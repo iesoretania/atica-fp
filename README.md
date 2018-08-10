@@ -1,4 +1,4 @@
-atica-tic
+ATICA-TIC
 =========
 
-A Symfony project created on August 10, 2018, 12:43 pm.
+Aplicación web para ayudar en la gestión de las incidencias TIC en un centro educativo.
