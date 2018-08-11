@@ -38,11 +38,11 @@ class User implements AdvancedUserInterface
 
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
+     * @ORM\OneToOne(targetEntity="Person")
+     * @ORM\JoinColumn(name="id")
+     * @var Person
      */
-    private $id;
+    private $person;
 
     /**
      * @ORM\Column(type="string", unique=true, nullable=true)
@@ -56,13 +56,6 @@ class User implements AdvancedUserInterface
      * @var string
      */
     private $password;
-
-    /**
-     * @ORM\OneToOne(targetEntity="Person")
-     * @ORM\JoinColumn(unique=true)
-     * @var Person
-     */
-    private $person;
 
     /**
      * @ORM\Column(type="boolean")
