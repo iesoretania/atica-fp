@@ -1,13 +1,37 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ 'title.welcome'|trans({}, 'layout') }}{% endblock %} - {{ app_name }}</title>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('build/app.css') }}" />
+    {% endblock %}
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ asset('safari-pinned-tab.svg') }}" color="#5bbad5">
+    <meta name="apple-mobile-web-app-title" content="{{ app_name }}">
+    <meta name="application-name" content="{{ app_name }}">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="theme-color" content="#ffffff"></head>
+<body>
+{% block body %}{% endblock %}
+<script src="{{ asset('build/app.js') }}"></script>
+{% block javascripts %}{% endblock %}
+<script type="text/javascript">
+    $('select').select2({
+        theme: "bootstrap",
+        language: "{{ app.request.locale }}"
+    });
+    var trigger = $('[data-toggle="offcanvas"], nav .sidebar-nav li');
+
+    trigger.click(function () {
+        $('#wrapper').toggleClass('toggled');
+        $('#sidebar').toggleClass('collapsed');
+    });
+</script>
+</body>
 </html>
