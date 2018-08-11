@@ -13,11 +13,18 @@
     "url": "https://github.com/iesoretania/atica-tic.git"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.2.0",
     "@symfony/webpack-encore": "^0.20.1",
     "autoprefixer": "^9.0.1",
+    "bootstrap": "^4.1.3",
+    "bootswatch": "^4.1.3",
+    "jquery": "^3.3.1",
     "node-sass": "^4.9.2",
+    "popper.js": "^1.14.4",
     "postcss-loader": "^2.1.6",
     "sass-loader": "^7.0.3",
+    "select2": "^4.0.6-rc.1",
+    "select2-theme-bootstrap4": "^0.2.0-beta.2",
     "webpack-notifier": "^1.6.0"
   },
   "browserslist": [
