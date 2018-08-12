@@ -38,8 +38,15 @@ class User implements AdvancedUserInterface
 
     /**
      * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     * @var int
+     */
+    private $id;
+
+    /**
      * @ORM\OneToOne(targetEntity="Person")
-     * @ORM\JoinColumn(name="id")
+     * @ORM\JoinColumn(unique=true)
      * @var Person
      */
     private $person;
