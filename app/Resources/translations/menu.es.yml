@@ -1,0 +1,31 @@
+menu.frontpage: Portada
+
+menu.admin: Administración
+menu.admin.detail: Gestionar el centro educativo
+
+menu.admin.user: Usuarios
+menu.admin.user.detail: Administrar usuarios de la plataforma
+
+menu.admin.organization: Centros educativos
+menu.admin.organization.detail: Administrar los centros educativos
+
+menu.organization: Centro educativo
+menu.organization.detail: Administrar el centro educativo
+
+menu.organization.import: Importar
+menu.organization.import.detail: Importar datos desde Séneca
+
+menu.organization.import.teacher: Profesorado
+menu.organization.import.teacher.detail: Importar profesorado desde Séneca
+
+menu.organization.import.unit: Unidades
+menu.organization.import.unit.detail: Importar unidades desde Séneca
+
+menu.organization.import.department: Departamentos
+menu.organization.import.department.detail: Importar departamentos desde Séneca
+
+menu.personal_data: Datos personales
+menu.personal_data.detail: Modificar los datos personales
+
+menu.logout: Desconectar
+menu.logout.detail: Salir de la aplicación
