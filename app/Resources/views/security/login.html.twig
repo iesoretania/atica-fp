@@ -14,13 +14,13 @@
                {% if not last_username %}autofocus="" {% endif %}>
     </div>
     <div class="form-group">
-        <div class="pull-right"><a href="{{ path('login_password_reset') }}" tabindex="4">{{ 'form.login.password.reset'|trans }}</a></div>
+        <div class="text-right"><a href="{{ path('login_password_reset') }}" tabindex="4">{{ 'form.login.password.reset'|trans }}</a></div>
         <label for="password">{{ 'form.login.password'|trans }}</label>
         <input type="password" name="_password" id="password" required="" class="form-control" tabindex="2"
                {% if last_username %}autofocus="" {% endif %}>
     </div>
     <div class="form-group">
-        <button type="submit" name="login" class="btn btn-info col-xs-12" tabindex="4">{{ 'form.login.submit'|trans }}</button>
+        <button type="submit" name="login" class="btn btn-info btn-block" tabindex="4">{{ 'form.login.submit'|trans }}</button>
     </div>
 </form>
 {% endblock %}
