@@ -36,30 +36,27 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     form_themes:
-    - 'bootstrap_3_horizontal_layout.html.twig'
+        - 'bootstrap_4_horizontal_layout.html.twig'
     globals:
-        app_name:     'GESTIÓN TIC'
+        app_name:     '%app_name%'
         app_repository: 'https://github.com/iesoretania/atica-tic'
-        app_version:  '1.0'
+        app_version:  ''
         user_extension: '@AppBundle\Service\UserExtensionService'
         menu_extension: "@app.menu_builders_chain"
 
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver: pdo_mysql
+        driver: 'pdo_mysql'
         host: '%database_host%'
         port: '%database_port%'
         dbname: '%database_name%'
         user: '%database_user%'
         password: '%database_password%'
-        charset: UTF8
-        # if using pdo_sqlite as your database driver:
-        #   1. add the path in parameters.yml
-        #     e.g. database_path: '%kernel.project_dir%/var/data/data.sqlite'
-        #   2. Uncomment database_path in parameters.yml.dist
-        #   3. Uncomment next line:
-        #path: '%database_path%'
+        charset: 'utf8mb4'
+        default_table_options:
+            charset: utf8mb4
+            collate: utf8mb4_unicode_ci
         types:
             datetime:
                 class: AppBundle\DoctrineExtension\DBAL\Type\UTCDateTimeType
