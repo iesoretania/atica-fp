@@ -1,0 +1,8 @@
+{% for item in menu_extension.menu.children %}
+    <li{% if app.request.get('_route') starts with item.routeName %} class="active"{% endif %}>
+        <a href="{{ path(item.routeName, item.routeParams|default([])) }}">
+            {% if item.icon %}<i class="fa fa-{{ item.icon }}"></i>&nbsp;{% endif %}
+            {{ item.caption | trans([], 'menu') }}
+        </a>
+    </li>
+{% endfor %}

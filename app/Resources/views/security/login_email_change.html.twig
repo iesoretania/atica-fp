@@ -1,0 +1,17 @@
+{% trans_default_domain "security" %}
+{% extends 'security/login_base.html.twig' %}
+
+{% block title 'form.change_email.email.subject'|trans %}
+
+{% block login_title %}{{ 'form.change_email.email.subject'|trans }}{% endblock %}
+
+{% block login_action %}{% endblock %}
+
+{% block login_content %}
+    <form method="post">
+        <div class="alert alert-warning">{{ 'form.change_email.email.warning'|trans({'%name%': user.firstName, '%email%': user.tokenType}) }}</div>
+        <div class="form-group">
+            <button type="submit" name="login" class="btn btn-info col-xs-12" tabindex="5">{{ 'form.change_email.email.submit'|trans }}</button>
+        </div>
+    </form>
+{% endblock %}

@@ -55,7 +55,7 @@ class CoreMenu implements MenuBuilderInterface
             $menu2 = new MenuItem();
             $menu2
                 ->setName('admin_user')
-                ->setRouteName('admin_user_list')
+                ->setRouteName('admin')
                 ->setCaption('menu.admin.user')
                 ->setDescription('menu.admin.user.detail')
                 ->setColor('purple')
@@ -66,7 +66,7 @@ class CoreMenu implements MenuBuilderInterface
             $menu2 = new MenuItem();
             $menu2
                 ->setName('admin_organization')
-                ->setRouteName('admin_organization_list')
+                ->setRouteName('admin')
                 ->setCaption('menu.admin.organization')
                 ->setDescription('menu.admin.organization.detail')
                 ->setColor('yellow')
@@ -83,7 +83,7 @@ class CoreMenu implements MenuBuilderInterface
                 ->setCaption('menu.organization')
                 ->setDescription('menu.organization.detail')
                 ->setColor('yellow')
-                ->setIcon('bank')
+                ->setIcon('university')
                 ->setPriority(8000);
 
             $root[] = $menu1;
@@ -91,7 +91,7 @@ class CoreMenu implements MenuBuilderInterface
             $menu2 = new MenuItem();
             $menu2
                 ->setName('organization_import')
-                ->setRouteName('organization_import')
+                ->setRouteName('organization')
                 ->setCaption('menu.organization.import')
                 ->setDescription('menu.organization.import.detail')
                 ->setColor('red')
@@ -102,24 +102,12 @@ class CoreMenu implements MenuBuilderInterface
             $menu3 = new MenuItem();
             $menu3
                 ->setName('organization_import')
-                ->setRouteName('organization_import_teacher_form')
+                ->setRouteName('organization')
                 ->setCaption('menu.organization.import.teacher')
                 ->setDescription('menu.organization.import.teacher.detail')
                 ->setColor('blue')
                 ->setIcon('graduation-cap')
                 ->setPriority(0);
-
-            $menu2->addChild($menu3);
-
-            $menu3 = new MenuItem();
-            $menu3
-                ->setName('unit_import')
-                ->setRouteName('organization_import_unit_form')
-                ->setCaption('menu.organization.import.unit')
-                ->setDescription('menu.organization.import.unit.detail')
-                ->setColor('green')
-                ->setIcon('group')
-                ->setPriority(1);
 
             $menu2->addChild($menu3);
         }

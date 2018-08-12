@@ -1,0 +1,5 @@
+{% import 'layout/macros_layout.html.twig' as ml %}
+
+{% for key, type in {'info': 'info', 'error': 'danger', 'success': 'success'} %}
+{{ ml.flash_message(key, type) }}
+{% endfor %}

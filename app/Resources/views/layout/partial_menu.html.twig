@@ -1,0 +1,9 @@
+{% trans_default_domain 'menu' %}
+{% import 'layout/macros_menu.html.twig' as mm %}
+
+<section class="row tile2-row text-center">
+    {% set menu_item = menu_extension.getMenuByRouteName(menu_path|default(app.request.get('_route'))) %}
+    {% for item in menu_item.children %}
+        {{ mm.menu_item(item.caption, item.description, item.routeName, item.routeParams, item.color, item.icon) }}
+    {% endfor %}
+</section>

@@ -1,11 +1,19 @@
 # To get started with security, check out the documentation:
-# https://symfony.com/doc/current/security.html
+# http://symfony.com/doc/current/security.html
 security:
 
-    # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+    # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-        in_memory:
-            memory: ~
+        db_provider:
+            entity:
+                class: AppBundle:User
+
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+
+    role-hierarchy:
+        ROLE_ADMIN: [ROLE_ALLOWED_TO_SWITCH]
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -13,13 +21,23 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        main:
+        login:
+            pattern:  ^/(entrar|restablecer|publico)
             anonymous: ~
             logout_on_user_change: true
-            # activate different ways to authenticate
 
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-            #http_basic: ~
+        main:
+            logout_on_user_change: true
 
-            # https://symfony.com/doc/current/security/form_login_setup.html
-            #form_login: ~
+            guard:
+                authenticators:
+                - AppBundle\Security\FormAuthenticator
+
+            logout:
+                path: logout
+                target: /
+
+            switch_user:
+                role: ROLE_ALLOWED_TO_SWITCH
+                parameter: _switch_user
+

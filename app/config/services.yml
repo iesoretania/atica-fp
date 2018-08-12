@@ -26,6 +26,14 @@ services:
     app.menu_builders_chain:
         class: AppBundle\Service\MenuBuilderChain
 
+    AppBundle\Service\MailerService:
+        autowire: false
+        arguments: ["%notification.prefix%", "%notification.email_from%", "@mailer", "@translator"]
+
+    AppBundle\Service\SenecaAuthenticatorService:
+        autowire: false
+        arguments: ["%external.url%", "%external.url.force_security%", "%external.enabled%"]
+
     # controllers are imported separately to make sure they're public
     # and have a tag that allows actions to type-hint services
     AppBundle\Controller\:
