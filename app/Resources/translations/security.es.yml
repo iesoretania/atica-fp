@@ -46,7 +46,7 @@ form.reset.message: Contraseña restablecida con éxito
 form.change_email.notvalid: No se ha encontrado la petición de cambio de dirección o bien ha caducado. Vuelva a solicitarla
 form.change_email.message: La nueva dirección de correo ha sido confirmada con éxito.
 form.change_email.error: No se ha podido actualizar la dirección de correo electrónico, sigue en vigor su valor anterior.
-form.change_email.email.warning: "%name%, ¿desea cambiar la dirección de correo electrónico asociada a la cuenta %email%?"
+form.change_email.email.warning: "%name%, ¿desea cambiar la dirección de correo electrónico de su perfil a '%email%'?"
 form.change_email.email.submit: Confirmar nueva dirección
 form.change_email.email.subject: Confirmación de cambio de dirección de correo
 form.change_email.email.body: |

@@ -65,7 +65,7 @@ class SecurityController extends Controller
     /**
      * @Route("/restablecer", name="login_password_reset", methods={"GET", "POST"})
      */
-    public function passwordResetRequestAction(Request $request)
+    public function passwordResetRequestAction(Request $request, MailerService $mailerService)
     {
 
         $data = [
@@ -82,7 +82,7 @@ class SecurityController extends Controller
 
         // ¿se ha enviado una dirección?
         if ($form->isSubmitted() && $form->isValid()) {
-            $error = $this->passwordResetRequest($email);
+            $error = $this->passwordResetRequest($email, $mailerService);
 
             if (!is_string($error)) {
                 return $error;
@@ -257,7 +257,7 @@ class SecurityController extends Controller
      * @param $email
      * @return string|RedirectResponse
      */
-    private function passwordResetRequest($email)
+    private function passwordResetRequest($email, MailerService $mailerService)
     {
         /** @var User $user */
         // comprobar que está asociada a un usuario
@@ -291,7 +291,7 @@ class SecurityController extends Controller
                     $user->setTokenExpiration($validity)->setTokenType('password');
 
                     // enviar correo
-                    if (0 === $this->get(MailerService::class)->sendEmail([$user],
+                    if (0 === $mailerService->sendEmail([$user],
                             ['id' => 'form.reset.email.subject', 'parameters' => []],
                             [
                                 'id' => 'form.reset.email.body',

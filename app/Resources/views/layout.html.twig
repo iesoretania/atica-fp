@@ -25,9 +25,6 @@
             <div class="sidebar-sticky">
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
                     <span>{{ 'menu.frontpage'|trans({}, 'menu') }}</span>
-                    <a class="d-flex align-items-center text-muted" href="#">
-                        <span data-feather="plus-circle"></span>
-                    </a>
                 </h6>
                 <ul class="nav flex-column">
                     {% for item in menu_extension.menu.children %}
@@ -43,19 +40,17 @@
             </div>
         </nav>
 
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                {% block content_header %}
-                    {% if title is defined %}
-                        <h1 class="well">{{ title }}</h1>
-                    {% endif %}
-                    {% include 'layout/partial_flash.html.twig' %}
-                {% endblock %}
-                {% if menu ?? false %}
-                    {% include 'layout/partial_menu.html.twig' %}
+        <main role="main" class="col-md-10 ml-sm-auto pt-3 px-4">
+            {% block content_header %}
+                {% if title is defined %}
+                    <h1 class="well">{{ title }}</h1>
                 {% endif %}
-                {% block content %}{% endblock %}
-            </div>
+                {% include 'layout/partial_flash.html.twig' %}
+            {% endblock %}
+            {% if menu ?? false %}
+                {% include 'layout/partial_menu.html.twig' %}
+            {% endif %}
+            {% block content %}{% endblock %}
         </main>
     </div>
 </div>

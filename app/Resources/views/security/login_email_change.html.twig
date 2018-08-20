@@ -9,9 +9,9 @@
 
 {% block login_content %}
     <form method="post">
-        <div class="alert alert-warning">{{ 'form.change_email.email.warning'|trans({'%name%': user.firstName, '%email%': user.tokenType}) }}</div>
+        <div class="alert alert-warning">{{ 'form.change_email.email.warning'|trans({'%name%': user.person.firstName, '%email%': user.tokenType}) }}</div>
         <div class="form-group">
-            <button type="submit" name="login" class="btn btn-info col-xs-12" tabindex="5">{{ 'form.change_email.email.submit'|trans }}</button>
+            <button type="submit" name="login" class="btn btn-info btn-block" tabindex="5">{{ 'form.change_email.email.submit'|trans }}</button>
         </div>
     </form>
 {% endblock %}

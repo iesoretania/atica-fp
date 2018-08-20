@@ -1,0 +1,63 @@
+form.user_name: Nombre de usuario
+form.first_name: Nombre
+form.last_name: Apellidos
+form.email_address: Correo electrónico
+form.gender: Sexo
+form.gender.neutral: No especificado
+form.gender.male: Hombre
+form.gender.female: Mujer
+form.enabled: Acceso
+form.enabled.no: El acceso a la aplicación le está denegado
+form.enabled.yes: El acceso a la aplicación le está permitido
+form.global_administrator: El usuario puede administrar todos los centros
+
+form.allow_external_check: Permitir comprobación de contraseña externa
+form.allow_external_check.yes: "El usuario puede activar la autenticación desde Séneca. NOTA: el nombre de usuario deberá ser su usuario IdEA"
+form.allow_external_check.no: El usuario solamente puede utilizar la contraseña almacenada en local
+
+form.external_check: Comprobación de contraseña
+form.external_check.yes: Se comprobará primero en Séneca y luego en local si Séneca no está disponible
+form.external_check.no: Sólo se comprobará en local
+
+form.save: Guardar cambios
+form.delete: Eliminar usuarios seleccionados
+form.back: Volver
+form.impersonate: Acceder como el usuario
+form.delete_confirm: Confirmar borrado
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes usuarios? En el caso de que alguno de ellos tenga elementos asociados en algún centro, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+form.old_password: Contraseña actual
+form.new_password: Nueva contraseña
+form.new_password_repeat: Repetir contraseña
+form.change_password: Guardar cambios y cambiar la contraseña
+
+message.saved: Datos personales actualizados con éxito.
+message.password_changed: Datos personales y contraseña actualizados con éxito.
+message.email_change.info: ¡Atención! Para que la nueva dirección de correo electrónico entre en vigor debe confirmarla mediante un mensaje que le acaba de ser enviado a '%email%'.
+message.email_change.error: Ha ocurrido un error enviando la petición de confirmación de cambio de dirección de correo electrónico. Contacte con el administrador.
+message.error: No se han podido actualizar los datos personales.
+message.deleted: Los usuarios seleccionados han sido eliminados con éxito.
+message.delete_error: No se han podido eliminar los usuarios seleccionados.
+
+
+title.new: Nuevo usuario
+title.edit: Datos del usuario
+title.delete: Eliminar usuarios
+
+title.list: Listado de usuarios
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_users: No hay usuarios
+table.new: Nuevo usuario
+table.filter: Filtrar...
+
+header.username: Usuario
+header.name: Nombre completo
+header.email: Correo-e
+header.profiles: Perfiles
+header.last_login: Últ. conexión
+
+role.global_administrator: Administrador global
