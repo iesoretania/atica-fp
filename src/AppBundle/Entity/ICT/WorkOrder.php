@@ -90,4 +90,138 @@ class WorkOrder
         $this->usedConsumables = new ArrayCollection();
     }
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return Organization
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
+    /**
+     * @param Organization $organization
+     * @return WorkOrder
+     */
+    public function setOrganization($organization)
+    {
+        $this->organization = $organization;
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     * @return WorkOrder
+     */
+    public function setPerson($person)
+    {
+        $this->person = $person;
+        return $this;
+    }
+
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @return WorkOrder
+     */
+    public function setTicket($ticket)
+    {
+        $this->ticket = $ticket;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return WorkOrder
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getStartedOn()
+    {
+        return $this->startedOn;
+    }
+
+    /**
+     * @param \DateTime $startedOn
+     * @return WorkOrder
+     */
+    public function setStartedOn($startedOn)
+    {
+        $this->startedOn = $startedOn;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getFinishedOn()
+    {
+        return $this->finishedOn;
+    }
+
+    /**
+     * @param \DateTime $finishedOn
+     * @return WorkOrder
+     */
+    public function setFinishedOn($finishedOn)
+    {
+        $this->finishedOn = $finishedOn;
+        return $this;
+    }
+
+    /**
+     * @return UsedConsumable[]
+     */
+    public function getUsedConsumables()
+    {
+        return $this->usedConsumables;
+    }
+
+    /**
+     * @param UsedConsumable[] $usedConsumables
+     * @return WorkOrder
+     */
+    public function setUsedConsumables($usedConsumables)
+    {
+        $this->usedConsumables = $usedConsumables;
+        return $this;
+    }
+
 }
