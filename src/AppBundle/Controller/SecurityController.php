@@ -60,6 +60,7 @@ class SecurityController extends Controller
      */
     public function logInOutCheckAction()
     {
+        return $this->redirectToRoute('login');
     }
 
     /**
