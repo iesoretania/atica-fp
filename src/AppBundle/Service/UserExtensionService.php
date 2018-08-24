@@ -18,10 +18,12 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\User;
 use AppBundle\Security\OrganizationVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserExtensionService
 {
@@ -53,6 +55,24 @@ class UserExtensionService
             return $this->em->getRepository('AppBundle:Organization')->find($this->session->get('organization_id'));
         }
         return null;
+    }
+
+    public function checkCurrentOrganization(UserInterface $user)
+    {
+        if (!$user instanceof User) {
+            return false;
+        }
+
+        if ($user->isGlobalAdministrator()) {
+            return true;
+        }
+
+        return $this->session->has('organization_id')
+            && count($this->em->getRepository('AppBundle:Organization')->getMembershipByUserQueryBuilder($user)
+                ->andWhere('o = :organization')
+                ->setParameter('organization', $this->getCurrentOrganization())
+                ->getQuery()
+                ->getResult()) > 0;
     }
 
     public function isUserGlobalAdministrator()
