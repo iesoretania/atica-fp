@@ -1,0 +1,4 @@
+exception.title: "Ha ocurrido un error: {{ status_text }}"
+exception.header1: "¡Vaya! Parece que ha ocurrido un error."
+exception.header2: 'El servidor ha devuelto un error "{{ status_code }} {{ status_text }}".'
+exception.body: Algo anda mal. Por favor, indíquenos qué estaba haciendo cuando ocurrió este error e intentaremos arreglarlo lo antes posible.
