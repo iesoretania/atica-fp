@@ -114,6 +114,30 @@ class CoreMenu implements MenuBuilderInterface
 
         $menu = new MenuItem();
         $menu
+            ->setName('ict_ticket_new')
+            ->setRouteName('frontpage')
+            ->setCaption('menu.ict.ticket_new')
+            ->setDescription('menu.ict.ticket_new.detail')
+            ->setColor('purple')
+            ->setIcon('exclamation-triangle')
+            ->setPriority(0);
+
+        $root[] = $menu;
+
+        $menu = new MenuItem();
+        $menu
+            ->setName('ict_ticket_inbox')
+            ->setRouteName('frontpage')
+            ->setCaption('menu.ict.ticket_inbox')
+            ->setDescription('menu.ict.ticket_inbox.detail')
+            ->setColor('purple')
+            ->setIcon('inbox')
+            ->setPriority(0);
+
+        $root[] = $menu;
+
+        $menu = new MenuItem();
+        $menu
             ->setName('personal_data')
             ->setRouteName('personal_data')
             ->setCaption('menu.personal_data')
@@ -123,6 +147,7 @@ class CoreMenu implements MenuBuilderInterface
             ->setPriority(9999);
 
         $root[] = $menu;
+
         $menu = new MenuItem();
         $menu
             ->setName('logout')
