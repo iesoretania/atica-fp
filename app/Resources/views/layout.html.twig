@@ -14,40 +14,12 @@
     <nav class="navbar navbar-dark navbar-expand-md sticky-top bg-dark">
         <!-- Just an image -->
         <a class="navbar-brand" href="{{ path('frontpage') }}">{{ app_name }}</a>
-        <!-- Breadcrumb-->
-        <div class="mr-auto">
-            <ol class="breadcrumb clearfix d-none d-md-inline-flex p-0 bg-dark border-0 m-0">
-            {% for menu_item in menu_extension.pathByRouteName(menu_path|default(app.request.get('_route'))) %}
-                {% if not loop.last or (breadcrumb is defined and breadcrumb) %}{% set last_url = path(menu_item.routeName, menu_item.routeParams) %}<a href="{{ last_url }}" class="breadcrumb-link">{% endif %}
-                <li class="breadcrumb-item">
-                {%- if menu_item.icon %}<i class="fa fa-{{ menu_item.icon }}"></i> {% endif -%}
-                {%- if not loop.first and menu_item.caption %}{% if menu_item.icon %}<span class="hidden-xs hidden-sm">{% endif %}{{- menu_item.caption|trans({}, 'menu') -}}{% if menu_item.icon %}</span>{% endif %}{% endif %}
-                {%- if loop.first %}<span class="hidden-xs hidden-sm">{{- user_extension.currentOrganization.name -}}</span>{% endif %}
-                {% if not loop.last or (breadcrumb is defined and breadcrumb) %}</a>{% endif %}
-                </li>
-            {%- endfor -%}
-            {% for item in breadcrumb|default([]) %}
-                <li class="breadcrumb-item active">
-                    {%- if item.routeName is defined %}{% set last_url = path(item.routeName, item.routeParams ?: {}) %}<a href="{{ last_url }}" class="breadcrumb-link">{% endif -%}
-                        {%- if item.icon is defined %}<i class="fa fa-{{ item.icon }}"></i> {% endif -%}
-                        {%- if item.caption is defined %}{{- item.caption|trans({}, 'menu') -}}{% endif %}{{- item.fixed|default('') -}}
-                        {%- if item.routeName is defined %}</a>{% endif -%}
-                </li>
-            {%- endfor %}
-            </ol>
-        </div>
-        <ul class="navbar-nav ml-auto nav-flex-icons">
+        <span class="nav-text ml-auto mr-0">
+            {{ 'user.logged.as'|trans({'%user%': app.user}, 'layout') }}
+        </span>
+        <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('logout') }}"><i class="fas fa-power-off"></i> {{ 'user.logout'|trans({}, 'layout') }}</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right dropdown-unique" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item waves-effect waves-light" href="#">Action</a>
-                    <a class="dropdown-item waves-effect waves-light" href="#">Another action</a>
-                    <a class="dropdown-item waves-effect waves-light" href="#">Something else here</a>
-                </div>
             </li>
         </ul>
     </nav>
@@ -62,7 +34,7 @@
                 <ul class="nav flex-column">
                     {% for item in menu_extension.menu.children %}
                         <li class="nav-item">
-                            <a class="nav-link{% if app.request.get('_route') starts with item.routeName %} active{% endif %}" href="{{ path(item.routeName, item.routeParams|default([])) }}">
+                            <a class="nav-link{% if app.request.get('_route') starts with item.routeName %} active{% endif %}" href="{{ path(item.routeName, item.routeParams|default([])) }}" title="{{ item.description | trans({}, 'menu') }}">
                                 {% if item.icon %}<i class="fas fa-{{ item.icon }}"></i>&nbsp;{% endif %}
                                 {{ item.caption | trans([], 'menu') }}
                                 {% if app.request.get('_route') starts with item.routeName %}<span class="sr-only">{{ 'menu.current'|trans({}, 'layout') }}</span>{% endif %}
@@ -74,6 +46,26 @@
         </nav>
 
         <main role="main" class="col-md-10 ml-sm-auto pt-3 px-4">
+            <nav class="breadcrumb">
+                {% for menu_item in menu_extension.pathByRouteName(menu_path|default(app.request.get('_route'))) %}
+                    {% if not loop.last or (breadcrumb is defined and breadcrumb) %}{% set last_url = path(menu_item.routeName, menu_item.routeParams) %}<a href="{{ last_url }}" class="breadcrumb-link">{% endif %}
+                    <li class="breadcrumb-item">
+                    {%- if menu_item.icon %}<i class="fa fa-{{ menu_item.icon }}"></i> {% endif -%}
+                    {%- if not loop.first and menu_item.caption %}{% if menu_item.icon %}<span class="hidden-xs hidden-sm">{% endif %}{{- menu_item.caption|trans({}, 'menu') -}}{% if menu_item.icon %}</span>{% endif %}{% endif %}
+                    {%- if loop.first %}<span class="hidden-xs hidden-sm">{{- user_extension.currentOrganization.name -}}</span>{% endif %}
+                    {% if not loop.last or (breadcrumb is defined and breadcrumb) %}</a>{% endif %}
+                    </li>
+                {%- endfor -%}
+                {% for item in breadcrumb|default([]) %}
+                    <li class="breadcrumb-item active">
+                        {%- if item.routeName is defined %}{% set last_url = path(item.routeName, item.routeParams ?: {}) %}<a href="{{ last_url }}" class="breadcrumb-link">{% endif -%}
+                            {%- if item.icon is defined %}<i class="fa fa-{{ item.icon }}"></i> {% endif -%}
+                            {%- if item.caption is defined %}{{- item.caption|trans({}, 'menu') -}}{% endif %}{{- item.fixed|default('') -}}
+                            {%- if item.routeName is defined %}</a>{% endif -%}
+                    </li>
+                {%- endfor %}
+            </nav>
+
             {% block content_header %}
                 {% if title is defined %}
                     <h1 class="well">{{ title }}</h1>

@@ -1,13 +1,13 @@
 menu.frontpage: Portada
 
 menu.admin: Administración
-menu.admin.detail: Gestionar el centro educativo
+menu.admin.detail: Gestionar la plataforma
 
 menu.admin.user: Usuarios
 menu.admin.user.detail: Administrar usuarios de la plataforma
 
 menu.admin.organization: Centros educativos
-menu.admin.organization.detail: Administrar los centros educativos
+menu.admin.organization.detail: Gestionar los centros educativos
 
 menu.organization: Centro educativo
 menu.organization.detail: Administrar el centro educativo
