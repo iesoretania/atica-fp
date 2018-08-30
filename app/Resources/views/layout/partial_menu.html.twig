@@ -2,11 +2,11 @@
 {% import 'layout/macros_menu.html.twig' as mm %}
 
 <div class="row pb-sm-4">
-    <div class="card-deck w-100">
+    <div class="card-deck w-100 m-auto">
     {% set menu_item = menu_extension.getMenuByRouteName(menu_path|default(app.request.get('_route'))) %}
     {% for item in menu_item.children %}
         {{ mm.menu_item(item.caption, item.description, item.routeName, item.routeParams, item.color, item.icon) }}
-        {% if loop.index % 3 == 0 %}</div></div><div class="row pb-sm-4"><div class="card-deck w-100">{% endif %}
+        {% if loop.index % 3 == 0 %}</div></div><div class="row pb-sm-4"><div class="card-deck w-100 m-auto">{% endif %}
     {% endfor %}
     </div>
 </div>
