@@ -195,7 +195,7 @@ form.login button {
 
 // Más ajustes de formularios
 
-label.control-label.required:after {
+label.required:after {
   content: "*";
   color: red;
 }
@@ -220,14 +220,16 @@ tr.clickable-row {
 
 span#search-clear {
   position: absolute;
-  right: 25px;
+  vertical-align: middle;
+  right: 22px;
   top: 0;
   bottom: 0;
-  height: 14px;
+  height: 18px;
   margin: auto;
   font-size: 14px;
   cursor: pointer;
   color: #ccc;
+  width: 1em;
 }
 
 .loading {

@@ -3,16 +3,18 @@
 {% import 'macros.html.twig' as m %}
 
 {% block content %}
-    <div class="form-group col-md-5">
-        <input type="search" id="search" class="form-control" autofocus="autofocus" placeholder="&#xF002; {{ 'table.filter'|trans }}" autocomplete="off" value="{{ q }}">
-        <span id="search-clear" class="fas fa-remove"></span>
+    <div class="row">
+        <div class="form-group col-5">
+            <input type="search" id="search" class="form-control" autofocus="autofocus" placeholder="&#xF002; {{ 'table.filter'|trans }}" autocomplete="off" value="{{ q }}">
+            <span id="search-clear"><i class="fas fa-times"></i></span>
+        </div>
+        {% block new_action %}
+        <div class="form-group col-7">
+            <a href="{% block path_new %}{% endblock %}" class="btn btn-success"><i class="fa fa-plus"></i> {{ 'table.new'|trans }}</a>
+            {% block more_actions %}{% endblock %}
+        </div>
+        {% endblock %}
     </div>
-    {% block new_action %}
-    <div class="form-group col-md-5">
-        <a href="{% block path_new %}{% endblock %}" class="btn btn-success"><i class="fa fa-plus"></i> {{ 'table.new'|trans }}</a>
-        {% block more_actions %}{% endblock %}
-    </div>
-    {% endblock %}
     {% block before_table %}{% endblock %}
     <section id="exchange">
     <div id="table" class="w-100 table-responsive-sm">
