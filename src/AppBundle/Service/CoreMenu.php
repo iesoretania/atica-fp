@@ -55,7 +55,7 @@ class CoreMenu implements MenuBuilderInterface
             $menu2 = new MenuItem();
             $menu2
                 ->setName('admin_user')
-                ->setRouteName('admin')
+                ->setRouteName('admin_user_list')
                 ->setCaption('menu.admin.user')
                 ->setDescription('menu.admin.user.detail')
                 ->setColor('purple')
@@ -66,7 +66,7 @@ class CoreMenu implements MenuBuilderInterface
             $menu2 = new MenuItem();
             $menu2
                 ->setName('admin_organization')
-                ->setRouteName('admin')
+                ->setRouteName('admin_organization_list')
                 ->setCaption('menu.admin.organization')
                 ->setDescription('menu.admin.organization.detail')
                 ->setColor('yellow')

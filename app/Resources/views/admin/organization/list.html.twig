@@ -1,0 +1,59 @@
+{% trans_default_domain 'organization' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('admin_organization_form_new') }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-30"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-10">{{ 'header.code'|trans }}</th>
+    <th class="w-20">{{ 'header.city'|trans }}</th>
+    <th class="w-20">{{ 'header.email'|trans }}</th>
+    <th class="w-10">{{ 'header.phone_number'|trans }}</th>
+    <th class="w-10"></th>
+{% endblock %}
+
+{% block table_body %}
+            {% for organization in pager %}
+                {% set url = path('admin_organization_form_edit', {'id': organization.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="organizations[]" value="{{ organization.id }}" {% if organization.id == user_extension.currentOrganization.id %} disabled="disabled"{% else %} class="selectable"{% endif %}> <a href="{{ url }}">{{ organization.name }}</a></label>
+                    </td>
+                    <td>
+                        <a href="{{ url }}">{{ organization.code }}</a>
+                    </td>
+                    <td>
+                        {{ organization.city }}
+                    </td>
+                    <td>
+                        {{ organization.emailAddress }}
+                    </td>
+                    <td>
+                        {{ organization.phoneNumber }}
+                    </td>
+                    <td>
+                        {% if organization.id != user_extension.currentOrganization.id %}
+                            {{ m.submit_button('switch', 'refresh', 'btn-primary btn-xs btn-block', 'table.switch'|trans, false, organization.id) }}
+                        {% else %}
+                            <i class="fa fa-check"></i> {{ 'table.active'|trans }}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('admin_organization_operation') }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}

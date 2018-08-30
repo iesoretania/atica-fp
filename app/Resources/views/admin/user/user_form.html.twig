@@ -1,0 +1,14 @@
+{% trans_default_domain 'user' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ m.start_button() }}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {% if user.id and app.user.id != user.id and is_granted('ROLE_ALLOWED_TO_SWITCH') %}
+            {{ m.link_button(path('frontpage', {'_switch_user': user.username}), 'user-secret', 'btn-warning', 'form.impersonate'|trans) }}
+        {% endif %}
+    {{ m.end_button() }}
+    {{ form_end(form) }}
+{% endblock %}

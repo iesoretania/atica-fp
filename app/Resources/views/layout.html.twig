@@ -46,10 +46,11 @@
         </nav>
 
         <main role="main" class="col-md-10 ml-sm-auto pt-3 px-4">
-            <nav class="breadcrumb">
+            <ol class="breadcrumb">
+                {% set last_url = "" %}
                 {% for menu_item in menu_extension.pathByRouteName(menu_path|default(app.request.get('_route'))) %}
-                    {% if not loop.last or (breadcrumb is defined and breadcrumb) %}{% set last_url = path(menu_item.routeName, menu_item.routeParams) %}<a href="{{ last_url }}" class="breadcrumb-link">{% endif %}
                     <li class="breadcrumb-item">
+                    {% if not loop.last or (breadcrumb is defined and breadcrumb) %}{% set last_url = path(menu_item.routeName, menu_item.routeParams) %}<a href="{{ last_url }}" class="breadcrumb-link">{% endif %}
                     {%- if menu_item.icon %}<i class="fa fa-{{ menu_item.icon }}"></i> {% endif -%}
                     {%- if not loop.first and menu_item.caption %}{% if menu_item.icon %}<span class="hidden-xs hidden-sm">{% endif %}{{- menu_item.caption|trans({}, 'menu') -}}{% if menu_item.icon %}</span>{% endif %}{% endif %}
                     {%- if loop.first %}<span class="hidden-xs hidden-sm">{{- user_extension.currentOrganization.name -}}</span>{% endif %}
@@ -64,7 +65,7 @@
                             {%- if item.routeName is defined %}</a>{% endif -%}
                     </li>
                 {%- endfor %}
-            </nav>
+            </ol>
 
             {% block content_header %}
                 {% if title is defined %}
