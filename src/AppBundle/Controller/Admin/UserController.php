@@ -18,6 +18,7 @@
 
 namespace AppBundle\Controller\Admin;
 
+use AppBundle\Entity\Person;
 use AppBundle\Entity\User;
 use AppBundle\Form\Type\UserType;
 use Doctrine\ORM\QueryBuilder;
@@ -45,7 +46,10 @@ class UserController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         if (null === $localUser) {
+            $localPerson = new Person();
             $localUser = new User();
+            $localUser->setPerson($localPerson);
+            $em->persist($localPerson);
             $em->persist($localUser);
         }
 
