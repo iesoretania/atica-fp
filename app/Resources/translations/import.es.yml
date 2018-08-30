@@ -1,0 +1,47 @@
+title.teacher_import: Importación de profesorado
+title.import_result: Resultado de la importación
+
+form.file: "Fichero .CSV de Séneca"
+
+form.external_password: Habilitar contraseña de Séneca
+form.external_password.no: El docente tendrá una contraseña independiente de la de Séneca
+form.external_password.yes: Se intentará verificar la contraseña desde Séneca y, si falla, en local
+
+form.generate_password: Contraseña inicial del nuevo profesorado
+form.generate_password.no: No generar ninguna
+form.generate_password.yes: Establecer por defecto en el usuario IdEA (aumenta el tiempo de importación)
+
+form.remove_existing: Eliminar no incluidos en el fichero
+form.remove_existing.no: Mantener los elementos no incluidos
+form.remove_existing.yes: Eliminar aquellos elementos no incluidos y que no estén asociados
+
+form.add_new_teachers: Incorporar profesorado nuevo del listado importado
+form.add_new_teachers.no: No añadir ningún docente nuevo
+form.add_new_teachers.yes: Añadir aquellos profesores nuevos que no estaban incluidos antes
+
+form.remove_old_teachers: Retirar profesorado que no aparezca en el listado importado
+form.remove_old_teachers.no: No retirar ningún docente existentes
+form.remove_old_teachers.yes: Retirar aquellos profesores que no están en el listado
+
+form.teacher_import: Importar profesorado
+form.submit: Importar
+form.again: Importar otro fichero
+form.back: Volver
+
+message.password_info: |
+  El profesorado nuevo ha sido incorporado con una contraseña generada automáticamente. Dicha contraseña
+  es su usuario IdEA. Recomendamos que sea cambiada lo antes posible para evitar problemas de accesos
+  no autorizados.
+
+message.import_ok: Importación realizada con éxito
+message.import_error: Ha ocurrido un error al realizar la importación
+
+report.stats: Estadísticas de la importación
+
+report.existing_teachers: Docentes ya existentes
+report.new_teachers: Docentes nuevos incorporados
+
+report.existing_memberships: Pertenencias ya existentes
+report.new_memberships: Pertenencias nuevas incorporadas
+
+report.welcome: Docentes nuevos dados de alta en la plataforma

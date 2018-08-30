@@ -91,7 +91,7 @@ class CoreMenu implements MenuBuilderInterface
             $menu2 = new MenuItem();
             $menu2
                 ->setName('organization_import')
-                ->setRouteName('organization')
+                ->setRouteName('organization_import')
                 ->setCaption('menu.organization.import')
                 ->setDescription('menu.organization.import.detail')
                 ->setColor('red')
@@ -101,8 +101,8 @@ class CoreMenu implements MenuBuilderInterface
 
             $menu3 = new MenuItem();
             $menu3
-                ->setName('organization_import')
-                ->setRouteName('organization')
+                ->setName('organization_import_teacher')
+                ->setRouteName('organization_import_teacher_form')
                 ->setCaption('menu.organization.import.teacher')
                 ->setDescription('menu.organization.import.teacher.detail')
                 ->setColor('blue')

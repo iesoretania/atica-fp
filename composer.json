@@ -28,6 +28,7 @@
         "doctrine/doctrine-migrations-bundle": "^1.2",
         "ext-curl": "*",
         "ext-dom": "*",
+        "ext-iconv": "*",
         "ext-libxml": "*",
         "incenteev/composer-parameter-handler": "^2.0",
         "sensio/distribution-bundle": "^5.0.19",

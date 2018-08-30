@@ -1,0 +1,34 @@
+{% trans_default_domain 'import' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    {% if not stats %}
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ m.start_button() }}
+            {{ m.submit_button('submit', 'check', 'btn-success', 'form.teacher_import'|trans) }}
+            {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.end_button() }}
+        {{ form_end(form) }}
+    {% else %}
+        <h4>{{ 'report.stats'|trans }}</h4>
+        <ul>
+            <li>{{ 'report.existing_teachers'|trans }}: {{ stats.existing_user_count }}</li>
+            <li>{{ 'report.new_teachers'|trans }}: {{ stats.new_user_count }}</li>
+            <li>{{ 'report.existing_memberships'|trans }}: {{ stats.existing_membership_count }}</li>
+            <li>{{ 'report.new_memberships'|trans }}: {{ stats.new_membership_count }}</li>
+        </ul>
+        {% if stats.user_collection %}
+            <h4>{{ 'report.welcome'|trans }}</h4>
+            <ul>
+                {% for teacher in stats.user_collection %}
+                <li>{{ teacher }}</li>
+                {% endfor %}
+            </ul>
+            {% if generate_password %}
+                <div class="alert alert-warning">{{ 'message.password_info'|trans }}</div>
+            {% endif %}
+        {% endif %}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {% endif %}
+{% endblock %}
