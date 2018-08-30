@@ -4,12 +4,12 @@
 
 {% block content %}
     <div class="row">
-        <div class="form-group col-5">
+        <div class="form-group col-sm-5">
             <input type="search" id="search" class="form-control" autofocus="autofocus" placeholder="&#xF002; {{ 'table.filter'|trans }}" autocomplete="off" value="{{ q }}">
             <span id="search-clear"><i class="fas fa-times"></i></span>
         </div>
         {% block new_action %}
-        <div class="form-group col-7">
+        <div class="form-group col-sm-7">
             <a href="{% block path_new %}{% endblock %}" class="btn btn-success"><i class="fa fa-plus"></i> {{ 'table.new'|trans }}</a>
             {% block more_actions %}{% endblock %}
         </div>
