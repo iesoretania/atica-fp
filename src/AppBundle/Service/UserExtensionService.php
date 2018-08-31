@@ -49,6 +49,9 @@ class UserExtensionService
         $this->authorizationChecker = $authorizationChecker;
     }
 
+    /**
+     * @return \AppBundle\Entity\Organization|null|object
+     */
     public function getCurrentOrganization()
     {
         if ($this->session->has('organization_id')) {

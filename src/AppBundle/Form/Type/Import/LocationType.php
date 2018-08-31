@@ -20,14 +20,14 @@
 
 namespace AppBundle\Form\Type\Import;
 
-use AppBundle\Form\Model\TeacherImport;
+use AppBundle\Form\Model\LocationImport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TeacherType extends AbstractType
+class LocationType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -40,22 +40,14 @@ class TeacherType extends AbstractType
                 'label' => 'form.file',
                 'required' => true
             ])
-            ->add('externalPassword', ChoiceType::class, [
-                'label' => 'form.teacher.external_password',
+            ->add('onlyKeepNew', ChoiceType::class, [
+                'label' => 'form.location.only_keep_new',
                 'required' => true,
                 'expanded' => true,
+                'disabled' => true,
                 'choices' => [
-                    'form.teacher.external_password.yes' => true,
-                    'form.teacher.external_password.no' => false
-                ]
-            ])
-            ->add('generatePassword', ChoiceType::class, [
-                'label' => 'form.teacher.generate_password',
-                'required' => true,
-                'expanded' => true,
-                'choices' => [
-                    'form.teacher.generate_password.no' => false,
-                    'form.teacher.generate_password.yes' => true
+                    'form.location.only_keep_new.yes' => true,
+                    'form.location.only_keep_new.no' => false
                 ]
             ]);
     }
@@ -66,7 +58,7 @@ class TeacherType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => TeacherImport::class,
+            'data_class' => LocationImport::class,
             'translation_domain' => 'import'
         ]);
     }

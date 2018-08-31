@@ -1,34 +1,30 @@
-title.teacher_import: Importación de profesorado
 title.import_result: Resultado de la importación
+
+title.teacher.import: Importación de profesorado
+title.location.import: Importación de dependencias
 
 form.file: "Fichero .CSV de Séneca"
 
-form.external_password: Habilitar contraseña de Séneca
-form.external_password.no: El docente tendrá una contraseña independiente de la de Séneca
-form.external_password.yes: Se intentará verificar la contraseña desde Séneca y, si falla, en local
+form.teacher.external_password: Habilitar contraseña de Séneca
+form.teacher.external_password.no: El docente tendrá una contraseña independiente de la de Séneca
+form.teacher.external_password.yes: Se intentará verificar la contraseña desde Séneca y, si falla, en local
 
-form.generate_password: Contraseña inicial del nuevo profesorado
-form.generate_password.no: No generar ninguna
-form.generate_password.yes: Establecer por defecto en el usuario IdEA (aumenta el tiempo de importación)
+form.teacher.generate_password: Contraseña inicial del nuevo profesorado
+form.teacher.generate_password.no: No generar ninguna
+form.teacher.generate_password.yes: Establecer por defecto en el usuario IdEA (aumenta el tiempo de importación)
 
-form.remove_existing: Eliminar no incluidos en el fichero
-form.remove_existing.no: Mantener los elementos no incluidos
-form.remove_existing.yes: Eliminar aquellos elementos no incluidos y que no estén asociados
+form.location.only_keep_new: Eliminar las no incluidas en el fichero
+form.location.only_keep_new.no: Mantener las dependencias no incluidas
+form.location.only_keep_new.yes: Eliminar aquellas dependencias no incluidas en el fichero
 
-form.add_new_teachers: Incorporar profesorado nuevo del listado importado
-form.add_new_teachers.no: No añadir ningún docente nuevo
-form.add_new_teachers.yes: Añadir aquellos profesores nuevos que no estaban incluidos antes
+form.teacher.do_import: Importar profesorado
+form.location.do_import: Importar dependencias
 
-form.remove_old_teachers: Retirar profesorado que no aparezca en el listado importado
-form.remove_old_teachers.no: No retirar ningún docente existentes
-form.remove_old_teachers.yes: Retirar aquellos profesores que no están en el listado
-
-form.teacher_import: Importar profesorado
 form.submit: Importar
 form.again: Importar otro fichero
 form.back: Volver
 
-message.password_info: |
+message.teacher.password_info: |
   El profesorado nuevo ha sido incorporado con una contraseña generada automáticamente. Dicha contraseña
   es su usuario IdEA. Recomendamos que sea cambiada lo antes posible para evitar problemas de accesos
   no autorizados.
@@ -38,10 +34,13 @@ message.import_error: Ha ocurrido un error al realizar la importación
 
 report.stats: Estadísticas de la importación
 
-report.existing_teachers: Docentes ya existentes
-report.new_teachers: Docentes nuevos incorporados
+report.teacher.existing_teachers: Docentes ya existentes
+report.teacher.new_teachers: Docentes nuevos incorporados
+report.teacher.existing_memberships: Pertenencias ya existentes
+report.teacher.new_memberships: Pertenencias nuevas incorporadas
 
-report.existing_memberships: Pertenencias ya existentes
-report.new_memberships: Pertenencias nuevas incorporadas
+report.location.updated_locations: Dependencias ya existentes
+report.location.new_locations: Dependencias nuevas incorporadas
 
-report.welcome: Docentes nuevos dados de alta en la plataforma
+report.teacher.list: Docentes nuevos dados de alta en la plataforma
+report.location.list: Dependencias nuevas dadas de alta en el centro

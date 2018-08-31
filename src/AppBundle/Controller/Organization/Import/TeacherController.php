@@ -63,7 +63,7 @@ class TeacherController extends Controller
                 $this->addFlash('error', $this->get('translator')->trans('message.import_error', [], 'import'));
             }
         }
-        $title = $this->get('translator')->trans('title.teacher_import', [], 'import');
+        $title = $this->get('translator')->trans('title.teacher.import', [], 'import');
 
         return $this->render('admin/organization/import/teacher_form.html.twig', [
             'title' => $title,

@@ -110,6 +110,18 @@ class CoreMenu implements MenuBuilderInterface
                 ->setPriority(0);
 
             $menu2->addChild($menu3);
+
+            $menu3 = new MenuItem();
+            $menu3
+                ->setName('organization_import_location')
+                ->setRouteName('organization_import_location_form')
+                ->setCaption('menu.organization.import.location')
+                ->setDescription('menu.organization.import.location.detail')
+                ->setColor('blue')
+                ->setIcon('store-alt')
+                ->setPriority(0);
+
+            $menu2->addChild($menu3);
         }
 
         $menu = new MenuItem();

@@ -28,6 +28,9 @@ menu.organization.import.detail: Importar datos desde Séneca
 menu.organization.import.teacher: Profesorado
 menu.organization.import.teacher.detail: Importar profesorado desde Séneca
 
+menu.organization.import.location: Dependencias
+menu.organization.import.location.detail: Importar dependencias desde Séneca
+
 menu.organization.import.unit: Unidades
 menu.organization.import.unit.detail: Importar unidades desde Séneca
 
