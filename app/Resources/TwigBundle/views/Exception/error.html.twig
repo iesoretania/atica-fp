@@ -3,11 +3,11 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>{{ 'exception.title'|trans({'status_text': status_text, 'status_code': status_code}) }}</title>
+    <title>{{ 'exception.title'|trans({'{{ status_text }}': status_text, '{{ status_code }}': status_code}) }}</title>
 </head>
 <body>
-<h1>{{ 'exception.header1'|trans({'status_text': status_text, 'status_code': status_code}) }}</h1>
-<h2>{{ 'exception.header2'|trans({'status_text': status_text, 'status_code': status_code}) }}</h2>
-{{ 'exception.body'|trans({'status_text': status_text, 'status_code': status_code}) }}
+<h1>{{ 'exception.header1'|trans({'{{ status_text }}': status_text, '{{ status_code }}': status_code}) }}</h1>
+<h2>{{ 'exception.header2'|trans({'{{ status_text }}': status_text, '{{ status_code }}': status_code}) }}</h2>
+{{ 'exception.body'|trans({'{{ status_text }}': status_text, '{{ status_code }}': status_code}) }}
 </body>
 </html>
