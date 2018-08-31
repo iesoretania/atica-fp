@@ -55,6 +55,12 @@ class Location
     private $name;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var string
+     */
+    private $additionalData;
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      * @var string
      */
@@ -119,6 +125,24 @@ class Location
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAdditionalData()
+    {
+        return $this->additionalData;
+    }
+
+    /**
+     * @param string $additionalData
+     * @return Location
+     */
+    public function setAdditionalData($additionalData)
+    {
+        $this->additionalData = $additionalData;
         return $this;
     }
 
