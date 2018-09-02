@@ -90,6 +90,17 @@ class CoreMenu implements MenuBuilderInterface
 
             $menu2 = new MenuItem();
             $menu2
+                ->setName('organization_location')
+                ->setRouteName('organization_location_list')
+                ->setCaption('menu.organization.location')
+                ->setDescription('menu.organization.location.detail')
+                ->setColor('red')
+                ->setIcon('store-alt');
+
+            $menu1->addChild($menu2);
+
+            $menu2 = new MenuItem();
+            $menu2
                 ->setName('organization_import')
                 ->setRouteName('organization_import')
                 ->setCaption('menu.organization.import')

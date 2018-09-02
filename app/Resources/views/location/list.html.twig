@@ -1,0 +1,44 @@
+{% trans_default_domain 'location' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('organization_location_form_new') }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-30"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-30">{{ 'header.additional_data'|trans }}</th>
+    <th class="w-30">{{ 'header.description'|trans }}</th>
+    <th class="w-10"></th>
+{% endblock %}
+
+{% block table_body %}
+            {% for location in pager %}
+                {% set url = path('organization_location_form_edit', {'id': location.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="locations[]" value="{{ location.id }}" class="selectable"> <a href="{{ url }}">{{ location.name }}</a></label>
+                    </td>
+                    <td>
+                        <a href="{{ url }}">{{ location.additionalData }}</a>
+                    </td>
+                    <td>
+                        {{ location.description }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('organization_location_operation') }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}

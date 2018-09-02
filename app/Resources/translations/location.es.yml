@@ -1,0 +1,32 @@
+form.name: Nombre de la dependencia
+form.additional_data: Datos adicionales
+form.description: Notas
+
+form.save: Guardar cambios
+form.back: Volver
+form.delete: Eliminar dependencias seleccionadas
+form.delete_confirm: Confirmar borrado
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes dependencias? Los elementos asociados no se verán afectados, pero aparecerán sin localización.
+
+  Esta operación no se puede deshacer.
+
+message.saved: Datos de la dependencia actualizados con éxito.
+message.save_error: No se han podido actualizar los datos de la dependencia.
+message.deleted: Las dependencias seleccionadas han sido eliminadas con éxito.
+message.delete_error: No se han podido eliminar las dependencias seleccionadas.
+
+title.new: Nueva dependencia
+title.edit: Datos de la dependencia
+title.list: Listado de dependencias
+title.delete: Eliminar dependencias
+
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay dependencias
+table.new: Nueva dependencias
+table.filter: Filtrar...
+
+header.name: Nombre
+header.additional_data: Información adicional
+header.description: Observaciones
