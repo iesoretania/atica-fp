@@ -19,6 +19,7 @@
 namespace AppBundle\Controller\Organization\Import;
 
 use AppBundle\Security\OrganizationVoter;
+use AppBundle\Service\UserExtensionService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -27,9 +28,9 @@ class MenuController extends Controller
     /**
      * @Route("/centro/importar", name="organization_import", methods={"GET"})
      */
-    public function indexAction()
+    public function indexAction(UserExtensionService $userExtensionService)
     {
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $this->get('AppBundle\Service\UserExtensionService')->getCurrentOrganization());
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $userExtensionService->getCurrentOrganization());
         return $this->render('default/index.html.twig',
             [
                 'menu' => true
