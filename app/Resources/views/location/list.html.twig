@@ -5,10 +5,9 @@
 {% block path_new %}{{ path('organization_location_form_new') }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-30"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-40"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
     <th class="w-30">{{ 'header.additional_data'|trans }}</th>
     <th class="w-30">{{ 'header.description'|trans }}</th>
-    <th class="w-10"></th>
 {% endblock %}
 
 {% block table_body %}

@@ -1,4 +1,6 @@
 form.name: Nombre de la dependencia
+form.parent: Localización
+form.no_parent: No está dentro de otra dependencia
 form.additional_data: Datos adicionales
 form.description: Notas
 
@@ -24,7 +26,7 @@ title.delete: Eliminar dependencias
 
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay dependencias
-table.new: Nueva dependencias
+table.new: Nueva dependencia
 table.filter: Filtrar...
 
 header.name: Nombre

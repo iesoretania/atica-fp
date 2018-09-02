@@ -19,6 +19,7 @@
 namespace AppBundle\Form\Type;
 
 use AppBundle\Entity\Location;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -35,8 +36,11 @@ class LocationType extends AbstractType
             ->add('name', null, [
                 'label' => 'form.name'
             ])
-            ->add('parent', null, [
-                'label' => 'form.parent'
+            ->add('parent', EntityType::class, [
+                'label' => 'form.parent',
+                'choice_translation_domain' => false,
+                'class' => Location::class,
+                'placeholder' => 'form.no_parent'
             ])
             ->add('additionalData', null, [
                 'label' => 'form.additional_data'
