@@ -111,6 +111,13 @@ class Location
      */
     public function setParent($parent)
     {
+        $path = $this->getPathArray(null);
+
+        if (in_array($parent, $path, true)) {
+            // evitar referencias circulares
+            $parent = null;
+        }
+
         $this->parent = $parent;
         return $this;
     }
@@ -167,5 +174,24 @@ class Location
     {
         $this->description = $description;
         return $this;
+    }
+
+    /**
+     * Get element path array from specified root
+     *
+     * @param Location|null $root
+     *
+     * @return Location[]
+     */
+    public function getPathArray(Location $root = null)
+    {
+        $path = [];
+        $item = $this;
+
+        while ($item && $item !== $root) {
+            array_unshift($path, $item);
+            $item = $item->getParent();
+        }
+        return $path;
     }
 }
