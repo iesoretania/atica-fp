@@ -1,0 +1,14 @@
+form.created_by: Notificada por
+form.element: Elemento afectado
+form.description: Descripción de la incidencia
+
+form.save: Guardar cambios
+form.back: Volver
+
+message.saved: Incidencia actualizada con éxito.
+message.save_error: No se han podido actualizar la incidencia.
+
+title.new: Datos de la incidencia
+title.edit: Datos de la incidencia
+title.list: Listado de incidencias
+title.close: Cerrar incidencias

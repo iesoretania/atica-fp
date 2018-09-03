@@ -138,7 +138,7 @@ class CoreMenu implements MenuBuilderInterface
         $menu = new MenuItem();
         $menu
             ->setName('ict_ticket_new')
-            ->setRouteName('frontpage')
+            ->setRouteName('ict_ticket_new')
             ->setCaption('menu.ict.ticket_new')
             ->setDescription('menu.ict.ticket_new.detail')
             ->setColor('purple')

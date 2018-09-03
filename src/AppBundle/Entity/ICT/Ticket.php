@@ -51,6 +51,13 @@ class Ticket
     private $description;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\ICT\Element")
+     * @ORM\JoinColumn(nullable=false)
+     * @var Element
+     */
+    private $element;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Person")
      * @ORM\JoinColumn(nullable=false)
      * @var Person
@@ -154,6 +161,24 @@ class Ticket
     public function setDescription($description)
     {
         $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return Element
+     */
+    public function getElement()
+    {
+        return $this->element;
+    }
+
+    /**
+     * @param Element $element
+     * @return Ticket
+     */
+    public function setElement($element)
+    {
+        $this->element = $element;
         return $this;
     }
 
