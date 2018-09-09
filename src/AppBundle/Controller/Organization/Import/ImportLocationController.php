@@ -30,7 +30,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 
-class LocationController extends Controller
+class ImportLocationController extends Controller
 {
     /**
      * @Route("/centro/importar/dependencias", name="organization_import_location_form", methods={"GET", "POST"})

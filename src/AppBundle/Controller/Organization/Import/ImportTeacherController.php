@@ -32,7 +32,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 
-class TeacherController extends Controller
+class ImportTeacherController extends Controller
 {
     /**
      * @Route("/centro/importar/profesorado", name="organization_import_teacher_form", methods={"GET", "POST"})
