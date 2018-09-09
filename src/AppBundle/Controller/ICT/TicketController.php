@@ -50,22 +50,19 @@ class TicketController extends Controller
             try {
                 $em->flush();
 
-                $this->addFlash('success', $this->get('translator')->trans('message.import_ok', [], 'import'));
+                $this->addFlash('success', $this->get('translator')->trans('message.saved', [], 'ict_ticket'));
 
                 return $this->redirectToRoute('frontpage');
             }
             catch (\Exception $e) {
-                $this->addFlash('error', $this->get('translator')->trans('message.import_error', [], 'import'));
+                $this->addFlash('error', $this->get('translator')->trans('message.save_error', [], 'ict_ticket'));
             }
         }
 
         $title = $translator->trans($ticket->getId() ? 'title.edit' : 'title.new', [], 'ict_ticket');
 
-        $breadcrumb = [['fixed' => $title]];
-
         return $this->render('ict/ticket/form.html.twig', [
             'menu_path' => 'ict_ticket_new',
-            'breadcrumb' => $breadcrumb,
             'title' => $title,
             'form' => $form->createView()
         ]);
