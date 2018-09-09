@@ -199,22 +199,6 @@ class LocationController extends Controller
 
     /**
      * @param Request $request
-     * @param \Doctrine\Common\Persistence\ObjectManager $em
-     * @return bool
-     */
-    private function processSwitchOrganization(Request $request, $em)
-    {
-        $organization = $em->getRepository('AppBundle:Organization')->find($request->request->get('switch', null));
-        if ($organization) {
-            $this->get('session')->set('organization_id', $organization->getId());
-            $this->addFlash('success', $this->get('translator')->trans('message.switched', ['%name%' => $organization->getName()], 'location'));
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * @param Request $request
      * @return array
      */
     private function processOperations(Request $request, Organization $organization)
@@ -230,7 +214,7 @@ class LocationController extends Controller
 
         $locations = [];
         if (!$redirect) {
-            $locations = $em->getRepository('AppBundle:Location')->findAllInListByIdAndOrganization($items, $organization);
+            $locations = $em->getRepository('AppBundle:Location')->findInListByIdAndOrganization($items, $organization);
             $redirect = $this->processRemoveLocations($request, $locations, $em);
         }
         return array($redirect, $locations);

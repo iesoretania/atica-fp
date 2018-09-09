@@ -24,7 +24,7 @@ use AppBundle\Entity\Organization;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ICT\ElementRepository")
  * @ORM\Table(name="ict_element")
  */
 class Element

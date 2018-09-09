@@ -51,7 +51,7 @@ class TicketType extends AbstractType
 
         $placeholder = (count($elements) === 0) ? 'form.no_elements' : 'form.select_element';
 
-        $locations = $this->entityManager->getRepository(Location::class)->findByOrganization($this->userExtensionService->getCurrentOrganization());
+        $locations = $this->entityManager->getRepository(Location::class)->findRootsByOrganization($this->userExtensionService->getCurrentOrganization());
 
         $form
             ->add('location', EntityType::class, [

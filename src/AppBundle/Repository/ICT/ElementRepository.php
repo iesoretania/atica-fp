@@ -18,14 +18,18 @@
 
 namespace AppBundle\Repository\ICT;
 
+use AppBundle\Entity\Location;
 use Doctrine\ORM\EntityRepository;
 
-class PriorityRepository extends EntityRepository
+class ElementRepository extends EntityRepository
 {
-    public function findAllSortedByPriority()
+
+    public function findByLocation(Location $location)
     {
-        return $this->createQueryBuilder('p')
-            ->orderBy('p.levelNumber')
+        return $this->createQueryBuilder('e')
+            ->orderBy('e.name')
+            ->andWhere('e.location = :location')
+            ->setParameter('location', $location)
             ->getQuery()
             ->getResult();
     }
