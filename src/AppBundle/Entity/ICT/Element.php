@@ -73,7 +73,7 @@ class Element
     /**
      * @ORM\ManyToOne(targetEntity="ElementTemplate")
      * @ORM\JoinColumn(nullable=true)
-     * @var Template
+     * @var ElementTemplate
      */
     private $template;
 
@@ -194,7 +194,7 @@ class Element
     }
 
     /**
-     * @return Template
+     * @return ElementTemplate
      */
     public function getTemplate()
     {
@@ -202,7 +202,7 @@ class Element
     }
 
     /**
-     * @param Template $template
+     * @param ElementTemplate $template
      * @return Element
      */
     public function setTemplate($template)
