@@ -1,0 +1,13 @@
+form.name: Nombre del equipamiento
+form.description: Descripción del equipamiento
+
+form.save: Guardar cambios
+form.back: Volver
+
+message.saved: Plantilla actualizada con éxito.
+message.save_error: No se ha podido actualizar la plantilla.
+
+title.new: Nueva plantilla
+title.edit: Datos de la plantilla
+title.list: Listado de plantillas
+title.delete: Eliminar plantillas

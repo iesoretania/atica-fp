@@ -1,4 +1,4 @@
-{% trans_default_domain 'location' %}
+{% trans_default_domain 'ict_element' %}
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
@@ -7,6 +7,11 @@
     {{ m.start_button() }}
         {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.link_button(path('ict_element_template_form_edit', {'id': 0}), 'drafting-compass', 'btn-info d-none', '', 'template-link') }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('build/element.js') }}"></script>
 {% endblock %}

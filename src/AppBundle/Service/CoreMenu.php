@@ -175,11 +175,23 @@ class CoreMenu implements MenuBuilderInterface
             $menu = new MenuItem();
             $menu
                 ->setName('ict_element')
-                ->setRouteName('frontpage')
+                ->setRouteName('ict_element_form_new')
                 ->setCaption('menu.ict.element')
                 ->setDescription('menu.ict.element.detail')
                 ->setColor('purple')
                 ->setIcon('boxes')
+                ->setPriority(0);
+
+            $menu2->addChild($menu);
+
+            $menu = new MenuItem();
+            $menu
+                ->setName('ict_element_template')
+                ->setRouteName('ict_element_template_form_new')
+                ->setCaption('menu.ict.element_template')
+                ->setDescription('menu.ict.element_template.detail')
+                ->setColor('purple')
+                    ->setIcon('drafting-compass')
                 ->setPriority(0);
 
             $menu2->addChild($menu);

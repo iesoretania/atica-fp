@@ -23,7 +23,7 @@ use AppBundle\Entity\Organization;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ICT\ElementTemplateRepository")
  * @ORM\Table(name="ict_element_template")
  */
 class ElementTemplate
@@ -54,6 +54,11 @@ class ElementTemplate
      * @var string
      */
     private $description;
+
+    public function __toString()
+    {
+        return $this->getName() . ($this->getDescription() ? ' - '.$this->getDescription() : '');
+    }
 
     /**
      * @return int

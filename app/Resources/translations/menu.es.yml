@@ -22,6 +22,9 @@ menu.ict.ticket_inbox.detail: Gestionar las incidencias TIC notificadas
 menu.ict.element: Equipamiento TIC
 menu.ict.element.detail: Gestionar el material inventariable
 
+menu.ict.element_template: Plantilla de equipamiento
+menu.ict.element_template.detail: Gestionar las plantillas de equipamiento
+
 menu.organization: Gestión del centro
 menu.organization.detail: Administrar el centro educativo
 
