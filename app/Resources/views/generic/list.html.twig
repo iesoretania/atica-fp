@@ -42,5 +42,6 @@
 {% endblock %}
 
 {% block javascripts %}
+    {{ parent() }}
     <script src="{{ asset('build/list.js') }}"></script>
 {% endblock %}

@@ -23,7 +23,7 @@ namespace AppBundle\Entity\ICT;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ICT\PriorityRepository")
  * @ORM\Table(name="ict_priority")
  */
 class Priority

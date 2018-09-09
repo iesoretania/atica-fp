@@ -19,7 +19,8 @@
     <meta name="theme-color" content="#ffffff"></head>
 <body>
 {% block body %}{% endblock %}
-<script src="{{ asset('build/app.js') }}"></script>
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('build/app.js') }}"></script>
+{% endblock %}
 </body>
 </html>
