@@ -135,6 +135,18 @@ class CoreMenu implements MenuBuilderInterface
             $menu2->addChild($menu3);
         }
 
+        $menu2 = new MenuItem();
+        $menu2
+            ->setName('ict')
+            ->setRouteName('ict_menu')
+            ->setCaption('menu.ict')
+            ->setDescription('menu.ict.detail')
+            ->setColor('purple')
+            ->setIcon('laptop')
+            ->setPriority(0);
+
+        $root[] = $menu2;
+
         $menu = new MenuItem();
         $menu
             ->setName('ict_ticket_new')
@@ -145,19 +157,33 @@ class CoreMenu implements MenuBuilderInterface
             ->setIcon('exclamation-triangle')
             ->setPriority(0);
 
-        $root[] = $menu;
+        $menu2->addChild($menu);
 
-        $menu = new MenuItem();
-        $menu
-            ->setName('ict_ticket_inbox')
-            ->setRouteName('frontpage')
-            ->setCaption('menu.ict.ticket_inbox')
-            ->setDescription('menu.ict.ticket_inbox.detail')
-            ->setColor('purple')
-            ->setIcon('inbox')
-            ->setPriority(0);
+        if ($isLocalAdministrator) {
+            $menu = new MenuItem();
+            $menu
+                ->setName('ict_ticket_inbox')
+                ->setRouteName('frontpage')
+                ->setCaption('menu.ict.ticket_inbox')
+                ->setDescription('menu.ict.ticket_inbox.detail')
+                ->setColor('purple')
+                ->setIcon('inbox')
+                ->setPriority(0);
 
-        $root[] = $menu;
+            $menu2->addChild($menu);
+
+            $menu = new MenuItem();
+            $menu
+                ->setName('ict_element')
+                ->setRouteName('frontpage')
+                ->setCaption('menu.ict.element')
+                ->setDescription('menu.ict.element.detail')
+                ->setColor('purple')
+                ->setIcon('boxes')
+                ->setPriority(0);
+
+            $menu2->addChild($menu);
+        }
 
         $menu = new MenuItem();
         $menu

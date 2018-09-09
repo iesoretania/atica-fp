@@ -1,8 +1,8 @@
 form.created_by: Notificada por
 form.location: Dependencia del elemento
-form.select_location: Seleccione dependencia
-form.element: Elemento afectado
-form.select_element: Seleccione elemento
+form.select_location: Seleccione la dependencia del equipamiento
+form.element: Equipamiento afectado
+form.select_element: Seleccione el equipamiento
 form.no_elements: No hay elementos
 form.description: Descripción de la incidencia
 form.priority: Prioridad inicial
