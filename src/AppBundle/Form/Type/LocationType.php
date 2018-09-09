@@ -40,7 +40,8 @@ class LocationType extends AbstractType
                 'label' => 'form.parent',
                 'choice_translation_domain' => false,
                 'class' => Location::class,
-                'placeholder' => 'form.no_parent'
+                'placeholder' => 'form.no_parent',
+                'required' => false
             ])
             ->add('additionalData', null, [
                 'label' => 'form.additional_data'

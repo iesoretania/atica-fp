@@ -75,7 +75,7 @@ class LocationController extends Controller
         return $this->render('location/form.html.twig', [
             'menu_path' => 'organization_location_list',
             'breadcrumb' => [['fixed' => $location->getId() ? (string) $location : $this->get('translator')->trans('title.new', [], 'location')]],
-            'title' => $this->get('translator')->trans($organization->getId() ? 'title.edit' : 'title.new', [], 'location'),
+            'title' => $this->get('translator')->trans($location->getId() ? 'title.edit' : 'title.new', [], 'location'),
             'form' => $form->createView(),
             'user' => $location
         ]);
@@ -84,7 +84,7 @@ class LocationController extends Controller
     /**
      * @Route("/listar/{page}", name="organization_location_list", requirements={"page" = "\d+"}, defaults={"page" = "1"}, methods={"GET"})
      */
-    public function listAction($page, Request $request)
+    public function listAction($page, Request $request, UserExtensionService $userExtensionService)
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -97,11 +97,15 @@ class LocationController extends Controller
         $q = $request->get('q', null);
         if ($q) {
             $queryBuilder
-                ->where('l.name LIKE :tq')
+                ->orWhere('l.name LIKE :tq')
                 ->orWhere('l.additionalData LIKE :tq')
                 ->orWhere('l.description LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
+
+        $queryBuilder
+            ->andWhere('l.organization = :organization')
+            ->setParameter('organization', $userExtensionService->getCurrentOrganization());
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
