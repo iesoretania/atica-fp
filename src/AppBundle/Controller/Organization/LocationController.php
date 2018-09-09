@@ -152,16 +152,18 @@ class LocationController extends Controller
         /* Desasociar elementos a las dependencias */
         $em->createQueryBuilder()
             ->update('AppBundle:ICT\\Element', 'e')
-            ->set('e.location = NULL')
+            ->set('e.location', ':location')
             ->where('e.location IN (:items)')
+            ->setParameter('location', null)
             ->setParameter('items', $locations)
             ->getQuery()
             ->execute();
 
         $em->createQueryBuilder()
             ->update('AppBundle:Location', 'l')
-            ->set('l.parent = NULL')
+            ->set('l.parent', ':parent')
             ->where('l.parent IN (:items)')
+            ->setParameter('parent', null)
             ->setParameter('items', $locations)
             ->getQuery()
             ->execute();
@@ -185,13 +187,13 @@ class LocationController extends Controller
     {
         $redirect = false;
         if ($request->get('confirm', '') === 'ok') {
-            try {
+            //try {
                 $this->deleteLocations($locations);
                 $em->flush();
                 $this->addFlash('success', $this->get('translator')->trans('message.deleted', [], 'location'));
-            } catch (\Exception $e) {
-                $this->addFlash('error', $this->get('translator')->trans('message.delete_error', [], 'location'));
-            }
+            //} catch (\Exception $e) {
+            //    $this->addFlash('error', $this->get('translator')->trans('message.delete_error', [], 'location'));
+            //}
             $redirect = true;
         }
         return $redirect;

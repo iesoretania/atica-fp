@@ -3,22 +3,22 @@
 {% import 'macros.html.twig' as m %}
 {% block content %}
     <form method="post">
-        {% for organization in organizations %}
-            <input type="hidden" name="location[]" value="{{ location.id }}">
+        {% for location in locations %}
+            <input type="hidden" name="locations[]" value="{{ location.id }}">
         {% endfor %}
         <input type="hidden" name="confirm" value="ok">
         <div class="alert alert-warning">{{ 'prompt.delete_confirm'|trans|nl2br }}</div>
         <div id="table" class="col-md-12 table-responsive">
-            <table id="list" class="table table-bordered table-hover table-striped">
+            <table id="list" class="table table-bordered table-hover table-striped table-sm">
                 <thead>
                     <tr>
-                        <th class="col-sm-4">{{ 'header.name'|trans }}</th>
-                        <th class="col-sm-4">{{ 'header.additional_data'|trans }}</th>
-                        <th class="col-sm-4">{{ 'header.description'|trans }}</th>
+                        <th class="w-40">{{ 'header.name'|trans }}</th>
+                        <th class="w-30">{{ 'header.additional_data'|trans }}</th>
+                        <th class="w-30">{{ 'header.description'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for location in organizations %}
+                    {% for location in locations %}
                         <tr>
                             <td>{{ location.name }}</td>
                             <td>{{ location.additionalData }}</td>
