@@ -95,6 +95,11 @@ class Element
      */
     private $delistedOn;
 
+    public function __toString()
+    {
+        return $this->getName() . ($this->getDescription() ? ' - '.$this->getDescription() : '');
+    }
+
     /**
      * @return int
      */

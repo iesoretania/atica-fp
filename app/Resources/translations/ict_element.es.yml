@@ -20,3 +20,24 @@ title.new: Nuevo equipamiento
 title.edit: Datos del equipamiento
 title.list: Listado del equipamiento
 title.delete: Eliminar equipamiento
+
+header.name: Equipamiento
+header.location: Dependencia
+header.serial_number: Número de serie
+
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay equipamiento que mostrar
+table.new: Nuevo equipamiento
+table.filter: Filtrar...
+table.list: Listado de equipamiento
+
+form.delete: Eliminar equipamiento seleccionado
+form.delete_confirm: Confirmar borrado
+
+message.deleted: Equipamiento eliminado con éxito
+message.delete_error: Ha ocurrido un error al intentar eliminar el equipamiento
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar el siguiente equipamiento? Las incidencias relacionadas con los mismos serán eliminadas.
+
+  Esta operación no se puede deshacer.

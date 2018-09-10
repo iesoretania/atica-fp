@@ -19,6 +19,7 @@
 namespace AppBundle\Repository\ICT;
 
 use AppBundle\Entity\Location;
+use AppBundle\Entity\Organization;
 use Doctrine\ORM\EntityRepository;
 
 class ElementRepository extends EntityRepository
@@ -30,6 +31,20 @@ class ElementRepository extends EntityRepository
             ->orderBy('e.name')
             ->andWhere('e.location = :location')
             ->setParameter('location', $location)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findInListByIdAndOrganization($items, Organization $organization)
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.id IN (:items)')
+            ->andWhere('e.organization = :organization')
+            ->setParameter('items', $items)
+            ->setParameter('organization', $organization)
+            ->orderBy('e.name')
+            ->addOrderBy('e.description')
+            ->addOrderBy('e.serialNumber')
             ->getQuery()
             ->getResult();
     }
