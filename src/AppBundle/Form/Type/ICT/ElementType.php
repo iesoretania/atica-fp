@@ -20,7 +20,7 @@ namespace AppBundle\Form\Type\ICT;
 
 use AppBundle\Entity\ICT\Element;
 use AppBundle\Entity\ICT\ElementTemplate;
-use AppBundle\Entity\Location;
+use AppBundle\Entity\ICT\Location;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

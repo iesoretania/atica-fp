@@ -141,7 +141,7 @@ class ElementController extends Controller
         }
 
         return $this->render('ict/element/delete.html.twig', [
-            'menu_path' => 'organization_location_list',
+            'menu_path' => 'ict_location_list',
             'breadcrumb' => [['fixed' => $this->get('translator')->trans('title.delete', [], 'location')]],
             'title' => $this->get('translator')->trans('title.delete', [], 'location'),
             'items' => $items

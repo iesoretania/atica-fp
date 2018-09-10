@@ -18,7 +18,7 @@
 
 namespace AppBundle\Security;
 
-use AppBundle\Entity\Location;
+use AppBundle\Entity\ICT\Location;
 use AppBundle\Entity\Membership;
 use AppBundle\Entity\User;
 use AppBundle\Service\UserExtensionService;

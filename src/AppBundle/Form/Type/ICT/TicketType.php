@@ -20,7 +20,7 @@ namespace AppBundle\Form\Type\ICT;
 
 use AppBundle\Entity\ICT\Priority;
 use AppBundle\Entity\ICT\Ticket;
-use AppBundle\Entity\Location;
+use AppBundle\Entity\ICT\Location;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -118,7 +118,7 @@ class TicketType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData();
 
-            $location = isset($data['location']) ? $this->entityManager->getRepository('AppBundle:Location')->find($data['location']) : null;
+            $location = isset($data['location']) ? $this->entityManager->getRepository('AppBundle:ICT\Location')->find($data['location']) : null;
 
             $this->addElements($form, $location);
         });

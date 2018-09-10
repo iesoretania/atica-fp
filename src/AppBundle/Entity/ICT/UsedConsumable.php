@@ -19,8 +19,6 @@
 
 namespace AppBundle\Entity\ICT;
 
-use AppBundle\Entity\Location;
-use AppBundle\Entity\Organization;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

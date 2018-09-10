@@ -18,7 +18,7 @@
 
 namespace AppBundle\Controller\Organization\Import;
 
-use AppBundle\Entity\Location;
+use AppBundle\Entity\ICT\Location;
 use AppBundle\Entity\Organization;
 use AppBundle\Form\Model\LocationImport;
 use AppBundle\Form\Type\Import\LocationType;
@@ -97,7 +97,7 @@ class ImportLocationController extends Controller
                     }
                     $name = $userData['Dependencias'];
 
-                    $item = $em->getRepository('AppBundle:Location')->findOneBy(['name' => $name, 'organization' => $organization]);
+                    $item = $em->getRepository('AppBundle:ICT\Location')->findOneBy(['name' => $name, 'organization' => $organization]);
                     $alreadyProcessed = isset($collection[$name]);
 
                     if (null === $item) {

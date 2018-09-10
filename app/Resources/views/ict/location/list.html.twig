@@ -1,8 +1,8 @@
-{% trans_default_domain 'location' %}
+{% trans_default_domain 'ict_location' %}
 {% extends 'generic/list.html.twig' %}
 {% import 'macros.html.twig' as m %}
 
-{% block path_new %}{{ path('organization_location_form_new') }}{% endblock %}
+{% block path_new %}{{ path('ict_location_form_new') }}{% endblock %}
 
 {% block table_header %}
     <th class="w-40"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
@@ -12,7 +12,7 @@
 
 {% block table_body %}
             {% for location in pager %}
-                {% set url = path('organization_location_form_edit', {'id': location.id}) %}
+                {% set url = path('ict_location_form_edit', {'id': location.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="locations[]" value="{{ location.id }}" class="selectable"> <a href="{{ url }}">{{ location.name }}</a></label>
@@ -32,7 +32,7 @@
 {% endblock %}
 
 {% block before_table %}
-    <form action="{{ path('organization_location_operation') }}" method="post">
+    <form action="{{ path('ict_location_operation') }}" method="post">
 {% endblock %}
 
 {% block after_table %}

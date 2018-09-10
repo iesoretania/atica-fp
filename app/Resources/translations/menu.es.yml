@@ -25,11 +25,11 @@ menu.ict.element.detail: Gestionar el material inventariable
 menu.ict.element_template: Plantilla de equipamiento
 menu.ict.element_template.detail: Gestionar las plantillas de equipamiento
 
+menu.ict.location: Dependencias
+menu.ict.location.detail: Administrar las dependencias del centro educativo
+
 menu.organization: Gestión del centro
 menu.organization.detail: Administrar el centro educativo
-
-menu.organization.location: Dependencias del centro
-menu.organization.location.detail: Administrar las dependencias del centro educativo
 
 menu.organization.import: Importar
 menu.organization.import.detail: Importar datos desde Séneca

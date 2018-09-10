@@ -86,16 +86,6 @@ class CoreMenu implements MenuBuilderInterface
 
             $menu2 = new MenuItem();
             $menu2
-                ->setName('organization_location')
-                ->setRouteName('organization_location_list')
-                ->setCaption('menu.organization.location')
-                ->setDescription('menu.organization.location.detail')
-                ->setIcon('store-alt');
-
-            $menu1->addChild($menu2);
-
-            $menu2 = new MenuItem();
-            $menu2
                 ->setName('organization_import')
                 ->setRouteName('organization_import')
                 ->setCaption('menu.organization.import')
@@ -180,6 +170,16 @@ class CoreMenu implements MenuBuilderInterface
                 ->setDescription('menu.ict.element_template.detail')
                 ->setIcon('drafting-compass')
                 ->setPriority(0);
+
+            $menu2->addChild($menu);
+
+            $menu = new MenuItem();
+            $menu
+                ->setName('ict_location')
+                ->setRouteName('ict_location_list')
+                ->setCaption('menu.ict.location')
+                ->setDescription('menu.ict.location.detail')
+                ->setIcon('store-alt');
 
             $menu2->addChild($menu);
         }

@@ -18,7 +18,7 @@
 
 namespace AppBundle\Repository\ICT;
 
-use AppBundle\Entity\Location;
+use AppBundle\Entity\ICT\Location;
 use AppBundle\Entity\Organization;
 use Doctrine\ORM\EntityRepository;
 

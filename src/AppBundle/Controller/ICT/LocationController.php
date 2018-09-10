@@ -16,9 +16,9 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Controller\Organization;
+namespace AppBundle\Controller\ICT;
 
-use AppBundle\Entity\Location;
+use AppBundle\Entity\ICT\Location;
 use AppBundle\Entity\Organization;
 use AppBundle\Form\Type\LocationType;
 use AppBundle\Security\LocationVoter;
@@ -32,13 +32,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @Route("/centro/dependencias")
+ * @Route("/tic/dependencia")
  */
 class LocationController extends Controller
 {
     /**
-     * @Route("/nueva", name="organization_location_form_new", methods={"GET", "POST"})
-     * @Route("/{id}", name="organization_location_form_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
+     * @Route("/nueva", name="ict_location_form_new", methods={"GET", "POST"})
+     * @Route("/{id}", name="ict_location_form_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
     public function indexAction(UserExtensionService $userExtensionService, Request $request, Location $location = null)
     {
@@ -65,24 +65,24 @@ class LocationController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $em->flush();
-                $this->addFlash('success', $this->get('translator')->trans('message.saved', [], 'location'));
-                return $this->redirectToRoute('organization_location_list');
+                $this->addFlash('success', $this->get('translator')->trans('message.saved', [], 'ict_location'));
+                return $this->redirectToRoute('ict_location_list');
             } catch (\Exception $e) {
-                $this->addFlash('error', $this->get('translator')->trans('message.save_error', [], 'location'));
+                $this->addFlash('error', $this->get('translator')->trans('message.save_error', [], 'ict_location'));
             }
         }
 
-        return $this->render('location/form.html.twig', [
-            'menu_path' => 'organization_location_list',
-            'breadcrumb' => [['fixed' => $location->getId() ? (string) $location : $this->get('translator')->trans('title.new', [], 'location')]],
-            'title' => $this->get('translator')->trans($location->getId() ? 'title.edit' : 'title.new', [], 'location'),
+        return $this->render('ict/location/form.html.twig', [
+            'menu_path' => 'ict_location_list',
+            'breadcrumb' => [['fixed' => $location->getId() ? (string) $location : $this->get('translator')->trans('title.new', [], 'ict_location')]],
+            'title' => $this->get('translator')->trans($location->getId() ? 'title.edit' : 'title.new', [], 'ict_location'),
             'form' => $form->createView(),
             'user' => $location
         ]);
     }
 
     /**
-     * @Route("/listar/{page}", name="organization_location_list", requirements={"page" = "\d+"}, defaults={"page" = "1"}, methods={"GET"})
+     * @Route("/listar/{page}", name="ict_location_list", requirements={"page" = "\d+"}, defaults={"page" = "1"}, methods={"GET"})
      */
     public function listAction($page, Request $request, UserExtensionService $userExtensionService)
     {
@@ -91,7 +91,7 @@ class LocationController extends Controller
 
         $queryBuilder
             ->select('l')
-            ->from('AppBundle:Location', 'l')
+            ->from('AppBundle:ICT\Location', 'l')
             ->orderBy('l.name');
 
         $q = $request->get('q', null);
@@ -113,18 +113,18 @@ class LocationController extends Controller
             ->setMaxPerPage($this->getParameter('page.size'))
             ->setCurrentPage($q ? 1 : $page);
 
-        $title = $this->get('translator')->trans('title.list', [], 'location');
+        $title = $this->get('translator')->trans('title.list', [], 'ict_location');
 
-        return $this->render('location/list.html.twig', [
+        return $this->render('ict/location/list.html.twig', [
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'domain' => 'location'
+            'domain' => 'ict_location'
         ]);
     }
 
     /**
-     * @Route("/operacion", name="organization_location_operation", methods={"POST"})
+     * @Route("/operacion", name="ict_location_operation", methods={"POST"})
      */
     public function operationAction(Request $request, UserExtensionService $userExtensionService)
     {
@@ -133,13 +133,13 @@ class LocationController extends Controller
         list($redirect, $locations) = $this->processOperations($request, $organization);
 
         if ($redirect) {
-            return $this->redirectToRoute('organization_location_list');
+            return $this->redirectToRoute('ict_location_list');
         }
 
-        return $this->render('location/delete.html.twig', [
-            'menu_path' => 'organization_location_list',
-            'breadcrumb' => [['fixed' => $this->get('translator')->trans('title.delete', [], 'location')]],
-            'title' => $this->get('translator')->trans('title.delete', [], 'location'),
+        return $this->render('ict/location/delete.html.twig', [
+            'menu_path' => 'ict_location_list',
+            'breadcrumb' => [['fixed' => $this->get('translator')->trans('title.delete', [], 'ict_location')]],
+            'title' => $this->get('translator')->trans('title.delete', [], 'ict_location'),
             'locations' => $locations
         ]);
     }
@@ -155,7 +155,7 @@ class LocationController extends Controller
 
         /* Desasociar elementos a las dependencias */
         $em->createQueryBuilder()
-            ->update('AppBundle:ICT\\Element', 'e')
+            ->update('AppBundle:ICT\Element', 'e')
             ->set('e.location', ':location')
             ->where('e.location IN (:items)')
             ->setParameter('location', null)
@@ -164,7 +164,7 @@ class LocationController extends Controller
             ->execute();
 
         $em->createQueryBuilder()
-            ->update('AppBundle:Location', 'l')
+            ->update('AppBundle:ICT\Location', 'l')
             ->set('l.parent', ':parent')
             ->where('l.parent IN (:items)')
             ->setParameter('parent', null)
@@ -174,7 +174,7 @@ class LocationController extends Controller
 
         /* Finalmente eliminamos las dependencias */
         $em->createQueryBuilder()
-            ->delete('AppBundle:Location', 'l')
+            ->delete('AppBundle:ICT\Location', 'l')
             ->where('l IN (:items)')
             ->setParameter('items', $locations)
             ->getQuery()
@@ -194,9 +194,9 @@ class LocationController extends Controller
             try {
                 $this->deleteLocations($locations);
                 $em->flush();
-                $this->addFlash('success', $this->get('translator')->trans('message.deleted', [], 'location'));
+                $this->addFlash('success', $this->get('translator')->trans('message.deleted', [], 'ict_location'));
             } catch (\Exception $e) {
-                $this->addFlash('error', $this->get('translator')->trans('message.delete_error', [], 'location'));
+                $this->addFlash('error', $this->get('translator')->trans('message.delete_error', [], 'ict_location'));
             }
             $redirect = true;
         }
@@ -220,7 +220,7 @@ class LocationController extends Controller
 
         $locations = [];
         if (!$redirect) {
-            $locations = $em->getRepository('AppBundle:Location')->findInListByIdAndOrganization($items, $organization);
+            $locations = $em->getRepository('AppBundle:ICT\Location')->findInListByIdAndOrganization($items, $organization);
             $redirect = $this->processRemoveLocations($request, $locations, $em);
         }
         return array($redirect, $locations);

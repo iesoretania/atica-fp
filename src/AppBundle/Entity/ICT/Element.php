@@ -19,7 +19,6 @@
 namespace AppBundle\Entity\ICT;
 
 
-use AppBundle\Entity\Location;
 use AppBundle\Entity\Organization;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -52,7 +51,7 @@ class Element
     private $parent;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Location")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\ICT\Location")
      * @ORM\JoinColumn(nullable=true)
      * @var Location
      */

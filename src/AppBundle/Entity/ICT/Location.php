@@ -16,13 +16,14 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Entity;
+namespace AppBundle\Entity\ICT;
 
-
+use AppBundle\Entity\Organization;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="AppBundle\Repository\LocationRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ICT\LocationRepository")
+ * @ORM\Table(name="ict_location")
  */
 class Location
 {
@@ -35,7 +36,7 @@ class Location
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Organization")
      * @ORM\JoinColumn(nullable=false)
      * @var Organization
      */

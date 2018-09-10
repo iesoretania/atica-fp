@@ -18,7 +18,7 @@
 
 namespace AppBundle\Form\Type;
 
-use AppBundle\Entity\Location;
+use AppBundle\Entity\ICT\Location;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -59,7 +59,7 @@ class LocationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Location::class,
-            'translation_domain' => 'location',
+            'translation_domain' => 'ict_location',
             'new' => false
         ]);
     }

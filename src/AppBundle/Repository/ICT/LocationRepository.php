@@ -16,7 +16,7 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Repository;
+namespace AppBundle\Repository\ICT;
 
 use AppBundle\Entity\Organization;
 use Doctrine\ORM\EntityRepository;

@@ -19,7 +19,6 @@
 
 namespace AppBundle\Entity\ICT;
 
-use AppBundle\Entity\Location;
 use AppBundle\Entity\Organization;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -45,7 +44,7 @@ class Consumable
     private $organization;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Location")
+     * @ORM\ManyToOne(targetEntity="Location")
      * @ORM\JoinColumn(nullable=true)
      * @var Location
      */
