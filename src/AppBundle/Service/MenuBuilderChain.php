@@ -59,7 +59,6 @@ class MenuBuilderChain
             ->setRouteName('frontpage')
             ->setCaption('menu.frontpage')
             ->setDescription('menu.frontpage.detail')
-            ->setColor('teal')
             ->setIcon('home');
 
         foreach ($this->menuBuilders as $menuBuilder) {

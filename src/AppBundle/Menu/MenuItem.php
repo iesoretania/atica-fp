@@ -54,11 +54,6 @@ class MenuItem
     protected $icon;
 
     /**
-     * @var string
-     */
-    protected $color;
-
-    /**
      * @var Collection
      */
     protected $children;
@@ -188,24 +183,6 @@ class MenuItem
     public function setIcon($icon)
     {
         $this->icon = $icon;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getColor()
-    {
-        return $this->color;
-    }
-
-    /**
-     * @param string $color
-     * @return MenuItem
-     */
-    public function setColor($color)
-    {
-        $this->color = $color;
         return $this;
     }
 

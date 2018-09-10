@@ -46,7 +46,6 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('admin')
                 ->setCaption('menu.admin')
                 ->setDescription('menu.admin.detail')
-                ->setColor('teal')
                 ->setIcon('wrench')
                 ->setPriority(9000);
 
@@ -58,7 +57,6 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('admin_user_list')
                 ->setCaption('menu.admin.user')
                 ->setDescription('menu.admin.user.detail')
-                ->setColor('purple')
                 ->setIcon('id-badge');
 
             $menu1->addChild($menu2);
@@ -69,7 +67,6 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('admin_organization_list')
                 ->setCaption('menu.admin.organization')
                 ->setDescription('menu.admin.organization.detail')
-                ->setColor('yellow')
                 ->setIcon('map-marker');
 
             $menu1->addChild($menu2);
@@ -82,7 +79,6 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('organization')
                 ->setCaption('menu.organization')
                 ->setDescription('menu.organization.detail')
-                ->setColor('yellow')
                 ->setIcon('university')
                 ->setPriority(8000);
 
@@ -94,7 +90,6 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('organization_location_list')
                 ->setCaption('menu.organization.location')
                 ->setDescription('menu.organization.location.detail')
-                ->setColor('red')
                 ->setIcon('store-alt');
 
             $menu1->addChild($menu2);
@@ -105,7 +100,6 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('organization_import')
                 ->setCaption('menu.organization.import')
                 ->setDescription('menu.organization.import.detail')
-                ->setColor('red')
                 ->setIcon('download');
 
             $menu1->addChild($menu2);
@@ -116,7 +110,6 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('organization_import_teacher_form')
                 ->setCaption('menu.organization.import.teacher')
                 ->setDescription('menu.organization.import.teacher.detail')
-                ->setColor('blue')
                 ->setIcon('graduation-cap')
                 ->setPriority(0);
 
@@ -128,7 +121,6 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('organization_import_location_form')
                 ->setCaption('menu.organization.import.location')
                 ->setDescription('menu.organization.import.location.detail')
-                ->setColor('blue')
                 ->setIcon('store-alt')
                 ->setPriority(0);
 
@@ -141,7 +133,6 @@ class CoreMenu implements MenuBuilderInterface
             ->setRouteName('ict_menu')
             ->setCaption('menu.ict')
             ->setDescription('menu.ict.detail')
-            ->setColor('purple')
             ->setIcon('laptop')
             ->setPriority(0);
 
@@ -153,7 +144,6 @@ class CoreMenu implements MenuBuilderInterface
             ->setRouteName('ict_ticket_new')
             ->setCaption('menu.ict.ticket_new')
             ->setDescription('menu.ict.ticket_new.detail')
-            ->setColor('purple')
             ->setIcon('exclamation-triangle')
             ->setPriority(0);
 
@@ -166,7 +156,6 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('frontpage')
                 ->setCaption('menu.ict.ticket_inbox')
                 ->setDescription('menu.ict.ticket_inbox.detail')
-                ->setColor('purple')
                 ->setIcon('inbox')
                 ->setPriority(0);
 
@@ -178,7 +167,6 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('ict_element_list')
                 ->setCaption('menu.ict.element')
                 ->setDescription('menu.ict.element.detail')
-                ->setColor('purple')
                 ->setIcon('boxes')
                 ->setPriority(0);
 
@@ -190,8 +178,7 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('ict_element_template_form_new')
                 ->setCaption('menu.ict.element_template')
                 ->setDescription('menu.ict.element_template.detail')
-                ->setColor('purple')
-                    ->setIcon('drafting-compass')
+                ->setIcon('drafting-compass')
                 ->setPriority(0);
 
             $menu2->addChild($menu);
@@ -203,7 +190,6 @@ class CoreMenu implements MenuBuilderInterface
             ->setRouteName('personal_data')
             ->setCaption('menu.personal_data')
             ->setDescription('menu.personal_data.detail')
-            ->setColor('purple')
             ->setIcon('cog')
             ->setPriority(9999);
 
@@ -215,7 +201,6 @@ class CoreMenu implements MenuBuilderInterface
             ->setRouteName('logout')
             ->setCaption('menu.logout')
             ->setDescription('menu.logout.detail')
-            ->setColor('gray')
             ->setIcon('power-off')
             ->setPriority(10000);
 
