@@ -198,7 +198,7 @@ class UserController extends Controller
      */
     private function processPasswordChange(User $user, FormInterface $form)
     {
-// Si es solicitado, cambiar la contraseña
+        // Si es solicitado, cambiar la contraseña
         $passwordSubmit = $form->get('changePassword');
         if (($passwordSubmit instanceof SubmitButton) && $passwordSubmit->isClicked()) {
             $user->setPassword($this->container->get('security.password_encoder')
