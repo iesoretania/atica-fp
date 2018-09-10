@@ -66,6 +66,7 @@ class TicketType extends AbstractType
                 'label' => 'form.element',
                 'choice_translation_domain' => false,
                 'choices' => $elements,
+                'choice_label' => 'name',
                 'placeholder' => $placeholder
             ])
             ->add('description', TextareaType::class, [
