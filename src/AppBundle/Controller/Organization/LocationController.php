@@ -191,13 +191,13 @@ class LocationController extends Controller
     {
         $redirect = false;
         if ($request->get('confirm', '') === 'ok') {
-            //try {
+            try {
                 $this->deleteLocations($locations);
                 $em->flush();
                 $this->addFlash('success', $this->get('translator')->trans('message.deleted', [], 'location'));
-            //} catch (\Exception $e) {
-            //    $this->addFlash('error', $this->get('translator')->trans('message.delete_error', [], 'location'));
-            //}
+            } catch (\Exception $e) {
+                $this->addFlash('error', $this->get('translator')->trans('message.delete_error', [], 'location'));
+            }
             $redirect = true;
         }
         return $redirect;
