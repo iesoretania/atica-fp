@@ -12,9 +12,8 @@
 {% block body %}
 
     <nav class="navbar navbar-dark navbar-expand-md sticky-top bg-dark">
-        <!-- Just an image -->
         <a class="navbar-brand" href="{{ path('frontpage') }}">{{ app_name }}</a>
-        <span class="nav-text ml-auto mr-0">
+        <span class="nav-text ml-auto mr-0 text-light">
             {{ 'user.logged.as'|trans({'%user%': app.user}, 'layout') }}
         </span>
         <ul class="navbar-nav">
