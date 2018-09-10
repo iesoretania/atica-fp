@@ -94,6 +94,7 @@ class ElementController extends Controller
         $queryBuilder
             ->select('e')
             ->from('AppBundle:ICT\Element', 'e')
+            ->join('e.location', 'l')
             ->orderBy('e.name')
             ->addOrderBy('e.description')
             ->addOrderBy('e.serialNumber');
@@ -103,6 +104,7 @@ class ElementController extends Controller
             $queryBuilder
                 ->orWhere('e.name LIKE :tq')
                 ->orWhere('e.description LIKE :tq')
+                ->orWhere('l.name LIKE :tq')
                 ->orWhere('e.serialNumber LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
