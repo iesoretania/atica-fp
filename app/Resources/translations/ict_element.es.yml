@@ -11,9 +11,11 @@ form.delisted_on: Fecha de baja
 form.description: Descripción del equipamiento
 
 form.save: Guardar cambios
+form.save_template: Guardar cambios y crear plantilla
 form.back: Volver
 
 message.saved: Equipamiento actualizado con éxito.
+message.template_saved: Equipamiento actualizado y plantilla creada con éxito.
 message.save_error: No se ha podido actualizar el equipamiento.
 
 title.new: Nuevo equipamiento

@@ -19,6 +19,7 @@
 namespace AppBundle\Controller\ICT;
 
 use AppBundle\Entity\ICT\Element;
+use AppBundle\Entity\ICT\ElementTemplate;
 use AppBundle\Entity\Organization;
 use AppBundle\Form\Type\ICT\ElementType;
 use AppBundle\Security\ICT\ElementVoter;
@@ -66,8 +67,23 @@ class ElementController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                if ($request->request->has('save_template')) {
+                    $template = new ElementTemplate();
+                    $template
+                        ->setOrganization($organization)
+                        ->setName($element->getName())
+                        ->setDescription($element->getDescription());
+                    $em->persist($template);
+
+                    $element->setTemplate($template);
+
+                    $message = 'message.template_saved';
+                }
+                else {
+                    $message = 'message.saved';
+                }
                 $em->flush();
-                $this->addFlash('success', $this->get('translator')->trans('message.saved', [], 'ict_element'));
+                $this->addFlash('success', $this->get('translator')->trans($message, [], 'ict_element'));
                 return $this->redirectToRoute('ict_element_list');
             } catch (\Exception $e) {
                 $this->addFlash('error', $this->get('translator')->trans('message.save_error', [], 'ict_element'));
