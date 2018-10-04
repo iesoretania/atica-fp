@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ICT\ElementRepository")
- * @ORM\Table(name="ict_element")
+ * @ORM\Table(name="ict_element", uniqueConstraints={@ORM\UniqueConstraint(name="reference_idx", columns={"organization_id", "reference"})})
  */
 class Element
 {
@@ -64,10 +64,22 @@ class Element
     private $name;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var string
+     */
+    private $reference;
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      * @var string
      */
     private $description;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     * @var string
+     */
+    private $detail;
 
     /**
      * @ORM\ManyToOne(targetEntity="ElementTemplate")
@@ -182,6 +194,24 @@ class Element
     /**
      * @return string
      */
+    public function getReference()
+    {
+        return $this->reference;
+    }
+
+    /**
+     * @param string $reference
+     * @return Element
+     */
+    public function setReference($reference)
+    {
+        $this->reference = $reference;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getDescription()
     {
         return $this->description;
@@ -194,6 +224,24 @@ class Element
     public function setDescription($description)
     {
         $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDetail()
+    {
+        return $this->detail;
+    }
+
+    /**
+     * @param string $detail
+     * @return Element
+     */
+    public function setDetail($detail)
+    {
+        $this->detail = $detail;
         return $this;
     }
 

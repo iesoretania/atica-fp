@@ -6,8 +6,9 @@
 
 {% block table_header %}
     <th class="w-60"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-10">{{ 'header.reference'|trans }}</th>
     <th class="w-20">{{ 'header.location'|trans }}</th>
-    <th class="w-20">{{ 'header.serial_number'|trans }}</th>
+    <th class="w-10">{{ 'header.serial_number'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
@@ -16,6 +17,9 @@
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item }}</a></label>
+                    </td>
+                    <td>
+                        <a href="{{ url }}">{{ item.reference }}</a>
                     </td>
                     <td>
                         <a href="{{ url }}">{{ item.location }}</a>
@@ -28,7 +32,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

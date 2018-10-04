@@ -119,6 +119,7 @@ class ElementController extends Controller
         if ($q) {
             $queryBuilder
                 ->orWhere('e.name LIKE :tq')
+                ->orWhere('e.reference LIKE :tq')
                 ->orWhere('e.description LIKE :tq')
                 ->orWhere('l.name LIKE :tq')
                 ->orWhere('e.serialNumber LIKE :tq')
@@ -160,8 +161,8 @@ class ElementController extends Controller
 
         return $this->render('ict/element/delete.html.twig', [
             'menu_path' => 'ict_location_list',
-            'breadcrumb' => [['fixed' => $this->get('translator')->trans('title.delete', [], 'location')]],
-            'title' => $this->get('translator')->trans('title.delete', [], 'location'),
+            'breadcrumb' => [['fixed' => $this->get('translator')->trans('title.delete', [], 'ict_element')]],
+            'title' => $this->get('translator')->trans('title.delete', [], 'ict_element'),
             'items' => $items
         ]);
     }

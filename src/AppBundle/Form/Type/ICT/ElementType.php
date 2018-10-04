@@ -59,6 +59,10 @@ class ElementType extends AbstractType
                 'placeholder' => 'form.select_template',
                 'required' => false
             ])
+            ->add('reference', null, [
+                'label' => 'form.reference',
+                'required' => false
+            ])
             ->add('location', EntityType::class, [
                 'label' => 'form.location',
                 'class' => Location::class,
@@ -84,6 +88,13 @@ class ElementType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'form.description',
+                'attr' => [
+                    'rows' => 8
+                ],
+                'required' => false
+            ])
+            ->add('detail', TextareaType::class, [
+                'label' => 'form.detail',
                 'attr' => [
                     'rows' => 8
                 ],

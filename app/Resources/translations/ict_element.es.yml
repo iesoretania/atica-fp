@@ -1,5 +1,6 @@
 form.template: Plantilla predefinida
 form.select_template: Copie los datos de una plantilla de equipamiento si lo desea
+form.reference: Número de inventario
 form.name: Nombre del equipamiento
 form.location: Dependencia del equipamiento
 form.select_location: Seleccione la dependencia del equipamiento
@@ -8,7 +9,8 @@ form.select_parent: No forma parte de otro equipamiento
 form.serial_number: Número de serie
 form.listed_on: Fecha de alta
 form.delisted_on: Fecha de baja
-form.description: Descripción del equipamiento
+form.description: Descripción resumida del equipamiento
+form.detail: Detalle adicional
 
 form.save: Guardar cambios
 form.save_template: Guardar cambios y crear plantilla
@@ -24,6 +26,7 @@ title.list: Listado del equipamiento
 title.delete: Eliminar equipamiento
 
 header.name: Equipamiento
+header.reference: "Nº. inventario"
 header.location: Dependencia
 header.serial_number: Número de serie
 
