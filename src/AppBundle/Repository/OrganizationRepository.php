@@ -53,7 +53,6 @@ class OrganizationRepository extends EntityRepository
             ->andWhere('m.user = :user')
             ->setParameter('user', $user)
             ->orderBy('o.name');
-
     }
 
     /**
@@ -88,7 +87,8 @@ class OrganizationRepository extends EntityRepository
             ->getSingleScalarResult();
     }
 
-    public function count() {
+    public function count()
+    {
         $query = $this->createQueryBuilder('o')->select('count(o)')->getQuery();
         return $query->getSingleScalarResult();
     }
@@ -99,7 +99,8 @@ class OrganizationRepository extends EntityRepository
      * @param Organization $organization
      * @return array
      */
-    public function findAllInListByIdButCurrent($items, Organization $organization) {
+    public function findAllInListByIdButCurrent($items, Organization $organization)
+    {
         return $this->createQueryBuilder('o')
             ->where('o.id IN (:items)')
             ->andWhere('o != :current')

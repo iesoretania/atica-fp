@@ -31,9 +31,11 @@ class MenuController extends Controller
     public function indexAction(UserExtensionService $userExtensionService)
     {
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $userExtensionService->getCurrentOrganization());
-        return $this->render('default/index.html.twig',
+        return $this->render(
+            'default/index.html.twig',
             [
                 'menu' => true
-            ]);
+            ]
+        );
     }
 }

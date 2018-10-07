@@ -19,7 +19,6 @@
 
 namespace AppBundle\Entity\ICT;
 
-
 use Doctrine\ORM\Mapping as ORM;
 
 /**

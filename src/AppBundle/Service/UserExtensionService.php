@@ -42,8 +42,11 @@ class UserExtensionService
      */
     private $authorizationChecker;
 
-    public function __construct(EntityManagerInterface $em, SessionInterface $session, AuthorizationCheckerInterface $authorizationChecker)
-    {
+    public function __construct(
+        EntityManagerInterface $em,
+        SessionInterface $session,
+        AuthorizationCheckerInterface $authorizationChecker
+    ) {
         $this->em = $em;
         $this->session = $session;
         $this->authorizationChecker = $authorizationChecker;

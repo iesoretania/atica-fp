@@ -78,8 +78,7 @@ class ElementController extends Controller
                     $element->setTemplate($template);
 
                     $message = 'message.template_saved';
-                }
-                else {
+                } else {
                     $message = 'message.saved';
                 }
                 $em->flush();
@@ -92,15 +91,21 @@ class ElementController extends Controller
 
         return $this->render('ict/element/form.html.twig', [
             'menu_path' => 'ict_element_list',
-            'breadcrumb' => [['fixed' => $element->getId() ? $element->getName() : $this->get('translator')->trans('title.new', [], 'ict_element')]],
-            'title' => $this->get('translator')->trans($element->getId() ? 'title.edit' : 'title.new', [], 'ict_element'),
+            'breadcrumb' => [
+                ['fixed' => $element->getId() ?
+                    $element->getName() :
+                    $this->get('translator')->trans('title.new', [], 'ict_element')]
+            ],
+            'title' => $this->get('translator')->
+                trans($element->getId() ? 'title.edit' : 'title.new', [], 'ict_element'),
             'form' => $form->createView()
         ]);
     }
 
 
     /**
-     * @Route("/listar/{page}", name="ict_element_list", requirements={"page" = "\d+"}, defaults={"page" = "1"}, methods={"GET"})
+     * @Route("/listar/{page}", name="ict_element_list", requirements={"page" = "\d+"},
+     *     defaults={"page" = "1"}, methods={"GET"})
      */
     public function listAction($page, Request $request, UserExtensionService $userExtensionService)
     {
@@ -123,7 +128,7 @@ class ElementController extends Controller
                 ->orWhere('e.description LIKE :tq')
                 ->orWhere('l.name LIKE :tq')
                 ->orWhere('e.serialNumber LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
+                ->setParameter('tq', '%' . $q . '%');
         }
 
         $queryBuilder
@@ -233,7 +238,8 @@ class ElementController extends Controller
 
         $itemToRemove = [];
         if (!$redirect) {
-            $itemToRemove = $em->getRepository('AppBundle:ICT\Element')->findInListByIdAndOrganization($items, $organization);
+            $itemToRemove = $em->getRepository('AppBundle:ICT\Element')->
+                findInListByIdAndOrganization($items, $organization);
             $redirect = $this->processRemoveItems($request, $itemToRemove, $em);
         }
         return array($redirect, $itemToRemove);

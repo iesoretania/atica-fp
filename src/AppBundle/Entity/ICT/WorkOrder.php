@@ -20,7 +20,6 @@
 
 namespace AppBundle\Entity\ICT;
 
-
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -223,5 +222,4 @@ class WorkOrder
         $this->usedConsumables = $usedConsumables;
         return $this;
     }
-
 }

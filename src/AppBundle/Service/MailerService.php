@@ -64,7 +64,8 @@ class MailerService
          * @var \Swift_Message
          */
         $msg = $this->mailer->createMessage()
-            ->setSubject($this->prefix.$this->translator->trans($subject['id'], $subject['parameters'], $translationDomain))
+            ->setSubject($this->prefix . $this->translator->
+                trans($subject['id'], $subject['parameters'], $translationDomain))
             ->setFrom($this->from)
             ->setTo($to)
             ->setBody($this->translator->trans($body['id'], $body['parameters'], $translationDomain));

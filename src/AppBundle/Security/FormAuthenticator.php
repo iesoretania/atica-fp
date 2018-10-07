@@ -60,8 +60,12 @@ class FormAuthenticator extends AbstractGuardAuthenticator
     /**
      * Constructor
      */
-    public function __construct(RouterInterface $router, UserPasswordEncoderInterface $encoder, SenecaAuthenticatorService $senecaAuthenticator, ManagerRegistry $managerRegistry)
-    {
+    public function __construct(
+        RouterInterface $router,
+        UserPasswordEncoderInterface $encoder,
+        SenecaAuthenticatorService $senecaAuthenticator,
+        ManagerRegistry $managerRegistry
+    ) {
         $this->router = $router;
         $this->encoder = $encoder;
         $this->senecaAuthenticator = $senecaAuthenticator;
@@ -154,7 +158,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $targetPath = $request->getSession()->get('_security.'.$providerKey.'.target_path');
+        $targetPath = $request->getSession()->get('_security.' . $providerKey . '.target_path');
         if (!$targetPath) {
             $targetPath = $this->router->generate('frontpage');
         }

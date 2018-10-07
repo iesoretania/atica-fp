@@ -53,7 +53,10 @@ class SecurityListener implements EventSubscriberInterface
                 ->countOrganizationsByUser($user);
 
             if ($organizationsCount > 1) {
-                $this->session->set('_security.organization.target_path', $this->session->get('_security.main.target_path'));
+                $this->session->set(
+                    '_security.organization.target_path',
+                    $this->session->get('_security.main.target_path')
+                );
             } else {
                 $organization = $em->getRepository('AppBundle:Organization')->findFirstByUserOrNull($user);
                 $this->session->set('organization_id', $organization->getId());
@@ -75,7 +78,10 @@ class SecurityListener implements EventSubscriberInterface
                 $this->session->set('organization_id', $organization->getId());
                 break;
             default:
-                $this->session->set('_security.organization.target_path', $this->session->get('_security.main.target_path'));
+                $this->session->set(
+                    '_security.organization.target_path',
+                    $this->session->get('_security.main.target_path')
+                );
         }
     }
 

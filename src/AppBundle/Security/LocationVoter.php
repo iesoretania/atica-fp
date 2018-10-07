@@ -35,7 +35,10 @@ class LocationVoter extends Voter
 
     private $userExtensionService;
 
-    public function __construct(AccessDecisionManagerInterface $decisionManager, UserExtensionService $userExtensionService) {
+    public function __construct(
+        AccessDecisionManagerInterface $decisionManager,
+        UserExtensionService $userExtensionService
+    ) {
         $this->decisionManager = $decisionManager;
         $this->userExtensionService = $userExtensionService;
     }
@@ -93,11 +96,12 @@ class LocationVoter extends Voter
 
         // Si es permiso de acceso, comprobar que pertenece actualmente a la organización
         if ($attribute === self::ACCESS) {
-
             $date = new \DateTime();
             /** @var Membership $membership */
             foreach ($user->getMemberships() as $membership) {
-                if ($membership->getOrganization() === $organization && $membership->getValidFrom() <= $date && ($membership->getValidUntil() === null || $membership->getValidUntil() >= $date)) {
+                if ($membership->getOrganization() === $organization &&
+                    $membership->getValidFrom() <= $date &&
+                    ($membership->getValidUntil() === null || $membership->getValidUntil() >= $date)) {
                     return true;
                 }
             }

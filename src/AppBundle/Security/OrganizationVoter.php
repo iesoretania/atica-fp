@@ -32,7 +32,8 @@ class OrganizationVoter extends Voter
 
     private $decisionManager;
 
-    public function __construct(AccessDecisionManagerInterface $decisionManager) {
+    public function __construct(AccessDecisionManagerInterface $decisionManager)
+    {
         $this->decisionManager = $decisionManager;
     }
 
@@ -82,11 +83,11 @@ class OrganizationVoter extends Voter
 
         // Si es permiso de acceso, comprobar que pertenece actualmente a la organización
         if ($attribute === self::ACCESS) {
-
             $date = new \DateTime();
             /** @var Membership $membership */
             foreach ($user->getMemberships() as $membership) {
-                if ($membership->getOrganization() == $subject && $membership->getValidFrom() <= $date && ($membership->getValidUntil() === null || $membership->getValidUntil() >= $date)) {
+                if ($membership->getOrganization() == $subject && $membership->getValidFrom() <= $date &&
+                    ($membership->getValidUntil() === null || $membership->getValidUntil() >= $date)) {
                     return true;
                 }
             }

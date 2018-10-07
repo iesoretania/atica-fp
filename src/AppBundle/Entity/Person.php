@@ -71,7 +71,7 @@ class Person
      */
     public function __toString()
     {
-        return $this->getFirstName().' '.$this->getLastName();
+        return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
     /**

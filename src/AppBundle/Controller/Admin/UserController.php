@@ -62,7 +62,6 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $message = $this->processPasswordChange($localUser, $form);
 
             try {
@@ -77,7 +76,11 @@ class UserController extends Controller
         $title = $this->get('translator')->trans($localUser->getId() ? 'title.edit' : 'title.new', [], 'user');
 
 
-        $breadcrumb = [$localUser->getId() ? ['fixed' => (string) $localUser] : ['fixed' => $this->get('translator')->trans('title.new', [], 'user')]];
+        $breadcrumb = [
+            $localUser->getId() ?
+                ['fixed' => (string) $localUser] :
+                ['fixed' => $this->get('translator')->trans('title.new', [], 'user')]
+        ];
 
         return $this->render('admin/user/user_form.html.twig', [
             'menu_path' => 'admin_user_list',
@@ -89,7 +92,8 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/listar/{page}", name="admin_user_list", requirements={"page" = "\d+"}, defaults={"page" = "1"}, methods={"GET"})
+     * @Route("/listar/{page}", name="admin_user_list", requirements={"page" = "\d+"},
+     *     defaults={"page" = "1"}, methods={"GET"})
      */
     public function listAction($page, Request $request)
     {

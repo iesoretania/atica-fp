@@ -18,13 +18,13 @@
 
 namespace AppBundle\Entity\ICT;
 
-
 use AppBundle\Entity\Organization;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ICT\ElementRepository")
- * @ORM\Table(name="ict_element", uniqueConstraints={@ORM\UniqueConstraint(name="reference_idx", columns={"organization_id", "reference"})})
+ * @ORM\Table(name="ict_element",
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="reference_idx", columns={"organization_id", "reference"})})
  */
 class Element
 {
@@ -108,7 +108,7 @@ class Element
 
     public function __toString()
     {
-        return $this->getName() . ($this->getDescription() ? ' - '.$this->getDescription() : '');
+        return $this->getName() . ($this->getDescription() ? ' - ' . $this->getDescription() : '');
     }
 
     /**
@@ -316,5 +316,4 @@ class Element
         $this->delistedOn = $delistedOn;
         return $this;
     }
-
 }

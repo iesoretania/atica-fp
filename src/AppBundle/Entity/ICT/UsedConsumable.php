@@ -100,6 +100,4 @@ class UsedConsumable
         $this->quantity = $quantity;
         return $this;
     }
-
 }
-

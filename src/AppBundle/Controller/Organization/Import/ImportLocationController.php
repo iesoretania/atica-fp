@@ -48,7 +48,6 @@ class ImportLocationController extends Controller
         $breadcrumb = [];
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $stats = $this->importLocationsFromCsv($formData->getFile()->getPathname(), $organization, [
                 'only_keep_new' => $formData->getOnlyKeepNew()
             ]);
@@ -97,7 +96,9 @@ class ImportLocationController extends Controller
                     }
                     $name = $userData['Dependencias'];
 
-                    $item = $em->getRepository('AppBundle:ICT\Location')->findOneBy(['name' => $name, 'organization' => $organization]);
+                    $item = $em->getRepository('AppBundle:ICT\Location')->
+                        findOneBy(['name' => $name, 'organization' => $organization]);
+
                     $alreadyProcessed = isset($collection[$name]);
 
                     if (null === $item) {
@@ -123,7 +124,6 @@ class ImportLocationController extends Controller
                         ->setOrganization($organization)
                         ->setName($name)
                         ->setAdditionalData($userData['Plantas'] ?: null);
-
                 }
             }
             $em->flush();

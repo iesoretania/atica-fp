@@ -50,7 +50,6 @@ class ImportTeacherController extends Controller
         $breadcrumb = [];
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $stats = $this->importTeachersFromCsv($formData->getFile()->getPathname(), $organization, [
                 'generate_password' => $formData->getGeneratePassword(),
                 'external_check' => $formData->isExternalPassword()
@@ -151,8 +150,13 @@ class ImportTeacherController extends Controller
                         }
                     }
 
-                    $validFrom = \DateTime::createFromFormat('d/m/Y H:i:s', $userData['Fecha de toma de posesión'].'00:00:00');
-                    $validUntil = ($userData['Fecha de cese']) ? \DateTime::createFromFormat('d/m/Y H:i:s', $userData['Fecha de cese'].'23:59:59') : null;
+                    $validFrom = \DateTime::createFromFormat(
+                        'd/m/Y H:i:s',
+                        $userData['Fecha de toma de posesión'] . '00:00:00'
+                    );
+                    $validUntil = ($userData['Fecha de cese']) ?
+                        \DateTime::createFromFormat('d/m/Y H:i:s', $userData['Fecha de cese'] . '23:59:59') :
+                        null;
 
                     if (false === $validFrom) {
                         continue;

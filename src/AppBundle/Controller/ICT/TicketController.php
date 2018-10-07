@@ -31,8 +31,11 @@ class TicketController extends Controller
     /**
      * @Route("/tic/incidencia/nueva", name="ict_ticket_new", methods={"GET", "POST"})
      */
-    public function ictTicketFormAction(UserExtensionService $userExtensionService, TranslatorInterface $translator, Request $request)
-    {
+    public function ictTicketFormAction(
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        Request $request
+    ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $ticket = new Ticket();
@@ -53,8 +56,7 @@ class TicketController extends Controller
                 $this->addFlash('success', $this->get('translator')->trans('message.saved', [], 'ict_ticket'));
 
                 return $this->redirectToRoute('frontpage');
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 $this->addFlash('error', $this->get('translator')->trans('message.save_error', [], 'ict_ticket'));
             }
         }

@@ -18,7 +18,6 @@
 
 namespace AppBundle\Entity\ICT;
 
-
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
 use Doctrine\ORM\Mapping as ORM;
@@ -361,5 +360,4 @@ class Ticket
         $this->duplicates = $duplicates;
         return $this;
     }
-
 }

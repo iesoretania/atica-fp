@@ -36,7 +36,8 @@ class UserRepository extends EntityRepository implements UserLoaderInterface
      *
      * @return UserInterface|null
      */
-    public function loadUserByUsername($username) {
+    public function loadUserByUsername($username)
+    {
         if (!$username) {
             return null;
         }
@@ -55,7 +56,8 @@ class UserRepository extends EntityRepository implements UserLoaderInterface
      * @param UserInterface $user
      * @return null|UserInterface
      */
-    public function refreshUser(UserInterface $user) {
+    public function refreshUser(UserInterface $user)
+    {
         return $this->loadUserByUsername($user->getUsername());
     }
 
@@ -63,7 +65,8 @@ class UserRepository extends EntityRepository implements UserLoaderInterface
      * @param $class
      * @return bool
      */
-    public function supportsClass($class) {
+    public function supportsClass($class)
+    {
         return $class === User::class;
     }
 

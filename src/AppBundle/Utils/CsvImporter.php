@@ -44,7 +44,6 @@ class CsvImporter
                 $this->header[$key] = iconv('ISO-8859-1', 'UTF-8', $data);
             }
         }
-
     }
 
     public function __destruct()
@@ -66,8 +65,7 @@ class CsvImporter
             $line_count = -1; // so loop limit is ignored
         }
 
-        while ($line_count < $max_lines && ($row = fgetcsv($this->fp, $this->length, $this->delimiter)) !== FALSE)
-        {
+        while ($line_count < $max_lines && ($row = fgetcsv($this->fp, $this->length, $this->delimiter)) !== false) {
             foreach ($row as $key => $key_data) {
                 $row[$key] = iconv('ISO-8859-1', 'UTF-8', $key_data);
             }

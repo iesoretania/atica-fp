@@ -40,8 +40,11 @@ class LocationController extends Controller
      * @Route("/nueva", name="ict_location_form_new", methods={"GET", "POST"})
      * @Route("/{id}", name="ict_location_form_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
-    public function indexAction(UserExtensionService $userExtensionService, Request $request, Location $location = null)
-    {
+    public function indexAction(
+        UserExtensionService $userExtensionService,
+        Request $request,
+        Location $location = null
+    ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
         if ($location) {
@@ -74,15 +77,21 @@ class LocationController extends Controller
 
         return $this->render('ict/location/form.html.twig', [
             'menu_path' => 'ict_location_list',
-            'breadcrumb' => [['fixed' => $location->getId() ? (string) $location : $this->get('translator')->trans('title.new', [], 'ict_location')]],
-            'title' => $this->get('translator')->trans($location->getId() ? 'title.edit' : 'title.new', [], 'ict_location'),
+            'breadcrumb' => [
+                ['fixed' => $location->getId() ?
+                    (string) $location :
+                    $this->get('translator')->trans('title.new', [], 'ict_location')]
+            ],
+            'title' => $this->get('translator')->
+                trans($location->getId() ? 'title.edit' : 'title.new', [], 'ict_location'),
             'form' => $form->createView(),
             'user' => $location
         ]);
     }
 
     /**
-     * @Route("/listar/{page}", name="ict_location_list", requirements={"page" = "\d+"}, defaults={"page" = "1"}, methods={"GET"})
+     * @Route("/listar/{page}", name="ict_location_list", requirements={"page" = "\d+"},
+     *     defaults={"page" = "1"}, methods={"GET"})
      */
     public function listAction($page, Request $request, UserExtensionService $userExtensionService)
     {
@@ -100,7 +109,7 @@ class LocationController extends Controller
                 ->orWhere('l.name LIKE :tq')
                 ->orWhere('l.additionalData LIKE :tq')
                 ->orWhere('l.description LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
+                ->setParameter('tq', '%' . $q . '%');
         }
 
         $queryBuilder
@@ -220,7 +229,8 @@ class LocationController extends Controller
 
         $locations = [];
         if (!$redirect) {
-            $locations = $em->getRepository('AppBundle:ICT\Location')->findInListByIdAndOrganization($items, $organization);
+            $locations = $em->getRepository('AppBundle:ICT\Location')->
+                findInListByIdAndOrganization($items, $organization);
             $redirect = $this->processRemoveLocations($request, $locations, $em);
         }
         return array($redirect, $locations);

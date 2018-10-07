@@ -28,7 +28,8 @@ class RequestListener implements EventSubscriberInterface
 {
     private $router;
 
-    public function __construct(RouterInterface $router) {
+    public function __construct(RouterInterface $router)
+    {
         $this->router = $router;
     }
 

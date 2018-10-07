@@ -91,7 +91,8 @@ class SecurityController extends Controller
         }
 
         return $this->render(
-            'security/login_password_reset.html.twig', [
+            'security/login_password_reset.html.twig',
+            [
                 'last_username' => $this->get('session')->get('_security.last_username', ''),
                 'form' => $form->createView(),
                 'error' => $error
@@ -128,7 +129,10 @@ class SecurityController extends Controller
                 $this->getDoctrine()->getManager()->flush();
 
                 // indicar que los cambios se han realizado con éxito y volver a la página de inicio
-                $this->addFlash('success', $this->get('translator')->trans('form.change_email.message', [], 'security'));
+                $this->addFlash(
+                    'success',
+                    $this->get('translator')->trans('form.change_email.message', [], 'security')
+                );
             } catch (\Exception $e) {
                 // indicar que no se ha podido cambiar
                 $this->addFlash('error', $this->get('translator')->trans('form.change_email.error', [], 'security'));
@@ -139,7 +143,8 @@ class SecurityController extends Controller
         }
 
         return $this->render(
-            'security/login_email_change.html.twig', [
+            'security/login_email_change.html.twig',
+            [
                 'user' => $user
             ]
         );
@@ -175,7 +180,6 @@ class SecurityController extends Controller
 
         $error = '';
         if ($form->isSubmitted() && $form->isValid()) {
-
             //codificar la nueva contraseña y asignarla al usuario
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $form->get('newPassword')->get('first')->getData());
@@ -197,7 +201,8 @@ class SecurityController extends Controller
         }
 
         return $this->render(
-            'security/login_password_new.html.twig', [
+            'security/login_password_new.html.twig',
+            [
                 'user' => $user,
                 'form' => $form->createView(),
                 'error' => $error
@@ -220,13 +225,14 @@ class SecurityController extends Controller
 
         $data = ['organization' => $this->getUser()->getDefaultOrganization()];
 
-        $count = $this->getDoctrine()->getManager()->getRepository('AppBundle:Organization')->countOrganizationsByUser($this->getUser(), new \DateTime());
+        $count = $this->getDoctrine()->getManager()->getRepository('AppBundle:Organization')->
+            countOrganizationsByUser($this->getUser(), new \DateTime());
 
         $form = $this->createFormBuilder($data)
             ->add('organization', EntityType::class, [
                 'expanded' => $count < 5,
                 'class' => Organization::class,
-                'query_builder' => function(OrganizationRepository $er) {
+                'query_builder' => function (OrganizationRepository $er) {
                     return $er->getMembershipByUserQueryBuilder($this->getUser(), new \DateTime());
                 },
                 'required' => true
@@ -237,7 +243,6 @@ class SecurityController extends Controller
 
         // ¿se ha seleccionado una organización?
         if ($form->isSubmitted() && $form->isValid() && $form->get('organization')->getData()) {
-
             $session->set('organization_id', $form->get('organization')->getData()->getId());
             $session->set('organization_selected', true);
             $this->getUser()->setDefaultOrganization($form->get('organization')->getData());
@@ -247,7 +252,9 @@ class SecurityController extends Controller
             $session->remove('_security.organization.target_path');
             return new RedirectResponse($url);
         }
-        return $this->render('security/login_organization.html.twig', [
+        return $this->render(
+            'security/login_organization.html.twig',
+            [
                 'form' => $form->createView(),
                 'count' => $count
             ]
@@ -262,7 +269,8 @@ class SecurityController extends Controller
     {
         /** @var User $user */
         // comprobar que está asociada a un usuario
-        $user = $this->getDoctrine()->getManager()->getRepository('AppBundle:User')->findOneBy(['emailAddress' => $email]);
+        $user = $this->getDoctrine()->getManager()->getRepository('AppBundle:User')->
+            findOneBy(['emailAddress' => $email]);
 
         $error = '';
 
@@ -276,7 +284,8 @@ class SecurityController extends Controller
             $expire = (int) $this->getParameter('password_reset.expire');
 
             if ($this->getParameter('external.enabled') && $user->getExternalCheck()) {
-                $this->addFlash('error', $this->get('translator')->trans('form.reset.external_login.error', [], 'security'));
+                $this->addFlash('error', $this->get('translator')->
+                    trans('form.reset.external_login.error', [], 'security'));
             } else {
                 // comprobar que no se ha generado un token hace poco
                 if ($user->getToken() && $user->getTokenExpiration() > new \DateTime()) {
@@ -292,26 +301,32 @@ class SecurityController extends Controller
                     $user->setTokenExpiration($validity)->setTokenType('password');
 
                     // enviar correo
-                    if (0 === $mailerService->sendEmail([$user],
-                            ['id' => 'form.reset.email.subject', 'parameters' => []],
-                            [
-                                'id' => 'form.reset.email.body',
-                                'parameters' => [
-                                    '%name%' => $user->getPerson()->getFirstName(),
-                                    '%link%' => $this->generateUrl('login_password_reset_do',
-                                        ['userId' => $user->getId(), 'token' => $token],
-                                        UrlGeneratorInterface::ABSOLUTE_URL),
-                                    '%expiry%' => $expire
-                                ]
-                            ], 'security')
-                    ) {
+                    if (0 === $mailerService->sendEmail(
+                        [$user],
+                        ['id' => 'form.reset.email.subject', 'parameters' => []],
+                        [
+                            'id' => 'form.reset.email.body',
+                            'parameters' => [
+                                '%name%' => $user->getPerson()->getFirstName(),
+                                '%link%' => $this->generateUrl(
+                                    'login_password_reset_do',
+                                    ['userId' => $user->getId(), 'token' => $token],
+                                    UrlGeneratorInterface::ABSOLUTE_URL
+                                ),
+                                '%expiry%' => $expire
+                            ]
+                        ],
+                        'security'
+                    )) {
                         $this->addFlash('error', $this->get('translator')->trans('form.reset.error', [], 'security'));
                     } else {
                         // guardar token
                         $this->get('doctrine')->getManager()->flush();
 
-                        $this->addFlash('success',
-                            $this->get('translator')->trans('form.reset.sent', ['%email%' => $email], 'security'));
+                        $this->addFlash(
+                            'success',
+                            $this->get('translator')->trans('form.reset.sent', ['%email%' => $email], 'security')
+                        );
                         return $this->redirectToRoute('login');
                     }
                 }
@@ -319,5 +334,4 @@ class SecurityController extends Controller
         }
         return $error;
     }
-
 }

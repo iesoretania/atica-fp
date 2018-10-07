@@ -101,14 +101,8 @@ class SenecaAuthenticatorService
     private function getUrl($url, $forceSecurity)
     {
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $forceSecurity);
-        curl_setopt($curl, CURLOPT_HEADER, false);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($curl, CURLOPT_MAXREDIRS, 2);
-        curl_setopt($curl, CURLOPT_URL, $url);
+        $this->setCurlDefaultOptions($url, $forceSecurity, $curl);
         curl_setopt($curl, CURLOPT_REFERER, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/533.4 (KHTML, like Gecko) Chrome/5.0.375.125 Safari/533.4");
         $str = curl_exec($curl);
         curl_close($curl);
         return $str === false ? '' : (string) $str;
@@ -132,17 +126,33 @@ class SenecaAuthenticatorService
         $fieldsString = rtrim($fieldsString, '&');
 
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $forceSecurity);
-        curl_setopt($curl, CURLOPT_HEADER, false);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($curl, CURLOPT_URL, $postUrl);
+        $this->setCurlDefaultOptions($postUrl, $forceSecurity, $curl);
         curl_setopt($curl, CURLOPT_REFERER, $refererUrl);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/533.4 (KHTML, like Gecko) Chrome/5.0.375.125 Safari/533.4");
         curl_setopt($curl, CURLOPT_POST, count($fields));
         curl_setopt($curl, CURLOPT_POSTFIELDS, $fieldsString);
         $str = curl_exec($curl);
         curl_close($curl);
         return $str === false ? '' : (string) $str;
+    }
+
+    /**
+     * @param $url
+     * @param $forceSecurity
+     * @param $curl
+     */
+    private function setCurlDefaultOptions($url, $forceSecurity, $curl)
+    {
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $forceSecurity);
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_MAXREDIRS, 2);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $curl,
+            CURLOPT_USERAGENT,
+            'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) ' .
+            'AppleWebKit/533.4 (KHTML, like Gecko) Chrome/5.0.375.125 Safari/533.4'
+        );
     }
 }

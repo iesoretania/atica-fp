@@ -22,13 +22,11 @@ use AppBundle\Entity\User;
 use AppBundle\Form\Type\UserType;
 use AppBundle\Service\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-
 
 class PersonalDataController extends Controller
 {
@@ -53,7 +51,11 @@ class PersonalDataController extends Controller
             $translator = $this->get('translator');
 
             $passwordSubmitted = $this->processPasswordAndEmailChanges($form, $user, $oldEmail, $mailerService);
-            $message = $this->get('translator')->trans($passwordSubmitted ? 'message.password_changed' : 'message.saved', [], 'user');
+            $message = $this->get('translator')->trans(
+                $passwordSubmitted ? 'message.password_changed' : 'message.saved',
+                [],
+                'user'
+            );
 
             try {
                 $this->getDoctrine()->getManager()->flush();
@@ -103,29 +105,35 @@ class PersonalDataController extends Controller
 
             // calcular fecha de expiración del token
             $validity = new \DateTime();
-            $validity->add(new \DateInterval('PT'.$expire.'M'));
+            $validity->add(new \DateInterval('PT' . $expire . 'M'));
             $user->setTokenExpiration($validity);
 
             $user->setEmailAddress($newEmail);
 
             // enviar correo
-            if (0 === $mailerService->sendEmail([$user],
-                    ['id' => 'form.change_email.email.subject', 'parameters' => []],
-                    [
-                        'id' => 'form.change_email.email.body',
-                        'parameters' => [
-                            '%name%' => $user->getPerson()->getFirstName(),
-                            '%link%' => $this->generateUrl('email_reset_do',
-                                ['userId' => $user->getId(), 'token' => $token],
-                                UrlGeneratorInterface::ABSOLUTE_URL),
-                            '%expiry%' => $expire
-                        ]
-                    ], 'security')
-            ) {
+            if (0 === $mailerService->sendEmail(
+                [$user],
+                ['id' => 'form.change_email.email.subject', 'parameters' => []],
+                [
+                    'id' => 'form.change_email.email.body',
+                    'parameters' => [
+                        '%name%' => $user->getPerson()->getFirstName(),
+                        '%link%' => $this->generateUrl(
+                            'email_reset_do',
+                            ['userId' => $user->getId(), 'token' => $token],
+                            UrlGeneratorInterface::ABSOLUTE_URL
+                        ),
+                        '%expiry%' => $expire
+                    ]
+                ],
+                'security'
+            )) {
                 $this->addFlash('error', $this->get('translator')->trans('message.email_change.error', [], 'user'));
             } else {
-                $this->addFlash('info',
-                    $this->get('translator')->trans('message.email_change.info', ['%email%' => $newEmail], 'user'));
+                $this->addFlash(
+                    'info',
+                    $this->get('translator')->trans('message.email_change.info', ['%email%' => $newEmail], 'user')
+                );
             }
 
             $user->setEmailAddress($oldEmail);
@@ -139,15 +147,20 @@ class PersonalDataController extends Controller
      * @param string $oldEmail
      * @return bool
      */
-    private function processPasswordAndEmailChanges(FormInterface $form, User $user, $oldEmail, MailerService $mailerService)
-    {
+    private function processPasswordAndEmailChanges(
+        FormInterface $form,
+        User $user,
+        $oldEmail,
+        MailerService $mailerService
+    ) {
         // comprobar si ha cambiado el correo electrónico
         if ($user->getEmailAddress() !== $oldEmail) {
             $this->requestEmailAddressChange($user, $oldEmail, $mailerService);
         }
 
         // Si es solicitado, cambiar la contraseña
-        $passwordSubmitted = ($form->has('changePassword') && $form->get('changePassword') instanceof SubmitButton) && $form->get('changePassword')->isClicked();
+        $passwordSubmitted = ($form->has('changePassword') &&
+                $form->get('changePassword') instanceof SubmitButton) && $form->get('changePassword')->isClicked();
         if ($passwordSubmitted) {
             $user->setPassword($this->get('security.password_encoder')
                 ->encodePassword($user, $form->get('newPassword')->get('first')->getData()));

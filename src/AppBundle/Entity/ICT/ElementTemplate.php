@@ -57,7 +57,7 @@ class ElementTemplate
 
     public function __toString()
     {
-        return $this->getName() . ($this->getDescription() ? ' - '.$this->getDescription() : '');
+        return $this->getName() . ($this->getDescription() ? ' - ' . $this->getDescription() : '');
     }
 
     /**

@@ -47,8 +47,11 @@ class ElementType extends AbstractType
 
     public function addElements(FormInterface $form)
     {
-        $templates = $this->entityManager->getRepository(ElementTemplate::class)->findByOrganization($this->userExtensionService->getCurrentOrganization());
-        $locations = $this->entityManager->getRepository(Location::class)->findRootsByOrganization($this->userExtensionService->getCurrentOrganization());
+        $templates = $this->entityManager->getRepository(ElementTemplate::class)->
+            findByOrganization($this->userExtensionService->getCurrentOrganization());
+
+        $locations = $this->entityManager->getRepository(Location::class)->
+            findRootsByOrganization($this->userExtensionService->getCurrentOrganization());
 
         $form
             ->add('template', EntityType::class, [
@@ -107,12 +110,12 @@ class ElementType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             $this->addElements($form);
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
             $form = $event->getForm();
             $this->addElements($form);
         });

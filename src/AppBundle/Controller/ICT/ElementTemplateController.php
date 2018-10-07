@@ -35,8 +35,11 @@ class ElementTemplateController extends Controller
      * @Route("/nueva", name="ict_element_template_form_new", methods={"GET", "POST"})
      * @Route("/{id}", name="ict_element_template_form_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
-    public function indexAction(UserExtensionService $userExtensionService, Request $request, ElementTemplate $elementTemplate = null)
-    {
+    public function indexAction(
+        UserExtensionService $userExtensionService,
+        Request $request,
+        ElementTemplate $elementTemplate = null
+    ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -58,17 +61,29 @@ class ElementTemplateController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $em->flush();
-                $this->addFlash('success', $this->get('translator')->trans('message.saved', [], 'ict_element_template'));
+                $this->addFlash(
+                    'success',
+                    $this->get('translator')->trans('message.saved', [], 'ict_element_template')
+                );
                 return $this->redirectToRoute('ict_menu');
             } catch (\Exception $e) {
-                $this->addFlash('error', $this->get('translator')->trans('message.save_error', [], 'ict_element_template'));
+                $this->addFlash(
+                    'error',
+                    $this->get('translator')->trans('message.save_error', [], 'ict_element_template')
+                );
             }
         }
 
         return $this->render('ict/element_template/form.html.twig', [
             'menu_path' => 'ict_element_template_form_new',
-            'breadcrumb' => [['fixed' => $elementTemplate->getId() ? (string) $elementTemplate : $this->get('translator')->trans('title.new', [], 'ict_element_template')]],
-            'title' => $this->get('translator')->trans($elementTemplate->getId() ? 'title.edit' : 'title.new', [], 'ict_element_template'),
+            'breadcrumb' => [
+                ['fixed' => $elementTemplate->getId() ?
+                    (string) $elementTemplate
+                    : $this->get('translator')->trans('title.new', [], 'ict_element_template')]
+            ],
+            'title' => $this->get('translator')->trans($elementTemplate->getId() ?
+                'title.edit' :
+                'title.new', [], 'ict_element_template'),
             'form' => $form->createView()
         ]);
     }

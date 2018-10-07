@@ -203,8 +203,8 @@ class MenuItem
         $this->children->add($child);
 
         $iterator = $this->children->getIterator();
-        $iterator->uasort(function(MenuItem $a, MenuItem $b) {
-            if ($a->getPriority() == $b->getPriority()) {
+        $iterator->uasort(function (MenuItem $a, MenuItem $b) {
+            if ($a->getPriority() === $b->getPriority()) {
                 return $a->getName() < $b->getName() ? -1 : 1;
             }
             return ($a->getPriority() < $b->getPriority()) ? -1 : 1;

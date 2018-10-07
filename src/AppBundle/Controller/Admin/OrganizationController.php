@@ -66,15 +66,21 @@ class OrganizationController extends Controller
 
         return $this->render('admin/organization/form.html.twig', [
             'menu_path' => 'admin_organization_list',
-            'breadcrumb' => [['fixed' => $organization->getId() ? (string) $organization : $this->get('translator')->trans('title.new', [], 'organization')]],
-            'title' => $this->get('translator')->trans($organization->getId() ? 'title.edit' : 'title.new', [], 'organization'),
+            'breadcrumb' => [
+                ['fixed' => $organization->getId() ?
+                    (string) $organization :
+                    $this->get('translator')->trans('title.new', [], 'organization')]
+            ],
+            'title' => $this->get('translator')->
+                trans($organization->getId() ? 'title.edit' : 'title.new', [], 'organization'),
             'form' => $form->createView(),
             'user' => $organization
         ]);
     }
 
     /**
-     * @Route("/listar/{page}", name="admin_organization_list", requirements={"page" = "\d+"}, defaults={"page" = "1"}, methods={"GET"})
+     * @Route("/listar/{page}", name="admin_organization_list", requirements={"page" = "\d+"},
+     *     defaults={"page" = "1"}, methods={"GET"})
      */
     public function listAction($page, Request $request)
     {
@@ -95,7 +101,7 @@ class OrganizationController extends Controller
                 ->orWhere('o.emailAddress LIKE :tq')
                 ->orWhere('o.phoneNumber LIKE :tq')
                 ->orWhere('o.city LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%')
+                ->setParameter('tq', '%' . $q . '%')
                 ->setParameter('q', $q);
         }
 
@@ -192,7 +198,8 @@ class OrganizationController extends Controller
         $organization = $em->getRepository('AppBundle:Organization')->find($request->request->get('switch', null));
         if ($organization) {
             $this->get('session')->set('organization_id', $organization->getId());
-            $this->addFlash('success', $this->get('translator')->trans('message.switched', ['%name%' => $organization->getName()], 'organization'));
+            $this->addFlash('success', $this->get('translator')->
+                trans('message.switched', ['%name%' => $organization->getName()], 'organization'));
             return true;
         }
         return false;
@@ -218,7 +225,8 @@ class OrganizationController extends Controller
 
         $organizations = [];
         if (!$redirect) {
-            $organizations = $em->getRepository('AppBundle:Organization')->findAllInListByIdButCurrent($items, $this->get(UserExtensionService::class)->getCurrentOrganization());
+            $organizations = $em->getRepository('AppBundle:Organization')->
+                findAllInListByIdButCurrent($items, $this->get(UserExtensionService::class)->getCurrentOrganization());
             $redirect = $this->processRemoveOrganizations($request, $organizations, $em);
         }
         return array($redirect, $organizations);

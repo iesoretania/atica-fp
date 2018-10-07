@@ -47,11 +47,14 @@ class TicketType extends AbstractType
 
     public function addElements(FormInterface $form, Location $location = null)
     {
-        $elements = null === $location ? [] : $this->entityManager->getRepository('AppBundle:ICT\Element')->findByLocation($location);
+        $elements = null === $location ?
+            [] :
+            $this->entityManager->getRepository('AppBundle:ICT\Element')->findByLocation($location);
 
         $placeholder = (count($elements) === 0) ? 'form.no_elements' : 'form.select_element';
 
-        $locations = $this->entityManager->getRepository(Location::class)->findRootsByOrganization($this->userExtensionService->getCurrentOrganization());
+        $locations = $this->entityManager->getRepository(Location::class)->
+            findRootsByOrganization($this->userExtensionService->getCurrentOrganization());
 
         $form
             ->add('location', EntityType::class, [
@@ -80,11 +83,12 @@ class TicketType extends AbstractType
             $form
                 ->add('priority', ChoiceType::class, [
                     'label' => 'form.priority',
-                    'choices' => $this->entityManager->getRepository('AppBundle:ICT\Priority')->findAllSortedByPriority(),
-                    'choice_label' => function(Priority $priority = null) {
+                    'choices' => $this->entityManager->getRepository('AppBundle:ICT\Priority')->
+                        findAllSortedByPriority(),
+                    'choice_label' => function (Priority $priority = null) {
                         return (null !== $priority) ? $priority->getName() : '';
                     },
-                    'choice_value' => function(Priority $priority = null) {
+                    'choice_value' => function (Priority $priority = null) {
                         return (null !== $priority) ? $priority->getLevelNumber() : '';
                     },
                     'placeholder' => 'form.select_priority'
@@ -104,7 +108,7 @@ class TicketType extends AbstractType
                 ]);
         }
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -113,16 +117,17 @@ class TicketType extends AbstractType
             $this->addElements($form, $location);
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
 
             $form = $event->getForm();
             $data = $event->getData();
 
-            $location = isset($data['location']) ? $this->entityManager->getRepository('AppBundle:ICT\Location')->find($data['location']) : null;
+            $location = isset($data['location']) ?
+                $this->entityManager->getRepository('AppBundle:ICT\Location')->find($data['location']) :
+                null;
 
             $this->addElements($form, $location);
         });
-
     }
 
     /**
