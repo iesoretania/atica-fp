@@ -89,6 +89,11 @@ class ElementType extends AbstractType
                 'required' => false,
                 'widget' => 'single_text'
             ])
+            ->add('unavailableSince', DateType::class, [
+                'label' => 'form.unavailable_since',
+                'required' => false,
+                'widget' => 'single_text'
+            ])
             ->add('description', TextareaType::class, [
                 'label' => 'form.description',
                 'attr' => [

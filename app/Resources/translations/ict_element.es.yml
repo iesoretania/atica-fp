@@ -9,6 +9,7 @@ form.select_parent: No forma parte de otro equipamiento
 form.serial_number: Número de serie
 form.listed_on: Fecha de alta
 form.delisted_on: Fecha de baja
+form.unavailable_since: No operativo desde
 form.description: Descripción resumida del equipamiento
 form.detail: Detalle adicional
 

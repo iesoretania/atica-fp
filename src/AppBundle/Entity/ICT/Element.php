@@ -105,10 +105,16 @@ class Element
      * @var \DateTime
      */
     private $delistedOn;
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     * @var \DateTime
+     */
+    private $unavailableSince;
+
 
     public function __toString()
     {
-        return $this->getName() . ($this->getDescription() ? ' - ' . $this->getDescription() : '');
+        return $this->getName() . ($this->getDescription() ? ' - ' . $this->getDescription() : '') . ($this->getReference() ? ' - ' . $this->getReference() : '');
     }
 
     /**
@@ -290,10 +296,10 @@ class Element
     }
 
     /**
-     * @param \DateTime $listedOn
+     * @param \DateTime|null $listedOn
      * @return Element
      */
-    public function setListedOn($listedOn)
+    public function setListedOn($listedOn = null)
     {
         $this->listedOn = $listedOn;
         return $this;
@@ -308,12 +314,30 @@ class Element
     }
 
     /**
-     * @param \DateTime $delistedOn
+     * @param \DateTime|null $delistedOn
      * @return Element
      */
-    public function setDelistedOn($delistedOn)
+    public function setDelistedOn($delistedOn = null)
     {
         $this->delistedOn = $delistedOn;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUnavailableSince()
+    {
+        return $this->unavailableSince;
+    }
+
+    /**
+     * @param \DateTime|null $unavailableSince
+     * @return Element
+     */
+    public function setUnavailableSince($unavailableSince = null)
+    {
+        $this->unavailableSince = $unavailableSince;
         return $this;
     }
 }
