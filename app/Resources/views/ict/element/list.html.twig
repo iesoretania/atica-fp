@@ -17,6 +17,7 @@
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item }}</a></label>
+                        {% if item.unavailableSince %}<i class="text-danger fas fa-times"></i>{% endif %}
                     </td>
                     <td>
                         <a href="{{ url }}">{{ item.reference }}</a>
