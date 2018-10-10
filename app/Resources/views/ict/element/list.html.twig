@@ -16,7 +16,7 @@
                 {% set url = path('ict_element_form_edit', {'id': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item }}</a></label>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.name }}{% if item.description %} - {{ item.description }}{% endif %}</a></label>
                         {% if item.unavailableSince %}<i class="text-danger fas fa-times"></i>{% endif %}
                     </td>
                     <td>
