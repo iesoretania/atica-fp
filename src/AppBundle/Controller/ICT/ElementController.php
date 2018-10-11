@@ -38,6 +38,7 @@ use Symfony\Component\HttpFoundation\Request;
 class ElementController extends Controller
 {
     /**
+     * @Route("/nuevo/{id}", name="ict_element_form_new_prefill", methods={"GET", "POST"})
      * @Route("/nuevo", name="ict_element_form_new", methods={"GET", "POST"})
      * @Route("/{id}", name="ict_element_form_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
@@ -51,11 +52,25 @@ class ElementController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
+        if ($request->get('_route') === 'ict_element_form_new_prefill') {
+            $baseElement = $element;
+            $element = null;
+        } else {
+            $baseElement = null;
+        }
+
         if (null === $element) {
             $element = new Element();
             $element
                 ->setOrganization($organization)
                 ->setListedOn(new \DateTime());
+
+            if ($baseElement) {
+                $element
+                    ->setLocation($baseElement->getLocation())
+                    ->setListedOn($baseElement->getListedOn());
+            }
+
             $em->persist($element);
         }
 
@@ -83,6 +98,10 @@ class ElementController extends Controller
                 }
                 $em->flush();
                 $this->addFlash('success', $this->get('translator')->trans($message, [], 'ict_element'));
+
+                if ($request->request->has('submit_repeat')) {
+                    return $this->redirectToRoute('ict_element_form_new_prefill', ['id' => $element->getId()]);
+                }
                 return $this->redirectToRoute('ict_element_list');
             } catch (\Exception $e) {
                 $this->addFlash('error', $this->get('translator')->trans('message.save_error', [], 'ict_element'));

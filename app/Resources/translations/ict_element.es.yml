@@ -14,7 +14,8 @@ form.description: Descripción resumida del equipamiento
 form.detail: Detalle adicional
 
 form.save: Guardar cambios
-form.save_template: Guardar cambios y crear plantilla
+form.save_repeat: Guardar y crear otro
+form.save_template: Guardar y crear plantilla
 form.back: Volver
 
 message.saved: Equipamiento actualizado con éxito.

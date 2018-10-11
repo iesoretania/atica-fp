@@ -6,6 +6,7 @@
     {{ form_widget(form) }}
     {{ m.start_button() }}
         {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+        {{ m.submit_button('submit_repeat', 'recycle', 'btn-success', 'form.save_repeat'|trans) }}
         {{ m.submit_button('save_template', 'drafting-compass', 'btn-warning', 'form.save_template'|trans) }}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
         {{ m.link_button(path('ict_element_template_form_edit', {'id': 0}), 'drafting-compass', 'btn-info d-none', '', 'template-link') }}
