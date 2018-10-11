@@ -5,10 +5,9 @@
 {% block path_new %}{{ path('ict_element_form_new') }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-60"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-70"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
     <th class="w-10">{{ 'header.reference'|trans }}</th>
     <th class="w-20">{{ 'header.location'|trans }}</th>
-    <th class="w-10">{{ 'header.serial_number'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
@@ -23,17 +22,12 @@
                         <a href="{{ url }}">{{ item.reference }}</a>
                     </td>
                     <td>
-                        <a href="{{ url }}">{{ item.location }}</a>
-                    </td>
-                    <td>
-                        <a href="{{ url }}">
-                            {{ item.serialNumber }}
-                        </a>
+                        {% if item.location %}<a href="{{ path('ict_location_form_edit', {'id': item.location.id}) }}">{{ item.location }}</a>{% endif %}
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

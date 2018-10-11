@@ -115,10 +115,10 @@ class ElementController extends Controller
         $queryBuilder
             ->select('e')
             ->from('AppBundle:ICT\Element', 'e')
-            ->join('e.location', 'l')
+            ->leftJoin('e.location', 'l')
             ->orderBy('e.name')
             ->addOrderBy('e.description')
-            ->addOrderBy('e.serialNumber');
+            ->addOrderBy('e.reference');
 
         $q = $request->get('q', null);
         if ($q) {
