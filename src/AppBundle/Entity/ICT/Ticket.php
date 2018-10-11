@@ -102,7 +102,7 @@ class Ticket
     private $dueOn;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      * @var integer
      */
     private $priority;

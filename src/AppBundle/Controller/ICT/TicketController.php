@@ -41,7 +41,9 @@ class TicketController extends Controller
         $ticket = new Ticket();
         $ticket
             ->setOrganization($organization)
-            ->setCreatedBy($this->getUser());
+            ->setCreatedBy($this->getUser())
+            ->setCreatedOn(new \DateTime())
+            ->setLastUpdatedOn(new \DateTime());
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($ticket);

@@ -90,7 +90,8 @@ class TicketType extends AbstractType
                     'choice_value' => function (Priority $priority = null) {
                         return (null !== $priority) ? $priority->getLevelNumber() : '';
                     },
-                    'placeholder' => 'form.select_priority'
+                    'placeholder' => 'form.select_priority',
+                    'required' => false
                 ]);
         }
     }
