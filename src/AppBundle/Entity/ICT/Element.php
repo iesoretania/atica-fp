@@ -20,11 +20,13 @@ namespace AppBundle\Entity\ICT;
 
 use AppBundle\Entity\Organization;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ICT\ElementRepository")
  * @ORM\Table(name="ict_element",
  *     uniqueConstraints={@ORM\UniqueConstraint(name="reference_idx", columns={"organization_id", "reference"})})
+ * @UniqueEntity(fields={"organization", "reference"}, message="reference.duplicated")
  */
 class Element
 {
