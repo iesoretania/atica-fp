@@ -19,6 +19,7 @@
 
 namespace AppBundle\Entity\ICT;
 
+use AppBundle\Entity\Organization;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -34,6 +35,13 @@ class Priority
      * @var integer
      */
     private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Organization")
+     * @ORM\JoinColumn(nullable=false)
+     * @var Organization
+     */
+    private $organization;
 
     /**
      * @ORM\Column(type="string")
@@ -71,6 +79,24 @@ class Priority
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return Organization
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
+    /**
+     * @param Organization $organization
+     * @return Priority
+     */
+    public function setOrganization($organization)
+    {
+        $this->organization = $organization;
+        return $this;
     }
 
     /**
