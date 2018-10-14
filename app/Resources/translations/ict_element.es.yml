@@ -10,6 +10,8 @@ form.serial_number: Número de serie
 form.listed_on: Fecha de alta
 form.delisted_on: Fecha de baja
 form.unavailable_since: No operativo desde
+form.tainted_since: Con problemas desde
+form.being_repaired_since: En reparación desde
 form.description: Descripción resumida del equipamiento
 form.detail: Detalle adicional
 

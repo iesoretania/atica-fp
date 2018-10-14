@@ -89,8 +89,18 @@ class ElementType extends AbstractType
                 'required' => false,
                 'widget' => 'single_text'
             ])
+            ->add('taintedSince', DateType::class, [
+                'label' => 'form.tainted_since',
+                'required' => false,
+                'widget' => 'single_text'
+            ])
             ->add('unavailableSince', DateType::class, [
                 'label' => 'form.unavailable_since',
+                'required' => false,
+                'widget' => 'single_text'
+            ])
+            ->add('beingRepairedSince', DateType::class, [
+                'label' => 'form.being_repaired_since',
                 'required' => false,
                 'widget' => 'single_text'
             ])

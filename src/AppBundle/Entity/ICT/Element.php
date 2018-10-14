@@ -107,11 +107,24 @@ class Element
      * @var \DateTime
      */
     private $delistedOn;
+
     /**
      * @ORM\Column(type="date", nullable=true)
      * @var \DateTime
      */
     private $unavailableSince;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     * @var \DateTime
+     */
+    private $taintedSince;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     * @var \DateTime
+     */
+    private $beingRepairedSince;
 
 
     public function __toString()
@@ -340,6 +353,42 @@ class Element
     public function setUnavailableSince($unavailableSince = null)
     {
         $this->unavailableSince = $unavailableSince;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getTaintedSince()
+    {
+        return $this->taintedSince;
+    }
+
+    /**
+     * @param \DateTime|null $taintedSince
+     * @return Element
+     */
+    public function setTaintedSince($taintedSince = null)
+    {
+        $this->taintedSince = $taintedSince;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getBeingRepairedSince()
+    {
+        return $this->beingRepairedSince;
+    }
+
+    /**
+     * @param \DateTime|null $beingRepairedSince
+     * @return Element
+     */
+    public function setBeingRepairedSince($beingRepairedSince = null)
+    {
+        $this->beingRepairedSince = $beingRepairedSince;
         return $this;
     }
 }
