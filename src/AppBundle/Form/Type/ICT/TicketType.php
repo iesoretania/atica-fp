@@ -82,10 +82,11 @@ class TicketType extends AbstractType
             $form
                 ->add('priority', ChoiceType::class, [
                     'label' => 'form.priority',
+                    'choice_translation_domain' => false,
                     'choices' => $this->entityManager->getRepository('AppBundle:ICT\Priority')->
                         findAllSortedByPriority(),
                     'choice_label' => function (Priority $priority = null) {
-                        return (null !== $priority) ? $priority->getName() : '';
+                        return (null !== $priority) ? (string) $priority : '';
                     },
                     'choice_value' => function (Priority $priority = null) {
                         return (null !== $priority) ? $priority->getLevelNumber() : '';

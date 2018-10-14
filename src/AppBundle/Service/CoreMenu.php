@@ -182,6 +182,16 @@ class CoreMenu implements MenuBuilderInterface
                 ->setIcon('store-alt');
 
             $menu2->addChild($menu);
+
+            $menu = new MenuItem();
+            $menu
+                ->setName('ict_priority')
+                ->setRouteName('ict_priority_list')
+                ->setCaption('menu.ict.priority')
+                ->setDescription('menu.ict.priority.detail')
+                ->setIcon('arrows-alt-v');
+
+            $menu2->addChild($menu);
         }
 
         $menu = new MenuItem();

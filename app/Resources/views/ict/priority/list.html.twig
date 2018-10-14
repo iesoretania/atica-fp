@@ -1,0 +1,51 @@
+{% trans_default_domain 'ict_priority' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('ict_priority_form_new') }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-10"><label><input type="checkbox" id="select"> {{ 'header.level_number'|trans }}</label></th>
+    <th class="w-10">{{ 'header.name'|trans }}</th>
+    <th class="w-10">{{ 'header.color'|trans }}</th>
+    <th class="w-10">{{ 'header.days'|trans }}</th>
+    <th class="w-60">{{ 'header.description'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('ict_priority_form_edit', {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.levelNumber }}</a></label>
+                    </td>
+                    <td>
+                        <a href="{{ url }}">{{ item.name }}</a>
+                    </td>
+                    <td>
+                        <div style="background-color: {{ item.color }} !important; border: dashed 1px black !important; margin: 0.1em !important; height: 1em !important;"></div>
+                    </td>
+                    <td>
+                        {{ item.days }}
+                    </td>
+                    <td>
+                        {{ item.description }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('ict_priority_operation') }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}

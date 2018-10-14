@@ -73,6 +73,11 @@ class Priority
      */
     private $days;
 
+    public function __toString()
+    {
+        return $this->getLevelNumber() . ' - ' . $this->getName();
+    }
+
     /**
      * @return int
      */

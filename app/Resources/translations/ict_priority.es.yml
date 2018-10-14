@@ -1,0 +1,36 @@
+form.name: Nombre de la prioridad
+form.color: Color asignado
+form.days: Días máximos de resolución
+form.level_number: Nivel de prioridad
+form.description: Descripción
+
+form.save: Guardar cambios
+form.back: Volver
+form.delete: Eliminar prioridades seleccionadas
+form.delete_confirm: Confirmar borrado
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes prioridades?
+
+  Esta operación no se puede deshacer.
+
+message.saved: Datos actualizados con éxito.
+message.save_error: No se han podido los datos.
+message.deleted: Los elementos seleccionados han sido eliminados con éxito.
+message.delete_error: No se han podido eliminar los elementos seleccionados.
+
+title.new: Nueva prioridad preestablecida
+title.edit: Datos de la prioridad
+title.list: Listado de prioridades preestablecidas
+title.delete: Eliminar prioridades
+
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay prioridades
+table.new: Nueva prioridad preestablecida
+table.filter: Filtrar...
+
+header.name: Nombre
+header.level_number: Nivel de prioridad
+header.days: Días máx.
+header.color: Color asignado
+header.description: Descripción
