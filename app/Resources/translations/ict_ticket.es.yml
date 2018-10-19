@@ -6,6 +6,8 @@ form.select_element: Seleccione el equipamiento
 form.no_elements: No hay elementos
 form.description: Descripción de la incidencia
 form.priority: Prioridad inicial
+form.assignee: Asignada a
+form.no_assignee: Nadie
 form.select_priority: Seleccione la prioridad a asignar inicialmente
 
 priority.none: Ninguna

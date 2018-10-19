@@ -44,7 +44,7 @@ class TicketType extends AbstractType
         $this->entityManager = $locationRepository;
     }
 
-    public function addElements(FormInterface $form, Location $location = null)
+    public function addElements(FormInterface $form, $options, $persons, Location $location = null)
     {
         $elements = null === $location ?
             [] :
@@ -54,6 +54,8 @@ class TicketType extends AbstractType
 
         $locations = $this->entityManager->getRepository(Location::class)->
             findRootsByOrganization($this->userExtensionService->getCurrentOrganization());
+
+        $admin = $this->userExtensionService->isUserLocalAdministrator();
 
         $form
             ->add('location', EntityType::class, [
@@ -78,7 +80,7 @@ class TicketType extends AbstractType
                 ]
             ]);
 
-        if (true === $this->userExtensionService->isUserLocalAdministrator()) {
+        if (true === $admin || false === $options['new']) {
             $form
                 ->add('priority', EntityType::class, [
                     'label' => 'form.priority',
@@ -87,7 +89,16 @@ class TicketType extends AbstractType
                     'choices' => $this->entityManager->getRepository('AppBundle:ICT\Priority')->
                         findAllByOrganizationSortedByPriority($this->userExtensionService->getCurrentOrganization()),
                     'placeholder' => 'form.select_priority',
-                    'required' => false
+                    'required' => false,
+                    'disabled' => false === $admin
+                ])
+                ->add('assignee', null, [
+                    'label' => 'form.assignee',
+                    'choice_translation_domain' => false,
+                    'choices' => $persons,
+                    'placeholder' => 'form.no_assignee',
+                    'required' => false,
+                    'disabled' => false === $admin
                 ]);
         }
     }
@@ -97,23 +108,26 @@ class TicketType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if (true === $this->userExtensionService->isUserLocalAdministrator()) {
-            $builder
-                ->add('createdBy', null, [
-                    'label' => 'form.created_by'
-                ]);
-        }
+        $persons = $this->entityManager->getRepository('AppBundle:Person')->
+            findAllByOrganizationSorted($this->userExtensionService->getCurrentOrganization());
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder
+            ->add('createdBy', null, [
+                'label' => 'form.created_by',
+                'choices' => $persons,
+                'disabled' => (false === $this->userExtensionService->isUserLocalAdministrator())
+            ]);
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options, $persons)  {
             $form = $event->getForm();
             $data = $event->getData();
 
             $location = $data->getElement() ? $data->getElement()->getLocation() : null;
 
-            $this->addElements($form, $location);
+            $this->addElements($form, $options, $persons, $location);
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options, $persons) {
 
             $form = $event->getForm();
             $data = $event->getData();
@@ -122,7 +136,7 @@ class TicketType extends AbstractType
                 $this->entityManager->getRepository('AppBundle:ICT\Location')->find($data['location']) :
                 null;
 
-            $this->addElements($form, $location);
+            $this->addElements($form, $options, $persons, $location);
         });
     }
 
@@ -134,7 +148,8 @@ class TicketType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Ticket::class,
             'translation_domain' => 'ict_ticket',
-            'new' => false
+            'new' => false,
+            'own' => false
         ]);
     }
 }

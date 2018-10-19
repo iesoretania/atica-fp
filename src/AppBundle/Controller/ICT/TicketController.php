@@ -53,7 +53,7 @@ class TicketController extends Controller
             $ticket = new Ticket();
             $ticket
                 ->setOrganization($organization)
-                ->setCreatedBy($this->getUser())
+                ->setCreatedBy($this->getUser()->getPerson())
                 ->setCreatedOn(new \DateTime())
                 ->setLastUpdatedOn(new \DateTime());
 
@@ -62,9 +62,11 @@ class TicketController extends Controller
             $this->denyAccessUnlessGranted(TicketVoter::ACCESS, $ticket);
         }
 
-        $disabled = false === $this->isGranted(TicketVoter::MANAGE, $ticket);
+        $manager = $this->isGranted(TicketVoter::MANAGE, $ticket);
         $form = $this->createForm(TicketType::class, $ticket, [
-            'disabled' => $disabled
+                'disabled' => false === $manager,
+                'new' => $ticket->getId() === null,
+                'own' => $manager
             ]
         );
         $form->handleRequest($request);
@@ -89,7 +91,7 @@ class TicketController extends Controller
             'title' => $translator->
             trans($ticket->getId() ? 'title.edit' : 'title.new', [], 'ict_ticket'),
             'form' => $form->createView(),
-            'disabled' => $disabled
+            'disabled' => false === $manager
         ]);
     }
 
