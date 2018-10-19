@@ -20,7 +20,7 @@
                 <tbody>
                     {% for user in users %}
                         <tr>
-                            <td>{{ user.firstName }} {{ user.lastName }}</td>
+                            <td>{{ user.person.firstName }} {{ user.person.lastName }}</td>
                             <td>{{ user.userNameAndEmailAddress }}</td>
                             <td>{{ user.globalAdministrator ? 'role.global_administrator'|trans }}</td>
                         </tr>

@@ -153,12 +153,13 @@ class UserController extends Controller
         $users = $queryBuilder
             ->select('u')
             ->from('AppBundle:User', 'u')
+            ->join('u.person', 'p')
             ->where('u.id IN (:items)')
             ->andWhere('u.id != :current')
             ->setParameter('items', $items)
             ->setParameter('current', $this->getUser()->getId())
-            ->orderBy('u.firstName')
-            ->addOrderBy('u.lastName')
+            ->orderBy('p.firstName')
+            ->addOrderBy('p.lastName')
             ->getQuery()
             ->getResult();
 
