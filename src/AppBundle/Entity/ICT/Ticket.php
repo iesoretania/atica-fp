@@ -23,7 +23,7 @@ use AppBundle\Entity\Person;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ICT\TicketRepository")
  * @ORM\Table(name="ict_ticket")
  */
 class Ticket
@@ -102,8 +102,8 @@ class Ticket
     private $dueOn;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @var integer
+     * @ORM\ManyToOne(targetEntity="Priority")
+     * @var Priority
      */
     private $priority;
 
@@ -308,7 +308,7 @@ class Ticket
     }
 
     /**
-     * @return int
+     * @return Priority
      */
     public function getPriority()
     {
@@ -316,7 +316,7 @@ class Ticket
     }
 
     /**
-     * @param int $priority
+     * @param Priority $priority
      * @return Ticket
      */
     public function setPriority($priority)

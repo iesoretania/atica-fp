@@ -25,7 +25,6 @@ use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -63,6 +62,7 @@ class TicketType extends AbstractType
                 'choice_translation_domain' => false,
                 'choices' => $locations,
                 'mapped' => false,
+                'data' => $location,
                 'placeholder' => 'form.select_location'
             ])
             ->add('element', null, [
@@ -80,17 +80,12 @@ class TicketType extends AbstractType
 
         if (true === $this->userExtensionService->isUserLocalAdministrator()) {
             $form
-                ->add('priority', ChoiceType::class, [
+                ->add('priority', EntityType::class, [
                     'label' => 'form.priority',
+                    'class' => Priority::class,
                     'choice_translation_domain' => false,
                     'choices' => $this->entityManager->getRepository('AppBundle:ICT\Priority')->
-                        findAllSortedByPriority(),
-                    'choice_label' => function (Priority $priority = null) {
-                        return (null !== $priority) ? (string) $priority : '';
-                    },
-                    'choice_value' => function (Priority $priority = null) {
-                        return (null !== $priority) ? $priority->getLevelNumber() : '';
-                    },
+                        findAllByOrganizationSortedByPriority($this->userExtensionService->getCurrentOrganization()),
                     'placeholder' => 'form.select_priority',
                     'required' => false
                 ]);

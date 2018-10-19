@@ -16,8 +16,11 @@ menu.ict.detail: Gestiones relacionadas con las TIC
 menu.ict.ticket_new: Nueva incidencia TIC
 menu.ict.ticket_new.detail: Tramitar una incidencia con las TIC
 
-menu.ict.ticket_inbox: Incidencias recibidas
-menu.ict.ticket_inbox.detail: Gestionar las incidencias TIC notificadas
+menu.ict.ticket_list: Listado de incidencias
+menu.ict.ticket_list.detail: Gestionar las incidencias TIC
+
+menu.ict.ticket_inbox: Incidencias nuevas recibidas
+menu.ict.ticket_inbox.detail: Gestionar las incidencias TIC pendientes de evaluar
 
 menu.ict.element: Equipamiento TIC
 menu.ict.element.detail: Gestionar el material inventariable

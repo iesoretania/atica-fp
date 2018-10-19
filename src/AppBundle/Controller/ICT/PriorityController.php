@@ -82,8 +82,7 @@ class PriorityController extends Controller
             ],
             'title' => $this->get('translator')->
                 trans($priority->getId() ? 'title.edit' : 'title.new', [], 'ict_priority'),
-            'form' => $form->createView(),
-            'user' => $priority
+            'form' => $form->createView()
         ]);
     }
 

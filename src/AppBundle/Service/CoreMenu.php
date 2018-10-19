@@ -131,10 +131,21 @@ class CoreMenu implements MenuBuilderInterface
         $menu = new MenuItem();
         $menu
             ->setName('ict_ticket_new')
-            ->setRouteName('ict_ticket_new')
+            ->setRouteName('ict_ticket_form_new')
             ->setCaption('menu.ict.ticket_new')
             ->setDescription('menu.ict.ticket_new.detail')
             ->setIcon('exclamation-triangle')
+            ->setPriority(0);
+
+        $menu2->addChild($menu);
+
+        $menu = new MenuItem();
+        $menu
+            ->setName('ict_ticket_list')
+            ->setRouteName('ict_ticket_list')
+            ->setCaption('menu.ict.ticket_list')
+            ->setDescription('menu.ict.ticket_list.detail')
+            ->setIcon('clipboard-list')
             ->setPriority(0);
 
         $menu2->addChild($menu);

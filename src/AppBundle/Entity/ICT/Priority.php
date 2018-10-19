@@ -73,7 +73,18 @@ class Priority
      */
     private $days;
 
+    /**
+     * @return string
+     */
     public function __toString()
+    {
+        return $this->getFullName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullName()
     {
         return $this->getLevelNumber() . ' - ' . $this->getName();
     }

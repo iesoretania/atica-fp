@@ -16,11 +16,36 @@ priority.critical: Crítica
 
 form.save: Guardar cambios
 form.back: Volver
+form.delete: Eliminar incidencias seleccionadas
+form.delete_confirm: Confirmar borrado
 
 message.saved: Incidencia actualizada con éxito.
-message.save_error: No se han podido actualizar la incidencia.
+message.save_error: No se ha podido actualizar la incidencia.
+message.deleted: Las incidencias seleccionadas han sido eliminadas con éxito.
+message.delete_error: No se han podido eliminar las incidencias seleccionadas.
 
-title.new: Datos de la incidencia
+title.new: Nueva incidencia
 title.edit: Datos de la incidencia
 title.list: Listado de incidencias
 title.close: Cerrar incidencias
+title.delete: Eliminar incidencias
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes incidencias?
+
+  Esta operación no se puede deshacer.
+
+alert.disabled: "ATENCIÓN: La incidencia no se puede modificar porque ya ha sido evaluada por el administrador."
+
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay incidencias que mostrar
+table.new: Nueva incidencia
+table.filter: Filtrar...
+
+header.id: Núm.
+header.priority: Prioridad
+header.created_by: Notificada por
+header.created_on: Fecha apertura
+header.due_on: Fecha límite
+header.element: Equipamiento
+header.description: Descripción

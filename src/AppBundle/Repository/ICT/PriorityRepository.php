@@ -18,14 +18,35 @@
 
 namespace AppBundle\Repository\ICT;
 
+use AppBundle\Entity\Organization;
 use Doctrine\ORM\EntityRepository;
 
 class PriorityRepository extends EntityRepository
 {
-    public function findAllSortedByPriority()
+    /**
+     * Pasado un array de ids de localizaciones, devolver la lista de objetos que pertenezcan a la organización actual
+     * @param $items
+     * @param Organization $organization
+     * @return array
+     */
+    public function findInListByIdAndOrganization($items, Organization $organization)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.id IN (:items)')
+            ->andWhere('p.organization = :organization')
+            ->setParameter('items', $items)
+            ->setParameter('organization', $organization)
+            ->orderBy('p.name')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAllByOrganizationSortedByPriority(Organization $organization)
     {
         return $this->createQueryBuilder('p')
             ->orderBy('p.levelNumber')
+            ->andWhere('p.organization = :organization')
+            ->setParameter('organization', $organization)
             ->getQuery()
             ->getResult();
     }
