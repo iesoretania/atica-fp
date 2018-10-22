@@ -57,6 +57,22 @@ class TicketType extends AbstractType
 
         $admin = $this->userExtensionService->isUserLocalAdministrator();
 
+        if (true === $admin || false === $options['new']) {
+            $form
+                ->add('createdOn', null, [
+                    'label' => 'form.created_on',
+                    'widget' => 'single_text',
+                    'required' => true,
+                    'disabled' => false === $admin
+                ])
+                ->add('lastUpdatedOn', null, [
+                    'label' => 'form.last_updated_on',
+                    'widget' => 'single_text',
+                    'required' => true,
+                    'disabled' => false === $admin
+                ]);
+        }
+
         $form
             ->add('location', EntityType::class, [
                 'label' => 'form.location',
@@ -94,6 +110,26 @@ class TicketType extends AbstractType
                 ])
                 ->add('assignee', null, [
                     'label' => 'form.assignee',
+                    'choice_translation_domain' => false,
+                    'choices' => $persons,
+                    'placeholder' => 'form.no_assignee',
+                    'required' => false,
+                    'disabled' => false === $admin
+                ])
+                ->add('dueOn', null, [
+                    'label' => 'form.due_on',
+                    'widget' => 'single_text',
+                    'required' => false,
+                    'disabled' => false === $admin
+                ])
+                ->add('closedOn', null, [
+                    'label' => 'form.closed_on',
+                    'widget' => 'single_text',
+                    'required' => false,
+                    'disabled' => false === $admin
+                ])
+                ->add('closedBy', null, [
+                    'label' => 'form.closed_by',
                     'choice_translation_domain' => false,
                     'choices' => $persons,
                     'placeholder' => 'form.no_assignee',

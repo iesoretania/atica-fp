@@ -1,4 +1,6 @@
 form.created_by: Notificada por
+form.created_on: Fecha notificación
+form.last_updated_on: Última actualización
 form.location: Dependencia del elemento
 form.select_location: Seleccione la dependencia del equipamiento
 form.element: Equipamiento afectado
@@ -9,22 +11,22 @@ form.priority: Prioridad inicial
 form.assignee: Asignada a
 form.no_assignee: Nadie
 form.select_priority: Seleccione la prioridad a asignar inicialmente
-
-priority.none: Ninguna
-priority.low: Baja
-priority.medium: Media
-priority.high: Alta
-priority.critical: Crítica
+form.due_on: Fecha límite
+form.closed_on: Fecha de cierre
+form.closed_by: Cerrada por
 
 form.save: Guardar cambios
 form.back: Volver
 form.delete: Eliminar incidencias seleccionadas
 form.delete_confirm: Confirmar borrado
+form.assign: Asignar
 
 message.saved: Incidencia actualizada con éxito.
 message.save_error: No se ha podido actualizar la incidencia.
 message.deleted: Las incidencias seleccionadas han sido eliminadas con éxito.
 message.delete_error: No se han podido eliminar las incidencias seleccionadas.
+message.triaged: Las incidencias han sido asignadas correctamente.
+message.triage_error: Ha ocurrido un error al asignar las incidencias.
 
 title.new: Nueva incidencia
 title.edit: Datos de la incidencia
@@ -37,7 +39,7 @@ prompt.delete_confirm: |
 
   Esta operación no se puede deshacer.
 
-alert.disabled: "ATENCIÓN: La incidencia no se puede modificar porque ya ha sido evaluada por el administrador."
+alert.disabled: "ATENCIÓN: La incidencia no se puede modificar porque ya ha sido evaluada por el administrador o bien está cerrada."
 
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay incidencias que mostrar
@@ -45,9 +47,18 @@ table.new: Nueva incidencia
 table.filter: Filtrar...
 
 header.id: Núm.
-header.priority: Prioridad
-header.created_by: Notificada por
-header.created_on: Fecha apertura
-header.due_on: Fecha límite
+header.state: Estado
 header.element: Equipamiento
 header.description: Descripción
+header.people: Responsabilidades
+
+header.created_by: Notificada por
+header.created_on: Fecha notificación
+
+info.created_by: "Notificada por: "
+info.assigned_to: "Asignada a: "
+info.closed_by: "Cerrada por: "
+info.created_on: "Fecha apertura: "
+info.closed: Cerrada
+info.closed_on: "Fecha cierre: "
+info.due_on: "Fecha límite: "

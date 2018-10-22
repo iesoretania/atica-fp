@@ -6,9 +6,8 @@
 
 {% block table_header %}
     <th class="w-10"><label><input type="checkbox" id="select"> {{ 'header.id'|trans }}</label></th>
-    <th class="w-10">{{ 'header.created_on'|trans }}</th>
-    <th class="w-20">{{ 'header.created_by'|trans }}</th>
-    <th class="w-10">{{ 'header.due_on'|trans }}</th>
+    <th class="w-20">{{ 'header.state'|trans }}</th>
+    <th class="w-20">{{ 'header.people'|trans }}</th>
     <th class="w-20">{{ 'header.element'|trans }}</th>
     <th class="w-30">{{ 'header.description'|trans }}</th>
 {% endblock %}
@@ -16,24 +15,31 @@
 {% block table_body %}
             {% for item in pager %}
                 {% set url = path('ict_ticket_form_edit', {'id': item.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
+                <tr class="clickable-row {% if not item.closedOn and item.dueOn and item.dueOn<date('now') %}bg-danger{% endif %}" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.id }}</a></label>{% if item.priority and item.priority.levelNumber %}<span class="badge badge-pill badge-primary" style="float: right; background-color: {{ item.priority.color }} !important;">{{ item.priority.name }}</span>{% endif %}
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.id }}</a></label>
+                        {% if item.priority and item.priority.levelNumber %}<span class="badge badge-pill badge-primary" style="background-color: {{ item.priority.color }} !important;"> {{ item.priority.name }}</span>{% endif %}
+                        {% if item.closedOn %}<span class="badge badge-pill badge-primary"> {{ 'info.closed'|trans }}</span>{% endif %}
                     </td>
                     <td>
-                        <a href="{{ url }}">{{ item.createdOn|date('format.datetime'|trans({}, 'general')) }}</a>
+                        <b>{{ 'info.created_on'|trans }}</b>{{ item.createdOn|date('format.datetime'|trans({}, 'general')) }}
+                        {% if item.closedOn %}<br/><b>{{ 'info.closed_on'|trans }}</b>{{ item.closedOn|date('format.date'|trans({}, 'general')) }}
+                        {% elseif item.dueOn %}<br/><b>{{ 'info.due_on'|trans }}</b>{{ item.dueOn|date('format.date'|trans({}, 'general')) }}{% endif %}
                     </td>
                     <td>
-                        <a href="{{ url }}">{{ item.createdBy }}</a>
-                    </td>
-                    <td>
-                        {{ item.dueOn|date('format.datetime'|trans({}, 'general')) }}
+                        <b>{{ 'info.created_by'|trans }}</b>{{ item.createdBy }}
+                        <br/>
+                        {% if item.closedBy %}
+                            <b>{{ 'info.closed_by'|trans }}</b>{{ item.closedBy }}
+                        {% else %}
+                            <b>{{ 'info.assigned_to'|trans }}</b>{{ item.assignee ?: 'form.no_assignee'|trans }}
+                        {% endif %}
                     </td>
                     <td>
                         {{ item.element }}
                     </td>
                     <td>
-                        {{ item.description }}
+                        {{ item.description|nl2br }}
                     </td>
                 </tr>
             {% else %}

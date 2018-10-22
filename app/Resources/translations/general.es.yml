@@ -1,7 +1,7 @@
 hint.close: Cerrar
 
-format.datetime: Y/m/d H:i
-format.date: Y/m/d
+format.datetime: d/m/Y H:i
+format.date: d/m/Y
 format.time: H:i
 
 format.currency: €

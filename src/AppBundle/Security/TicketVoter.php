@@ -96,7 +96,8 @@ class TicketVoter extends Voter
 
         // Comprobar que el ticket es suyo o ha sido asignado a él y que el usuario
         // pertenece actualmente a la organización
-        if ($subject->getAssignee() === $user->getPerson() || $subject->getCreatedBy() === $user->getPerson()) {
+        $person = $user->getPerson();
+        if ($subject->getAssignee() === $person || $subject->getCreatedBy() === $person) {
             $date = new \DateTime();
             /** @var Membership $membership */
             foreach ($user->getMemberships() as $membership) {
@@ -104,12 +105,13 @@ class TicketVoter extends Voter
                     $membership->getValidFrom() <= $date &&
                     ($membership->getValidUntil() === null || $membership->getValidUntil() >= $date)) {
 
-                    // Si el permiso es de acceso: permitir
-                    // Si es de gestión, la incidencias debe estar sin prioridad
-                    if ($attribute === self::MANAGE && $subject->getPriority() !== null)
-                        return false;
-                    else
-                        return true;
+                    // Permitir:
+                    // - Si el permiso no es de gestión
+                    // - Si es de gestión, la incidencias debe estar sin prioridad y no cerrada
+                    return
+                        $attribute !== self::MANAGE ||
+                        ($subject->getPriority() === null &&
+                        $subject->getClosedOn() === null);
                 }
             }
         }

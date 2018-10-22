@@ -154,7 +154,7 @@ class CoreMenu implements MenuBuilderInterface
             $menu = new MenuItem();
             $menu
                 ->setName('ict_ticket_inbox')
-                ->setRouteName('frontpage')
+                ->setRouteName('ict_ticket_triage_list')
                 ->setCaption('menu.ict.ticket_inbox')
                 ->setDescription('menu.ict.ticket_inbox.detail')
                 ->setIcon('inbox')
