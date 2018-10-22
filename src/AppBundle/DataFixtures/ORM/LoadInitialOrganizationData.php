@@ -64,21 +64,21 @@ class LoadInitialOrganizationData extends AbstractFixture implements OrderedFixt
             [
                 'level_number' => 60,
                 'name' => 'Alta',
-                'color' => '#ff8000',
+                'color' => '#ffa000',
                 'days' => 15,
                 'description' => 'Incidencias que dificultan el desarrollo normal de las actividades docentes'
             ],
             [
                 'level_number' => 40,
                 'name' => 'Media',
-                'color' => '#ffff00',
+                'color' => '#c0c000',
                 'days' => 20,
                 'description' => 'Incidencias que afectan poco a las actividades docentes'
             ],
             [
                 'level_number' => 20,
                 'name' => 'Baja',
-                'color' => '#00ff00',
+                'color' => '#00a000',
                 'days' => 30,
                 'description' => 'Incidencias que afectan poco a las actividades docentes'
             ],

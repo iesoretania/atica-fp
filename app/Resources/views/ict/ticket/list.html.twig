@@ -18,7 +18,7 @@
                 {% set url = path('ict_ticket_form_edit', {'id': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.id }}</a></label>{% if item.priority %}<div style="float: right; width: 20%; background-color: {{ item.priority.color }} !important; border: dashed 1px black !important; margin: 0.1em !important; height: 1em !important;"></div>{% endif %}
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.id }}</a></label>{% if item.priority and item.priority.levelNumber %}<span class="badge badge-pill badge-primary" style="float: right; background-color: {{ item.priority.color }} !important;">{{ item.priority.name }}</span>{% endif %}
                     </td>
                     <td>
                         <a href="{{ url }}">{{ item.createdOn|date('format.datetime'|trans({}, 'general')) }}</a>
