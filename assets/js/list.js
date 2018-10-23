@@ -15,11 +15,11 @@ var reload = function(filter) {
     last_value_f = f;
 
     // quitar parámetros
-    url = url.replace(/(q=).*?(&|$)/,'$1$2');
-    url = url.replace(/(f=).*?(&|$)/,'$1$2');
+    url = url.replace(/(\?|&q=).*?(&|$)/,'');
+    url = url.replace(/(\?f=).*?(&|$)/,'');
 
     // codificar parámetros
-    if (f != 0) {
+    if (f && f != 0) {
         url = url + '?f=' + encodeURIComponent(f);
         if (q) url = url + '&q=' + encodeURIComponent(q);
     }

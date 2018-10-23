@@ -15,6 +15,11 @@ form.due_on: Fecha límite
 form.closed_on: Fecha de cierre
 form.closed_by: Cerrada por
 
+form.filter.show_all: Mostrar todo
+form.filter.late: Casi caducadas
+form.filter.closed: Cerradas
+form.filter.unassigned: Sin asignar
+
 form.save: Guardar cambios
 form.back: Volver
 form.delete: Eliminar incidencias seleccionadas
