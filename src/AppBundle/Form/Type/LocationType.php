@@ -43,16 +43,20 @@ class LocationType extends AbstractType
             ->add('description', TextareaType::class, [
                 'label' => 'form.description',
                 'required' => false
-            ])
-            ->add('hidden', ChoiceType::class, [
-                'label' => 'form.hidden',
-                'required' => true,
-                'expanded' => true,
-                'choices' => [
-                    'form.hidden.no' => false,
-                    'form.hidden.yes' => true
-                ]
             ]);
+
+        if ($options['admin']) {
+            $builder->
+                add('hidden', ChoiceType::class, [
+                    'label' => 'form.hidden',
+                    'required' => true,
+                    'expanded' => true,
+                    'choices' => [
+                        'form.hidden.no' => false,
+                        'form.hidden.yes' => true
+                    ]
+                ]);
+        }
     }
 
     /**
@@ -63,7 +67,8 @@ class LocationType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Location::class,
             'translation_domain' => 'ict_location',
-            'new' => false
+            'new' => false,
+            'admin' => false
         ]);
     }
 }

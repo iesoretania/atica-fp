@@ -149,7 +149,15 @@ class CoreMenu implements MenuBuilderInterface
             ->setPriority(0);
 
         $menu2->addChild($menu);
+        $menu = new MenuItem();
+        $menu
+            ->setName('ict_location')
+            ->setRouteName('ict_location_list')
+            ->setCaption('menu.ict.location')
+            ->setDescription('menu.ict.location.detail')
+            ->setIcon('store-alt');
 
+        $menu2->addChild($menu);
         if ($isLocalAdministrator) {
             $menu = new MenuItem();
             $menu
@@ -181,16 +189,6 @@ class CoreMenu implements MenuBuilderInterface
                 ->setDescription('menu.ict.element_template.detail')
                 ->setIcon('drafting-compass')
                 ->setPriority(0);
-
-            $menu2->addChild($menu);
-
-            $menu = new MenuItem();
-            $menu
-                ->setName('ict_location')
-                ->setRouteName('ict_location_list')
-                ->setCaption('menu.ict.location')
-                ->setDescription('menu.ict.location.detail')
-                ->setIcon('store-alt');
 
             $menu2->addChild($menu);
 

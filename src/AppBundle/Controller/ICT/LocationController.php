@@ -46,9 +46,13 @@ class LocationController extends Controller
         Location $location = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
+
         if ($location) {
-            $this->denyAccessUnlessGranted(LocationVoter::MANAGE, $location);
+            $this->denyAccessUnlessGranted(LocationVoter::ACCESS, $location);
+            $isAdmin = $this->isGranted(LocationVoter::MANAGE, $location);
+        } else {
+            $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
+            $isAdmin = true;
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -60,7 +64,9 @@ class LocationController extends Controller
         }
 
         $form = $this->createForm(LocationType::class, $location, [
-            'new' => $location->getId() === null
+            'new' => $location->getId() === null,
+            'disabled' => !$isAdmin,
+            'admin' => $isAdmin
         ]);
 
         $form->handleRequest($request);
@@ -85,6 +91,7 @@ class LocationController extends Controller
             'title' => $this->get('translator')->
                 trans($location->getId() ? 'title.edit' : 'title.new', [], 'ict_location'),
             'form' => $form->createView(),
+            'admin' => $isAdmin,
             'user' => $location
         ]);
     }
@@ -97,6 +104,9 @@ class LocationController extends Controller
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+
+        $organization = $userExtensionService->getCurrentOrganization();
+        $isAdmin = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         $queryBuilder
             ->select('l')
@@ -129,7 +139,12 @@ class LocationController extends Controller
         }
         $queryBuilder
             ->andWhere('l.organization = :organization')
-            ->setParameter('organization', $userExtensionService->getCurrentOrganization());
+            ->setParameter('organization', $organization);
+
+        if (false === $isAdmin) {
+            $queryBuilder
+                ->andWhere('l.hidden = false');
+        }
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -144,6 +159,7 @@ class LocationController extends Controller
             'pager' => $pager,
             'q' => $q,
             'f' => $f,
+            'admin' => $isAdmin,
             'domain' => 'ict_location'
         ]);
     }
