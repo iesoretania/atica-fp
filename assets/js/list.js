@@ -1,17 +1,33 @@
 const debounce = require('lodash.debounce');
-var last_value = "";
-var reload = function() {
+var last_value_q = "";
+var last_value_f = "";
+var reload = function(filter) {
     var url = window.location.href;
     var q = $('input#search').val();
-    if (q === last_value) {
+    var f = 0;
+    if (filter) {
+        f = $(filter.currentTarget).children().val();
+    }
+    if (q === last_value_q && f === last_value_f) {
         return;
     }
-    last_value = q;
-    // quitar parámetro
+    last_value_q = q;
+    last_value_f = f;
+
+    // quitar parámetros
     url = url.replace(/(q=).*?(&|$)/,'$1$2');
-    if (q) {
+    url = url.replace(/(f=).*?(&|$)/,'$1$2');
+
+    // codificar parámetros
+    if (f != 0) {
+        url = url + '?f=' + encodeURIComponent(f);
+        if (q) url = url + '&q=' + encodeURIComponent(q);
+    }
+    else if (q) {
         url = url + '?q=' + encodeURIComponent(q);
     }
+
+    // obtener nueva tabla
     $('table#list').addClass('loading');
     $.ajax({
         url: url,
@@ -30,6 +46,8 @@ var reload = function() {
 
 var dynamicFormInit = function() {
     $('input#search').on("change paste keyup", debounce(reload, 500));
+    var f = $("input[name='filter']");
+    if (f) f.parent().on('click', reload);
 
     $("#search-clear").click(function(){
         $('input#search').val('');

@@ -32,6 +32,23 @@
             {% endfor %}
 {% endblock %}
 
+{% block more_actions %}
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+            <input type="radio" name="filter" value="0" autocomplete="off" {% if f == 0 %}checked{% endif %}> {{ 'form.filter.show_all'|trans }}
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="filter" value="1" autocomplete="off" {% if f == 1 %}checked{% endif %}> {{ 'form.filter.tainted'|trans }}
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="filter" value="2" autocomplete="off" {% if f == 2 %}checked{% endif %}> {{ 'form.filter.unavailable'|trans }}
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="filter" value="3" autocomplete="off" {% if f == 3 %}checked{% endif %}> {{ 'form.filter.being_repaired'|trans }}
+        </label>
+    </div>
+{% endblock %}
+
 {% block before_table %}
     <form action="{{ path('ict_element_operation') }}" method="post">
 {% endblock %}

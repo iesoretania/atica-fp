@@ -15,6 +15,11 @@ form.being_repaired_since: En reparación desde
 form.description: Descripción resumida del equipamiento
 form.detail: Detalle adicional
 
+form.filter.show_all: Mostrar todo
+form.filter.tainted: Con problemas
+form.filter.unavailable: No disponibles
+form.filter.being_repaired: En reparación
+
 form.save: Guardar cambios
 form.save_repeat: Guardar y crear otro
 form.save_template: Guardar y crear plantilla

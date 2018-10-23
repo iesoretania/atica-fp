@@ -140,6 +140,7 @@ class ElementController extends Controller
             ->addOrderBy('e.reference');
 
         $q = $request->get('q', null);
+        $f = $request->get('f', 0);
         if ($q) {
             $queryBuilder
                 ->orWhere('e.name LIKE :tq')
@@ -148,6 +149,19 @@ class ElementController extends Controller
                 ->orWhere('l.name LIKE :tq')
                 ->orWhere('e.serialNumber LIKE :tq')
                 ->setParameter('tq', '%' . $q . '%');
+        }
+        if ($f) {
+            switch ($f) {
+                case 1:
+                    $queryBuilder->andWhere('e.taintedSince IS NOT NULL');
+                    break;
+                case 2:
+                    $queryBuilder->andWhere('e.unavailableSince IS NOT NULL');
+                    break;
+                case 3:
+                    $queryBuilder->andWhere('e.beingRepairedSince IS NOT NULL');
+                    break;
+            }
         }
 
         $queryBuilder
@@ -166,6 +180,7 @@ class ElementController extends Controller
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
+            'f' => $f,
             'domain' => 'ict_element'
         ]);
     }
