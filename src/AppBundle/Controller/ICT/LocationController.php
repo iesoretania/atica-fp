@@ -101,14 +101,15 @@ class LocationController extends Controller
         $queryBuilder
             ->select('l')
             ->addSelect('COUNT(e)')
-            ->addSelect('COUNT(e.unavailableSince)')
-            ->addSelect('COUNT(e.beingRepairedSince)')
+            ->addSelect('COUNT(e.unavailableSince) AS unavailable_count')
+            ->addSelect('COUNT(e.beingRepairedSince) AS being_repaired_count')
             ->from('AppBundle:ICT\Location', 'l')
             ->leftJoin('AppBundle:ICT\\Element', 'e', 'WITH', 'e.location = l')
             ->groupBy('l')
             ->orderBy('l.name');
 
         $q = $request->get('q', null);
+        $f = $request->get('f', 0);
         if ($q) {
             $queryBuilder
                 ->orWhere('l.name LIKE :tq')
@@ -116,7 +117,16 @@ class LocationController extends Controller
                 ->orWhere('l.description LIKE :tq')
                 ->setParameter('tq', '%' . $q . '%');
         }
-
+        if ($f) {
+            switch ($f) {
+                case 1:
+                    $queryBuilder->andHaving('unavailable_count > 0');
+                    break;
+                case 2:
+                    $queryBuilder->andHaving('being_repaired_count > 0');
+                    break;
+            }
+        }
         $queryBuilder
             ->andWhere('l.organization = :organization')
             ->setParameter('organization', $userExtensionService->getCurrentOrganization());
@@ -133,6 +143,7 @@ class LocationController extends Controller
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
+            'f' => $f,
             'domain' => 'ict_location'
         ]);
     }

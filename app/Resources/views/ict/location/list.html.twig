@@ -19,8 +19,8 @@
                         <label><input type="checkbox" name="locations[]" value="{{ location[0].id }}" class="selectable"> <a href="{{ url }}">{{ location[0].name }}</a></label>{% if location[0].hidden %} <i class="fas fa-eye-slash"></i>{% endif %}
                     </td>
                     <td>
-                        {{ location[1] }}{% if location[2]>0 %}
-                            <span class="text-danger"> ({{ location[2] }} <i class="fas fa-exclamation-circle"></i>{% if location[3] %}/{{ location[3] }} <i class="fas fa-toolbox"></i></span>{% endif %}){% endif %}
+                        {{ location[1] }}{% if location['unavailable_count'] %}
+                            <span class="text-danger"> ({{ location['unavailable_count'] }} <i class="fas fa-exclamation-circle"></i>{% if location['being_repaired_count'] %}/{{ location['being_repaired_count'] }} <i class="fas fa-toolbox"></i></span>{% endif %}){% endif %}
                     </td>
                     <td>
                         {{ location[0].additionalData }}
@@ -37,6 +37,17 @@
 {% endblock %}
 
 {% block before_table %}
+    <div class="btn-group btn-group-toggle" data-toggle="buttons" id="filter">
+        <label class="btn btn-secondary active">
+            <input type="radio" name="filter" value="0" autocomplete="off" {% if f == 0 %}checked{% endif %}> {{ 'form.filter.show_all'|trans }}
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="filter" value="1" autocomplete="off" {% if f == 1 %}checked{% endif %}> {{ 'form.filter.unavailable'|trans }}
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="filter" value="2" autocomplete="off" {% if f == 2 %}checked{% endif %}> {{ 'form.filter.being_repaired'|trans }}
+        </label>
+    </div>
     <form action="{{ path('ict_location_operation') }}" method="post">
 {% endblock %}
 

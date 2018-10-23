@@ -5,6 +5,10 @@ form.hidden: Visibilidad
 form.hidden.yes: No se mostrará al crear una incidencia
 form.hidden.no: Se mostrará al crear una incidencia
 
+form.filter.show_all: Mostrar todo
+form.filter.unavailable: Con equipamiento no disponible
+form.filter.being_repaired: Con equipamiento en taller
+
 form.save: Guardar cambios
 form.back: Volver
 form.delete: Eliminar dependencias seleccionadas
