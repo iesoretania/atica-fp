@@ -5,7 +5,7 @@
 {% block path_new %}{{ path('ict_ticket_form_new') }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-10"><label><input type="checkbox" id="select"> {{ 'header.id'|trans }}</label></th>
+    <th class="w-10"><label>{% if admin %}<input type="checkbox" id="select"> {% endif %}{{ 'header.id'|trans }}</label></th>
     <th class="w-20">{{ 'header.state'|trans }}</th>
     <th class="w-20">{{ 'header.people'|trans }}</th>
     <th class="w-20">{{ 'header.element'|trans }}</th>
@@ -17,7 +17,7 @@
                 {% set url = path('ict_ticket_form_edit', {'id': item.id}) %}
                 <tr class="clickable-row {% if not item.closedOn and item.dueOn and item.dueOn<date('now') %}bg-danger{% endif %}" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.id }}</a></label>
+                        <label>{% if admin %}<input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> {% endif %}<a href="{{ url }}">{{ item.id }}</a></label>
                         {% if item.priority and item.priority.levelNumber %}<span class="badge badge-pill badge-primary" style="background-color: {{ item.priority.color }} !important;"> {{ item.priority.name }}</span>{% endif %}
                         {% if item.closedOn %}<span class="badge badge-pill badge-primary"> {{ 'info.closed'|trans }}</span>{% endif %}
                     </td>
@@ -73,6 +73,6 @@
 {% block after_table %}
         <div class="clearfix"></div>
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+        {% if admin %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}{% endif %}
     </form>
 {% endblock %}

@@ -67,7 +67,10 @@ class TicketController extends Controller
         }
 
         $manager = $this->isGranted(TicketVoter::MANAGE, $ticket);
-        $form = $this->createForm(TicketType::class, $ticket, [
+        $form = $this->createForm(
+            TicketType::class,
+            $ticket,
+            [
                 'disabled' => false === $manager,
                 'new' => $ticket->getId() === null,
                 'own' => $manager
@@ -104,10 +107,14 @@ class TicketController extends Controller
      * @Route("/listar/{page}", name="ict_ticket_list", requirements={"page" = "\d+"},
      *     defaults={"page" = "1"}, methods={"GET"})
      */
-    public function listAction($page, Request $request, UserExtensionService $userExtensionService, TranslatorInterface $translator)
-    {
+    public function listAction(
+        $page,
+        Request $request,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator
+    ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $admin = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isAdmin = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -157,7 +164,7 @@ class TicketController extends Controller
             ->andWhere('t.organization = :organization')
             ->setParameter('organization', $userExtensionService->getCurrentOrganization());
 
-        if (false === $admin) {
+        if (false === $isAdmin) {
             $queryBuilder
                 ->andWhere('t.createdBy = :user')
                 ->orWhere('t.assignee = :user')
@@ -176,6 +183,7 @@ class TicketController extends Controller
             'pager' => $pager,
             'q' => $q,
             'f' => $f,
+            'admin' => $isAdmin,
             'domain' => 'ict_ticket'
         ]);
     }
@@ -188,8 +196,8 @@ class TicketController extends Controller
         $page,
         Request $request,
         UserExtensionService $userExtensionService,
-        TranslatorInterface $translator)
-    {
+        TranslatorInterface $translator
+    ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -254,8 +262,8 @@ class TicketController extends Controller
     public function operationAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        TranslatorInterface $translator)
-    {
+        TranslatorInterface $translator
+    ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -278,8 +286,8 @@ class TicketController extends Controller
      */
     public function triageOperationAction(
         Request $request,
-        UserExtensionService $userExtensionService)
-    {
+        UserExtensionService $userExtensionService
+    ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -402,8 +410,7 @@ class TicketController extends Controller
 
             if ($request->get('assign') !== '') {
                 $redirect = $this->processRemoveItems($request, $selectedItems, $em);
-            }
-            else {
+            } else {
                 $redirect = $this->processTriageItems($request, $selectedItems, $em);
             }
         }
