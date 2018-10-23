@@ -313,11 +313,13 @@ class TicketController extends Controller
             ->set('t.priority', ':priority')
             ->set('t.assignee', ':person')
             ->set('t.lastUpdatedOn', ':now')
+            ->set('t.dueOn', ':due')
             ->where('t IN (:items)')
             ->setParameter('items', $items)
             ->setParameter('priority', $priority)
             ->setParameter('person', $person)
             ->setParameter('now', new \DateTime())
+            ->setParameter('due', $priority->getDays() ? new \DateTime('P' . $priority->getDays() . ' days') : null)
             ->getQuery()
             ->execute();
     }
