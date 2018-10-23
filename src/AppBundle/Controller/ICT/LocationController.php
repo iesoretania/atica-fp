@@ -100,7 +100,12 @@ class LocationController extends Controller
 
         $queryBuilder
             ->select('l')
+            ->addSelect('COUNT(e)')
+            ->addSelect('COUNT(e.unavailableSince)')
+            ->addSelect('COUNT(e.beingRepairedSince)')
             ->from('AppBundle:ICT\Location', 'l')
+            ->leftJoin('AppBundle:ICT\\Element', 'e', 'WITH', 'e.location = l')
+            ->groupBy('l')
             ->orderBy('l.name');
 
         $q = $request->get('q', null);

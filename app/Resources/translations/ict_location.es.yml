@@ -31,5 +31,6 @@ table.new: Nueva dependencia
 table.filter: Filtrar...
 
 header.name: Nombre
+header.element_count: Total equipamiento
 header.additional_data: Información adicional
 header.description: Observaciones

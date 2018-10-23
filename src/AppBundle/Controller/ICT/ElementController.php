@@ -96,6 +96,9 @@ class ElementController extends Controller
                 } else {
                     $message = 'message.saved';
                 }
+                if ($element->getBeingRepairedSince() && !$element->getUnavailableSince()) {
+                    $element->setUnavailableSince($element->getBeingRepairedSince());
+                }
                 $em->flush();
                 $this->addFlash('success', $this->get('translator')->trans($message, [], 'ict_element'));
 
