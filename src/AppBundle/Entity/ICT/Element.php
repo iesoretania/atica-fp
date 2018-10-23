@@ -46,13 +46,6 @@ class Element
     private $organization;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Element")
-     * @ORM\JoinColumn(nullable=true)
-     * @var Element
-     */
-    private $parent;
-
-    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\ICT\Location")
      * @ORM\JoinColumn(nullable=true)
      * @var Location
@@ -155,24 +148,6 @@ class Element
     public function setOrganization($organization)
     {
         $this->organization = $organization;
-        return $this;
-    }
-
-    /**
-     * @return Element
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param Element $parent
-     * @return Element
-     */
-    public function setParent($parent)
-    {
-        $this->parent = $parent;
         return $this;
     }
 

@@ -43,13 +43,6 @@ class Location
     private $organization;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Location")
-     * @ORM\JoinColumn(nullable=true)
-     * @var Location
-     */
-    private $parent;
-
-    /**
      * @ORM\Column(type="string")
      * @var string
      */
@@ -66,6 +59,12 @@ class Location
      * @var string
      */
     private $description;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     * @var bool
+     */
+    private $hidden;
 
     public function __toString()
     {
@@ -95,31 +94,6 @@ class Location
     public function setOrganization($organization)
     {
         $this->organization = $organization;
-        return $this;
-    }
-
-    /**
-     * @return Location
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param Location $parent
-     * @return Location
-     */
-    public function setParent($parent)
-    {
-        $path = $this->getPathArray(null);
-
-        if (in_array($parent, $path, true)) {
-            // evitar referencias circulares
-            $parent = null;
-        }
-
-        $this->parent = $parent;
         return $this;
     }
 
@@ -178,21 +152,20 @@ class Location
     }
 
     /**
-     * Get element path array from specified root
-     *
-     * @param Location|null $root
-     *
-     * @return Location[]
+     * @return bool
      */
-    public function getPathArray(Location $root = null)
+    public function isHidden()
     {
-        $path = [];
-        $item = $this;
+        return $this->hidden;
+    }
 
-        while ($item && $item !== $root) {
-            array_unshift($path, $item);
-            $item = $item->getParent();
-        }
-        return $path;
+    /**
+     * @param bool $hidden
+     * @return Location
+     */
+    public function setHidden($hidden)
+    {
+        $this->hidden = $hidden;
+        return $this;
     }
 }

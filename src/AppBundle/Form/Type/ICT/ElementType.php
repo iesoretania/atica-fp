@@ -51,7 +51,7 @@ class ElementType extends AbstractType
             findByOrganization($this->userExtensionService->getCurrentOrganization());
 
         $locations = $this->entityManager->getRepository(Location::class)->
-            findRootsByOrganization($this->userExtensionService->getCurrentOrganization());
+            findVisibleByOrganization($this->userExtensionService->getCurrentOrganization());
 
         $form
             ->add('template', EntityType::class, [

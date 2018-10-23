@@ -15,10 +15,10 @@
                 {% set url = path('ict_location_form_edit', {'id': location.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="locations[]" value="{{ location.id }}" class="selectable"> <a href="{{ url }}">{{ location.name }}</a></label>
+                        <label><input type="checkbox" name="locations[]" value="{{ location.id }}" class="selectable"> <a href="{{ url }}">{{ location.name }}</a></label>{% if location.hidden %} <i class="fas fa-eye-slash"></i>{% endif %}
                     </td>
                     <td>
-                        <a href="{{ url }}">{{ location.additionalData }}</a>
+                        {{ location.additionalData }}
                     </td>
                     <td>
                         {{ location.description }}

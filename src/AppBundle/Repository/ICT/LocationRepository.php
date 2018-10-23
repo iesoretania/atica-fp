@@ -41,11 +41,11 @@ class LocationRepository extends EntityRepository
             ->getResult();
     }
 
-    public function findRootsByOrganization(Organization $organization)
+    public function findVisibleByOrganization(Organization $organization)
     {
         return $this->createQueryBuilder('l')
             ->andWhere('l.organization = :organization')
-            ->andWhere('l.parent IS NULL')
+            ->andWhere('l.hidden = false')
             ->setParameter('organization', $organization)
             ->orderBy('l.name')
             ->getQuery()

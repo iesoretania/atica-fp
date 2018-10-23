@@ -1,8 +1,9 @@
 form.name: Nombre de la dependencia
-form.parent: Localización
-form.no_parent: No está dentro de otra dependencia
 form.additional_data: Datos adicionales
 form.description: Notas
+form.hidden: Visibilidad
+form.hidden.yes: No se mostrará al crear una incidencia
+form.hidden.no: Se mostrará al crear una incidencia
 
 form.save: Guardar cambios
 form.back: Volver

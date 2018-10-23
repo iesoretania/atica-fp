@@ -104,7 +104,6 @@ class TicketVoter extends Voter
                 if ($membership->getOrganization() === $organization &&
                     $membership->getValidFrom() <= $date &&
                     ($membership->getValidUntil() === null || $membership->getValidUntil() >= $date)) {
-
                     // Permitir:
                     // - Si el permiso no es de gestión
                     // - Si es de gestión, la incidencias debe estar sin prioridad y no cerrada
