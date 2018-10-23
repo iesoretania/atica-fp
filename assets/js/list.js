@@ -15,6 +15,7 @@ var reload = function(filter) {
     last_value_f = f;
 
     // quitar parámetros
+    url = url.replace(/\/([0-9]*?)(&|$)/,'');
     url = url.replace(/(\?|&q=).*?(&|$)/,'');
     url = url.replace(/(\?f=).*?(&|$)/,'');
 
