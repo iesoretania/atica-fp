@@ -38,3 +38,6 @@ header.name: Nombre
 header.element_count: Equipamiento
 header.additional_data: Información adicional
 header.description: Observaciones
+
+tooltip.unavailable: No disponible
+tooltip.being_repaired: En reparación

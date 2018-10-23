@@ -16,7 +16,7 @@
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.name }}{% if item.description %} - {{ item.description }}{% endif %}</a></label>
-                        {% if item.beingRepairedSince %}<i class="text-danger fas fa-toolbox"></i>{% elseif item.unavailableSince %}<i class="text-danger fas fa-times"></i>{% elseif item.taintedSince %}<i class="text-warning fas fa-exclamation-triangle"></i>{% endif %}
+                        {% if item.beingRepairedSince %}<i class="text-danger fas fa-toolbox" title="{{ 'tooltip.being_repaired'|trans }}"></i>{% elseif item.unavailableSince %}<i class="text-danger fas fa-times" title="{{ 'tooltip.unavailable'|trans }}"></i>{% elseif item.taintedSince %}<i class="text-warning fas fa-exclamation-triangle" title="{{ 'tooltip.tainted'|trans }}"></i>{% endif %}
                     </td>
                     <td>
                         <a href="{{ url }}">{{ item.reference }}</a>

@@ -48,6 +48,10 @@ table.list: Listado de equipamiento
 form.delete: Eliminar equipamiento seleccionado
 form.delete_confirm: Confirmar borrado
 
+tooltip.tainted: Con problemas
+tooltip.unavailable: No disponible
+tooltip.being_repaired: En reparación
+
 message.deleted: Equipamiento eliminado con éxito
 message.delete_error: Ha ocurrido un error al intentar eliminar el equipamiento
 

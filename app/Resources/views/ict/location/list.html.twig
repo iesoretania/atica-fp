@@ -24,7 +24,7 @@
                     </td>
                     <td>
                         {{ location[1] }}{% if location['unavailable_count'] %}
-                            <span class="text-danger"> ({{ location['unavailable_count'] }} <i class="fas fa-exclamation-circle"></i>{% if location['being_repaired_count'] %}/{{ location['being_repaired_count'] }} <i class="fas fa-toolbox"></i></span>{% endif %}){% endif %}
+                            <span class="text-danger"> ({{ location['unavailable_count'] }} <i class="fas fa-exclamation-circle" title="{{ 'tooltip.unavailable'|trans }}"></i>{% if location['being_repaired_count'] %}/{{ location['being_repaired_count'] }} <i class="fas fa-toolbox" title="{{ 'tooltip.being_repaired'|trans }}"></i>{% endif %})</span>{% endif %}
                     </td>
                     <td>
                         {{ location[0].additionalData }}
