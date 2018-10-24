@@ -49,8 +49,8 @@
             {% endfor %}
 {% endblock %}
 
-{% block more_actions %}
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+{% block before_table %}
+    <div class="btn-group btn-group-toggle" id="filter" data-toggle="buttons">
         <label class="btn btn-secondary active">
             <input type="radio" name="filter" value="0" autocomplete="off" {% if f == 0 %}checked{% endif %}> {{ 'form.filter.show_all'|trans }}
         </label>
@@ -64,9 +64,6 @@
             <input type="radio" name="filter" value="3" autocomplete="off" {% if f == 3 %}checked{% endif %}> {{ 'form.filter.unassigned'|trans }}
         </label>
     </div>
-{% endblock %}
-
-{% block before_table %}
     <form action="{{ path('ict_ticket_operation') }}" method="post">
 {% endblock %}
 
