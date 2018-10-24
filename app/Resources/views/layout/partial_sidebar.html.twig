@@ -1,8 +1,26 @@
-{% for item in menu_extension.menu.children %}
-    <li{% if app.request.get('_route') starts with item.routeName %} class="active"{% endif %}>
-        <a href="{{ path(item.routeName, item.routeParams|default([])) }}">
-            {% if item.icon %}<i class="fa fa-{{ item.icon }}"></i>&nbsp;{% endif %}
-            {{ item.caption | trans([], 'menu') }}
-        </a>
-    </li>
-{% endfor %}
+<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+    <div class="sidebar-sticky">
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>{{ 'menu.sections'|trans({}, 'menu') }}</span>
+        </h6>
+        <ul class="nav flex-column">
+            {% for item in menu_extension.menu.children %}
+                <li class="nav-item">
+                    <a class="nav-link{% if app.request.get('_route') starts with item.routeName %} active{% endif %}" href="{{ path(item.routeName, item.routeParams|default([])) }}" title="{{ item.description | trans({}, 'menu') }}">
+                        {% if item.icon %}<i class="fas fa-{{ item.icon }}"></i>&nbsp;{% endif %}
+                        {{ item.caption | trans([], 'menu') }}
+                        {% if app.request.get('_route') starts with item.routeName %}<span class="sr-only">{{ 'menu.current'|trans({}, 'layout') }}</span>{% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+            {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('admin_user_list', {'_switch_user': '_exit'}) }}" title="{{ 'menu.exit_impersonation.detail' | trans({}, 'menu') }}">
+                        <i class="fas fa-user-slash"></i>
+                        {{ 'menu.exit_impersonation'|trans({}, 'menu') }}
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
