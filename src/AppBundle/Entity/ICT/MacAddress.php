@@ -23,10 +23,13 @@ use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ICT\MacAddressRepository")
- * @ORM\Table(name="ict_mac_address")
+ * @ORM\Table(name="ict_mac_address",
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="mac_idx", columns={"organization_id", "address"})})
+ * @UniqueEntity(fields={"organization", "address"}, message="mac_address.duplicated")
  */
 class MacAddress
 {

@@ -21,6 +21,7 @@ namespace AppBundle\Controller\ICT;
 use AppBundle\Entity\ICT\MacAddress;
 use AppBundle\Entity\Organization;
 use AppBundle\Form\Type\ICT\MacAddressType;
+use AppBundle\Security\MacAddressVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -45,7 +46,8 @@ class MacAddressController extends Controller
         MacAddress $macAddress = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
+
+        $isAdmin = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         $em = $this->getDoctrine()->getManager();
 
@@ -56,11 +58,13 @@ class MacAddressController extends Controller
                 ->setPerson($this->getUser()->getPerson())
                 ->setCreatedOn(new \DateTime());
             $em->persist($macAddress);
+        } else {
+            $this->denyAccessUnlessGranted(MacAddressVoter::ACCESS, $macAddress);
         }
 
         $form = $this->createForm(MacAddressType::class, $macAddress, [
             'new' => $macAddress->getId() === null,
-            'admin' => true
+            'admin' => $isAdmin
         ]);
 
         $form->handleRequest($request);
@@ -96,6 +100,9 @@ class MacAddressController extends Controller
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+
+        $organization = $userExtensionService->getCurrentOrganization();
+        $isAdmin = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         $queryBuilder
             ->select('m')
@@ -136,7 +143,13 @@ class MacAddressController extends Controller
 
         $queryBuilder
             ->andWhere('m.organization = :organization')
-            ->setParameter('organization', $userExtensionService->getCurrentOrganization());
+            ->setParameter('organization', $organization);
+
+        if (false === $isAdmin) {
+            $queryBuilder
+                ->andWhere('p = :person')
+                ->setParameter('person', $this->getUser()->getPerson());
+        }
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -151,7 +164,8 @@ class MacAddressController extends Controller
             'pager' => $pager,
             'q' => $q,
             'f' => $f,
-            'domain' => 'ict_mac_address'
+            'domain' => 'ict_mac_address',
+            'admin' => $isAdmin
         ]);
     }
 
