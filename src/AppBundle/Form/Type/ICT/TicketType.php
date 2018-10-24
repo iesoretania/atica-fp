@@ -64,12 +64,6 @@ class TicketType extends AbstractType
                     'widget' => 'single_text',
                     'required' => true,
                     'disabled' => false === $admin
-                ])
-                ->add('lastUpdatedOn', null, [
-                    'label' => 'form.last_updated_on',
-                    'widget' => 'single_text',
-                    'required' => true,
-                    'disabled' => false === $admin
                 ]);
         }
 

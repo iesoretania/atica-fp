@@ -78,7 +78,7 @@ class Ticket
     private $closedBy;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="date")
      * @var \DateTime
      */
     private $createdOn;
@@ -90,7 +90,7 @@ class Ticket
     private $lastUpdatedOn;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="date", nullable=true)
      * @var \DateTime
      */
     private $closedOn;

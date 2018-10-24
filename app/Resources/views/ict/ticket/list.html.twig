@@ -22,7 +22,7 @@
                         {% if item.closedOn %}<span class="badge badge-pill badge-primary"> {{ 'info.closed'|trans }}</span>{% endif %}
                     </td>
                     <td>
-                        <b>{{ 'info.created_on'|trans }}</b>{{ item.createdOn|date('format.datetime'|trans({}, 'general')) }}
+                        <b>{{ 'info.created_on'|trans }}</b>{{ item.createdOn|date('format.date'|trans({}, 'general')) }}
                         {% if item.closedOn %}<br/><b>{{ 'info.closed_on'|trans }}</b>{{ item.closedOn|date('format.date'|trans({}, 'general')) }}
                         {% elseif item.dueOn %}<br/><b>{{ 'info.due_on'|trans }}</b>{{ item.dueOn|date('format.date'|trans({}, 'general')) }}{% endif %}
                     </td>
