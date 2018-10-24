@@ -9,4 +9,35 @@
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+    <h2>{{ 'title.elements'|trans }}</h2>
+    <table class="table table-bordered table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th class="w-50">{{ 'header.element.name'|trans }}</th>
+            <th class="w-40">{{ 'header.element.detail'|trans }}</th>
+            <th class="w-10">{{ 'header.element.reference'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in elements %}
+            {% set url = path('ict_element_form_edit', {'id': item.id}) %}
+            <tr class="clickable-row" data-href="{{ url }}">
+                <td>
+                    <a href="{{ url }}">{{ item.name }}{% if item.description %} - {{ item.description }}{% endif %} <i class="fas fa-external-link-alt"></i></a>
+                    {% if item.beingRepairedSince %}<i class="text-danger fas fa-toolbox" title="{{ 'tooltip.being_repaired'|trans }}"></i>{% elseif item.unavailableSince %}<i class="text-danger fas fa-times" title="{{ 'tooltip.unavailable'|trans }}"></i>{% elseif item.taintedSince %}<i class="text-warning fas fa-exclamation-triangle" title="{{ 'tooltip.tainted'|trans }}"></i>{% endif %}
+                </td>
+                <td>
+                    {{ item.detail }}
+                </td>
+                <td>
+                    {{ item.reference }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">{{ 'table.no_items'|trans }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

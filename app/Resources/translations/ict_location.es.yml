@@ -29,6 +29,8 @@ title.edit: Datos de la dependencia
 title.list: Listado de dependencias
 title.delete: Eliminar dependencias
 
+title.elements: Equipamiento de la dependencia
+
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay dependencias
 table.new: Nueva dependencia
@@ -39,5 +41,9 @@ header.element_count: Equipamiento
 header.additional_data: Información adicional
 header.description: Observaciones
 
+header.element.name: Equipamiento
+header.element.detail: Detalles sobre el estado
+header.element.reference: Núm. de inventario
 tooltip.unavailable: No disponible
+tooltip.tainted: Con problemas
 tooltip.being_repaired: En reparación

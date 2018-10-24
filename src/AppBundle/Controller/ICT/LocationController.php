@@ -92,6 +92,7 @@ class LocationController extends Controller
                 trans($location->getId() ? 'title.edit' : 'title.new', [], 'ict_location'),
             'form' => $form->createView(),
             'admin' => $isAdmin,
+            'elements' => $this->getDoctrine()->getRepository('AppBundle:ICT\Element')->findByLocation($location),
             'user' => $location
         ]);
     }

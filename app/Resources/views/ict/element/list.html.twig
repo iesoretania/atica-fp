@@ -19,10 +19,10 @@
                         {% if item.beingRepairedSince %}<i class="text-danger fas fa-toolbox" title="{{ 'tooltip.being_repaired'|trans }}"></i>{% elseif item.unavailableSince %}<i class="text-danger fas fa-times" title="{{ 'tooltip.unavailable'|trans }}"></i>{% elseif item.taintedSince %}<i class="text-warning fas fa-exclamation-triangle" title="{{ 'tooltip.tainted'|trans }}"></i>{% endif %}
                     </td>
                     <td>
-                        <a href="{{ url }}">{{ item.reference }}</a>
+                        {{ item.reference }}
                     </td>
                     <td>
-                        {% if item.location %}<a href="{{ path('ict_location_form_edit', {'id': item.location.id}) }}">{{ item.location }}</a>{% endif %}
+                        {% if item.location %}<a href="{{ path('ict_location_form_edit', {'id': item.location.id}) }}">{{ item.location }} <i class="fas fa-external-link-alt"></i></a>{% endif %}
                     </td>
                 </tr>
             {% else %}
