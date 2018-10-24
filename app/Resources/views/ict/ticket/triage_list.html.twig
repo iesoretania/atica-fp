@@ -20,7 +20,7 @@
                         <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.id }}</a></label>
                     </td>
                     <td>
-                        <a href="{{ url }}">{{ item.createdOn|date('format.datetime'|trans({}, 'general')) }}</a>
+                        <a href="{{ url }}">{{ item.createdOn|date('format.date'|trans({}, 'general')) }}</a>
                     </td>
                     <td>
                         <a href="{{ url }}">{{ item.createdBy }}</a>
