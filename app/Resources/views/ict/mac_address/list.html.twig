@@ -1,0 +1,78 @@
+{% trans_default_domain 'ict_mac_address' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('ict_mac_address_form_new') }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-10"><label><input type="checkbox" id="select"> {{ 'header.address'|trans }}</label></th>
+    <th class="w-20">{{ 'header.person'|trans }}</th>
+    <th class="w-10">{{ 'header.created_on'|trans }}</th>
+    <th class="w-20">{{ 'header.state'|trans }}</th>
+    <th class="w-40">{{ 'header.description'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('ict_mac_address_form_edit', {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.address }}</a></label>
+                        {% if item.unRegisteredOn %}
+                            <i class="text-danger fas fa-times"></i>
+                        {% elseif item.registeredOn %}
+                            <i class="text-success fas fa-check"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ item.person }}
+                    </td>
+                    <td>
+                        {{ item.createdOn|date('format.date'|trans({}, 'general')) }}
+                    </td>
+                    <td>
+                        {% if item.unRegisteredOn %}
+                            <b>{{ 'info.unregistered_on'|trans }}</b>{{ item.unregisteredOn|date('format.date'|trans({}, 'general')) }}
+                        {% elseif item.registeredOn %}
+                            <b>{{ 'info.registered_on'|trans }}</b>{{ item.registeredOn|date('format.date'|trans({}, 'general')) }}
+                        {% else %}
+                            {{ 'info.pending'|trans }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ item.description }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <div class="btn-group btn-group-toggle" data-toggle="buttons" id="filter">
+        <label class="btn btn-secondary active">
+            <input type="radio" name="filter" value="0" autocomplete="off" {% if f == 0 %}checked{% endif %}> {{ 'form.filter.show_all'|trans }}
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="filter" value="1" autocomplete="off" {% if f == 1 %}checked{% endif %}> {{ 'form.filter.pending'|trans }}
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="filter" value="2" autocomplete="off" {% if f == 2 %}checked{% endif %}> {{ 'form.filter.registered'|trans }}
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="filter" value="3" autocomplete="off" {% if f == 3 %}checked{% endif %}> {{ 'form.filter.unregistered'|trans }}
+        </label>
+    </div>
+    <form action="{{ path('ict_mac_address_operation') }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+        {{ m.submit_button('register', 'thumbs-up', 'btn-success enable-on-items', 'form.register'|trans) }}
+        {{ m.submit_button('unregister', 'thumbs-down', 'btn-warning enable-on-items', 'form.unregister'|trans) }}
+    </form>
+{% endblock %}

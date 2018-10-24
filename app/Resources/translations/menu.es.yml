@@ -31,6 +31,9 @@ menu.ict.element_template.detail: Gestionar las plantillas de equipamiento
 menu.ict.location: Dependencias
 menu.ict.location.detail: Administrar las dependencias del centro educativo
 
+menu.ict.mac_address: Dispositivos inalámbricos
+menu.ict.mac_address.detail: Gestionar los dispositivos inalámbricos autorizados
+
 menu.ict.priority: Prioridades
 menu.ict.priority.detail: Administrar las prioridades prestablecidas de las incidencias
 

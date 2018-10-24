@@ -1,0 +1,54 @@
+form.person: Propietario del dispositivo
+form.address: Dirección MAC
+form.address.placeholder: "XX:XX:XX:XX:XX:XX"
+form.description: Descripción del dispositivo
+form.description.placeholder: "Por ejemplo: móvil, portátil, marca y modelo, etc..."
+form.created_on: Fecha de solicitud
+form.registered_on: Fecha de alta
+form.unregistered_on: Fecha de baja
+
+form.save: Guardar cambios
+form.back: Volver
+form.delete: Eliminar dispositivos seleccionados
+form.register: Dar de alta
+form.unregister: Dar de baja
+form.delete_confirm: Confirmar borrado
+
+form.filter.show_all: Mostrar todo
+form.filter.pending: Pendientes de alta
+form.filter.registered: Dados de alta
+form.filter.unregistered: Dados de baja
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes dispositivos?
+
+  Esta operación no se puede deshacer.
+
+message.saved: Datos actualizados con éxito.
+message.save_error: No se han podido los datos.
+message.deleted: Los elementos seleccionados han sido eliminados con éxito.
+message.delete_error: No se han podido eliminar los elementos seleccionados.
+message.registered: Los elementos seleccionados han sido dados de alta.
+message.register_error: No se han podido dar de alta los elementos seleccionados.
+message.unregistered: Los elementos seleccionados han sido dados de baja.
+message.unregister_error: No se han podido dar de baja los elementos seleccionados.
+
+title.new: Nuevo dispositivo
+title.edit: Datos del dispositivo
+title.list: Listado de dispositivos autorizados
+title.delete: Eliminar dispositivos
+
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay dispositivos
+table.new: Nuevo dispositivo
+table.filter: Filtrar...
+
+header.person: Propietario
+header.address: Dirección MAC
+header.created_on: Fecha solicitud
+header.state: Estado
+header.description: Descripción del dispositivo
+
+info.registered_on: "Fecha de alta: "
+info.unregistered_on: "Fecha de baja: "
+info.pending: "Pendiente"

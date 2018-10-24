@@ -149,6 +149,7 @@ class CoreMenu implements MenuBuilderInterface
             ->setPriority(0);
 
         $menu2->addChild($menu);
+
         $menu = new MenuItem();
         $menu
             ->setName('ict_location')
@@ -156,6 +157,16 @@ class CoreMenu implements MenuBuilderInterface
             ->setCaption('menu.ict.location')
             ->setDescription('menu.ict.location.detail')
             ->setIcon('store-alt');
+
+        $menu2->addChild($menu);
+
+        $menu = new MenuItem();
+        $menu
+            ->setName('ict_mac_address')
+            ->setRouteName('ict_mac_address_list')
+            ->setCaption('menu.ict.mac_address')
+            ->setDescription('menu.ict.mac_address.detail')
+            ->setIcon('wifi');
 
         $menu2->addChild($menu);
         if ($isLocalAdministrator) {
