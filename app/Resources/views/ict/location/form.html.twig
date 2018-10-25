@@ -35,7 +35,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                <td colspan="3">{{ 'table.no_items'|trans({}, 'ict_element') }}</td>
             </tr>
         {% endfor %}
         </tbody>

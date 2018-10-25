@@ -61,6 +61,9 @@ class LocationController extends Controller
             $location = new Location();
             $location->setOrganization($organization);
             $em->persist($location);
+            $elements = [];
+        } else {
+            $elements = $this->getDoctrine()->getRepository('AppBundle:ICT\Element')->findByLocation($location);
         }
 
         $form = $this->createForm(LocationType::class, $location, [
@@ -92,7 +95,7 @@ class LocationController extends Controller
                 trans($location->getId() ? 'title.edit' : 'title.new', [], 'ict_location'),
             'form' => $form->createView(),
             'admin' => $isAdmin,
-            'elements' => $this->getDoctrine()->getRepository('AppBundle:ICT\Element')->findByLocation($location),
+            'elements' => $elements,
             'user' => $location
         ]);
     }
