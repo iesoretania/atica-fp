@@ -135,7 +135,7 @@ class CoreMenu implements MenuBuilderInterface
             ->setCaption('menu.ict.ticket_new')
             ->setDescription('menu.ict.ticket_new.detail')
             ->setIcon('exclamation-triangle')
-            ->setPriority(0);
+            ->setPriority(-2000);
 
         $menu2->addChild($menu);
 
@@ -146,7 +146,7 @@ class CoreMenu implements MenuBuilderInterface
             ->setCaption('menu.ict.ticket_list')
             ->setDescription('menu.ict.ticket_list.detail')
             ->setIcon('clipboard-list')
-            ->setPriority(0);
+            ->setPriority(-1000);
 
         $menu2->addChild($menu);
 
