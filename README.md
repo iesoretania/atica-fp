@@ -1,4 +1,4 @@
-ATICA-TIC
-=========
+ATICA-FP
+========
 
-Aplicación web para ayudar en la gestión de las incidencias TIC en un centro educativo.
+Aplicación web para ayudar en el seguimiento del alumnado de FP dual

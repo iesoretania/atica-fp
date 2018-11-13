@@ -40,7 +40,7 @@ twig:
         - 'bootstrap_4_horizontal_layout.html.twig'
     globals:
         app_name:     '%app_name%'
-        app_repository: 'https://github.com/iesoretania/atica-tic'
+        app_repository: 'https://github.com/iesoretania/atica-fp'
         app_version:  ''
         user_extension: '@AppBundle\Service\UserExtensionService'
         menu_extension: "@app.menu_builders_chain"

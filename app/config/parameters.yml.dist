@@ -4,13 +4,13 @@
 # automáticamente al hacer un "composer install"
 #
 parameters:
-    app_name:          "Gestión TIC"
+    app_name:          "ÁTICA-FP"
 
     # Datos de conexión con la base de datos MySQL
     database_host:     127.0.0.1
     database_port:     ~
     # Nombre por defecto del schema o base de datos
-    database_name:     tic
+    database_name:     fp
     # Nombre y contraseña del usuario que accederá a la base de datos. ¡No usar "root" en producción!
     database_user:     root
     database_password: ~
@@ -24,14 +24,14 @@ parameters:
     mailer_password:   ~
 
     # Nombre de la sesión que se utilizará para almacenar datos en el navegador del usuario
-    session_name:      tic
+    session_name:      aticafp
 
     # Cambia la frase siguiente por cualquier secuencia aleatoria
     # Puedes generar una desde aquí: http://nux.net/secret
     secret:            ThisTokenIsNotSoSecretChangeIt
 
     # Prefijo de las notificaciones enviadas a los usuarios
-    notification.prefix:        "[TIC] "
+    notification.prefix:        "[ATICA-FP] "
 
     # Remitente de las notificaciones
     notification.email_from:    %mailer_user%
