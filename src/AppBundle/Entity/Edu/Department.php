@@ -25,6 +25,13 @@ class Department
     private $name;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AcademicYear")
+     * @ORM\JoinColumn(nullable=false)
+     * @var AcademicYear
+     */
+    private $academicYear;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Teacher")
      * @ORM\JoinColumn(nullable=true)
      * @var Teacher
@@ -74,4 +81,23 @@ class Department
         $this->head = $head;
         return $this;
     }
+
+    /**
+     * @return AcademicYear
+     */
+    public function getAcademicYear()
+    {
+        return $this->academicYear;
+    }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @return Department
+     */
+    public function setAcademicYear(AcademicYear $academicYear)
+    {
+        $this->academicYear = $academicYear;
+        return $this;
+    }
+
 }
