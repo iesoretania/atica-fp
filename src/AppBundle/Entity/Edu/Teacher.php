@@ -122,14 +122,4 @@ class Teacher
     {
         return $this->teachings;
     }
-
-    /**
-     * @param Teaching[] $teachings
-     * @return Teacher
-     */
-    public function setTeachings($teachings)
-    {
-        $this->teachings = $teachings;
-        return $this;
-    }
 }

@@ -119,14 +119,4 @@ class Group
     {
         return $this->teachings;
     }
-
-    /**
-     * @param Teaching[] $teachings
-     * @return Group
-     */
-    public function setTeachings($teachings)
-    {
-        $this->teachings = $teachings;
-        return $this;
-    }
 }
