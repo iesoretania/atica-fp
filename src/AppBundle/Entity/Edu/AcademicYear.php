@@ -33,6 +33,20 @@ class AcademicYear
     private $description;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Teacher")
+     * @ORM\JoinColumn(nullable=true)
+     * @var Teacher
+     */
+    private $principal;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Teacher")
+     * @ORM\JoinColumn(nullable=true)
+     * @var Teacher
+     */
+    private $financialManager;
+
+    /**
      * @return int
      */
     public function getId()
@@ -73,6 +87,42 @@ class AcademicYear
     public function setDescription($description)
     {
         $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return Teacher|null
+     */
+    public function getPrincipal()
+    {
+        return $this->principal;
+    }
+
+    /**
+     * @param Teacher|null $principal
+     * @return AcademicYear
+     */
+    public function setPrincipal(Teacher $principal = null)
+    {
+        $this->principal = $principal;
+        return $this;
+    }
+
+    /**
+     * @return Teacher|null
+     */
+    public function getFinancialManager()
+    {
+        return $this->financialManager;
+    }
+
+    /**
+     * @param Teacher|null $financialManager
+     * @return AcademicYear
+     */
+    public function setFinancialManager(Teacher $financialManager = null)
+    {
+        $this->financialManager = $financialManager;
         return $this;
     }
 }
