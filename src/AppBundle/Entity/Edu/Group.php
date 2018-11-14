@@ -45,9 +45,16 @@ class Group
      */
     private $teachings;
 
+    /**
+     * @ORM\OneToMany(targetEntity="StudentEnrollment", mappedBy="group")
+     * @var StudentEnrollment[]
+     */
+    private $enrollments;
+
     public function __construct()
     {
         $this->teachings = new ArrayCollection();
+        $this->enrollments = new ArrayCollection();
     }
 
     /**
@@ -118,5 +125,13 @@ class Group
     public function getTeachings()
     {
         return $this->teachings;
+    }
+
+    /**
+     * @return StudentEnrollment[]
+     */
+    public function getEnrollments()
+    {
+        return $this->enrollments;
     }
 }
