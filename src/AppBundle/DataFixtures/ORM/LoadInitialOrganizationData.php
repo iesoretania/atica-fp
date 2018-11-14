@@ -18,7 +18,6 @@
 
 namespace AppBundle\DataFixtures\ORM;
 
-use AppBundle\Entity\ICT\Priority;
 use AppBundle\Entity\Organization;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -44,68 +43,6 @@ class LoadInitialOrganizationData extends AbstractFixture implements OrderedFixt
         $manager->persist($organization);
 
         $this->setReference('organization', $organization);
-
-        $priorities = [
-            [
-                'level_number' => 100,
-                'name' => 'Crítica',
-                'color' => '#000000',
-                'days' => 5,
-                'description' =>
-                    'Incidencias críticas que impiden completamente el desarrollo de las actividades docentes'
-            ],
-            [
-                'level_number' => 80,
-                'name' => 'Urgente',
-                'color' => '#ff0000',
-                'days' => 10,
-                'description' => 'Incidencias importantes que deben tener prioridad alta y deben resolverse pronto'
-            ],
-            [
-                'level_number' => 60,
-                'name' => 'Alta',
-                'color' => '#ffa000',
-                'days' => 15,
-                'description' => 'Incidencias que dificultan el desarrollo normal de las actividades docentes'
-            ],
-            [
-                'level_number' => 40,
-                'name' => 'Media',
-                'color' => '#c0c000',
-                'days' => 20,
-                'description' => 'Incidencias que afectan poco a las actividades docentes'
-            ],
-            [
-                'level_number' => 20,
-                'name' => 'Baja',
-                'color' => '#00a000',
-                'days' => 30,
-                'description' => 'Incidencias que afectan poco a las actividades docentes'
-            ],
-            [
-                'level_number' => 0,
-                'name' => 'Ninguna',
-                'color' => '#ffffff',
-                'days' => null,
-                'description' => 'Incidencias no relevantes que no tienen prioridad alguna'
-            ]
-        ];
-
-        foreach ($priorities as $priorityData) {
-            $priority = new Priority();
-            $priority
-                ->setOrganization($organization)
-                ->setLevelNumber($priorityData['level_number'])
-                ->setName($priorityData['name'])
-                ->setColor($priorityData['color'])
-                ->setDescription($priorityData['description']);
-
-            if ($priorityData['days'] !== null) {
-                $priority->setDays($priorityData['days']);
-            }
-
-            $manager->persist($priority);
-        }
 
         $manager->flush();
     }
