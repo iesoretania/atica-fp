@@ -1,8 +1,8 @@
 {
-    "name": "lrlopez/atica-tic",
+    "name": "iesoretania/atica-fp",
     "license": "AGPL-3.0-only",
     "type": "project",
-    "description": "Aplicación web para ayudar en la gestión de las incidencias TIC en un centro educativo",
+    "description": "Aplicación web para el seguimiento del alumnado durante el período de alternancia y en la FCT",
     "autoload": {
         "psr-4": {
             "AppBundle\\": "src/AppBundle"
