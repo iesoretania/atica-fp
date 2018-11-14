@@ -38,6 +38,13 @@ class Subject
     private $name;
 
     /**
+     * @ORM\OneToMany(targetEntity="LearningOutcome", mappedBy="subject")
+     * @ORM\OrderBy({"code": "ASC"})
+     * @var LearningOutcome[]
+     */
+    private $learningOutcomes;
+
+    /**
      * @return int
      */
     public function getId()
@@ -91,5 +98,13 @@ class Subject
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return LearningOutcome[]
+     */
+    public function getLearningOutcomes()
+    {
+        return $this->learningOutcomes;
     }
 }

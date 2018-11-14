@@ -21,7 +21,7 @@ class Teaching
 
     /**
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Group")
+     * @ORM\ManyToOne(targetEntity="Group", inversedBy="teachings")
      * @ORM\JoinColumn(nullable=false)
      * @var Group
      */

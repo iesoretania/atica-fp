@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity\Edu;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,6 +31,18 @@ class Training
      * @var string
      */
     private $name;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Competency", mappedBy="training")
+     * @ORM\OrderBy({"code": "ASC"})
+     * @var Competency[]
+     */
+    private $competencies;
+
+    public function __construct()
+    {
+        $this->competencies = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -73,5 +86,13 @@ class Training
     {
         $this->academicYear = $academicYear;
         return $this;
+    }
+
+    /**
+     * @return Competency[]
+     */
+    public function getCompetencies()
+    {
+        return $this->competencies;
     }
 }
