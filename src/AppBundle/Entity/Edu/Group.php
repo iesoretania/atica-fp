@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity\Edu;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -37,6 +38,17 @@ class Group
      * @var Teacher
      */
     private $tutor;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Teaching", mappedBy="group")
+     * @var Teaching[]
+     */
+    private $teachings;
+
+    public function __construct()
+    {
+        $this->teachings = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -97,6 +109,24 @@ class Group
     public function setTutor(Teacher $tutor = null)
     {
         $this->tutor = $tutor;
+        return $this;
+    }
+
+    /**
+     * @return Teaching[]
+     */
+    public function getTeachings()
+    {
+        return $this->teachings;
+    }
+
+    /**
+     * @param Teaching[] $teachings
+     * @return Group
+     */
+    public function setTeachings($teachings)
+    {
+        $this->teachings = $teachings;
         return $this;
     }
 }

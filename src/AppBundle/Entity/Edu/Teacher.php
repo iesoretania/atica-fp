@@ -3,6 +3,7 @@
 namespace AppBundle\Entity\Edu;
 
 use AppBundle\Entity\Person;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -40,6 +41,17 @@ class Teacher
      * @var Department
      */
     private $department;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Teaching", mappedBy="teacher")
+     * @var Teaching[]
+     */
+    private $teachings;
+
+    public function __construct()
+    {
+        $this->teachings = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -100,6 +112,24 @@ class Teacher
     public function setDepartment(Department $department = null)
     {
         $this->department = $department;
+        return $this;
+    }
+
+    /**
+     * @return Teaching[]
+     */
+    public function getTeachings()
+    {
+        return $this->teachings;
+    }
+
+    /**
+     * @param Teaching[] $teachings
+     * @return Teacher
+     */
+    public function setTeachings($teachings)
+    {
+        $this->teachings = $teachings;
         return $this;
     }
 }
