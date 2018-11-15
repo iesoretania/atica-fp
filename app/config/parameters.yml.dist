@@ -4,7 +4,7 @@
 # automáticamente al hacer un "composer install"
 #
 parameters:
-    app_name:          "ÁTICA-FP"
+    app_name:          "ÁTICA FP"
 
     # Datos de conexión con la base de datos MySQL
     database_host:     127.0.0.1
