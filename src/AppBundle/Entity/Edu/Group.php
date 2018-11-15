@@ -43,6 +43,12 @@ class Group
     private $grade;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var string
+     */
+    private $internalCode;
+
+    /**
      * @ORM\Column(type="string")
      * @var string
      */
@@ -96,6 +102,24 @@ class Group
     public function setGrade(Grade $grade)
     {
         $this->grade = $grade;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInternalCode()
+    {
+        return $this->internalCode;
+    }
+
+    /**
+     * @param string $internalCode
+     * @return Group
+     */
+    public function setInternalCode($internalCode)
+    {
+        $this->internalCode = $internalCode;
         return $this;
     }
 

@@ -42,6 +42,12 @@ class Grade
     private $training;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var string
+     */
+    private $internalCode;
+
+    /**
      * @ORM\Column(type="string")
      * @var string
      */
@@ -70,6 +76,24 @@ class Grade
     public function setTraining(Training $training)
     {
         $this->training = $training;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInternalCode()
+    {
+        return $this->internalCode;
+    }
+
+    /**
+     * @param string $internalCode
+     * @return Grade
+     */
+    public function setInternalCode($internalCode)
+    {
+        $this->internalCode = $internalCode;
         return $this;
     }
 

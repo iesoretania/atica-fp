@@ -43,6 +43,12 @@ class Training
     private $academicYear;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var string
+     */
+    private $internalCode;
+
+    /**
      * @ORM\Column(type="string")
      * @var string
      */
@@ -66,6 +72,24 @@ class Training
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInternalCode()
+    {
+        return $this->internalCode;
+    }
+
+    /**
+     * @param string $internalCode
+     * @return Training
+     */
+    public function setInternalCode($internalCode)
+    {
+        $this->internalCode = $internalCode;
+        return $this;
     }
 
     /**
