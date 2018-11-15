@@ -67,7 +67,7 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('admin_organization_list')
                 ->setCaption('menu.admin.organization')
                 ->setDescription('menu.admin.organization.detail')
-                ->setIcon('map-marker');
+                ->setIcon('building');
 
             $menu1->addChild($menu2);
         }
@@ -79,7 +79,7 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('organization')
                 ->setCaption('menu.organization')
                 ->setDescription('menu.organization.detail')
-                ->setIcon('university')
+                ->setIcon('school')
                 ->setPriority(8000);
 
             $root[] = $menu1;
@@ -101,6 +101,17 @@ class CoreMenu implements MenuBuilderInterface
                 ->setCaption('menu.organization.import.teacher')
                 ->setDescription('menu.organization.import.teacher.detail')
                 ->setIcon('graduation-cap')
+                ->setPriority(0);
+
+            $menu2->addChild($menu3);
+
+            $menu3 = new MenuItem();
+            $menu3
+                ->setName('organization_import_group')
+                ->setRouteName('organization_import_group_form')
+                ->setCaption('menu.organization.import.group')
+                ->setDescription('menu.organization.import.group.detail')
+                ->setIcon('chalkboard-teacher')
                 ->setPriority(0);
 
             $menu2->addChild($menu3);

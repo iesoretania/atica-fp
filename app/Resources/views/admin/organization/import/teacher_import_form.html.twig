@@ -18,7 +18,7 @@
             <li>{{ 'report.teacher.existing_memberships'|trans }}: {{ stats.existing_membership_count }}</li>
             <li>{{ 'report.teacher.new_memberships'|trans }}: {{ stats.new_membership_count }}</li>
         </ul>
-        {% if stats.user_collection %}
+        {% if stats.collection %}
             <h4>{{ 'report.teacher.list'|trans }}</h4>
             <ul>
                 {% for teacher in stats.user_collection %}

@@ -20,14 +20,17 @@
 
 namespace AppBundle\Form\Type\Import;
 
-use AppBundle\Form\Model\TeacherImport;
+use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Form\Model\GroupImport;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TeacherType extends AbstractType
+class GroupImportType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -36,26 +39,28 @@ class TeacherType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('academicYear', EntityType::class, [
+                'label' => 'form.group.academic_year',
+                'class' => AcademicYear::class,
+                'query_builder' => function (EntityRepository $er) use ($options) {
+                    return $er->createQueryBuilder('a')
+                        ->andWhere('a.organization = :organization')
+                        ->orderBy('a.description', 'DESC')
+                        ->setParameter('organization', $options['organization']);
+                },
+                'required' => true
+            ])
             ->add('file', FileType::class, [
                 'label' => 'form.file',
                 'required' => true
             ])
-            ->add('externalPassword', ChoiceType::class, [
-                'label' => 'form.teacher.external_password',
+            ->add('restricted', ChoiceType::class, [
+                'label' => 'form.group.restricted',
                 'required' => true,
                 'expanded' => true,
                 'choices' => [
-                    'form.teacher.external_password.yes' => true,
-                    'form.teacher.external_password.no' => false
-                ]
-            ])
-            ->add('generatePassword', ChoiceType::class, [
-                'label' => 'form.teacher.generate_password',
-                'required' => true,
-                'expanded' => true,
-                'choices' => [
-                    'form.teacher.generate_password.no' => false,
-                    'form.teacher.generate_password.yes' => true
+                    'form.group.restricted.yes' => true,
+                    'form.group.restricted.no' => false
                 ]
             ]);
     }
@@ -66,7 +71,8 @@ class TeacherType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => TeacherImport::class,
+            'data_class' => GroupImport::class,
+            'organization' => null,
             'translation_domain' => 'import'
         ]);
     }

@@ -1,7 +1,7 @@
 title.import_result: Resultado de la importación
 
 title.teacher.import: Importación de profesorado
-title.location.import: Importación de dependencias
+title.group.import: Importación de grupos
 
 form.file: "Fichero .CSV de Séneca"
 
@@ -12,13 +12,13 @@ form.teacher.external_password.yes: Se intentará verificar la contraseña desde
 form.teacher.generate_password: Contraseña inicial del nuevo profesorado
 form.teacher.generate_password.no: No generar ninguna
 form.teacher.generate_password.yes: Establecer por defecto en el usuario IdEA (aumenta el tiempo de importación)
-
-form.location.only_keep_new: Eliminar las no incluidas en el fichero
-form.location.only_keep_new.no: Mantener las dependencias no incluidas
-form.location.only_keep_new.yes: Eliminar aquellas dependencias no incluidas en el fichero
-
 form.teacher.do_import: Importar profesorado
-form.location.do_import: Importar dependencias
+
+form.group.academic_year: Curso académico
+form.group.restricted: Grupos a importar
+form.group.restricted.no: Importar todos los grupos
+form.group.restricted.yes: Importar solamente los grupos de FP
+form.group.do_import: Importar grupos
 
 form.submit: Importar
 form.again: Importar otro fichero
@@ -39,8 +39,8 @@ report.teacher.new_teachers: Docentes nuevos incorporados
 report.teacher.existing_memberships: Pertenencias ya existentes
 report.teacher.new_memberships: Pertenencias nuevas incorporadas
 
-report.location.updated_locations: Dependencias ya existentes
-report.location.new_locations: Dependencias nuevas incorporadas
+report.group.new: Grupos nuevos incorporados
+report.group.old: Grupos ya existentes
 
 report.teacher.list: Docentes nuevos dados de alta en la plataforma
-report.location.list: Dependencias nuevas dadas de alta en el centro
+report.group.list: Grupos del centro

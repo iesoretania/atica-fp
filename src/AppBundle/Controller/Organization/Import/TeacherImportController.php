@@ -23,7 +23,7 @@ use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\User;
 use AppBundle\Form\Model\TeacherImport;
-use AppBundle\Form\Type\Import\TeacherType;
+use AppBundle\Form\Type\Import\TeacherImportType;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use AppBundle\Utils\CsvImporter;
@@ -32,7 +32,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 
-class ImportTeacherController extends Controller
+class TeacherImportController extends Controller
 {
     /**
      * @Route("/centro/importar/profesorado", name="organization_import_teacher_form", methods={"GET", "POST"})
@@ -43,7 +43,7 @@ class ImportTeacherController extends Controller
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $formData = new TeacherImport();
-        $form = $this->createForm(TeacherType::class, $formData);
+        $form = $this->createForm(TeacherImportType::class, $formData);
         $form->handleRequest($request);
 
         $stats = null;
@@ -64,7 +64,7 @@ class ImportTeacherController extends Controller
         }
         $title = $this->get('translator')->trans('title.teacher.import', [], 'import');
 
-        return $this->render('admin/organization/import/teacher_form.html.twig', [
+        return $this->render('admin/organization/import/teacher_import_form.html.twig', [
             'title' => $title,
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),

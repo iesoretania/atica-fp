@@ -62,6 +62,11 @@ class AcademicYear
      */
     private $financialManager;
 
+    public function __toString()
+    {
+        return $this->getDescription();
+    }
+
     /**
      * @return int
      */
