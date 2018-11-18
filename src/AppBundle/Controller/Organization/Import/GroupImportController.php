@@ -167,13 +167,18 @@ class GroupImportController extends Controller
                                 $trainingCollection[$trainingName] = $training;
                             }
 
-                            $grade = new Grade();
-                            $grade
-                                ->setInternalCode($calculatedGradeName)
-                                ->setName($calculatedGradeName)
-                                ->setTraining($training);
+                            $grade = $em->getRepository(Grade::class)->
+                                findOneBy(['internalCode' => $gradeName]);
 
-                            $em->persist($grade);
+                            if (null === $grade) {
+                                $grade = new Grade();
+                                $grade
+                                    ->setInternalCode($calculatedGradeName)
+                                    ->setName($calculatedGradeName)
+                                    ->setTraining($training);
+
+                                $em->persist($grade);
+                            }
                         }
                         $gradeCollection[$gradeName] = $grade;
                     }
