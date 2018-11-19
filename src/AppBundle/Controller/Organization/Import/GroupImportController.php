@@ -92,7 +92,22 @@ class GroupImportController extends Controller
 
         $trainingCollection = [];
         $gradeCollection = [];
+        $groupCollection = [];
         $collection = [];
+
+        // precargar los datos de la organización y del curso académico para evitar múltiples consultas
+        $items = $em->getRepository(Training::class)->findBy(['academicYear' => $academicYear]);
+        foreach($items as $item) {
+            $trainingCollection[$item->getInternalCode()] = $item;
+        }
+        $items = $em->getRepository(Grade::class)->findByAcademicYear($academicYear);
+        foreach($items as $item) {
+            $gradeCollection[$item->getInternalCode()] = $item;
+        }
+        $items = $em->getRepository(Group::class)->findByAcademicYear($academicYear);
+        foreach($items as $item) {
+            $groupCollection[$item->getInternalCode()] = $item;
+        }
 
         try {
             while ($data = $importer->get(100)) {
@@ -112,78 +127,98 @@ class GroupImportController extends Controller
                     if (isset($gradeCollection[$gradeName])) {
                         $grade = $gradeCollection[$gradeName];
                     } else {
-                        $grade = $em->getRepository(Grade::class)->findOneBy(['internalCode' => $gradeName]);
-                        if (null === $grade) {
-                            // Quedarnos con el primer elemento
-                            $trainings = explode(',', $gradeName);
-                            $gradeName = $trainings[0];
+                        // Quedarnos con el primer elemento
+                        $trainings = explode(',', $gradeName);
+                        $gradeName = $trainings[0];
 
-                            if (false === strpos($gradeName, 'F.P.')) {
-                                // Si no lleva la cadena F.P., eliminar el texto entre paréntesis y quitar 'de '
-                                // '2º de Bachillerato (Ciencias)' -> '2º de Bachillerato'
-                                $calculatedGradeName = trim(preg_replace('/\([^\)\(]*\)/', '', $gradeName));
-                                $calculatedGradeName = trim(preg_replace('/de /', '', $calculatedGradeName));
+                        if (false === strpos($gradeName, 'F.P.')) {
+                            // Si no lleva la cadena F.P., eliminar el texto entre paréntesis y quitar 'de '
+                            // '2º de Bachillerato (Ciencias)' -> '2º de Bachillerato'
+                            $calculatedGradeName = trim(preg_replace('/\([^\)\(]*\)/', '', $gradeName));
+                            $calculatedGradeName = trim(preg_replace('/de /', '', $calculatedGradeName));
 
-                                // Enseñanza: Si el texto lleva 'º ' quedarse con el texto que le sigue
-                                // '2º de Bachillerato (Ciencias)' -> 'Bachillerato'
-                                //
-                                // Si no, dejarlo tal cual
-                                if (false !== strpos($gradeName, 'º ')) {
-                                    preg_match('/º (.*)/u', $calculatedGradeName, $matches);
-                                    $trainingName = $matches[1];
-                                } else {
-                                    $trainingName = $calculatedGradeName;
-                                }
+                            // Enseñanza: Si el texto lleva 'º ' quedarse con el texto que le sigue
+                            // '2º de Bachillerato (Ciencias)' -> 'Bachillerato'
+                            //
+                            // Si no, dejarlo tal cual
+                            if (false !== strpos($gradeName, 'º ')) {
+                                preg_match('/º (.*)/u', $calculatedGradeName, $matches);
+                                $trainingName = $matches[1];
                             } else {
-                                // Si lleva la cadena F.P.
-                                //
-                                // Nivel: coger los dos primeros caracteres + texto entre paréntesis
-                                // '1º F.P.I.G.S. (Desarrollo de Aplicaciones Web)' ->
-                                // '1º Desarrollo de Aplicaciones Web'
-                                preg_match('/º.*(F\.P.*)\(([^\)\(]*)\)/u', $gradeName, $matches);
-                                $calculatedGradeName = mb_substr($gradeName, 0, 2) . ' ' . $matches[2];
-
-                                // Enseñanza: Coger el texto que empieza por F.P. + texto entre paréntesis
-                                // 'F.P.I.G.S. Desarrollo de Aplicaciones Web'
-                                $trainingName = $matches[1] . $matches[2];
+                                $trainingName = $calculatedGradeName;
                             }
+                        } else {
+                            // Si lleva la cadena F.P.
+                            //
+                            // Nivel: coger los dos primeros caracteres + texto entre paréntesis
+                            // '1º F.P.I.G.S. (Desarrollo de Aplicaciones Web)' ->
+                            // '1º Desarrollo de Aplicaciones Web'
+                            preg_match('/º.*(F\.P.*)\(([^\)\(]*)\)/u', $gradeName, $matches);
+                            $calculatedGradeName = mb_substr($gradeName, 0, 2) . ' ' . $matches[2];
 
-                            if (isset($trainingCollection[$trainingName])) {
-                                $training = $trainingCollection[$trainingName];
-                            } else {
-                                $training = $em->getRepository(Training::class)->
-                                    findOneBy(['internalCode' => $trainingName]);
-
-                                if (null === $training) {
-                                    $training = new Training();
-                                    $training
-                                        ->setAcademicYear($academicYear)
-                                        ->setInternalCode($trainingName)
-                                        ->setName($trainingName);
-
-                                    $em->persist($training);
-
-                                }
-                                $trainingCollection[$trainingName] = $training;
-                            }
-
-                            $grade = $em->getRepository(Grade::class)->
-                                findOneBy(['internalCode' => $gradeName]);
-
-                            if (null === $grade) {
-                                $grade = new Grade();
-                                $grade
-                                    ->setInternalCode($calculatedGradeName)
-                                    ->setName($calculatedGradeName)
-                                    ->setTraining($training);
-
-                                $em->persist($grade);
-                            }
+                            // Enseñanza: Coger el texto que empieza por F.P. + texto entre paréntesis
+                            // 'F.P.I.G.S. Desarrollo de Aplicaciones Web'
+                            $trainingName = $matches[1] . $matches[2];
                         }
+
+                        if (isset($trainingCollection[$trainingName])) {
+                            $training = $trainingCollection[$trainingName];
+                        } else {
+                            $training = $em->getRepository(Training::class)->findOneBy([
+                                'internalCode' => $trainingName,
+                                'academicYear' => $academicYear
+                            ]);
+
+                            if (null === $training) {
+                                $training = new Training();
+                                $training
+                                    ->setAcademicYear($academicYear)
+                                    ->setInternalCode($trainingName)
+                                    ->setName($trainingName);
+
+                                $em->persist($training);
+                            }
+                            $trainingCollection[$trainingName] = $training;
+                        }
+
+                        if (false === isset($gradeCollection[$calculatedGradeName])) {
+                            if ($training->getId()) {
+                                $grade = $em->getRepository(Grade::class)->findOneBy([
+                                    'internalCode' => $calculatedGradeName,
+                                    'training' => $training
+                                ]);
+                            } else {
+                                $grade = null;
+                            }
+                        } else {
+                            $grade = $gradeCollection[$calculatedGradeName];
+                        }
+
+
+                        if (null === $grade) {
+                            $grade = new Grade();
+                            $grade
+                                ->setInternalCode($calculatedGradeName)
+                                ->setName($calculatedGradeName)
+                                ->setTraining($training);
+                            $em->persist($grade);
+                        }
+
                         $gradeCollection[$gradeName] = $grade;
                     }
 
-                    $group = $em->getRepository(Group::class)->findOneBy(['internalCode' => $groupName]);
+                    $group = null;
+                    if ($grade->getId()) {
+                        if (false === isset($groupCollection[$groupName])) {
+                            $group = $em->getRepository(Group::class)->findOneBy([
+                                'internalCode' => $groupName,
+                                'grade' => $grade
+                            ]);
+                        } else {
+                            $group = $groupCollection[$groupName];
+                        }
+                    }
+
                     if (null === $group) {
                         $group = new Group();
                         $group
@@ -196,6 +231,7 @@ class GroupImportController extends Controller
                     } else {
                         $oldCount++;
                     }
+                    $groupCollection[$group->getInternalCode()] = $group;
                     $collection[] = $group;
                 }
             }

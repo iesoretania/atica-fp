@@ -21,7 +21,7 @@ namespace AppBundle\Entity\Edu;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\Edu\GradeRepository")
  * @ORM\Table(name="edu_grade")
  */
 class Grade
