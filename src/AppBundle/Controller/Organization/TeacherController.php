@@ -114,7 +114,7 @@ class TeacherController extends Controller
         $q = $request->get('q', null);
         if ($q) {
             $queryBuilder
-                ->where('u.id = :q')
+                ->andWhere('u.id = :q')
                 ->orWhere('u.loginUsername LIKE :tq')
                 ->orWhere('p.firstName LIKE :tq')
                 ->orWhere('p.lastName LIKE :tq')
@@ -122,6 +122,10 @@ class TeacherController extends Controller
                 ->setParameter('tq', '%'.$q.'%')
                 ->setParameter('q', $q);
         }
+
+        $queryBuilder
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear);
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -132,7 +136,7 @@ class TeacherController extends Controller
         $title = $this->get('translator')->trans('title.list', [], 'edu_teacher');
 
         return $this->render('organization/teacher/list.html.twig', [
-            'title' => $title,
+            'title' => $title . ' - ' . $academicYear,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'edu_teacher',

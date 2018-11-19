@@ -45,6 +45,9 @@ class TeacherImportController extends Controller
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $formData = new TeacherImport();
+        $formData->setAcademicYear($this->getDoctrine()
+            ->getRepository(AcademicYear::class)->getCurrentByOrganization($organization));
+
         $form = $this->createForm(TeacherImportType::class, $formData, [
             'organization' => $organization
         ]);
@@ -54,11 +57,15 @@ class TeacherImportController extends Controller
         $breadcrumb = [];
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $stats = $this->importTeachersFromCsv($formData->getFile()->getPathname(), $organization,
-                $formData->getAcademicYear(), [
-                'generate_password' => $formData->getGeneratePassword(),
-                'external_check' => $formData->isExternalPassword()
-            ]);
+            $stats = $this->importTeachersFromCsv(
+                $formData->getFile()->getPathname(),
+                $organization,
+                $formData->getAcademicYear(),
+                [
+                    'generate_password' => $formData->getGeneratePassword(),
+                    'external_check' => $formData->isExternalPassword()
+                ]
+            );
 
             if (null !== $stats) {
                 $this->addFlash('success', $this->get('translator')->trans('message.import_ok', [], 'import'));

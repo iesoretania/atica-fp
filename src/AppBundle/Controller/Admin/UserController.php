@@ -75,7 +75,6 @@ class UserController extends Controller
 
         $title = $this->get('translator')->trans($localUser->getId() ? 'title.edit' : 'title.new', [], 'user');
 
-
         $breadcrumb = [
             $localUser->getId() ?
                 ['fixed' => (string) $localUser] :

@@ -69,6 +69,11 @@ class Teacher
         $this->teachings = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return (string) $this->getPerson();
+    }
+
     /**
      * @return int
      */

@@ -13,8 +13,11 @@ menu.admin.organization.detail: Gestionar los centros educativos
 menu.organization: Gestión del centro
 menu.organization.detail: Administrar el centro educativo
 
-menu.organization.teacher: Gestionar profesorado
+menu.organization.teacher: Profesorado
 menu.organization.teacher.detail: Gestionar profesorado del centro
+
+menu.organization.academic_year: Cursos académicos
+menu.organization.academic_year.detail: Gestionar los cursos académicos del centro
 
 menu.organization.import: Importar
 menu.organization.import.detail: Importar datos desde Séneca

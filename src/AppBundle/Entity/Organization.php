@@ -35,7 +35,7 @@ class Organization
      * @ORM\Column(type="integer")
      * @var int
      */
-    private $id;
+    private $id = 0;
 
     /**
      * @ORM\Column(type="string")

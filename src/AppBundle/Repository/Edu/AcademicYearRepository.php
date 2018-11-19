@@ -18,24 +18,37 @@
 
 namespace AppBundle\Repository\Edu;
 
+use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\EducationalOrganization;
 use AppBundle\Entity\Organization;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
 
 class AcademicYearRepository extends EntityRepository
 {
-    public function getCurrentByOrganization(Organization $organization) {
-        try {
-            return $this->createQueryBuilder('ay')
-                ->where('ay.organization = :organization')
-                ->setParameter('organization', $organization)
-                ->orderBy('ay.description', 'DESC')
-                ->getQuery()
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
-        }
-        catch(NonUniqueResultException $e) {
-            return null;
-        }
+    public function getCurrentByOrganization(Organization $organization)
+    {
+        return $this->createQueryBuilder('ay')
+            ->join(EducationalOrganization::class, 'eo', 'WITH', 'ay = eo.currentAcademicYear')
+            ->where('eo.organization = :organization')
+            ->setParameter('organization', $organization)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findAllInListByIdAndOrganizationButCurrent(
+        $items,
+        Organization $organization,
+        AcademicYear $current
+    ) {
+        return $this->createQueryBuilder('ay')
+            ->where('ay.id IN (:items)')
+            ->andWhere('ay != :current')
+            ->andWhere('ay.organization = :organization')
+            ->setParameter('items', $items)
+            ->setParameter('current', $current)
+            ->setParameter('organization', $organization)
+            ->orderBy('ay.description')
+            ->getQuery()
+            ->getResult();
     }
 }

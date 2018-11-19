@@ -1,0 +1,38 @@
+form.description: Curso académico
+form.none: No especificado
+form.principal: Director/a
+form.financial_manager: Secretario/a
+form.save: Guardar cambios
+form.delete: Eliminar cursos seleccionados
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+form.switch: Activar
+
+table.new: Crear nuevo curso académico
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguiente cursos académicos? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.new: Nuevo curso académico
+title.edit: Curso académico
+title.delete: Eliminar cursos académicos
+
+title.list: Listado de cursos académicos
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay cursos definidos
+table.filter: Filtrar...
+
+table.active: Activado
+
+header.description: Curso académico
+header.principal: Director/a
+header.financial_manager: Secretario/a
+header.active: ¿Activo?
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Cursos académicos eliminados con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los elementos.
+message.switched: Activado el curso académico indicado.

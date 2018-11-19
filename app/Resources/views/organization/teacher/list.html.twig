@@ -31,7 +31,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if user %}{{ user.lastAccess ? teacher.user.lastAccess|date('format.datetime'|trans({}, 'general')) }}{% endif %}
+                        {% if user %}{{ user.lastAccess ? user.lastAccess|date('format.datetime'|trans({}, 'general')) }}{% endif %}
                     </td>
                 </tr>
             {% else %}

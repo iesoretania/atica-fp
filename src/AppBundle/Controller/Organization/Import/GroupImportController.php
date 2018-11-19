@@ -43,6 +43,9 @@ class GroupImportController extends Controller
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $formData = new GroupImport();
+        $formData->setAcademicYear($this->getDoctrine()
+            ->getRepository(AcademicYear::class)->getCurrentByOrganization($organization));
+
         $form = $this->createForm(GroupImportType::class, $formData, [
             'organization' => $organization
         ]);

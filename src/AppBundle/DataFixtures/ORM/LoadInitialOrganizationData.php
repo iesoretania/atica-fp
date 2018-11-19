@@ -19,6 +19,7 @@
 namespace AppBundle\DataFixtures\ORM;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\EducationalOrganization;
 use AppBundle\Entity\Organization;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -53,6 +54,13 @@ class LoadInitialOrganizationData extends AbstractFixture implements OrderedFixt
             ->setDescription($year . '-' . ($year + 1));
 
         $manager->persist($academicYear);
+
+        $educationalOrganization = new EducationalOrganization();
+        $educationalOrganization
+            ->setOrganization($organization)
+            ->setCurrentAcademicYear($academicYear);
+
+        $manager->persist($educationalOrganization);
 
         $manager->flush();
     }
