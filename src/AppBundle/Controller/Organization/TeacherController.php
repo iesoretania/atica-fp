@@ -20,6 +20,7 @@ namespace AppBundle\Controller\Organization;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
+use AppBundle\Form\Type\Edu\TeacherType;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -39,7 +40,46 @@ class TeacherController extends Controller
      */
     public function indexAction(Request $request, Teacher $teacher)
     {
-        return $this->redirectToRoute('frontpage');
+        $em = $this->getDoctrine()->getManager();
+
+        if (null === $teacher->getPerson()->getUser()) {
+            return $this->redirectToRoute(
+                'organization_teacher_list',
+                [
+                    'academic_year' => $teacher->getAcademicYear()
+                ]
+            );
+        }
+
+        $form = $this->createForm(TeacherType::class, $teacher);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $em->flush();
+                $this->addFlash('success', $this->get('translator')->trans('message.saved', [], 'edu_teacher'));
+                return $this->redirectToRoute('organization_teacher_list', [
+                    'academic_year' => $teacher->getAcademicYear()
+                ]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', $this->get('translator')->trans('message.error', [], 'edu_teacher'));
+            }
+        }
+
+        $title = $this->get('translator')->trans('title.edit', [], 'edu_teacher');
+
+        $breadcrumb = [
+            ['fixed' => (string) $teacher->getPerson()]
+        ];
+
+        return $this->render('organization/teacher/teacher_form.html.twig', [
+            'menu_path' => 'organization_teacher_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'form' => $form->createView(),
+            'user' => $teacher
+        ]);
     }
 
     /**
