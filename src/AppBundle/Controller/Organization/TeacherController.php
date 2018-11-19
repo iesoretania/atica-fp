@@ -20,8 +20,8 @@ namespace AppBundle\Controller\Organization;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
-use AppBundle\Entity\Membership;
 use AppBundle\Form\Type\Edu\TeacherType;
+use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -61,7 +61,7 @@ class TeacherController extends Controller
                 $em->flush();
                 $this->addFlash('success', $this->get('translator')->trans('message.saved', [], 'edu_teacher'));
                 return $this->redirectToRoute('organization_teacher_list', [
-                    'academic_year' => $teacher->getAcademicYear()
+                    'academicYear' => $teacher->getAcademicYear()
                 ]);
             } catch (\Exception $e) {
                 $this->addFlash('error', $this->get('translator')->trans('message.error', [], 'edu_teacher'));
@@ -84,8 +84,8 @@ class TeacherController extends Controller
     }
 
     /**
-     * @Route("/listar/{academic_year}/{page}", name="organization_teacher_list", requirements={"page" = "\d+"},
-     *     defaults={"academic_year" = null, "page" = 1},   methods={"GET"})
+     * @Route("/listar/{academicYear}/{page}", name="organization_teacher_list", requirements={"page" = "\d+"},
+     *     defaults={"academicYear" = null, "page" = 1},   methods={"GET"})
      */
     public function listAction(
         Request $request,
@@ -147,33 +147,18 @@ class TeacherController extends Controller
     /**
      * @Route("/eliminar/{academicYear}", name="organization_teacher_delete", methods={"POST"})
      */
-    public function deleteAction(Request $request, AcademicYear $academicYear)
+    public function deleteAction(Request $request, TeacherRepository $teacherRepository, AcademicYear $academicYear)
     {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
         $em = $this->getDoctrine()->getManager();
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $em->createQueryBuilder();
-
         $items = $request->request->get('users', []);
         if (count($items) === 0) {
-            return $this->redirectToRoute('organization_teacher_list');
+            return $this->redirectToRoute('organization_teacher_list', ['academicYear' => $academicYear->getId()]);
         }
 
-        $teachers = $queryBuilder
-            ->select('t')
-            ->from(Teacher::class, 't')
-            ->join('t.person', 'p')
-            ->join('p.user', 'u')
-            ->where('t.id IN (:items)')
-            ->andWhere('t.academicYear = :academic_year')
-            ->setParameter('items', $items)
-            ->setParameter('academic_year', $academicYear)
-            ->orderBy('p.firstName')
-            ->addOrderBy('p.lastName')
-            ->getQuery()
-            ->getResult();
+        $teachers = $teacherRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
         if ($request->get('confirm', '') === 'ok') {
             try {
@@ -189,13 +174,13 @@ class TeacherController extends Controller
             } catch (\Exception $e) {
                 $this->addFlash('error', $this->get('translator')->trans('message.delete_error', [], 'edu_teacher'));
             }
-            return $this->redirectToRoute('organization_teacher_list', ['academic_year' => $academicYear->getId()]);
+            return $this->redirectToRoute('organization_teacher_list', ['academicYear' => $academicYear->getId()]);
         }
 
         return $this->render('organization/teacher/delete.html.twig', [
             'menu_path' => 'organization_teacher_list',
-            'breadcrumb' => [['fixed' => $this->get('translator')->trans('title.delete', [], 'user')]],
-            'title' => $this->get('translator')->trans('title.delete', [], 'user'),
+            'breadcrumb' => [['fixed' => $this->get('translator')->trans('title.delete', [], 'edu_teacher')]],
+            'title' => $this->get('translator')->trans('title.delete', [], 'edu_teacher'),
             'teachers' => $teachers
         ]);
     }

@@ -19,6 +19,9 @@ menu.organization.teacher.detail: Gestionar profesorado del centro
 menu.organization.academic_year: Cursos académicos
 menu.organization.academic_year.detail: Gestionar los cursos académicos del centro
 
+menu.organization.group: Grupos de alumnado
+menu.organization.group.detail: Gestionar los grupos de alumnado del centro
+
 menu.organization.import: Importar
 menu.organization.import.detail: Importar datos desde Séneca
 

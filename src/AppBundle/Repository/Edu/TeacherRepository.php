@@ -19,40 +19,31 @@
 namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\Group;
+use AppBundle\Entity\Edu\Teacher;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-class GroupRepository extends ServiceEntityRepository
+class TeacherRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Group::class);
-    }
-
-    public function findByAcademicYear(AcademicYear $academicYear)
-    {
-        return $this->createQueryBuilder('g')
-            ->innerJoin('g.grade', 'gr')
-            ->innerJoin('gr.training', 't')
-            ->where('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear)
-            ->getQuery()
-            ->getResult();
+        parent::__construct($registry, Teacher::class);
     }
 
     public function findAllInListByIdAndAcademicYear(
         $items,
         AcademicYear $academicYear
     ) {
-        return $this->createQueryBuilder('g')
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 't')
-            ->where('g.id IN (:items)')
+        return $this->createQueryBuilder('t')
+            ->join('t.person', 'p')
+            ->join('p.user', 'u')
+            ->where('t.id IN (:items)')
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('items', $items)
             ->setParameter('academic_year', $academicYear)
-            ->orderBy('g.name')
+            ->orderBy('p.firstName')
+            ->addOrderBy('p.lastName')
             ->getQuery()
             ->getResult();
     }

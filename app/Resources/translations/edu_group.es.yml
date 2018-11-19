@@ -1,0 +1,36 @@
+form.grade: Nivel
+form.internal_code: Código Séneca
+form.name: Nombre
+form.tutors: Tutores
+form.students: Estudiantes
+
+form.save: Guardar cambios
+form.delete: Eliminar los grupos seleccionados
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nuevo grupo
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes grupos? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos del grupo
+title.delete: Eliminar grupos
+
+title.list: Listado de grupos
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay grupos
+table.filter: Filtrar...
+
+header.name: Nombre
+header.grade: Nivel
+header.training: Enseñanza
+header.tutors: Tutores
+header.students: Estudiantes
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Grupos eliminados del centro.
+message.delete_error: Ha ocurrido un error al eliminar los grupos del centro.

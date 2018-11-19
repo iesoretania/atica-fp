@@ -49,5 +49,3 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Profesorado eliminado del centro.
 message.delete_error: Ha ocurrido un error al eliminar el profesorado del centro.
-
-role.global_administrator: Administrador global

@@ -90,7 +90,7 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('organization_teacher_list')
                 ->setCaption('menu.organization.teacher')
                 ->setDescription('menu.organization.teacher.detail')
-                ->setIcon('chalkboard-teacher');
+                ->setIcon('graduation-cap');
 
             $menu1->addChild($menu2);
 
@@ -101,6 +101,16 @@ class CoreMenu implements MenuBuilderInterface
                 ->setCaption('menu.organization.academic_year')
                 ->setDescription('menu.organization.academic_year.detail')
                 ->setIcon('calendar-alt');
+
+            $menu1->addChild($menu2);
+
+            $menu2 = new MenuItem();
+            $menu2
+                ->setName('organization_group')
+                ->setRouteName('organization_group_list')
+                ->setCaption('menu.organization.group')
+                ->setDescription('menu.organization.group.detail')
+                ->setIcon('chalkboard-teacher');
 
             $menu1->addChild($menu2);
 

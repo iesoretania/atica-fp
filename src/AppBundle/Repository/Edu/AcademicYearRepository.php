@@ -42,6 +42,16 @@ class AcademicYearRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findAllByOrganization(Organization $organization)
+    {
+        return $this->createQueryBuilder('ay')
+            ->andWhere('ay.organization = :organization')
+            ->setParameter('organization', $organization)
+            ->orderBy('ay.description', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllInListByIdAndOrganizationButCurrent(
         $items,
         Organization $organization,
