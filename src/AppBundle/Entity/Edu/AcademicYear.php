@@ -22,7 +22,7 @@ use AppBundle\Entity\Organization;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\Edu\AcademicYearRepository")
  * @ORM\Table(name="edu_academic_year")
  */
 class AcademicYear

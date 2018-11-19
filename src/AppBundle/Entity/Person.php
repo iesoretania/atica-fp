@@ -65,6 +65,12 @@ class Person
     private $gender;
 
     /**
+     * @ORM\OneToOne(targetEntity="User", mappedBy="person")
+     * @var User|null
+     */
+    private $user;
+
+    /**
      * Convertir usuario en cadena
      *
      * @return string
@@ -159,5 +165,13 @@ class Person
     {
         $this->gender = $gender;
         return $this;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

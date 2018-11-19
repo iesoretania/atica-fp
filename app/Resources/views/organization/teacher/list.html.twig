@@ -1,0 +1,57 @@
+{% trans_default_domain 'edu_teacher' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('organization_import_teacher_form') }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-40"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-20">{{ 'header.username'|trans }}</th>
+    <th class="w-20">{{ 'header.email'|trans }}</th>
+    <th class="w-20">{{ 'header.last_login'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for teacher in pager %}
+                {% set url = path('organization_teacher_edit', {'id': teacher.id}) %}
+                {% set person = teacher.person %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="users[]" value="{{ teacher.id }}" class="selectable"> <a href="{{ url }}">{{ person.lastName }}, {{ teacher.person.firstName }}</a></label>
+                    </td>
+                    {% set user = person.user %}
+                    <td>
+                        {% if user %}<a href="{{ url }}">{{ user.loginUsername }}</a>{% if user.externalCheck and user.allowExternalCheck %} <i class="fas fa-sign-out"></i>{% endif -%}{% endif %}
+                    </td>
+                    <td>
+                        {% if user %}
+                        <a href="{{ url }}">
+                            {{ user.emailAddress }}
+                        </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user %}{{ user.lastAccess ? teacher.user.lastAccess|date('format.datetime'|trans({}, 'general')) }}{% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">{{ 'table.no_users'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('organization_teacher_delete') }}" method="post">
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academic_year': academic_year.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}

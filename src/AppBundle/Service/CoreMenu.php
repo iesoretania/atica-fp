@@ -86,6 +86,16 @@ class CoreMenu implements MenuBuilderInterface
 
             $menu2 = new MenuItem();
             $menu2
+                ->setName('organization_teacher')
+                ->setRouteName('organization_teacher_list')
+                ->setCaption('menu.organization.teacher')
+                ->setDescription('menu.organization.teacher.detail')
+                ->setIcon('chalkboard-teacher');
+
+            $menu1->addChild($menu2);
+
+            $menu2 = new MenuItem();
+            $menu2
                 ->setName('organization_import')
                 ->setRouteName('organization_import')
                 ->setCaption('menu.organization.import')

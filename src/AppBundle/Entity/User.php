@@ -45,7 +45,7 @@ class User implements AdvancedUserInterface
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="Person")
+     * @ORM\OneToOne(targetEntity="Person", inversedBy="user")
      * @ORM\JoinColumn(unique=true)
      * @var Person
      */

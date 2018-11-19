@@ -13,14 +13,17 @@ menu.admin.organization.detail: Gestionar los centros educativos
 menu.organization: Gestión del centro
 menu.organization.detail: Administrar el centro educativo
 
+menu.organization.teacher: Gestionar profesorado
+menu.organization.teacher.detail: Gestionar profesorado del centro
+
 menu.organization.import: Importar
 menu.organization.import.detail: Importar datos desde Séneca
 
-menu.organization.import.teacher: Profesorado
+menu.organization.import.teacher: Importar profesorado
 menu.organization.import.teacher.detail: Importar profesorado desde Séneca
 
-menu.organization.import.group: Grupos de alumnado
-menu.organization.import.group.detail: Importar grupos desde Séneca
+menu.organization.import.group: Importar grupos
+menu.organization.import.group.detail: Importar grupos de alumnado desde Séneca
 
 menu.organization.import.department: Departamentos
 menu.organization.import.department.detail: Importar departamentos desde Séneca
