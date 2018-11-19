@@ -82,7 +82,7 @@ class UserController extends Controller
                 ['fixed' => $this->get('translator')->trans('title.new', [], 'user')]
         ];
 
-        return $this->render('admin/user/user_form.html.twig', [
+        return $this->render('admin/user/form.html.twig', [
             'menu_path' => 'admin_user_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,

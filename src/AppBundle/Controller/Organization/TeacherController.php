@@ -20,6 +20,7 @@ namespace AppBundle\Controller\Organization;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
+use AppBundle\Entity\Membership;
 use AppBundle\Form\Type\Edu\TeacherType;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Service\UserExtensionService;
@@ -73,7 +74,7 @@ class TeacherController extends Controller
             ['fixed' => (string) $teacher->getPerson()]
         ];
 
-        return $this->render('organization/teacher/teacher_form.html.twig', [
+        return $this->render('organization/teacher/form.html.twig', [
             'menu_path' => 'organization_teacher_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
@@ -140,10 +141,58 @@ class TeacherController extends Controller
     }
 
     /**
-     * @Route("/eliminar", name="organization_teacher_delete", methods={"POST"})
+     * @Route("/eliminar/{academicYear}", name="organization_teacher_delete", methods={"POST"})
      */
-    public function deleteAction(Request $request)
+    public function deleteAction(Request $request, AcademicYear $academicYear)
     {
-        return $this->redirectToRoute('frontpage');
+        $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
+
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $em->createQueryBuilder();
+
+        $items = $request->request->get('users', []);
+        if (count($items) === 0) {
+            return $this->redirectToRoute('organization_teacher_list');
+        }
+
+        $teachers = $queryBuilder
+            ->select('t')
+            ->from(Teacher::class, 't')
+            ->join('t.person', 'p')
+            ->join('p.user', 'u')
+            ->where('t.id IN (:items)')
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('items', $items)
+            ->setParameter('academic_year', $academicYear)
+            ->orderBy('p.firstName')
+            ->addOrderBy('p.lastName')
+            ->getQuery()
+            ->getResult();
+
+        if ($request->get('confirm', '') === 'ok') {
+            try {
+                $em->createQueryBuilder()
+                    ->delete(Teacher::class, 't')
+                    ->where('t IN (:items)')
+                    ->setParameter('items', $items)
+                    ->getQuery()
+                    ->execute();
+
+                $em->flush();
+                $this->addFlash('success', $this->get('translator')->trans('message.deleted', [], 'edu_teacher'));
+            } catch (\Exception $e) {
+                $this->addFlash('error', $this->get('translator')->trans('message.delete_error', [], 'edu_teacher'));
+            }
+            return $this->redirectToRoute('organization_teacher_list', ['academic_year' => $academicYear->getId()]);
+        }
+
+        return $this->render('organization/teacher/delete.html.twig', [
+            'menu_path' => 'organization_teacher_list',
+            'breadcrumb' => [['fixed' => $this->get('translator')->trans('title.delete', [], 'user')]],
+            'title' => $this->get('translator')->trans('title.delete', [], 'user'),
+            'teachers' => $teachers
+        ]);
     }
 }
