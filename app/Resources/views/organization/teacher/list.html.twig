@@ -42,7 +42,7 @@
 {% endblock %}
 
 {% block before_table %}
-    <form action="{{ path('organization_teacher_delete') }}" method="post">
+    <form action="{{ path('organization_teacher_delete', {'academicYear': academic_year.id}) }}" method="post">
 {% endblock %}
 
 {% block pagerfanta %}
