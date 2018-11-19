@@ -20,13 +20,20 @@ namespace AppBundle\Repository;
 
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\User;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class UserRepository extends EntityRepository implements UserLoaderInterface
+class UserRepository extends ServiceEntityRepository implements UserLoaderInterface
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, User::class);
+    }
+
     /**
      * Loads the user for the given username.
      *
@@ -41,15 +48,20 @@ class UserRepository extends EntityRepository implements UserLoaderInterface
         if (!$username) {
             return null;
         }
-        return $this->getEntityManager()
-            ->createQuery('SELECT u FROM AppBundle:User u
+        try {
+            return $this->getEntityManager()
+                ->createQuery('SELECT u FROM AppBundle:User u
                            WHERE u.loginUsername = :username
                            OR u.emailAddress = :username')
-            ->setParameters([
-                'username' => $username
-            ])
-            ->setMaxResults(1)
-            ->getOneOrNullResult();
+                ->setParameters([
+                    'username' => $username
+                ])
+                ->setMaxResults(1)
+                ->getOneOrNullResult();
+        }
+        catch(NonUniqueResultException $e) {
+            return null;
+        }
     }
 
     /**

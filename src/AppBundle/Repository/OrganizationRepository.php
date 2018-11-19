@@ -20,10 +20,16 @@ namespace AppBundle\Repository;
 
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\User;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
-class OrganizationRepository extends EntityRepository
+class OrganizationRepository extends ServiceEntityRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Organization::class);
+    }
+
     /**
      * Devuelve las organizaciones a las que pertenece el usuario en la fecha indicada.
      * Si no se especifica fecha, se devuelven todas a las que pertenece.

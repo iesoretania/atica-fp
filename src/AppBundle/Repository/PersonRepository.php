@@ -19,10 +19,17 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Organization;
-use Doctrine\ORM\EntityRepository;
+use AppBundle\Entity\Person;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
-class PersonRepository extends EntityRepository
+class PersonRepository extends ServiceEntityRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Person::class);
+    }
+
     public function findAllByOrganizationSorted(Organization $organization)
     {
         return $this->createQueryBuilder('p')

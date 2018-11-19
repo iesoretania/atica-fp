@@ -19,11 +19,20 @@
 namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use Doctrine\ORM\EntityRepository;
+use AppBundle\Entity\Edu\Grade;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
-class GradeRepository extends EntityRepository
+class GradeRepository extends ServiceEntityRepository
 {
-    public function findByAcademicYear(AcademicYear $academicYear) {
+
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Grade::class);
+    }
+
+    public function findByAcademicYear(AcademicYear $academicYear)
+    {
         return $this->createQueryBuilder('g')
             ->innerJoin('g.training', 't')
             ->where('t.academicYear = :academic_year')

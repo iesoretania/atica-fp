@@ -21,10 +21,17 @@ namespace AppBundle\Repository\Edu;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\EducationalOrganization;
 use AppBundle\Entity\Organization;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
-class AcademicYearRepository extends EntityRepository
+class AcademicYearRepository extends ServiceEntityRepository
 {
+
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, AcademicYear::class);
+    }
+
     public function getCurrentByOrganization(Organization $organization)
     {
         return $this->createQueryBuilder('ay')
