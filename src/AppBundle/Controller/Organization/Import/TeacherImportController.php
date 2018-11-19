@@ -18,6 +18,8 @@
 
 namespace AppBundle\Controller\Organization\Import;
 
+use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Membership;
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
@@ -43,14 +45,17 @@ class TeacherImportController extends Controller
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $formData = new TeacherImport();
-        $form = $this->createForm(TeacherImportType::class, $formData);
+        $form = $this->createForm(TeacherImportType::class, $formData, [
+            'organization' => $organization
+        ]);
         $form->handleRequest($request);
 
         $stats = null;
         $breadcrumb = [];
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $stats = $this->importTeachersFromCsv($formData->getFile()->getPathname(), $organization, [
+            $stats = $this->importTeachersFromCsv($formData->getFile()->getPathname(), $organization,
+                $formData->getAcademicYear(), [
                 'generate_password' => $formData->getGeneratePassword(),
                 'external_check' => $formData->isExternalPassword()
             ]);
@@ -79,7 +84,7 @@ class TeacherImportController extends Controller
      * @param array $options
      * @return array|null
      */
-    private function importTeachersFromCsv($file, Organization $organization, $options = [])
+    private function importTeachersFromCsv($file, Organization $organization, AcademicYear $academicYear, $options = [])
     {
         $generatePassword = isset($options['generate_password']) && $options['generate_password'];
         $external = isset($options['external_check']) && $options['external_check'];
@@ -104,7 +109,7 @@ class TeacherImportController extends Controller
                     }
                     $userName = $userData['Usuario IdEA'];
 
-                    $user = $em->getRepository('AppBundle:User')->findOneBy(['loginUsername' => $userName]);
+                    $user = $em->getRepository(User::class)->findOneBy(['loginUsername' => $userName]);
                     $alreadyProcessed = isset($userCollection[$userName]);
 
                     if (null === $user) {
@@ -163,7 +168,7 @@ class TeacherImportController extends Controller
                     }
 
                     /** @var Membership $membership */
-                    $membership = $em->getRepository('AppBundle:Membership')->findOneBy([
+                    $membership = $em->getRepository(Membership::class)->findOneBy([
                         'organization' => $organization,
                         'user' => $user,
                         'validFrom' => $validFrom
@@ -185,6 +190,18 @@ class TeacherImportController extends Controller
                             ->setValidUntil($validUntil);
 
                         $existingMemberships++;
+                    }
+
+                    $teacher = $em->getRepository(Teacher::class)->findOneBy([
+                        'academicYear' => $academicYear
+                    ]);
+
+                    if (null === $teacher) {
+                        $teacher = new Teacher();
+                        $teacher
+                            ->setAcademicYear($academicYear)
+                            ->setPerson($user->getPerson());
+                        $em->persist($teacher);
                     }
                 }
             }

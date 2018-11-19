@@ -18,11 +18,17 @@
 
 namespace AppBundle\Form\Model;
 
+use AppBundle\Entity\Edu\AcademicYear;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class TeacherImport
 {
+    /**
+     * @var AcademicYear
+     */
+    private $academicYear;
+
     /**
      * @Assert\File
      * @var UploadedFile
@@ -46,6 +52,24 @@ class TeacherImport
     {
         $this->generatePassword = false;
         $this->externalPassword = true;
+    }
+
+    /**
+     * @return AcademicYear
+     */
+    public function getAcademicYear()
+    {
+        return $this->academicYear;
+    }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @return TeacherImport
+     */
+    public function setAcademicYear($academicYear)
+    {
+        $this->academicYear = $academicYear;
+        return $this;
     }
 
     /**

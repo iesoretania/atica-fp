@@ -20,7 +20,10 @@
 
 namespace AppBundle\Form\Type\Import;
 
+use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Form\Model\TeacherImport;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -36,6 +39,17 @@ class TeacherImportType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('academicYear', EntityType::class, [
+                'label' => 'form.group.academic_year',
+                'class' => AcademicYear::class,
+                'query_builder' => function (EntityRepository $er) use ($options) {
+                    return $er->createQueryBuilder('a')
+                        ->andWhere('a.organization = :organization')
+                        ->orderBy('a.description', 'DESC')
+                        ->setParameter('organization', $options['organization']);
+                },
+                'required' => true
+            ])
             ->add('file', FileType::class, [
                 'label' => 'form.file',
                 'required' => true
@@ -67,6 +81,7 @@ class TeacherImportType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => TeacherImport::class,
+            'organization' => null,
             'translation_domain' => 'import'
         ]);
     }
