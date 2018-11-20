@@ -19,6 +19,7 @@
 namespace AppBundle\Entity\Edu;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -159,7 +160,7 @@ class Group
     }
 
     /**
-     * @return Teacher[]
+     * @return Teacher[]|Collection
      */
     public function getTutors()
     {

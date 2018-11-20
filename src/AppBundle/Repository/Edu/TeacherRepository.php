@@ -22,6 +22,7 @@ use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
 
 class TeacherRepository extends ServiceEntityRepository
 {
@@ -42,6 +43,25 @@ class TeacherRepository extends ServiceEntityRepository
             ->addOrderBy('p.firstName')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findByAcademicYearAndInternalCode(AcademicYear $academicYear, $internalCode)
+    {
+        try {
+            return $this->createQueryBuilder('t')
+                ->join('t.person', 'p')
+                ->join('p.user', 'u')
+                ->andWhere('t.academicYear = :academic_year')
+                ->andWhere('p.internalCode = :internal_code')
+                ->setParameter('academic_year', $academicYear)
+                ->setParameter('internal_code', $internalCode)
+                ->getQuery()
+                ->setMaxResults(1)
+                ->getOneOrNullResult();
+        }
+        catch(NonUniqueResultException $e) {
+            return null;
+        }
     }
 
     public function findAllInListByIdAndAcademicYear(

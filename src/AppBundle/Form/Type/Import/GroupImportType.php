@@ -62,6 +62,15 @@ class GroupImportType extends AbstractType
                     'form.group.restricted.yes' => true,
                     'form.group.restricted.no' => false
                 ]
+            ])
+            ->add('extractTutors', ChoiceType::class, [
+                'label' => 'form.group.extract_tutors',
+                'required' => true,
+                'expanded' => true,
+                'choices' => [
+                    'form.group.extract_tutors.yes' => true,
+                    'form.group.extract_tutors.no' => false
+                ]
             ]);
     }
 

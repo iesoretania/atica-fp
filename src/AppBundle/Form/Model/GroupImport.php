@@ -40,9 +40,15 @@ class GroupImport
      */
     private $restricted;
 
+    /**
+     * @var bool
+     */
+    private $extractTutors;
+
     public function __construct()
     {
         $this->restricted = true;
+        $this->extractTutors = true;
     }
 
     /**
@@ -96,6 +102,24 @@ class GroupImport
     public function setRestricted($restricted)
     {
         $this->restricted = $restricted;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExtractTutors()
+    {
+        return $this->extractTutors;
+    }
+
+    /**
+     * @param bool $extractTutors
+     * @return GroupImport
+     */
+    public function setExtractTutors($extractTutors)
+    {
+        $this->extractTutors = $extractTutors;
         return $this;
     }
 }

@@ -24,6 +24,7 @@ use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Form\Model\GroupImport;
 use AppBundle\Form\Type\Import\GroupImportType;
+use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use AppBundle\Utils\CsvImporter;
@@ -37,7 +38,7 @@ class GroupImportController extends Controller
     /**
      * @Route("/centro/importar/grupo", name="organization_import_group_form", methods={"GET", "POST"})
      */
-    public function indexAction(UserExtensionService $userExtensionService, Request $request)
+    public function indexAction(UserExtensionService $userExtensionService, TeacherRepository $teacherRepository, Request $request)
     {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
@@ -55,9 +56,13 @@ class GroupImportController extends Controller
         $breadcrumb = [];
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $stats = $this->importFromCsv($formData->getFile()->getPathname(), $formData->getAcademicYear(), [
-                'restricted' => $formData->isRestricted()
-            ]);
+            $stats = $this->importFromCsv($formData->getFile()->getPathname(), $formData->getAcademicYear(),
+                $teacherRepository,
+                [
+                    'restricted' => $formData->isRestricted(),
+                    'extract_tutors' => $formData->isExtractTutors()
+                ]
+            );
 
             if (null !== $stats) {
                 $this->addFlash('success', $this->get('translator')->trans('message.import_ok', [], 'import'));
@@ -79,10 +84,11 @@ class GroupImportController extends Controller
     /**
      * @param string $file
      * @param AcademicYear $academicYear
+     * @param TeacherRepository $teacherRepository
      * @param array $options
      * @return array|null
      */
-    private function importFromCsv($file, AcademicYear $academicYear, $options = [])
+    private function importFromCsv($file, AcademicYear $academicYear, TeacherRepository $teacherRepository, $options = [])
     {
         $newCount = 0;
         $oldCount = 0;
@@ -233,6 +239,26 @@ class GroupImportController extends Controller
                         $newCount++;
                     } else {
                         $oldCount++;
+                    }
+
+                    // tutores
+                    if ($options['extract_tutors']) {
+                        preg_match_all('/\b(.*) \(.*\)/U', $groupData['Tutor/a'], $matches, PREG_SET_ORDER, 0);
+
+                        $matches = array_map(function($element) {
+                            return $element[1];
+                        }, $matches);
+                        $matches = array_unique($matches);
+
+                        if (null !== $matches) {
+                            foreach ($matches as $tutor) {
+                                $teacher = $teacherRepository->findByAcademicYearAndInternalCode($academicYear, $tutor);
+
+                                if ($teacher && false === $group->getTutors()->contains($teacher)) {
+                                    $group->getTutors()->add($teacher);
+                                }
+                            }
+                        }
                     }
                     $groupCollection[$group->getInternalCode()] = $group;
                     $collection[] = $group;

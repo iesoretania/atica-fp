@@ -31,6 +31,10 @@ class GradeRepository extends ServiceEntityRepository
         parent::__construct($registry, Grade::class);
     }
 
+    /**
+     * @param AcademicYear $academicYear
+     * @return Grade[]
+     */
     public function findByAcademicYear(AcademicYear $academicYear)
     {
         return $this->createQueryBuilder('g')

@@ -23,6 +23,7 @@ use AppBundle\Entity\Edu\EducationalOrganization;
 use AppBundle\Entity\Organization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
 
 class AcademicYearRepository extends ServiceEntityRepository
 {
@@ -32,14 +33,23 @@ class AcademicYearRepository extends ServiceEntityRepository
         parent::__construct($registry, AcademicYear::class);
     }
 
-    public function getCurrentByOrganization(Organization $organization)
+    public function getCurrentByOrganization(Organization $organization = null)
     {
-        return $this->createQueryBuilder('ay')
-            ->join(EducationalOrganization::class, 'eo', 'WITH', 'ay = eo.currentAcademicYear')
-            ->where('eo.organization = :organization')
-            ->setParameter('organization', $organization)
-            ->getQuery()
-            ->getOneOrNullResult();
+        if (null === $organization) {
+            return null;
+        }
+
+        try {
+            return $this->createQueryBuilder('ay')
+                ->join(EducationalOrganization::class, 'eo', 'WITH', 'ay = eo.currentAcademicYear')
+                ->where('eo.organization = :organization')
+                ->setParameter('organization', $organization)
+                ->getQuery()
+                ->getOneOrNullResult();
+        }
+        catch(NonUniqueResultException $e) {
+            return null;
+        }
     }
 
     public function findAllByOrganization(Organization $organization)

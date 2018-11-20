@@ -30,6 +30,10 @@ class GroupRepository extends ServiceEntityRepository
         parent::__construct($registry, Group::class);
     }
 
+    /**
+     * @param AcademicYear $academicYear
+     * @return Group[]
+     */
     public function findByAcademicYear(AcademicYear $academicYear)
     {
         return $this->createQueryBuilder('g')
@@ -41,6 +45,11 @@ class GroupRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @param $items
+     * @param AcademicYear $academicYear
+     * @return Group[]
+     */
     public function findAllInListByIdAndAcademicYear(
         $items,
         AcademicYear $academicYear
