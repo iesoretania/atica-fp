@@ -21,6 +21,7 @@ namespace AppBundle\Security\Edu;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\User;
+use AppBundle\Service\UserExtensionService;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
@@ -39,10 +40,17 @@ class AcademicYearVoter extends Voter
      */
     private $managerRegistry;
 
-    public function __construct(AccessDecisionManagerInterface $decisionManager, ManagerRegistry $managerRegistry)
-    {
+    /** @var UserExtensionService $userExtensionService */
+    private $userExtensionService;
+
+    public function __construct(
+        AccessDecisionManagerInterface $decisionManager,
+        ManagerRegistry $managerRegistry,
+        UserExtensionService $userExtensionService
+    ) {
         $this->decisionManager = $decisionManager;
         $this->managerRegistry = $managerRegistry;
+        $this->userExtensionService = $userExtensionService;
     }
 
     /**
@@ -68,6 +76,11 @@ class AcademicYearVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         if (!$subject instanceof AcademicYear) {
+            return false;
+        }
+
+        // si el curso académico no pertenece a la organización actual, denegar
+        if ($subject->getOrganization() !== $this->userExtensionService->getCurrentOrganization()) {
             return false;
         }
 

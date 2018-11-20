@@ -101,12 +101,13 @@ class GradeController extends Controller
         $page = 1,
         AcademicYear $academicYear = null
     ) {
-        $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
-
         if (null === $academicYear) {
+            $organization = $userExtensionService->getCurrentOrganization();
             $academicYear = $academicYearRepository->getCurrentByOrganization($organization);
         }
+
+        $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
+
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
 

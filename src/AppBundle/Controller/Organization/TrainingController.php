@@ -58,6 +58,8 @@ class TrainingController extends Controller
             $training
                 ->setAcademicYear($academicYearRepository->getCurrentByOrganization($organization));
             $em->persist($training);
+        } else {
+            $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $training->getAcademicYear());
         }
 
         $form = $this->createForm(TrainingType::class, $training);
@@ -107,12 +109,13 @@ class TrainingController extends Controller
         $page = 1,
         AcademicYear $academicYear = null
     ) {
-        $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
-
         if (null === $academicYear) {
+            $organization = $userExtensionService->getCurrentOrganization();
             $academicYear = $academicYearRepository->getCurrentByOrganization($organization);
         }
+
+        $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
+
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
 
@@ -155,10 +158,15 @@ class TrainingController extends Controller
      */
     public function deleteAction(
         Request $request,
+        UserExtensionService $userExtensionService,
         TrainingRepository $trainingRepository,
         AcademicYear $academicYear
     ) {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
+
+        if ($academicYear->getOrganization() !== $userExtensionService->getCurrentOrganization()) {
+            return $this->createNotFoundException();
+        }
 
         $em = $this->getDoctrine()->getManager();
 

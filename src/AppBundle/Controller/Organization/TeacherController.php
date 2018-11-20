@@ -52,6 +52,8 @@ class TeacherController extends Controller
             );
         }
 
+        $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $teacher->getAcademicYear());
+
         $form = $this->createForm(TeacherType::class, $teacher);
 
         $form->handleRequest($request);
