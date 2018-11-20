@@ -61,6 +61,12 @@ class Training
      */
     private $competencies;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Department")
+     * @var Department|null
+     */
+    private $department;
+
     public function __construct()
     {
         $this->competencies = new ArrayCollection();
@@ -139,5 +145,23 @@ class Training
     public function getCompetencies()
     {
         return $this->competencies;
+    }
+
+    /**
+     * @return Department|null
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
+    /**
+     * @param Department|null $department
+     * @return Training
+     */
+    public function setDepartment($department = null)
+    {
+        $this->department = $department;
+        return $this;
     }
 }
