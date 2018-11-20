@@ -1,0 +1,46 @@
+{% trans_default_domain 'edu_department' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('organization_department_new') }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-40"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-40">{{ 'header.head'|trans }}</th>
+    <th class="w-20"></th>
+{% endblock %}
+
+{% block table_body %}
+            {% for department in pager %}
+                {% set url = path('organization_department_edit', {'id': department.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ department.id }}" class="selectable"> <a href="{{ url }}">{{ department.name }}</a></label>
+                    </td>
+                    <td>
+                        {{ department.head|default('') }}
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('organization_department_delete', {'academicYear': academic_year.id}) }}" method="post">
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}

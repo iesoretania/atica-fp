@@ -41,6 +41,12 @@ class Department
     private $name;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var string
+     */
+    private $internalCode;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AcademicYear")
      * @ORM\JoinColumn(nullable=false)
      * @var AcademicYear
@@ -53,6 +59,12 @@ class Department
      * @var Teacher
      */
     private $head;
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
 
     /**
      * @return int
@@ -77,6 +89,24 @@ class Department
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInternalCode()
+    {
+        return $this->internalCode;
+    }
+
+    /**
+     * @param string $internalCode
+     * @return Department
+     */
+    public function setInternalCode($internalCode)
+    {
+        $this->internalCode = $internalCode;
         return $this;
     }
 

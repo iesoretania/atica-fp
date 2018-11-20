@@ -45,4 +45,23 @@ class DepartmentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $items
+     * @param AcademicYear $academicYear
+     * @return Department[]
+     */
+    public function findAllInListByIdAndAcademicYear(
+        $items,
+        AcademicYear $academicYear
+    ) {
+        return $this->createQueryBuilder('d')
+            ->where('d.id IN (:items)')
+            ->andWhere('d.academicYear = :academic_year')
+            ->setParameter('items', $items)
+            ->setParameter('academic_year', $academicYear)
+            ->orderBy('d.name')
+            ->getQuery()
+            ->getResult();
+    }
 }
