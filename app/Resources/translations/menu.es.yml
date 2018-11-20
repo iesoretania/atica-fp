@@ -25,6 +25,9 @@ menu.organization.group.detail: Gestionar los grupos de alumnado del centro
 menu.organization.grade: Niveles
 menu.organization.grade.detail: Gestionar los niveles de enseñanza
 
+menu.organization.training: Enseñanzas
+menu.organization.training.detail: Gestionar las enseñanzas del centro
+
 menu.organization.import: Importar
 menu.organization.import.detail: Importar datos desde Séneca
 
