@@ -28,4 +28,14 @@ class MembershipRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Membership::class);
     }
+
+    public function deleteOldMemberships(\DateTime $date)
+    {
+        $this->createQueryBuilder('m')
+            ->delete(Membership::class, 'm')
+            ->where('m.validUntil < :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->execute();
+    }
 }

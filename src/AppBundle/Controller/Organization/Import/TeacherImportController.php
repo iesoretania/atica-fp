@@ -26,6 +26,7 @@ use AppBundle\Entity\Person;
 use AppBundle\Entity\User;
 use AppBundle\Form\Model\TeacherImport;
 use AppBundle\Form\Type\Import\TeacherImportType;
+use AppBundle\Repository\MembershipRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use AppBundle\Utils\CsvImporter;
@@ -39,8 +40,11 @@ class TeacherImportController extends Controller
     /**
      * @Route("/centro/importar/profesorado", name="organization_import_teacher_form", methods={"GET", "POST"})
      */
-    public function indexAction(UserExtensionService $userExtensionService, Request $request)
-    {
+    public function indexAction(
+        UserExtensionService $userExtensionService,
+        MembershipRepository $membershipRepository,
+        Request $request
+    ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -59,6 +63,7 @@ class TeacherImportController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $stats = $this->importTeachersFromCsv(
                 $formData->getFile()->getPathname(),
+                $membershipRepository,
                 $organization,
                 $formData->getAcademicYear(),
                 [
@@ -87,12 +92,19 @@ class TeacherImportController extends Controller
 
     /**
      * @param string $file
+     * @param MembershipRepository $membershipRepository
      * @param Organization $organization
+     * @param AcademicYear $academicYear
      * @param array $options
      * @return array|null
      */
-    private function importTeachersFromCsv($file, Organization $organization, AcademicYear $academicYear, $options = [])
-    {
+    private function importTeachersFromCsv(
+        $file,
+        MembershipRepository $membershipRepository,
+        Organization $organization,
+        AcademicYear $academicYear,
+        $options = []
+    ) {
         $generatePassword = isset($options['generate_password']) && $options['generate_password'];
         $external = isset($options['external_check']) && $options['external_check'];
         $newUserCount = 0;
@@ -212,6 +224,11 @@ class TeacherImportController extends Controller
                     }
                 }
             }
+            $em->flush();
+
+            // por último, borrar pertenencias caducadas
+            $membershipRepository->deleteOldMemberships(new \DateTime());
+
             $em->flush();
         } catch (Exception $e) {
             return null;
