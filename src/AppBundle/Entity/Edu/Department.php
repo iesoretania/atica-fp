@@ -122,7 +122,7 @@ class Department
      * @param Teacher $head
      * @return Department
      */
-    public function setHead(Teacher $head)
+    public function setHead(Teacher $head = null)
     {
         $this->head = $head;
         return $this;

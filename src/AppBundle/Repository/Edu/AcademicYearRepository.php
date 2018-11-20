@@ -33,6 +33,10 @@ class AcademicYearRepository extends ServiceEntityRepository
         parent::__construct($registry, AcademicYear::class);
     }
 
+    /**
+     * @param Organization|null $organization
+     * @return AcademicYear|null
+     */
     public function getCurrentByOrganization(Organization $organization = null)
     {
         if (null === $organization) {
@@ -52,6 +56,10 @@ class AcademicYearRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param Organization $organization
+     * @return AcademicYear[]
+     */
     public function findAllByOrganization(Organization $organization)
     {
         return $this->createQueryBuilder('ay')
@@ -62,6 +70,12 @@ class AcademicYearRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @param $items
+     * @param Organization $organization
+     * @param AcademicYear $current
+     * @return AcademicYear[]
+     */
     public function findAllInListByIdAndOrganizationButCurrent(
         $items,
         Organization $organization,

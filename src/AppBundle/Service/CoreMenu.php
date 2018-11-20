@@ -179,7 +179,19 @@ class CoreMenu implements MenuBuilderInterface
                 ->setCaption('menu.organization.import.group')
                 ->setDescription('menu.organization.import.group.detail')
                 ->setIcon('chalkboard')
-                ->setPriority(0);
+                ->setPriority(10);
+
+            $menu2->addChild($menu3);
+
+            $menu3 = new MenuItem();
+            $menu3
+
+                ->setName('organization_import_department')
+                ->setRouteName('organization_import_department_form')
+                ->setCaption('menu.organization.import.department')
+                ->setDescription('menu.organization.import.department.detail')
+                ->setIcon('users')
+                ->setPriority(20);
 
             $menu2->addChild($menu3);
         }
