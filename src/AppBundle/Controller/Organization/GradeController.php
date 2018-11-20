@@ -19,10 +19,10 @@
 namespace AppBundle\Controller\Organization;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\Group;
-use AppBundle\Form\Type\Edu\GroupType;
+use AppBundle\Entity\Edu\Grade;
+use AppBundle\Form\Type\Edu\GradeType;
 use AppBundle\Repository\Edu\AcademicYearRepository;
-use AppBundle\Repository\Edu\GroupRepository;
+use AppBundle\Repository\Edu\GradeRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
@@ -34,56 +34,56 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @Route("/centro/grupo")
+ * @Route("/centro/nivel")
  */
-class GroupController extends Controller
+class GradeController extends Controller
 {
     /**
-     * @Route("/nuevo", name="organization_group_new", methods={"GET", "POST"})
-     * @Route("/{id}", name="organization_group_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
+     * @Route("/nuevo", name="organization_grade_new", methods={"GET", "POST"})
+     * @Route("/{id}", name="organization_grade_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
-    public function indexAction(Request $request, UserExtensionService $userExtensionService, Group $group = null)
+    public function indexAction(Request $request, UserExtensionService $userExtensionService, Grade $grade = null)
     {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $em = $this->getDoctrine()->getManager();
 
-        if (null === $group) {
-            $group = new Group();
-            $em->persist($group);
+        if (null === $grade) {
+            $grade = new Grade();
+            $em->persist($grade);
         }
 
-        $form = $this->createForm(GroupType::class, $group);
+        $form = $this->createForm(GradeType::class, $grade);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $em->flush();
-                $this->addFlash('success', $this->get('translator')->trans('message.saved', [], 'edu_group'));
-                return $this->redirectToRoute('organization_group_list', [
-                    'academicYear' => $group->getGrade()->getTraining()->getAcademicYear()
+                $this->addFlash('success', $this->get('translator')->trans('message.saved', [], 'edu_grade'));
+                return $this->redirectToRoute('organization_grade_list', [
+                    'academicYear' => $grade->getTraining()->getAcademicYear()
                 ]);
             } catch (\Exception $e) {
-                $this->addFlash('error', $this->get('translator')->trans('message.error', [], 'edu_group'));
+                $this->addFlash('error', $this->get('translator')->trans('message.error', [], 'edu_grade'));
             }
         }
 
         $title = $this->get('translator')->trans(
-            $group->getId() ? 'title.edit' : 'title.new',
+            $grade->getId() ? 'title.edit' : 'title.new',
             [],
-            'edu_group'
+            'edu_grade'
         );
 
         $breadcrumb = [
-            $group->getId() ?
-                ['fixed' => $group->getName()] :
-                ['fixed' => $this->get('translator')->trans('title.new', [], 'edu_group')]
+            $grade->getId() ?
+                ['fixed' => $grade->getName()] :
+                ['fixed' => $this->get('translator')->trans('title.new', [], 'edu_grade')]
         ];
 
-        return $this->render('organization/group/form.html.twig', [
-            'menu_path' => 'organization_group_list',
+        return $this->render('organization/grade/form.html.twig', [
+            'menu_path' => 'organization_grade_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'form' => $form->createView()
@@ -91,7 +91,7 @@ class GroupController extends Controller
     }
 
     /**
-     * @Route("/listar/{academicYear}/{page}", name="organization_group_list", requirements={"page" = "\d+"},
+     * @Route("/listar/{academicYear}/{page}", name="organization_grade_list", requirements={"page" = "\d+"},
      *     defaults={"academicYear" = null, "page" = 1},   methods={"GET"})
      */
     public function listAction(
@@ -112,16 +112,15 @@ class GroupController extends Controller
 
         $queryBuilder
             ->select('g')
-            ->from(Group::class, 'g')
+            ->from(Grade::class, 'g')
             ->orderBy('g.name')
-            ->innerJoin('g.grade', 'gr')
-            ->innerJoin('gr.training', 't');
+            ->innerJoin('g.training', 't');
 
         $q = $request->get('q', null);
         if ($q) {
             $queryBuilder
                 ->where('g.name LIKE :tq')
-                ->orWhere('gr.name LIKE :tq')
+                ->orWhere('t.name LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
 
@@ -135,23 +134,23 @@ class GroupController extends Controller
             ->setMaxPerPage($this->getParameter('page.size'))
             ->setCurrentPage($q ? 1 : $page);
 
-        $title = $this->get('translator')->trans('title.list', [], 'edu_group');
+        $title = $this->get('translator')->trans('title.list', [], 'edu_grade');
 
-        return $this->render('organization/group/list.html.twig', [
+        return $this->render('organization/grade/list.html.twig', [
             'title' => $title . ' - ' . $academicYear,
             'pager' => $pager,
             'q' => $q,
-            'domain' => 'edu_group',
+            'domain' => 'edu_grade',
             'academic_year' => $academicYear
         ]);
     }
 
     /**
-     * @Route("/eliminar/{academicYear}", name="organization_group_delete", methods={"POST"})
+     * @Route("/eliminar/{academicYear}", name="organization_grade_delete", methods={"POST"})
      */
     public function deleteAction(
         Request $request,
-        GroupRepository $groupRepository,
+        GradeRepository $gradeRepository,
         AcademicYear $academicYear
     ) {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
@@ -160,34 +159,34 @@ class GroupController extends Controller
 
         $items = $request->request->get('items', []);
         if (count($items) === 0) {
-            return $this->redirectToRoute('organization_group_list', ['academicYear' => $academicYear->getId()]);
+            return $this->redirectToRoute('organization_grade_list', ['academicYear' => $academicYear->getId()]);
         }
 
-        $groups = $groupRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
+        $grades = $gradeRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
         if ($request->get('confirm', '') === 'ok') {
-            dump($groups);
+            dump($grades);
             try {
                 $em->createQueryBuilder()
-                    ->delete(Group::class, 't')
-                    ->where('t IN (:items)')
-                    ->setParameter('items', $groups)
+                    ->delete(Grade::class, 'g')
+                    ->where('g IN (:items)')
+                    ->setParameter('items', $grades)
                     ->getQuery()
                     ->execute();
 
                 $em->flush();
-                $this->addFlash('success', $this->get('translator')->trans('message.deleted', [], 'edu_group'));
+                $this->addFlash('success', $this->get('translator')->trans('message.deleted', [], 'edu_grade'));
             } catch (\Exception $e) {
-                $this->addFlash('error', $this->get('translator')->trans('message.delete_error', [], 'edu_group'));
+                $this->addFlash('error', $this->get('translator')->trans('message.delete_error', [], 'edu_grade'));
             }
-            return $this->redirectToRoute('organization_group_list', ['academicYear' => $academicYear->getId()]);
+            return $this->redirectToRoute('organization_grade_list', ['academicYear' => $academicYear->getId()]);
         }
 
-        return $this->render('organization/group/delete.html.twig', [
-            'menu_path' => 'organization_group_list',
-            'breadcrumb' => [['fixed' => $this->get('translator')->trans('title.delete', [], 'edu_group')]],
-            'title' => $this->get('translator')->trans('title.delete', [], 'edu_group'),
-            'groups' => $groups
+        return $this->render('organization/grade/delete.html.twig', [
+            'menu_path' => 'organization_grade_list',
+            'breadcrumb' => [['fixed' => $this->get('translator')->trans('title.delete', [], 'edu_grade')]],
+            'title' => $this->get('translator')->trans('title.delete', [], 'edu_grade'),
+            'grades' => $grades
         ]);
     }
 }

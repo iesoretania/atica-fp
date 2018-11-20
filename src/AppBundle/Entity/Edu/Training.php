@@ -22,7 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\Edu\TrainingRepository")
  * @ORM\Table(name="edu_training")
  */
 class Training
@@ -64,6 +64,11 @@ class Training
     public function __construct()
     {
         $this->competencies = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 
     /**

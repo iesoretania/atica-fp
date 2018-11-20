@@ -17,6 +17,7 @@ prompt.delete_confirm: |
   Esta operación no se puede deshacer.
 
 title.edit: Datos del grupo
+title.new: Nuevo grupo
 title.delete: Eliminar grupos
 
 title.list: Listado de grupos

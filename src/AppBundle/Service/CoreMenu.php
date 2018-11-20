@@ -90,17 +90,8 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('organization_teacher_list')
                 ->setCaption('menu.organization.teacher')
                 ->setDescription('menu.organization.teacher.detail')
-                ->setIcon('chalkboard-teacher');
-
-            $menu1->addChild($menu2);
-
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_academic_year')
-                ->setRouteName('organization_academic_year_list')
-                ->setCaption('menu.organization.academic_year')
-                ->setDescription('menu.organization.academic_year.detail')
-                ->setIcon('calendar-alt');
+                ->setIcon('chalkboard-teacher')
+                ->setPriority(0);
 
             $menu1->addChild($menu2);
 
@@ -110,7 +101,30 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('organization_group_list')
                 ->setCaption('menu.organization.group')
                 ->setDescription('menu.organization.group.detail')
-                ->setIcon('chalkboard');
+                ->setIcon('chalkboard')
+                ->setPriority(10);
+
+            $menu1->addChild($menu2);
+
+            $menu2 = new MenuItem();
+            $menu2
+                ->setName('organization_grade')
+                ->setRouteName('organization_grade_list')
+                ->setCaption('menu.organization.grade')
+                ->setDescription('menu.organization.grade.detail')
+                ->setIcon('columns')
+                ->setPriority(20);
+
+            $menu1->addChild($menu2);
+
+            $menu2 = new MenuItem();
+            $menu2
+                ->setName('organization_academic_year')
+                ->setRouteName('organization_academic_year_list')
+                ->setCaption('menu.organization.academic_year')
+                ->setDescription('menu.organization.academic_year.detail')
+                ->setIcon('calendar-alt')
+                ->setPriority(9000);
 
             $menu1->addChild($menu2);
 
