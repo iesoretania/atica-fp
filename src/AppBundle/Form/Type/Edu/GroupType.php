@@ -22,6 +22,7 @@ use AppBundle\Entity\Edu\Grade;
 use AppBundle\Entity\Edu\Group;
 use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\GradeRepository;
+use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -36,17 +37,21 @@ class GroupType extends AbstractType
     /** @var GradeRepository */
     private $gradeRepository;
 
+    /** @var TeacherRepository */
+    private $teacherRepository;
+
     /** @var UserExtensionService */
     private $userExtensionService;
-
 
     public function __construct(
         GradeRepository $gradeRepository,
         AcademicYearRepository $academicYearRepository,
+        TeacherRepository $teacherRepository,
         UserExtensionService $userExtensionService
     ) {
         $this->gradeRepository = $gradeRepository;
         $this->academicYearRepository = $academicYearRepository;
+        $this->teacherRepository = $teacherRepository;
         $this->userExtensionService = $userExtensionService;
     }
 
@@ -60,6 +65,7 @@ class GroupType extends AbstractType
         );
 
         $grades = $this->gradeRepository->findByAcademicYear($academicYear);
+        $teachers = $this->teacherRepository->findByAcademicYear($academicYear);
 
         $builder
             ->add('grade', EntityType::class, [
@@ -76,6 +82,11 @@ class GroupType extends AbstractType
                 'label' => 'form.internal_code',
                 'required' => false,
                 'disabled' => true
+            ])
+            ->add('tutors', null, [
+                'label' => 'form.tutors',
+                'choices' => $teachers,
+                'required' => false
             ]);
     }
 

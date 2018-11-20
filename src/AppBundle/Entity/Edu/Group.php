@@ -55,13 +55,6 @@ class Group
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Teacher")
-     * @ORM\JoinColumn(nullable=true)
-     * @var Teacher
-     */
-    private $tutor;
-
-    /**
      * @ORM\OneToMany(targetEntity="Teaching", mappedBy="group")
      * @var Teaching[]
      */
@@ -73,10 +66,18 @@ class Group
      */
     private $enrollments;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Teacher")
+     * @ORM\JoinTable(name="edu_group_tutor")
+     * @var Teacher[]
+     */
+    private $tutors;
+
     public function __construct()
     {
         $this->teachings = new ArrayCollection();
         $this->enrollments = new ArrayCollection();
+        $this->tutors = new ArrayCollection();
     }
 
     /**
@@ -142,24 +143,6 @@ class Group
     }
 
     /**
-     * @return Teacher
-     */
-    public function getTutor()
-    {
-        return $this->tutor;
-    }
-
-    /**
-     * @param Teacher $tutor
-     * @return Group
-     */
-    public function setTutor(Teacher $tutor = null)
-    {
-        $this->tutor = $tutor;
-        return $this;
-    }
-
-    /**
      * @return Teaching[]
      */
     public function getTeachings()
@@ -173,5 +156,23 @@ class Group
     public function getEnrollments()
     {
         return $this->enrollments;
+    }
+
+    /**
+     * @return Teacher[]
+     */
+    public function getTutors()
+    {
+        return $this->tutors;
+    }
+
+    /**
+     * @param Teacher[] $tutors
+     * @return Group
+     */
+    public function setTutors($tutors)
+    {
+        $this->tutors = $tutors;
+        return $this;
     }
 }

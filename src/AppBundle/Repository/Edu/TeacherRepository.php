@@ -31,6 +31,19 @@ class TeacherRepository extends ServiceEntityRepository
         parent::__construct($registry, Teacher::class);
     }
 
+    public function findByAcademicYear(AcademicYear $academicYear)
+    {
+        return $this->createQueryBuilder('t')
+            ->join('t.person', 'p')
+            ->join('p.user', 'u')
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllInListByIdAndAcademicYear(
         $items,
         AcademicYear $academicYear
@@ -42,8 +55,8 @@ class TeacherRepository extends ServiceEntityRepository
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('items', $items)
             ->setParameter('academic_year', $academicYear)
-            ->orderBy('p.firstName')
-            ->addOrderBy('p.lastName')
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
             ->getQuery()
             ->getResult();
     }
