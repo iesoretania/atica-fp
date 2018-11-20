@@ -165,7 +165,6 @@ class GradeController extends Controller
         $grades = $gradeRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
         if ($request->get('confirm', '') === 'ok') {
-            dump($grades);
             try {
                 $em->createQueryBuilder()
                     ->delete(Grade::class, 'g')

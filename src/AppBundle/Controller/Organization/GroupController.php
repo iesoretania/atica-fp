@@ -166,7 +166,6 @@ class GroupController extends Controller
         $groups = $groupRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
         if ($request->get('confirm', '') === 'ok') {
-            dump($groups);
             try {
                 $em->createQueryBuilder()
                     ->delete(Group::class, 't')
