@@ -120,6 +120,8 @@ class TeacherImportController extends Controller
         $userCollection = [];
         $newUserCollection = [];
 
+        $now = new \DateTime();
+
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $userData) {
@@ -182,7 +184,7 @@ class TeacherImportController extends Controller
                         \DateTime::createFromFormat('d/m/Y H:i:s', $userData['Fecha de cese'] . '23:59:59') :
                         null;
 
-                    if (false === $validFrom) {
+                    if (false === $validFrom || $validUntil < $now) {
                         continue;
                     }
 
