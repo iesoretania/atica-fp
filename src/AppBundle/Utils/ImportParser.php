@@ -30,7 +30,7 @@ class ImportParser
         if (false === strpos($gradeName, 'F.P.')) {
             // Si no lleva la cadena F.P., eliminar el texto entre paréntesis y quitar 'de '
             // '2º de Bachillerato (Ciencias)' -> '2º de Bachillerato'
-            $calculatedGradeName = trim(preg_replace('/\([^\)\(]*\)/', '', $gradeName));
+            $calculatedGradeName = trim(preg_replace('/(\(.*\))/', '', $gradeName));
             $calculatedGradeName = trim(preg_replace('/de /', '', $calculatedGradeName));
 
             $matches = [];

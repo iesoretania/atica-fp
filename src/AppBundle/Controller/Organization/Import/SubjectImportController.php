@@ -127,6 +127,7 @@ class SubjectImportController extends Controller
 
         $importer = new CsvImporter($file, true);
 
+        $teachingCollection = [];
         $subjectCollection = [];
         $teacherCollection = [];
         $gradeCollection = [];
@@ -139,7 +140,8 @@ class SubjectImportController extends Controller
                     if (!isset($subjectData['Materia'])) {
                         return null;
                     }
-                    $subjectName = $subjectData['Materia'];
+                    $subjectName = trim($subjectData['Materia']);
+                    $subjectName = preg_replace('/\ +/', ' ', $subjectName, -1);
                     $groupName = $subjectData['Unidad'];
 
                     $group = null;
@@ -155,7 +157,8 @@ class SubjectImportController extends Controller
                         list($gradeName, $trainingName) = ImportParser::parseGradeName($subjectData['Curso']);
 
                         $subject = null;
-                        if (false === isset($subjectCollection[$subjectName . $gradeName])) {
+                        $indexSubject = $subjectName . '.' . $gradeName;
+                        if (false === isset($subjectCollection[$indexSubject])) {
                             $subject = $subjectRepository->findOneByAcademicYearAndInternalCodes(
                                 $academicYear,
                                 $subjectName,
@@ -167,13 +170,14 @@ class SubjectImportController extends Controller
                                 $oldCount++;
                             }
                         } else {
-                            $subject = $subjectCollection[$subjectName . $gradeName];
+                            $subject = $subjectCollection[$indexSubject];
                         }
 
                         if (null === $subject) {
                             $grade = null;
                             if (false === isset($gradeCollection[$gradeName])) {
-                                $grade = $gradeRepository->findOneByAcademicYearAndInternalCode($academicYear, $gradeName);
+                                $grade = $gradeRepository->
+                                    findOneByAcademicYearAndInternalCode($academicYear, $gradeName);
                                 $gradeCollection[$gradeName] = $grade;
                             } else {
                                 $grade = $gradeCollection[$gradeName];
@@ -186,7 +190,7 @@ class SubjectImportController extends Controller
                                     ->setInternalCode($subjectName)
                                     ->setName($subjectName);
 
-                                $subjectCollection[$subjectName . $gradeName] = $subject;
+                                $subjectCollection[$indexSubject] = $subject;
 
                                 $entityManager->persist($subject);
                                 $collection[] = $subject;
@@ -200,7 +204,8 @@ class SubjectImportController extends Controller
 
                             $teacher = null;
                             if (false === isset($teacherCollection[$teacherName])) {
-                                $teacher = $teacherRepository->findByAcademicYearAndInternalCode($academicYear, $teacherName);
+                                $teacher = $teacherRepository->
+                                    findByAcademicYearAndInternalCode($academicYear, $teacherName);
                                 $teacherCollection[$teacherName] = $teacher;
                             } else {
                                 $teacher = $teacherCollection[$teacherName];
@@ -208,13 +213,18 @@ class SubjectImportController extends Controller
 
                             // si el profesor existe
                             if ($teacher && $subject) {
-                                $teaching = $teachingRepository->findOneBy(
-                                    [
-                                        'teacher' => $teacher,
-                                        'group' => $group,
-                                        'subject' => $subject
-                                    ]
-                                );
+                                $indexSubject = $teacherName . '.' . $groupName . '.' . $subjectName;
+                                if (false === isset($teachingCollection[$indexSubject])) {
+                                    $teaching = $teachingRepository->findOneBy(
+                                        [
+                                            'teacher' => $teacher,
+                                            'group' => $group,
+                                            'subject' => $subject
+                                        ]
+                                    );
+                                } else {
+                                    $teaching = $teachingCollection[$indexSubject];
+                                }
 
                                 // comprobar si existe la asignación y, si no, la crea
                                 if (null === $teaching) {
@@ -226,6 +236,8 @@ class SubjectImportController extends Controller
 
                                     $entityManager->persist($teaching);
                                 }
+
+                                $teachingCollection[$indexSubject] = $teaching;
                             }
                         }
                     }
