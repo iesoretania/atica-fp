@@ -21,7 +21,7 @@ namespace AppBundle\Entity\Edu;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\Edu\SubjectRepository")
  * @ORM\Table(name="edu_subject")
  */
 class Subject
@@ -46,6 +46,12 @@ class Subject
      * @var string
      */
     private $code;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var string
+     */
+    private $internalCode;
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -78,10 +84,12 @@ class Subject
 
     /**
      * @param Grade $grade
+     * @return Subject
      */
-    public function setGrade(Grade $grade)
+    public function setGrade($grade)
     {
         $this->grade = $grade;
+        return $this;
     }
 
     /**
@@ -94,10 +102,30 @@ class Subject
 
     /**
      * @param string $code
+     * @return Subject
      */
     public function setCode($code)
     {
         $this->code = $code;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInternalCode()
+    {
+        return $this->internalCode;
+    }
+
+    /**
+     * @param string $internalCode
+     * @return Subject
+     */
+    public function setInternalCode($internalCode)
+    {
+        $this->internalCode = $internalCode;
+        return $this;
     }
 
     /**
@@ -110,10 +138,12 @@ class Subject
 
     /**
      * @param string $name
+     * @return Subject
      */
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
@@ -123,4 +153,15 @@ class Subject
     {
         return $this->learningOutcomes;
     }
+
+    /**
+     * @param LearningOutcome[] $learningOutcomes
+     * @return Subject
+     */
+    public function setLearningOutcomes($learningOutcomes)
+    {
+        $this->learningOutcomes = $learningOutcomes;
+        return $this;
+    }
+
 }

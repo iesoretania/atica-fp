@@ -19,18 +19,17 @@
 namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\Grade;
+use AppBundle\Entity\Edu\Subject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 
-class GradeRepository extends ServiceEntityRepository
+class SubjectRepository extends ServiceEntityRepository
 {
-
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Grade::class);
+        parent::__construct($registry, Subject::class);
     }
 
     /**
@@ -39,17 +38,17 @@ class GradeRepository extends ServiceEntityRepository
      */
     public function findByAcademicYearQueryBuilder(AcademicYear $academicYear)
     {
-        return $this->createQueryBuilder('g')
-            ->innerJoin('g.training', 't')
+        return $this->createQueryBuilder('s')
+            ->join('s.grade', 'g')
+            ->join('g.training', 't')
             ->where('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear)
-            ->orderBy('t.name')
-            ->addOrderBy('g.name');
+            ->orderBy('s.name');
     }
 
     /**
      * @param AcademicYear $academicYear
-     * @return Grade[]
+     * @return Subject[]
      */
     public function findByAcademicYear(AcademicYear $academicYear)
     {
@@ -60,15 +59,18 @@ class GradeRepository extends ServiceEntityRepository
 
     /**
      * @param AcademicYear $academicYear
-     * @param string $internalCode
-     * @return Grade|null
+     * @param string $subjectInternalCode
+     * @param string $gradeInternalCode
+     * @return Subject|null
      */
-    public function findOneByAcademicYearAndInternalCode(AcademicYear $academicYear, $internalCode)
+    public function findOneByAcademicYearAndInternalCodes(AcademicYear $academicYear, $subjectInternalCode, $gradeInternalCode)
     {
         try {
             return $this->findByAcademicYearQueryBuilder($academicYear)
-                ->andWhere('g.internalCode = :internal_code')
-                ->setParameter('internal_code', $internalCode)
+                ->andWhere('s.internalCode = :subject_internal_code')
+                ->andWhere('g.internalCode = :grade_internal_code')
+                ->setParameter('subject_internal_code', $subjectInternalCode)
+                ->setParameter('grade_internal_code', $gradeInternalCode)
                 ->getQuery()
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
@@ -81,20 +83,19 @@ class GradeRepository extends ServiceEntityRepository
     /**
      * @param $items
      * @param AcademicYear $academicYear
-     * @return Grade[]
+     * @return Subject[]
      */
     public function findAllInListByIdAndAcademicYear(
         $items,
         AcademicYear $academicYear
     ) {
-        return $this->createQueryBuilder('g')
-            ->join('g.training', 't')
-            ->where('g.id IN (:items)')
-            ->andWhere('t.academicYear = :academic_year')
+        return $this->createQueryBuilder('s')
+            ->join('s.grade', 'g')
+            ->where('s.id IN (:items)')
+            ->andWhere('g.academicYear = :academic_year')
             ->setParameter('items', $items)
             ->setParameter('academic_year', $academicYear)
-            ->orderBy('t.name')
-            ->addOrderBy('g.name')
+            ->orderBy('s.name')
             ->getQuery()
             ->getResult();
     }

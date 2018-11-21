@@ -22,6 +22,8 @@ use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Group;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\QueryBuilder;
 
 class GroupRepository extends ServiceEntityRepository
 {
@@ -32,17 +34,46 @@ class GroupRepository extends ServiceEntityRepository
 
     /**
      * @param AcademicYear $academicYear
-     * @return Group[]
+     * @return QueryBuilder
      */
-    public function findByAcademicYear(AcademicYear $academicYear)
+    public function findByAcademicYearQueryBuilder(AcademicYear $academicYear)
     {
         return $this->createQueryBuilder('g')
             ->innerJoin('g.grade', 'gr')
             ->innerJoin('gr.training', 't')
             ->where('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear)
+            ->setParameter('academic_year', $academicYear);
+    }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @return Group[]
+     */
+    public function findByAcademicYear(AcademicYear $academicYear)
+    {
+        return $this->findByAcademicYearQueryBuilder($academicYear)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @param string $internalCode
+     * @return Group|null
+     */
+    public function findOneByAcademicYearAndInternalCode(AcademicYear $academicYear, $internalCode)
+    {
+        try {
+            return $this->findByAcademicYearQueryBuilder($academicYear)
+                ->andWhere('g.internalCode = :internal_code')
+                ->setParameter('internal_code', $internalCode)
+                ->getQuery()
+                ->setMaxResults(1)
+                ->getOneOrNullResult();
+        }
+        catch(NonUniqueResultException $e) {
+            return null;
+        }
     }
 
     /**

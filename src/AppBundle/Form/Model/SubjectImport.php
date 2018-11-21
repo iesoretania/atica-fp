@@ -22,7 +22,7 @@ use AppBundle\Entity\Edu\AcademicYear;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class DepartmentImport
+class SubjectImport
 {
     /**
      * @var AcademicYear
@@ -38,11 +38,11 @@ class DepartmentImport
     /**
      * @var bool
      */
-    private $extractHeads;
+    private $extractTeachers;
 
     public function __construct()
     {
-        $this->extractHeads = true;
+        $this->extractTeachers = true;
     }
 
     /**
@@ -55,7 +55,7 @@ class DepartmentImport
 
     /**
      * @param AcademicYear $academicYear
-     * @return DepartmentImport
+     * @return SubjectImport
      */
     public function setAcademicYear($academicYear)
     {
@@ -73,7 +73,7 @@ class DepartmentImport
 
     /**
      *
-     * @return DepartmentImport
+     * @return SubjectImport
      */
     public function setFile(UploadedFile $file)
     {
@@ -84,18 +84,18 @@ class DepartmentImport
     /**
      * @return bool
      */
-    public function isExtractHeads()
+    public function isExtractTeachers()
     {
-        return $this->extractHeads;
+        return $this->extractTeachers;
     }
 
     /**
-     * @param bool $extractHeads
-     * @return DepartmentImport
+     * @param bool $extractTeachers
+     * @return SubjectImport
      */
-    public function setExtractHeads($extractHeads)
+    public function setExtractTeachers($extractTeachers)
     {
-        $this->extractHeads = $extractHeads;
+        $this->extractTeachers = $extractTeachers;
         return $this;
     }
 }

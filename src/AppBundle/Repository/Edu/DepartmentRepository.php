@@ -34,7 +34,7 @@ class DepartmentRepository extends ServiceEntityRepository
 
     /**
      * @param AcademicYear $academicYear
-     * @return Training[]
+     * @return Department[]
      */
     public function findByAcademicYear(AcademicYear $academicYear)
     {

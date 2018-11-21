@@ -26,7 +26,6 @@ use Doctrine\ORM\NonUniqueResultException;
 
 class TeacherRepository extends ServiceEntityRepository
 {
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Teacher::class);

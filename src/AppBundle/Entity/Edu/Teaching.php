@@ -22,13 +22,21 @@ namespace AppBundle\Entity\Edu;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="edu_teaching")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\Edu\TeachingRepository")
+ * @ORM\Table(name="edu_teaching",
+ *     uniqueConstraints={@ORM\UniqueConstraint(columns={"teacher_id", "group_id", "subject_id"})}))
  */
 class Teaching
 {
     /**
      * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     * @var int
+     */
+    private $id;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Teacher", inversedBy="teachings")
      * @ORM\JoinColumn(nullable=false)
      * @var Teacher
@@ -36,7 +44,6 @@ class Teaching
     private $teacher;
 
     /**
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Group", inversedBy="teachings")
      * @ORM\JoinColumn(nullable=false)
      * @var Group
@@ -44,12 +51,19 @@ class Teaching
     private $group;
 
     /**
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Subject")
      * @ORM\JoinColumn(nullable=false)
      * @var Subject
      */
     private $subject;
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return Teacher
@@ -61,10 +75,12 @@ class Teaching
 
     /**
      * @param Teacher $teacher
+     * @return Teaching
      */
-    public function setTeacher(Teacher $teacher)
+    public function setTeacher($teacher)
     {
         $this->teacher = $teacher;
+        return $this;
     }
 
     /**
@@ -77,10 +93,12 @@ class Teaching
 
     /**
      * @param Group $group
+     * @return Teaching
      */
-    public function setGroup(Group $group)
+    public function setGroup($group)
     {
         $this->group = $group;
+        return $this;
     }
 
     /**
@@ -93,9 +111,11 @@ class Teaching
 
     /**
      * @param Subject $subject
+     * @return Teaching
      */
-    public function setSubject(Subject $subject)
+    public function setSubject($subject)
     {
         $this->subject = $subject;
+        return $this;
     }
 }

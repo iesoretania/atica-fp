@@ -28,6 +28,7 @@ use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use AppBundle\Utils\CsvImporter;
+use AppBundle\Utils\ImportParser;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -140,35 +141,7 @@ class GroupImportController extends Controller
                         $trainings = explode(',', $gradeName);
                         $gradeName = $trainings[0];
 
-                        if (false === strpos($gradeName, 'F.P.')) {
-                            // Si no lleva la cadena F.P., eliminar el texto entre paréntesis y quitar 'de '
-                            // '2º de Bachillerato (Ciencias)' -> '2º de Bachillerato'
-                            $calculatedGradeName = trim(preg_replace('/\([^\)\(]*\)/', '', $gradeName));
-                            $calculatedGradeName = trim(preg_replace('/de /', '', $calculatedGradeName));
-
-                            // Enseñanza: Si el texto lleva 'º ' quedarse con el texto que le sigue
-                            // '2º de Bachillerato (Ciencias)' -> 'Bachillerato'
-                            //
-                            // Si no, dejarlo tal cual
-                            if (false !== strpos($gradeName, 'º ')) {
-                                preg_match('/º (.*)/u', $calculatedGradeName, $matches);
-                                $trainingName = $matches[1];
-                            } else {
-                                $trainingName = $calculatedGradeName;
-                            }
-                        } else {
-                            // Si lleva la cadena F.P.
-                            //
-                            // Nivel: coger los dos primeros caracteres + texto entre paréntesis
-                            // '1º F.P.I.G.S. (Desarrollo de Aplicaciones Web)' ->
-                            // '1º Desarrollo de Aplicaciones Web'
-                            preg_match('/º.*(F\.P.*)\(([^\)\(]*)\)/u', $gradeName, $matches);
-                            $calculatedGradeName = mb_substr($gradeName, 0, 2) . ' ' . $matches[2];
-
-                            // Enseñanza: Coger el texto que empieza por F.P. + texto entre paréntesis
-                            // 'F.P.I.G.S. Desarrollo de Aplicaciones Web'
-                            $trainingName = $matches[1] . $matches[2];
-                        }
+                        list($calculatedGradeName, $trainingName) = ImportParser::parseGradeName($gradeName);
 
                         if (isset($trainingCollection[$trainingName])) {
                             $training = $trainingCollection[$trainingName];
@@ -243,6 +216,7 @@ class GroupImportController extends Controller
 
                     // tutores
                     if ($options['extract_tutors']) {
+                        $matches = [];
                         preg_match_all('/\b(.*) \(.*\)/U', $groupData['Tutor/a'], $matches, PREG_SET_ORDER, 0);
 
                         $matches = array_map(function($element) {
@@ -283,4 +257,5 @@ class GroupImportController extends Controller
             'collection' => $collection
         ];
     }
+
 }

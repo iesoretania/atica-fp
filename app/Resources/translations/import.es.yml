@@ -1,34 +1,6 @@
 title.import_result: Resultado de la importación
 
-title.teacher.import: Importación de profesorado
-title.group.import: Importación de grupos
-title.department.import: Importación de departamentos
-
 form.file: "Fichero .CSV de Séneca"
-
-form.teacher.external_password: Habilitar contraseña de Séneca
-form.teacher.external_password.no: El docente tendrá una contraseña independiente de la de Séneca
-form.teacher.external_password.yes: Se intentará verificar la contraseña desde Séneca y, si falla, en local
-
-form.teacher.generate_password: Contraseña inicial del nuevo profesorado
-form.teacher.generate_password.no: No generar ninguna
-form.teacher.generate_password.yes: Establecer por defecto en el usuario IdEA (aumenta el tiempo de importación)
-form.teacher.do_import: Importar profesorado
-
-form.group.academic_year: Curso académico
-form.group.restricted: Grupos a importar
-form.group.restricted.no: Importar todos los grupos
-form.group.restricted.yes: Importar solamente los grupos de FP
-form.group.extract_tutors: Tutores de grupo
-form.group.extract_tutors.no: No asignar los tutores
-form.group.extract_tutors.yes: Asignar tutores de los grupos
-form.group.do_import: Importar grupos
-
-form.department.academic_year: Curso académico
-form.department.extract_heads: Jefaturas de departamento
-form.department.extract_heads.no: No asignar
-form.department.extract_heads.yes: Asignar automáticamente
-form.department.do_import: Importar departamentos
 
 form.submit: Importar
 form.again: Importar otro fichero
@@ -44,17 +16,53 @@ message.import_error: Ha ocurrido un error al realizar la importación
 
 report.stats: Estadísticas de la importación
 
+title.teacher.import: Importación de profesorado
+form.teacher.external_password: Habilitar contraseña de Séneca
+form.teacher.external_password.no: El docente tendrá una contraseña independiente de la de Séneca
+form.teacher.external_password.yes: Se intentará verificar la contraseña desde Séneca y, si falla, en local
+form.teacher.generate_password: Contraseña inicial del nuevo profesorado
+form.teacher.generate_password.no: No generar ninguna
+form.teacher.generate_password.yes: Establecer por defecto en el usuario IdEA (aumenta el tiempo de importación)
+form.teacher.do_import: Importar profesorado
+
+report.teacher.list: Docentes nuevos dados de alta en la plataforma
 report.teacher.existing_teachers: Docentes ya existentes
 report.teacher.new_teachers: Docentes nuevos incorporados
 report.teacher.existing_memberships: Pertenencias ya existentes
 report.teacher.new_memberships: Pertenencias nuevas incorporadas
 
+title.group.import: Importación de grupos
+form.group.academic_year: Curso académico
+form.group.restricted: Grupos a importar
+form.group.restricted.no: Importar todos los grupos
+form.group.restricted.yes: Importar solamente los grupos de FP
+form.group.extract_tutors: Tutores de grupo
+form.group.extract_tutors.no: No asignar los tutores
+form.group.extract_tutors.yes: Asignar tutores de los grupos
+form.group.do_import: Importar grupos
+
+report.group.list: Grupos procesados
 report.group.new: Grupos nuevos incorporados
 report.group.old: Grupos ya existentes
 
+title.department.import: Importación de departamentos
+form.department.academic_year: Curso académico
+form.department.extract_heads: Jefaturas de departamento
+form.department.extract_heads.no: No asignar
+form.department.extract_heads.yes: Asignar automáticamente
+form.department.do_import: Importar departamentos
+
+report.department.list: Departamentos procesados
 report.department.new: Departamentos nuevos incorporados
 report.department.old: Departamentos ya existentes
 
-report.teacher.list: Docentes nuevos dados de alta en la plataforma
-report.group.list: Grupos procesados
-report.department.list: Departamentos procesados
+title.subject.import: Importación de materias
+form.subject.academic_year: Curso académico
+form.subject.extract_teachers: Profesorado asociado
+form.subject.extract_teachers.no: No asignar
+form.subject.extract_teachers.yes: Asignar automáticamente
+form.subject.do_import: Importar materias
+
+report.subject.list: Materias procesadas
+report.subject.new: Materias nuevas incorporados
+report.subject.old: Materias ya existentes
