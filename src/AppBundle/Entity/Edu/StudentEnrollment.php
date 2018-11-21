@@ -23,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="student_enrollment",
+ * @ORM\Table(name="edu_student_enrollment",
  *     uniqueConstraints={@ORM\UniqueConstraint(columns={"person_id", "group_id"})})))
  */
 class StudentEnrollment
