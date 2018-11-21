@@ -130,12 +130,23 @@ class CoreMenu implements MenuBuilderInterface
 
             $menu2 = new MenuItem();
             $menu2
+                ->setName('organization_subject')
+                ->setRouteName('organization_subject_list')
+                ->setCaption('menu.organization.subject')
+                ->setDescription('menu.organization.subject.detail')
+                ->setIcon('book-open')
+                ->setPriority(40);
+
+            $menu1->addChild($menu2);
+
+            $menu2 = new MenuItem();
+            $menu2
                 ->setName('organization_department')
                 ->setRouteName('organization_department_list')
                 ->setCaption('menu.organization.department')
                 ->setDescription('menu.organization.department.detail')
                 ->setIcon('users')
-                ->setPriority(40);
+                ->setPriority(50);
 
             $menu1->addChild($menu2);
 

@@ -1,0 +1,32 @@
+{% trans_default_domain 'edu_subject' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    <form method="post">
+        {% for subject in subjects %}
+            <input type="hidden" name="items[]" value="{{ subject.id }}">
+        {% endfor %}
+        <input type="hidden" name="confirm" value="ok">
+        <div class="alert alert-warning">{{ 'prompt.delete_confirm'|trans|nl2br }}</div>
+        <div id="table" class="col-md-12 table-responsive">
+            <table id="list" class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th class="w-50">{{ 'header.name'|trans }}</label></th>
+                        <th class="w-50">{{ 'header.grade'|trans }}</label></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subject in subjects %}
+                        <tr>
+                            <td>{{ subject.name }}</td>
+                            <td>{{ subject.grade }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('submit', 'trash', 'btn-danger', 'form.delete_confirm'|trans) }}
+    </form>
+{% endblock %}

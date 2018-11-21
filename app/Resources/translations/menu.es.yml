@@ -28,6 +28,9 @@ menu.organization.grade.detail: Gestionar los niveles de enseñanza
 menu.organization.training: Enseñanzas
 menu.organization.training.detail: Gestionar las enseñanzas del centro
 
+menu.organization.subject: Materias
+menu.organization.subject.detail: Gestionar las materias impartidas en el centro
+
 menu.organization.department: Departamentos
 menu.organization.department.detail: Gestionar los departamentos del centro
 

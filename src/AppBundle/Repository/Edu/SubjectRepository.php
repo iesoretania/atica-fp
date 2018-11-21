@@ -74,8 +74,7 @@ class SubjectRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
-        }
-        catch(NonUniqueResultException $e) {
+        } catch (NonUniqueResultException $e) {
             return null;
         }
     }
@@ -91,8 +90,9 @@ class SubjectRepository extends ServiceEntityRepository
     ) {
         return $this->createQueryBuilder('s')
             ->join('s.grade', 'g')
+            ->join('g.training', 't')
             ->where('s.id IN (:items)')
-            ->andWhere('g.academicYear = :academic_year')
+            ->andWhere('t.academicYear = :academic_year')
             ->setParameter('items', $items)
             ->setParameter('academic_year', $academicYear)
             ->orderBy('s.name')
