@@ -1,5 +1,6 @@
 form.grade: Nivel
 form.internal_code: Código Séneca
+form.code: Abreviatura
 form.name: Nombre
 
 form.save: Guardar cambios

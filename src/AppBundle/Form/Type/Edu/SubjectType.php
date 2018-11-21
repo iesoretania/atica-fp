@@ -72,6 +72,10 @@ class SubjectType extends AbstractType
                 'label' => 'form.name',
                 'required' => true
             ])
+            ->add('code', null, [
+                'label' => 'form.code',
+                'required' => false
+            ])
             ->add('internalCode', null, [
                 'label' => 'form.internal_code',
                 'required' => false,
