@@ -67,7 +67,6 @@ class DepartmentImportController extends Controller
                 $departmentRepository,
                 $entityManager,
                 [
-                    'restricted' => $formData->isRestricted(),
                     'extract_heads' => $formData->isExtractHeads()
                 ]
             );
