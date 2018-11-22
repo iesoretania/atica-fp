@@ -184,7 +184,7 @@ class TeacherImportController extends Controller
                         \DateTime::createFromFormat('d/m/Y H:i:s', $userData['Fecha de cese'] . '23:59:59') :
                         null;
 
-                    if (false === $validFrom || $validUntil < $now) {
+                    if (false === $validFrom || (null !== $validUntil && $validUntil < $now)) {
                         continue;
                     }
 
