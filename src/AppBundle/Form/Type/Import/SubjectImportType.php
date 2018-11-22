@@ -81,6 +81,15 @@ class SubjectImportType extends AbstractType
                     'form.subject.extract_teachers.yes' => true,
                     'form.subject.extract_teachers.no' => false
                 ]
+            ])
+            ->add('keepOneSubjectPerTraining', ChoiceType::class, [
+                'label' => 'form.subject.keep_one_subject_per_training',
+                'required' => true,
+                'expanded' => true,
+                'choices' => [
+                    'form.subject.keep_one_subject_per_training.yes' => true,
+                    'form.subject.keep_one_subject_per_training.no' => false
+                ]
             ]);
     }
 

@@ -27,9 +27,14 @@ use Doctrine\ORM\QueryBuilder;
 
 class SubjectRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /** @var TeachingRepository */
+    private $teachingRepository;
+
+    public function __construct(ManagerRegistry $registry, TeachingRepository $teachingRepository)
     {
         parent::__construct($registry, Subject::class);
+
+        $this->teachingRepository = $teachingRepository;
     }
 
     /**
@@ -98,5 +103,43 @@ class SubjectRepository extends ServiceEntityRepository
             ->orderBy('s.name')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @param $filter
+     * @return Subject[]
+     */
+    public function findByAcademicYearAndTrainingFilterOrdered(AcademicYear $academicYear, $filter)
+    {
+        return $this->createQueryBuilder('s')
+            ->select('s')
+            ->join('s.grade', 'g')
+            ->join('g.training', 't')
+            ->where('t.academicYear = :academic_year')
+            ->andWhere('t.name LIKE :filter')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('filter', $filter)
+            ->orderBy('t.name', 'ASC')
+            ->addOrderBy('s.name', 'ASC')
+            ->addOrderBy('g.name', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Subject[] $list
+     * @return mixed
+     */
+    public function deleteFromList($list)
+    {
+        $this->teachingRepository->deleteFromSubjectList($list);
+
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(Subject::class, 's')
+            ->where('s IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
     }
 }

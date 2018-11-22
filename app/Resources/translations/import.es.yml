@@ -58,11 +58,15 @@ report.department.old: Departamentos ya existentes
 
 title.subject.import: Importación de materias
 form.subject.academic_year: Curso académico
-form.subject.extract_teachers: Profesorado asociado
+form.subject.extract_teachers: Profesorado asociado a las materias
 form.subject.extract_teachers.no: No asignar
 form.subject.extract_teachers.yes: Asignar automáticamente
+form.subject.keep_one_subject_per_training: Materias iguales en misma enseñanza de FP
+form.subject.keep_one_subject_per_training.no: Incorporar como materias independientes
+form.subject.keep_one_subject_per_training.yes: Dejar solamente la que esté en el curso mayor
 form.subject.do_import: Importar materias
 
 report.subject.list: Materias procesadas
+report.subject.deleted_list: Duplicados eliminados
 report.subject.new: Materias nuevas incorporados
 report.subject.old: Materias ya existentes

@@ -40,9 +40,15 @@ class SubjectImport
      */
     private $extractTeachers;
 
+    /**
+     * @var bool
+     */
+    private $keepOneSubjectPerTraining;
+
     public function __construct()
     {
         $this->extractTeachers = true;
+        $this->keepOneSubjectPerTraining = true;
     }
 
     /**
@@ -96,6 +102,24 @@ class SubjectImport
     public function setExtractTeachers($extractTeachers)
     {
         $this->extractTeachers = $extractTeachers;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isKeepOneSubjectPerTraining()
+    {
+        return $this->keepOneSubjectPerTraining;
+    }
+
+    /**
+     * @param bool $keepOneSubjectPerTraining
+     * @return SubjectImport
+     */
+    public function setKeepOneSubjectPerTraining($keepOneSubjectPerTraining)
+    {
+        $this->keepOneSubjectPerTraining = $keepOneSubjectPerTraining;
         return $this;
     }
 }

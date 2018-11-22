@@ -23,6 +23,14 @@
                     <li><b>{{ item.name }}: </b>{{ item.grade }}</li>
                 {% endfor %}
             </ul>
+            {% if stats.deleted_list %}
+                <h4>{{ 'report.subject.deleted_list'|trans }}</h4>
+                <ul>
+                    {% for item in stats.deleted_list %}
+                        <li><b>{{ item.name }}: </b>{{ item.grade }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         {% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {% endif %}

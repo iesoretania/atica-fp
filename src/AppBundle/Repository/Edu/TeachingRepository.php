@@ -28,4 +28,18 @@ class TeachingRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Teaching::class);
     }
+
+    /**
+     * @param Teaching[]
+     * @return mixed
+     */
+    public function deleteFromSubjectList($list)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(Teaching::class, 't')
+            ->where('t.subject IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
+    }
 }

@@ -78,6 +78,7 @@ class SubjectImportController extends Controller
                 $teachingRepository,
                 $entityManager,
                 [
+                    'keep_one_subject_per_training' => $formData->isKeepOneSubjectPerTraining(),
                     'extract_teachers' => $formData->isExtractTeachers()
                 ]
             );
@@ -244,6 +245,30 @@ class SubjectImportController extends Controller
                 }
             }
             $entityManager->flush();
+
+            $deletedList = [];
+
+            // comprobar si hay que eliminar las materias duplicadas en cursos inferiores
+            // (para los pendientes en FP)
+            if ($options['keep_one_subject_per_training']) {
+                $subjects = $subjectRepository->findByAcademicYearAndTrainingFilterOrdered($academicYear, 'F.P.%');
+
+                $lastSubjectName = '';
+                $lastTrainingName = '';
+
+                foreach ($subjects as $subject) {
+                    if ($lastSubjectName === $subject->getName() &&
+                        $lastTrainingName === $subject->getGrade()->getTraining()) {
+                        $deletedList[] = $subject;
+                    }
+                    $lastSubjectName = $subject->getName();
+                    $lastTrainingName = $subject->getGrade()->getTraining();
+                }
+
+                $subjectRepository->deleteFromList($deletedList);
+
+                $entityManager->flush();
+            }
         } catch (Exception $e) {
             return null;
         }
@@ -261,7 +286,8 @@ class SubjectImportController extends Controller
         return [
             'new_items' => $newCount,
             'old_items' => $oldCount,
-            'collection' => $collection
+            'collection' => $collection,
+            'deleted_list' => $deletedList
         ];
     }
 }
