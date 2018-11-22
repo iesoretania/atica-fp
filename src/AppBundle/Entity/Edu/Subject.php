@@ -18,6 +18,7 @@
 
 namespace AppBundle\Entity\Edu;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -65,6 +66,18 @@ class Subject
      * @var LearningOutcome[]
      */
     private $learningOutcomes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Teaching", mappedBy="subject")
+     * @var Teaching[]
+     */
+    private $teachings;
+
+    public function __construct()
+    {
+        $this->learningOutcomes = new ArrayCollection();
+        $this->teachings = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -164,4 +177,21 @@ class Subject
         return $this;
     }
 
+    /**
+     * @return Teaching[]
+     */
+    public function getTeachings()
+    {
+        return $this->teachings;
+    }
+
+    /**
+     * @param Teaching[] $teachings
+     * @return Subject
+     */
+    public function setTeachings($teachings)
+    {
+        $this->teachings = $teachings;
+        return $this;
+    }
 }

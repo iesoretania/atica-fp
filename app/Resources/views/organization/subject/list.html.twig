@@ -5,9 +5,9 @@
 {% block path_new %}{{ path('organization_subject_new') }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-40"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
-    <th class="w-40">{{ 'header.grade'|trans }}</th>
-    <th class="w-20"></th>
+    <th class="w-30"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-20">{{ 'header.grade'|trans }}</th>
+    <th class="w-50">{{ 'header.teachers'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
@@ -21,6 +21,7 @@
                         {{ subject.grade }}
                     </td>
                     <td>
+                        {% for teaching in subject.teachings %}{{ teaching.teacher }} ({{ teaching.group }}){% if not loop.last %}, {% endif %}{% endfor %}
                     </td>
                 </tr>
             {% else %}

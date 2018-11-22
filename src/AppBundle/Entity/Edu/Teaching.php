@@ -51,7 +51,7 @@ class Teaching
     private $group;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Subject")
+     * @ORM\ManyToOne(targetEntity="Subject", inversedBy="teachings")
      * @ORM\JoinColumn(nullable=false)
      * @var Subject
      */
