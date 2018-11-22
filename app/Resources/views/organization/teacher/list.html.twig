@@ -5,10 +5,8 @@
 {% block path_new %}{{ path('organization_import_teacher_form') }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-40"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
-    <th class="w-20">{{ 'header.username'|trans }}</th>
-    <th class="w-20">{{ 'header.email'|trans }}</th>
-    <th class="w-20">{{ 'header.last_login'|trans }}</th>
+    <th class="w-20"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-80">{{ 'header.subjects'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
@@ -21,22 +19,12 @@
                     </td>
                     {% set user = person.user %}
                     <td>
-                        {% if user %}<a href="{{ url }}">{{ user.loginUsername }}</a>{% if user.externalCheck and user.allowExternalCheck %} <i class="fas fa-sign-out"></i>{% endif -%}{% endif %}
-                    </td>
-                    <td>
-                        {% if user %}
-                        <a href="{{ url }}">
-                            {{ user.emailAddress }}
-                        </a>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if user %}{{ user.lastAccess ? user.lastAccess|date('format.datetime'|trans({}, 'general')) }}{% endif %}
+                        {% for teaching in teacher.teachings %}{{ teaching.subject.name }} ({{ teaching.group }}){% if not loop.last %}, {% endif %}{% endfor %}
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="4">{{ 'table.no_users'|trans }}</td>
+                    <td colspan="2">{{ 'table.no_users'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

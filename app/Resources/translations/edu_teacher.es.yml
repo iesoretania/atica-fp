@@ -41,9 +41,7 @@ table.filter: Filtrar...
 
 header.username: Usuario
 header.name: Nombre completo
-header.email: Correo-e
-header.profiles: Perfiles
-header.last_login: Últ. conexión
+header.subjects: Docencia
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
