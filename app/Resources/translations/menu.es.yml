@@ -49,6 +49,9 @@ menu.organization.import.department.detail: Importar departamentos desde Séneca
 menu.organization.import.subject: Importar materias
 menu.organization.import.subject.detail: Importar asignaturas y módulos profesionales desde Séneca
 
+menu.organization.import.student: Importar estudiantes
+menu.organization.import.student.detail: Importar estudiantes desde Séneca
+
 menu.personal_data: Datos personales
 menu.personal_data.detail: Modificar los datos personales
 

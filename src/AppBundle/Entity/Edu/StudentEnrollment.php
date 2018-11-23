@@ -69,10 +69,12 @@ class StudentEnrollment
 
     /**
      * @param Person $person
+     * @return StudentEnrollment
      */
-    public function setPerson(Person $person)
+    public function setPerson($person)
     {
         $this->person = $person;
+        return $this;
     }
 
     /**
@@ -85,9 +87,11 @@ class StudentEnrollment
 
     /**
      * @param Group $group
+     * @return StudentEnrollment
      */
-    public function setGroup(Group $group)
+    public function setGroup($group)
     {
         $this->group = $group;
+        return $this;
     }
 }

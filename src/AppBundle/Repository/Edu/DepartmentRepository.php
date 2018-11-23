@@ -20,7 +20,6 @@ namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Department;
-use AppBundle\Entity\Edu\Training;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
