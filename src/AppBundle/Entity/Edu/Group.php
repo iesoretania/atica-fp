@@ -18,6 +18,7 @@
 
 namespace AppBundle\Entity\Edu;
 
+use AppBundle\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -181,5 +182,17 @@ class Group
     {
         $this->tutors = $tutors;
         return $this;
+    }
+
+    /**
+     * @return Person[]
+     */
+    public function getStudents()
+    {
+        $students = [];
+        foreach ($this->enrollments as $enrollment) {
+            $students[] = $enrollment->getPerson();
+        }
+        return $students;
     }
 }
