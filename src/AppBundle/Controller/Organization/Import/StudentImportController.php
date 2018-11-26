@@ -114,6 +114,8 @@ class StudentImportController extends Controller
 
         $collection = [];
 
+        $personCollection = [];
+
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $studentData) {
@@ -137,16 +139,19 @@ class StudentImportController extends Controller
                         continue;
                     }
 
-                    $internalCode = $studentData['DNI/Pasaporte'] ?: $studentData['Nº Id. Escolar'];
+                    $uniqueIdentifier = $studentData['DNI/Pasaporte'] ?: $studentData['Nº Id. Escolar'];
 
-                    $person = $personRepository->findOneBy([
-                        'internalCode' => $internalCode
-                    ]);
-
+                    if (false === isset($personCollection[$uniqueIdentifier])) {
+                        $person = $personRepository->findOneBy([
+                            'uniqueIdentifier' => $uniqueIdentifier
+                        ]);
+                    } else {
+                        $person = $personCollection[$uniqueIdentifier];
+                    }
                     if (null === $person) {
                         $person = new Person();
                         $person
-                            ->setInternalCode($internalCode)
+                            ->setUniqueIdentifier($uniqueIdentifier)
                             ->setFirstName($studentData['Nombre'])
                             ->setLastName(
                                 $studentData['Primer apellido'] .
@@ -164,6 +169,7 @@ class StudentImportController extends Controller
                             'group' => $group
                         ]);
                     }
+                    $personCollection[$uniqueIdentifier] = $person;
 
                     if (null === $enrollment) {
                         $enrollment = new StudentEnrollment();

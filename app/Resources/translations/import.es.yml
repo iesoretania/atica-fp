@@ -73,7 +73,7 @@ report.subject.old: Materias ya existentes
 
 title.student.import: Importación de estudiantes
 form.student.academic_year: Curso académico
-form.student.do_import: Importar materias
+form.student.do_import: Importar estudiantes
 
 report.student.list: Estudiantes procesados
 report.student.new: Estudiantes nuevos incorporados

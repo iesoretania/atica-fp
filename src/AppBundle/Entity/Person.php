@@ -59,6 +59,12 @@ class Person
     private $internalCode;
 
     /**
+     * @ORM\Column(type="string", nullable=true, unique=true)
+     * @var string
+     */
+    private $uniqueIdentifier;
+
+    /**
      * @ORM\Column(type="integer")
      * @var int
      */
@@ -85,6 +91,7 @@ class Person
      */
     public function __construct()
     {
+        $this->gender = self::GENDER_NEUTRAL;
     }
 
     /**
@@ -146,6 +153,24 @@ class Person
     public function setInternalCode($internalCode)
     {
         $this->internalCode = $internalCode;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUniqueIdentifier()
+    {
+        return $this->uniqueIdentifier;
+    }
+
+    /**
+     * @param string $uniqueIdentifier
+     * @return Person
+     */
+    public function setUniqueIdentifier($uniqueIdentifier)
+    {
+        $this->uniqueIdentifier = $uniqueIdentifier;
         return $this;
     }
 

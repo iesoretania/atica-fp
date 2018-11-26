@@ -138,18 +138,27 @@ class TeacherImportController extends Controller
                             $user = $userCollection[$userName];
                         } else {
                             $user = new User();
-                            $person = new Person();
-                            $user->setPerson($person);
 
-                            $fullName = explode(', ', $userData['Empleado/a']);
+                            $person = $em->getRepository(Person::class)->findOneBy([
+                                'uniqueIdentifier' => $userData['DNI/Pasaporte']
+                            ]);
 
+                            if (null === $person) {
+                                $person = new Person();
+
+                                $fullName = explode(', ', $userData['Empleado/a']);
+
+                                $person
+                                    ->setFirstName($fullName[1])
+                                    ->setLastName($fullName[0])
+                                    ->setGender(User::GENDER_NEUTRAL);
+                            }
                             $person
-                                ->setFirstName($fullName[1])
-                                ->setLastName($fullName[0])
-                                ->setGender(User::GENDER_NEUTRAL)
+                                ->setUniqueIdentifier($userData['DNI/Pasaporte'])
                                 ->setInternalCode($userData['Empleado/a']);
 
                             $user
+                                ->setPerson($person)
                                 ->setLoginUsername($userName)
                                 ->setEnabled(true)
                                 ->setGlobalAdministrator(false)
