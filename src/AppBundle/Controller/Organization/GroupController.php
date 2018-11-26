@@ -86,6 +86,7 @@ class GroupController extends Controller
             'menu_path' => 'organization_group_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
+            'group' => $group,
             'form' => $form->createView()
         ]);
     }

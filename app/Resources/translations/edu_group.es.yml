@@ -20,6 +20,9 @@ title.edit: Datos del grupo
 title.new: Nuevo grupo
 title.delete: Eliminar grupos
 
+title.students: Estudiantes del grupo
+title.teachers: Docentes del grupo
+
 title.list: Listado de grupos
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay grupos
@@ -30,6 +33,10 @@ header.grade: Nivel
 header.training: Enseñanza
 header.tutors: Tutores
 header.students: Estudiantes
+
+header.teachers: Docentes
+header.student: Apellidos y nombre
+header.subject: Materia
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
