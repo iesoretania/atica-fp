@@ -18,6 +18,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Edu\AcademicYear;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -110,6 +111,12 @@ class Organization
      * @var Collection
      */
     private $administrators;
+
+    /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Edu\AcademicYear")
+     * @var AcademicYear
+     */
+    private $currentAcademicYear;
 
     /**
      * Constructor
@@ -381,30 +388,6 @@ class Organization
     }
 
     /**
-     * Add membership
-     *
-     * @param Membership $membership
-     *
-     * @return Organization
-     */
-    public function addMembership(Membership $membership)
-    {
-        $this->memberships[] = $membership;
-
-        return $this;
-    }
-
-    /**
-     * Remove membership
-     *
-     * @param Membership $membership
-     */
-    public function removeMembership(Membership $membership)
-    {
-        $this->memberships->removeElement($membership);
-    }
-
-    /**
      * Get memberships
      *
      * @return Collection
@@ -425,7 +408,6 @@ class Organization
     {
         if (!$this->administrators->contains($administrator)) {
             $this->administrators->add($administrator);
-            $administrator->addManagedOrganization($this);
         }
 
         return $this;
@@ -440,7 +422,6 @@ class Organization
     {
         if ($this->administrators->contains($administrator)) {
             $this->administrators->removeElement($administrator);
-            $administrator->removeManagedOrganization($this);
         }
     }
 
@@ -452,5 +433,23 @@ class Organization
     public function getAdministrators()
     {
         return $this->administrators;
+    }
+
+    /**
+     * @return AcademicYear
+     */
+    public function getCurrentAcademicYear()
+    {
+        return $this->currentAcademicYear;
+    }
+
+    /**
+     * @param AcademicYear $currentAcademicYear
+     * @return Organization
+     */
+    public function setCurrentAcademicYear($currentAcademicYear)
+    {
+        $this->currentAcademicYear = $currentAcademicYear;
+        return $this;
     }
 }

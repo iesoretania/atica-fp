@@ -45,7 +45,6 @@ class TrainingController extends Controller
     public function indexAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        AcademicYearRepository $academicYearRepository,
         Training $training = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -56,7 +55,7 @@ class TrainingController extends Controller
         if (null === $training) {
             $training = new Training();
             $training
-                ->setAcademicYear($academicYearRepository->getCurrentByOrganization($organization));
+                ->setAcademicYear($organization->getCurrentAcademicYear());
             $em->persist($training);
         } else {
             $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $training->getAcademicYear());
@@ -105,13 +104,12 @@ class TrainingController extends Controller
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        AcademicYearRepository $academicYearRepository,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
         if (null === $academicYear) {
             $organization = $userExtensionService->getCurrentOrganization();
-            $academicYear = $academicYearRepository->getCurrentByOrganization($organization);
+            $academicYear = $organization->getCurrentAcademicYear();
         }
 
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);

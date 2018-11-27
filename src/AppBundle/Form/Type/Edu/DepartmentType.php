@@ -54,9 +54,7 @@ class DepartmentType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $academicYear = $this->academicYearRepository->getCurrentByOrganization(
-            $this->userExtensionService->getCurrentOrganization()
-        );
+        $academicYear = $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
 
         $teachers = $this->teacherRepository->findByAcademicYear($academicYear);
 

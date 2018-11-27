@@ -97,13 +97,12 @@ class GradeController extends Controller
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        AcademicYearRepository $academicYearRepository,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
         if (null === $academicYear) {
             $organization = $userExtensionService->getCurrentOrganization();
-            $academicYear = $academicYearRepository->getCurrentByOrganization($organization);
+            $academicYear = $organization->getCurrentAcademicYear();
         }
 
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);

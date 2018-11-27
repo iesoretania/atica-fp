@@ -19,7 +19,6 @@
 namespace AppBundle\Controller\Organization;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\EducationalOrganization;
 use AppBundle\Entity\Organization;
 use AppBundle\Form\Type\Edu\AcademicYearType;
 use AppBundle\Security\OrganizationVoter;
@@ -133,15 +132,11 @@ class AcademicYearController extends Controller
 
         $title = $this->get('translator')->trans('title.list', [], 'edu_academic_year');
 
-        $current = $this->getDoctrine()->getManager()
-            ->getRepository(EducationalOrganization::class)
-            ->findOneBy(['organization' => $organization]);
-
         return $this->render('organization/academic_year/list.html.twig', [
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'current' => $current->getCurrentAcademicYear(),
+            'current' => $organization->getCurrentAcademicYear(),
             'domain' => 'edu_academic_year'
         ]);
     }
@@ -154,14 +149,10 @@ class AcademicYearController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
-        $current = $this->getDoctrine()->getManager()
-            ->getRepository(EducationalOrganization::class)
-            ->findOneBy(['organization' => $organization]);
-
         list($redirect, $academicYears) = $this->processOperations(
             $request,
             $userExtensionService->getCurrentOrganization(),
-            $current->getCurrentAcademicYear()
+            $organization->getCurrentAcademicYear()
         );
 
         if ($redirect) {
@@ -249,12 +240,7 @@ class AcademicYearController extends Controller
             ]
         );
         if ($academicYear) {
-            $educationalOrganization = $em->getRepository(EducationalOrganization::class)->findOneBy(
-                [
-                    'organization' => $organization
-                ]
-            );
-            $educationalOrganization->setCurrentAcademicYear($academicYear);
+            $organization->setCurrentAcademicYear($academicYear);
             $em->flush();
 
             $this->addFlash('success', $this->get('translator')->

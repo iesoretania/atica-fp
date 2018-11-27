@@ -20,18 +20,19 @@ namespace AppBundle\DataFixtures\ORM;
 
 use AppBundle\Entity\Person;
 use AppBundle\Entity\User;
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class LoadInitialUserData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
+class LoadInitialUserData extends Fixture
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    /** @var UserPasswordEncoderInterface $passwordEncoder */
+    private $passwordEncoder;
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $this->passwordEncoder = $passwordEncoder;
+    }
 
     public function load(ObjectManager $manager)
     {
@@ -50,25 +51,10 @@ class LoadInitialUserData extends AbstractFixture implements OrderedFixtureInter
             ->setLoginUsername('admin')
             ->setEnabled(true)
             ->setGlobalAdministrator(true)
-            ->setPassword($this->container->get('security.password_encoder')->encodePassword($userAdmin, 'admin'));
+            ->setPassword($this->passwordEncoder->encodePassword($userAdmin, 'admin'));
 
         $manager->persist($userAdmin);
 
         $manager->flush();
-    }
-
-    public function getOrder()
-    {
-        return 10;
-    }
-
-    /**
-     * Sets the container.
-     *
-     * @param ContainerInterface|null $container A ContainerInterface instance or null
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 }

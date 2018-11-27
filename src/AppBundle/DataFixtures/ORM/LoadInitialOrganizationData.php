@@ -18,65 +18,40 @@
 
 namespace AppBundle\DataFixtures\ORM;
 
-use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\EducationalOrganization;
-use AppBundle\Entity\Organization;
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use AppBundle\Repository\OrganizationRepository;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LoadInitialOrganizationData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
+class LoadInitialOrganizationData extends Fixture
 {
     /**
-     * @var ContainerInterface
+     * @var OrganizationRepository
      */
-    private $container;
+    private $organizationRepository;
+
+    public function __construct(OrganizationRepository $organizationRepository)
+    {
+        $this->organizationRepository = $organizationRepository;
+    }
 
     public function load(ObjectManager $manager)
     {
-        $organization = new Organization();
+        $organization = $this->organizationRepository->createEducationalOrganization();
+
         $organization
             ->setName('I.E.S. Test')
             ->setCode('23999999')
             ->setCity('Linares');
 
-        $manager->persist($organization);
+        $manager->flush();
 
         $this->setReference('organization', $organization);
-
-        $year = (date('n') < 9) ? (date('Y') - 1) : date('Y');
-
-        $academicYear = new AcademicYear();
-        $academicYear
-            ->setOrganization($organization)
-            ->setDescription($year . '-' . ($year + 1));
-
-        $manager->persist($academicYear);
-
-        $educationalOrganization = new EducationalOrganization();
-        $educationalOrganization
-            ->setOrganization($organization)
-            ->setCurrentAcademicYear($academicYear);
-
-        $manager->persist($educationalOrganization);
-
-        $manager->flush();
     }
 
-    public function getOrder()
+    public function getDependencies()
     {
-        return 20;
-    }
-
-    /**
-     * Sets the container.
-     *
-     * @param ContainerInterface|null $container A ContainerInterface instance or null
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
+        return [
+            LoadInitialUserData::class
+        ];
     }
 }

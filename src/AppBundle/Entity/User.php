@@ -447,30 +447,6 @@ class User implements AdvancedUserInterface
     }
 
     /**
-     * Add membership
-     *
-     * @param Membership $membership
-     *
-     * @return User
-     */
-    public function addMembership(Membership $membership)
-    {
-        $this->memberships[] = $membership;
-
-        return $this;
-    }
-
-    /**
-     * Remove membership
-     *
-     * @param Membership $membership
-     */
-    public function removeMembership(Membership $membership)
-    {
-        $this->memberships->removeElement($membership);
-    }
-
-    /**
      * Get memberships
      *
      * @return Collection
@@ -635,30 +611,6 @@ class User implements AdvancedUserInterface
      */
     public function eraseCredentials()
     {
-    }
-
-    /**
-     * Add managedOrganization
-     *
-     * @param Organization $managedOrganization
-     *
-     * @return User
-     */
-    public function addManagedOrganization(Organization $managedOrganization)
-    {
-        $this->managedOrganizations[] = $managedOrganization;
-
-        return $this;
-    }
-
-    /**
-     * Remove managedOrganization
-     *
-     * @param Organization $managedOrganization
-     */
-    public function removeManagedOrganization(Organization $managedOrganization)
-    {
-        $this->managedOrganizations->removeElement($managedOrganization);
     }
 
     /**

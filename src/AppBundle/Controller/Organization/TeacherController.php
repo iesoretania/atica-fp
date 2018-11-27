@@ -97,8 +97,7 @@ class TeacherController extends Controller
     ) {
         if (null === $academicYear) {
             $organization = $userExtensionService->getCurrentOrganization();
-            $academicYear = $this->getDoctrine()->getRepository(AcademicYear::class)->
-                getCurrentByOrganization($organization);
+            $academicYear = $organization->getCurrentAcademicYear();
         }
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 

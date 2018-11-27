@@ -20,7 +20,6 @@ namespace AppBundle\Form\Type\Edu;
 
 use AppBundle\Entity\Edu\Grade;
 use AppBundle\Entity\Edu\Subject;
-use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\GradeRepository;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -30,9 +29,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SubjectType extends AbstractType
 {
-    /** @var AcademicYearRepository */
-    private $academicYearRepository;
-
     /** @var GradeRepository */
     private $gradeRepository;
 
@@ -40,11 +36,9 @@ class SubjectType extends AbstractType
     private $userExtensionService;
 
     public function __construct(
-        AcademicYearRepository $academicYearRepository,
         GradeRepository $gradeRepository,
         UserExtensionService $userExtensionService
     ) {
-        $this->academicYearRepository = $academicYearRepository;
         $this->gradeRepository = $gradeRepository;
         $this->userExtensionService = $userExtensionService;
     }
@@ -54,9 +48,7 @@ class SubjectType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $academicYear = $this->academicYearRepository->getCurrentByOrganization(
-            $this->userExtensionService->getCurrentOrganization()
-        );
+        $academicYear = $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
 
         $grades = $this->gradeRepository->findByAcademicYear($academicYear);
 

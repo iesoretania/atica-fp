@@ -19,11 +19,9 @@
 namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\EducationalOrganization;
 use AppBundle\Entity\Organization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\NonUniqueResultException;
 
 class AcademicYearRepository extends ServiceEntityRepository
 {
@@ -31,29 +29,6 @@ class AcademicYearRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, AcademicYear::class);
-    }
-
-    /**
-     * @param Organization|null $organization
-     * @return AcademicYear|null
-     */
-    public function getCurrentByOrganization(Organization $organization = null)
-    {
-        if (null === $organization) {
-            return null;
-        }
-
-        try {
-            return $this->createQueryBuilder('ay')
-                ->join(EducationalOrganization::class, 'eo', 'WITH', 'ay = eo.currentAcademicYear')
-                ->where('eo.organization = :organization')
-                ->setParameter('organization', $organization)
-                ->getQuery()
-                ->getOneOrNullResult();
-        }
-        catch(NonUniqueResultException $e) {
-            return null;
-        }
     }
 
     /**

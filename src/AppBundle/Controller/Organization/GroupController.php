@@ -21,7 +21,6 @@ namespace AppBundle\Controller\Organization;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Group;
 use AppBundle\Form\Type\Edu\GroupType;
-use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;
@@ -98,13 +97,12 @@ class GroupController extends Controller
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        AcademicYearRepository $academicYearRepository,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
         if (null === $academicYear) {
             $organization = $userExtensionService->getCurrentOrganization();
-            $academicYear = $academicYearRepository->getCurrentByOrganization($organization);
+            $academicYear = $organization->getCurrentAcademicYear();
         }
 
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);

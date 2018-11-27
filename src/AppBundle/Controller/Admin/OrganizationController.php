@@ -18,10 +18,9 @@
 
 namespace AppBundle\Controller\Admin;
 
-use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\EducationalOrganization;
 use AppBundle\Entity\Organization;
 use AppBundle\Form\Type\OrganizationType;
+use AppBundle\Repository\OrganizationRepository;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -41,29 +40,12 @@ class OrganizationController extends Controller
      * @Route("/nueva", name="admin_organization_form_new", methods={"GET", "POST"})
      * @Route("/{id}", name="admin_organization_form_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
-    public function indexAction(Request $request, Organization $organization = null)
+    public function indexAction(Request $request, OrganizationRepository $organizationRepository, Organization $organization = null)
     {
         $em = $this->getDoctrine()->getManager();
 
         if (null === $organization) {
-            $organization = new Organization();
-            $em->persist($organization);
-
-            $year = (date('n') < 9) ? (date('Y') - 1) : date('Y');
-
-            $academicYear = new AcademicYear();
-            $academicYear
-                ->setOrganization($organization)
-                ->setDescription($year . '-' . ($year + 1));
-
-            $em->persist($academicYear);
-
-            $educationalOrganization = new EducationalOrganization();
-            $educationalOrganization
-                ->setOrganization($organization)
-                ->setCurrentAcademicYear($academicYear);
-
-            $em->persist($educationalOrganization);
+            $organization = $organizationRepository->createEducationalOrganization();
         }
 
         $form = $this->createForm(OrganizationType::class, $organization, [

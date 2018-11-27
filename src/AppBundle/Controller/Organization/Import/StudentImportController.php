@@ -23,7 +23,6 @@ use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Person;
 use AppBundle\Form\Model\StudentImport;
 use AppBundle\Form\Type\Import\StudentImportType;
-use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\StudentEnrollmentRepository;
 use AppBundle\Repository\PersonRepository;
@@ -43,7 +42,6 @@ class StudentImportController extends Controller
      */
     public function indexAction(
         UserExtensionService $userExtensionService,
-        AcademicYearRepository $academicYearRepository,
         StudentEnrollmentRepository $studentEnrollmentRepository,
         GroupRepository $groupRepository,
         PersonRepository $personRepository,
@@ -54,7 +52,7 @@ class StudentImportController extends Controller
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $formData = new StudentImport();
-        $formData->setAcademicYear($academicYearRepository->getCurrentByOrganization($organization));
+        $formData->setAcademicYear($organization->getCurrentAcademicYear());
 
         $form = $this->createForm(StudentImportType::class, $formData);
         $form->handleRequest($request);

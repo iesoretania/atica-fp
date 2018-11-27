@@ -20,7 +20,6 @@ namespace AppBundle\Form\Type\Edu;
 
 use AppBundle\Entity\Edu\Grade;
 use AppBundle\Entity\Edu\Group;
-use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\GradeRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Service\UserExtensionService;
@@ -31,9 +30,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class GroupType extends AbstractType
 {
-    /** @var AcademicYearRepository */
-    private $academicYearRepository;
-
     /** @var GradeRepository */
     private $gradeRepository;
 
@@ -45,12 +41,10 @@ class GroupType extends AbstractType
 
     public function __construct(
         GradeRepository $gradeRepository,
-        AcademicYearRepository $academicYearRepository,
         TeacherRepository $teacherRepository,
         UserExtensionService $userExtensionService
     ) {
         $this->gradeRepository = $gradeRepository;
-        $this->academicYearRepository = $academicYearRepository;
         $this->teacherRepository = $teacherRepository;
         $this->userExtensionService = $userExtensionService;
     }
@@ -60,9 +54,7 @@ class GroupType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $academicYear = $this->academicYearRepository->getCurrentByOrganization(
-            $this->userExtensionService->getCurrentOrganization()
-        );
+        $academicYear = $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
 
         $grades = $this->gradeRepository->findByAcademicYear($academicYear);
         $teachers = $this->teacherRepository->findByAcademicYear($academicYear);

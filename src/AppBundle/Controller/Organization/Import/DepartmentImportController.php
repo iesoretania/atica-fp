@@ -22,7 +22,6 @@ use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Department;
 use AppBundle\Form\Model\DepartmentImport;
 use AppBundle\Form\Type\Import\DepartmentImportType;
-use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\DepartmentRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Security\OrganizationVoter;
@@ -41,7 +40,6 @@ class DepartmentImportController extends Controller
      */
     public function indexAction(
         UserExtensionService $userExtensionService,
-        AcademicYearRepository $academicYearRepository,
         TeacherRepository $teacherRepository,
         DepartmentRepository $departmentRepository,
         EntityManagerInterface $entityManager,
@@ -51,7 +49,7 @@ class DepartmentImportController extends Controller
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $formData = new DepartmentImport();
-        $formData->setAcademicYear($academicYearRepository->getCurrentByOrganization($organization));
+        $formData->setAcademicYear($organization->getCurrentAcademicYear());
 
         $form = $this->createForm(DepartmentImportType::class, $formData);
         $form->handleRequest($request);

@@ -49,8 +49,7 @@ class TeacherImportController extends Controller
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $formData = new TeacherImport();
-        $formData->setAcademicYear($this->getDoctrine()
-            ->getRepository(AcademicYear::class)->getCurrentByOrganization($organization));
+        $formData->setAcademicYear($organization->getCurrentAcademicYear());
 
         $form = $this->createForm(TeacherImportType::class, $formData, [
             'organization' => $organization

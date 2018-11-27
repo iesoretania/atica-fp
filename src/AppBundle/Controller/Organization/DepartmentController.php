@@ -21,7 +21,6 @@ namespace AppBundle\Controller\Organization;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Department;
 use AppBundle\Form\Type\Edu\DepartmentType;
-use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\DepartmentRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;
@@ -45,7 +44,6 @@ class DepartmentController extends Controller
     public function indexAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        AcademicYearRepository $academicYearRepository,
         Department $department = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -56,7 +54,7 @@ class DepartmentController extends Controller
         if (null === $department) {
             $department = new Department();
             $department
-                ->setAcademicYear($academicYearRepository->getCurrentByOrganization($organization));
+                ->setAcademicYear($organization->getCurrentAcademicYear());
             $em->persist($department);
         }
 
@@ -103,13 +101,12 @@ class DepartmentController extends Controller
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        AcademicYearRepository $academicYearRepository,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
         if (null === $academicYear) {
             $organization = $userExtensionService->getCurrentOrganization();
-            $academicYear = $academicYearRepository->getCurrentByOrganization($organization);
+            $academicYear = $organization->getCurrentAcademicYear();
         }
 
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);

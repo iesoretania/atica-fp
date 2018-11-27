@@ -18,6 +18,7 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -28,6 +29,26 @@ class OrganizationRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Organization::class);
+    }
+
+    public function createEducationalOrganization()
+    {
+        $organization = new Organization();
+
+        $year = (date('n') < 9) ? (date('Y') - 1) : date('Y');
+
+        $academicYear = new AcademicYear();
+        $academicYear
+            ->setOrganization($organization)
+            ->setDescription($year . '-' . ($year + 1));
+
+        $this->getEntityManager()->persist($organization);
+        $this->getEntityManager()->persist($academicYear);
+
+        $organization
+            ->setCurrentAcademicYear($academicYear);
+
+        return $organization;
     }
 
     /**

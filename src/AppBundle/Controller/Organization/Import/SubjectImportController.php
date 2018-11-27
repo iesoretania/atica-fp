@@ -23,7 +23,6 @@ use AppBundle\Entity\Edu\Subject;
 use AppBundle\Entity\Edu\Teaching;
 use AppBundle\Form\Model\SubjectImport;
 use AppBundle\Form\Type\Import\SubjectImportType;
-use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\GradeRepository;
 use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\SubjectRepository;
@@ -46,7 +45,6 @@ class SubjectImportController extends Controller
      */
     public function indexAction(
         UserExtensionService $userExtensionService,
-        AcademicYearRepository $academicYearRepository,
         TeacherRepository $teacherRepository,
         SubjectRepository $subjectRepository,
         GradeRepository $gradeRepository,
@@ -59,8 +57,7 @@ class SubjectImportController extends Controller
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $formData = new SubjectImport();
-        $formData->setAcademicYear($academicYearRepository->getCurrentByOrganization($organization));
-
+        $formData->setAcademicYear($organization->getCurrentAcademicYear());
         $form = $this->createForm(SubjectImportType::class, $formData);
         $form->handleRequest($request);
 
