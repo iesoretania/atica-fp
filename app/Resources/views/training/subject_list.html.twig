@@ -1,0 +1,36 @@
+{% trans_default_domain 'edu_subject' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th>{{ 'header.name'|trans }}</th>
+    <th>{{ 'header.grade'|trans }}</th>
+    <th>{{ 'header.teachers'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for subject in pager %}
+                <tr>
+                    <td>
+                        {{ subject.name }}{% if subject.workLinked %} <span class="badge badge-primary">{{ 'header.work_linked_training'|trans }}</span>{% endif %}{% if subject.workplaceTraining %} <span class="badge badge-primary">{{ 'header.workplace_training'|trans }}</span>{% endif %}
+                    </td>
+                    <td>
+                        {{ subject.grade }}
+                    </td>
+                    <td>
+                        {% for teaching in subject.teachings %}{{ teaching.teacher }} ({{ teaching.group }}){% if not loop.last %}, {% endif %}{% endfor %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}
