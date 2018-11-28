@@ -15,7 +15,7 @@
                 {% set url = path('organization_training_edit', {'id': training.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="items[]" value="{{ training.id }}" class="selectable"> <a href="{{ url }}">{{ training.name }}{% if training.workLinked %} <span class="badge badge-primary">{{ 'header.work_linked_training'|trans }}</span>{% endif %}</a></label>
+                        <label><input type="checkbox" name="items[]" value="{{ training.id }}" class="selectable"> <a href="{{ url }}">{{ training.name }}{% if training.workLinked %} <span class="badge badge-success">{{ 'header.work_linked_training'|trans }}</span>{% endif %}</a></label>
                     </td>
                     <td>
                         {{ training.department|default('') }}

@@ -26,7 +26,7 @@
                     </td>
                     <td>
                         {% if academic_year != current  %}
-                            {{ m.submit_button('switch', 'lightbulb', 'btn-primary btn-xs btn-block', 'form.switch'|trans, false, academic_year.id) }}
+                            {{ m.submit_button('switch', 'lightbulb', 'btn-primary btn-sm btn-block', 'form.switch'|trans, false, academic_year.id) }}
                         {% else %}
                             <i class="fas fa-check"></i> {{ 'table.active'|trans }}
                         {% endif %}

@@ -14,14 +14,14 @@
             {% for training in pager %}
                 <tr>
                     <td>
-                        {{ training.name }}{% if training.workLinked %} <span class="badge badge-primary">{{ 'header.work_linked_training'|trans }}</span>{% endif %}
+                        {{ training.name }}{% if training.workLinked %} <span class="badge badge-success">{{ 'header.work_linked_training'|trans }}</span>{% endif %}
                     </td>
                     <td>
                         {{ training.department|default('') }}
                     </td>
                     <td class="text-center">
-                        {{ m.link_button(path('training_subject_list', {'id': training.id}), 'book-open', 'btn-primary btn-xs w-40', 'table.subjects'|trans, null, 'd-md-none d-lg-inline') }}
-                        {{ m.link_button('', 'award', 'btn-primary btn-xs w-40', 'table.competences'|trans, null, 'd-md-none d-lg-inline') }}
+                        {{ m.link_button(path('training_subject_list', {'id': training.id}), 'book-open', 'btn-primary btn-sm w-40', 'table.subjects'|trans, null, 'd-md-none d-lg-inline') }}
+                        {{ m.link_button('', 'award', 'btn-primary btn-sm w-40', 'table.competences'|trans, null, 'd-md-none d-lg-inline') }}
                     </td>
                 </tr>
             {% else %}
