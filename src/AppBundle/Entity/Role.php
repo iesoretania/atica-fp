@@ -28,8 +28,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Role
 {
     const ROLE_LOCAL_ADMIN = 'LOCAL_ADMIN';
+    const ROLE_WLT_MANAGER = 'WLT_MANAGER';
 
-    const ROLES = [self::ROLE_LOCAL_ADMIN];
+    const ROLES = [self::ROLE_LOCAL_ADMIN, self::ROLE_WLT_MANAGER];
 
     /**
      * @ORM\Id

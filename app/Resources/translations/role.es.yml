@@ -1,4 +1,5 @@
-form.role.LOCAL_ADMIN: Administrador local
+form.role.LOCAL_ADMIN: Administrador/a local
+form.role.WLT_MANAGER: Coordinador/a de FP dual
 
 form.save: Guardar cambios
 form.back: Volver
