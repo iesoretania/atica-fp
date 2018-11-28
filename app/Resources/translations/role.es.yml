@@ -1,0 +1,9 @@
+form.role.LOCAL_ADMIN: Administrador local
+
+form.save: Guardar cambios
+form.back: Volver
+
+message.saved: Asignaciones actualizadas con éxito.
+message.save_error: No se han podido actualizar las asignaciones.
+
+title.roles: Asignación de roles

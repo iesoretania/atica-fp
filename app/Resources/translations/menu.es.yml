@@ -34,6 +34,9 @@ menu.organization.subject.detail: Gestionar las materias impartidas en el centro
 menu.organization.department: Departamentos
 menu.organization.department.detail: Gestionar los departamentos del centro
 
+menu.organization.role: Roles
+menu.organization.role.detail: Gestionar los roles del centro
+
 menu.organization.import: Importar
 menu.organization.import.detail: Importar datos desde Séneca
 

@@ -22,7 +22,8 @@ use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\Role;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 class RoleRepository extends ServiceEntityRepository
 {
@@ -46,5 +47,60 @@ class RoleRepository extends ServiceEntityRepository
         ]);
 
         return $role !== null;
+    }
+
+    public function findByOrganizationAndRole(Organization $organization, $roleName)
+    {
+        $roles = $this->findBy([
+            'organization' => $organization,
+            'role' => $roleName
+        ]);
+
+        return $roles;
+    }
+
+    public function updateOrganizationRoles(Organization $organization, $rolesData)
+    {
+        foreach ($rolesData as $roleName => $roleData) {
+
+            // inicialmente copiar quien tenía originalmente el rol
+            $toRemove = new ArrayCollection(array_map(function (Role $role) {
+                return $role->getPerson();
+            }, $this->findByOrganizationAndRole($organization, $roleName)));
+
+            $toAdd = [];
+
+            // si una persona mantiene el rol, se elimina de la lista de eliminación
+            // si es una persona nueva, se añade a la lista de nuevos
+            foreach ($roleData as $person) {
+                if ($toRemove->contains($person)) {
+                    $toRemove->removeElement($person);
+                } else {
+                    $toAdd[] = $person;
+                }
+            }
+
+            // eliminar las asignaciones de rol que queden en la lista
+            $this->createQueryBuilder('r')
+                ->delete(Role::class, 'r')
+                ->where('r.organization = :organization')
+                ->andWhere('r.role = :role_name')
+                ->andWhere('r.person IN (:persons)')
+                ->setParameter('organization', $organization)
+                ->setParameter('role_name', $roleName)
+                ->setParameter('persons', $toRemove)
+                ->getQuery()
+                ->execute();
+
+            // crear las nuevas asignaciones de rol
+            foreach ($toAdd as $person) {
+                $role = new Role();
+                $role
+                    ->setOrganization($organization)
+                    ->setRole($roleName)
+                    ->setPerson($person);
+                $this->getEntityManager()->persist($role);
+            }
+        }
     }
 }
