@@ -9,7 +9,6 @@ form.phone_number: Número de teléfono
 form.fax_number: Número de fax
 form.web_site: Sitio web
 form.description: Notas
-form.managers: Administradores locales
 
 form.enabled: Acceso
 form.enabled.no: El acceso a la aplicación le está denegado

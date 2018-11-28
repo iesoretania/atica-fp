@@ -120,12 +120,6 @@ class User implements AdvancedUserInterface
     private $memberships;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Organization", mappedBy="administrators")
-     * @var Collection
-     */
-    private $managedOrganizations;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Organization")
      * @ORM\JoinColumn(nullable=true)
      * @var Organization|null
@@ -178,7 +172,6 @@ class User implements AdvancedUserInterface
     public function __construct()
     {
         $this->memberships = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->managedOrganizations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->externalCheck = false;
         $this->allowExternalCheck = false;
     }
@@ -611,16 +604,6 @@ class User implements AdvancedUserInterface
      */
     public function eraseCredentials()
     {
-    }
-
-    /**
-     * Get managedOrganizations
-     *
-     * @return Collection
-     */
-    public function getManagedOrganizations()
-    {
-        return $this->managedOrganizations;
     }
 
     /**

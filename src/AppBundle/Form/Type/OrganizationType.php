@@ -62,11 +62,6 @@ class OrganizationType extends AbstractType
             ->add('description', TextareaType::class, [
                 'label' => 'form.description',
                 'required' => false
-            ])
-            ->add('administrators', null, [
-                'label' => 'form.managers',
-                'choice_label' => 'fullName',
-                'required' => false
             ]);
     }
 

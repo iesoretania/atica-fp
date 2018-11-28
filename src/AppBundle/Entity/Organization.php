@@ -106,13 +106,6 @@ class Organization
     private $memberships;
 
     /**
-     * @ORM\ManyToMany(targetEntity="User", inversedBy="managedOrganizations")
-     * @ORM\JoinTable(name="manager")
-     * @var Collection
-     */
-    private $administrators;
-
-    /**
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Edu\AcademicYear")
      * @var AcademicYear
      */
@@ -124,7 +117,6 @@ class Organization
     public function __construct()
     {
         $this->memberships = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->administrators = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -395,44 +387,6 @@ class Organization
     public function getMemberships()
     {
         return $this->memberships;
-    }
-
-    /**
-     * Add administrator
-     *
-     * @param User $administrator
-     *
-     * @return Organization
-     */
-    public function addAdministrator(User $administrator)
-    {
-        if (!$this->administrators->contains($administrator)) {
-            $this->administrators->add($administrator);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Remove administrator
-     *
-     * @param User $administrator
-     */
-    public function removeAdministrator(User $administrator)
-    {
-        if ($this->administrators->contains($administrator)) {
-            $this->administrators->removeElement($administrator);
-        }
-    }
-
-    /**
-     * Get administrators
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getAdministrators()
-    {
-        return $this->administrators;
     }
 
     /**

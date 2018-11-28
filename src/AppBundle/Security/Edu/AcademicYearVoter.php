@@ -19,10 +19,11 @@
 namespace AppBundle\Security\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\Teacher;
+use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Repository\Edu\TeacherRepository;
+use AppBundle\Repository\RoleRepository;
 use AppBundle\Service\UserExtensionService;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -35,22 +36,25 @@ class AcademicYearVoter extends Voter
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
 
-    /**
-     * @var ManagerRegistry
-     */
-    private $managerRegistry;
-
     /** @var UserExtensionService $userExtensionService */
     private $userExtensionService;
 
+    /** @var RoleRepository */
+    private $roleRepository;
+
+    /** @var TeacherRepository */
+    private $teacherRepository;
+
     public function __construct(
         AccessDecisionManagerInterface $decisionManager,
-        ManagerRegistry $managerRegistry,
-        UserExtensionService $userExtensionService
+        UserExtensionService $userExtensionService,
+        RoleRepository $roleRepository,
+        TeacherRepository $teacherRepository
     ) {
         $this->decisionManager = $decisionManager;
-        $this->managerRegistry = $managerRegistry;
         $this->userExtensionService = $userExtensionService;
+        $this->roleRepository = $roleRepository;
+        $this->teacherRepository = $teacherRepository;
     }
 
     /**
@@ -80,7 +84,8 @@ class AcademicYearVoter extends Voter
         }
 
         // si el curso académico no pertenece a la organización actual, denegar
-        if ($subject->getOrganization() !== $this->userExtensionService->getCurrentOrganization()) {
+        $organization = $this->userExtensionService->getCurrentOrganization();
+        if ($subject->getOrganization() !== $organization) {
             return false;
         }
 
@@ -98,16 +103,13 @@ class AcademicYearVoter extends Voter
         }
 
         // Si es administrador de la organización, permitir siempre
-        if ($user->getManagedOrganizations()->contains($subject->getOrganization())) {
+        if ($this->roleRepository->personHasRole($organization, $user->getPerson(), Role::ROLE_LOCAL_ADMIN)) {
             return true;
         }
 
         // Si es permiso de acceso, comprobar que es un profesor de ese curso académico
         if ($attribute === self::ACCESS) {
-            return (null !== $this->managerRegistry->getRepository(Teacher::class)->findBy([
-                'person' => $user->getPerson(),
-                'academicYear' => $subject
-            ]));
+            return null !== $this->teacherRepository->findOneByPersonAndAcademicYear($user->getPerson(), $subject);
         }
 
         // denegamos en cualquier otro caso

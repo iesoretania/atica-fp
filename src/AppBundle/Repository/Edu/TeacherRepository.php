@@ -20,6 +20,7 @@ namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
+use AppBundle\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
@@ -78,5 +79,22 @@ class TeacherRepository extends ServiceEntityRepository
             ->addOrderBy('p.firstName')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findOneByPersonAndAcademicYear(
+        Person $person,
+        AcademicYear $academicYear
+    ) {
+        try {
+            return $this->createQueryBuilder('t')
+                ->where('t.person = :person')
+                ->andWhere('t.academicYear = :academic_year')
+                ->setParameter('person', $person)
+                ->setParameter('academic_year', $academicYear)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
     }
 }

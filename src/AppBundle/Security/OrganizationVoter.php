@@ -20,7 +20,9 @@ namespace AppBundle\Security;
 
 use AppBundle\Entity\Membership;
 use AppBundle\Entity\Organization;
+use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Repository\RoleRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -30,11 +32,16 @@ class OrganizationVoter extends Voter
     const MANAGE = 'ORGANIZATION_MANAGE';
     const ACCESS = 'ORGANIZATION_ACCESS';
 
+    /** @var AccessDecisionManagerInterface */
     private $decisionManager;
 
-    public function __construct(AccessDecisionManagerInterface $decisionManager)
+    /** @var RoleRepository */
+    private $roleRepository;
+
+    public function __construct(AccessDecisionManagerInterface $decisionManager, RoleRepository $roleRepository)
     {
         $this->decisionManager = $decisionManager;
+        $this->roleRepository = $roleRepository;
     }
 
     /**
@@ -77,7 +84,7 @@ class OrganizationVoter extends Voter
         }
 
         // Si es administrador de la organización, permitir siempre
-        if ($user->getManagedOrganizations()->contains($subject)) {
+        if ($this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_LOCAL_ADMIN)) {
             return true;
         }
 
@@ -86,7 +93,7 @@ class OrganizationVoter extends Voter
             $date = new \DateTime();
             /** @var Membership $membership */
             foreach ($user->getMemberships() as $membership) {
-                if ($membership->getOrganization() == $subject && $membership->getValidFrom() <= $date &&
+                if ($membership->getOrganization() === $subject && $membership->getValidFrom() <= $date &&
                     ($membership->getValidUntil() === null || $membership->getValidUntil() >= $date)) {
                     return true;
                 }
