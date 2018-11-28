@@ -18,10 +18,7 @@
 
 namespace AppBundle\Controller\Training;
 
-use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Training;
-use AppBundle\Repository\Edu\TrainingRepository;
-use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -91,55 +88,6 @@ class TrainingController extends Controller
             'pager' => $pager,
             'q' => $q,
             'domain' => 'edu_training'
-        ]);
-    }
-
-    /**
-     * @Route("/eliminar/{academicYear}", name="organization_training_delete", methods={"POST"})
-     */
-    public function deleteAction(
-        Request $request,
-        UserExtensionService $userExtensionService,
-        TrainingRepository $trainingRepository,
-        AcademicYear $academicYear
-    ) {
-        $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
-
-        if ($academicYear->getOrganization() !== $userExtensionService->getCurrentOrganization()) {
-            return $this->createNotFoundException();
-        }
-
-        $em = $this->getDoctrine()->getManager();
-
-        $items = $request->request->get('items', []);
-        if (count($items) === 0) {
-            return $this->redirectToRoute('organization_training_list', ['academicYear' => $academicYear->getId()]);
-        }
-
-        $trainings = $trainingRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
-
-        if ($request->get('confirm', '') === 'ok') {
-            try {
-                $em->createQueryBuilder()
-                    ->delete(Training::class, 't')
-                    ->where('t IN (:items)')
-                    ->setParameter('items', $trainings)
-                    ->getQuery()
-                    ->execute();
-
-                $em->flush();
-                $this->addFlash('success', $this->get('translator')->trans('message.deleted', [], 'edu_training'));
-            } catch (\Exception $e) {
-                $this->addFlash('error', $this->get('translator')->trans('message.delete_error', [], 'edu_training'));
-            }
-            return $this->redirectToRoute('organization_training_list', ['academicYear' => $academicYear->getId()]);
-        }
-
-        return $this->render('organization/training/delete.html.twig', [
-            'menu_path' => 'organization_training_list',
-            'breadcrumb' => [['fixed' => $this->get('translator')->trans('title.delete', [], 'edu_training')]],
-            'title' => $this->get('translator')->trans('title.delete', [], 'edu_training'),
-            'trainings' => $trainings
         ]);
     }
 }

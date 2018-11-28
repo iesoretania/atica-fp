@@ -28,6 +28,9 @@ table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% res
 table.no_items: No hay enseñanzas
 table.filter: Filtrar...
 
+table.subjects: Materias
+table.competences: Competencias
+
 header.name: Nombre
 header.department: Departamento
 header.work_linked_training: DUAL

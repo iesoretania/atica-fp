@@ -5,22 +5,23 @@
 {% block new_action %}{% endblock %}
 
 {% block table_header %}
-    <th class="w-40">{{ 'header.name'|trans }}</th>
-    <th class="w-40">{{ 'header.department'|trans }}</th>
-    <th class="w-20"></th>
+    <th>{{ 'header.name'|trans }}</th>
+    <th>{{ 'header.department'|trans }}</th>
+    <th></th>
 {% endblock %}
 
 {% block table_body %}
             {% for training in pager %}
-                {% set url = path('organization_training_edit', {'id': training.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
+                <tr>
                     <td>
-                        <a href="{{ url }}">{{ training.name }}{% if training.workLinked %} <span class="badge badge-primary">{{ 'header.work_linked_training'|trans }}</span>{% endif %}</a>
+                        {{ training.name }}{% if training.workLinked %} <span class="badge badge-primary">{{ 'header.work_linked_training'|trans }}</span>{% endif %}
                     </td>
                     <td>
                         {{ training.department|default('') }}
                     </td>
-                    <td>
+                    <td class="text-center">
+                        {{ m.link_button('', 'book-open', 'btn-primary btn-xs w-40', 'table.subjects'|trans, null, 'd-md-none d-lg-inline') }}
+                        {{ m.link_button('', 'award', 'btn-primary btn-xs w-40', 'table.competences'|trans, null, 'd-md-none d-lg-inline') }}
                     </td>
                 </tr>
             {% else %}
