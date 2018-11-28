@@ -67,9 +67,16 @@ class Training
      */
     private $department;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @var bool
+     */
+    private $workLinked;
+
     public function __construct()
     {
         $this->competencies = new ArrayCollection();
+        $this->workLinked = false;
     }
 
     public function __toString()
@@ -162,6 +169,24 @@ class Training
     public function setDepartment($department = null)
     {
         $this->department = $department;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWorkLinked()
+    {
+        return $this->workLinked;
+    }
+
+    /**
+     * @param bool $workLinked
+     * @return Training
+     */
+    public function setWorkLinked($workLinked)
+    {
+        $this->workLinked = $workLinked;
         return $this;
     }
 }

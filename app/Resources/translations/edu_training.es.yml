@@ -3,6 +3,10 @@ form.internal_code: Código Séneca
 form.name: Nombre
 form.no_department: Sin asignar
 
+form.work_linked_training: FP dual
+form.work_linked_training.yes: Enseñanza asociada a un proyecto de FP dual
+form.work_linked_training.no: No se aplica a la enseñanza
+
 form.save: Guardar cambios
 form.delete: Eliminar las enseñanzas seleccionadas
 form.back: Volver
@@ -26,6 +30,7 @@ table.filter: Filtrar...
 
 header.name: Nombre
 header.department: Departamento
+header.work_linked_training: DUAL
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
