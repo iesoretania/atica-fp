@@ -77,14 +77,6 @@ class SubjectType extends AbstractType
                     'form.workplace_training.yes' => true
                 ]
             ])
-            ->add('workLinked', ChoiceType::class, [
-                'label' => 'form.work_linked_training',
-                'expanded' => true,
-                'choices' => [
-                    'form.work_linked_training.no' => false,
-                    'form.work_linked_training.yes' => true
-                ]
-            ])
             ->add('internalCode', null, [
                 'label' => 'form.internal_code',
                 'required' => false,

@@ -7,10 +7,6 @@ form.workplace_training: FCT
 form.workplace_training.yes: El módulo se corresponde con la Formación en Centros de Trabajo
 form.workplace_training.no: No se aplica
 
-form.work_linked_training: FP dual
-form.work_linked_training.yes: El módulo está asociado a un proyecto de FP dual
-form.work_linked_training.no: No se aplica
-
 form.save: Guardar cambios
 form.delete: Eliminar las materias seleccionadas
 form.back: Volver

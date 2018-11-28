@@ -15,13 +15,13 @@
                 {% set url = path('organization_subject_edit', {'id': subject.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="items[]" value="{{ subject.id }}" class="selectable"> <a href="{{ url }}">{{ subject.name }}{% if subject.workLinked %} <span class="badge badge-primary">{{ 'header.work_linked_training'|trans }}</span>{% endif %}{% if subject.workplaceTraining %} <span class="badge badge-primary">{{ 'header.workplace_training'|trans }}</span>{% endif %}</a></label>
+                        <label><input type="checkbox" name="items[]" value="{{ subject.id }}" class="selectable"> <a href="{{ url }}">{{ subject.name }}{% if subject.workplaceTraining %} <span class="badge badge-primary">{{ 'header.workplace_training'|trans }}</span>{% endif %}</a></label>
                     </td>
                     <td>
                         {{ subject.grade }}
                     </td>
                     <td>
-                        {% for teaching in subject.teachings %}{{ teaching.teacher }} ({{ teaching.group }}){% if not loop.last %}, {% endif %}{% endfor %}
+                        {% for teaching in subject.teachings %}{{ teaching.teacher }} ({{ teaching.group }}){% if teaching.workLinked %} <span class="badge badge-primary">{{ 'header.work_linked_training'|trans }}</span>{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}
                     </td>
                 </tr>
             {% else %}

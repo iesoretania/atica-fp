@@ -79,18 +79,11 @@ class Subject
      */
     private $workplaceTraining;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $workLinked;
-
     public function __construct()
     {
         $this->learningOutcomes = new ArrayCollection();
         $this->teachings = new ArrayCollection();
 
-        $this->workLinked = false;
         $this->workplaceTraining = false;
     }
 
@@ -225,24 +218,6 @@ class Subject
     public function setWorkplaceTraining($workplaceTraining)
     {
         $this->workplaceTraining = $workplaceTraining;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isWorkLinked()
-    {
-        return $this->workLinked;
-    }
-
-    /**
-     * @param bool $workLinked
-     * @return Subject
-     */
-    public function setWorkLinked($workLinked)
-    {
-        $this->workLinked = $workLinked;
         return $this;
     }
 }
