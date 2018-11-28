@@ -18,6 +18,7 @@
 
 namespace AppBundle\Entity\Edu;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -52,6 +53,26 @@ class Grade
      * @var string
      */
     private $name;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Group", mappedBy="grade")
+     * @ORM\OrderBy({"name": "ASC"})
+     * @var Group[]
+     */
+    private $groups;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Subject", mappedBy="grade")
+     * @ORM\OrderBy({"name": "ASC"})
+     * @var Subject[]
+     */
+    private $subjects;
+
+    public function __construct()
+    {
+        $this->groups = new ArrayCollection();
+        $this->subjects = new ArrayCollection();
+    }
 
     public function __toString()
     {
@@ -118,5 +139,21 @@ class Grade
     {
         $this->name = $name;
         return $this;
+    }
+
+    /**
+     * @return Group[]
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+    /**
+     * @return Subject[]
+     */
+    public function getSubjects()
+    {
+        return $this->subjects;
     }
 }

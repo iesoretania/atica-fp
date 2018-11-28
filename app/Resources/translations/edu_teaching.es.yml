@@ -1,0 +1,27 @@
+form.subject: Materia
+form.teacher: Profesor/a
+form.group: Grupo
+form.none: Elija una opción
+
+form.work_linked_training: FP dual
+form.work_linked_training.yes: El módulo está asociado a un proyecto de FP dual
+form.work_linked_training.no: No se aplica
+
+form.save: Guardar cambios
+form.delete: Eliminar la asociación
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar la siguiente asociación?
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos de la asociación
+title.new: Nueva asociación
+title.delete: Eliminar asociación
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Asociación eliminada con éxito.
+message.delete_error: Ha ocurrido un error al eliminar la asociación.

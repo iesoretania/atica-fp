@@ -20,7 +20,9 @@ namespace AppBundle\Controller\Organization;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Subject;
+use AppBundle\Entity\Edu\Teaching;
 use AppBundle\Form\Type\Edu\SubjectType;
+use AppBundle\Form\Type\Edu\TeachingType;
 use AppBundle\Repository\Edu\SubjectRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;
@@ -198,6 +200,140 @@ class SubjectController extends Controller
             'breadcrumb' => [['fixed' => $this->get('translator')->trans('title.delete', [], 'edu_subject')]],
             'title' => $this->get('translator')->trans('title.delete', [], 'edu_subject'),
             'subjects' => $subjects
+        ]);
+    }
+
+    /**
+     * @Route("/asignacion/nueva/{id}", name="organization_teaching_new", methods={"GET", "POST"})
+     */
+    public function formNewTeachingAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        Subject $subject
+    ) {
+        $teaching = new Teaching();
+        $teaching
+            ->setSubject($subject);
+
+        $this->getDoctrine()->getManager()->persist($teaching);
+
+        return $this->formTeachingAction($request, $userExtensionService, $teaching);
+    }
+
+    /**
+     * @Route("/asignacion/{id}", name="organization_teaching_edit", requirements={"id" = "\d+"},
+     *     methods={"GET", "POST"})
+     */
+    public function formTeachingAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        Teaching $teaching
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $academicYear = $teaching->getSubject()->getGrade()->getTraining()->getAcademicYear();
+
+        $form = $this->createForm(TeachingType::class, $teaching, ['subject' => $teaching->getSubject()]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $em->flush();
+                $this->addFlash('success', $this->get('translator')->trans('message.saved', [], 'edu_teaching'));
+                return $this->redirectToRoute('organization_subject_list', [
+                    'academicYear' => $academicYear
+                ]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', $this->get('translator')->trans('message.error', [], 'edu_teaching'));
+            }
+        }
+
+        $title = $this->get('translator')->trans(
+            $teaching->getId() ? 'title.edit' : 'title.new',
+            [],
+            'edu_teaching'
+        );
+
+        $breadcrumb = [
+            [
+                'fixed' => $academicYear->getDescription(),
+                'routeName' => 'organization_subject_list',
+                'routeParams' => ['academicYear' => $academicYear->getId()]
+            ],
+            $teaching->getId() ?
+                ['fixed' => $teaching->getTeacher()->getPerson() .
+                    ' - ' . $teaching->getSubject()->getName() .
+                    ' (' . $teaching->getGroup()->getName() . ')'] :
+                ['fixed' => $this->get('translator')->trans('title.new', [], 'edu_teaching')]
+        ];
+
+        return $this->render('organization/subject/teaching_form.html.twig', [
+            'menu_path' => 'organization_subject_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'teaching' => $teaching,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/asignacion/eliminar/{id}", name="organization_teaching_delete", requirements={"id" = "\d+"},
+     *     methods={"GET", "POST"})
+     */
+    public function deleteTeachingAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        Teaching $teaching
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
+
+        $academicYear = $teaching->getGroup()->getGrade()->getTraining()->getAcademicYear();
+
+        $em = $this->getDoctrine()->getManager();
+
+        if ($request->get('confirm', '') === 'ok') {
+            try {
+                $em->remove($teaching);
+                $em->flush();
+                $this->addFlash('success', $this->get('translator')->trans('message.deleted', [], 'edu_teaching'));
+            } catch (\Exception $e) {
+                $this->addFlash('error', $this->get('translator')->trans('message.delete_error', [], 'edu_teaching'));
+            }
+            return $this->redirectToRoute('organization_subject_list', [
+                'academicYear' => $academicYear->getId()
+            ]);
+        }
+
+        $title = $this->get('translator')->trans('title.delete', [], 'edu_teaching');
+
+        $breadcrumb = [
+            [
+                'fixed' => $academicYear->getDescription(),
+                'routeName' => 'organization_subject_list',
+                'routeParams' => ['academicYear' => $academicYear->getId()]
+            ],
+            [
+                'fixed' => $teaching->getTeacher()->getPerson() .
+                    ' - ' . $teaching->getSubject()->getName() .
+                    ' (' . $teaching->getGroup()->getName() . ')',
+                'routeName' => 'organization_teaching_edit',
+                'routeParams' => ['id' => $teaching->getId()]
+            ],
+            [
+                'fixed' => $this->get('translator')->trans('title.delete', [], 'edu_teaching')
+            ]
+        ];
+
+        return $this->render('organization/subject/teaching_delete.html.twig', [
+            'menu_path' => 'organization_subject_list',
+            'breadcrumb' => $breadcrumb,
+            'teaching' => $teaching,
+            'title' => $title
         ]);
     }
 }

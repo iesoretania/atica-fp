@@ -38,7 +38,7 @@ class Group
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Grade")
+     * @ORM\ManyToOne(targetEntity="Grade", inversedBy="groups")
      * @ORM\JoinColumn(nullable=false)
      * @var Grade
      */

@@ -36,7 +36,7 @@ class Subject
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Grade")
+     * @ORM\ManyToOne(targetEntity="Grade", inversedBy="subjects")
      * @ORM\JoinColumn(nullable=false)
      * @var Grade
      */
@@ -83,9 +83,14 @@ class Subject
     {
         $this->learningOutcomes = new ArrayCollection();
         $this->teachings = new ArrayCollection();
-
         $this->workplaceTraining = false;
     }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
 
     /**
      * @return int

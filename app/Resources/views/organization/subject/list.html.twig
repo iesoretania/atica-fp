@@ -21,7 +21,8 @@
                         {{ subject.grade }}
                     </td>
                     <td>
-                        {% for teaching in subject.teachings %}{{ teaching.teacher }} ({{ teaching.group }}){% if teaching.workLinked %} <span class="badge badge-primary">{{ 'header.work_linked_training'|trans }}</span>{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}
+                        {% for teaching in subject.teachings %}<a href="{{ path('organization_teaching_edit', {'id': teaching.id}) }}">{{ teaching.teacher }} ({{ teaching.group }}){% if teaching.workLinked %} <span class="badge badge-primary">{{ 'header.work_linked_training'|trans }}</span>{% endif %}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+                        &nbsp;<a href="{{ path('organization_teaching_new', {'id': subject.id}) }}"><i class="fas fa-plus-square"></i></a>
                     </td>
                 </tr>
             {% else %}
