@@ -18,6 +18,8 @@
 
 namespace AppBundle\Controller\Admin;
 
+use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Membership;
 use AppBundle\Entity\Organization;
 use AppBundle\Form\Type\OrganizationType;
 use AppBundle\Repository\OrganizationRepository;
@@ -40,8 +42,11 @@ class OrganizationController extends Controller
      * @Route("/nueva", name="admin_organization_form_new", methods={"GET", "POST"})
      * @Route("/{id}", name="admin_organization_form_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
-    public function indexAction(Request $request, OrganizationRepository $organizationRepository, Organization $organization = null)
-    {
+    public function indexAction(
+        Request $request,
+        OrganizationRepository $organizationRepository,
+        Organization $organization = null
+    ) {
         $em = $this->getDoctrine()->getManager();
 
         if (null === $organization) {
@@ -124,9 +129,9 @@ class OrganizationController extends Controller
     /**
      * @Route("/operacion", name="admin_organization_operation", methods={"POST"})
      */
-    public function operationAction(Request $request)
+    public function operationAction(Request $request, UserExtensionService $userExtensionService)
     {
-        list($redirect, $organizations) = $this->processOperations($request);
+        list($redirect, $organizations) = $this->processOperations($request, $userExtensionService);
 
         if ($redirect) {
             return $this->redirectToRoute('admin_organization_list');
@@ -151,15 +156,32 @@ class OrganizationController extends Controller
 
         /* Borrar primero las pertenencias */
         $em->createQueryBuilder()
-            ->delete('AppBundle:Membership', 'm')
+            ->delete(Membership::class, 'm')
             ->where('m.organization IN (:items)')
+            ->setParameter('items', $organizations)
+            ->getQuery()
+            ->execute();
+
+        /* Borrar los cursos académicos */
+        $em->createQueryBuilder()
+            ->update(Organization::class, 'o')
+            ->set('o.currentAcademicYear', ':academic_year')
+            ->where('o IN (:items)')
+            ->setParameter('items', $organizations)
+            ->setParameter('academic_year', null)
+            ->getQuery()
+            ->execute();
+
+        $em->createQueryBuilder()
+            ->delete(AcademicYear::class, 'ay')
+            ->where('ay.organization IN (:items)')
             ->setParameter('items', $organizations)
             ->getQuery()
             ->execute();
 
         /* Finalmente las organizaciones */
         $em->createQueryBuilder()
-            ->delete('AppBundle:Organization', 'o')
+            ->delete(Organization::class, 'o')
             ->where('o IN (:items)')
             ->setParameter('items', $organizations)
             ->getQuery()
@@ -209,7 +231,7 @@ class OrganizationController extends Controller
      * @param Request $request
      * @return array
      */
-    private function processOperations(Request $request)
+    private function processOperations(Request $request, UserExtensionService $userExtensionService)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -226,7 +248,7 @@ class OrganizationController extends Controller
         $organizations = [];
         if (!$redirect) {
             $organizations = $em->getRepository('AppBundle:Organization')->
-                findAllInListByIdButCurrent($items, $this->get(UserExtensionService::class)->getCurrentOrganization());
+                findAllInListByIdButCurrent($items, $userExtensionService->getCurrentOrganization());
             $redirect = $this->processRemoveOrganizations($request, $organizations, $em);
         }
         return array($redirect, $organizations);
