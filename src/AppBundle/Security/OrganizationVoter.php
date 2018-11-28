@@ -22,6 +22,7 @@ use AppBundle\Entity\Membership;
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Repository\Edu\TrainingRepository;
 use AppBundle\Repository\RoleRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
@@ -31,6 +32,7 @@ class OrganizationVoter extends Voter
 {
     const MANAGE = 'ORGANIZATION_MANAGE';
     const ACCESS = 'ORGANIZATION_ACCESS';
+    const MANAGE_TRAININGS = 'ORGANIZATION_MANAGE_TRAININGS';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -38,10 +40,17 @@ class OrganizationVoter extends Voter
     /** @var RoleRepository */
     private $roleRepository;
 
-    public function __construct(AccessDecisionManagerInterface $decisionManager, RoleRepository $roleRepository)
-    {
+    /** @var TrainingRepository */
+    private $trainingRepository;
+
+    public function __construct(
+        AccessDecisionManagerInterface $decisionManager,
+        RoleRepository $roleRepository,
+        TrainingRepository $trainingRepository
+    ) {
         $this->decisionManager = $decisionManager;
         $this->roleRepository = $roleRepository;
+        $this->trainingRepository = $trainingRepository;
     }
 
     /**
@@ -54,7 +63,7 @@ class OrganizationVoter extends Voter
             return false;
         }
 
-        if (!in_array($attribute, [self::MANAGE, self::ACCESS], true)) {
+        if (!in_array($attribute, [self::MANAGE, self::ACCESS, self::MANAGE_TRAININGS], true)) {
             return false;
         }
 
@@ -86,6 +95,23 @@ class OrganizationVoter extends Voter
         // Si es administrador de la organización, permitir siempre
         if ($this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_LOCAL_ADMIN)) {
             return true;
+        }
+
+        // Si es jefe de algún departamento o coordinador de FP dual, permitir gestionar enseñanzas
+        if ($attribute === self::MANAGE_TRAININGS) {
+            // jefe de departamento
+            $trainings = $this->trainingRepository->findByAcademicYearAndDepartmentHead(
+                $subject->getCurrentAcademicYear(),
+                $user->getPerson()
+            );
+
+            if (count($trainings) > 0) {
+                return true;
+            }
+            // coordinador de FP dual
+            if ($this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
+                return true;
+            }
         }
 
         // Si es permiso de acceso, comprobar que pertenece actualmente a la organización

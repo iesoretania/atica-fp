@@ -19,14 +19,20 @@
 namespace AppBundle\Service;
 
 use AppBundle\Menu\MenuItem;
+use AppBundle\Security\OrganizationVoter;
+use Symfony\Component\Security\Core\Security;
 
 class CoreMenu implements MenuBuilderInterface
 {
     private $userExtension;
 
-    public function __construct(UserExtensionService $userExtension)
+    /** @var Security */
+    private $security;
+
+    public function __construct(UserExtensionService $userExtension, Security $security)
     {
         $this->userExtension = $userExtension;
+        $this->security = $security;
     }
 
     /**
@@ -34,11 +40,24 @@ class CoreMenu implements MenuBuilderInterface
      */
     public function getMenuStructure()
     {
+        $organization = $this->userExtension->getCurrentOrganization();
         $isGlobalAdministrator = $this->userExtension->isUserGlobalAdministrator();
-        $isLocalAdministrator = $this->userExtension->isUserLocalAdministrator();
+        $isLocalAdministrator = $this->security->isGranted(OrganizationVoter::MANAGE, $organization);
 
         $root = [];
 
+        if ($this->security->isGranted(OrganizationVoter::MANAGE_TRAININGS, $organization)) {
+            $menu1 = new MenuItem();
+            $menu1
+                ->setName('training')
+                ->setRouteName('training')
+                ->setCaption('menu.training')
+                ->setDescription('menu.training.detail')
+                ->setIcon('graduation-cap')
+                ->setPriority(5000);
+
+            $root[] = $menu1;
+        }
         if ($isGlobalAdministrator) {
             $menu1 = new MenuItem();
             $menu1

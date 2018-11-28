@@ -20,6 +20,7 @@ namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Training;
+use AppBundle\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -63,4 +64,26 @@ class TrainingRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @param Person $departmentHead
+     * @return Training[]
+     */
+    public function findByAcademicYearAndDepartmentHead(
+        AcademicYear $academicYear,
+        Person $departmentHead
+    ) {
+        return $this->createQueryBuilder('t')
+            ->join('t.department', 'd')
+            ->join('d.head', 'te')
+            ->andWhere('t.academicYear = :academic_year')
+            ->andWhere('te.person = :department_head')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('department_head', $departmentHead)
+            ->getQuery()
+            ->getResult();
+    }
+
+
 }
