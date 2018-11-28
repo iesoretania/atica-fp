@@ -23,6 +23,7 @@ use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\QueryBuilder;
 
 class TrainingRepository extends ServiceEntityRepository
 {
@@ -68,9 +69,9 @@ class TrainingRepository extends ServiceEntityRepository
     /**
      * @param AcademicYear $academicYear
      * @param Person $departmentHead
-     * @return Training[]
+     * @return QueryBuilder
      */
-    public function findByAcademicYearAndDepartmentHead(
+    public function findByAcademicYearAndDepartmentHeadQueryBuilder(
         AcademicYear $academicYear,
         Person $departmentHead
     ) {
@@ -80,10 +81,36 @@ class TrainingRepository extends ServiceEntityRepository
             ->andWhere('t.academicYear = :academic_year')
             ->andWhere('te.person = :department_head')
             ->setParameter('academic_year', $academicYear)
-            ->setParameter('department_head', $departmentHead)
+            ->setParameter('department_head', $departmentHead);
+    }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @param Person $departmentHead
+     * @return Training[]
+     */
+    public function findByAcademicYearAndDepartmentHead(
+        AcademicYear $academicYear,
+        Person $departmentHead
+    ) {
+        return $this->findByAcademicYearAndDepartmentHeadQueryBuilder($academicYear, $departmentHead)
             ->getQuery()
             ->getResult();
     }
 
+    /**
+     * @param AcademicYear $academicYear
+     * @param Person $departmentHead
+     * @return int
+     */
+    public function countByAcademicYearAndDepartmentHead(
+        AcademicYear $academicYear,
+        Person $departmentHead
+    ) {
+        return $this->findByAcademicYearAndDepartmentHeadQueryBuilder($academicYear, $departmentHead)
+            ->select('COUNT(t)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
 }

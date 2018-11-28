@@ -32,7 +32,8 @@ class OrganizationVoter extends Voter
 {
     const MANAGE = 'ORGANIZATION_MANAGE';
     const ACCESS = 'ORGANIZATION_ACCESS';
-    const MANAGE_TRAININGS = 'ORGANIZATION_MANAGE_TRAININGS';
+    const ACCESS_TRAININGS = 'ORGANIZATION_ACCESS_TRAININGS';
+    const MANAGE_WORKLINKED_TRAINING = 'ORGANIZATION_MANAGE_WORKLINKED_TRAINING';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -63,7 +64,7 @@ class OrganizationVoter extends Voter
             return false;
         }
 
-        if (!in_array($attribute, [self::MANAGE, self::ACCESS, self::MANAGE_TRAININGS], true)) {
+        if (!in_array($attribute, [self::MANAGE, self::ACCESS, self::ACCESS_TRAININGS, self::MANAGE_WORKLINKED_TRAINING], true)) {
             return false;
         }
 
@@ -97,33 +98,39 @@ class OrganizationVoter extends Voter
             return true;
         }
 
-        // Si es jefe de algún departamento o coordinador de FP dual, permitir gestionar enseñanzas
-        if ($attribute === self::MANAGE_TRAININGS) {
-            // jefe de departamento
-            $trainings = $this->trainingRepository->findByAcademicYearAndDepartmentHead(
-                $subject->getCurrentAcademicYear(),
-                $user->getPerson()
-            );
-
-            if (count($trainings) > 0) {
-                return true;
-            }
-            // coordinador de FP dual
-            if ($this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
-                return true;
-            }
-        }
-
-        // Si es permiso de acceso, comprobar que pertenece actualmente a la organización
-        if ($attribute === self::ACCESS) {
-            $date = new \DateTime();
-            /** @var Membership $membership */
-            foreach ($user->getMemberships() as $membership) {
-                if ($membership->getOrganization() === $subject && $membership->getValidFrom() <= $date &&
-                    ($membership->getValidUntil() === null || $membership->getValidUntil() >= $date)) {
+        switch ($attribute) {
+            // acceder a las enseñanzas del centro
+            case self::ACCESS_TRAININGS:
+                // Si es jefe de algún departamento o coordinador de FP dual, permitir acceder a las enseñanzas
+                // 1) Jefe de departamento
+                if ($this->trainingRepository->countByAcademicYearAndDepartmentHead(
+                        $subject->getCurrentAcademicYear(),
+                        $user->getPerson()
+                    ) > 0) {
                     return true;
                 }
-            }
+
+                // 2) Coordinador de FP dual
+                if ($this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
+                    return true;
+                }
+                break;
+
+            case self::MANAGE_WORKLINKED_TRAINING:
+                return $this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER);
+
+            case self::ACCESS:
+                // Si es permiso de acceso, comprobar que pertenece actualmente a la organización
+                if ($attribute === self::ACCESS) {
+                    $date = new \DateTime();
+                    /** @var Membership $membership */
+                    foreach ($user->getMemberships() as $membership) {
+                        if ($membership->getOrganization() === $subject && $membership->getValidFrom() <= $date &&
+                            ($membership->getValidUntil() === null || $membership->getValidUntil() >= $date)) {
+                            return true;
+                        }
+                    }
+                }
         }
 
         // denegamos en cualquier otro caso

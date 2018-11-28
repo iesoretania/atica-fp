@@ -46,11 +46,11 @@ class CoreMenu implements MenuBuilderInterface
 
         $root = [];
 
-        if ($this->security->isGranted(OrganizationVoter::MANAGE_TRAININGS, $organization)) {
+        if ($this->security->isGranted(OrganizationVoter::ACCESS_TRAININGS, $organization)) {
             $menu1 = new MenuItem();
             $menu1
                 ->setName('training')
-                ->setRouteName('training')
+                ->setRouteName('training_list')
                 ->setCaption('menu.training')
                 ->setDescription('menu.training.detail')
                 ->setIcon('graduation-cap')
