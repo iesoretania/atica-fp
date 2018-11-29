@@ -47,7 +47,6 @@ class TeachingType extends AbstractType
     {
         /** @var Subject $subject */
         $subject = $options['subject'];
-        $subjects = $subject->getGrade()->getSubjects();
         $groups = $subject->getGrade()->getGroups();
         if (count($groups) > 0) {
             $group = $groups[0];
@@ -61,7 +60,7 @@ class TeachingType extends AbstractType
                 'label' => 'form.subject',
                 'class' => Subject::class,
                 'choice_translation_domain' => false,
-                'choices' => $subjects,
+                'choices' => [$subject],
                 'disabled' => true,
                 'required' => true
             ])
