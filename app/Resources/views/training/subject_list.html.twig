@@ -12,9 +12,10 @@
 
 {% block table_body %}
             {% for subject in pager %}
-                <tr>
+                {% set url = path('training_learning_outcome_list', {'id': subject.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        {{ subject.name }}{% if subject.workplaceTraining %} <span class="badge badge-success">{{ 'header.workplace_training'|trans }}</span>{% endif %}
+                        <a href="{{ url }}">{{ subject.name }}{% if subject.workplaceTraining %} <span class="badge badge-success">{{ 'header.workplace_training'|trans }}</span>{% endif %}</a>
                     </td>
                     <td>
                         {{ subject.grade }}

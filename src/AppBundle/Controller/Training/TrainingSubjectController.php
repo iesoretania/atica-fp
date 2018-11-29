@@ -82,7 +82,7 @@ class TrainingSubjectController extends Controller
         ];
 
         return $this->render('training/subject_list.html.twig', [
-            'menu_path' => 'training_list',
+            'menu_path' => 'training',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,

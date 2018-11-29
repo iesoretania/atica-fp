@@ -50,7 +50,7 @@ class CoreMenu implements MenuBuilderInterface
             $menu1 = new MenuItem();
             $menu1
                 ->setName('training')
-                ->setRouteName('training_list')
+                ->setRouteName('training')
                 ->setCaption('menu.training')
                 ->setDescription('menu.training.detail')
                 ->setIcon('graduation-cap')

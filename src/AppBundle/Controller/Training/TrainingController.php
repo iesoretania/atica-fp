@@ -34,7 +34,7 @@ use Symfony\Component\HttpFoundation\Request;
 class TrainingController extends Controller
 {
     /**
-     * @Route("/listar/{page}", name="training_list", requirements={"page" = "\d+"},
+     * @Route("/listar/{page}", name="training", requirements={"page" = "\d+"},
      *     defaults={"page" = 1},   methods={"GET"})
      */
     public function listAction(
