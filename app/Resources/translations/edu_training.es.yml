@@ -34,9 +34,9 @@ table.filter: Filtrar...
 
 table.subjects: Materias
 table.competences: Competencias
+table.activities: Actividades
 
 header.name: Nombre
-header.department: Departamento
 header.work_linked_training: DUAL
 
 message.saved: Datos actualizados con éxito.

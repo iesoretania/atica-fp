@@ -6,7 +6,6 @@
 
 {% block table_header %}
     <th>{{ 'header.name'|trans }}</th>
-    <th>{{ 'header.department'|trans }}</th>
     <th></th>
 {% endblock %}
 
@@ -17,16 +16,16 @@
                         {{ training.name }}{% if training.workLinked %} <span class="badge badge-success">{{ 'header.work_linked_training'|trans }}</span>{% endif %}
                     </td>
                     <td>
-                        {{ training.department|default('') }}
-                    </td>
-                    <td class="text-center">
-                        {{ m.link_button(path('training_subject_list', {'id': training.id}), 'book-open', 'btn-primary btn-sm w-40', 'table.subjects'|trans, null, 'd-md-none d-lg-inline') }}
-                        {{ m.link_button(path('training_competency_list', {'id': training.id}), 'award', 'btn-primary btn-sm w-40', 'table.competences'|trans, null, 'd-md-none d-lg-inline') }}
+                        {{ m.link_button(path('training_subject_list', {'id': training.id}), 'book-open', 'btn-info btn-sm', 'table.subjects'|trans, null, 'd-md-none d-lg-inline') }}
+                        {{ m.link_button(path('training_competency_list', {'id': training.id}), 'award', 'btn-info btn-sm', 'table.competences'|trans, null, 'd-md-none d-lg-inline') }}
+                        {% if training.workLinked %}
+                            {{ m.link_button('', 'toolbox', 'btn-success btn-sm', 'table.activities'|trans, null, 'd-md-none d-lg-inline') }}
+                        {% endif %}
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="2">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

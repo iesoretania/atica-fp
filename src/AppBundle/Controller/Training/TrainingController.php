@@ -77,6 +77,7 @@ class TrainingController extends Controller
         }
 
         $queryBuilder
+            ->andWhere('t.department IS NOT NULL')
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear);
 
