@@ -53,7 +53,7 @@ class LearningOutcomeController extends Controller
     }
 
     /**
-     * @Route("/materia/resultado/nuevo/{id}", name="training_learning_outcome_edit",
+     * @Route("/materia/resultado/{id}", name="training_learning_outcome_edit",
      *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
     public function formAction(
