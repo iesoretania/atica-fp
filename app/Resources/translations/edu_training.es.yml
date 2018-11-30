@@ -1,7 +1,7 @@
-form.department: Departamento
+form.department: Familia profesional
 form.internal_code: Código Séneca
 form.name: Nombre
-form.no_department: Sin asignar
+form.no_department: No es una enseñanza de FP
 
 form.work_linked_training: FP dual
 form.work_linked_training.yes: Enseñanza asociada a un proyecto de FP dual
@@ -37,6 +37,7 @@ table.competences: Competencias
 table.activities: Actividades
 
 header.name: Nombre
+header.department: Familia profesional
 header.work_linked_training: DUAL
 
 message.saved: Datos actualizados con éxito.

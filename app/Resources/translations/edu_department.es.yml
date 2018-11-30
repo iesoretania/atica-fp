@@ -15,11 +15,11 @@ prompt.delete_confirm: |
 
   Esta operación no se puede deshacer.
 
-title.edit: Datos del departamento
-title.new: Nuevo departamento
+title.edit: Datos del departamento de familia profesional
+title.new: Nuevo departamento de familia profesional
 title.delete: Eliminar departamentos
 
-title.list: Listado de departamentos
+title.list: Listado de departamentos de familia profesional
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay departamentos
 table.filter: Filtrar...

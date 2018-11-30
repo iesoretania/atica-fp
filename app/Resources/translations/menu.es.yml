@@ -31,8 +31,8 @@ menu.organization.training.detail: Gestionar las enseñanzas del centro
 menu.organization.subject: Materias
 menu.organization.subject.detail: Gestionar las materias impartidas en el centro
 
-menu.organization.department: Departamentos
-menu.organization.department.detail: Gestionar los departamentos del centro
+menu.organization.department: Familias profesionales
+menu.organization.department.detail: Gestionar los departamentos de FP del centro
 
 menu.organization.role: Roles
 menu.organization.role.detail: Gestionar los roles del centro
@@ -46,8 +46,8 @@ menu.organization.import.teacher.detail: Importar profesorado desde Séneca
 menu.organization.import.group: Importar grupos
 menu.organization.import.group.detail: Importar grupos de alumnado desde Séneca
 
-menu.organization.import.department: Importar departamentos
-menu.organization.import.department.detail: Importar departamentos desde Séneca
+menu.organization.import.department: Importar familia profesional
+menu.organization.import.department.detail: Importar departamentos de familia profesional desde Séneca
 
 menu.organization.import.subject: Importar materias
 menu.organization.import.subject.detail: Importar asignaturas y módulos profesionales desde Séneca
@@ -55,8 +55,8 @@ menu.organization.import.subject.detail: Importar asignaturas y módulos profesi
 menu.organization.import.student: Importar estudiantes
 menu.organization.import.student.detail: Importar estudiantes desde Séneca
 
-menu.training: Enseñanzas
-menu.training.detail: Configurar los elementos de las enseñanzas del centro
+menu.training: Enseñanzas de FP
+menu.training.detail: Configurar los elementos de las enseñanzas de FP del centro
 
 menu.personal_data: Datos personales
 menu.personal_data.detail: Modificar los datos personales
