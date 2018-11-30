@@ -101,6 +101,11 @@ class TrainingVoter extends Voter
             return true;
         }
 
+        // Si es el coordinador de FP dual, permitir si el ciclo es dual
+        if ($subject->isWorkLinked() && $this->roleRepository->personHasRole($organization, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
+            return true;
+        }
+
         // Si es el jefe de departamento de la enseñanza, permitir siempre
         if ($subject->getDepartment() && $subject->getDepartment()->getHead()->getPerson() === $user->getPerson()) {
             return true;

@@ -64,6 +64,10 @@ class TrainingController extends Controller
                 ->setParameter('tq', '%'.$q.'%');
         }
 
+        if (false === $this->isGranted(OrganizationVoter::MANAGE, $organization)) {
+            $f = 1;
+        }
+
         switch ($f) {
             case 1:
                 $queryBuilder
