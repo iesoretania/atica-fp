@@ -126,6 +126,7 @@ class SubjectController extends Controller
             ->orderBy('s.name');
 
         $q = $request->get('q', null);
+        $f = $request->get('f', 0);
         if ($q) {
             $queryBuilder
                 ->where('s.name LIKE :tq')
@@ -133,6 +134,22 @@ class SubjectController extends Controller
                 ->setParameter('tq', '%'.$q.'%');
         }
 
+        switch ($f) {
+            case 1:
+                $queryBuilder
+                    ->andWhere('t.workLinked = :on')
+                    ->setParameter('on', true);
+                break;
+            case 2:
+                $queryBuilder
+                    ->andWhere('s.workplaceTraining = :on')
+                    ->setParameter('on', true);
+                break;
+            case 3:
+                $queryBuilder
+                    ->andWhere('SIZE(s.teachings) = 0');
+                break;
+        }
         $queryBuilder
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear);
@@ -149,6 +166,7 @@ class SubjectController extends Controller
             'title' => $title . ' - ' . $academicYear,
             'pager' => $pager,
             'q' => $q,
+            'f' => $f,
             'domain' => 'edu_subject',
             'academic_year' => $academicYear
         ]);

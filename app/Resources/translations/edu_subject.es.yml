@@ -12,6 +12,11 @@ form.delete: Eliminar las materias seleccionadas
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
+form.filter.all: Mostrar todo
+form.filter.work_linked_training: FP dual
+form.filter.workcenter_training: FCT
+form.filter.unassigned: Sin asignar
+
 table.new: Nueva materia
 
 prompt.delete_confirm: |

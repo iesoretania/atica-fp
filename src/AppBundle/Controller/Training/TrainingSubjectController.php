@@ -57,11 +57,24 @@ class TrainingSubjectController extends Controller
             ->addOrderBy('s.name');
 
         $q = $request->get('q', null);
+        $f = $request->get('f', 0);
         if ($q) {
             $queryBuilder
                 ->where('s.name LIKE :tq')
                 ->orWhere('g.name LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
+        }
+
+        switch ($f) {
+            case 2:
+                $queryBuilder
+                    ->andWhere('s.workplaceTraining = :on')
+                    ->setParameter('on', true);
+                break;
+            case 3:
+                $queryBuilder
+                    ->andWhere('SIZE(s.teachings) = 0');
+                break;
         }
 
         $queryBuilder
@@ -87,6 +100,7 @@ class TrainingSubjectController extends Controller
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
+            'f' => $f,
             'domain' => 'edu_subject'
         ]);
     }
