@@ -12,6 +12,10 @@ form.delete: Eliminar las enseñanzas seleccionadas
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
+form.filter.all: Mostrar todo
+form.filter.work_linked_training: FP dual
+form.filter.unassigned: Sin asignar
+
 table.new: Nueva enseñanza
 
 prompt.delete_confirm: |

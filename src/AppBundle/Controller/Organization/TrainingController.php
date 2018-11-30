@@ -123,11 +123,24 @@ class TrainingController extends Controller
             ->orderBy('t.name');
 
         $q = $request->get('q', null);
+        $f = $request->get('f', 0);
         if ($q) {
             $queryBuilder
                 ->where('t.name LIKE :tq')
                 ->orWhere('t.name LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
+        }
+
+        switch ($f) {
+            case 1:
+                $queryBuilder
+                    ->andWhere('t.workLinked = :on')
+                    ->setParameter('on', true);
+                break;
+            case 2:
+                $queryBuilder
+                    ->andWhere('t.department IS NULL');
+                break;
         }
 
         $queryBuilder
@@ -146,6 +159,7 @@ class TrainingController extends Controller
             'title' => $title . ' - ' . $academicYear,
             'pager' => $pager,
             'q' => $q,
+            'f' => $f,
             'domain' => 'edu_training',
             'academic_year' => $academicYear
         ]);
