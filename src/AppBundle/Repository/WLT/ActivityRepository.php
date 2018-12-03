@@ -16,39 +16,30 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Repository\Edu;
+namespace AppBundle\Repository\WLT;
 
-use AppBundle\Entity\Edu\Competency;
-use AppBundle\Entity\Edu\Training;
+use AppBundle\Entity\Edu\Subject;
+use AppBundle\Entity\WLT\Activity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-class CompetencyRepository extends ServiceEntityRepository
+class ActivityRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Competency::class);
+        parent::__construct($registry, Activity::class);
     }
 
-    public function findAllInListByIdAndTraining(
+    public function findAllInListByIdAndSubject(
         $items,
-        Training $training
+        Subject $subject
     ) {
-        return $this->createQueryBuilder('c')
-            ->where('c IN (:items)')
-            ->andWhere('c.training = :training')
+        return $this->createQueryBuilder('a')
+            ->where('a IN (:items)')
+            ->andWhere('a.subject = :subject')
             ->setParameter('items', $items)
-            ->setParameter('training', $training)
-            ->orderBy('c.code')
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByTraining(Training $training) {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.training = :training')
-            ->setParameter('training', $training)
-            ->orderBy('c.code')
+            ->setParameter('subject', $subject)
+            ->orderBy('a.code')
             ->getQuery()
             ->getResult();
     }
@@ -56,8 +47,8 @@ class CompetencyRepository extends ServiceEntityRepository
     public function deleteFromList($items)
     {
         return $this->getEntityManager()->createQueryBuilder()
-            ->delete(Competency::class, 'c')
-            ->where('c IN (:items)')
+            ->delete(Activity::class, 'a')
+            ->where('a IN (:items)')
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();

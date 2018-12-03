@@ -18,9 +18,6 @@
                     <td>
                         {{ m.link_button(path('training_subject_list', {'id': training.id}), 'book-open', 'btn-info btn-sm', 'table.subjects'|trans, null, 'd-md-none d-lg-inline') }}
                         {{ m.link_button(path('training_competency_list', {'id': training.id}), 'award', 'btn-info btn-sm', 'table.competences'|trans, null, 'd-md-none d-lg-inline') }}
-                        {% if training.workLinked %}
-                            {{ m.link_button('', 'toolbox', 'btn-success btn-sm', 'table.activities'|trans, null, 'd-md-none d-lg-inline') }}
-                        {% endif %}
                     </td>
                 </tr>
             {% else %}

@@ -7,21 +7,23 @@
 {% block table_header %}
     <th>{{ 'header.name'|trans }}</th>
     <th>{{ 'header.grade'|trans }}</th>
-    <th>{{ 'header.teachers'|trans }}</th>
+    <th></th>
 {% endblock %}
 
 {% block table_body %}
             {% for subject in pager %}
-                {% set url = path('training_learning_outcome_list', {'id': subject.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
+                <tr>
                     <td>
-                        <a href="{{ url }}">{{ subject.name }}{% if subject.workplaceTraining %} <span class="badge badge-success">{{ 'header.workplace_training'|trans }}</span>{% endif %}</a>
+                        {{ subject.name }}{% if subject.workplaceTraining %} <span class="badge badge-success">{{ 'header.workplace_training'|trans }}</span>{% endif %}
                     </td>
                     <td>
                         {{ subject.grade }}
                     </td>
                     <td>
-                        {% for teaching in subject.teachings %}{{ teaching.teacher }} ({{ teaching.group }}){% if teaching.workLinked %} <span class="badge badge-success">{{ 'header.work_linked_training'|trans }}</span>{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}
+                        {{ m.link_button(path('training_learning_outcome_list', {'id': subject.id}), 'toolbox', 'btn-info btn-sm', 'table.learning_outcomes'|trans, null, 'd-md-none d-lg-inline') }}
+                        {% if subject.grade.training.workLinked %}
+                            {{ m.link_button(path('training_activity_list', {'id': subject.id}), 'toolbox', 'btn-success btn-sm', 'table.activities'|trans, null, 'd-md-none d-lg-inline') }}
+                        {% endif %}
                     </td>
                 </tr>
             {% else %}

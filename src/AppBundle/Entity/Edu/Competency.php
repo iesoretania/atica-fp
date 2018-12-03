@@ -54,6 +54,12 @@ class Competency
      */
     private $description;
 
+    public function __toString()
+    {
+        return $this->getCode() . ': ' . $this->getDescription();
+    }
+
+
     /**
      * @return int
      */

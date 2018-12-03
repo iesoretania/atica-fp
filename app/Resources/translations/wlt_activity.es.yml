@@ -1,0 +1,36 @@
+form.subject: Nivel
+form.code: Código
+form.description: Descripción
+form.prior_learning: Formación inicial
+form.competencies: Competencias asociadas
+
+form.save: Guardar cambios
+form.delete: Eliminar las actividades seleccionadas
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nueva actividad formativo-productiva
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes actividades formativo-productivas? En el caso de que alguna de ellas tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Ficha de actividad
+title.new: Nueva actividad formativo-productiva
+title.delete: Eliminar actividades
+
+title.list: Actividades formativo-productivas
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay actividades
+table.filter: Filtrar...
+
+header.code: Código
+header.description: Descripción de la actividad
+header.subject: Nivel
+header.competencies: Competencias asociadas
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Actividades eliminadas del centro.
+message.delete_error: Ha ocurrido un error al eliminar las actividades.

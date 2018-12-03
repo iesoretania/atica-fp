@@ -28,6 +28,9 @@ title.edit: Datos de la materia
 title.new: Nueva materia
 title.delete: Eliminar materias
 
+table.learning_outcomes: Resultados de aprendizaje
+table.activities: Actividades
+
 title.list: Listado de materias
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay materias
