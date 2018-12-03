@@ -23,7 +23,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\WLT\ActivityRealizationRepository")
  * @ORM\Table(name="wlt_activity_realization")
  */
 class ActivityRealization
@@ -137,5 +137,20 @@ class ActivityRealization
     public function setLearningOutcomes($learningOutcomes)
     {
         $this->learningOutcomes = $learningOutcomes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubjectLearningOutcomes()
+    {
+        $data = [];
+
+        foreach ($this->getLearningOutcomes() as $learningOutcome) {
+            $subject = $learningOutcome->getSubject();
+            $data[$subject->getCode() ?: $subject->getName() ][] = $learningOutcome;
+        }
+
+        return $data;
     }
 }

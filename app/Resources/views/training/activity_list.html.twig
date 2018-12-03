@@ -8,6 +8,7 @@
     <th><label><input type="checkbox" id="select"> {{ 'header.code'|trans }}</label></th>
     <th>{{ 'header.description'|trans }}</th>
     <th>{{ 'header.competencies'|trans }}</th>
+    <th></th>
 {% endblock %}
 
 {% block table_body %}
@@ -23,10 +24,13 @@
                     <td>
                         {{ activity.competencies|join(', ') }}
                     </td>
+                    <td>
+                        {{ m.link_button(path('training_activity_realization_list', {'id': activity.id}), 'clipboard-list', 'btn-info btn-sm', 'table.activity_realizations'|trans, null, 'd-md-none d-lg-inline') }}
+                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

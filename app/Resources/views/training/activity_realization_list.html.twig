@@ -1,0 +1,52 @@
+{% trans_default_domain 'wlt_activity_realization' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('training_activity_realization_new', {'id': activity.id}) }}{% endblock %}
+
+{% block table_header %}
+    <th><label><input type="checkbox" id="select"> {{ 'header.code'|trans }}</label></th>
+    <th>{{ 'header.description'|trans }}</th>
+    <th>{{ 'header.learning_outcomes'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for activity_realization in pager %}
+                {% set url = path('training_activity_realization_edit', {'id': activity_realization.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ activity_realization.id }}" class="selectable"> <a href="{{ url }}">{{ activity_realization.code }}</a></label>
+                    </td>
+                    <td>
+                        {{ activity_realization.description|nl2br }}
+                    </td>
+                    <td>
+                        <ul class="m-0">
+                        {% for subject, learning_outcomes in activity_realization.subjectLearningOutcomes %}
+                            <li>
+                                <i>{{ subject }}: </i>
+                                {% for learning_outcome in learning_outcomes %}
+                                    {{ learning_outcome.code }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('training_activity_realization_delete', {'id': activity.id}) }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+</form>
+{% endblock %}

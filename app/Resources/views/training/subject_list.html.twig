@@ -22,7 +22,7 @@
                     <td>
                         {{ m.link_button(path('training_learning_outcome_list', {'id': subject.id}), 'toolbox', 'btn-info btn-sm', 'table.learning_outcomes'|trans, null, 'd-md-none d-lg-inline') }}
                         {% if subject.grade.training.workLinked %}
-                            {{ m.link_button(path('training_activity_list', {'id': subject.id}), 'toolbox', 'btn-success btn-sm', 'table.activities'|trans, null, 'd-md-none d-lg-inline') }}
+                            {{ m.link_button(path('training_activity_list', {'id': subject.id}), 'drafting-compass', 'btn-success btn-sm', 'table.activities'|trans, null, 'd-md-none d-lg-inline') }}
                         {% endif %}
                     </td>
                 </tr>

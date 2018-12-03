@@ -25,7 +25,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\WLT\ActivityRepository")
  * @ORM\Table(name="wlt_activity")
  */
 class Activity

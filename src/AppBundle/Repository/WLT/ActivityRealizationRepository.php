@@ -16,31 +16,30 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Repository\Edu;
+namespace AppBundle\Repository\WLT;
 
-use AppBundle\Entity\Edu\LearningOutcome;
-use AppBundle\Entity\Edu\Subject;
-use AppBundle\Entity\Edu\Training;
+use AppBundle\Entity\WLT\Activity;
+use AppBundle\Entity\WLT\ActivityRealization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-class LearningOutcomeRepository extends ServiceEntityRepository
+class ActivityRealizationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, LearningOutcome::class);
+        parent::__construct($registry, ActivityRealization::class);
     }
 
-    public function findAllInListByIdAndSubject(
+    public function findAllInListByIdAndActivity(
         $items,
-        Subject $subject
+        Activity $activity
     ) {
-        return $this->createQueryBuilder('l')
-            ->where('l IN (:items)')
-            ->andWhere('l.subject = :subject')
+        return $this->createQueryBuilder('ar')
+            ->where('ar IN (:items)')
+            ->andWhere('ar.activity = :activity')
             ->setParameter('items', $items)
-            ->setParameter('subject', $subject)
-            ->orderBy('l.code')
+            ->setParameter('activity', $activity)
+            ->orderBy('ar.code')
             ->getQuery()
             ->getResult();
     }
@@ -48,29 +47,10 @@ class LearningOutcomeRepository extends ServiceEntityRepository
     public function deleteFromList($items)
     {
         return $this->getEntityManager()->createQueryBuilder()
-            ->delete(LearningOutcome::class, 'l')
-            ->where('l IN (:items)')
+            ->delete(ActivityRealization::class, 'ar')
+            ->where('ar IN (:items)')
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();
-    }
-
-    /**
-     * @param Training $training
-     * @return Subject[]
-     */
-    public function findByTraining(Training $training)
-    {
-        return $this->createQueryBuilder('lo')
-            ->join('lo.subject', 's')
-            ->join('s.grade', 'g')
-            ->join('g.training', 't')
-            ->where('t = :training')
-            ->setParameter('training', $training)
-            ->addOrderBy('g.name')
-            ->addOrderBy('s.name')
-            ->addOrderBy('lo.code')
-            ->getQuery()
-            ->getResult();
     }
 }

@@ -1,4 +1,4 @@
-form.subject: Nivel
+form.subject: Módulo profesional
 form.code: Código
 form.description: Descripción
 form.prior_learning: Formación inicial
@@ -24,6 +24,8 @@ title.list: Actividades formativo-productivas
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay actividades
 table.filter: Filtrar...
+
+table.activity_realizations: Concreciones
 
 header.code: Código
 header.description: Descripción de la actividad

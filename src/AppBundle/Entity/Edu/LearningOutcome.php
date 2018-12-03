@@ -54,6 +54,11 @@ class LearningOutcome
      */
     private $description;
 
+    public function __toString()
+    {
+        return ($this->getSubject()->getCode() ?: $this->getSubject()->getName()) . ' - '. $this->getCode();
+    }
+
     /**
      * @return int
      */
