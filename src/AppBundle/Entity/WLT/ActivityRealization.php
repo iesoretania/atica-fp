@@ -85,10 +85,12 @@ class ActivityRealization
 
     /**
      * @param Activity $activity
+     * @return ActivityRealization
      */
     public function setActivity(Activity $activity)
     {
         $this->activity = $activity;
+        return $this;
     }
 
     /**
@@ -101,10 +103,12 @@ class ActivityRealization
 
     /**
      * @param string $code
+     * @return ActivityRealization
      */
     public function setCode($code)
     {
         $this->code = $code;
+        return $this;
     }
 
     /**
@@ -117,10 +121,12 @@ class ActivityRealization
 
     /**
      * @param string $description
+     * @return ActivityRealization
      */
     public function setDescription($description)
     {
         $this->description = $description;
+        return $this;
     }
 
     /**
@@ -133,10 +139,12 @@ class ActivityRealization
 
     /**
      * @param LearningOutcome[] $learningOutcomes
+     * @return ActivityRealization
      */
     public function setLearningOutcomes($learningOutcomes)
     {
         $this->learningOutcomes = $learningOutcomes;
+        return $this;
     }
 
     /**

@@ -45,7 +45,8 @@ class ActivityRealizationController extends Controller
 
         $activityRealization = new ActivityRealization();
         $activityRealization
-            ->setActivity($activity);
+            ->setActivity($activity)
+            ->setCode($activity->getCode());
 
         $this->getDoctrine()->getManager()->persist($activityRealization);
 
