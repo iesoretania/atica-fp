@@ -37,7 +37,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 class ActivityRealizationController extends Controller
 {
     /**
-     * @Route("/materia/actividad/{id}/concrecion/nueva", name="training_activity_realization_new", methods={"GET", "POST"})
+     * @Route("/materia/actividad/{id}/concrecion/nueva", name="training_activity_realization_new",
+     *     methods={"GET", "POST"})
      **/
     public function newAction(Request $request, TranslatorInterface $translator, Activity $activity)
     {

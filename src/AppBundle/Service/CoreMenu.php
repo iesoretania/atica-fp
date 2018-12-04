@@ -58,6 +58,20 @@ class CoreMenu implements MenuBuilderInterface
 
             $root[] = $menu1;
         }
+
+        if ($this->security->isGranted(OrganizationVoter::MANAGE_COMPANIES, $organization)) {
+            $menu1 = new MenuItem();
+            $menu1
+                ->setName('company')
+                ->setRouteName('company')
+                ->setCaption('menu.company')
+                ->setDescription('menu.company.detail')
+                ->setIcon('industry')
+                ->setPriority(6000);
+
+            $root[] = $menu1;
+        }
+
         if ($isGlobalAdministrator) {
             $menu1 = new MenuItem();
             $menu1

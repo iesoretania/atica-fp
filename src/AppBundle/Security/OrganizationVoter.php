@@ -34,6 +34,7 @@ class OrganizationVoter extends Voter
     const ACCESS = 'ORGANIZATION_ACCESS';
     const ACCESS_TRAININGS = 'ORGANIZATION_ACCESS_TRAININGS';
     const MANAGE_WORKLINKED_TRAINING = 'ORGANIZATION_MANAGE_WORKLINKED_TRAINING';
+    const MANAGE_COMPANIES = 'ORGANIZATION_MANAGE_COMPANIES';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -64,7 +65,13 @@ class OrganizationVoter extends Voter
             return false;
         }
 
-        if (!in_array($attribute, [self::MANAGE, self::ACCESS, self::ACCESS_TRAININGS, self::MANAGE_WORKLINKED_TRAINING], true)) {
+        if (!in_array($attribute, [
+            self::MANAGE,
+            self::ACCESS,
+            self::ACCESS_TRAININGS,
+            self::MANAGE_WORKLINKED_TRAINING,
+            self::MANAGE_COMPANIES
+        ], true)) {
             return false;
         }
 
@@ -99,14 +106,15 @@ class OrganizationVoter extends Voter
         }
 
         switch ($attribute) {
-            // acceder a las enseñanzas del centro
+            // acceder a las enseñanzas del centro y a la gestión de empresas
+            case self::MANAGE_COMPANIES:
             case self::ACCESS_TRAININGS:
-                // Si es jefe de algún departamento o coordinador de FP dual, permitir acceder a las enseñanzas
+                // Si es jefe de algún departamento o coordinador de FP dual, permitir acceder
                 // 1) Jefe de departamento
                 if ($this->trainingRepository->countByAcademicYearAndDepartmentHead(
-                        $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
-                    ) > 0) {
+                    $subject->getCurrentAcademicYear(),
+                    $user->getPerson()
+                ) > 0) {
                     return true;
                 }
 

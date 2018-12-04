@@ -1,0 +1,42 @@
+form.name: Nombre del centro
+form.code: CIF
+form.email_address: Correo electrónico
+form.address: Dirección postal
+form.city: Ciudad
+form.zip_code: Código postal
+form.phone_number: Número de teléfono
+form.fax_number: Número de fax
+form.web_site: Sitio web
+
+form.save: Guardar cambios
+form.delete: Eliminar las empresas seleccionadas
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nueva empresa
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes empresas? En el caso de que alguna de ellas tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos de la empresa
+title.new: Nueva empresa
+title.delete: Eliminar empresas
+
+title.list: Listado de empresas registradas
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay empresas
+table.filter: Filtrar...
+
+table.workcenters: Centros de trabajo
+
+header.code: CIF
+header.name: Nombre de la empresa
+header.city: Ciudad
+header.email_address: Correo-e
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Empresas eliminadas del centro.
+message.delete_error: Ha ocurrido un error al eliminar las empresas.
