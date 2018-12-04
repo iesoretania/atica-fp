@@ -79,7 +79,7 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('admin')
                 ->setCaption('menu.admin')
                 ->setDescription('menu.admin.detail')
-                ->setIcon('wrench')
+                ->setIcon('cogs')
                 ->setPriority(9000);
 
             $root[] = $menu1;
@@ -145,7 +145,7 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('organization_grade_list')
                 ->setCaption('menu.organization.grade')
                 ->setDescription('menu.organization.grade.detail')
-                ->setIcon('columns')
+                ->setIcon('sitemap')
                 ->setPriority(20);
 
             $menu1->addChild($menu2);
@@ -280,7 +280,7 @@ class CoreMenu implements MenuBuilderInterface
             ->setRouteName('personal_data')
             ->setCaption('menu.personal_data')
             ->setDescription('menu.personal_data.detail')
-            ->setIcon('cog')
+            ->setIcon('clipboard-list')
             ->setPriority(9999);
 
         $root[] = $menu;

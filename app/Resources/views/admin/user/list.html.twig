@@ -17,7 +17,7 @@
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="users[]" value="{{ user.id }}" {% if user.id == app.user.id %} disabled="disabled"{% else %} class="selectable"{% endif %}> <a href="{{ url }}">{{ user.person.lastName }}, {{ user.person.firstName }}</a></label>
-                        {%- if user.globalAdministrator %} <i class="fa fa-wrench"></i>{% endif -%}
+                        {%- if user.globalAdministrator %} <i class="fas fa-cogs"></i>{% endif -%}
                     </td>
                     <td>
                         <a href="{{ url }}">{{ user.loginUsername }}</a>{% if user.externalCheck and user.allowExternalCheck %} <i class="fa fa-sign-out"></i>{% endif -%}
