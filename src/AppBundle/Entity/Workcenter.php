@@ -18,6 +18,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Edu\AcademicYear;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -41,6 +42,13 @@ class Workcenter
      * @var Company
      */
     private $company;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\AcademicYear")
+     * @ORM\JoinColumn(nullable=false)
+     * @var AcademicYear
+     */
+    private $academicYear;
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -114,6 +122,24 @@ class Workcenter
     public function setCompany(Company $company)
     {
         $this->company = $company;
+    }
+
+    /**
+     * @return AcademicYear
+     */
+    public function getAcademicYear()
+    {
+        return $this->academicYear;
+    }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @return Workcenter
+     */
+    public function setAcademicYear(AcademicYear $academicYear)
+    {
+        $this->academicYear = $academicYear;
+        return $this;
     }
 
     /**
@@ -239,7 +265,7 @@ class Workcenter
     /**
      * @param Person|null $manager
      */
-    public function setManager($manager = null)
+    public function setManager(Person $manager = null)
     {
         $this->manager = $manager;
     }
