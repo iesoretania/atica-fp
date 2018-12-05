@@ -23,6 +23,7 @@ use AppBundle\Entity\Workcenter;
 use AppBundle\Form\Type\WorkcenterType;
 use AppBundle\Repository\WorkcenterRepository;
 use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WorkcenterVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -57,7 +58,7 @@ class WorkcenterController extends Controller
 
         $this->getDoctrine()->getManager()->persist($workcenter);
 
-        return $this->formAction($request, $translator, $userExtensionService, $workcenter);
+        return $this->formAction($request, $translator, $workcenter);
     }
 
     /**
@@ -67,11 +68,9 @@ class WorkcenterController extends Controller
     public function formAction(
         Request $request,
         TranslatorInterface $translator,
-        UserExtensionService $userExtensionService,
         Workcenter $workcenter
     ) {
-        $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
+        $this->denyAccessUnlessGranted(WorkcenterVoter::MANAGE, $workcenter);
 
         $form = $this->createForm(WorkcenterType::class, $workcenter);
 
