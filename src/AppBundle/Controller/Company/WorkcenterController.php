@@ -98,6 +98,7 @@ class WorkcenterController extends Controller
                 'routeName' => 'company_workcenter_list',
                 'routeParams' => ['id' => $workcenter->getCompany()->getId()]
             ],
+            ['fixed' => $this->get('translator')->trans('title.list', [], 'workcenter')],
             $workcenter->getId() ?
                 ['fixed' => $workcenter->getName()] :
                 ['fixed' => $this->get('translator')->trans('title.new', [], 'workcenter')]
@@ -153,7 +154,7 @@ class WorkcenterController extends Controller
             ->setMaxPerPage($this->getParameter('page.size'))
             ->setCurrentPage($q ? 1 : $page);
 
-        $title = $this->get('translator')->trans('title.list', [], 'workcenter');
+        $title = $company->getName() . ' - ' . $this->get('translator')->trans('title.list', [], 'workcenter');
 
         $breadcrumb = [
             ['fixed' => $company->getName()]

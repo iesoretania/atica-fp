@@ -287,4 +287,22 @@ class Workcenter
         $this->manager = $manager;
         return $this;
     }
+
+    /**
+     * @param Company $company
+     * @return Workcenter
+     */
+    public function initFromCompany(Company $company)
+    {
+        $this
+            ->setCompany($company)
+            ->setAddress($company->getAddress())
+            ->setCity($company->getCity())
+            ->setZipCode($company->getZipCode())
+            ->setPhoneNumber($company->getPhoneNumber())
+            ->setFaxNumber($company->getFaxNumber())
+            ->setEmailAddress($company->getEmailAddress());
+
+        return $this;
+    }
 }

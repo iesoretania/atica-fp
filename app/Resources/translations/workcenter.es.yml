@@ -23,7 +23,7 @@ title.edit: Datos de la sede
 title.new: Nueva sede
 title.delete: Eliminar sedes
 
-title.list: Listado de sedes
+title.list: Sedes
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay sedes
 table.filter: Filtrar...

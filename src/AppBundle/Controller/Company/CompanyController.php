@@ -71,15 +71,10 @@ class CompanyController extends Controller
                 if ($company->getId() == 0) {
                     $workcenter = new Workcenter();
                     $workcenter
-                        ->setCompany($company)
+                        ->initFromCompany($company)
                         ->setAcademicYear($organization->getCurrentAcademicYear())
-                        ->setName($translator->trans('title.main_workcenter', [], 'workcenter'))
-                        ->setAddress($company->getAddress())
-                        ->setCity($company->getCity())
-                        ->setZipCode($company->getZipCode())
-                        ->setPhoneNumber($company->getPhoneNumber())
-                        ->setFaxNumber($company->getFaxNumber())
-                        ->setEmailAddress($company->getEmailAddress());
+                        ->setName($translator->trans('title.main_workcenter', [], 'workcenter'));
+
                     $this->getDoctrine()->getManager()->persist($workcenter);
                 }
                 $this->getDoctrine()->getManager()->flush();
