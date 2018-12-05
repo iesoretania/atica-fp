@@ -1,0 +1,32 @@
+form.academic_year: Curso académico
+form.date: Fecha no lectiva
+form.description: Descripción
+
+form.save: Guardar cambios
+form.delete: Eliminar los elementos seleccionados
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nueva fecha no lectiva
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes días no lectivos? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos del día no lectivo
+title.new: Nuevo día no lectivo
+title.delete: Eliminar días no lectivos
+
+title.list: Listado de días no lectivos
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay días lectivos
+table.filter: Filtrar...
+
+header.date: Fecha
+header.description: Descripción
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Días lectivos eliminados del centro.
+message.delete_error: Ha ocurrido un error al eliminar los días lectivos.
