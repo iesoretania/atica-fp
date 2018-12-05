@@ -23,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\WorkcenterRepository")
  * @ORM\Table(name="workcenter")
  */
 class Workcenter
@@ -118,10 +118,12 @@ class Workcenter
 
     /**
      * @param Company $company
+     * @return Workcenter
      */
     public function setCompany(Company $company)
     {
         $this->company = $company;
+        return $this;
     }
 
     /**
@@ -152,10 +154,12 @@ class Workcenter
 
     /**
      * @param string $name
+     * @return Workcenter
      */
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
@@ -168,10 +172,12 @@ class Workcenter
 
     /**
      * @param string $address
+     * @return Workcenter
      */
     public function setAddress($address)
     {
         $this->address = $address;
+        return $this;
     }
 
     /**
@@ -184,10 +190,12 @@ class Workcenter
 
     /**
      * @param string $city
+     * @return Workcenter
      */
     public function setCity($city)
     {
         $this->city = $city;
+        return $this;
     }
 
     /**
@@ -200,10 +208,12 @@ class Workcenter
 
     /**
      * @param string $zipCode
+     * @return Workcenter
      */
     public function setZipCode($zipCode)
     {
         $this->zipCode = $zipCode;
+        return $this;
     }
 
     /**
@@ -216,10 +226,12 @@ class Workcenter
 
     /**
      * @param string $phoneNumber
+     * @return Workcenter
      */
     public function setPhoneNumber($phoneNumber)
     {
         $this->phoneNumber = $phoneNumber;
+        return $this;
     }
 
     /**
@@ -232,10 +244,12 @@ class Workcenter
 
     /**
      * @param string $faxNumber
+     * @return Workcenter
      */
     public function setFaxNumber($faxNumber)
     {
         $this->faxNumber = $faxNumber;
+        return $this;
     }
 
     /**
@@ -248,10 +262,12 @@ class Workcenter
 
     /**
      * @param string $emailAddress
+     * @return Workcenter
      */
     public function setEmailAddress($emailAddress)
     {
         $this->emailAddress = $emailAddress;
+        return $this;
     }
 
     /**
@@ -264,9 +280,11 @@ class Workcenter
 
     /**
      * @param Person|null $manager
+     * @return Workcenter
      */
     public function setManager(Person $manager = null)
     {
         $this->manager = $manager;
+        return $this;
     }
 }

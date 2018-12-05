@@ -30,7 +30,7 @@
                         {{ company.emailAddress }}
                     </td>
                     <td>
-                        {{ m.link_button('', 'store', 'btn-info btn-sm', 'table.workcenters'|trans, null, 'd-md-none d-lg-inline') }}
+                        {{ m.link_button(path('company_workcenter_list', {'id': company.id}), 'store', 'btn-info btn-sm', 'table.workcenters'|trans, null, 'd-md-none d-lg-inline') }}
                     </td>
                 </tr>
             {% else %}

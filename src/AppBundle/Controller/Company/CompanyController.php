@@ -16,9 +16,10 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Controller;
+namespace AppBundle\Controller\Company;
 
 use AppBundle\Entity\Company;
+use AppBundle\Entity\Workcenter;
 use AppBundle\Form\Type\CompanyType;
 use AppBundle\Repository\CompanyRepository;
 use AppBundle\Security\OrganizationVoter;
@@ -67,6 +68,20 @@ class CompanyController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                if ($company->getId() == 0) {
+                    $workcenter = new Workcenter();
+                    $workcenter
+                        ->setCompany($company)
+                        ->setAcademicYear($organization->getCurrentAcademicYear())
+                        ->setName($translator->trans('title.main_workcenter', [], 'workcenter'))
+                        ->setAddress($company->getAddress())
+                        ->setCity($company->getCity())
+                        ->setZipCode($company->getZipCode())
+                        ->setPhoneNumber($company->getPhoneNumber())
+                        ->setFaxNumber($company->getFaxNumber())
+                        ->setEmailAddress($company->getEmailAddress());
+                    $this->getDoctrine()->getManager()->persist($workcenter);
+                }
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'company'));
                 return $this->redirectToRoute('company');

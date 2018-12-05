@@ -1,0 +1,44 @@
+{% trans_default_domain 'workcenter' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+
+{% block path_new %}{{ path('company_workcenter_new', {'id': company.id}) }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-60">{{ 'header.name'|trans }}</th>
+    <th class="w-20">{{ 'header.city'|trans }}</th>
+    <th class="w-20">{{ 'header.email_address'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for workcenter in pager %}
+                {% set url = path('company_workcenter_edit', {'id': workcenter.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ workcenter.id }}"> <a href="{{ url }}">{{ workcenter.name }}</a></label>
+                    </td>
+                    <td>
+                        {{ workcenter.city }}
+                    </td>
+                    <td>
+                        {{ workcenter.emailAddress }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+<form action="{{ path('company_workcenter_delete', {'id': company.id}) }}" method="post">
+{% endblock %}
+
+    {% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+</form>
+{% endblock %}

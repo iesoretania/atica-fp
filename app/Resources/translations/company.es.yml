@@ -29,7 +29,7 @@ table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% res
 table.no_items: No hay empresas
 table.filter: Filtrar...
 
-table.workcenters: Centros de trabajo
+table.workcenters: Sedes
 
 header.code: CIF
 header.name: Nombre de la empresa
