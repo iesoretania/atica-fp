@@ -18,7 +18,7 @@ class Version20181127221603 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE role (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, organization_id INT DEFAULT NULL, role VARCHAR(20) NOT NULL, INDEX IDX_57698A6A217BBB47 (person_id), INDEX IDX_57698A6A32C8A3DE (organization_id), UNIQUE INDEX UNIQ_57698A6A217BBB4732C8A3DE57698A6A (person_id, organization_id, role), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE role (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, organization_id INT DEFAULT NULL, role VARCHAR(20) NOT NULL, INDEX IDX_57698A6A217BBB47 (person_id), INDEX IDX_57698A6A32C8A3DE (organization_id), UNIQUE INDEX UNIQ_57698A6A217BBB4732C8A3DE57698A6A (person_id, organization_id, role), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
         $this->addSql('ALTER TABLE role ADD CONSTRAINT FK_57698A6A217BBB47 FOREIGN KEY (person_id) REFERENCES person (id)');
         $this->addSql('ALTER TABLE role ADD CONSTRAINT FK_57698A6A32C8A3DE FOREIGN KEY (organization_id) REFERENCES organization (id)');
         $this->addSql('DROP TABLE edu_organization');

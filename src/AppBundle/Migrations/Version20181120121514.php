@@ -18,7 +18,7 @@ class Version20181120121514 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE edu_group_tutor (group_id INT NOT NULL, teacher_id INT NOT NULL, INDEX IDX_78832E94FE54D947 (group_id), INDEX IDX_78832E9441807E1D (teacher_id), PRIMARY KEY(group_id, teacher_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE edu_group_tutor (group_id INT NOT NULL, teacher_id INT NOT NULL, INDEX IDX_78832E94FE54D947 (group_id), INDEX IDX_78832E9441807E1D (teacher_id), PRIMARY KEY(group_id, teacher_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
         $this->addSql('ALTER TABLE edu_group_tutor ADD CONSTRAINT FK_78832E94FE54D947 FOREIGN KEY (group_id) REFERENCES edu_group (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE edu_group_tutor ADD CONSTRAINT FK_78832E9441807E1D FOREIGN KEY (teacher_id) REFERENCES edu_teacher (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE edu_group DROP FOREIGN KEY FK_4C368872208F64F1');

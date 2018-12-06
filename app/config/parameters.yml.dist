@@ -14,6 +14,10 @@ parameters:
     # Nombre y contraseña del usuario que accederá a la base de datos. ¡No usar "root" en producción!
     database_user:     root
     database_password: ~
+    database_charset: utf8mb4
+
+    # Si vas a usar la base de datos en otro idioma, usa mejor utf8mb4_unicode_ci
+    database_collate: utf8mb4_spanish_ci
 
     # En el caso de usar una cuenta de GMail para enviar notificaciones,
     # cambia "smtp" por "gmail", "127.0.0.1" por "~"; en mailer_user coloca
