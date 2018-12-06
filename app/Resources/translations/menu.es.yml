@@ -58,6 +58,9 @@ menu.organization.import.subject.detail: Importar asignaturas y módulos profesi
 menu.organization.import.student: Importar estudiantes
 menu.organization.import.student.detail: Importar estudiantes desde Séneca
 
+menu.organization.import.non_working_day: Importar días no lectivos
+menu.organization.import.non_working_day.detail: Importar días no lectivos desde un fichero .ICS
+
 menu.training: Enseñanzas de FP
 menu.training.detail: Configurar los elementos de las enseñanzas de FP del centro
 

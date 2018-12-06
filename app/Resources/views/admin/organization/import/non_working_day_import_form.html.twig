@@ -1,0 +1,25 @@
+{% trans_default_domain 'import' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    {% if not stats %}
+        <div class="alert alert-info">
+            {% set link = 'link.non_working_day.import'|trans %}
+            {{ 'instructions.non_working_day.import'|trans({'%link%': '<a href="' ~ link ~ '">' ~ link ~ '</a>'})|raw }}
+        </div>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ m.start_button() }}
+            {{ m.submit_button('submit', 'check', 'btn-success', 'form.non_working_day.do_import'|trans) }}
+            {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.end_button() }}
+        {{ form_end(form) }}
+    {% else %}
+        <h4>{{ 'report.stats'|trans }}</h4>
+        <ul>
+            <li>{{ 'report.non_working_day.new'|trans }}: {{ stats.new_items }}</li>
+            <li>{{ 'report.non_working_day.old'|trans }}: {{ stats.old_items }}</li>
+        </ul>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {% endif %}
+{% endblock %}

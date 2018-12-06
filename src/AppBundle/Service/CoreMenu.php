@@ -283,6 +283,18 @@ class CoreMenu implements MenuBuilderInterface
                 ->setPriority(40);
 
             $menu2->addChild($menu3);
+
+            $menu3 = new MenuItem();
+            $menu3
+
+                ->setName('organization_import_non_working_day')
+                ->setRouteName('organization_import_non_working_day_form')
+                ->setCaption('menu.organization.import.non_working_day')
+                ->setDescription('menu.organization.import.non_working_day.detail')
+                ->setIcon('calendar-times')
+                ->setPriority(50);
+
+            $menu2->addChild($menu3);
         }
 
         $menu = new MenuItem();

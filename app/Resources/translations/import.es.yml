@@ -78,3 +78,17 @@ form.student.do_import: Importar estudiantes
 report.student.list: Estudiantes procesados
 report.student.new: Estudiantes nuevos incorporados
 report.student.old: Estudiantes ya existentes
+
+title.non_working_day.import: Importación de días no lectivos
+form.non_working_day.academic_year: Curso académico
+form.non_working_day.do_import: Importar días no lectivos
+form.non_working_day.file: "Fichero .ICS de la Consejería"
+
+report.non_working_day.new: Nuevas fechas incorporadas
+report.non_working_day.old: Fechas ya existentes
+
+instructions.non_working_day.import: |
+  Puede descargar el calendario de días no lectivos de su centro escolar en formato .ICS desde
+  esta dirección: %link%
+
+link.non_working_day.import: "https://www.juntadeandalucia.es/educacion/secretariavirtual/consulta/calendario-escolar/"
