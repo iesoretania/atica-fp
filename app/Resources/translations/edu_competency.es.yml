@@ -6,6 +6,11 @@ form.save: Guardar cambios
 form.delete: Eliminar las competencias seleccionadas
 form.back: Volver
 form.delete_confirm: Confirmar borrado
+form.import: Importar desde el texto indicado
+form.import.placeholder: |
+  Por ejemplo:
+  a) Configurar y explotar sistemas...
+  b) Gestionar...
 
 table.new: Nueva competencia
 
@@ -17,6 +22,7 @@ prompt.delete_confirm: |
 title.edit: Datos de la competencia
 title.new: Nueva competencia
 title.delete: Eliminar competencia
+title.import: Importación masiva
 
 title.list: Competencias
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"

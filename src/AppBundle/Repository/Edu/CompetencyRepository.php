@@ -44,13 +44,26 @@ class CompetencyRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByTraining(Training $training) {
+    public function findByTraining(Training $training)
+    {
         return $this->createQueryBuilder('c')
             ->andWhere('c.training = :training')
             ->setParameter('training', $training)
             ->orderBy('c.code')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findOneByCodeAndTraining($code, Training $training)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.code = :code')
+            ->andWhere('c.training = :training')
+            ->setParameter('code', $code)
+            ->setParameter('training', $training)
+            ->orderBy('c.code')
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     public function deleteFromList($items)

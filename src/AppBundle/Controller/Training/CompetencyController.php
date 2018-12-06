@@ -180,8 +180,8 @@ class CompetencyController extends Controller
         Request $request,
         CompetencyRepository $competencyRepository,
         TranslatorInterface $translator,
-        Training $training)
-    {
+        Training $training
+    ) {
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
 
         $em = $this->getDoctrine()->getManager();
@@ -220,5 +220,66 @@ class CompetencyController extends Controller
             'title' => $translator->trans('title.delete', [], 'edu_competency'),
             'competencies' => $competencies
         ]);
+    }
+
+    /**
+     * @Route("/competencia/importar/{id}", name="training_competency_import",
+     *     requirements={"id" = "\d+"}, methods={"POST"})
+     */
+    public function importAction(
+        Request $request,
+        CompetencyRepository $competencyRepository,
+        TranslatorInterface $translator,
+        Training $training
+    ) {
+        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $lines = trim($request->request->get('data', []));
+        if ($lines === '') {
+            return $this->redirectToRoute('training_competency_list', ['id' => $training->getId()]);
+        }
+
+        $items = $this->parseImport($lines);
+        foreach ($items as $code => $item) {
+            if (null === $competencyRepository->findOneByCodeAndTraining($code, $training)) {
+                $competency = new Competency();
+                $competency
+                    ->setTraining($training)
+                    ->setCode($code)
+                    ->setDescription($item);
+                $em->persist($competency);
+            }
+        }
+        //try {
+            $em->flush();
+            $this->addFlash('success', $translator->trans('message.saved', [], 'edu_competency'));
+        //} catch (\Exception $e) {
+        //    $this->addFlash('error', $translator->trans('message.error', [], 'edu_competency'));
+        //}
+
+        return $this->redirectToRoute('training_competency_list', ['id' => $training->getId()]);
+    }
+
+    /**
+     * @param $lines
+     *
+     * @return array
+     */
+    private function parseImport($lines)
+    {
+        $items = explode("\n", $lines);
+        $output = [];
+        $matches = [];
+
+        foreach ($items as $item) {
+            preg_match('/^(.{1,10})\) (.*)/u', $item, $matches);
+            if ($matches) {
+                $output[$matches[1]] = $matches[2];
+            }
+        }
+
+        return $output;
     }
 }
