@@ -301,7 +301,8 @@ class Workcenter
             ->setZipCode($company->getZipCode())
             ->setPhoneNumber($company->getPhoneNumber())
             ->setFaxNumber($company->getFaxNumber())
-            ->setEmailAddress($company->getEmailAddress());
+            ->setEmailAddress($company->getEmailAddress())
+            ->setManager($company->getManager());
 
         return $this;
     }

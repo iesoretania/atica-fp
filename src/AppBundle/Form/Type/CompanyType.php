@@ -19,6 +19,9 @@
 namespace AppBundle\Form\Type;
 
 use AppBundle\Entity\Company;
+use AppBundle\Entity\Person;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -57,6 +60,21 @@ class CompanyType extends AbstractType
             ])
             ->add('webSite', null, [
                 'label' => 'form.web_site'
+            ])
+            ->add('manager', EntityType::class, [
+                'label' => 'form.manager',
+                'class' => Person::class,
+                'choice_label' => 'fullDisplayName',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('p')
+                        ->addSelect('u')
+                        ->leftJoin('p.user', 'u')
+                        ->orderBy('p.lastName')
+                        ->addOrderBy('p.firstName');
+                },
+                'placeholder' => 'form.manager.no_manager',
+                'attr' => ['class' => 'person'],
+                'required' => false
             ]);
     }
 

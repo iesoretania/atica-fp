@@ -87,6 +87,17 @@ class Person
     }
 
     /**
+     * Convertir usuario en cadena extendida
+     *
+     * @return string
+     */
+    public function getFullDisplayName()
+    {
+        $prefix = $this->getFirstName() . ' ' . $this->getLastName();
+        return $this->getUniqueIdentifier() ? $prefix . ' - ' . $this->getUniqueIdentifier() : $prefix;
+    }
+
+    /**
      * Constructor
      */
     public function __construct()
