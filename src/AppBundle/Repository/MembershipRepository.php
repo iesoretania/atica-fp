@@ -19,8 +19,11 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Membership;
+use AppBundle\Entity\Organization;
+use AppBundle\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
 
 class MembershipRepository extends ServiceEntityRepository
 {
@@ -37,5 +40,49 @@ class MembershipRepository extends ServiceEntityRepository
             ->setParameter('date', $date)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param Organization $organization
+     * @param User $user
+     * @param \DateTime $fromDate
+     * @param \DateTime|null $toDate
+     *
+     * @return Membership
+     */
+    public function addNewOrganizationMembership(
+        Organization $organization,
+        User $user,
+        \DateTime $fromDate,
+        \DateTime $toDate = null
+    ) {
+        try {
+            $membership = $this->createQueryBuilder('m')
+                ->where('m.organization = :organization')
+                ->andWhere('m.user = :user')
+                ->andWhere('m.validFrom = :from_date')
+                ->andWhere('m.validUntil = :to_date')
+                ->setParameter('organization', $organization)
+                ->setParameter('user', $user)
+                ->setParameter('from_date', $fromDate)
+                ->setParameter('to_date', $toDate)
+                ->getQuery()
+                ->getOneOrNullResult();
+
+        } catch (NonUniqueResultException $e) {
+            $membership = null;
+        }
+        if (null === $membership) {
+            $membership = new Membership();
+            $membership
+                ->setOrganization($organization)
+                ->setUser($user)
+                ->setValidFrom($fromDate)
+                ->setValidUntil($toDate);
+
+            $this->getEntityManager()->persist($membership);
+        }
+
+        return $membership;
     }
 }

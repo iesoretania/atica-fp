@@ -2,7 +2,6 @@
 {% extends 'generic/list.html.twig' %}
 {% import 'macros.html.twig' as m %}
 
-
 {% block path_new %}{{ path('company_new') }}{% endblock %}
 
 {% block table_header %}
@@ -44,7 +43,7 @@
 <form action="{{ path('company_delete') }}" method="post">
 {% endblock %}
 
-    {% block after_table %}
+{% block after_table %}
     <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}

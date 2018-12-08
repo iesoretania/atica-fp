@@ -1,0 +1,41 @@
+form.first_name: Nombre
+form.last_name: Apellidos
+form.unique_indentifier: DNI/NIE
+form.gender: Sexo
+form.gender.neutral: No especificado
+form.gender.male: Hombre
+form.gender.female: Mujer
+form.email_address: Correo electrónico
+
+form.save: Guardar cambios
+form.delete: Eliminar personas seleccionadas
+form.back: Volver
+form.impersonate: Acceder como el usuario
+form.delete_confirm: Confirmar borrado
+
+form.new_person.save: Registrar persona
+form.new_person.close: Cerrar
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes personas? En el caso de que alguna de ellas tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido actualizar los datos.
+message.deleted: Las personas seleccionadas han sido eliminadas con éxito.
+message.delete_error: No se han podido eliminar las personas seleccionadas.
+
+title.new: Registrar nueva persona
+title.edit: Datos de la persona
+title.delete: Eliminar personas
+
+title.list: Listado de personas
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_users: No hay personas
+table.new: Nueva persona
+table.filter: Filtrar...
+
+header.name: Nombre completo
+header.username: Usuario
+header.unique_indentifier: DNI/NIE

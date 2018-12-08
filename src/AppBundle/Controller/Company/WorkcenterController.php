@@ -21,6 +21,7 @@ namespace AppBundle\Controller\Company;
 use AppBundle\Entity\Company;
 use AppBundle\Entity\Workcenter;
 use AppBundle\Form\Type\WorkcenterType;
+use AppBundle\Repository\MembershipRepository;
 use AppBundle\Repository\WorkcenterRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WorkcenterVoter;
@@ -43,6 +44,7 @@ class WorkcenterController extends Controller
      **/
     public function newAction(
         Request $request,
+        MembershipRepository $membershipRepository,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
         Company $company
@@ -58,7 +60,7 @@ class WorkcenterController extends Controller
 
         $this->getDoctrine()->getManager()->persist($workcenter);
 
-        return $this->formAction($request, $translator, $workcenter);
+        return $this->formAction($request, $membershipRepository, $translator, $workcenter);
     }
 
     /**
@@ -67,6 +69,7 @@ class WorkcenterController extends Controller
      */
     public function formAction(
         Request $request,
+        MembershipRepository $membershipRepository,
         TranslatorInterface $translator,
         Workcenter $workcenter
     ) {
@@ -78,9 +81,18 @@ class WorkcenterController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                if ($workcenter->getManager() && $workcenter->getManager()->getUser()) {
+                    $organization = $workcenter->getAcademicYear()->getOrganization();
+                    $membershipRepository->addNewOrganizationMembership(
+                        $organization,
+                        $workcenter->getManager()->getUser(),
+                        $organization->getCurrentAcademicYear()->getStartDate(),
+                        $organization->getCurrentAcademicYear()->getEndDate()
+                    );
+                }
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'workcenter'));
-                return $this->redirectToRoute('company');
+                return $this->redirectToRoute('company_workcenter_list', ['id' => $workcenter->getCompany()->getId()]);
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'workcenter'));
             }

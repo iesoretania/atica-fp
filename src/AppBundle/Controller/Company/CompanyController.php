@@ -22,6 +22,7 @@ use AppBundle\Entity\Company;
 use AppBundle\Entity\Workcenter;
 use AppBundle\Form\Type\CompanyType;
 use AppBundle\Repository\CompanyRepository;
+use AppBundle\Repository\MembershipRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -39,22 +40,38 @@ class CompanyController extends Controller
 {
     /**
      * @Route("/nueva", name="company_new", methods={"GET", "POST"})
-     **/
-    public function newAction(Request $request, TranslatorInterface $translator, UserExtensionService $userExtensionService)
-    {
+     * @param Request $request
+     * @param MembershipRepository $membershipRepository
+     * @param TranslatorInterface $translator
+     * @param UserExtensionService $userExtensionService
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function newAction(
+        Request $request,
+        MembershipRepository $membershipRepository,
+        TranslatorInterface $translator,
+        UserExtensionService $userExtensionService
+    ) {
         $company = new Company();
 
         $this->getDoctrine()->getManager()->persist($company);
 
-        return $this->formAction($request, $translator, $userExtensionService, $company);
+        return $this->formAction($request, $membershipRepository, $translator, $userExtensionService, $company);
     }
 
     /**
      * @Route("/{id}", name="company_edit",
      *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
+     * @param Request $request
+     * @param MembershipRepository $membershipRepository
+     * @param TranslatorInterface $translator
+     * @param UserExtensionService $userExtensionService
+     * @param Company $company
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function formAction(
         Request $request,
+        MembershipRepository $membershipRepository,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
         Company $company
@@ -76,7 +93,17 @@ class CompanyController extends Controller
                         ->setName($translator->trans('title.main_workcenter', [], 'workcenter'));
 
                     $this->getDoctrine()->getManager()->persist($workcenter);
+
+                    if ($workcenter->getManager() && $workcenter->getManager()->getUser()) {
+                        $membershipRepository->addNewOrganizationMembership(
+                            $organization,
+                            $workcenter->getManager()->getUser(),
+                            $organization->getCurrentAcademicYear()->getStartDate(),
+                            $organization->getCurrentAcademicYear()->getEndDate()
+                        );
+                    }
                 }
+
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'company'));
                 return $this->redirectToRoute('company');

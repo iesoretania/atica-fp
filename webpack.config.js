@@ -13,6 +13,7 @@ Encore
 
     // other js modules
     .addEntry('list', './assets/js/list.js')
+    .addEntry('person', './assets/js/person.js')
 
     // allow legacy applications to use $/jQuery as a global variable
     .autoProvidejQuery()

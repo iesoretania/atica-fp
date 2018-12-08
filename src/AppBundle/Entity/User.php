@@ -155,7 +155,7 @@ class User implements AdvancedUserInterface
      */
     public function getFullName()
     {
-        return (string) $this.' ('.$this->getUsernameAndEmailAddress().')';
+        return $this.' ('.$this->getUsernameAndEmailAddress().')';
     }
 
     /**
@@ -174,6 +174,8 @@ class User implements AdvancedUserInterface
         $this->memberships = new \Doctrine\Common\Collections\ArrayCollection();
         $this->externalCheck = false;
         $this->allowExternalCheck = false;
+        $this->enabled = true;
+        $this->globalAdministrator = false;
     }
 
     /**
