@@ -36,10 +36,14 @@ class OrganizationRepository extends ServiceEntityRepository
         $organization = new Organization();
 
         $year = (date('n') < 9) ? (date('Y') - 1) : date('Y');
+        $startDate = new \DateTime($year . '/09/01');
+        $endDate = new \DateTime(($year + 1) . '/08/31');
 
         $academicYear = new AcademicYear();
         $academicYear
             ->setOrganization($organization)
+            ->setStartDate($startDate)
+            ->setEndDate($endDate)
             ->setDescription($year . '-' . ($year + 1));
 
         $this->getEntityManager()->persist($organization);

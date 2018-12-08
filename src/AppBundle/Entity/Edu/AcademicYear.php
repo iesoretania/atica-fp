@@ -62,6 +62,18 @@ class AcademicYear
      */
     private $financialManager;
 
+    /**
+     * @ORM\Column(type="date")
+     * @var \DateTime
+     */
+    private $startDate;
+
+    /**
+     * @ORM\Column(type="date")
+     * @var \DateTime
+     */
+    private $endDate;
+
     public function __toString()
     {
         return $this->getDescription();
@@ -144,6 +156,42 @@ class AcademicYear
     public function setFinancialManager(Teacher $financialManager = null)
     {
         $this->financialManager = $financialManager;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getStartDate()
+    {
+        return $this->startDate;
+    }
+
+    /**
+     * @param \DateTime $startDate
+     * @return AcademicYear
+     */
+    public function setStartDate($startDate)
+    {
+        $this->startDate = $startDate;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getEndDate()
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * @param \DateTime $endDate
+     * @return AcademicYear
+     */
+    public function setEndDate($endDate)
+    {
+        $this->endDate = $endDate;
         return $this;
     }
 }

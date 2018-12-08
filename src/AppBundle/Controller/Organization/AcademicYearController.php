@@ -39,8 +39,11 @@ class AcademicYearController extends Controller
      * @Route("/nuevo", name="organization_academic_year_new", methods={"GET", "POST"})
      * @Route("/{id}", name="organization_academic_year_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
-    public function indexAction(Request $request, UserExtensionService $userExtensionService, AcademicYear $academicYear = null)
-    {
+    public function indexAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        AcademicYear $academicYear = null
+    ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -48,8 +51,13 @@ class AcademicYearController extends Controller
 
         if (null === $academicYear) {
             $academicYear = new AcademicYear();
+            $year = date('Y');
+            $startDate = new \DateTime($year . '/09/01');
+            $endDate = new \DateTime(($year + 1) . '/08/31');
             $academicYear
-                ->setOrganization($organization);
+                ->setOrganization($organization)
+                ->setStartDate($startDate)
+                ->setEndDate($endDate);
             $em->persist($academicYear);
         }
 

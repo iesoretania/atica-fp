@@ -48,6 +48,16 @@ class AcademicYearType extends AbstractType
             ->add('description', null, [
                 'label' => 'form.description'
             ])
+            ->add('startDate', null, [
+                'label' => 'form.start_date',
+                'widget' => 'single_text',
+                'required' => true
+            ])
+            ->add('endDate', null, [
+                'label' => 'form.end_date',
+                'widget' => 'single_text',
+                'required' => true
+            ])
             ->add('principal', EntityType::class, [
                 'label' => 'form.principal',
                 'class' => Teacher::class,
