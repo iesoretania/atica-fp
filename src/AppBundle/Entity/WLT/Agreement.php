@@ -21,6 +21,7 @@ namespace AppBundle\Entity\WLT;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\Workcenter;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -106,9 +107,17 @@ class Agreement
      */
     private $defaultEndTime2;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="ActivityRealization")
+     * @ORM\JoinTable("wlt_agreement_activity_realization")
+     * @var ActivityRealization[]
+     */
+    private $activityRealizations;
+
     public function __construct()
     {
         $this->studentPollSubmitted = false;
+        $this->activityRealizations = new ArrayCollection();
     }
 
     public function __toString()
@@ -301,6 +310,24 @@ class Agreement
     public function setDefaultEndTime2($defaultEndTime2)
     {
         $this->defaultEndTime2 = $defaultEndTime2;
+        return $this;
+    }
+
+    /**
+     * @return ActivityRealization[]
+     */
+    public function getActivityRealizations()
+    {
+        return $this->activityRealizations;
+    }
+
+    /**
+     * @param ActivityRealization[] $activityRealizations
+     * @return Agreement
+     */
+    public function setActivityRealizations($activityRealizations)
+    {
+        $this->activityRealizations = $activityRealizations;
         return $this;
     }
 }

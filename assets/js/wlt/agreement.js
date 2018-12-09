@@ -77,10 +77,47 @@ $(function ()
         });
     }
 
+    function studentEnrollmentChange()
+    {
+        studentEnrollment = $("#agreement_studentEnrollment");
+        company = $("#agreement_company");
+        workcenter = $("#agreement_workcenter");
+
+        var form = $(this).closest('form');
+        var data = {};
+        data[academicYear.attr('name')] = academicYear.val();
+        data[company.attr('name')] = company.val();
+        data[workcenter.attr('name')] = workcenter.val();
+        data[studentEnrollment.attr('name')] = studentEnrollment.val();
+        activityRealizations = $('#agreement_activityRealizations');
+        var next = activityRealizations.next();
+        activityRealizations.replaceWith('<div id="agreement_activityRealizations"><span class="text-info"><i class="fa fa-circle-notch fa-spin fa-3x fa-fw"></i></span></div>');
+        next.remove();
+        $.ajax({
+            url: form.attr('action'),
+            type: form.attr('method'),
+            data: data,
+            success: function (html) {
+                $('#agreement_activityRealizations').replaceWith(
+                    $(html).find('#agreement_activityRealizations')
+                );
+                $('select#agreement_activityRealizations').select2({
+                    theme: "bootstrap",
+                    language: 'es'
+                });
+            },
+            error: function () {
+                $('#agreement_activityRealizations').replaceWith('<div id="agreement_activityRealizations"><span class="text-danger"><i class="fa fa-times-circle fa-3x"></i></span></div>')
+            }
+        });
+    }
+
     var academicYear = $("#agreement_academicYear");
     var company = $("#agreement_company");
     var workcenter = $("#agreement_workcenter");
+    var studentEnrollment = $("#agreement_studentEnrollment");
 
     academicYear.change(academicYearChange);
     company.change(companyChange);
+    studentEnrollment.change(studentEnrollmentChange);
 });

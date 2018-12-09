@@ -76,6 +76,11 @@ class Activity
         $this->competencies = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->getCode() . ': ' . $this->getDescription();
+    }
+
     /**
      * @return int
      */

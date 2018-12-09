@@ -18,6 +18,7 @@
 
 namespace AppBundle\Repository\WLT;
 
+use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\WLT\Activity;
 use AppBundle\Entity\WLT\ActivityRealization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -40,6 +41,22 @@ class ActivityRealizationRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->setParameter('activity', $activity)
             ->orderBy('ar.code')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByTraining(Training $training)
+    {
+        return $this->createQueryBuilder('ar')
+            ->join('ar.activity', 'a')
+            ->join('a.subject', 's')
+            ->join('s.grade', 'g')
+            ->andWhere('g.training = :training')
+            ->setParameter('training', $training)
+            ->orderBy('s.code')
+            ->addOrderBy('s.name')
+            ->addOrderBy('a.code')
+            ->addOrderBy('ar.code')
             ->getQuery()
             ->getResult();
     }

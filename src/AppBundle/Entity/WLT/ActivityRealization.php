@@ -67,6 +67,11 @@ class ActivityRealization
         $this->learningOutcomes = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->getCode() . ': ' . $this->getDescription();
+    }
+
     /**
      * @return int
      */
