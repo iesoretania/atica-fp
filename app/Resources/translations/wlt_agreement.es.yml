@@ -1,4 +1,6 @@
 form.academic_year: Curso académico
+form.company: Empresa
+form.company.none: Seleccione empresa
 form.workcenter: Centro de trabajo
 form.workcenter.none: Seleccione un centro de trabajo
 form.student_enrollment: Estudiante

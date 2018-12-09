@@ -22,6 +22,7 @@ use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Repository\RoleRepository;
+use AppBundle\Service\UserExtensionService;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -37,12 +38,17 @@ class AgreementVoter extends Voter
     /** @var RoleRepository */
     private $roleRepository;
 
+    /** @var UserExtensionService */
+    private $userExtensionService;
+
     public function __construct(
         AccessDecisionManagerInterface $decisionManager,
-        RoleRepository $roleRepository
+        RoleRepository $roleRepository,
+        UserExtensionService $userExtensionService
     ) {
         $this->decisionManager = $decisionManager;
         $this->roleRepository = $roleRepository;
+        $this->userExtensionService = $userExtensionService;
     }
 
     /**
@@ -87,22 +93,26 @@ class AgreementVoter extends Voter
             return false;
         }
 
+        $organization = $this->userExtensionService->getCurrentOrganization();
+
         // Si es administrador de la organización, permitir siempre
-        if ($this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_LOCAL_ADMIN)) {
+        if ($this->roleRepository->personHasRole($organization, $user->getPerson(), Role::ROLE_LOCAL_ADMIN)) {
             return true;
         }
 
         // Si es jefe de su departamento o coordinador de FP dual, permitir acceder
         // 1) Jefe del departamento del estudiante
-        $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
-        if (null !== $training->getDepartment() && $training->getDepartment()->getHead() &&
-            $training->getDepartment()->getHead()->getPerson() === $user
-        ) {
-            return true;
+        if (null !== $subject->getStudentEnrollment()) {
+            $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
+            if (null !== $training->getDepartment() && $training->getDepartment()->getHead() &&
+                $training->getDepartment()->getHead()->getPerson() === $user
+            ) {
+                return true;
+            }
         }
 
         // 2) Coordinador de FP dual
-        if ($this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
+        if ($this->roleRepository->personHasRole($organization, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
             return true;
         }
 

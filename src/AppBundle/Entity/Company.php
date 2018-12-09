@@ -110,6 +110,11 @@ class Company
         $this->workcenters = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
     /**
      * @return int
      */

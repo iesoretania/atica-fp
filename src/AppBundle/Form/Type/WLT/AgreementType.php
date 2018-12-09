@@ -18,18 +18,27 @@
 
 namespace AppBundle\Form\Type\WLT;
 
+use AppBundle\Entity\Company;
+use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\Workcenter;
+use AppBundle\Repository\CompanyRepository;
+use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\StudentEnrollmentRepository;
 use AppBundle\Repository\WorkcenterRepository;
+use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Security;
 
 class AgreementType extends AbstractType
 {
@@ -42,33 +51,75 @@ class AgreementType extends AbstractType
     /** @var WorkcenterRepository */
     private $workcenterRepository;
 
+    /** @var AcademicYearRepository */
+    private $academicYearRepository;
+
+    /** @var CompanyRepository */
+    private $companyRepository;
+
+    /** @var Security */
+    private $security;
+
     /**
-     * AgreementType constructor.
      * @param UserExtensionService $userExtensionService
      * @param StudentEnrollmentRepository $studentEnrollmentRepository
      * @param WorkcenterRepository $workcenterRepository
+     * @param AcademicYearRepository $academicYearRepository
+     * @param CompanyRepository $companyRepository
+     * @param Security $security
      */
     public function __construct(
         UserExtensionService $userExtensionService,
         StudentEnrollmentRepository $studentEnrollmentRepository,
-        WorkcenterRepository $workcenterRepository
+        WorkcenterRepository $workcenterRepository,
+        AcademicYearRepository $academicYearRepository,
+        CompanyRepository $companyRepository,
+        Security $security
     ) {
         $this->userExtensionService = $userExtensionService;
         $this->studentEnrollmentRepository = $studentEnrollmentRepository;
         $this->workcenterRepository = $workcenterRepository;
+        $this->academicYearRepository = $academicYearRepository;
+        $this->companyRepository = $companyRepository;
+        $this->security = $security;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function addElements(FormInterface $form, AcademicYear $academicYear = null, Company $company = null)
     {
-        $academicYear = $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
+        $organization = $this->userExtensionService->getCurrentOrganization();
+        if (null === $academicYear) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
 
         $studentEnrollments = $this->studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
-        $workcenters = $this->workcenterRepository->findAll();
+        $workcenters = $company ? $this->workcenterRepository->findByAcademicYearAndCompany($academicYear, $company) : [];
 
-        $builder
+        $academicYears = $this->academicYearRepository->findAllByOrganization($organization);
+
+        $form
+            ->add('academicYear', EntityType::class, [
+                'label' => 'form.academic_year',
+                'mapped' => false,
+                'class' => AcademicYear::class,
+                'choice_translation_domain' => false,
+                'choices' => $academicYears,
+                'data' => $academicYear,
+                'disabled' => false === $this->security->isGranted(OrganizationVoter::MANAGE, $organization),
+                'required' => true
+            ])
+            ->add('company', EntityType::class, [
+                'label' => 'form.company',
+                'mapped' => false,
+                'class' => Company::class,
+                'choice_translation_domain' => false,
+                'data' => $company,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('c')
+                        ->orderBy('c.name');
+                },
+                'placeholder' => 'form.company.none',
+                'required' => true
+            ])
             ->add('workcenter', EntityType::class, [
                 'label' => 'form.workcenter',
                 'class' => Workcenter::class,
@@ -126,6 +177,37 @@ class AgreementType extends AbstractType
                 'label' => 'form.default_end_time_2',
                 'required' => false,
             ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $form = $event->getForm();
+            $data = $event->getData();
+
+            $academicYear = $data->getStudentEnrollment() ?
+                $data->getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getAcademicYear() :
+                null;
+            $company = $data->getWorkcenter() ? $data->getWorkcenter()->getCompany() : null;
+
+            $this->addElements($form, $academicYear, $company);
+        });
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+            $form = $event->getForm();
+            $data = $event->getData();
+
+            /** @var Company|null */
+            $company = isset($data['company']) ? $this->companyRepository->find($data['company']) : null;
+
+            /** @var AcademicYear $academicYear */
+            $academicYear = isset($data['academicYear']) ? $this->academicYearRepository->find($data['academicYear']) : null;
+
+            $this->addElements($form, $academicYear, $company);
+        });
     }
 
     /**

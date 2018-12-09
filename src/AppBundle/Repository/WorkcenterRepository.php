@@ -19,6 +19,7 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Company;
+use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Workcenter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -28,6 +29,19 @@ class WorkcenterRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Workcenter::class);
+    }
+
+    public function findByAcademicYearAndCompany(AcademicYear $academicYear, Company $company)
+    {
+        return $this->createQueryBuilder('w')
+            ->andWhere('w.academicYear = :academic_year')
+            ->andWhere('w.company = :company')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('company', $company)
+            ->orderBy('w.name')
+            ->addOrderBy('w.city')
+            ->getQuery()
+            ->getResult();
     }
 
     public function findAllInListByIdAndCompany(
