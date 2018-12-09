@@ -21,6 +21,8 @@ namespace AppBundle\Controller\API;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\User;
 use AppBundle\Form\Type\NewPersonType;
+use AppBundle\Security\OrganizationVoter;
+use AppBundle\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,8 +33,12 @@ class PersonAPIController extends Controller
     /**
      * @Route("/api/persona/crear", name="api_person_new", methods={"GET", "POST"})
      */
-    public function apiNewPersonAction(Request $request)
+    public function apiNewPersonAction(Request $request, UserExtensionService $userExtensionService)
     {
+        $organization = $userExtensionService->getCurrentOrganization();
+
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
+
         $em = $this->getDoctrine()->getManager();
 
         $newPerson = new Person();
