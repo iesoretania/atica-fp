@@ -57,6 +57,18 @@ class CoreMenu implements MenuBuilderInterface
                 ->setPriority(4000);
 
             $root[] = $menu1;
+
+            if ($this->security->isGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization)) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('work_linked_training_agreement')
+                    ->setRouteName('work_linked_training_agreement_list')
+                    ->setCaption('menu.work_linked_training.agreement')
+                    ->setDescription('menu.work_linked_training.agreement.detail')
+                    ->setIcon('handshake');
+
+                $menu1->addChild($menu2);
+            }
         }
 
         if ($this->security->isGranted(OrganizationVoter::ACCESS_TRAININGS, $organization)) {

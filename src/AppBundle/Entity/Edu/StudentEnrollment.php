@@ -51,6 +51,12 @@ class StudentEnrollment
      */
     private $group;
 
+    public function __toString()
+    {
+        return $this->getPerson() . ' (' . $this->getGroup() . ')';
+    }
+
+
     /**
      * @return int
      */

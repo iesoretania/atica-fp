@@ -1,0 +1,51 @@
+{% trans_default_domain 'wlt_agreement' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('work_linked_training_agreement_new') }}{% endblock %}
+
+{% block table_header %}
+    <th><label><input type="checkbox" id="select"> {{ 'header.student_enrollment'|trans }}</label></th>
+    <th>{{ 'header.workcenter'|trans }}</th>
+    <th>{{ 'header.work_tutor'|trans }}</th>
+    <th>{{ 'header.start_date'|trans }}</th>
+    <th>{{ 'header.end_date'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('work_linked_training_agreement_edit', {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.studentEnrollment }}</a></label>
+                    </td>
+                    <td>
+                        {{ item.workcenter }}
+                    </td>
+                    <td>
+                        {{ item.workTutor.fullDisplayName }}
+                    </td>
+                    <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}</td>
+                    <td>{{ item.endDate ? item.endDate|date('format.date'|trans({}, 'general')) }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('work_linked_training_agreement_delete', {'academicYear': academic_year.id}) }}" method="post">
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}

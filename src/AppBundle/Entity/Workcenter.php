@@ -100,6 +100,11 @@ class Workcenter
      */
     private $manager;
 
+    public function __toString()
+    {
+        return $this->getCompany()->getName() . ' - ' . $this->getName();
+    }
+
     /**
      * @return int
      */

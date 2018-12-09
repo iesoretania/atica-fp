@@ -1,0 +1,45 @@
+form.academic_year: Curso académico
+form.workcenter: Centro de trabajo
+form.workcenter.none: Seleccione un centro de trabajo
+form.student_enrollment: Estudiante
+form.student_enrollment.none: Seleccione un estudiante
+form.work_tutor: Reponsable laboral
+form.work_tutor.none: Seleccione el reponsable laboral
+form.start_date: Fecha de comienzo
+form.end_date: Fecha de finalización
+form.default_start_time_1: Hora de inicio, primer tramo
+form.default_end_time_1: Hora de fin, primer tramo
+form.default_start_time_2: Hora de inicio, segundo tramo
+form.default_end_time_2: Hora de fin, segundo tramo
+
+form.save: Guardar cambios
+form.delete: Eliminar los acuerdos seleccionados
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nuevo acuerdo de colaboración
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes acuerdos? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos del acuerdo
+title.new: Nuevo acuerdo de colaboración
+title.delete: Eliminar acuerdos
+
+title.list: Listado de acuerdos de colaboración
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay acuerdos que mostrar
+table.filter: Filtrar...
+
+header.student_enrollment: Estudiante
+header.workcenter: Centro de trabajo
+header.work_tutor: Responsable laboral
+header.start_date: Fecha de inicio
+header.end_date: Fecha de finalización
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Acuerdos eliminados con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los acuerdos de colaboración.

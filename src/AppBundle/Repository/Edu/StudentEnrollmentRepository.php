@@ -18,6 +18,7 @@
 
 namespace AppBundle\Repository\Edu;
 
+use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -28,5 +29,23 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, StudentEnrollment::class);
+    }
+
+    public function findByAcademicYearAndWLT(AcademicYear $academicYear)
+    {
+        return $this->createQueryBuilder('se')
+            ->join('se.group', 'g')
+            ->join('se.person', 's')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->where('t.academicYear = :academic_year')
+            ->andWhere('t.workLinked = :work_linked')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('work_linked', true)
+            ->addOrderBy('s.lastName')
+            ->addOrderBy('s.firstName')
+            ->addOrderBy('g.name')
+            ->getQuery()
+            ->getResult();
     }
 }
