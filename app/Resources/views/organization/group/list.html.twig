@@ -17,7 +17,7 @@
                 {% set url = path('organization_group_edit', {'id': group.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="items[]" value="{{ group.id }}" class="selectable"> <a href="{{ url }}">{{ group.name }}</a></label>
+                        <label><input type="checkbox" name="items[]" value="{{ group.id }}" class="selectable"> <a href="{{ url }}">{{ group.name }}{% if group.grade.training.workLinked %} <span class="badge badge-success">{{ 'header.work_linked_training'|trans({}, 'edu_training') }}</span>{% endif %}</a></label>
                     </td>
                     <td>
                         {{ group.grade.name }}
