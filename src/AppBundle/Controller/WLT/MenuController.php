@@ -26,7 +26,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class MenuController extends Controller
 {
     /**
-     * @Route("/fpdual", name="wlt", methods={"GET"})
+     * @Route("/dual", name="work_linked_training", methods={"GET"})
      */
     public function indexAction(UserExtensionService $userExtensionService)
     {

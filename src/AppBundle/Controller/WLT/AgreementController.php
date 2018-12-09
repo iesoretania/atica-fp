@@ -38,7 +38,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * @Route("/fpdual/acuerdo")
+ * @Route("/dual/acuerdo")
  */
 class AgreementController extends Controller
 {
