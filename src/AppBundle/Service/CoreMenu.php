@@ -46,6 +46,19 @@ class CoreMenu implements MenuBuilderInterface
 
         $root = [];
 
+        if ($this->security->isGranted(OrganizationVoter::ACCESS_WORK_LINKED_TRAINING, $organization)) {
+            $menu1 = new MenuItem();
+            $menu1
+                ->setName('work_linked_training')
+                ->setRouteName('wlt')
+                ->setCaption('menu.work_linked_training')
+                ->setDescription('menu.work_linked_training.detail')
+                ->setIcon('city')
+                ->setPriority(4000);
+
+            $root[] = $menu1;
+        }
+
         if ($this->security->isGranted(OrganizationVoter::ACCESS_TRAININGS, $organization)) {
             $menu1 = new MenuItem();
             $menu1

@@ -81,7 +81,7 @@ class TrainingController extends Controller
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear);
 
-        if (false === $this->isGranted(OrganizationVoter::MANAGE_WORKLINKED_TRAINING, $organization)) {
+        if (false === $this->isGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization)) {
             $queryBuilder
                 ->join('t.department', 'd')
                 ->join('d.head', 'te')

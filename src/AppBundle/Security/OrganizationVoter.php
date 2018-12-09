@@ -22,6 +22,7 @@ use AppBundle\Entity\Membership;
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Repository\Edu\TeachingRepository;
 use AppBundle\Repository\Edu\TrainingRepository;
 use AppBundle\Repository\RoleRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -33,7 +34,8 @@ class OrganizationVoter extends Voter
     const MANAGE = 'ORGANIZATION_MANAGE';
     const ACCESS = 'ORGANIZATION_ACCESS';
     const ACCESS_TRAININGS = 'ORGANIZATION_ACCESS_TRAININGS';
-    const MANAGE_WORKLINKED_TRAINING = 'ORGANIZATION_MANAGE_WORKLINKED_TRAINING';
+    const ACCESS_WORK_LINKED_TRAINING = 'ORGANIZATION_ACCESS_WORKLINKED_TRAINING';
+    const MANAGE_WORK_LINKED_TRAINING = 'ORGANIZATION_MANAGE_WORKLINKED_TRAINING';
     const MANAGE_COMPANIES = 'ORGANIZATION_MANAGE_COMPANIES';
 
     /** @var AccessDecisionManagerInterface */
@@ -45,14 +47,19 @@ class OrganizationVoter extends Voter
     /** @var TrainingRepository */
     private $trainingRepository;
 
+    /** @var TeachingRepository */
+    private $teachingRepository;
+
     public function __construct(
         AccessDecisionManagerInterface $decisionManager,
         RoleRepository $roleRepository,
-        TrainingRepository $trainingRepository
+        TrainingRepository $trainingRepository,
+        TeachingRepository $teachingRepository
     ) {
         $this->decisionManager = $decisionManager;
         $this->roleRepository = $roleRepository;
         $this->trainingRepository = $trainingRepository;
+        $this->teachingRepository = $teachingRepository;
     }
 
     /**
@@ -69,7 +76,8 @@ class OrganizationVoter extends Voter
             self::MANAGE,
             self::ACCESS,
             self::ACCESS_TRAININGS,
-            self::MANAGE_WORKLINKED_TRAINING,
+            self::ACCESS_WORK_LINKED_TRAINING,
+            self::MANAGE_WORK_LINKED_TRAINING,
             self::MANAGE_COMPANIES
         ], true)) {
             return false;
@@ -124,9 +132,22 @@ class OrganizationVoter extends Voter
                 }
                 break;
 
-            case self::MANAGE_WORKLINKED_TRAINING:
+            case self::MANAGE_WORK_LINKED_TRAINING:
                 return $this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER);
 
+            case self::ACCESS_WORK_LINKED_TRAINING:
+                // pueden acceder los que gestionan la FP dual, los profesores que imparten en dual, los gerentes
+                // de los centros de trabajo con acuerdo de colaboración
+                if ($this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
+                    return true;
+                }
+                if ($this->teachingRepository->countAcademicYearAndPersonAndWLT(
+                    $subject->getCurrentAcademicYear(),
+                    $user->getPerson()
+                ) > 0) {
+                    return true;
+                }
+                return false;
             case self::ACCESS:
                 // Si es permiso de acceso, comprobar que pertenece actualmente a la organización
                 if ($attribute === self::ACCESS) {

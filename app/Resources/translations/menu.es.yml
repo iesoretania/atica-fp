@@ -61,6 +61,9 @@ menu.organization.import.student.detail: Importar estudiantes desde Séneca
 menu.organization.import.non_working_day: Importar días no lectivos
 menu.organization.import.non_working_day.detail: Importar días no lectivos desde un fichero .ICS
 
+menu.work_linked_training: FP dual
+menu.work_linked_training.detail: Actividades relacionadas con la FP dual
+
 menu.training: Enseñanzas de FP
 menu.training.detail: Configurar los elementos de las enseñanzas de FP del centro
 
