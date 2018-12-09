@@ -19,6 +19,8 @@
 namespace AppBundle\Controller\Training;
 
 use AppBundle\Entity\Edu\Training;
+use AppBundle\Entity\Role;
+use AppBundle\Repository\RoleRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -27,6 +29,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @Route("/ensenanza")
@@ -40,6 +43,8 @@ class TrainingController extends Controller
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        Security $security,
+        RoleRepository $roleRepository,
         $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -81,7 +86,13 @@ class TrainingController extends Controller
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear);
 
-        if (false === $this->isGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization)) {
+        if (false === $security->isGranted(OrganizationVoter::MANAGE, $organization) &&
+            false === $roleRepository->personHasRole(
+                $organization,
+                $this->getUser()->getPerson(),
+                Role::ROLE_WLT_MANAGER
+            )
+        ) {
             $queryBuilder
                 ->join('t.department', 'd')
                 ->join('d.head', 'te')

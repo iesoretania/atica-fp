@@ -117,6 +117,7 @@ class OrganizationVoter extends Voter
             // acceder a las enseñanzas del centro y a la gestión de empresas
             case self::MANAGE_COMPANIES:
             case self::ACCESS_TRAININGS:
+            case self::MANAGE_WORK_LINKED_TRAINING:
                 // Si es jefe de algún departamento o coordinador de FP dual, permitir acceder
                 // 1) Jefe de departamento
                 if ($this->trainingRepository->countByAcademicYearAndDepartmentHead(
@@ -130,18 +131,27 @@ class OrganizationVoter extends Voter
                 if ($this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
                     return true;
                 }
-                break;
-
-            case self::MANAGE_WORK_LINKED_TRAINING:
-                return $this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER);
+                return false;
 
             case self::ACCESS_WORK_LINKED_TRAINING:
                 // pueden acceder los que gestionan la FP dual, los profesores que imparten en dual, los gerentes
                 // de los centros de trabajo con acuerdo de colaboración
+
+                // 1) Coordinador de FP dual
                 if ($this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
                     return true;
                 }
+
+                // 2) Profesores que imparten en FP Dual
                 if ($this->teachingRepository->countAcademicYearAndPersonAndWLT(
+                    $subject->getCurrentAcademicYear(),
+                    $user->getPerson()
+                ) > 0) {
+                    return true;
+                }
+
+                // 3) Jefe de departamento
+                if ($this->trainingRepository->countByAcademicYearAndDepartmentHead(
                     $subject->getCurrentAcademicYear(),
                     $user->getPerson()
                 ) > 0) {

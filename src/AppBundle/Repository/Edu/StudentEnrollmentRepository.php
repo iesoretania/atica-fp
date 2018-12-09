@@ -20,6 +20,7 @@ namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
+use AppBundle\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -31,7 +32,7 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
         parent::__construct($registry, StudentEnrollment::class);
     }
 
-    public function findByAcademicYearAndWLT(AcademicYear $academicYear)
+    public function findByAcademicYearAndWLTQueryBuilder(AcademicYear $academicYear)
     {
         return $this->createQueryBuilder('se')
             ->join('se.group', 'g')
@@ -44,8 +45,24 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
             ->setParameter('work_linked', true)
             ->addOrderBy('s.lastName')
             ->addOrderBy('s.firstName')
-            ->addOrderBy('g.name')
+            ->addOrderBy('g.name');
+    }
+
+    public function findByAcademicYearAndWLT(AcademicYear $academicYear)
+    {
+        return $this->findByAcademicYearAndWLTQueryBuilder($academicYear)
             ->getQuery()
             ->getResult();
     }
+    public function findByAcademicYearAndDepartmentHeadAndWLT(AcademicYear $academicYear, Person $person)
+    {
+        return $this->findByAcademicYearAndWLTQueryBuilder($academicYear)
+            ->join('t.department', 'd')
+            ->join('d.head', 'te')
+            ->andWhere('te.person = :person')
+            ->setParameter('person', $person)
+            ->getQuery()
+            ->getResult();
+    }
+
 }

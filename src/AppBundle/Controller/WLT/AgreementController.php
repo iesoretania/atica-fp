@@ -19,8 +19,10 @@
 namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Role;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Form\Type\WLT\AgreementType;
+use AppBundle\Repository\RoleRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;
@@ -32,6 +34,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -120,6 +123,8 @@ class AgreementController extends Controller
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        RoleRepository $roleRepository,
+        Security $security,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
@@ -167,6 +172,19 @@ class AgreementController extends Controller
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear);
 
+        if (false === $security->isGranted(OrganizationVoter::MANAGE, $organization) &&
+            false === $roleRepository->personHasRole(
+                $organization,
+                $this->getUser()->getPerson(),
+                Role::ROLE_WLT_MANAGER
+            )
+        ) {
+            $queryBuilder
+                ->join('t.department', 'd')
+                ->join('d.head', 'ht')
+                ->andWhere('ht.person = :person')
+                ->setParameter('person', $this->getUser()->getPerson());
+        }
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         $pager

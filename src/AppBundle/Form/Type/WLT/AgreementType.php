@@ -22,12 +22,15 @@ use AppBundle\Entity\Company;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Person;
+use AppBundle\Entity\Role;
+use AppBundle\Entity\User;
 use AppBundle\Entity\WLT\ActivityRealization;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\Workcenter;
 use AppBundle\Repository\CompanyRepository;
 use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\StudentEnrollmentRepository;
+use AppBundle\Repository\RoleRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Repository\WorkcenterRepository;
 use AppBundle\Security\OrganizationVoter;
@@ -80,6 +83,7 @@ class AgreementType extends AbstractType
         WorkcenterRepository $workcenterRepository,
         AcademicYearRepository $academicYearRepository,
         CompanyRepository $companyRepository,
+        RoleRepository $roleRepository,
         ActivityRealizationRepository $activityRealizationRepository,
         Security $security
     ) {
@@ -88,6 +92,7 @@ class AgreementType extends AbstractType
         $this->workcenterRepository = $workcenterRepository;
         $this->academicYearRepository = $academicYearRepository;
         $this->companyRepository = $companyRepository;
+        $this->roleRepository = $roleRepository;
         $this->activityRealizationRepository = $activityRealizationRepository;
         $this->security = $security;
     }
@@ -103,7 +108,22 @@ class AgreementType extends AbstractType
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $studentEnrollments = $this->studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
+        /** @var User $user */
+        $user = $this->security->getUser();
+        if (false === $this->security->isGranted(OrganizationVoter::MANAGE, $organization) &&
+            false === $this->roleRepository->personHasRole(
+                $organization,
+                $user->getPerson(),
+                Role::ROLE_WLT_MANAGER
+            )
+        ) {
+            $studentEnrollments = $this->studentEnrollmentRepository->findByAcademicYearAndDepartmentHeadAndWLT(
+                $academicYear,
+                $user->getPerson()
+            );
+        } else {
+            $studentEnrollments = $this->studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
+        }
         $workcenters = $company ?
             $this->workcenterRepository->findByAcademicYearAndCompany($academicYear, $company) :
             [];
@@ -171,7 +191,7 @@ class AgreementType extends AbstractType
                 },
                 'placeholder' => 'form.work_tutor.none',
                 'attr' => ['class' => 'person'],
-                'required' => false
+                'required' => true
             ])
             ->add('startDate', null, [
                 'label' => 'form.start_date',

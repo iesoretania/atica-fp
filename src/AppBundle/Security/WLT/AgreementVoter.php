@@ -105,7 +105,7 @@ class AgreementVoter extends Voter
         if (null !== $subject->getStudentEnrollment()) {
             $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
             if (null !== $training->getDepartment() && $training->getDepartment()->getHead() &&
-                $training->getDepartment()->getHead()->getPerson() === $user
+                $training->getDepartment()->getHead()->getPerson() === $user->getPerson()
             ) {
                 return true;
             }
