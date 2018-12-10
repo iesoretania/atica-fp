@@ -10,6 +10,7 @@
     <th>{{ 'header.work_tutor'|trans }}</th>
     <th>{{ 'header.start_date'|trans }}</th>
     <th>{{ 'header.end_date'|trans }}</th>
+    <th></th>
 {% endblock %}
 
 {% block table_body %}
@@ -27,10 +28,13 @@
                     </td>
                     <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}</td>
                     <td>{{ item.endDate ? item.endDate|date('format.date'|trans({}, 'general')) }}</td>
+                    <td>
+                        {{ m.link_button(path('work_linked_training_agreement_calendar_list', {'id': item.id}), 'calendar-alt', 'btn-info btn-sm btn-block', 'table.calendar'|trans) }}
+                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="6">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

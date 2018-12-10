@@ -55,27 +55,37 @@ var dynamicFormInit = function() {
         reload();
     });
 
-    jQuery(document).ready(function($) {
+    jQuery(document).ready(function ($) {
 
-        var updateButton = function() {
+        var updateButton = function () {
             $(".enable-on-items").prop('disabled', $("input[type='checkbox']:checked").length === 0);
         };
 
         $("section#exchange")
-            .on("click", ".clickable-row", function(ev) {
+            .on("click", ".clickable-row", function (ev) {
                 if (ev.target.type !== "checkbox") {
                     window.document.location = $(this).data("href");
                 }
             })
             .on("click", ".clickable-row input[type='checkbox']", updateButton)
-            .on("click", "#select", function(item) {
+            .on("click", "#select", function (item) {
                 $("input[type='checkbox'].selectable").prop('checked', item.currentTarget.checked);
                 updateButton();
             });
 
-        $("input[type='checkbox']#select").click(function(item) {
+        $("body").on("click", "input[type='checkbox'].selectable", updateButton);
+
+        $("input[type='checkbox']#select").click(function (item) {
             $("input[type='checkbox'].selectable").prop('checked', item.currentTarget.checked);
             updateButton();
+        });
+
+        $('#toggle').click(function () {
+            $("input.selectable").each(function () {
+                this.checked = !(this.checked);
+            });
+            updateButton();
+            return false;
         });
 
         updateButton();

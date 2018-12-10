@@ -49,6 +49,21 @@ class NonWorkingDayRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param AcademicYear $academicYear
+     * @return NonWorkingDay|null
+     */
+    public function findOneByAcademicYearAndDate(AcademicYear $academicYear, \DateTime $dateTime)
+    {
+        return $this->createQueryBuilder('n')
+            ->where('n.academicYear = :academic_year')
+            ->andWhere('n.date = :date')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('date', $dateTime->setTimezone(new \DateTimeZone('UTC')))
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * @param $items
      * @param AcademicYear $academicYear
      * @return NonWorkingDay[]

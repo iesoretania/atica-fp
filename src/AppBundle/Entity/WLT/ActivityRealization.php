@@ -24,7 +24,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\WLT\ActivityRealizationRepository")
- * @ORM\Table(name="wlt_activity_realization")
+ * @ORM\Table(name="wlt_activity_realization",
+ *     uniqueConstraints={@ORM\UniqueConstraint(columns={"activity_id", "code"})}))))
  */
 class ActivityRealization
 {

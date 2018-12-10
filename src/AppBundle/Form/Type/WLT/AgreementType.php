@@ -166,6 +166,7 @@ class AgreementType extends AbstractType
                 'label' => 'form.workcenter',
                 'class' => Workcenter::class,
                 'choice_translation_domain' => false,
+                'choice_label' => 'name',
                 'choices' => $workcenters,
                 'placeholder' => 'form.workcenter.none',
                 'required' => true

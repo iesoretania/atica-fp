@@ -21,6 +21,7 @@ form.back: Volver
 form.delete_confirm: Confirmar borrado
 
 table.new: Nuevo acuerdo de colaboración
+table.calendar: Calendario
 
 prompt.delete_confirm: |
   ¿Está seguro de que desea eliminar los siguientes acuerdos? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
@@ -30,6 +31,8 @@ prompt.delete_confirm: |
 title.edit: Datos del acuerdo
 title.new: Nuevo acuerdo de colaboración
 title.delete: Eliminar acuerdos
+title.calendar: Calendario en alternancia
+title.calendar.add: Añadir jornadas
 
 title.list: Listado de acuerdos de colaboración
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"

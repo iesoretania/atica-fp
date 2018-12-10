@@ -1,0 +1,121 @@
+title.browse: Calendario del acuerdo
+title.form: Modificar jornada
+title.delete: Eliminar jornadas
+title.preview: Previsualización de jornadas
+
+form.group: Grupo
+form.training: Enseñanza
+
+form.start_date: Fecha de inicio
+form.total_hours: Horas enseñanza
+form.agreement_hours: Horas del acuerdo
+form.student_hours: Totales ya asignadas
+form.pending_hours: Horas a asignar
+form.hours_mon: Horas lunes
+form.hours_tue: Horas martes
+form.hours_wed: Horas miércoles
+form.hours_thu: Horas jueves
+form.hours_fri: Horas viernes
+form.hours_sat: Horas sábado
+form.hours_sun: Horas domingo
+
+form.overwrite_action: Jornadas que ya existen en calendario
+form.overwrite_action.replace: Sobreescribir el valor anterior
+form.overwrite_action.add: Sumar horas a las ya existentes
+
+form.is_locked: Bloqueo
+form.unlocked: El estudiante puede realizar cambios en las actividades
+form.locked: La jornada está bloqueada y el estudiante no podrá realizar cambios
+
+form.date: Fecha
+form.hours: Horas
+form.r_hours: "%hours% hora|%hours% horas"
+form.no_sessions: No hay sesiones
+form.notes: Anotaciones sobre la jornada
+form.no_activities: Sin actividad registrada
+form.no_workday: No incluido en el plan de formación
+form.draft: BORRADOR
+
+form.edit: Modificar
+form.tracking: Seguimiento
+form.select: Seleccionar jornada
+form.delete_item: Eliminar
+form.delete: Eliminar jornadas seleccionadas
+form.lock_action: Bloquear
+form.unlock_action: Desbloquear
+form.week_lock_action: Bloquear
+form.week_lock_print_action: Bloq. e imp.
+form.week_unlock_action: Desbloquear semana
+form.print: Imprimir hoja semanal
+form.select_deselect: Seleccionar/deseleccionar jornadas
+
+form.save: Guardar cambios
+form.calculate: Vista previa
+form.add: Añadir jornadas
+form.delete_confirm: Confirmar borrado
+form.back: Volver
+
+header.date: Fecha
+header.hours: Horas asignadas
+
+message.saved: Jornadas añadidas al calendario del acuerdo.
+message.deleted: Jornadas eliminadas del calendario.
+message.save_error: Ha ocurrido un error al añadir las jornadas. Compruebe que el estudiante no las ha cumplimentado.
+message.delete_error: Ha ocurrido un error al eliminar las jornadas.
+
+message.locked: Bloqueo de jornadas actualizado.
+message.locked_error: Error al actualizar el bloqueo.
+
+prompt.session_deletion_warning: >
+    ¡ATENCIÓN! No se podrá eliminar una jornada del calendario del programa formativo si el estudiante la ha cumplimentado en alguna de sus fichas de seguimiento.
+
+month0: Enero
+month1: Febrero
+month2: Marzo
+month3: Abril
+month4: Mayo
+month5: Junio
+month6: Julio
+month7: Agosto
+month8: Septiembre
+month9: Octubre
+month10: Noviembre
+month11: Diciembre
+
+r_month0: enero
+r_month1: febrero
+r_month2: marzo
+r_month3: abril
+r_month4: mayo
+r_month5: junio
+r_month6: julio
+r_month7: agosto
+r_month8: septiembre
+r_month9: octubre
+r_month10: noviembre
+r_month11: diciembre
+
+dow0: Lunes
+dow1: Martes
+dow2: Miércoles
+dow3: Jueves
+dow4: Viernes
+dow5: Sábado
+dow6: Domingo
+
+caption.hours: "{1}1 hora|]1,Inf[%count% horas"
+
+prompt.empty: Aún no hay jornadas registradas en el calendario.
+
+prompt.delete_confirm: |
+    ¿Está seguro de que desea eliminar las siguientes jornadas? En el caso de que alguna de ellas tenga elementos asociados, el borrado no tendrá lugar.
+
+    Esta operación no se puede deshacer.
+
+
+form.start_time_1: Hora de entrada (tramo inicial)
+form.end_time_1: Hora de salida (tramo inicial)
+form.start_time_2: Hora de entrada (segundo tramo)
+form.end_time_2: Hora de salida (segundo tramo)
+
+form.time.placeholder: "hh:mm"

@@ -27,7 +27,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\WLT\AgreementRepository")
- * @ORM\Table(name="wlt_agreement")
+ * @ORM\Table(name="wlt_agreement",
+ *     uniqueConstraints={@ORM\UniqueConstraint(columns={"student_enrollment_id", "workcenter_id"})}))))
  */
 class Agreement
 {
@@ -66,7 +67,6 @@ class Agreement
      */
     private $startDate;
 
-
     /**
      * @ORM\Column(type="date", nullable=true)
      * @var \DateTime
@@ -81,28 +81,28 @@ class Agreement
 
     /**
      * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("^\d\d:\d\d$")
+     * @Assert\Regex("/^\d\d:\d\d$/")
      * @var string
      */
     private $defaultStartTime1;
 
     /**
      * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("^\d\d:\d\d$")
+     * @Assert\Regex("/^\d\d:\d\d$/")
      * @var string
      */
     private $defaultEndTime1;
 
     /**
      * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("^\d\d:\d\d$")
+     * @Assert\Regex("/^\d\d:\d\d$/")
      * @var string
      */
     private $defaultStartTime2;
 
     /**
      * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("^\d\d:\d\d$")
+     * @Assert\Regex("/^\d\d:\d\d$/")
      * @var string
      */
     private $defaultEndTime2;
@@ -114,10 +114,17 @@ class Agreement
      */
     private $activityRealizations;
 
+    /**
+     * @ORM\OneToMany(targetEntity="WorkDay", mappedBy="agreement")
+     * @var WorkDay[]
+     */
+    private $workDays;
+
     public function __construct()
     {
         $this->studentPollSubmitted = false;
         $this->activityRealizations = new ArrayCollection();
+        $this->workDays = new ArrayCollection();
     }
 
     public function __toString()
@@ -145,7 +152,7 @@ class Agreement
      * @param Workcenter $workcenter
      * @return Agreement
      */
-    public function setWorkcenter($workcenter)
+    public function setWorkcenter(Workcenter $workcenter)
     {
         $this->workcenter = $workcenter;
         return $this;
@@ -163,7 +170,7 @@ class Agreement
      * @param StudentEnrollment $studentEnrollment
      * @return Agreement
      */
-    public function setStudentEnrollment($studentEnrollment)
+    public function setStudentEnrollment(StudentEnrollment $studentEnrollment)
     {
         $this->studentEnrollment = $studentEnrollment;
         return $this;
@@ -181,7 +188,7 @@ class Agreement
      * @param Person $workTutor
      * @return Agreement
      */
-    public function setWorkTutor($workTutor)
+    public function setWorkTutor(Person $workTutor)
     {
         $this->workTutor = $workTutor;
         return $this;
@@ -329,5 +336,13 @@ class Agreement
     {
         $this->activityRealizations = $activityRealizations;
         return $this;
+    }
+
+    /**
+     * @return WorkDay[]
+     */
+    public function getWorkDays()
+    {
+        return $this->workDays;
     }
 }

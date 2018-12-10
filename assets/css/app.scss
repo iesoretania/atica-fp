@@ -3,6 +3,8 @@ $breadcrumb-divider: quote(">");
 
 $sizes: (
         10: 10%,
+        16: 16%,
+        18: 18%,
         20: 20%,
         30: 30%,
         40: 40%,
@@ -257,4 +259,12 @@ span#search-clear {
 
 div#filter {
   padding-bottom: 0.8em;
+}
+
+/* Separador de meses en el calendario */
+th.calendar-month {
+  text-align: center;
+  font-variant: small-caps;
+  background-color: $breadcrumb-bg;
+  color: $navbar-light-color;
 }
