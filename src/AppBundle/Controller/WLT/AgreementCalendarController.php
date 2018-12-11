@@ -23,6 +23,7 @@ use AppBundle\Entity\WLT\WorkDay;
 use AppBundle\Form\Model\CalendarAdd;
 use AppBundle\Form\Type\WLT\CalendarAddType;
 use AppBundle\Form\Type\WLT\WorkDayType;
+use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
 use AppBundle\Security\WLT\AgreementVoter;
 use Symfony\Component\Routing\Annotation\Route;
@@ -72,6 +73,7 @@ class AgreementCalendarController extends Controller
         Request $request,
         TranslatorInterface $translator,
         WorkDayRepository $workDayRepository,
+        AgreementRepository $agreementRepository,
         Agreement $agreement
     ) {
         $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
@@ -105,6 +107,7 @@ class AgreementCalendarController extends Controller
             if ('' === $request->get('submit', 'none')) {
                 try {
                     $this->getDoctrine()->getManager()->flush();
+                    $agreementRepository->updateDates($agreement);
                     $this->addFlash('success', $translator->trans('message.saved', [], 'calendar'));
                     return $this->redirectToRoute('work_linked_training_agreement_calendar_list', [
                         'id' => $agreement->getId()
@@ -139,6 +142,7 @@ class AgreementCalendarController extends Controller
      */
     public function editAction(
         Request $request,
+        AgreementRepository $agreementRepository,
         TranslatorInterface $translator,
         WorkDay $workDay
     ) {
@@ -155,6 +159,7 @@ class AgreementCalendarController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $this->getDoctrine()->getManager()->flush();
+                $agreementRepository->updateDates($agreement);
                 $this->addFlash('success', $translator->trans('message.saved', [], 'calendar'));
                 return $this->redirectToRoute('work_linked_training_agreement_calendar_list', [
                     'id' => $agreement->getId()
@@ -188,6 +193,7 @@ class AgreementCalendarController extends Controller
     public function deleteAction(
         Request $request,
         WorkDayRepository $workDayRepository,
+        AgreementRepository $agreementRepository,
         TranslatorInterface $translator,
         Agreement $agreement
     ) {
@@ -208,6 +214,7 @@ class AgreementCalendarController extends Controller
                 $workDayRepository->deleteFromList($workDays);
 
                 $this->getDoctrine()->getManager()->flush();
+                $agreementRepository->updateDates($agreement);
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'calendar'));
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'calendar'));

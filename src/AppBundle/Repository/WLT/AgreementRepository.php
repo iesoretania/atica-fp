@@ -20,15 +20,18 @@ namespace AppBundle\Repository\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\WLT\Agreement;
+use AppBundle\Entity\WLT\WorkDay;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 class AgreementRepository extends ServiceEntityRepository
 {
+    private $workDayRepository;
 
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, WorkDayRepository $workDayRepository)
     {
         parent::__construct($registry, Agreement::class);
+        $this->workDayRepository = $workDayRepository;
     }
 
     /**
@@ -55,6 +58,26 @@ class AgreementRepository extends ServiceEntityRepository
             ->addOrderBy('p.firstName')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Agreement $agreement
+     */
+    public function updateDates(Agreement $agreement)
+    {
+        $workDays = $this->workDayRepository->findByAgreement($agreement);
+        if (count($workDays) === 0) {
+            return;
+        }
+        /** @var WorkDay $first */
+        $first = $workDays[0];
+        /** @var WorkDay $last */
+        $last = $workDays[count($workDays) - 1];
+        $agreement
+            ->setStartDate($first->getDate())
+            ->setEndDate($last->getDate());
+
+        $this->getEntityManager()->flush();
     }
 
     /**
