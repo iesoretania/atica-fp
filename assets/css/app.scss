@@ -264,7 +264,17 @@ div#filter {
 /* Separador de meses en el calendario */
 th.calendar-month {
   text-align: center;
+  font-size: 150%;
   font-variant: small-caps;
+  text-transform: uppercase;
   background-color: $breadcrumb-bg;
   color: $navbar-light-color;
+}
+
+table.calendar th {
+  text-align: center;
+}
+
+table.calendar td {
+  height: 6em;
 }

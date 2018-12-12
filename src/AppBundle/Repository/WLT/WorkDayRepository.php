@@ -111,13 +111,12 @@ class WorkDayRepository extends ServiceEntityRepository
         }
 
         $date = new \DateTime(
-            $startDate->format('Y') . '-' . $startDate->format('m') . '-' . $startDate->format('d'),
+            $startDate->format('Y-m-d') . ' 00:00:00',
             new \DateTimeZone('UTC')
         );
 
         while ($hours > 0) {
-            $dow = $date->format('N') - 1;
-
+            $dow = (int) $date->format('N') - 1;
             if ($weekHours[$dow] > 0) {
                 $nonWorkingDay = $this->nonWorkingDayRepository->findOneByAcademicYearAndDate($academicYear, $date);
                 if (null === $nonWorkingDay) {
@@ -185,21 +184,30 @@ class WorkDayRepository extends ServiceEntityRepository
     public static function groupByMonthAndWeekNumber($workDays)
     {
         $collection = [];
+
         foreach ($workDays as $workDay) {
-            $date= $workDay->getDate();
-            $dow = $date->format('N') - 1;
-            $week = $date->format('W');
+            $date = $workDay->getDate();
             $month = (int) $date->format('Y') * 12 + (int) $date->format('n') - 1;
 
-            $count = isset($collection[$month][$week]['days']) ?
-                count($collection[$month][$week]['days']) : 0;
-            $count = $dow - $count;
-
-            while ($count-- > 0) {
-                $collection[$month][$week]['days'][] = [];
+            if (false === isset($collection[$month])) {
+                $firstMonthDate = date_create($date->format('Y-m-01'));
+                $firstMonthDow = (int) $firstMonthDate->format('N') - 1;
+                $currentDate = clone $firstMonthDate;
+                $currentDate->sub(new \DateInterval('P' . $firstMonthDow . 'D'));
+                $dateLast = date_create($date->format('Y-m-t'));
+                while ($currentDate <= $dateLast) {
+                    $currentWeek = (int) $currentDate->format('W');
+                    $currentDay = (int) $currentDate->format('d');
+                    $collection[$month][$currentWeek]['days'][$currentDay] = [];
+                    $currentDate->add(new \DateInterval('P1D'));
+                }
             }
-            $collection[$month][$week]['days'][] = $workDay;
+
+            $currentWeek = (int) $date->format('W');
+            $currentDay = (int) $date->format('d');
+            $collection[$month][$currentWeek]['days'][$currentDay] = $workDay;
         }
+
         return $collection;
     }
 

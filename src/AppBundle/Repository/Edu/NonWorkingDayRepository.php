@@ -20,11 +20,8 @@ namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\NonWorkingDay;
-use AppBundle\Entity\Edu\Training;
-use AppBundle\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\QueryBuilder;
 
 class NonWorkingDayRepository extends ServiceEntityRepository
 {
@@ -58,7 +55,7 @@ class NonWorkingDayRepository extends ServiceEntityRepository
             ->where('n.academicYear = :academic_year')
             ->andWhere('n.date = :date')
             ->setParameter('academic_year', $academicYear)
-            ->setParameter('date', $dateTime->setTimezone(new \DateTimeZone('UTC')))
+            ->setParameter('date', $dateTime)
             ->getQuery()
             ->getOneOrNullResult();
     }

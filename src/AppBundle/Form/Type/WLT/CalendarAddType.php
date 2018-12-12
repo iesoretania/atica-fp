@@ -24,6 +24,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Range;
 
 class CalendarAddType extends AbstractType
 {
@@ -40,26 +41,44 @@ class CalendarAddType extends AbstractType
             ])
             ->add('totalHours', null, [
                 'label' => 'form.total_hours',
+                'constraints' => [
+                    new Range(['min' => 1, 'max' => 3000])
+                ],
                 'required' => true
             ])
             ->add('hoursMon', null, [
                 'label' => 'form.hours_mon',
+                'constraints' => [
+                    new Range(['min' => 0, 'max' => 24])
+                ],
                 'required' => true
             ])
             ->add('hoursTue', null, [
                 'label' => 'form.hours_tue',
+                'constraints' => [
+                    new Range(['min' => 0, 'max' => 24])
+                ],
                 'required' => true
             ])
             ->add('hoursWed', null, [
                 'label' => 'form.hours_wed',
+                'constraints' => [
+                    new Range(['min' => 0, 'max' => 24])
+                ],
                 'required' => true
             ])
             ->add('hoursThu', null, [
                 'label' => 'form.hours_thu',
+                'constraints' => [
+                    new Range(['min' => 0, 'max' => 24])
+                ],
                 'required' => true
             ])
             ->add('hoursFri', null, [
                 'label' => 'form.hours_fri',
+                'constraints' => [
+                    new Range(['min' => 0, 'max' => 24])
+                ],
                 'required' => true
             ])
             ->add('overwriteAction', ChoiceType::class, [
