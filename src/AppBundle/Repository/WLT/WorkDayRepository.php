@@ -25,6 +25,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 
 class WorkDayRepository extends ServiceEntityRepository
 {
@@ -76,6 +78,25 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * @param Agreement $agreement
+     * @return int
+     */
+    public function countByAgreement(Agreement $agreement)
+    {
+        try {
+            return $this->createQueryBuilder('wr')
+                ->select('COUNT(wr)')
+                ->where('wr.agreement = :agreement')
+                ->setParameter('agreement', $agreement)
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NoResultException $e) {
+        } catch (NonUniqueResultException $e) {
+        }
+        return 0;
+    }
+
     public function findByAgreementGroupByMonthAndWeekNumber(Agreement $agreement)
     {
         return self::groupByMonthAndWeekNumber($this->findByAgreement($agreement));
@@ -100,6 +121,8 @@ class WorkDayRepository extends ServiceEntityRepository
         $academicYear = $agreement->getStudentEnrollment()->
             getGroup()->getGrade()->getTraining()->getAcademicYear();
 
+        $countCurrentWorkDays = $this->countByAgreement($agreement);
+
         $collection = new ArrayCollection();
         $count = 0;
         foreach ($weekHours as $hourCount) {
@@ -115,36 +138,46 @@ class WorkDayRepository extends ServiceEntityRepository
             new \DateTimeZone('UTC')
         );
 
+        $oneMoreDay = new \DateInterval('P1D');
+
+        $nonWorkingDays = $this->nonWorkingDayRepository->findByAcademicYear($academicYear);
+        $nonWorkingDaysData = [];
+
+        foreach ($nonWorkingDays as $nonWorkingDay) {
+            $nonWorkingDaysData[$nonWorkingDay->getDate()->format('Ymd')] = 1;
+        }
+
         while ($hours > 0) {
             $dow = (int) $date->format('N') - 1;
-            if ($weekHours[$dow] > 0) {
-                $nonWorkingDay = $this->nonWorkingDayRepository->findOneByAcademicYearAndDate($academicYear, $date);
-                if (null === $nonWorkingDay) {
-                    $min = min($weekHours[$dow], $hours);
+            if ($weekHours[$dow] > 0 && false === isset($nonWorkingDaysData[$date->format('Ymd')])) {
+                $min = min($weekHours[$dow], $hours);
+                if ($countCurrentWorkDays && $date >= $agreement->getStartDate() && $date <= $agreement->getEndDate()) {
                     $workDay = $this->findOneByAgreementAndDate($agreement, $date);
-                    if (null === $workDay) {
-                        $workDay = new WorkDay();
-                        $workDay
-                            ->setAgreement($agreement)
-                            ->setDate(clone $date)
-                            ->setHours($min)
-                            ->setStartTime1($agreement->getDefaultStartTime1())
-                            ->setEndTime1($agreement->getDefaultEndTime1())
-                            ->setStartTime2($agreement->getDefaultStartTime2())
-                            ->setEndTime2($agreement->getDefaultEndTime2());
-                    } elseif ($overwrite) {
-                        $workDay->setHours($min);
-                    } else {
-                        $workDay->setHours($workDay->getHours() + $min);
-                    }
-
-                    $this->getEntityManager()->persist($workDay);
-
-                    $collection[] = $workDay;
-                    $hours -= $min;
+                } else {
+                    $workDay = null;
                 }
+                if (null === $workDay) {
+                    $workDay = new WorkDay();
+                    $workDay
+                        ->setAgreement($agreement)
+                        ->setDate(clone $date)
+                        ->setHours($min)
+                        ->setStartTime1($agreement->getDefaultStartTime1())
+                        ->setEndTime1($agreement->getDefaultEndTime1())
+                        ->setStartTime2($agreement->getDefaultStartTime2())
+                        ->setEndTime2($agreement->getDefaultEndTime2());
+                } elseif ($overwrite) {
+                    $workDay->setHours($min);
+                } else {
+                    $workDay->setHours($workDay->getHours() + $min);
+                }
+
+                $this->getEntityManager()->persist($workDay);
+
+                $collection[] = $workDay;
+                $hours -= $min;
             }
-            $date->add(new \DateInterval('P1D'));
+            $date->add($oneMoreDay);
         }
 
         return $collection;
@@ -185,6 +218,8 @@ class WorkDayRepository extends ServiceEntityRepository
     {
         $collection = [];
 
+        $oneDayMore = new \DateInterval('P1D');
+
         foreach ($workDays as $workDay) {
             $date = $workDay->getDate();
             $month = (int) $date->format('Y') * 12 + (int) $date->format('n') - 1;
@@ -199,7 +234,7 @@ class WorkDayRepository extends ServiceEntityRepository
                     $currentWeek = (int) $currentDate->format('W');
                     $currentDay = (int) $currentDate->format('d');
                     $collection[$month][$currentWeek]['days'][$currentDay] = [];
-                    $currentDate->add(new \DateInterval('P1D'));
+                    $currentDate->add($oneDayMore);
                 }
             }
 

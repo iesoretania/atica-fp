@@ -62,6 +62,9 @@ class AgreementType extends AbstractType
     /** @var CompanyRepository */
     private $companyRepository;
 
+    /** @var RoleRepository */
+    private $roleRepository;
+
     /** @var Security */
     private $security;
 
@@ -74,6 +77,7 @@ class AgreementType extends AbstractType
      * @param WorkcenterRepository $workcenterRepository
      * @param AcademicYearRepository $academicYearRepository
      * @param CompanyRepository $companyRepository
+     * @param RoleRepository $roleRepository
      * @param ActivityRealizationRepository $activityRealizationRepository
      * @param Security $security
      */
@@ -153,6 +157,7 @@ class AgreementType extends AbstractType
                 'label' => 'form.company',
                 'mapped' => false,
                 'class' => Company::class,
+                'choice_label' => 'fullName',
                 'choice_translation_domain' => false,
                 'data' => $company,
                 'query_builder' => function (EntityRepository $er) {

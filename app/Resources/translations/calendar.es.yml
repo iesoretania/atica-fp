@@ -58,7 +58,8 @@ form.back: Volver
 header.date: Fecha
 header.hours: Horas asignadas
 
-message.saved: Jornadas añadidas al calendario del acuerdo.
+message.saved: Cambios guardados con éxito.
+message.added: Jornadas añadidas al calendario del acuerdo.
 message.deleted: Jornadas eliminadas del calendario.
 message.save_error: Ha ocurrido un error al añadir las jornadas. Compruebe que el estudiante no las ha cumplimentado.
 message.delete_error: Ha ocurrido un error al eliminar las jornadas.

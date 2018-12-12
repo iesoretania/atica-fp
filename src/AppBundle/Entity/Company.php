@@ -115,6 +115,11 @@ class Company
         return $this->getName();
     }
 
+    public function getFullName()
+    {
+        return $this->getCode() . ' - ' . $this->getName();
+    }
+
     /**
      * @return int
      */

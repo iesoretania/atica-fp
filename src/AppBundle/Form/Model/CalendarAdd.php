@@ -18,6 +18,8 @@
 
 namespace AppBundle\Form\Model;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class CalendarAdd
 {
     const OVERWRITE_ACTION_REPLACE = 1;
@@ -245,5 +247,15 @@ class CalendarAdd
     {
         $this->overwriteAction = $overwriteAction;
         return $this;
+    }
+
+    /**
+     * @Assert\GreaterThan(value=0, message="calendar.week_hours.invalid")
+     * @return int
+     */
+    public function getWeekHours()
+    {
+        return $this->getHoursMon() + $this->getHoursTue() + $this->getHoursWed() + $this->getHoursThu() +
+            $this->getHoursFri() + $this->getHoursSat() + $this->getHoursSun();
     }
 }

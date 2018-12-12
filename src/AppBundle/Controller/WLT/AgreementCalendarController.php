@@ -108,7 +108,7 @@ class AgreementCalendarController extends Controller
                 try {
                     $this->getDoctrine()->getManager()->flush();
                     $agreementRepository->updateDates($agreement);
-                    $this->addFlash('success', $translator->trans('message.saved', [], 'calendar'));
+                    $this->addFlash('success', $translator->trans('message.added', [], 'calendar'));
                     return $this->redirectToRoute('work_linked_training_agreement_calendar_list', [
                         'id' => $agreement->getId()
                     ]);

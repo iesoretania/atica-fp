@@ -23,12 +23,14 @@ use AppBundle\Entity\Person;
 use AppBundle\Entity\Workcenter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\WLT\AgreementRepository")
  * @ORM\Table(name="wlt_agreement",
  *     uniqueConstraints={@ORM\UniqueConstraint(columns={"student_enrollment_id", "workcenter_id"})}))))
+ * @UniqueEntity(fields={"studentEnrollment", "workcenter"}, message="agreement.student_workcenter.unique")
  */
 class Agreement
 {
