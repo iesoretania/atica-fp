@@ -40,7 +40,7 @@
 {% endblock %}
 
 {% block before_table %}
-    <form action="{{ path('work_linked_training_agreement_delete', {'academicYear': academic_year.id}) }}" method="post">
+    <form action="{{ path('work_linked_training_agreement_operation', {'academicYear': academic_year.id}) }}" method="post">
 {% endblock %}
 
 {% block pagerfanta %}
@@ -51,5 +51,6 @@
         <div class="clearfix"></div>
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
         {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+        {{ m.submit_button('copy', 'copy', 'btn-primary enable-on-items', 'form.calendar_copy'|trans) }}
     </form>
 {% endblock %}

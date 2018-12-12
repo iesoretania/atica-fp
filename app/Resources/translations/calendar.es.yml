@@ -19,6 +19,9 @@ form.hours_fri: Horas viernes
 form.hours_sat: Horas sábado
 form.hours_sun: Horas domingo
 
+form.source_agreement: Acuerdo origen
+form.source_agreement.none: Seleccione un acuerdo existente
+
 form.overwrite_action: Jornadas que ya existen en calendario
 form.overwrite_action.replace: Sobreescribir el valor anterior
 form.overwrite_action.add: Sumar horas a las ya existentes

@@ -61,6 +61,32 @@ class AgreementRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param $items
+     * @param AcademicYear $academicYear
+     * @return Agreement[]
+     */
+    public function findAllInListByNotIdAndAcademicYear(
+        $items,
+        AcademicYear $academicYear
+    ) {
+        return $this->createQueryBuilder('a')
+            ->join('a.studentEnrollment', 'se')
+            ->join('se.group', 'g')
+            ->join('se.person', 'p')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 'tr')
+            ->where('a.id NOT IN (:items)')
+            ->andWhere('tr.academicYear = :academic_year')
+            ->setParameter('items', $items)
+            ->setParameter('academic_year', $academicYear)
+            ->orderBy('g.name')
+            ->addOrderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param Agreement $agreement
      */
     public function updateDates(Agreement $agreement)
@@ -78,6 +104,34 @@ class AgreementRepository extends ServiceEntityRepository
             ->setEndDate($last->getDate());
 
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @param Agreement $agreement
+     */
+    public function cloneCalendarFromAgreement(Agreement $destination, Agreement $source, $overwrite = false)
+    {
+        $workDays = $this->workDayRepository->findByAgreement($source);
+        if (count($workDays) === 0) {
+            return;
+        }
+
+        /** @var WorkDay $workDay */
+        foreach ($workDays as $workDay) {
+            $newWorkDay = $this->workDayRepository->findOneByAgreementAndDate($destination, $workDay->getDate());
+            if (null === $newWorkDay) {
+                $newWorkDay = new WorkDay();
+                $newWorkDay
+                    ->setAgreement($destination)
+                    ->setDate($workDay->getDate())
+                    ->setHours($workDay->getHours());
+                $this->getEntityManager()->persist($newWorkDay);
+            } elseif ($overwrite) {
+                $newWorkDay->setHours($workDay->getHours());
+            } else {
+                $newWorkDay->setHours($newWorkDay->getHours() + $workDay->getHours());
+            }
+        }
     }
 
     /**

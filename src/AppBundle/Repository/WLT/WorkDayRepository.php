@@ -116,7 +116,7 @@ class WorkDayRepository extends ServiceEntityRepository
         \DateTime $startDate,
         $hours,
         $weekHours,
-        $overwrite
+        $overwrite = false
     ) {
         $academicYear = $agreement->getStudentEnrollment()->
             getGroup()->getGrade()->getTraining()->getAcademicYear();

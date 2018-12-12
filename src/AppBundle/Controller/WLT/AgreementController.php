@@ -21,7 +21,9 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\WLT\Agreement;
+use AppBundle\Form\Model\CalendarCopy;
 use AppBundle\Form\Type\WLT\AgreementType;
+use AppBundle\Form\Type\WLT\CalendarCopyType;
 use AppBundle\Repository\RoleRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
@@ -203,9 +205,9 @@ class AgreementController extends Controller
     }
 
     /**
-     * @Route("/eliminar/{academicYear}", name="work_linked_training_agreement_delete", methods={"POST"})
+     * @Route("/operacion/{academicYear}", name="work_linked_training_agreement_operation", methods={"POST"})
      */
-    public function deleteAction(
+    public function operationAction(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -218,15 +220,32 @@ class AgreementController extends Controller
             return $this->createNotFoundException();
         }
 
+        $items = $request->request->get('items', []);
+
+        if (count($items) !== 0) {
+            if ('' === $request->get('delete')) {
+                return $this->deleteAction($items, $request, $translator, $agreementRepository, $academicYear);
+            }
+            if ('' === $request->get('copy')) {
+                return $this->copyAction($items, $request, $translator, $agreementRepository, $academicYear);
+            }
+        }
+
+        return $this->redirectToRoute(
+            'work_linked_training_agreement_list',
+            ['academicYear' => $academicYear->getId()]
+        );
+    }
+
+    private function deleteAction(
+        $items,
+        Request $request,
+        TranslatorInterface $translator,
+        AgreementRepository $agreementRepository,
+        AcademicYear $academicYear
+    ) {
         $em = $this->getDoctrine()->getManager();
 
-        $items = $request->request->get('items', []);
-        if (count($items) === 0) {
-            return $this->redirectToRoute(
-                'work_linked_training_agreement_list',
-                ['academicYear' => $academicYear->getId()]
-            );
-        }
 
         $agreements = $agreementRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
@@ -246,10 +265,61 @@ class AgreementController extends Controller
         }
 
         return $this->render('wlt/agreement/delete.html.twig', [
-            'menu_path' => 'work_linked_training_agreement',
+            'menu_path' => 'work_linked_training_agreement_list',
             'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'wlt_agreement')]],
             'title' => $translator->trans('title.delete', [], 'wlt_agreement'),
             'items' => $agreements
+        ]);
+    }
+
+    private function copyAction(
+        $items,
+        Request $request,
+        TranslatorInterface $translator,
+        AgreementRepository $agreementRepository,
+        AcademicYear $academicYear
+    ) {
+        $em = $this->getDoctrine()->getManager();
+
+        $selectedAgreements = $agreementRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
+        $agreementChoices = $agreementRepository->findAllInListByNotIdAndAcademicYear($items, $academicYear);
+
+        $calendarCopy = new CalendarCopy();
+
+        $form = $this->createForm(CalendarCopyType::class, $calendarCopy, [
+            'agreements' => $agreementChoices
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                foreach ($selectedAgreements as $agreement) {
+                    $agreementRepository->cloneCalendarFromAgreement(
+                        $agreement,
+                        $calendarCopy->getAgreement(),
+                        $calendarCopy->getOverwriteAction() === CalendarCopy::OVERWRITE_ACTION_REPLACE
+                    );
+                }
+                $em->flush();
+                foreach ($selectedAgreements as $agreement) {
+                    $agreementRepository->updateDates($agreement);
+                }
+                $this->addFlash('success', $translator->trans('message.copied', [], 'wlt_agreement'));
+                return $this->redirectToRoute('work_linked_training_agreement_list', [
+                    'academicYear' => $academicYear
+                ]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.copy_error', [], 'wlt_agreement'));
+            }
+        }
+        $title = $translator->trans('title.copy', [], 'wlt_agreement');
+        return $this->render('wlt/agreement/copy.html.twig', [
+            'menu_path' => 'work_linked_training_agreement_list',
+            'breadcrumb' => [['fixed' => $title]],
+            'title' => $title,
+            'form' => $form->createView(),
+            'items' => $selectedAgreements
         ]);
     }
 }

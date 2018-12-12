@@ -17,6 +17,8 @@ form.activity_realizations: Programa formativo
 
 form.save: Guardar cambios
 form.delete: Eliminar los acuerdos seleccionados
+form.calendar_copy: Copiar un calendario a los acuerdos
+form.copy_confirm: Realizar copia
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
@@ -28,9 +30,15 @@ prompt.delete_confirm: |
 
   Esta operación no se puede deshacer.
 
+prompt.copy_confirm: |
+  Este proceso copiará el calendario completo del acuerdo seleccionado en los acuerdos indicados más abajo.
+
+  Esta operación no se puede deshacer.
+
 title.edit: Datos del acuerdo
 title.new: Nuevo acuerdo de colaboración
 title.delete: Eliminar acuerdos
+title.copy: Copiar calendarios
 title.calendar: Calendario en alternancia
 title.calendar.add: Añadir jornadas
 
@@ -47,5 +55,7 @@ header.end_date: Fecha de finalización
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
+message.copied: Calendarios copiados con éxito.
+message.copy_error: Los calendarios no se han podido copiar debido a un error.
 message.deleted: Acuerdos eliminados con éxito.
 message.delete_error: Ha ocurrido un error al eliminar los acuerdos de colaboración.

@@ -1,0 +1,36 @@
+{% trans_default_domain 'wlt_agreement' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+        {% for item in items %}
+            <input type="hidden" name="items[]" value="{{ item.id }}">
+        {% endfor %}
+        <div id="table" class="col-md-12 table-responsive">
+            <table id="list" class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ 'header.student_enrollment'|trans }}</label></th>
+                        <th>{{ 'header.workcenter'|trans }}</label></th>
+                        <th>{{ 'header.start_date'|trans }}</label></th>
+                        <th>{{ 'header.end_date'|trans }}</label></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ item.studentEnrollment }}</td>
+                            <td>{{ item.workcenter }}</td>
+                            <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}</td>
+                            <td>{{ item.endDate ? item.endDate|date('format.date'|trans({}, 'general')) }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="alert alert-warning">{{ 'prompt.copy_confirm'|trans|nl2br }}</div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('copy', 'copy', 'btn-success', 'form.copy_confirm'|trans) }}
+    {{ form_end(form) }}
+{% endblock %}
