@@ -66,7 +66,7 @@ class TeachingRepository extends ServiceEntityRepository
      *
      * @return int
      */
-    public function countAcademicYearAndPersonAndWLT(AcademicYear $academicYear, Person $person)
+    public function countAcademicYearAndWltTeacher(AcademicYear $academicYear, Person $person)
     {
         try {
             return $this->findByAcademicYearAndPersonQueryBuilder($academicYear, $person)

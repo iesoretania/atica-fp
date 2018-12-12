@@ -103,7 +103,7 @@ class TrainingRepository extends ServiceEntityRepository
      * @param Person $departmentHead
      * @return int
      */
-    public function countByAcademicYearAndDepartmentHead(
+    public function countAcademicYearAndDepartmentHead(
         AcademicYear $academicYear,
         Person $departmentHead
     ) {

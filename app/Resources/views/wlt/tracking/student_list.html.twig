@@ -1,0 +1,37 @@
+{% trans_default_domain 'wlt_tracking' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th>{{ 'header.student'|trans }}</th>
+    <th>{{ 'header.workcenter'|trans }}</th>
+    <th>{{ 'header.start_date'|trans }}</th>
+    <th>{{ 'header.end_date'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = '' %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">{{ item.studentEnrollment }}</a>
+                    </td>
+                    <td>
+                        {{ item.workcenter }}
+                    </td>
+                    <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}</td>
+                    <td>{{ item.endDate ? item.endDate|date('format.date'|trans({}, 'general')) }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}

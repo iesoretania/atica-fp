@@ -45,6 +45,18 @@ class TeacherRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findOneByAcademicYearAndPerson(AcademicYear $academicYear, Person $person)
+    {
+        return $this->createQueryBuilder('t')
+            ->join('t.person', 'p')
+            ->where('p = :person')
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('person', $person)
+            ->setParameter('academic_year', $academicYear)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function findByAcademicYearAndInternalCode(AcademicYear $academicYear, $internalCode)
     {
         try {

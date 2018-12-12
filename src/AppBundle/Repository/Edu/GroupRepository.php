@@ -20,9 +20,12 @@ namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Group;
+use AppBundle\Entity\Edu\Teacher;
+use AppBundle\Entity\Edu\Teaching;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 
 class GroupRepository extends ServiceEntityRepository
@@ -70,8 +73,7 @@ class GroupRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
-        }
-        catch(NonUniqueResultException $e) {
+        } catch (NonUniqueResultException $e) {
             return null;
         }
     }
@@ -93,6 +95,88 @@ class GroupRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->setParameter('academic_year', $academicYear)
             ->orderBy('g.name')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByAcademicYearAndWltQueryBuilder(AcademicYear $academicYear)
+    {
+        return $this->createQueryBuilder('g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->andWhere('t.academicYear = :academic_year')
+            ->andWhere('t.workLinked = :work_linked')
+            ->setParameter('work_linked', true)
+            ->setParameter('academic_year', $academicYear);
+    }
+
+    public function findByAcademicYearAndWltTutorQueryBuilder(AcademicYear $academicYear, Teacher $teacher)
+    {
+        return $this->findByAcademicYearAndWltQueryBuilder($academicYear)
+            ->andWhere(':tutor MEMBER OF g.tutors')
+            ->setParameter('tutor', $teacher);
+    }
+
+    public function findByAcademicYearAndWltTutor(AcademicYear $academicYear, Teacher $teacher)
+    {
+        return $this->findByAcademicYearAndWltTutorQueryBuilder($academicYear, $teacher)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countAcademicYearAndWltTutor(AcademicYear $academicYear, Teacher $tutor)
+    {
+        try {
+            return $this->findByAcademicYearAndWltTutorQueryBuilder($academicYear, $tutor)
+                ->select('COUNT(g)')
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NoResultException $e) {
+        } catch (NonUniqueResultException $e) {
+        }
+
+        return 0;
+    }
+
+    public function findByAcademicYearAndWltTeacherQueryBuilder(AcademicYear $academicYear, Teacher $teacher)
+    {
+        $groups = array_map(function (Teaching $t) {
+            return $t->getGroup();
+        }, $teacher->getTeachings()->toArray());
+
+        return $this->findByAcademicYearAndWltQueryBuilder($academicYear)
+            ->andWhere('g IN (:groups)')
+            ->setParameter('groups', $groups);
+    }
+
+    public function findByAcademicYearAndWltTeacher(AcademicYear $academicYear, Teacher $teacher)
+    {
+        return $this->findByAcademicYearAndWltTeacherQueryBuilder($academicYear, $teacher)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countAcademicYearAndWltTeacher(AcademicYear $academicYear, Teacher $teacher)
+    {
+        $groups = array_map(function (Teaching $t) {
+            return $t->getGroup();
+        }, $teacher->getTeachings()->toArray());
+
+        return $this->findByAcademicYearAndWltQueryBuilder($academicYear)
+            ->select('COUNT(g)')
+            ->andWhere('g IN (:groups)')
+            ->setParameter('groups', $groups)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+
+    public function findByAcademicYearAndWltHead(AcademicYear $academicYear, Teacher $teacher)
+    {
+        return $this->findByAcademicYearAndWltQueryBuilder($academicYear)
+            ->join('t.department', 'd')
+            ->andWhere('d.head = :teacher')
+            ->setParameter('teacher', $teacher)
             ->getQuery()
             ->getResult();
     }

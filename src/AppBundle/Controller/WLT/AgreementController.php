@@ -164,6 +164,7 @@ class AgreementController extends Controller
                 ->orWhere('p.firstName LIKE :tq')
                 ->orWhere('w.name LIKE :tq')
                 ->orWhere('c.name LIKE :tq')
+                ->orWhere('g.name LIKE :tq')
                 ->orWhere('wt.firstName LIKE :tq')
                 ->orWhere('wt.lastName LIKE :tq')
                 ->orWhere('wt.uniqueIdentifier LIKE :tq')

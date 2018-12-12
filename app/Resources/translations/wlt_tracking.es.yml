@@ -1,0 +1,21 @@
+header.training: Ciclo formativo
+header.student: Estudiante
+header.workcenter: Empresa
+header.start_date: Fecha de inicio
+header.end_date: Fecha de fin
+
+form.calendar: Calendario
+
+form.save: Guardar cambios
+form.back: Volver
+
+title.training.list: Ciclos formativos
+title.student.list: Estudiantes
+title.workcenter.list: Empresas
+
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay resultados que mostrar
+table.filter: Filtrar...
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.

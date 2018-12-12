@@ -121,7 +121,7 @@ class WorkcenterVoter extends Voter
             // Si es jefe de algún departamento de FP o el coordinador de FP dual, permitir gestionar
             case self::MANAGE:
                 // 1) Jefe de departamento
-                if ($this->trainingRepository->countByAcademicYearAndDepartmentHead(
+                if ($this->trainingRepository->countAcademicYearAndDepartmentHead(
                         $subject->getAcademicYear(),
                         $user->getPerson()
                     ) > 0) {
