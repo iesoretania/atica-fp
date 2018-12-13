@@ -1,6 +1,6 @@
 {% trans_default_domain 'menu' %}
 {% macro menu_item(caption, description, path, parameters, icon) %}
-    <div class="card card-menu col-sm-3">
+    <div class="card card-menu col-sm">
         <a href="{{ path(path, parameters) }}" title="{{ description | trans }}">
             <div class="card-body text-center">
                 <h4 class="card-text text-center"><i class="fas fa-{{ icon }} fa-4x"></i></h4>
