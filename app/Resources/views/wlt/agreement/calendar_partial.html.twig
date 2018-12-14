@@ -29,7 +29,7 @@
                                     {% if day %}
                                         <b>{{ n }}</b><br/>
                                         {{ 'caption.hours'|transchoice(day.hours) }}
-                                    {% else %}
+                                    {% elseif n > 0 %}
                                         {{ n }}
                                     {% endif %}
                                 </td>

@@ -222,9 +222,10 @@ class WorkDayRepository extends ServiceEntityRepository
 
         foreach ($workDays as $workDay) {
             $date = $workDay->getDate();
-            $month = (int) $date->format('Y') * 12 + (int) $date->format('n') - 1;
+            $month = (int) $date->format('n');
+            $monthCode = (int) $date->format('Y') * 12 + $month - 1;
 
-            if (false === isset($collection[$month])) {
+            if (false === isset($collection[$monthCode])) {
                 $firstMonthDate = date_create($date->format('Y-m-01'));
                 $firstMonthDow = (int) $firstMonthDate->format('N') - 1;
                 $currentDate = clone $firstMonthDate;
@@ -233,14 +234,16 @@ class WorkDayRepository extends ServiceEntityRepository
                 while ($currentDate <= $dateLast) {
                     $currentWeek = (int) $currentDate->format('W');
                     $currentDay = (int) $currentDate->format('d');
-                    $collection[$month][$currentWeek]['days'][$currentDay] = [];
+                    $currentMonth = (int) $currentDate->format('n');
+                    $sign = ($currentMonth !== $month) ? -1 : 1;
+                    $collection[$monthCode][$currentWeek]['days'][$sign * $currentDay] = [];
                     $currentDate->add($oneDayMore);
                 }
             }
 
             $currentWeek = (int) $date->format('W');
             $currentDay = (int) $date->format('d');
-            $collection[$month][$currentWeek]['days'][$currentDay] = $workDay;
+            $collection[$monthCode][$currentWeek]['days'][$currentDay] = $workDay;
         }
 
         return $collection;
