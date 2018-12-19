@@ -1,0 +1,49 @@
+{% trans_default_domain 'wlt_company_program' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{% endblock %}
+
+{% block table_header %}
+    <th><label><input type="checkbox" id="select"> {{ 'header.company'|trans }}</label></th>
+    <th>{{ 'header.training'|trans }}</th>
+    <th>{{ 'header.items'|trans }}</th>
+    <th></th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = '' %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item[0].id }}" class="selectable"> <a href="{{ url }}">{{ item[0].company }}</a></label>
+                    </td>
+                    <td>
+                        {{ item[0].training }}
+                    </td>
+                    <td>
+                        {{ item[1] }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="" method="post">
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+        {{ m.link_button('', 'download', 'btn-primary enable-on-items', 'form.import'|trans) }}
+    </form>
+{% endblock %}

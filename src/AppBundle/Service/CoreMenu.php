@@ -78,6 +78,16 @@ class CoreMenu implements MenuBuilderInterface
                     ->setIcon('handshake');
 
                 $menu1->addChild($menu2);
+
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('work_linked_training_learning_program')
+                    ->setRouteName('work_linked_training_learning_program_list')
+                    ->setCaption('menu.work_linked_training.learning_program')
+                    ->setDescription('menu.work_linked_training.learning_program.detail')
+                    ->setIcon('atlas');
+
+                $menu1->addChild($menu2);
             }
         }
 

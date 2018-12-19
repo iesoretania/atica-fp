@@ -70,6 +70,9 @@ menu.work_linked_training.tracking.detail: Realizar el seguimiento de actividade
 menu.work_linked_training.agreement: Acuerdos de colaboración
 menu.work_linked_training.agreement.detail: Gestionar los acuerdos de colaboración de FP dual
 
+menu.work_linked_training.learning_program: Programas formativos
+menu.work_linked_training.learning_program.detail: Gestionar los programas formativos de las empresas colaboradoras
+
 menu.training: Enseñanzas de FP
 menu.training.detail: Configurar los elementos de las enseñanzas de FP del centro
 
