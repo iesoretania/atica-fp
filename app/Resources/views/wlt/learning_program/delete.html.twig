@@ -1,4 +1,4 @@
-{% trans_default_domain 'wlt_company_program' %}
+{% trans_default_domain 'wlt_learning_program' %}
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
@@ -27,6 +27,6 @@
             </table>
         </div>
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-        {{ m.submit_button('submit', 'trash', 'btn-danger', 'form.delete_confirm'|trans) }}
-    </form>c
+        {{ m.submit_button('delete', 'trash', 'btn-danger', 'form.delete_confirm'|trans) }}
+    </form>
 {% endblock %}

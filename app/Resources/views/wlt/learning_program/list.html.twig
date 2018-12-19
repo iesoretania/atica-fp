@@ -1,19 +1,18 @@
-{% trans_default_domain 'wlt_company_program' %}
+{% trans_default_domain 'wlt_learning_program' %}
 {% extends 'generic/list.html.twig' %}
 {% import 'macros.html.twig' as m %}
 
-{% block path_new %}{% endblock %}
+{% block path_new %}{{ path('work_linked_training_learning_program_new') }}{% endblock %}
 
 {% block table_header %}
     <th><label><input type="checkbox" id="select"> {{ 'header.company'|trans }}</label></th>
     <th>{{ 'header.training'|trans }}</th>
     <th>{{ 'header.items'|trans }}</th>
-    <th></th>
 {% endblock %}
 
 {% block table_body %}
             {% for item in pager %}
-                {% set url = '' %}
+                {% set url = path('work_linked_training_learning_program_edit', {'id': item[0].id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="items[]" value="{{ item[0].id }}" class="selectable"> <a href="{{ url }}">{{ item[0].company }}</a></label>
@@ -33,7 +32,7 @@
 {% endblock %}
 
 {% block before_table %}
-    <form action="" method="post">
+    <form action="{{ path('work_linked_training_learning_program_operation', {'academicYear': academic_year.id}) }}" method="post">
 {% endblock %}
 
 {% block pagerfanta %}

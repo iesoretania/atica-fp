@@ -35,14 +35,36 @@ class TrainingRepository extends ServiceEntityRepository
 
     /**
      * @param AcademicYear $academicYear
-     * @return Training[]
+     * @return QueryBuilder
      */
-    public function findByAcademicYear(AcademicYear $academicYear)
+    private function findByAcademicYearQueryBuilder(AcademicYear $academicYear)
     {
         return $this->createQueryBuilder('t')
             ->where('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear)
-            ->orderBy('t.name')
+            ->orderBy('t.name');
+    }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @return Training[]
+     */
+    public function findByAcademicYear(AcademicYear $academicYear)
+    {
+        return $this->findByAcademicYearQueryBuilder($academicYear)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @return Training[]
+     */
+    public function findByAcademicYearAndWLT(AcademicYear $academicYear)
+    {
+        return $this->findByAcademicYearQueryBuilder($academicYear)
+            ->andWhere('t.workLinked = :work_linked')
+            ->setParameter('work_linked', true)
             ->getQuery()
             ->getResult();
     }
@@ -71,7 +93,7 @@ class TrainingRepository extends ServiceEntityRepository
      * @param Person $departmentHead
      * @return QueryBuilder
      */
-    public function findByAcademicYearAndDepartmentHeadQueryBuilder(
+    private function findByAcademicYearAndDepartmentHeadQueryBuilder(
         AcademicYear $academicYear,
         Person $departmentHead
     ) {

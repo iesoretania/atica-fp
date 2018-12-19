@@ -1,4 +1,4 @@
-{% trans_default_domain 'wlt_company_program' %}
+{% trans_default_domain 'wlt_learning_program' %}
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
@@ -13,4 +13,5 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('build/wlt_learning_program.js') }}"></script>
 {% endblock %}

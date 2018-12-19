@@ -25,7 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\WLT\LearningProgramRepository")
  * @ORM\Table(name="wlt_learning_program",
  *     uniqueConstraints={@ORM\UniqueConstraint(columns={"company_id", "training_id"})}))))
  * @UniqueEntity(fields={"company", "training"}, message="company_program.company_training.unique")
@@ -64,6 +64,11 @@ class LearningProgram
     public function __construct()
     {
         $this->activityRealizations = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->getCompany() . ' - ' . $this->getTraining();
     }
 
     /**
