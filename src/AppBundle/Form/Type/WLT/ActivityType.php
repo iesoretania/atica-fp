@@ -70,11 +70,11 @@ class ActivityType extends AbstractType
                 'choice_translation_domain' => false,
                 'choices' => $competencies,
                 'multiple' => true,
-                'required' => true
+                'required' => false
             ])
             ->add('priorLearning', null, [
                 'label' => 'form.prior_learning',
-                'required' => true
+                'required' => false
             ]);
     }
 

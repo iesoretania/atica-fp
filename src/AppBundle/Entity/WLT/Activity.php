@@ -59,7 +59,7 @@ class Activity
     private $description;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      * @var string
      */
     private $priorLearning;

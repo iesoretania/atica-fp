@@ -72,7 +72,7 @@ class ActivityRealizationType extends AbstractType
                 'choice_translation_domain' => false,
                 'choices' => $learningOutcomes,
                 'multiple' => true,
-                'required' => true
+                'required' => false
             ]);
     }
 
