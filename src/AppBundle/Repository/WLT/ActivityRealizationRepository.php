@@ -18,9 +18,11 @@
 
 namespace AppBundle\Repository\WLT;
 
+use AppBundle\Entity\Company;
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\WLT\Activity;
 use AppBundle\Entity\WLT\ActivityRealization;
+use AppBundle\Entity\WLT\LearningProgram;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
@@ -54,6 +56,25 @@ class ActivityRealizationRepository extends ServiceEntityRepository
             ->join('s.grade', 'g')
             ->andWhere('g.training = :training')
             ->setParameter('training', $training)
+            ->orderBy('s.code')
+            ->addOrderBy('s.name')
+            ->addOrderBy('a.code')
+            ->addOrderBy('ar.code')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByTrainingAndCompany(Training $training, Company $company)
+    {
+        return $this->createQueryBuilder('ar')
+            ->join('ar.activity', 'a')
+            ->join('a.subject', 's')
+            ->join('s.grade', 'g')
+            ->join(LearningProgram::class, 'lp', 'WITH', 'ar MEMBER OF lp.activityRealizations')
+            ->andWhere('g.training = :training')
+            ->andWhere('lp.company = :company')
+            ->setParameter('training', $training)
+            ->setParameter('company', $company)
             ->orderBy('s.code')
             ->addOrderBy('s.name')
             ->addOrderBy('a.code')

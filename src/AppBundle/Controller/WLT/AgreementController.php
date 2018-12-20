@@ -70,7 +70,9 @@ class AgreementController extends Controller
         TranslatorInterface $translator,
         Agreement $agreement
     ) {
-        $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
+        if ($agreement->getId()) {
+            $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
+        }
 
         if (null === $agreement->getStudentEnrollment()) {
             $academicYear = $userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();

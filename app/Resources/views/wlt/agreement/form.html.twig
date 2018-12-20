@@ -2,7 +2,7 @@
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
-    {{ form_start(form) }}
+    {{ form_start(form, {'attr': {'data-ajax': path('work_linked_training_agreement_new')}}) }}
     {{ form_widget(form) }}
     {{ m.start_button() }}
         {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}

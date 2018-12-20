@@ -19,6 +19,8 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Company;
+use AppBundle\Entity\Edu\Training;
+use AppBundle\Entity\WLT\LearningProgram;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -27,6 +29,18 @@ class CompanyRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Company::class);
+    }
+
+    public function findByLearningProgramFromTraining(Training $training)
+    {
+        return $this->createQueryBuilder('c')
+            ->distinct(true)
+            ->join(LearningProgram::class, 'lp', 'WITH', 'c = lp.company')
+            ->where('lp.training = :training')
+            ->setParameter('training', $training)
+            ->orderBy('c.name')
+            ->getQuery()
+            ->getResult();
     }
 
     public function findAllInListById(

@@ -71,16 +71,6 @@ class AgreementType extends AbstractType
     /** @var ActivityRealizationRepository */
     private $activityRealizationRepository;
 
-    /**
-     * @param UserExtensionService $userExtensionService
-     * @param StudentEnrollmentRepository $studentEnrollmentRepository
-     * @param WorkcenterRepository $workcenterRepository
-     * @param AcademicYearRepository $academicYearRepository
-     * @param CompanyRepository $companyRepository
-     * @param RoleRepository $roleRepository
-     * @param ActivityRealizationRepository $activityRealizationRepository
-     * @param Security $security
-     */
     public function __construct(
         UserExtensionService $userExtensionService,
         StudentEnrollmentRepository $studentEnrollmentRepository,
@@ -137,11 +127,17 @@ class AgreementType extends AbstractType
             [$academicYear];
 
         if ($studentEnrollment) {
-            $activityRealizations = $this->activityRealizationRepository->findByTraining(
-                $studentEnrollment->getGroup()->getGrade()->getTraining()
-            );
+            $training = $studentEnrollment->getGroup()->getGrade()->getTraining();
+            if ($company) {
+                $activityRealizations = $this->activityRealizationRepository->
+                findByTrainingAndCompany($training, $company);
+            } else {
+                $activityRealizations = [];
+            }
+            $companies = $this->companyRepository->findByLearningProgramFromTraining($training);
         } else {
             $activityRealizations = [];
+            $companies = [];
         }
         $form
             ->add('academicYear', EntityType::class, [
@@ -153,12 +149,21 @@ class AgreementType extends AbstractType
                 'data' => $academicYear,
                 'required' => true
             ])
+            ->add('studentEnrollment', EntityType::class, [
+                'label' => 'form.student_enrollment',
+                'class' => StudentEnrollment::class,
+                'choice_translation_domain' => false,
+                'choices' => $studentEnrollments,
+                'placeholder' => 'form.student_enrollment.none',
+                'required' => true
+            ])
             ->add('company', EntityType::class, [
                 'label' => 'form.company',
                 'mapped' => false,
                 'class' => Company::class,
                 'choice_label' => 'fullName',
                 'choice_translation_domain' => false,
+                'choices' => $companies,
                 'data' => $company,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('c')
@@ -174,14 +179,6 @@ class AgreementType extends AbstractType
                 'choice_label' => 'name',
                 'choices' => $workcenters,
                 'placeholder' => 'form.workcenter.none',
-                'required' => true
-            ])
-            ->add('studentEnrollment', EntityType::class, [
-                'label' => 'form.student_enrollment',
-                'class' => StudentEnrollment::class,
-                'choice_translation_domain' => false,
-                'choices' => $studentEnrollments,
-                'placeholder' => 'form.student_enrollment.none',
                 'required' => true
             ])
             ->add('workTutor', EntityType::class, [
