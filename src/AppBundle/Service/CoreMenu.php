@@ -53,7 +53,7 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('work_linked_training')
                 ->setCaption('menu.work_linked_training')
                 ->setDescription('menu.work_linked_training.detail')
-                ->setIcon('city')
+                ->setIcon('briefcase')
                 ->setPriority(4000);
 
             $root[] = $menu1;
