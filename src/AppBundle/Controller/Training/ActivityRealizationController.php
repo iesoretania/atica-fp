@@ -132,7 +132,8 @@ class ActivityRealizationController extends Controller
         Activity $activity,
         $page = 1
     ) {
-        $training = $activity->getSubject()->getGrade()->getTraining();
+        $subject = $activity->getSubject();
+        $training = $subject->getGrade()->getTraining();
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
 
         /** @var QueryBuilder $queryBuilder */
@@ -167,9 +168,16 @@ class ActivityRealizationController extends Controller
             [
                 'fixed' => $training->getName(),
                 'routeName' => 'training_subject_list',
-                'routeParams' => ['id' => $activity->getSubject()->getGrade()->getTraining()->getId()]
+                'routeParams' => ['id' => $training->getId()]
             ],
-            ['fixed' => $activity->getCode()],
+            [
+                'fixed' => $subject->getName(),
+                'routeName' => 'training_activity_list',
+                'routeParams' => ['id' => $subject->getId()]
+            ],
+            [
+                'fixed' => $activity->getCode(),
+            ],
             ['fixed' => $translator->trans('title.list', [], 'wlt_activity_realization')]
         ];
 
