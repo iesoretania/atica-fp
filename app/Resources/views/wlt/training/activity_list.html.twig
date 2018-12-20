@@ -25,7 +25,7 @@
                         {{ activity.competencies|join(', ') }}
                     </td>
                     <td>
-                        {{ m.link_button(path('work_linked_training_training_activity_realization_list', {'id': activity.id}), 'clipboard-list', 'btn-info btn-sm', 'table.activity_realizations'|trans, null, 'd-md-none d-lg-inline') }}
+                        {{ m.link_button(path('work_linked_training_training_activity_realization_list', {'id': activity.id}), 'clipboard-list', 'btn-info btn-sm btn-block', 'table.activity_realizations'|trans, null, 'd-md-none d-lg-inline') }}
                     </td>
                 </tr>
             {% else %}
