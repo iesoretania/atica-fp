@@ -16,35 +16,35 @@ form.default_end_time_2: Hora de fin, segundo tramo
 form.activity_realizations: Programa formativo
 
 form.save: Guardar cambios
-form.delete: Eliminar los acuerdos seleccionados
-form.calendar_copy: Copiar un calendario a los acuerdos
+form.delete: Eliminar los convenios seleccionados
+form.calendar_copy: Copiar un calendario a los convenios
 form.copy_confirm: Realizar copia
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
-table.new: Nuevo acuerdo de colaboración
+table.new: Nuevo convenio de colaboración
 table.calendar: Calendario
 
 prompt.delete_confirm: |
-  ¿Está seguro de que desea eliminar los siguientes acuerdos? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
+  ¿Está seguro de que desea eliminar los siguientes convenios? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
 
   Esta operación no se puede deshacer.
 
 prompt.copy_confirm: |
-  Este proceso copiará el calendario completo del acuerdo seleccionado en los acuerdos indicados más abajo.
+  Este proceso copiará el calendario completo del convenio seleccionado en los convenios indicados más abajo.
 
   Esta operación no se puede deshacer.
 
-title.edit: Datos del acuerdo
-title.new: Nuevo acuerdo de colaboración
-title.delete: Eliminar acuerdos
+title.edit: Datos del convenio
+title.new: Nuevo convenio de colaboración
+title.delete: Eliminar convenios
 title.copy: Copiar calendarios
 title.calendar: Calendario en alternancia
 title.calendar.add: Añadir jornadas
 
-title.list: Listado de acuerdos de colaboración
+title.list: Listado de convenios de colaboración
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
-table.no_items: No hay acuerdos que mostrar
+table.no_items: No hay convenios que mostrar
 table.filter: Filtrar...
 
 header.student_enrollment: Estudiante
@@ -58,4 +58,4 @@ message.error: No se han podido guardar los cambios.
 message.copied: Calendarios copiados con éxito.
 message.copy_error: Los calendarios no se han podido copiar debido a un error.
 message.deleted: Acuerdos eliminados con éxito.
-message.delete_error: Ha ocurrido un error al eliminar los acuerdos de colaboración.
+message.delete_error: Ha ocurrido un error al eliminar los convenios de colaboración.
