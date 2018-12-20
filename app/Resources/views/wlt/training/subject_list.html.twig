@@ -6,6 +6,7 @@
 
 {% block table_header %}
     <th>{{ 'header.name'|trans }}</th>
+    <th>{{ 'header.code'|trans }}</th>
     <th>{{ 'header.grade'|trans }}</th>
 {% endblock %}
 
@@ -17,28 +18,17 @@
                         <a href="{{ url }}">{{ subject.name }}</a>{% if subject.workplaceTraining %} <span class="badge badge-success">{{ 'header.workplace_training'|trans }}</span>{% endif %}
                     </td>
                     <td>
+                        {{ subject.code }}
+                    </td>
+                    <td>
                         {{ subject.grade }}
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="2">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
-{% endblock %}
-
-{% block before_table %}
-    <div class="btn-group btn-group-toggle" id="filter" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-            <input type="radio" name="filter" value="0" autocomplete="off" {% if f == 0 %}checked{% endif %}> {{ 'form.filter.all'|trans }}
-        </label>
-        <label class="btn btn-secondary">
-            <input type="radio" name="filter" value="2" autocomplete="off" {% if f == 2 %}checked{% endif %}> {{ 'form.filter.workcenter_training'|trans }}
-        </label>
-        <label class="btn btn-secondary">
-            <input type="radio" name="filter" value="3" autocomplete="off" {% if f == 3 %}checked{% endif %}> {{ 'form.filter.unassigned'|trans }}
-        </label>
-    </div>
 {% endblock %}
 
 {% block after_table %}

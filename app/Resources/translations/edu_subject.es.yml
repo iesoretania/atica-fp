@@ -38,6 +38,7 @@ table.filter: Filtrar...
 
 header.name: Nombre
 header.grade: Nivel
+header.code: Código
 header.teachers: Profesorado
 header.workplace_training: FCT
 header.work_linked_training: DUAL
