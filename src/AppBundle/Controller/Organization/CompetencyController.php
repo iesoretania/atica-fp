@@ -16,13 +16,14 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Controller\Training;
+namespace AppBundle\Controller\Organization;
 
 use AppBundle\Entity\Edu\Competency;
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Form\Type\Edu\CompetencyType;
 use AppBundle\Repository\Edu\CompetencyRepository;
 use AppBundle\Security\Edu\TrainingVoter;
+use AppBundle\Security\OrganizationVoter;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -32,16 +33,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * @Route("/ensenanza")
+ * @Route("/centro/ensenanza")
  */
 class CompetencyController extends Controller
 {
     /**
-     * @Route("/{id}/competencia/nueva", name="training_competency_new", methods={"GET", "POST"})
+     * @Route("/{id}/competencia/nueva", name="organization_training_competency_new", methods={"GET", "POST"})
      **/
     public function newAction(Request $request, TranslatorInterface $translator, Training $training)
     {
-        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
 
         $competency = new Competency();
         $competency
@@ -53,7 +54,7 @@ class CompetencyController extends Controller
     }
 
     /**
-     * @Route("/competencia/{id}", name="training_competency_edit",
+     * @Route("/competencia/{id}", name="organization_training_competency_edit",
      *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
     public function formAction(
@@ -63,7 +64,7 @@ class CompetencyController extends Controller
     ) {
         $training = $competency->getTraining();
 
-        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
 
         $form = $this->createForm(CompetencyType::class, $competency, [
             'training' => $training
@@ -75,7 +76,7 @@ class CompetencyController extends Controller
             try {
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'edu_competency'));
-                return $this->redirectToRoute('training_competency_list', [
+                return $this->redirectToRoute('organization_training_competency_list', [
                     'id' => $training->getId()
                 ]);
             } catch (\Exception $e) {
@@ -92,12 +93,12 @@ class CompetencyController extends Controller
         $breadcrumb = [
             [
                 'fixed' => $training->getName(),
-                'routeName' => 'training_competency_list',
+                'routeName' => 'organization_training_competency_list',
                 'routeParams' => ['id' => $training->getId()]
             ],
             [
                 'fixed' => $translator->trans('title.list', [], 'edu_competency'),
-                'routeName' => 'training_competency_list',
+                'routeName' => 'organization_training_competency_list',
                 'routeParams' => ['id' => $training->getId()]
             ],
             $competency->getId() ?
@@ -105,8 +106,8 @@ class CompetencyController extends Controller
                 ['fixed' => $this->get('translator')->trans('title.new', [], 'edu_competency')]
         ];
 
-        return $this->render('training/competency_form.html.twig', [
-            'menu_path' => 'training',
+        return $this->render('organization/training/competency_form.html.twig', [
+            'menu_path' => 'organization_training_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'competency' => $competency,
@@ -115,7 +116,7 @@ class CompetencyController extends Controller
     }
 
     /**
-     * @Route("/{id}/competencial/{page}/", name="training_competency_list",
+     * @Route("/{id}/competencial/{page}/", name="organization_training_competency_list",
      *     requirements={"id" = "\d+", "page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
      */
     public function listAction(
@@ -124,7 +125,7 @@ class CompetencyController extends Controller
         Training $training,
         $page = 1
     ) {
-        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -161,8 +162,8 @@ class CompetencyController extends Controller
             ['fixed' => $translator->trans('title.list', [], 'edu_competency')]
         ];
 
-        return $this->render('training/competency_list.html.twig', [
-            'menu_path' => 'training',
+        return $this->render('organization/training/competency_list.html.twig', [
+            'menu_path' => 'organization_training_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,
@@ -173,7 +174,7 @@ class CompetencyController extends Controller
     }
 
     /**
-     * @Route("/competencia/eliminar/{id}", name="training_competency_delete",
+     * @Route("/competencia/eliminar/{id}", name="organization_training_competency_delete",
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
     public function deleteAction(
@@ -188,7 +189,7 @@ class CompetencyController extends Controller
 
         $items = $request->request->get('items', []);
         if (count($items) === 0) {
-            return $this->redirectToRoute('training_competency_list', ['id' => $training->getId()]);
+            return $this->redirectToRoute('organization_training_competency_list', ['id' => $training->getId()]);
         }
 
         $competencies = $competencyRepository->findAllInListByIdAndTraining($items, $training);
@@ -202,20 +203,20 @@ class CompetencyController extends Controller
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_competency'));
             }
-            return $this->redirectToRoute('training_competency_list', ['id' => $training->getId()]);
+            return $this->redirectToRoute('organization_training_competency_list', ['id' => $training->getId()]);
         }
 
         $breadcrumb = [
             [
                 'fixed' => $training->getName(),
-                'routeName' => 'training_competency_list',
+                'routeName' => 'organization_training_competency_list',
                 'routeParams' => ['id' => $training->getId()]
             ],
             ['fixed' => $this->get('translator')->trans('title.delete', [], 'edu_competency')]
         ];
 
-        return $this->render('training/competency_delete.html.twig', [
-            'menu_path' => 'training',
+        return $this->render('organization/training/competency_delete.html.twig', [
+            'menu_path' => 'organization_training_list',
             'breadcrumb' => $breadcrumb,
             'title' => $translator->trans('title.delete', [], 'edu_competency'),
             'competencies' => $competencies
@@ -223,7 +224,7 @@ class CompetencyController extends Controller
     }
 
     /**
-     * @Route("/competencia/importar/{id}", name="training_competency_import",
+     * @Route("/competencia/importar/{id}", name="organization_training_competency_import",
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
     public function importAction(
@@ -232,13 +233,13 @@ class CompetencyController extends Controller
         TranslatorInterface $translator,
         Training $training
     ) {
-        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
 
         $em = $this->getDoctrine()->getManager();
 
         $lines = trim($request->request->get('data', []));
         if ($lines === '') {
-            return $this->redirectToRoute('training_competency_list', ['id' => $training->getId()]);
+            return $this->redirectToRoute('organization_training_competency_list', ['id' => $training->getId()]);
         }
 
         $items = $this->parseImport($lines);
@@ -252,14 +253,13 @@ class CompetencyController extends Controller
                 $em->persist($competency);
             }
         }
-        //try {
+        try {
             $em->flush();
             $this->addFlash('success', $translator->trans('message.saved', [], 'edu_competency'));
-        //} catch (\Exception $e) {
-        //    $this->addFlash('error', $translator->trans('message.error', [], 'edu_competency'));
-        //}
-
-        return $this->redirectToRoute('training_competency_list', ['id' => $training->getId()]);
+        } catch (\Exception $e) {
+            $this->addFlash('error', $translator->trans('message.error', [], 'edu_competency'));
+        }
+        return $this->redirectToRoute('organization_training_competency_list', ['id' => $training->getId()]);
     }
 
     /**
