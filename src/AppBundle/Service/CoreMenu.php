@@ -89,19 +89,19 @@ class CoreMenu implements MenuBuilderInterface
 
                 $menu1->addChild($menu2);
             }
-        }
 
-        if ($this->security->isGranted(OrganizationVoter::ACCESS_TRAININGS, $organization)) {
-            $menu1 = new MenuItem();
-            $menu1
-                ->setName('training')
-                ->setRouteName('training')
-                ->setCaption('menu.training')
-                ->setDescription('menu.training.detail')
-                ->setIcon('graduation-cap')
-                ->setPriority(5000);
+            if ($this->security->isGranted(OrganizationVoter::ACCESS_TRAININGS, $organization)) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('work_linked_training_training')
+                    ->setRouteName('work_linked_training_training')
+                    ->setCaption('menu.work_linked_training.training')
+                    ->setDescription('menu.work_linked_training.training.detail')
+                    ->setIcon('graduation-cap')
+                    ->setPriority(5000);
 
-            $root[] = $menu1;
+                $menu1->addChild($menu2);
+            }
         }
 
         if ($this->security->isGranted(OrganizationVoter::MANAGE_COMPANIES, $organization)) {

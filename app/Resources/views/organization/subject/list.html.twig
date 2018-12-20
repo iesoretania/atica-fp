@@ -7,7 +7,8 @@
 {% block table_header %}
     <th class="w-30"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
     <th class="w-20">{{ 'header.grade'|trans }}</th>
-    <th class="w-50">{{ 'header.teachers'|trans }}</th>
+    <th class="w-40">{{ 'header.teachers'|trans }}</th>
+    <th class="w-10"></th>
 {% endblock %}
 
 {% block table_body %}
@@ -24,10 +25,13 @@
                         {% for teaching in subject.teachings %}<a href="{{ path('organization_teaching_edit', {'id': teaching.id}) }}">{{ teaching.teacher }} ({{ teaching.group }}){% if teaching.workLinked %} <span class="badge badge-success">{{ 'header.work_linked_training'|trans }}</span>{% endif %}</a>{% if not loop.last %}, {% endif %}{% endfor %}
                         &nbsp;<a href="{{ path('organization_teaching_new', {'id': subject.id}) }}"><i class="fas fa-plus-square"></i></a>
                     </td>
+                    <td>
+                        {{ m.link_button(path('organization_training_learning_outcome_list', {'id': subject.id}), 'toolbox', 'btn-info btn-sm', 'table.learning_outcomes'|trans, null, 'd-md-none d-lg-inline') }}
+                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

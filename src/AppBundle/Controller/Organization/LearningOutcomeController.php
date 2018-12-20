@@ -16,12 +16,12 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Controller\Training;
+namespace AppBundle\Controller\Organization;
 
+use AppBundle\Entity\Edu\LearningOutcome;
 use AppBundle\Entity\Edu\Subject;
-use AppBundle\Entity\WLT\Activity;
-use AppBundle\Form\Type\WLT\ActivityType;
-use AppBundle\Repository\WLT\ActivityRepository;
+use AppBundle\Form\Type\Edu\LearningOutcomeType;
+use AppBundle\Repository\Edu\LearningOutcomeRepository;
 use AppBundle\Security\Edu\TrainingVoter;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -32,41 +32,41 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * @Route("/ensenanza")
+ * @Route("/centro/ensenanza")
  */
-class ActivityController extends Controller
+class LearningOutcomeController extends Controller
 {
     /**
-     * @Route("/materia/{id}/actividad/nueva", name="training_activity_new", methods={"GET", "POST"})
+     * @Route("/materia/{id}/resultado/nuevo", name="organization_training_learning_outcome_new", methods={"GET", "POST"})
      **/
     public function newAction(Request $request, TranslatorInterface $translator, Subject $subject)
     {
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $subject->getGrade()->getTraining());
 
-        $activity = new Activity();
-        $activity
+        $learningOutcome = new LearningOutcome();
+        $learningOutcome
             ->setSubject($subject);
 
-        $this->getDoctrine()->getManager()->persist($activity);
+        $this->getDoctrine()->getManager()->persist($learningOutcome);
 
-        return $this->formAction($request, $translator, $activity);
+        return $this->formAction($request, $translator, $learningOutcome);
     }
 
     /**
-     * @Route("/materia/actividad/{id}", name="training_activity_edit",
+     * @Route("/materia/resultado/{id}", name="organization_training_learning_outcome_edit",
      *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
     public function formAction(
         Request $request,
         TranslatorInterface $translator,
-        Activity $activity
+        LearningOutcome $learningOutcome
     ) {
-        $subject = $activity->getSubject();
+        $subject = $learningOutcome->getSubject();
         $training = $subject->getGrade()->getTraining();
 
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
 
-        $form = $this->createForm(ActivityType::class, $activity, [
+        $form = $this->createForm(LearningOutcomeType::class, $learningOutcome, [
             'subject' => $subject
         ]);
 
@@ -75,39 +75,39 @@ class ActivityController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $this->getDoctrine()->getManager()->flush();
-                $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_activity'));
-                return $this->redirectToRoute('training_activity_list', [
+                $this->addFlash('success', $translator->trans('message.saved', [], 'edu_learning_outcome'));
+                return $this->redirectToRoute('organization_training_learning_outcome_list', [
                     'id' => $subject->getId()
                 ]);
             } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_activity'));
+                $this->addFlash('error', $translator->trans('message.error', [], 'edu_learning_outcome'));
             }
         }
 
         $title = $translator->trans(
-            $activity->getId() ? 'title.edit' : 'title.new',
+            $learningOutcome->getId() ? 'title.edit' : 'title.new',
             [],
-            'wlt_activity'
+            'edu_learning_outcome'
         );
 
         $breadcrumb = [
             [
                 'fixed' => $training->getName(),
-                'routeName' => 'training_subject_list',
-                'routeParams' => ['id' => $training->getId()]
+                'routeName' => 'organization_subject_list',
+                'routeParams' => []
             ],
             [
                 'fixed' => $subject->getName(),
-                'routeName' => 'training_activity_list',
+                'routeName' => 'organization_training_learning_outcome_list',
                 'routeParams' => ['id' => $subject->getId()]
             ],
-            $activity->getId() ?
-                ['fixed' => $activity->getCode()] :
-                ['fixed' => $this->get('translator')->trans('title.new', [], 'wlt_activity')]
+            $learningOutcome->getId() ?
+                ['fixed' => $learningOutcome->getCode()] :
+                ['fixed' => $this->get('translator')->trans('title.new', [], 'edu_learning_outcome')]
         ];
 
-        return $this->render('training/activity_form.html.twig', [
-            'menu_path' => 'training',
+        return $this->render('organization/training/learning_outcome_form.html.twig', [
+            'menu_path' => 'organization_subject_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'subject' => $subject,
@@ -116,7 +116,7 @@ class ActivityController extends Controller
     }
 
     /**
-     * @Route("/materia/{id}/actividad/{page}/", name="training_activity_list",
+     * @Route("/materia/{id}/resultado/{page}/", name="organization_training_learning_outcome_list",
      *     requirements={"id" = "\d+", "page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
      */
     public function listAction(
@@ -131,20 +131,20 @@ class ActivityController extends Controller
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
 
         $queryBuilder
-            ->select('a')
-            ->from(Activity::class, 'a')
-            ->orderBy('a.code');
+            ->select('l')
+            ->from(LearningOutcome::class, 'l')
+            ->orderBy('l.code');
 
         $q = $request->get('q', null);
         if ($q) {
             $queryBuilder
-                ->where('a.code LIKE :tq')
-                ->orWhere('a.description LIKE :tq')
+                ->where('l.code LIKE :tq')
+                ->orWhere('l.description LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
 
         $queryBuilder
-            ->andWhere('a.subject = :subject')
+            ->andWhere('l.subject = :subject')
             ->setParameter('subject', $subject);
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
@@ -153,36 +153,34 @@ class ActivityController extends Controller
             ->setMaxPerPage($this->getParameter('page.size'))
             ->setCurrentPage($q ? 1 : $page);
 
-        $title = $subject->getName() . ' - ' . $translator->trans('title.list', [], 'wlt_activity');
+        $title = $subject->getName() . ' - ' . $translator->trans('title.list', [], 'edu_learning_outcome');
 
         $breadcrumb = [
             [
                 'fixed' => $subject->getGrade()->getTraining()->getName(),
-                'routeName' => 'training_subject_list',
-                'routeParams' => ['id' => $subject->getGrade()->getTraining()->getId()]
             ],
             ['fixed' => $subject->getName()],
-            ['fixed' => $translator->trans('title.list', [], 'wlt_activity')]
+            ['fixed' => $translator->trans('title.list', [], 'edu_learning_outcome')]
         ];
 
-        return $this->render('training/activity_list.html.twig', [
-            'menu_path' => 'training',
+        return $this->render('organization/training/learning_outcome_list.html.twig', [
+            'menu_path' => 'organization_subject_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
             'subject' => $subject,
-            'domain' => 'wlt_activity'
+            'domain' => 'edu_learning_outcome'
         ]);
     }
 
     /**
-     * @Route("/materia/actividad/eliminar/{id}", name="training_activity_delete",
+     * @Route("/materia/resultado/eliminar/{id}", name="organization_training_learning_outcome_delete",
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
     public function deleteAction(
         Request $request,
-        ActivityRepository $activityRepository,
+        LearningOutcomeRepository $learningOutcomeRepository,
         TranslatorInterface $translator,
         Subject $subject)
     {
@@ -194,42 +192,42 @@ class ActivityController extends Controller
 
         $items = $request->request->get('items', []);
         if (count($items) === 0) {
-            return $this->redirectToRoute('training_activity_list', ['id' => $subject->getId()]);
+            return $this->redirectToRoute('organization_training_learning_outcome_list', ['id' => $subject->getId()]);
         }
 
-        $activities = $activityRepository->findAllInListByIdAndSubject($items, $subject);
+        $learningOutcomes = $learningOutcomeRepository->findAllInListByIdAndSubject($items, $subject);
 
         if ($request->get('confirm', '') === 'ok') {
             try {
-                $activityRepository->deleteFromList($activities);
+                $learningOutcomeRepository->deleteFromList($learningOutcomes);
 
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_activity'));
+                $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_learning_outcome'));
             } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_activity'));
+                $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_learning_outcome'));
             }
-            return $this->redirectToRoute('training_activity_list', ['id' => $subject->getId()]);
+            return $this->redirectToRoute('organization_training_learning_outcome_list', ['id' => $subject->getId()]);
         }
 
         $breadcrumb = [
             [
                 'fixed' => $training->getName(),
-                'routeName' => 'training_subject_list',
-                'routeParams' => ['id' => $training->getId()]
+                'routeName' => 'organization_training_learning_outcome_list',
+                'routeParams' => ['id' => $subject->getId()]
             ],
             [
                 'fixed' => $subject->getName(),
-                'routeName' => 'training_activity_list',
+                'routeName' => 'organization_training_learning_outcome_list',
                 'routeParams' => ['id' => $subject->getId()]
             ],
-            ['fixed' => $this->get('translator')->trans('title.delete', [], 'wlt_activity')]
+            ['fixed' => $this->get('translator')->trans('title.delete', [], 'edu_learning_outcome')]
         ];
 
-        return $this->render('training/activity_delete.html.twig', [
-            'menu_path' => 'training',
+        return $this->render('organization/training/learning_outcome_delete.html.twig', [
+            'menu_path' => 'organization_subject_list',
             'breadcrumb' => $breadcrumb,
-            'title' => $translator->trans('title.delete', [], 'wlt_activity'),
-            'items' => $activities
+            'title' => $translator->trans('title.delete', [], 'edu_learning_outcome'),
+            'learning_outcomes' => $learningOutcomes
         ]);
     }
 }

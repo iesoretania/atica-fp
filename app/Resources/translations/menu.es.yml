@@ -73,8 +73,8 @@ menu.work_linked_training.agreement.detail: Gestionar los convenios de colaborac
 menu.work_linked_training.learning_program: Programas formativos
 menu.work_linked_training.learning_program.detail: Gestionar los programas formativos de las empresas colaboradoras
 
-menu.training: Enseñanzas de FP
-menu.training.detail: Configurar los elementos de las enseñanzas de FP del centro
+menu.work_linked_training.training: Enseñanzas de FP dual
+menu.work_linked_training.training.detail: Configurar los elementos de las enseñanzas de FP dual del centro
 
 menu.company: Empresas colaboradoras
 menu.company.detail: Gestionar las empresas colaboradoras y sus centros de trabajo

@@ -16,7 +16,7 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Controller\Training;
+namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\Edu\Subject;
 use AppBundle\Entity\Edu\Training;
@@ -35,8 +35,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 class TrainingSubjectController extends Controller
 {
     /**
-     * @Route("/materia/{id}/{page}/", name="training_subject_list", requirements={"id" = "\d+", "page" = "\d+"},
-     *     defaults={"page" = 1}, methods={"GET"})
+     * @Route("/materia/{id}/{page}/", name="work_linked_training_training_subject_list",
+     *     requirements={"id" = "\d+", "page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
      */
     public function listAction(
         Request $request,
@@ -90,12 +90,14 @@ class TrainingSubjectController extends Controller
         $title = $translator->trans('title.list', [], 'edu_subject');
 
         $breadcrumb = [
-            ['fixed' => $training->getName()],
+            [
+                'fixed' => $training->getName()
+            ],
             ['fixed' => $translator->trans('table.subjects', [], 'edu_training')]
         ];
 
-        return $this->render('training/subject_list.html.twig', [
-            'menu_path' => 'training',
+        return $this->render('wlt/training/subject_list.html.twig', [
+            'menu_path' => 'work_linked_training_training',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,

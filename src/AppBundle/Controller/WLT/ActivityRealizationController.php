@@ -16,7 +16,7 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Controller\Training;
+namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\WLT\Activity;
 use AppBundle\Entity\WLT\ActivityRealization;
@@ -32,12 +32,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * @Route("/ensenanza")
+ * @Route("/dual/ensenanza")
  */
 class ActivityRealizationController extends Controller
 {
     /**
-     * @Route("/materia/actividad/{id}/concrecion/nueva", name="training_activity_realization_new",
+     * @Route("/materia/actividad/{id}/concrecion/nueva", name="work_linked_training_training_activity_realization_new",
      *     methods={"GET", "POST"})
      **/
     public function newAction(Request $request, TranslatorInterface $translator, Activity $activity)
@@ -55,7 +55,7 @@ class ActivityRealizationController extends Controller
     }
 
     /**
-     * @Route("/materia/actividad/concrecion/{id}", name="training_activity_realization_edit",
+     * @Route("/materia/actividad/concrecion/{id}", name="work_linked_training_training_activity_realization_edit",
      *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
     public function formAction(
@@ -79,7 +79,7 @@ class ActivityRealizationController extends Controller
             try {
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_activity_realization'));
-                return $this->redirectToRoute('training_activity_realization_list', [
+                return $this->redirectToRoute('work_linked_training_training_activity_realization_list', [
                     'id' => $activity->getId()
                 ]);
             } catch (\Exception $e) {
@@ -96,17 +96,17 @@ class ActivityRealizationController extends Controller
         $breadcrumb = [
             [
                 'fixed' => $training->getName(),
-                'routeName' => 'training_subject_list',
+                'routeName' => 'work_linked_training_training_subject_list',
                 'routeParams' => ['id' => $training->getId()]
             ],
             [
                 'fixed' => $subject->getName(),
-                'routeName' => 'training_activity_list',
+                'routeName' => 'work_linked_training_training_activity_list',
                 'routeParams' => ['id' => $subject->getId()]
             ],
             [
                 'fixed' => $activity->getCode(),
-                'routeName' => 'training_activity_realization_list',
+                'routeName' => 'work_linked_training_training_activity_realization_list',
                 'routeParams' => ['id' => $activity->getId()]
             ],
             $activityRealization->getId() ?
@@ -114,8 +114,8 @@ class ActivityRealizationController extends Controller
                 ['fixed' => $this->get('translator')->trans('title.new', [], 'wlt_activity_realization')]
         ];
 
-        return $this->render('training/activity_realization_form.html.twig', [
-            'menu_path' => 'training',
+        return $this->render('wlt/training/activity_realization_form.html.twig', [
+            'menu_path' => 'work_linked_training_training',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'form' => $form->createView()
@@ -123,7 +123,7 @@ class ActivityRealizationController extends Controller
     }
 
     /**
-     * @Route("/materia/actividad/{id}/concrecion/{page}/", name="training_activity_realization_list",
+     * @Route("/materia/actividad/{id}/concrecion/{page}/", name="work_linked_training_training_activity_realization_list",
      *     requirements={"id" = "\d+", "page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
      */
     public function listAction(
@@ -167,12 +167,12 @@ class ActivityRealizationController extends Controller
         $breadcrumb = [
             [
                 'fixed' => $training->getName(),
-                'routeName' => 'training_subject_list',
+                'routeName' => 'work_linked_training_training_subject_list',
                 'routeParams' => ['id' => $training->getId()]
             ],
             [
                 'fixed' => $subject->getName(),
-                'routeName' => 'training_activity_list',
+                'routeName' => 'work_linked_training_training_activity_list',
                 'routeParams' => ['id' => $subject->getId()]
             ],
             [
@@ -181,8 +181,8 @@ class ActivityRealizationController extends Controller
             ['fixed' => $translator->trans('title.list', [], 'wlt_activity_realization')]
         ];
 
-        return $this->render('training/activity_realization_list.html.twig', [
-            'menu_path' => 'training',
+        return $this->render('wlt/training/activity_realization_list.html.twig', [
+            'menu_path' => 'work_linked_training_training',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,
@@ -193,7 +193,7 @@ class ActivityRealizationController extends Controller
     }
 
     /**
-     * @Route("/materia/actividad/concrecion/eliminar/{id}", name="training_activity_realization_delete",
+     * @Route("/materia/actividad/concrecion/eliminar/{id}", name="work_linked_training_training_activity_realization_delete",
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
     public function deleteAction(
@@ -210,7 +210,7 @@ class ActivityRealizationController extends Controller
 
         $items = $request->request->get('items', []);
         if (count($items) === 0) {
-            return $this->redirectToRoute('training_activity_realization_list', ['id' => $activity->getId()]);
+            return $this->redirectToRoute('work_linked_training_training_activity_realization_list', ['id' => $activity->getId()]);
         }
 
         $activityRealizations = $activityRealizationRepository->findAllInListByIdAndActivity($items, $activity);
@@ -224,29 +224,29 @@ class ActivityRealizationController extends Controller
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_activity_realization'));
             }
-            return $this->redirectToRoute('training_activity_realization_list', ['id' => $activity->getId()]);
+            return $this->redirectToRoute('work_linked_training_training_activity_realization_list', ['id' => $activity->getId()]);
         }
 
         $breadcrumb = [
             [
                 'fixed' => $training->getName(),
-                'routeName' => 'training_subject_list',
+                'routeName' => 'work_linked_training_training_subject_list',
                 'routeParams' => ['id' => $training->getId()]
             ],
             [
                 'fixed' => $activity->getSubject()->getName(),
-                'routeName' => 'training_activity_list',
+                'routeName' => 'work_linked_training_training_activity_list',
                 'routeParams' => ['id' => $activity->getSubject()->getId()]
             ],
             [
                 'fixed' => $activity->getCode(),
-                'routeName' => 'training_activity_realization_list',
+                'routeName' => 'work_linked_training_training_activity_realization_list',
                 'routeParams' => ['id' => $activity->getId()]
             ],
             ['fixed' => $this->get('translator')->trans('title.delete', [], 'wlt_activity_realization')]
         ];
 
-        return $this->render('training/activity_delete.html.twig', [
+        return $this->render('wlt/training/activity_delete.html.twig', [
             'menu_path' => 'training',
             'breadcrumb' => $breadcrumb,
             'title' => $translator->trans('title.delete', [], 'wlt_activity_realization'),

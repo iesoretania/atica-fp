@@ -1,0 +1,34 @@
+{% trans_default_domain 'edu_training' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th>{{ 'header.name'|trans }}</th>
+    <th>{{ 'header.department'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for training in pager %}
+                {% set url = path('work_linked_training_training_subject_list', {'id': training.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">{{ training.name }}</a>
+                    </td>
+                    <td>
+                        {{ training.department }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="2">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}

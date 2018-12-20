@@ -16,7 +16,7 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Controller\Training;
+namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\Role;
@@ -32,13 +32,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 
 /**
- * @Route("/ensenanza")
+ * @Route("/dual/ensenanza")
  */
 class TrainingController extends Controller
 {
     /**
-     * @Route("/listar/{page}", name="training", requirements={"page" = "\d+"},
-     *     defaults={"page" = 1},   methods={"GET"})
+     * @Route("/listar/{page}", name="work_linked_training_training", requirements={"page" = "\d+"},
+     *     defaults={"page" = 1}, methods={"GET"})
      */
     public function listAction(
         Request $request,
@@ -61,7 +61,6 @@ class TrainingController extends Controller
             ->orderBy('t.name');
 
         $q = $request->get('q', null);
-        $f = $request->get('f', 0);
         if ($q) {
             $queryBuilder
                 ->where('t.name LIKE :tq')
@@ -69,19 +68,9 @@ class TrainingController extends Controller
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        if (false === $this->isGranted(OrganizationVoter::MANAGE, $organization)) {
-            $f = 1;
-        }
-
-        switch ($f) {
-            case 1:
-                $queryBuilder
-                    ->andWhere('t.workLinked = :on')
-                    ->setParameter('on', true);
-                break;
-        }
-
         $queryBuilder
+            ->andWhere('t.workLinked = :on')
+            ->setParameter('on', true)
             ->andWhere('t.department IS NOT NULL')
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear);
@@ -108,11 +97,10 @@ class TrainingController extends Controller
 
         $title = $this->get('translator')->trans('title.list', [], 'edu_training');
 
-        return $this->render('training/list.html.twig', [
+        return $this->render('wlt/training/list.html.twig', [
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'f' => $f,
             'domain' => 'edu_training'
         ]);
     }
