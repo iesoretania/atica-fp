@@ -85,6 +85,25 @@ class SubjectRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param AcademicYear $academicYear
+     * @param string $code
+     * @return Subject|null
+     */
+    public function findOneByAcademicYearAndCode(AcademicYear $academicYear, $code)
+    {
+        try {
+            return $this->findByAcademicYearQueryBuilder($academicYear)
+                ->andWhere('s.code = :code')
+                ->setParameter('code', $code)
+                ->getQuery()
+                ->setMaxResults(1)
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
+    }
+
+    /**
      * @param $items
      * @param AcademicYear $academicYear
      * @return Subject[]

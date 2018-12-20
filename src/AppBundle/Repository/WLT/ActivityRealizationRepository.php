@@ -23,6 +23,7 @@ use AppBundle\Entity\WLT\Activity;
 use AppBundle\Entity\WLT\ActivityRealization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
 
 class ActivityRealizationRepository extends ServiceEntityRepository
 {
@@ -59,6 +60,25 @@ class ActivityRealizationRepository extends ServiceEntityRepository
             ->addOrderBy('ar.code')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findOneByTrainingAndCode(Training $training, $code)
+    {
+        try {
+            return $this->createQueryBuilder('ar')
+                ->join('ar.activity', 'a')
+                ->join('a.subject', 's')
+                ->join('s.grade', 'g')
+                ->andWhere('g.training = :training')
+                ->andWhere('ar.code = :code')
+                ->setParameter('training', $training)
+                ->setParameter('code', $code)
+                ->getQuery()
+                ->setMaxResults(1)
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
     }
 
     public function deleteFromList($items)

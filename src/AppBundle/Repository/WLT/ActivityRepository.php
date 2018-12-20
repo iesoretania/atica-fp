@@ -19,15 +19,34 @@
 namespace AppBundle\Repository\WLT;
 
 use AppBundle\Entity\Edu\Subject;
+use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\WLT\Activity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
 
 class ActivityRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Activity::class);
+    }
+
+    public function findOneByTrainingAndCode(Training $training, $code)
+    {
+        try {
+            return $this->createQueryBuilder('a')
+                ->join('a.subject', 's')
+                ->join('s.grade', 'g')
+                ->where('g.training = :training')
+                ->andWhere('a.code = :code')
+                ->setParameter('training', $training)
+                ->setParameter('code', $code)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
     }
 
     public function findAllInListByIdAndSubject(

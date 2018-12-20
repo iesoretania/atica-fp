@@ -1,0 +1,38 @@
+{% trans_default_domain 'import' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    {% if not stats %}
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ m.start_button() }}
+            {{ m.submit_button('submit', 'check', 'btn-success', 'form.learning_program.do_import'|trans) }}
+            {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.end_button() }}
+        {{ form_end(form) }}
+    {% else %}
+        <h4>{{ 'report.learning_program.activity.list'|trans }}</h4>
+        <ul>
+            <li>{{ 'report.learning_program.activity.new'|trans }}: {{ stats.activity.new_items }}</li>
+            <li>{{ 'report.learning_program.activity.old'|trans }}: {{ stats.activity.old_items }}</li>
+        </ul>
+        <h4>{{ 'report.learning_program.company.list'|trans }}</h4>
+        <ul>
+            <li>{{ 'report.learning_program.company.new'|trans }}: {{ stats.company.new_items }}</li>
+            <li>{{ 'report.learning_program.company.old'|trans }}: {{ stats.company.old_items }}</li>
+            <li>{{ 'report.learning_program.company.unknown'|trans }}: {{ stats.company.unknown_items|join(', ') }}</li>
+        </ul>
+        {% if stats.subject.unknown_items %}
+            <h4>{{ 'report.learning_program.subject.list'|trans }}</h4>
+            <ul>
+                <li>{{ 'report.learning_program.subject.unknown'|trans }}: {{ stats.subject.unknown_items|join(', ') }}</li>
+            </ul>
+        {% endif %}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('build/wlt_learning_program_import.js') }}"></script>
+{% endblock %}

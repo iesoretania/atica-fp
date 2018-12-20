@@ -21,6 +21,7 @@ namespace AppBundle\Entity\WLT;
 use AppBundle\Entity\Company;
 use AppBundle\Entity\Edu\Training;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -116,7 +117,7 @@ class LearningProgram
     }
 
     /**
-     * @return ActivityRealization[]
+     * @return ActivityRealization[]|Collection
      */
     public function getActivityRealizations()
     {

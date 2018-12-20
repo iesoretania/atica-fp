@@ -92,3 +92,21 @@ instructions.non_working_day.import: |
   esta dirección: %link%
 
 link.non_working_day.import: "https://www.juntadeandalucia.es/educacion/secretariavirtual/consulta/calendario-escolar/"
+
+title.learning_program.import: Importación de programas formativos
+form.learning_program.academic_year: Curso académico
+form.learning_program.training: Enseñanza
+form.learning_program.training.none: Seleccione enseñanza
+form.learning_program.do_import: Importar programas formativos
+
+report.learning_program.activity.list: Concreciones de actividad procesadas
+report.learning_program.activity.new: Concreciones nuevas incorporadas
+report.learning_program.activity.old: Concreciones ya existentes
+
+report.learning_program.company.list: Empresas procesadas
+report.learning_program.company.new: Empresas incorporadas
+report.learning_program.company.old: Empresas con programa ya existente
+report.learning_program.company.unknown: Empresas desconocidas
+
+report.learning_program.subject.list: Problemas con materias
+report.learning_program.subject.unknown: Códigos de materia no encontrados

@@ -19,11 +19,22 @@
 namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\Training;
+use AppBundle\Entity\WLT\Activity;
+use AppBundle\Entity\WLT\ActivityRealization;
 use AppBundle\Entity\WLT\LearningProgram;
+use AppBundle\Form\Model\LearningProgramImport;
+use AppBundle\Form\Type\WLT\LearningProgramImportType;
 use AppBundle\Form\Type\WLT\LearningProgramType;
+use AppBundle\Repository\CompanyRepository;
+use AppBundle\Repository\Edu\SubjectRepository;
+use AppBundle\Repository\WLT\ActivityRealizationRepository;
+use AppBundle\Repository\WLT\ActivityRepository;
 use AppBundle\Repository\WLT\LearningProgramRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
+use AppBundle\Utils\CsvImporter;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -244,10 +255,225 @@ class LearningProgramController extends Controller
         }
 
         return $this->render('wlt/learning_program/delete.html.twig', [
-            'menu_path' => 'work_linked_training_agreement_list',
+            'menu_path' => 'work_linked_training_learning_program_list',
             'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'wlt_learning_program')]],
             'title' => $translator->trans('title.delete', [], 'wlt_learning_program'),
             'items' => $learningPrograms
         ]);
+    }
+
+    /**
+     * @Route("/importar", name="work_linked_training_learning_program_import", methods={"GET", "POST"})
+     */
+    public function importAction(
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        ActivityRepository $activityRepository,
+        ActivityRealizationRepository $activityRealizationRepository,
+        LearningProgramRepository $learningProgramRepository,
+        CompanyRepository $companyRepository,
+        SubjectRepository $subjectRepository,
+        EntityManagerInterface $entityManager,
+        Request $request
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+
+        $this->denyAccessUnlessGranted(
+            OrganizationVoter::MANAGE_WORK_LINKED_TRAINING,
+            $organization
+        );
+
+        $formData = new LearningProgramImport();
+        $formData->setAcademicYear($organization->getCurrentAcademicYear());
+
+        $form = $this->createForm(LearningProgramImportType::class, $formData);
+        $form->handleRequest($request);
+
+        $title = $translator->trans('title.learning_program.import', [], 'import');
+        $breadcrumb = [['fixed' => $title]];
+
+        $stats = null;
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $stats = $this->importFromCsv(
+                $formData->getFile()->getPathname(),
+                $formData->getTraining(),
+                $activityRepository,
+                $activityRealizationRepository,
+                $learningProgramRepository,
+                $companyRepository,
+                $subjectRepository,
+                $entityManager
+            );
+
+            if (null !== $stats) {
+                $this->addFlash('success', $translator->trans('message.import_ok', [], 'import'));
+                $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
+            } else {
+                $this->addFlash('error', $translator->trans('message.import_error', [], 'import'));
+            }
+        }
+        return $this->render('wlt/learning_program/import_form.html.twig', [
+            'menu_path' => 'work_linked_training_learning_program_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'form' => $form->createView(),
+            'stats' => $stats
+        ]);
+    }
+
+    private function importFromCsv(
+        $file,
+        Training $training,
+        ActivityRepository $activityRepository,
+        ActivityRealizationRepository $activityRealizationRepository,
+        LearningProgramRepository $learningProgramRepository,
+        CompanyRepository $companyRepository,
+        SubjectRepository $subjectRepository,
+        EntityManagerInterface $entityManager
+    ) {
+        $newActivityCount = 0;
+        $oldActivityCount = 0;
+
+        $newCompanyCount = 0;
+        $oldCompanyCount = 0;
+
+        $unknownSubjects = [];
+        $unknownCompanies = [];
+        $unknownActivities = [];
+
+        $importer = new CsvImporter($file, false);
+
+        $companies = [];
+        $companiesParsed = false;
+        $learningPrograms = [];
+
+        $lastCode = '!';
+        $activity = null;
+
+        try {
+            while ($data = $importer->get(100)) {
+                foreach ($data as $lineData) {
+                    if ('' === $lineData[1]) {
+                        continue;
+                    }
+
+                    if ($companiesParsed === false && '' === $lineData[0]) {
+                        for ($i = count($lineData) - 1; $i > 1; $i--) {
+                            if ($lineData[$i]) {
+                                $company = $companyRepository->findOneBy(['code' => $lineData[$i]]);
+                                if ($company) {
+                                    $companies[] = $company;
+                                    $learningProgram = $learningProgramRepository->findOneBy(
+                                        [
+                                            'company' => $company,
+                                            'training' => $training
+                                        ]
+                                    );
+                                    if (null === $learningProgram) {
+                                        $learningProgram = new LearningProgram();
+                                        $learningProgram
+                                            ->setTraining($training)
+                                            ->setCompany($company);
+                                        $entityManager->persist($learningProgram);
+                                        $newCompanyCount++;
+                                    } else {
+                                        $oldCompanyCount++;
+                                    }
+                                    $learningPrograms[] = $learningProgram;
+                                } else {
+                                    $unknownCompanies[] = $lineData[$i];
+                                }
+                            }
+                        }
+                        $companiesParsed = true;
+                        continue;
+                    }
+                    if ($companiesParsed) {
+                        // Nueva actividad
+                        if ($lineData[0] !== '' && $lineData[0] === $lineData[2]) {
+                            $activity = $activityRepository->findOneByTrainingAndCode($training, $lineData[0]);
+                            if (null === $activity) {
+                                // obtener código de la asignatura y buscarla
+                                preg_match('/^([A-Za-z]*)/', $lineData[0], $output);
+                                $lastCode = $output[0];
+                                $subject = $subjectRepository->findOneByAcademicYearAndCode(
+                                    $training->getAcademicYear(),
+                                    $lastCode
+                                );
+                                // si no hay asignatura, ignorar las actividades
+                                if (null !== $subject) {
+                                    $activity = new Activity();
+                                    $activity
+                                        ->setSubject($subject)
+                                        ->setDescription($lineData[1])
+                                        ->setCode($lineData[0]);
+                                    $entityManager->persist($activity);
+                                } else {
+                                    $unknownSubjects[$lastCode] = $lastCode;
+                                }
+                            } else {
+                                $lastCode = $activity->getCode();
+                            }
+                        } else {
+                            if ($activity && ($lineData[2] === 'SÍ' || $lineData[2] === 'NO') &&
+                                strpos($lineData[0], $lastCode) === 0) {
+                                // Procesar concreción
+                                $activityRealization = $activityRealizationRepository->findOneByTrainingAndCode(
+                                    $training,
+                                    $lineData[0]
+                                );
+                                if (null === $activityRealization) {
+                                    $activityRealization = new ActivityRealization();
+                                    $activityRealization
+                                        ->setActivity($activity)
+                                        ->setCode($lineData[0])
+                                        ->setDescription($lineData[1]);
+                                    $entityManager->persist($activityRealization);
+                                    $newActivityCount++;
+                                } else {
+                                    $oldActivityCount++;
+                                }
+                                /** @var LearningProgram $learningProgram */
+                                foreach ($learningPrograms as $learningProgram) {
+                                    $activityRealizations = $learningProgram->getActivityRealizations();
+                                    if ($lineData[2] === 'SÍ') {
+                                        if (false === $activityRealizations->contains($activityRealization)) {
+                                            $activityRealizations->add($activityRealization);
+                                        }
+                                    }
+                                    if ($lineData[2] === 'NO') {
+                                        if (true === $activityRealizations->contains($activityRealization)) {
+                                            $activityRealizations->removeElement($activityRealization);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return null;
+        }
+
+
+        return [
+            'activity' => [
+                'new_items' => $newActivityCount,
+                'old_items' => $oldActivityCount,
+                'unknown_items' => $unknownActivities
+            ],
+            'company' => [
+                'new_items' => $newCompanyCount,
+                'old_items' => $oldCompanyCount,
+                'unknown_items' => $unknownCompanies
+            ],
+            'subject' => [
+                'unknown_items' => $unknownSubjects
+            ]
+        ];
     }
 }
