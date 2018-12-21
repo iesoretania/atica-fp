@@ -344,7 +344,6 @@ class LearningProgramController extends Controller
 
         $importer = new CsvImporter($file, false);
 
-        $companies = [];
         $companiesParsed = false;
         $learningPrograms = [];
 
@@ -363,7 +362,6 @@ class LearningProgramController extends Controller
                             if ($lineData[$i]) {
                                 $company = $companyRepository->findOneBy(['code' => $lineData[$i]]);
                                 if ($company) {
-                                    $companies[] = $company;
                                     $learningProgram = $learningProgramRepository->findOneBy(
                                         [
                                             'company' => $company,
@@ -380,7 +378,7 @@ class LearningProgramController extends Controller
                                     } else {
                                         $oldCompanyCount++;
                                     }
-                                    $learningPrograms[] = $learningProgram;
+                                    $learningPrograms[$i] = $learningProgram;
                                 } else {
                                     $unknownCompanies[] = $lineData[$i];
                                 }
@@ -416,8 +414,8 @@ class LearningProgramController extends Controller
                                 $lastCode = $activity->getCode();
                             }
                         } else {
-                            if ($activity && ($lineData[2] === 'SÍ' || $lineData[2] === 'NO') &&
-                                strpos($lineData[0], $lastCode) === 0) {
+                            if ($activity && strpos($lineData[0], $lastCode) === 0 &&
+                                (strlen($lineData[2]) === 2 || strlen($lineData[2]) === 1)) {
                                 // Procesar concreción
                                 $activityRealization = $activityRealizationRepository->findOneByTrainingAndCode(
                                     $training,
@@ -435,14 +433,14 @@ class LearningProgramController extends Controller
                                     $oldActivityCount++;
                                 }
                                 /** @var LearningProgram $learningProgram */
-                                foreach ($learningPrograms as $learningProgram) {
+                                foreach ($learningPrograms as $n => $learningProgram) {
                                     $activityRealizations = $learningProgram->getActivityRealizations();
-                                    if ($lineData[2] === 'SÍ') {
+                                    if (strpos($lineData[$n + 2], 'S') === 0) {
                                         if (false === $activityRealizations->contains($activityRealization)) {
                                             $activityRealizations->add($activityRealization);
                                         }
                                     }
-                                    if ($lineData[2] === 'NO') {
+                                    if (strpos($lineData[$n + 2], 'N') === 0) {
                                         if (true === $activityRealizations->contains($activityRealization)) {
                                             $activityRealizations->removeElement($activityRealization);
                                         }
