@@ -9,9 +9,7 @@ form.calendar: Calendario
 form.save: Guardar cambios
 form.back: Volver
 
-title.training.list: Ciclos formativos
-title.student.list: Estudiantes
-title.workcenter.list: Empresas
+title.agreement.list: Convenios
 
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay resultados que mostrar

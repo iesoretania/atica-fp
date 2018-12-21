@@ -23,7 +23,7 @@ title.new: Nuevo programa formativo
 title.delete: Eliminar programa
 title.copy: Importar programas
 
-title.list: Listado de programas formativos
+title.list: Programas formativos
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay programas que mostrar
 table.filter: Filtrar...

@@ -160,7 +160,7 @@ class TrackingController extends Controller
             ->setMaxPerPage($this->getParameter('page.size'))
             ->setCurrentPage($q ? 1 : $page);
 
-        $title = $translator->trans('title.student.list', [], 'wlt_tracking');
+        $title = $translator->trans('title.agreement.list', [], 'wlt_tracking');
 
         return $this->render('wlt/tracking/student_list.html.twig', [
             'title' => $title . ' - ' . $academicYear,
