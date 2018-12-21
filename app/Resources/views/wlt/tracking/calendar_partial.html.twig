@@ -1,0 +1,58 @@
+{% trans_default_domain 'calendar' %}
+
+{% if calendar is not empty %}
+    <div class="row">
+    {% for num, month in calendar %}
+        <div class="col-sm">
+            <div class="table-responsive">
+                <table class="calendar table table-bordered table-condensed table-hover">
+                    <thead>
+                    <tr>
+                        {% set year = num//12 %}
+                        <th colspan="5" class="calendar-month">{{ ('month'~(num % 12))|trans({}, 'calendar') }} {{ year }}</th>
+                    </tr>
+                    <tr>
+                        <th class="w-20">{{ 'dow0'|trans({}, 'calendar') }}</th>
+                        <th class="w-20">{{ 'dow1'|trans({}, 'calendar') }}</th>
+                        <th class="w-20">{{ 'dow2'|trans({}, 'calendar') }}</th>
+                        <th class="w-20">{{ 'dow3'|trans({}, 'calendar') }}</th>
+                        <th class="w-20">{{ 'dow4'|trans({}, 'calendar') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for week in month %}
+                        <tr>
+                            {% for n, day in week.days %}
+                                {% if loop.index < 6 %}
+                                {% block day %}
+                                <td {% if day %}class="bg-info"{% endif %}>
+                                    {% if day %}
+                                        <b>{{ n }}</b><br/>
+                                        {{ 'caption.hours'|transchoice(day.hours) }}
+                                    {% elseif n > 0 %}
+                                        {{ n }}
+                                    {% endif %}
+                                </td>
+                                {% endblock %}
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% if not loop.first and loop.index is divisible by(3) and not loop.last %}
+    </div>
+    <div class="row">
+    {% endif %}
+    {% endfor %}
+    {% if (calendar|length % 3) > 0 %}
+        {% for i in range((calendar|length % 3), 2) %}
+            <div class="col-sm"></div>
+        {% endfor %}
+    {% endif %}
+    </div>
+{% else %}
+    <div class="alert alert-warning">{{ 'prompt.empty'|trans({}, 'calendar')|nl2br }}</div>
+{% endif %}

@@ -10,6 +10,7 @@ form.save: Guardar cambios
 form.back: Volver
 
 title.agreement.list: Convenios
+title.calendar: Calendario en alternancia
 
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay resultados que mostrar

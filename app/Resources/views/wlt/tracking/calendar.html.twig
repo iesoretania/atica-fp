@@ -1,0 +1,28 @@
+{% trans_default_domain 'calendar' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    <form action="" class="list" method="post">
+    {% embed 'wlt/tracking/calendar_partial.html.twig' %}
+        {% block day %}
+            <td {% if day %}class="bg-{{  day.activityRealizations.count == 0 ? 'info' : 'success' }}"{% endif %}>
+                {% if day %}
+                    {% set url = path('work_linked_training_tracking_calendar_form', {'id': day.id}) %}
+                    <label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> <a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a></label><br/>
+                    {{ 'caption.hours'|transchoice(day.hours, {}, 'calendar') }}
+                {% elseif n > 0 %}
+                    {{ n }}
+                {% endif %}
+            </td>
+        {% endblock %}
+    {% endembed %}
+
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.link_button('', 'check-square', 'btn-primary', 'form.select_deselect'|trans, 'toggle') }}
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('build/list.js') }}"></script>
+{% endblock %}

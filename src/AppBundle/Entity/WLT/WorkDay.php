@@ -103,16 +103,17 @@ class WorkDay
     private $endTime2;
 
     /**
-     * @ORM\OneToMany(targetEntity="Tracking", mappedBy="workDay")
-     * @var Tracking[]
+     * @ORM\ManyToMany(targetEntity="ActivityRealization")
+     * @ORM\JoinTable("wlt_tracking")
+     * @var ActivityRealization[]
      */
-    private $trackings;
+    private $activityRealizations;
 
     public function __construct()
     {
         $this->locked = false;
         $this->absence = false;
-        $this->trackings = new ArrayCollection();
+        $this->activityRealizations = new ArrayCollection();
     }
 
     /**
@@ -300,6 +301,24 @@ class WorkDay
     public function setEndTime2($endTime2)
     {
         $this->endTime2 = $endTime2;
+        return $this;
+    }
+
+    /**
+     * @return ActivityRealization[]
+     */
+    public function getActivityRealizations()
+    {
+        return $this->activityRealizations;
+    }
+
+    /**
+     * @param ActivityRealization[] $activityRealizations
+     * @return WorkDay
+     */
+    public function setActivityRealizations($activityRealizations)
+    {
+        $this->activityRealizations = $activityRealizations;
         return $this;
     }
 }

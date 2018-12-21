@@ -6,6 +6,7 @@ title.preview: Previsualización de jornadas
 form.group: Grupo
 form.training: Enseñanza
 
+form.activity_realizations: Actividades realizadas
 form.start_date: Fecha de inicio
 form.total_hours: Horas enseñanza
 form.agreement_hours: Horas del acuerdo

@@ -162,7 +162,7 @@ class TrackingController extends Controller
 
         $title = $translator->trans('title.agreement.list', [], 'wlt_tracking');
 
-        return $this->render('wlt/tracking/student_list.html.twig', [
+        return $this->render('wlt/tracking/list.html.twig', [
             'title' => $title . ' - ' . $academicYear,
             'pager' => $pager,
             'q' => $q,
