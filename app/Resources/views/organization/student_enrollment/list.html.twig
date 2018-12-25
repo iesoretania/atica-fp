@@ -1,0 +1,53 @@
+{% trans_default_domain 'edu_student_enrollment' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('organization_import_student_form') }}{% endblock %}
+
+{% block table_header %}
+    <th><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th>{{ 'header.unique_identifier'|trans }}</th>
+    <th>{{ 'header.group'|trans }}</th>
+    <th>{{ 'header.user'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for student_enrollment in pager %}
+                {% set url = path('organization_student_enrollment_edit', {'id': student_enrollment.id}) %}
+                {% set person = student_enrollment.person %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ student_enrollment.id }}" class="selectable"> <a href="{{ url }}">{{ person.lastName }}, {{ person.firstName }}</a></label>
+                    </td>
+                    <td>
+                        {{ student_enrollment.person.uniqueIdentifier }}
+                    </td>
+                    <td>
+                        {{ student_enrollment.group }}
+                    </td>
+                    {% set user = person.user %}
+                    <td>
+                        {% if user %}{{ user.usernameAndEmailAddress }}{% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">{{ 'table.no_users'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('organization_student_enrollment_delete', {'academicYear': academic_year.id}) }}" method="post">
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}

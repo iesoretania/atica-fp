@@ -65,4 +65,40 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @param $items
+     * @param AcademicYear $academicYear
+     * @return StudentEnrollment[]
+     */
+    public function findInListByAcademicYear($items, AcademicYear $academicYear)
+    {
+        return $this->createQueryBuilder('se')
+            ->join('se.person', 'p')
+            ->join('se.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->where('t.academicYear = :academic_year')
+            ->andWhere('se IN (:items)')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('items', $items)
+            ->orderBy('p.lastName', 'ASC')
+            ->addOrderBy('p.firstName', 'ASC')
+            ->addOrderBy('g.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param StudentEnrollment[] $list
+     * @return mixed
+     */
+    public function deleteFromList($list)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(StudentEnrollment::class, 'se')
+            ->where('se IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
+    }
 }
