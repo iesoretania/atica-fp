@@ -8,7 +8,7 @@
             <td {% if day %}class="bg-{{ day.absence ? 'danger' : (day.activityRealizations.count == 0 ? 'info' : 'success') }}"{% endif %}>
                 {% if day %}
                     {% set url = path('work_linked_training_tracking_calendar_form', {'id': day.id}) %}
-                    <label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> <a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a></label><br/>
+                    <label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> <a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a></label>{% if day and day.locked %} <i class="fas fa-lock"></i>{% endif %}<br/>
                     {{ 'caption.hours'|transchoice(day.hours, {}, 'calendar') }}
                 {% elseif n > 0 %}
                     {{ n }}
