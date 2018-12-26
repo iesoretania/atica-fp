@@ -19,19 +19,26 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Organization;
+use AppBundle\Entity\Person;
 use AppBundle\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserRepository extends ServiceEntityRepository implements UserLoaderInterface
 {
-    public function __construct(ManagerRegistry $registry)
+
+    private $encoder;
+
+    public function __construct(ManagerRegistry $registry, UserPasswordEncoderInterface $encoder)
     {
         parent::__construct($registry, User::class);
+        
+        $this->encoder = $encoder;
     }
 
     /**
@@ -136,5 +143,27 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             ->setParameter('date', $date)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Person $person
+     * @return User
+     */
+    public function findByPersonOrCreate(Person $person)
+    {
+        $user = $this->findOneBy(['person' => $person]);
+        
+        if (null === $user) {
+            $user = new User();
+            $user
+                ->setLoginUsername($person->getUniqueIdentifier())
+                ->setEnabled(true)
+                ->setPassword($this->encoder->encodePassword($user, $person->getUniqueIdentifier()))
+                ->setPerson($person);
+
+            $this->getEntityManager()->persist($user);
+        }
+
+        return $user;
     }
 }

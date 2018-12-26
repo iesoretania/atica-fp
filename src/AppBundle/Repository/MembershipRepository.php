@@ -56,20 +56,24 @@ class MembershipRepository extends ServiceEntityRepository
         \DateTime $fromDate,
         \DateTime $toDate = null
     ) {
-        try {
-            $membership = $this->createQueryBuilder('m')
-                ->where('m.organization = :organization')
-                ->andWhere('m.user = :user')
-                ->andWhere('m.validFrom = :from_date')
-                ->andWhere('m.validUntil = :to_date')
-                ->setParameter('organization', $organization)
-                ->setParameter('user', $user)
-                ->setParameter('from_date', $fromDate)
-                ->setParameter('to_date', $toDate)
-                ->getQuery()
-                ->getOneOrNullResult();
+        if ($user->getId()) {
+            try {
+                $membership = $this->createQueryBuilder('m')
+                    ->where('m.organization = :organization')
+                    ->andWhere('m.user = :user')
+                    ->andWhere('m.validFrom = :from_date')
+                    ->andWhere('m.validUntil = :to_date')
+                    ->setParameter('organization', $organization)
+                    ->setParameter('user', $user)
+                    ->setParameter('from_date', $fromDate)
+                    ->setParameter('to_date', $toDate)
+                    ->getQuery()
+                    ->getOneOrNullResult();
 
-        } catch (NonUniqueResultException $e) {
+            } catch (NonUniqueResultException $e) {
+                $membership = null;
+            }
+        } else {
             $membership = null;
         }
         if (null === $membership) {

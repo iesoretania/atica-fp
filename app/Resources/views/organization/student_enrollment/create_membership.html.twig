@@ -1,0 +1,37 @@
+{% trans_default_domain 'edu_student_enrollment' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    <form method="post">
+        {% for item in items %}
+            <input type="hidden" name="items[]" value="{{ item.id }}">
+        {% endfor %}
+        <input type="hidden" name="confirm-create-membership" value="ok">
+        <div class="alert alert-warning">{{ 'prompt.create_membership_confirm'|trans|nl2br }}</div>
+        <div class="alert alert-info">{{ 'prompt.create_membership_info'|trans|nl2br }}</div>
+        <div id="table" class="col-md-12 table-responsive">
+            <table id="list" class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ 'header.name'|trans }}</label></th>
+                        <th>{{ 'header.group'|trans }}</th>
+                        <th>{{ 'header.login_username'|trans }}</label></th>
+                        <th>{{ 'header.already_created'|trans }}</label></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ item.person.lastName }}, {{ item.person.firstName }}</td>
+                            <td>{{ item.group }}</td>
+                            <td>{{ item.person.user.loginUsername | default(item.person.uniqueIdentifier) }}</td>
+                            <td>{{ (item.person.user ? 'table.already_created.yes' : 'table.already_created.no') | trans }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('submit', 'user-plus', 'btn-success', 'form.create_membership_confirm'|trans) }}
+    </form>
+{% endblock %}

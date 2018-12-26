@@ -17,7 +17,7 @@
                 {% set person = student_enrollment.person %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="items[]" value="{{ student_enrollment.id }}" class="selectable"> <a href="{{ url }}">{{ person.lastName }}, {{ person.firstName }}</a></label>
+                        <label><input type="checkbox" name="items[]" value="{{ student_enrollment.id }}" class="selectable"> <a href="{{ url }}">{{ person.lastName }}, {{ person.firstName }}</a> {% if person.user %}<span class="fas fa-user"></span>{% endif %}</label>
                     </td>
                     <td>
                         {{ student_enrollment.person.uniqueIdentifier }}
@@ -38,7 +38,7 @@
 {% endblock %}
 
 {% block before_table %}
-    <form action="{{ path('organization_student_enrollment_delete', {'academicYear': academic_year.id}) }}" method="post">
+    <form action="{{ path('organization_student_enrollment_operation', {'academicYear': academic_year.id}) }}" method="post">
 {% endblock %}
 
 {% block pagerfanta %}
@@ -49,5 +49,6 @@
         <div class="clearfix"></div>
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
         {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+        {{ m.submit_button('create-membership', 'user-plus', 'btn-success enable-on-items', 'form.create_membership'|trans) }}
     </form>
 {% endblock %}

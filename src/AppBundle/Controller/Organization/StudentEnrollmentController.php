@@ -22,6 +22,8 @@ use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Form\Type\Edu\StudentEnrollmentType;
 use AppBundle\Repository\Edu\StudentEnrollmentRepository;
+use AppBundle\Repository\MembershipRepository;
+use AppBundle\Repository\UserRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
@@ -36,7 +38,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 /**
  * @Route("/centro/matricula")
  */
-class StudentController extends Controller
+class StudentEnrollmentController extends Controller
 {
     /**
      * @Route("/{id}", name="organization_student_enrollment_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
@@ -153,13 +155,15 @@ class StudentController extends Controller
     }
 
     /**
-     * @Route("/eliminar/{academicYear}", name="organization_student_enrollment_delete", methods={"POST"})
+     * @Route("/operacion/{academicYear}", name="organization_student_enrollment_operation", methods={"POST"})
      */
     public function deleteAction(
         Request $request,
         StudentEnrollmentRepository $studentEnrollmentRepository,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        UserRepository $userRepository,
+        MembershipRepository $membershipRepository,
         AcademicYear $academicYear
     ) {
         $this->denyAccessUnlessGranted(
@@ -195,6 +199,45 @@ class StudentController extends Controller
                     'academicYear' => $academicYear->getId()
                 ]
             );
+        }
+
+        if ($request->get('confirm-create-membership', '') === 'ok') {
+            try {
+                $students = [];
+                foreach ($studentEnrollments as $studentEnrollment) {
+                    if (false === isset($students[$studentEnrollment->getPerson()->getId()])) {
+                        $user = $userRepository->findByPersonOrCreate($studentEnrollment->getPerson());
+                        $membershipRepository->addNewOrganizationMembership(
+                            $academicYear->getOrganization(),
+                            $user,
+                            $academicYear->getStartDate(),
+                            $academicYear->getEndDate()
+                        );
+                        $students[$studentEnrollment->getPerson()->getId()] = true;
+                    }
+                }
+                $em->flush();
+                $this->addFlash('success', $translator->trans('message.created', [], 'edu_student_enrollment'));
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.create_error', [], 'edu_student_enrollment'));
+            }
+            return $this->redirectToRoute(
+                'organization_student_enrollment_list',
+                [
+                    'academicYear' => $academicYear->getId()
+                ]
+            );
+        }
+
+        if ($request->get('create-membership', null) === '') {
+            return $this->render('organization/student_enrollment/create_membership.html.twig', [
+                'menu_path' => 'organization_student_enrollment_list',
+                'breadcrumb' => [
+                    ['fixed' => $translator->trans('title.create_membership', [], 'edu_student_enrollment')]
+                ],
+                'title' => $translator->trans('title.create_membership', [], 'edu_student_enrollment'),
+                'items' => $studentEnrollments
+            ]);
         }
 
         return $this->render('organization/student_enrollment/delete.html.twig', [
