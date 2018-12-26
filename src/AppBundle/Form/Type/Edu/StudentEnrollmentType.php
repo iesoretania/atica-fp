@@ -23,7 +23,6 @@ use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\User;
 use AppBundle\Repository\Edu\GroupRepository;
-use AppBundle\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -32,15 +31,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class StudentEnrollmentType extends AbstractType
 {
-    private $userExtensionService;
-
     private $groupRepository;
 
     public function __construct(
-        UserExtensionService $userExtensionService,
         GroupRepository $groupRepository
     ) {
-        $this->userExtensionService = $userExtensionService;
         $this->groupRepository = $groupRepository;
     }
 
