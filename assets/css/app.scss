@@ -277,6 +277,36 @@ table.calendar th {
 
 table.calendar td {
   height: 6em;
+  width: 100%;
+}
+
+$light-danger: lighten($danger, 20%);
+
+table.calendar {
+  td.workday {
+    background: $info;
+  }
+
+  td.submitted {
+    background: $success;
+    a {
+      color: $light;
+    }
+  }
+
+  td.absence {
+    background: repeating-linear-gradient(
+                    -45deg,
+                    $light-danger,
+                    $light-danger 2px,
+                    $table-bg 3px,
+                    $table-bg 8px
+    )
+  }
+
+  a {
+    color: $dark;
+  }
 }
 
 h5.checkbox-category {

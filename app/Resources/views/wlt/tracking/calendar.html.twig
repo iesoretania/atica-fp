@@ -5,7 +5,7 @@
     <form action="{{ path('work_linked_training_tracking_calendar_operation', {'id': agreement.id}) }}" class="list" method="post">
     {% embed 'wlt/tracking/calendar_partial.html.twig' %}
         {% block day %}
-            <td {% if day %}class="bg-{{ day.absence ? 'danger' : (day.activityRealizations.count == 0 ? 'info' : 'success') }}"{% endif %}>
+            <td {% if day %}class="{{ day.absence ? 'absence' : (day.activityRealizations.count == 0 ? 'workday' : 'submitted') }}"{% endif %}>
                 {% if day %}
                     {% set url = path('work_linked_training_tracking_calendar_form', {'id': day.id}) %}
                     <label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> <a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a></label>{% if day and day.locked %} <i class="fas fa-lock"></i>{% endif %}<br/>
