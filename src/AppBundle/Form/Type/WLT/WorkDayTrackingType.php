@@ -22,23 +22,31 @@ use AppBundle\Entity\WLT\ActivityRealization;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\WorkDay;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
+use AppBundle\Security\WLT\AgreementVoter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Security;
 
 class WorkDayTrackingType extends AbstractType
 {
     /** @var ActivityRealizationRepository */
     private $activityRealizationRepository;
 
+    /** @var Security */
+    private $security;
+
     public function __construct(
-        ActivityRealizationRepository $activityRealizationRepository
+        ActivityRealizationRepository $activityRealizationRepository,
+        Security $security
     ) {
         $this->activityRealizationRepository = $activityRealizationRepository;
+        $this->security = $security;
     }
 
     public function addElements(
@@ -50,6 +58,8 @@ class WorkDayTrackingType extends AbstractType
             $agreement->getStudentEnrollment()->getGroup()->getGrade()->getTraining(),
             $agreement->getWorkcenter()->getCompany()
         );
+
+        $managed = $this->security->isGranted(AgreementVoter::ATTENDANCE, $agreement);
 
         $form
             ->add('activityRealizations', EntityType::class, [
@@ -63,7 +73,22 @@ class WorkDayTrackingType extends AbstractType
                 'required' => false,
                 'choices' => $activityRealizations,
                 'disabled' => $absence
-            ])
+            ]);
+
+        if ($managed) {
+            $form
+                ->add('absence', ChoiceType::class, [
+                    'label' => 'form.work_day.attendance',
+                    'required' => true,
+                    'expanded' => true,
+                    'choices' => [
+                        'form.work_day.attendance.yes' => false,
+                        'form.work_day.attendance.no' => true
+                    ]
+                ]);
+        }
+
+        $form
             ->add('startTime1', null, [
                 'label' => 'form.start_time_1',
                 'required' => false,

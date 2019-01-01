@@ -8,6 +8,9 @@ form.group: Grupo
 form.training: Enseñanza
 
 form.activity_realizations: Actividades realizadas
+form.work_day.attendance: Asistencia
+form.work_day.attendance.yes: El estudiante ha acudido al centro de trabajo
+form.work_day.attendance.no: El estudiante no ha acudido al centro de trabajo
 form.start_date: Fecha de inicio
 form.total_hours: Horas enseñanza
 form.agreement_hours: Horas del acuerdo
