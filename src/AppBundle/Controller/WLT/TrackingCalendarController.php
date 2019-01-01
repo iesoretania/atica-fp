@@ -80,7 +80,10 @@ class TrackingCalendarController extends Controller
         $title .= ' - ' . $workDay->getDate()->format($translator->trans('format.date', [], 'general'));
         $title .= ' - ' . $translator->transChoice('caption.hours', $workDay->getHours(), [], 'calendar');
 
-        $form = $this->createForm(WorkDayTrackingType::class, $workDay, ['work_day' => $workDay]);
+        $form = $this->createForm(WorkDayTrackingType::class, $workDay, [
+            'work_day' => $workDay,
+            'disabled' => $workDay->isAbsence() && false === $this->isGranted(AgreementVoter::ATTENDANCE, $agreement)
+        ]);
 
         $form->handleRequest($request);
 

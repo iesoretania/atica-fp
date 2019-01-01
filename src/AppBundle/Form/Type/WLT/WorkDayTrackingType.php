@@ -43,7 +43,8 @@ class WorkDayTrackingType extends AbstractType
 
     public function addElements(
         FormInterface $form,
-        Agreement $agreement
+        Agreement $agreement,
+        $absence
     ) {
         $activityRealizations = $this->activityRealizationRepository->findByTrainingAndCompany(
             $agreement->getStudentEnrollment()->getGroup()->getGrade()->getTraining(),
@@ -60,7 +61,8 @@ class WorkDayTrackingType extends AbstractType
                 },
                 'multiple' => true,
                 'required' => false,
-                'choices' => $activityRealizations
+                'choices' => $activityRealizations,
+                'disabled' => $absence
             ])
             ->add('startTime1', null, [
                 'label' => 'form.start_time_1',
@@ -84,7 +86,8 @@ class WorkDayTrackingType extends AbstractType
             ])
             ->add('notes', null, [
                 'label' => 'form.notes',
-                'required' => false
+                'required' => false,
+                'disabled' => false
             ]);
     }
 
@@ -97,12 +100,12 @@ class WorkDayTrackingType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData();
 
-            $this->addElements($form, $data->getAgreement());
+            $this->addElements($form, $data->getAgreement(), $data->isAbsence());
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
-            $this->addElements($form, $options['work_day']->getAgreement());
+            $this->addElements($form, $options['work_day']->getAgreement(), $options['work_day']->isAbsence());
         });
     }
     /**
