@@ -2,7 +2,7 @@
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
-    <form action="" class="list" method="post">
+    <form action="{{ path('work_linked_training_tracking_calendar_operation', {'id': agreement.id}) }}" class="list" method="post">
     {% embed 'wlt/tracking/calendar_partial.html.twig' %}
         {% block day %}
             <td {% if day %}class="bg-{{ day.absence ? 'danger' : (day.activityRealizations.count == 0 ? 'info' : 'success') }}"{% endif %}>
@@ -19,6 +19,7 @@
 
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.link_button('', 'check-square', 'btn-primary', 'form.select_deselect'|trans, 'toggle') }}
+    {% if is_granted('WLT_AGREEMENT_ATTENDANCE', agreement) %}{{ m.submit_button('attendance', 'user-slash', 'btn-danger enable-on-items', 'form.attendance'|trans) }}{% endif %}
     </form>
 {% endblock %}
 

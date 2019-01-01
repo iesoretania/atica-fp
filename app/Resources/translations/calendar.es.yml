@@ -2,6 +2,7 @@ title.browse: Calendario del acuerdo
 title.form: Modificar jornada
 title.delete: Eliminar jornadas
 title.preview: Previsualización de jornadas
+title.attendance: Asistencia al centro de trabajo
 
 form.group: Grupo
 form.training: Enseñanza
@@ -53,6 +54,9 @@ form.week_unlock_action: Desbloquear semana
 form.print: Imprimir hoja semanal
 form.select_deselect: Seleccionar/deseleccionar jornadas
 
+form.attendance: Estudiante no asiste
+form.attendance_confirm: Confirmar faltas de asistencia
+
 form.save: Guardar cambios
 form.calculate: Vista previa
 form.add: Añadir jornadas
@@ -67,6 +71,8 @@ message.added: Jornadas añadidas al calendario del acuerdo.
 message.deleted: Jornadas eliminadas del calendario.
 message.save_error: Ha ocurrido un error al añadir las jornadas. Compruebe que el estudiante no las ha cumplimentado.
 message.delete_error: Ha ocurrido un error al eliminar las jornadas.
+message.attendance_updated: Asistencia de las jornadas actualizadas con éxito.
+message.attendance_error: Error al actualizar la asistencia de las jornadas.
 
 message.locked: Bloqueo de jornadas actualizado.
 message.locked_error: Error al actualizar el bloqueo.
@@ -117,6 +123,10 @@ prompt.delete_confirm: |
 
     Esta operación no se puede deshacer.
 
+prompt.attendance_confirm: |
+    ¿Está seguro de que desea indicar que el estudiante no asistió las siguientes jornadas? Si el estudiante marcó alguna actividad en esas jornadas, serán eliminadas.
+
+    Esta operación no se puede deshacer.
 
 form.start_time_1: Hora de entrada (tramo inicial)
 form.end_time_1: Hora de salida (tramo inicial)

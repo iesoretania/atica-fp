@@ -113,4 +113,62 @@ class TrackingCalendarController extends Controller
             'title' => $title
         ]);
     }
+
+    /**
+     * @Route("/{id}/operacion", name="work_linked_training_tracking_calendar_operation",
+     *     requirements={"id" = "\d+"}, methods={"POST"})
+     */
+    public function operationAction(
+        Request $request,
+        WorkDayRepository $workDayRepository,
+        AgreementRepository $agreementRepository,
+        TranslatorInterface $translator,
+        Agreement $agreement
+    ) {
+        $this->denyAccessUnlessGranted(AgreementVoter::ATTENDANCE, $agreement);
+
+        $items = $request->request->get('items', []);
+        if (count($items) === 0) {
+            return $this->redirectToRoute(
+                'work_linked_training_agreement_calendar_list',
+                ['id' => $agreement->getId()]
+            );
+        }
+
+        $workDays = $workDayRepository->findInListByIdAndAgreement($items, $agreement);
+
+        if ($request->get('confirm', '') === 'ok') {
+            try {
+                $workDayRepository->updateAttendance($workDays, true);
+                $this->getDoctrine()->getManager()->flush();
+                $agreementRepository->updateDates($agreement);
+                $this->addFlash('success', $translator->trans('message.attendance_updated', [], 'calendar'));
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.attendance_error', [], 'calendar'));
+            }
+            return $this->redirectToRoute(
+                'work_linked_training_tracking_calendar_list',
+                ['id' => $agreement->getId()]
+            );
+        }
+
+        $title = $translator->trans('title.attendance', [], 'calendar');
+
+        $breadcrumb = [
+            [
+                'fixed' => (string) $agreement,
+                'routeName' => 'work_linked_training_tracking_calendar_list',
+                'routeParams' => ['id' => $agreement->getId()]
+            ],
+            ['fixed' => $title]
+        ];
+
+        return $this->render('wlt/agreement/calendar_attendance.html.twig', [
+            'menu_path' => 'work_linked_training_tracking_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'agreement' => $agreement,
+            'items' => $workDays
+        ]);
+    }
 }

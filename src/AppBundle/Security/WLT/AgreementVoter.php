@@ -31,6 +31,7 @@ class AgreementVoter extends Voter
 {
     const MANAGE = 'WLT_AGREEMENT_MANAGE';
     const ACCESS = 'WLT_AGREEMENT_ACCESS';
+    const ATTENDANCE = 'WLT_AGREEMENT_ATTENDANCE';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -64,6 +65,7 @@ class AgreementVoter extends Voter
         if (!in_array($attribute, [
             self::MANAGE,
             self::ACCESS,
+            self::ATTENDANCE
         ], true)) {
             return false;
         }
@@ -116,25 +118,32 @@ class AgreementVoter extends Voter
             return true;
         }
 
-        // Si es permiso de acceso, comprobar si es el estudiante, el tutor de grupo o el responsable laboral
-        if ($attribute === self::ACCESS) {
-            // estudiante
-            if ($user === $subject->getStudentEnrollment()->getPerson()->getUser()) {
-                return true;
-            }
+        // tutor laboral
+        $isWorkTutor = $user === $subject->getWorkTutor()->getUser();
 
-            // responsable laboral
-            if ($user === $subject->getWorkTutor()->getUser()) {
-                return true;
-            }
+        $isGroupTutor = false;
 
-            // tutores de grupo
-            $tutors = $subject->getStudentEnrollment()->getGroup()->getTutors();
-            foreach ($tutors as $tutor) {
-                if ($tutor->getPerson() === $user) {
-                    return true;
-                }
+        // tutores de grupo
+        $tutors = $subject->getStudentEnrollment()->getGroup()->getTutors();
+        foreach ($tutors as $tutor) {
+            if ($tutor->getPerson() === $user) {
+                $isGroupTutor = true;
+                break;
             }
+        }
+
+        // estudiante del acuerdo
+        $isStudent = $user === $subject->getStudentEnrollment()->getPerson()->getUser();
+
+        switch ($attribute) {
+            // Si es permiso de acceso, comprobar si es el estudiante, el tutor de grupo o el responsable laboral
+            case self::ACCESS:
+                return $isStudent || $isWorkTutor || $isGroupTutor;
+
+            // Si es permiso para pasar lista, el tutor de grupo o el responsable laboral
+            case self::ATTENDANCE:
+                // responsable laboral o tutor de grupo
+                return $isWorkTutor || $isGroupTutor;
         }
 
         // denegamos en cualquier otro caso

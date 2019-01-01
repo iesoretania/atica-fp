@@ -262,4 +262,21 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * @param WorkDay[]
+     * @param bool
+     * @return mixed
+     */
+    public function updateAttendance($list, $value)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->update(WorkDay::class, 'w')
+            ->set('w.absence', ':value')
+            ->where('w IN (:list)')
+            ->setParameter('list', $list)
+            ->setParameter('value', $value)
+            ->getQuery()
+            ->execute();
+    }
 }
