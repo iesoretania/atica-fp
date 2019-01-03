@@ -221,7 +221,8 @@ class OrganizationVoter extends Voter
                     $user->getPerson()
                 );
 
-                return $teacher && $this->groupRepository->countAcademicYearAndWltTutor(
+                return $teacher &&
+                    $this->groupRepository->countAcademicYearAndWltTutor(
                         $subject->getCurrentAcademicYear(),
                         $teacher
                     ) > 0;

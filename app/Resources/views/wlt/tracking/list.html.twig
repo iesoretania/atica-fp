@@ -9,10 +9,12 @@
     <th>{{ 'header.workcenter'|trans }}</th>
     <th>{{ 'header.start_date'|trans }}</th>
     <th>{{ 'header.end_date'|trans }}</th>
+    <th>{{ 'header.status'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
             {% for item in pager %}
+                {% set stats = item.totalHours %}
                 {% set url = path('work_linked_training_tracking_calendar_list', {'id': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
@@ -23,6 +25,10 @@
                     </td>
                     <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}</td>
                     <td>{{ item.endDate ? item.endDate|date('format.date'|trans({}, 'general')) }}</td>
+                    <td>
+                        {{ stats.worked }}/{{ 'table.hours'|transchoice(stats.total) }}
+                        {% if stats.absences %} - {{ 'table.absences'|transchoice(stats.absences) }}{% endif %}
+                    </td>
                 </tr>
             {% else %}
                 <tr>

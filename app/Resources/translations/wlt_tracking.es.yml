@@ -3,6 +3,7 @@ header.student: Estudiante
 header.workcenter: Empresa
 header.start_date: Fecha de inicio
 header.end_date: Fecha de fin
+header.status: Estado
 
 form.calendar: Calendario
 
@@ -15,6 +16,9 @@ title.calendar: Calendario en alternancia
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay resultados que mostrar
 table.filter: Filtrar...
+
+table.hours: "%count% hora|%count% horas"
+table.absences: "%count% falta|%count% faltas"
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
