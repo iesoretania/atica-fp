@@ -52,30 +52,47 @@ class WorkDayTrackingType extends AbstractType
     public function addElements(
         FormInterface $form,
         Agreement $agreement,
-        $absence
+        WorkDay $workDay
     ) {
         $activityRealizations = $this->activityRealizationRepository->findByTrainingAndCompany(
             $agreement->getStudentEnrollment()->getGroup()->getGrade()->getTraining(),
             $agreement->getWorkcenter()->getCompany()
         );
 
-        $managed = $this->security->isGranted(AgreementVoter::ATTENDANCE, $agreement);
+        $locked = $workDay->isLocked();
+        $absence = $workDay->isAbsence();
+
+        $lockManager = $this->security->isGranted(AgreementVoter::LOCK, $agreement);
+        $attendanceManager = $this->security->isGranted(AgreementVoter::ATTENDANCE, $agreement);
+
 
         $form
             ->add('activityRealizations', EntityType::class, [
                 'label' => 'form.activity_realizations',
                 'class' => ActivityRealization::class,
+                'choice_translation_domain' => false,
+                'choices' => $activityRealizations,
                 'expanded' => true,
-                'group_by' => function (ActivityRealization $ar) {
-                    return (string) $ar->getActivity();
-                },
+                'group_by' => 'activity',
                 'multiple' => true,
                 'required' => false,
-                'choices' => $activityRealizations,
-                'disabled' => $absence
+                'disabled' => $absence || $locked
             ]);
 
-        if ($managed) {
+        if ($lockManager) {
+            $form
+                ->add('locked', ChoiceType::class, [
+                    'label' => 'form.locked',
+                    'required' => true,
+                    'expanded' => true,
+                    'choices' => [
+                        'form.locked.no' => false,
+                        'form.locked.yes' => true
+                    ]
+                ]);
+        }
+
+        if ($attendanceManager) {
             $form
                 ->add('absence', ChoiceType::class, [
                     'label' => 'form.work_day.attendance',
@@ -84,7 +101,8 @@ class WorkDayTrackingType extends AbstractType
                     'choices' => [
                         'form.work_day.attendance.yes' => false,
                         'form.work_day.attendance.no' => true
-                    ]
+                    ],
+                    'disabled' => $locked
                 ]);
         }
 
@@ -92,27 +110,31 @@ class WorkDayTrackingType extends AbstractType
             ->add('startTime1', null, [
                 'label' => 'form.start_time_1',
                 'required' => false,
-                'attr' => ['placeholder' => 'form.time.placeholder']
+                'attr' => ['placeholder' => 'form.time.placeholder'],
+                'disabled' => $absence || $locked
             ])
             ->add('endTime1', null, [
                 'label' => 'form.end_time_1',
                 'required' => false,
-                'attr' => ['placeholder' => 'form.time.placeholder']
+                'attr' => ['placeholder' => 'form.time.placeholder'],
+                'disabled' => $absence || $locked
             ])
             ->add('startTime2', null, [
                 'label' => 'form.start_time_2',
                 'required' => false,
-                'attr' => ['placeholder' => 'form.time.placeholder']
+                'attr' => ['placeholder' => 'form.time.placeholder'],
+                'disabled' => $absence || $locked
             ])
             ->add('endTime2', null, [
                 'label' => 'form.end_time_2',
                 'required' => false,
-                'attr' => ['placeholder' => 'form.time.placeholder']
+                'attr' => ['placeholder' => 'form.time.placeholder'],
+                'disabled' => $absence || $locked
             ])
             ->add('notes', null, [
                 'label' => 'form.notes',
                 'required' => false,
-                'disabled' => false
+                'disabled' => $locked
             ]);
     }
 
@@ -125,12 +147,12 @@ class WorkDayTrackingType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData();
 
-            $this->addElements($form, $data->getAgreement(), $data->isAbsence());
+            $this->addElements($form, $data->getAgreement(), $data);
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
-            $this->addElements($form, $options['work_day']->getAgreement(), $options['work_day']->isAbsence());
+            $this->addElements($form, $options['work_day']->getAgreement(), $options['work_day']);
         });
     }
     /**

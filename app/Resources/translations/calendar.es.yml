@@ -31,9 +31,9 @@ form.overwrite_action: Jornadas que ya existen en calendario
 form.overwrite_action.replace: Sobreescribir el valor anterior
 form.overwrite_action.add: Sumar horas a las ya existentes
 
-form.is_locked: Bloqueo
-form.unlocked: El estudiante puede realizar cambios en las actividades
-form.locked: La jornada está bloqueada y el estudiante no podrá realizar cambios
+form.locked: Bloqueo
+form.locked.no: Se pueden realizar cambios en la jornada
+form.locked.yes: La jornada está bloqueada y no se pueden realizar cambios
 
 form.date: Fecha
 form.hours: Horas
@@ -83,6 +83,9 @@ message.locked_error: Error al actualizar el bloqueo.
 prompt.session_deletion_warning: >
     ¡ATENCIÓN! No se podrá eliminar una jornada del calendario del programa formativo si el estudiante la ha cumplimentado en alguna de sus fichas de seguimiento.
 
+prompt.locked_warning: >
+    ¡ATENCIÓN! La jornada está bloqueada. No se podrán realizar cambios en ella. Si existe alguna incidencia, póngase en contacto con el centro educativo.
+
 month0: Enero
 month1: Febrero
 month2: Marzo
@@ -127,7 +130,7 @@ prompt.delete_confirm: |
     Esta operación no se puede deshacer.
 
 prompt.attendance_confirm: |
-    ¿Está seguro de que desea indicar que el estudiante no asistió las siguientes jornadas? Si el estudiante marcó alguna actividad en esas jornadas, serán eliminadas.
+    ¿Está seguro de que desea indicar que el estudiante no asistió las siguientes jornadas? Si el estudiante marcó alguna actividad en esas jornadas, serán eliminadas. Las jornadas bloqueadas no se verán afectadas por esta acción.
 
     Esta operación no se puede deshacer.
 

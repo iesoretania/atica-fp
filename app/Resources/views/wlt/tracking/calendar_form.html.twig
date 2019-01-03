@@ -3,6 +3,9 @@
 {% import 'macros.html.twig' as m %}
 {% form_theme form _self %}
 {% block content %}
+    {% if work_day.locked %}
+        <div class="alert alert-warning">{{ 'prompt.locked_warning'|trans|nl2br }}</div>
+    {% endif %}
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ m.start_button() }}
@@ -18,8 +21,8 @@
             <h5 class="checkbox-category">
                 {{ name }}
             </h5>
-            {% for key,choice in choices %}
-                {{ form_widget(form[key]) }}
+            {% for key, choice in choices %}
+                {{ form_widget(form[key], {translation_domain: false}) }}
                 {{ form_label(form[key]) }}
             {% endfor %}
         {% endfor %}

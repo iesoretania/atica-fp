@@ -32,6 +32,7 @@ class AgreementVoter extends Voter
     const MANAGE = 'WLT_AGREEMENT_MANAGE';
     const ACCESS = 'WLT_AGREEMENT_ACCESS';
     const ATTENDANCE = 'WLT_AGREEMENT_ATTENDANCE';
+    const LOCK = 'WLT_AGREEMENT_LOCK';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -65,7 +66,8 @@ class AgreementVoter extends Voter
         if (!in_array($attribute, [
             self::MANAGE,
             self::ACCESS,
-            self::ATTENDANCE
+            self::ATTENDANCE,
+            self::LOCK
         ], true)) {
             return false;
         }
@@ -142,8 +144,11 @@ class AgreementVoter extends Voter
 
             // Si es permiso para pasar lista, el tutor de grupo o el responsable laboral
             case self::ATTENDANCE:
-                // responsable laboral o tutor de grupo
                 return $isWorkTutor || $isGroupTutor;
+
+            // Si es permiso para bloquear/desbloquear jornadas, el tutor de grupo
+            case self::LOCK:
+                return $isGroupTutor;
         }
 
         // denegamos en cualquier otro caso

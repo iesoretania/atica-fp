@@ -81,8 +81,7 @@ class TrackingCalendarController extends Controller
         $title .= ' - ' . $translator->transChoice('caption.hours', $workDay->getHours(), [], 'calendar');
 
         $form = $this->createForm(WorkDayTrackingType::class, $workDay, [
-            'work_day' => $workDay,
-            'disabled' => $workDay->isAbsence() && false === $this->isGranted(AgreementVoter::ATTENDANCE, $agreement)
+            'work_day' => $workDay
         ]);
 
         $form->handleRequest($request);
@@ -113,6 +112,7 @@ class TrackingCalendarController extends Controller
             'menu_path' => 'work_linked_training_tracking_list',
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
+            'work_day' => $workDay,
             'title' => $title
         ]);
     }
@@ -128,7 +128,6 @@ class TrackingCalendarController extends Controller
         TranslatorInterface $translator,
         Agreement $agreement
     ) {
-        $this->denyAccessUnlessGranted(AgreementVoter::ATTENDANCE, $agreement);
 
         $items = $request->request->get('items', []);
         if (count($items) === 0) {
@@ -139,6 +138,27 @@ class TrackingCalendarController extends Controller
         }
 
         $workDays = $workDayRepository->findInListByIdAndAgreement($items, $agreement);
+
+        // comprobar si es bloqueo de jornadas
+        $locked = $request->get('lock') === '';
+        if ($locked || $request->get('unlock') === '') {
+            $this->denyAccessUnlessGranted(AgreementVoter::LOCK, $agreement);
+            try {
+                $workDayRepository->updateLock($workDays, $locked);
+                $this->getDoctrine()->getManager()->flush();
+                $agreementRepository->updateDates($agreement);
+                $this->addFlash('success', $translator->trans('message.locked', [], 'calendar'));
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.locked_error', [], 'calendar'));
+            }
+            return $this->redirectToRoute(
+                'work_linked_training_tracking_calendar_list',
+                ['id' => $agreement->getId()]
+            );
+        }
+
+        // marcar en las jornadas que estudiante no ha estado en el centro de trabajo
+        $this->denyAccessUnlessGranted(AgreementVoter::ATTENDANCE, $agreement);
 
         if ($request->get('confirm', '') === 'ok') {
             try {
