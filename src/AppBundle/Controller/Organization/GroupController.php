@@ -112,6 +112,8 @@ class GroupController extends Controller
 
         $queryBuilder
             ->select('g')
+            ->addSelect('gr')
+            ->addSelect('t')
             ->from(Group::class, 'g')
             ->orderBy('g.name')
             ->innerJoin('g.grade', 'gr')

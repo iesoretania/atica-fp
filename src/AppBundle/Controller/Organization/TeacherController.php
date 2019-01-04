@@ -106,13 +106,15 @@ class TeacherController extends Controller
 
         $queryBuilder
             ->select('t')
+            ->addSelect('p')
+            ->addSelect('u')
             ->from('AppBundle:Edu\Teacher', 't')
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName')
             ->innerJoin('t.person', 'p')
             ->innerJoin('p.user', 'u');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->andWhere('u.id = :q')

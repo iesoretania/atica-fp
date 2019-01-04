@@ -110,6 +110,9 @@ class StudentEnrollmentController extends Controller
 
         $queryBuilder
             ->select('se')
+            ->addSelect('p')
+            ->addSelect('u')
+            ->addSelect('g')
             ->from(StudentEnrollment::class, 'se')
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName')

@@ -144,6 +144,14 @@ class AgreementController extends Controller
 
         $queryBuilder
             ->select('a')
+            ->addSelect('w')
+            ->addSelect('c')
+            ->addSelect('se')
+            ->addSelect('p')
+            ->addSelect('g')
+            ->addSelect('gr')
+            ->addSelect('t')
+            ->addSelect('wt')
             ->from(Agreement::class, 'a')
             ->join('a.workcenter', 'w')
             ->join('w.company', 'c')
