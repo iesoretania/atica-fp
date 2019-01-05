@@ -124,7 +124,7 @@ class CoreMenu implements MenuBuilderInterface
                 ->setRouteName('admin')
                 ->setCaption('menu.admin')
                 ->setDescription('menu.admin.detail')
-                ->setIcon('cogs')
+                ->setIcon('tools')
                 ->setPriority(9000);
 
             $root[] = $menu1;
