@@ -16,25 +16,23 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Security\WLT;
+namespace AppBundle\Security\Edu;
 
+use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
-use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Repository\Edu\TeachingRepository;
 use AppBundle\Repository\RoleRepository;
-use AppBundle\Security\Edu\GroupVoter;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class AgreementVoter extends Voter
+class GroupVoter extends Voter
 {
-    const MANAGE = 'WLT_AGREEMENT_MANAGE';
-    const ACCESS = 'WLT_AGREEMENT_ACCESS';
-    const ATTENDANCE = 'WLT_AGREEMENT_ATTENDANCE';
-    const LOCK = 'WLT_AGREEMENT_LOCK';
+    const MANAGE = 'EDU_GROUP_MANAGE';
+    const ACCESS = 'EDU_GROUP_ACCESS';
+    const TEACH = 'EDU_GROUP_TEACH';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -66,15 +64,14 @@ class AgreementVoter extends Voter
     protected function supports($attribute, $subject)
     {
 
-        if (!$subject instanceof Agreement) {
+        if (!$subject instanceof Group) {
             return false;
         }
 
         if (!in_array($attribute, [
             self::MANAGE,
             self::ACCESS,
-            self::ATTENDANCE,
-            self::LOCK
+            self::TEACH
         ], true)) {
             return false;
         }
@@ -87,7 +84,7 @@ class AgreementVoter extends Voter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        if (!$subject instanceof Agreement) {
+        if (!$subject instanceof Group) {
             return false;
         }
 
@@ -111,32 +108,17 @@ class AgreementVoter extends Voter
             return true;
         }
 
-        // Si es jefe de su departamento o coordinador de FP dual, permitir acceder siempre
-
-        // Jefe del departamento del estudiante
-        if (null !== $subject->getStudentEnrollment()) {
-            $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
-            if (null !== $training->getDepartment() && $training->getDepartment()->getHead() &&
-                $training->getDepartment()->getHead()->getPerson() === $user->getPerson()
-            ) {
-                return true;
-            }
-        }
-
-        // Coordinador de FP dual
-        if ($this->roleRepository->personHasRole($organization, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
+        // Si es jefe de su departamento o coordinador de FP dual, permitir acceder
+        // 1) Jefe del departamento del ciclo formativo del grupo
+        $training = $subject->getGrade()->getTraining();
+        if (null !== $training->getDepartment() && $training->getDepartment()->getHead() &&
+            $training->getDepartment()->getHead()->getPerson() === $user->getPerson()
+        ) {
             return true;
         }
 
-        // Otros casos: ver qué permisos tiene el usuario
-
-        // Tutor laboral
-        $isWorkTutor = $user === $subject->getWorkTutor()->getUser();
-
-        $isGroupTutor = false;
-
-        // Tutor del grupo del acuerdo
-        $tutors = $subject->getStudentEnrollment()->getGroup()->getTutors();
+        // tutores del grupo
+        $tutors = $subject->getTutors();
         foreach ($tutors as $tutor) {
             if ($tutor->getPerson()->getUser() === $user) {
                 $isGroupTutor = true;
@@ -144,29 +126,20 @@ class AgreementVoter extends Voter
             }
         }
 
-        // Estudiante del acuerdo
-        $isStudent = $user === $subject->getStudentEnrollment()->getPerson()->getUser();
-
-        // Docente del grupo del acuerdo
-        $isTeacher = $this->decisionManager->decide(
-            $token,
-            [GroupVoter::TEACH],
-            $subject->getStudentEnrollment()->getGroup()
-        );
+        // profesor del grupo del acuerdo
+        $isTeacher = $this->teachingRepository->countByGroupAndPerson(
+            $subject,
+            $user->getPerson()
+        ) > 0;
 
         switch ($attribute) {
-            // Si es permiso de acceso, comprobar si es el estudiante, docente, el tutor de grupo o
-            // el responsable laboral
+            // Si es permiso de acceso, el tutor de grupo o un docente
             case self::ACCESS:
-                return $isTeacher || $isStudent || $isWorkTutor || $isGroupTutor;
+                return $isTeacher || $isGroupTutor;
 
-            // Si es permiso para pasar lista, el tutor de grupo o el responsable laboral
-            case self::ATTENDANCE:
-                return $isWorkTutor || $isGroupTutor;
-
-            // Si es permiso para bloquear/desbloquear jornadas, el tutor de grupo
-            case self::LOCK:
-                return $isGroupTutor;
+            // Si es permiso para enseñar, un docente
+            case self::TEACH:
+                return $isTeacher;
         }
 
         // denegamos en cualquier otro caso

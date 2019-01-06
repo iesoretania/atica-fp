@@ -243,7 +243,7 @@ class OrganizationVoter extends Voter
 
             case self::WLT_TEACHER:
                 return
-                    $this->teachingRepository->countAcademicYearAndWltTeacher(
+                    $this->teachingRepository->countAcademicYearAndWltPerson(
                         $subject->getCurrentAcademicYear(),
                         $user->getPerson()
                     ) > 0;
