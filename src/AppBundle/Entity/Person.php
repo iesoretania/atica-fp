@@ -71,7 +71,7 @@ class Person
     private $gender;
 
     /**
-     * @ORM\OneToOne(targetEntity="User", mappedBy="person")
+     * @ORM\OneToOne(targetEntity="User", inversedBy="person")
      * @var User|null
      */
     private $user;
@@ -209,5 +209,15 @@ class Person
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @param User|null $user
+     * @return Person
+     */
+    public function setUser($user = null)
+    {
+        $this->user = $user;
+        return $this;
     }
 }

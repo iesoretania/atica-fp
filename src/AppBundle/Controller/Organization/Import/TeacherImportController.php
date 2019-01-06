@@ -154,10 +154,10 @@ class TeacherImportController extends Controller
                             }
                             $person
                                 ->setUniqueIdentifier($userData['DNI/Pasaporte'])
-                                ->setInternalCode($userData['Empleado/a']);
+                                ->setInternalCode($userData['Empleado/a'])
+                                ->setUser($user);
 
                             $user
-                                ->setPerson($person)
                                 ->setLoginUsername($userName)
                                 ->setEnabled(true)
                                 ->setGlobalAdministrator(false)

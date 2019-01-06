@@ -52,9 +52,11 @@ class PersonAPIController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $newUser = new User();
             $newUser
-                ->setPerson($newPerson)
                 ->setLoginUsername($newPerson->getUniqueIdentifier());
             $emailAddress = $form->get('userEmailAddress')->getData();
+            $newPerson
+                ->setUser($newUser);
+
             if ($emailAddress) {
                 $newUser
                     ->setEmailAddress($emailAddress);

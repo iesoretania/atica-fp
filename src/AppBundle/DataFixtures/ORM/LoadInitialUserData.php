@@ -47,11 +47,13 @@ class LoadInitialUserData extends Fixture
 
         $userAdmin = new User();
         $userAdmin
-            ->setPerson($person)
             ->setLoginUsername('admin')
             ->setEnabled(true)
             ->setGlobalAdministrator(true)
             ->setPassword($this->passwordEncoder->encodePassword($userAdmin, 'admin'));
+
+        $person
+            ->setUser($userAdmin);
 
         $manager->persist($userAdmin);
 

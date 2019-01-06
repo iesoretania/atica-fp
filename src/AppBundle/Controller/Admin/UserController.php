@@ -48,7 +48,7 @@ class UserController extends Controller
         if (null === $localUser) {
             $localPerson = new Person();
             $localUser = new User();
-            $localUser->setPerson($localPerson);
+            $localPerson->setUser($localUser);
             $em->persist($localPerson);
             $em->persist($localUser);
         }

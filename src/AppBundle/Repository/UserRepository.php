@@ -158,8 +158,9 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             $user
                 ->setLoginUsername($person->getUniqueIdentifier())
                 ->setEnabled(true)
-                ->setPassword($this->encoder->encodePassword($user, $person->getUniqueIdentifier()))
-                ->setPerson($person);
+                ->setPassword($this->encoder->encodePassword($user, $person->getUniqueIdentifier()));
+            $person
+                ->setUser($user);
 
             $this->getEntityManager()->persist($user);
         }

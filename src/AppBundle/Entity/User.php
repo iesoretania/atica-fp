@@ -45,8 +45,7 @@ class User implements AdvancedUserInterface
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="Person", inversedBy="user")
-     * @ORM\JoinColumn(unique=true)
+     * @ORM\OneToOne(targetEntity="Person", mappedBy="user")
      * @var Person
      */
     private $person;
@@ -244,18 +243,6 @@ class User implements AdvancedUserInterface
     public function getPerson()
     {
         return $this->person;
-    }
-
-    /**
-     * Set person
-     *
-     * @param Person $person
-     * @return User
-     */
-    public function setPerson($person)
-    {
-        $this->person = $person;
-        return $this;
     }
 
     /**
