@@ -1023,12 +1023,12 @@
             "version": "v2.5.14",
             "source": {
                 "type": "git",
-                "url": "https://github.com/doctrine/doctrine2.git",
+                "url": "https://github.com/doctrine/orm.git",
                 "reference": "810a7baf81462a5ddf10e8baa8cb94b6eec02754"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/810a7baf81462a5ddf10e8baa8cb94b6eec02754",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/810a7baf81462a5ddf10e8baa8cb94b6eec02754",
                 "reference": "810a7baf81462a5ddf10e8baa8cb94b6eec02754",
                 "shasum": ""
             },
@@ -2605,16 +2605,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v3.4.20",
+            "version": "v3.4.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "f6b8ddc362b1cf3fb06548693c3adbb736092412"
+                "reference": "c7a57e0bcc3c57ae697f072b3e862487b6fd0030"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/f6b8ddc362b1cf3fb06548693c3adbb736092412",
-                "reference": "f6b8ddc362b1cf3fb06548693c3adbb736092412",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/c7a57e0bcc3c57ae697f072b3e862487b6fd0030",
+                "reference": "c7a57e0bcc3c57ae697f072b3e862487b6fd0030",
                 "shasum": ""
             },
             "require": {
@@ -2756,7 +2756,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2018-12-06T15:24:36+00:00"
+            "time": "2019-01-06T15:54:26+00:00"
         },
         {
             "name": "twig/twig",
