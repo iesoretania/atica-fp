@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018: Luis Ramón López López
+  Copyright (C) 2018-2019: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -76,7 +76,7 @@ class ActivityController extends Controller
             try {
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_activity'));
-                return $this->redirectToRoute('training_activity_list', [
+                return $this->redirectToRoute('work_linked_training_training_activity_list', [
                     'id' => $subject->getId()
                 ]);
             } catch (\Exception $e) {

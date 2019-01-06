@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018: Luis Ramón López López
+  Copyright (C) 2018-2019: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -76,11 +76,9 @@ class FormAuthenticator extends AbstractGuardAuthenticator
     {
         $session = $request->getSession();
 
-        if ($request->attributes->get('_route') !== 'login_check' || !$request->isMethod('POST') || !$session) {
-            return false;
-        }
-
-        return true;
+        return !(
+            $request->attributes->get('_route') !== 'login_check' || !$request->isMethod('POST') || !$session
+        );
     }
 
     /**

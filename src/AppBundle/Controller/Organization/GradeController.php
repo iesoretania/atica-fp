@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018: Luis Ramón López López
+  Copyright (C) 2018-2019: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +21,6 @@ namespace AppBundle\Controller\Organization;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Grade;
 use AppBundle\Form\Type\Edu\GradeType;
-use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\GradeRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;

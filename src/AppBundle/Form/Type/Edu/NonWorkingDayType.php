@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018: Luis Ramón López López
+  Copyright (C) 2018-2019: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -18,14 +18,8 @@
 
 namespace AppBundle\Form\Type\Edu;
 
-use AppBundle\Entity\Edu\Department;
 use AppBundle\Entity\Edu\NonWorkingDay;
-use AppBundle\Entity\Edu\Training;
-use AppBundle\Repository\Edu\DepartmentRepository;
-use AppBundle\Service\UserExtensionService;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
