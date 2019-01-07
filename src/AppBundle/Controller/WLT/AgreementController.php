@@ -24,6 +24,7 @@ use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Form\Model\CalendarCopy;
 use AppBundle\Form\Type\WLT\AgreementType;
 use AppBundle\Form\Type\WLT\CalendarCopyType;
+use AppBundle\Repository\MembershipRepository;
 use AppBundle\Repository\RoleRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
@@ -68,11 +69,14 @@ class AgreementController extends Controller
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        MembershipRepository $membershipRepository,
         Agreement $agreement
     ) {
         if ($agreement->getId()) {
             $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
         }
+
+        $oldWorkTutor = $agreement->getWorkTutor();
 
         if (null === $agreement->getStudentEnrollment()) {
             $academicYear = $userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
@@ -89,6 +93,14 @@ class AgreementController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                if ($agreement->getWorkTutor() !== $oldWorkTutor && $agreement->getWorkTutor()->getUser()) {
+                    $membershipRepository->addNewOrganizationMembership(
+                        $academicYear->getOrganization(),
+                        $agreement->getWorkTutor()->getUser(),
+                        $academicYear->getStartDate(),
+                        $academicYear->getEndDate()
+                    );
+                }
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_agreement'));
                 return $this->redirectToRoute('work_linked_training_agreement_list', [

@@ -78,6 +78,31 @@ class AgreementRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param AcademicYear $academicYear
+     * @param Person $workTutor
+     *
+     * @return int
+     */
+    public function countAcademicYearAndWorkTutor(AcademicYear $academicYear, Person $workTutor)
+    {
+        try {
+            return $this->createQueryBuilder('a')
+                ->select('COUNT(a)')
+                ->join('a.workcenter', 'w')
+                ->where('a.workTutor = :work_tutor')
+                ->andWhere('w.academicYear = :academic_year')
+                ->setParameter('work_tutor', $workTutor)
+                ->setParameter('academic_year', $academicYear)
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NoResultException $e) {
+        } catch (NonUniqueResultException $e) {
+        }
+
+        return 0;
+    }
+
+    /**
      * @param $items
      * @param AcademicYear $academicYear
      * @return Agreement[]
