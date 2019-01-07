@@ -358,7 +358,8 @@ class LearningProgramController extends Controller
                     }
 
                     if ($companiesParsed === false && '' === $lineData[0]) {
-                        for ($i = count($lineData) - 1; $i > 1; $i--) {
+                        $count = count($lineData);
+                        for ($i = 3; $i <= $count - 1; $i++) {
                             if ($lineData[$i]) {
                                 $company = $companyRepository->findOneBy(['code' => $lineData[$i]]);
                                 if ($company) {
@@ -432,16 +433,18 @@ class LearningProgramController extends Controller
                                 } else {
                                     $oldActivityCount++;
                                 }
+
                                 /** @var LearningProgram $learningProgram */
                                 foreach ($learningPrograms as $n => $learningProgram) {
-                                    $activityRealizations = $learningProgram->getActivityRealizations();
-                                    if (strpos($lineData[$n + 2], 'S') === 0) {
-                                        if (false === $activityRealizations->contains($activityRealization)) {
+                                    if (isset($lineData[$n])) {
+                                        $activityRealizations = $learningProgram->getActivityRealizations();
+                                        if ((strpos($lineData[$n], 'S') === 0) &&
+                                            false === $activityRealizations->contains($activityRealization)
+                                        ) {
                                             $activityRealizations->add($activityRealization);
-                                        }
-                                    }
-                                    if (strpos($lineData[$n + 2], 'N') === 0) {
-                                        if (true === $activityRealizations->contains($activityRealization)) {
+                                        } elseif ((strpos($lineData[$n], 'N') === 0) &&
+                                            true === $activityRealizations->contains($activityRealization)
+                                        ) {
                                             $activityRealizations->removeElement($activityRealization);
                                         }
                                     }
