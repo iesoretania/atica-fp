@@ -54,10 +54,7 @@ class WorkDayTrackingType extends AbstractType
         Agreement $agreement,
         WorkDay $workDay
     ) {
-        $activityRealizations = $this->activityRealizationRepository->findByTrainingAndCompany(
-            $agreement->getStudentEnrollment()->getGroup()->getGrade()->getTraining(),
-            $agreement->getWorkcenter()->getCompany()
-        );
+        $activityRealizations = $agreement->getActivityRealizations();
 
         $locked = $workDay->isLocked();
         $absence = $workDay->isAbsence();
