@@ -76,6 +76,8 @@ message.save_error: Ha ocurrido un error al añadir las jornadas. Compruebe que 
 message.delete_error: Ha ocurrido un error al eliminar las jornadas.
 message.attendance_updated: Asistencia de las jornadas actualizadas con éxito.
 message.attendance_error: Error al actualizar la asistencia de las jornadas.
+message.workday_saved: Cambios guardados con éxito.
+message.workday_save_error: Ha ocurrido un error al registrar los cambios a la jornada.
 
 message.locked: Bloqueo de jornadas actualizado.
 message.locked_error: Error al actualizar el bloqueo.

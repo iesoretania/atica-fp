@@ -21,12 +21,14 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\WorkDay;
 use AppBundle\Form\Type\WLT\WorkDayTrackingType;
+use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
 use AppBundle\Security\WLT\AgreementVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -74,6 +76,7 @@ class TrackingCalendarController extends Controller
     public function editAction(
         Request $request,
         AgreementRepository $agreementRepository,
+        ActivityRealizationRepository $activityRealizationRepository,
         TranslatorInterface $translator,
         WorkDay $workDay
     ) {
@@ -84,22 +87,45 @@ class TrackingCalendarController extends Controller
         $title .= ' - ' . $workDay->getDate()->format($translator->trans('format.date', [], 'general'));
         $title .= ' - ' . $translator->transChoice('caption.hours', $workDay->getHours(), [], 'calendar');
 
+        $lockedActivityRealizations = $activityRealizationRepository->findLockedByAgreement($agreement);
+        $oldActivityRealizations = clone $workDay->getActivityRealizations();
+
         $form = $this->createForm(WorkDayTrackingType::class, $workDay, [
-            'work_day' => $workDay
+            'work_day' => $workDay,
+            'locked_activity_realizations' => $lockedActivityRealizations
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                $currentActivityRealizations = $workDay->getActivityRealizations();
+                $toInsert = array_diff($currentActivityRealizations->toArray(), $oldActivityRealizations->toArray());
+
+                // comprobar que no se intenta activar una concreción ya bloqueada
+                $invalid = array_intersect($toInsert, $lockedActivityRealizations);
+                if (count($invalid) > 0) {
+                    throw $this->createAccessDeniedException();
+                }
+
+                // asegurar que no se pierden las concreciones marcadas pero bloqueadas
+                $toInsert = array_intersect($lockedActivityRealizations, $oldActivityRealizations->toArray());
+                foreach ($toInsert as $activityRealization) {
+                    if ($workDay->getActivityRealizations()->contains($activityRealization) === false) {
+                        $workDay->getActivityRealizations()->add($activityRealization);
+                    }
+                }
                 $this->getDoctrine()->getManager()->flush();
+
                 $agreementRepository->updateDates($agreement);
-                $this->addFlash('success', $translator->trans('message.saved', [], 'calendar'));
+                $this->addFlash('success', $translator->trans('message.workday_saved', [], 'calendar'));
                 return $this->redirectToRoute('work_linked_training_tracking_calendar_list', [
                     'id' => $agreement->getId()
                 ]);
+            } catch (AccessDeniedException $e) {
+                throw $e;
             } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.save_error', [], 'calendar'));
+                $this->addFlash('error', $translator->trans('message.workday_save_error', [], 'calendar'));
             }
         }
 

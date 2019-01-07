@@ -46,7 +46,8 @@ class WorkDayTrackingType extends AbstractType
     public function addElements(
         FormInterface $form,
         Agreement $agreement,
-        WorkDay $workDay
+        WorkDay $workDay,
+        $lockedActivityRealizations
     ) {
         $activityRealizations = $agreement->getActivityRealizations();
 
@@ -61,6 +62,9 @@ class WorkDayTrackingType extends AbstractType
             ->add('activityRealizations', EntityType::class, [
                 'label' => 'form.activity_realizations',
                 'class' => ActivityRealization::class,
+                'choice_attr' => function (ActivityRealization $ar) use ($lockedActivityRealizations) {
+                    return in_array($ar, $lockedActivityRealizations, true) ? ['disabled' => 'disabled'] : [];
+                },
                 'choice_translation_domain' => false,
                 'choices' => $activityRealizations,
                 'expanded' => true,
@@ -134,16 +138,21 @@ class WorkDayTrackingType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
             $data = $event->getData();
 
-            $this->addElements($form, $data->getAgreement(), $data);
+            $this->addElements($form, $data->getAgreement(), $data, $options['locked_activity_realizations']);
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
-            $this->addElements($form, $options['work_day']->getAgreement(), $options['work_day']);
+            $this->addElements(
+                $form,
+                $options['work_day']->getAgreement(),
+                $options['work_day'],
+                $options['locked_activity_realizations']
+            );
         });
     }
     /**
@@ -154,6 +163,7 @@ class WorkDayTrackingType extends AbstractType
         $resolver->setDefaults([
             'data_class' => WorkDay::class,
             'work_day' => null,
+            'locked_activity_realizations' => [],
             'translation_domain' => 'calendar'
         ]);
     }

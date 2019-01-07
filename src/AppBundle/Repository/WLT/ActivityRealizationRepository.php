@@ -22,6 +22,8 @@ use AppBundle\Entity\Company;
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\WLT\Activity;
 use AppBundle\Entity\WLT\ActivityRealization;
+use AppBundle\Entity\WLT\Agreement;
+use AppBundle\Entity\WLT\AgreementActivityRealization;
 use AppBundle\Entity\WLT\LearningProgram;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -110,5 +112,21 @@ class ActivityRealizationRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();
+    }
+
+    public function findLockedByAgreement(Agreement $agreement)
+    {
+        return $this->createQueryBuilder('ar')
+            ->join(
+                AgreementActivityRealization::class,
+                'aar',
+                'WITH',
+                'aar.activityRealization = ar'
+            )
+            ->where('aar.agreement = :agreement')
+            ->andWhere('aar.grade IS NOT NULL')
+            ->setParameter('agreement', $agreement)
+            ->getQuery()
+            ->getResult();
     }
 }
