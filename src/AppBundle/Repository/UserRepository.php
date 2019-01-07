@@ -151,7 +151,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
      */
     public function findByPersonOrCreate(Person $person)
     {
-        $user = $this->findOneBy(['person' => $person]);
+        $user = $person->getUser();
         
         if (null === $user) {
             $user = new User();
