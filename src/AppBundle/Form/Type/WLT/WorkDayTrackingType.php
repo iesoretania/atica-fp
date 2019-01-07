@@ -21,7 +21,6 @@ namespace AppBundle\Form\Type\WLT;
 use AppBundle\Entity\WLT\ActivityRealization;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\WorkDay;
-use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Security\WLT\AgreementVoter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -35,17 +34,12 @@ use Symfony\Component\Security\Core\Security;
 
 class WorkDayTrackingType extends AbstractType
 {
-    /** @var ActivityRealizationRepository */
-    private $activityRealizationRepository;
-
     /** @var Security */
     private $security;
 
     public function __construct(
-        ActivityRealizationRepository $activityRealizationRepository,
         Security $security
     ) {
-        $this->activityRealizationRepository = $activityRealizationRepository;
         $this->security = $security;
     }
 
