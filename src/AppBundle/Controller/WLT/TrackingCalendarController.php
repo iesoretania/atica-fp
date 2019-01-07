@@ -54,11 +54,15 @@ class TrackingCalendarController extends Controller
             ['fixed' => $title]
         ];
 
+        $selectable = $this->isGranted(AgreementVoter::LOCK, $agreement) ||
+            $this->isGranted(AgreementVoter::ATTENDANCE, $agreement);
+
         return $this->render('wlt/tracking/calendar.html.twig', [
             'menu_path' => 'work_linked_training_tracking_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'agreement' => $agreement,
+            'selectable' => $selectable,
             'calendar' => $workDays
         ]);
     }
