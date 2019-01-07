@@ -22,6 +22,7 @@ use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\Workcenter;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -110,11 +111,10 @@ class Agreement
     private $defaultEndTime2;
 
     /**
-     * @ORM\ManyToMany(targetEntity="ActivityRealization")
-     * @ORM\JoinTable("wlt_agreement_activity_realization")
-     * @var ActivityRealization[]
+     * @ORM\OneToMany(targetEntity="AgreementActivityRealization", mappedBy="agreement")
+     * @var AgreementActivityRealization[]
      */
-    private $activityRealizations;
+    private $evaluatedActivityRealizations;
 
     /**
      * @ORM\OneToMany(targetEntity="WorkDay", mappedBy="agreement")
@@ -323,21 +323,34 @@ class Agreement
     }
 
     /**
-     * @return ActivityRealization[]
+     * @return AgreementActivityRealization[]
      */
-    public function getActivityRealizations()
+    public function getEvaluatedActivityRealizations()
     {
-        return $this->activityRealizations;
+        return $this->evaluatedActivityRealizations;
     }
 
     /**
-     * @param ActivityRealization[] $activityRealizations
+     * @param AgreementActivityRealization[] $evaluatedActivityRealizations
      * @return Agreement
      */
-    public function setActivityRealizations($activityRealizations)
+    public function setEvaluatedActivityRealizations($evaluatedActivityRealizations)
     {
-        $this->activityRealizations = $activityRealizations;
+        $this->evaluatedActivityRealizations = $evaluatedActivityRealizations;
         return $this;
+    }
+
+    /**
+     * @return ActivityRealization[]|Collection
+     */
+    public function getActivityRealizations()
+    {
+        $result = new ArrayCollection();
+
+        foreach ($this->getEvaluatedActivityRealizations() as $evaluatedActivityRealization) {
+            $result->add($evaluatedActivityRealization->getActivityRealization());
+        }
+        return $result;
     }
 
     /**

@@ -21,11 +21,13 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\WLT\Agreement;
+use AppBundle\Entity\WLT\AgreementActivityRealization;
 use AppBundle\Form\Model\CalendarCopy;
 use AppBundle\Form\Type\WLT\AgreementType;
 use AppBundle\Form\Type\WLT\CalendarCopyType;
 use AppBundle\Repository\MembershipRepository;
 use AppBundle\Repository\RoleRepository;
+use AppBundle\Repository\WLT\AgreementActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;
@@ -70,6 +72,7 @@ class AgreementController extends Controller
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         MembershipRepository $membershipRepository,
+        AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
         Agreement $agreement
     ) {
         if ($agreement->getId()) {
@@ -89,10 +92,13 @@ class AgreementController extends Controller
 
         $form = $this->createForm(AgreementType::class, $agreement);
 
+        $oldActivityRealizations = $agreement->getActivityRealizations();
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                // dar acceso al tutor laboral a la organización si ha cambiado
                 if ($agreement->getWorkTutor() !== $oldWorkTutor && $agreement->getWorkTutor()->getUser()) {
                     $membershipRepository->addNewOrganizationMembership(
                         $academicYear->getOrganization(),
@@ -101,6 +107,21 @@ class AgreementController extends Controller
                         $academicYear->getEndDate()
                     );
                 }
+                // actualizar concreciones del convenio
+                $currentActivityRealizations = $form->get('activityRealizations')->getData();
+
+                $toInsert = array_diff($currentActivityRealizations->toArray(), $oldActivityRealizations->toArray());
+                foreach ($toInsert as $activityRealization) {
+                    $agreementActivityRealization = new AgreementActivityRealization();
+                    $agreementActivityRealization
+                        ->setAgreement($agreement)
+                        ->setActivityRealization($activityRealization);
+                    $this->getDoctrine()->getManager()->persist($agreementActivityRealization);
+                }
+
+                $toRemove = array_diff($oldActivityRealizations->toArray(), $currentActivityRealizations->toArray());
+                $agreementActivityRealizationRepository->deleteFromList($agreement, $toRemove);
+
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_agreement'));
                 return $this->redirectToRoute('work_linked_training_agreement_list', [

@@ -1,6 +1,7 @@
 {% trans_default_domain 'wlt_agreement' %}
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
+{% form_theme form _self %}
 {% block content %}
     {{ form_start(form, {'attr': {'data-ajax': path('work_linked_training_agreement_new')}}) }}
     {{ form_widget(form) }}
@@ -18,4 +19,18 @@
     {{ parent() }}
     <script src="{{ asset('build/person.js') }}"></script>
     <script src="{{ asset('build/wlt_agreement.js') }}"></script>
+{% endblock %}
+
+{% block _agreement_activityRealizations_widget %}
+    <div {{ block('widget_container_attributes') }}>
+        {% for name, choices in form.vars.choices %}
+            <h5 class="checkbox-category">
+                {{ name }}
+            </h5>
+            {% for key, choice in choices %}
+                {{ form_widget(form[key], {translation_domain: false}) }}
+                {{ form_label(form[key]) }}
+            {% endfor %}
+        {% endfor %}
+    </div>
 {% endblock %}

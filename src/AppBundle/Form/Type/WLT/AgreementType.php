@@ -95,7 +95,8 @@ class AgreementType extends AbstractType
         FormInterface $form,
         AcademicYear $academicYear = null,
         Company $company = null,
-        StudentEnrollment $studentEnrollment = null
+        StudentEnrollment $studentEnrollment = null,
+        $currentActivityRealizations
     ) {
         $organization = $this->userExtensionService->getCurrentOrganization();
         if (null === $academicYear) {
@@ -224,8 +225,10 @@ class AgreementType extends AbstractType
             ])
             ->add('activityRealizations', EntityType::class, [
                 'label' => 'form.activity_realizations',
+                'mapped' => false,
                 'class' => ActivityRealization::class,
-                'expanded' => false,
+                'data' => $currentActivityRealizations,
+                'expanded' => true,
                 'group_by' => function (ActivityRealization $ar) {
                     return (string) $ar->getActivity();
                 },
@@ -251,7 +254,9 @@ class AgreementType extends AbstractType
 
             $studentEnrollment = $data->getStudentEnrollment();
 
-            $this->addElements($form, $academicYear, $company, $studentEnrollment);
+            $currentActivityRealizations = $data->getActivityRealizations();
+
+            $this->addElements($form, $academicYear, $company, $studentEnrollment, $currentActivityRealizations);
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
@@ -271,7 +276,7 @@ class AgreementType extends AbstractType
                 $this->studentEnrollmentRepository->find($data['studentEnrollment']) :
                 null;
 
-            $this->addElements($form, $academicYear, $company, $studentEnrollment);
+            $this->addElements($form, $academicYear, $company, $studentEnrollment, null);
         });
     }
 
