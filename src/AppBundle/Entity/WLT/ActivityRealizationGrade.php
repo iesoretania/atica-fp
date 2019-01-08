@@ -22,7 +22,7 @@ use AppBundle\Entity\Edu\AcademicYear;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\WLT\ActivityRealizationGradeRepository")
  * @ORM\Table(name="wlt_activity_realization_grade")
  */
 class ActivityRealizationGrade
@@ -53,6 +53,13 @@ class ActivityRealizationGrade
      * @var int
      */
     private $numericGrade;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     * @var string
+     */
+    private $notes;
+
 
     /**
      * @return int
@@ -113,6 +120,24 @@ class ActivityRealizationGrade
     public function setNumericGrade($numericGrade)
     {
         $this->numericGrade = $numericGrade;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNotes()
+    {
+        return $this->notes;
+    }
+
+    /**
+     * @param string $notes
+     * @return ActivityRealizationGrade
+     */
+    public function setNotes($notes)
+    {
+        $this->notes = $notes;
         return $this;
     }
 }
