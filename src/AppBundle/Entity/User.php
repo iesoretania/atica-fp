@@ -246,6 +246,19 @@ class User implements AdvancedUserInterface
     }
 
     /**
+     * @param Person $person
+     * @return User
+     */
+    public function setPerson($person)
+    {
+        $this->person = $person;
+        if ($person->getUser() !== $this) {
+            $person->setUser($this);
+        }
+        return $this;
+    }
+
+    /**
      * Set enabled
      *
      * @param boolean $enabled

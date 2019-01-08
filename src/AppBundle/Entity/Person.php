@@ -215,9 +215,13 @@ class Person
      * @param User|null $user
      * @return Person
      */
-    public function setUser($user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
+        if ($user && $user->getPerson() !== $this) {
+            $user->setPerson($this);
+        }
+
         return $this;
     }
 }

@@ -129,15 +129,16 @@ class TeacherImportController extends Controller
                     }
                     $userName = $userData['Usuario IdEA'];
 
-                    $user = $em->getRepository(User::class)->findOneBy(['loginUsername' => $userName]);
                     $alreadyProcessed = isset($userCollection[$userName]);
 
-                    if (null === $user) {
-                        if ($alreadyProcessed) {
-                            $user = $userCollection[$userName];
-                        } else {
+                    if ($alreadyProcessed) {
+                        $user = $userCollection[$userName];
+                        $person = $user->getPerson();
+                        $existingUsers++;
+                    } else {
+                        $user = $em->getRepository(User::class)->findOneBy(['loginUsername' => $userName]);
+                        if (null === $user) {
                             $user = new User();
-
                             $person = $em->getRepository(Person::class)->findOneBy([
                                 'uniqueIdentifier' => $userData['DNI/Pasaporte']
                             ]);
@@ -176,11 +177,9 @@ class TeacherImportController extends Controller
                             $newUserCollection[$userName] = $user;
 
                             $newUserCount++;
-                        }
-                    } else {
-                        if (!$alreadyProcessed) {
+                        } else {
+                            $person = $user->getPerson();
                             $existingUsers++;
-                            $userCollection[$userName] = $user;
                         }
                     }
 
@@ -197,11 +196,11 @@ class TeacherImportController extends Controller
                     }
 
                     /** @var Membership $membership */
-                    $membership = $em->getRepository(Membership::class)->findOneBy([
+                    $membership = $user->getId() ? $em->getRepository(Membership::class)->findOneBy([
                         'organization' => $organization,
                         'user' => $user,
                         'validFrom' => $validFrom
-                    ]);
+                    ]) : null;
 
                     if (null === $membership) {
                         $membership = new Membership();
@@ -221,15 +220,16 @@ class TeacherImportController extends Controller
                         $existingMemberships++;
                     }
 
-                    $teacher = $em->getRepository(Teacher::class)->findOneBy([
-                        'academicYear' => $academicYear
-                    ]);
+                    $teacher = $person->getId() ? $em->getRepository(Teacher::class)->findOneBy([
+                        'academicYear' => $academicYear,
+                        'person' => $person
+                    ]) : null;
 
                     if (null === $teacher) {
                         $teacher = new Teacher();
                         $teacher
                             ->setAcademicYear($academicYear)
-                            ->setPerson($user->getPerson());
+                            ->setPerson($person);
                         $em->persist($teacher);
                     }
                 }
