@@ -5,11 +5,10 @@
 {% block path_new %}{{ path('organization_group_new') }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-10"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
-    <th class="w-30">{{ 'header.grade'|trans }}</th>
-    <th class="w-30">{{ 'header.tutors'|trans }}</th>
-    <th class="w-10">{{ 'header.students'|trans }}</th>
-    <th class="w-20"></th>
+    <th><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th>{{ 'header.grade'|trans }}</th>
+    <th>{{ 'header.tutors'|trans }}</th>
+    <th>{{ 'header.students'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
@@ -28,12 +27,10 @@
                     <td>
                         {{ group.students|length }}
                     </td>
-                    <td>
-                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

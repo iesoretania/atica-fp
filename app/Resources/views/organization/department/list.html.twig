@@ -5,9 +5,8 @@
 {% block path_new %}{{ path('organization_department_new') }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-40"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
-    <th class="w-40">{{ 'header.head'|trans }}</th>
-    <th class="w-20"></th>
+    <th><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th>{{ 'header.head'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
@@ -20,12 +19,10 @@
                     <td>
                         {{ department.head|default('') }}
                     </td>
-                    <td>
-                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="2">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}
