@@ -147,6 +147,18 @@ class StudentImportController extends Controller
                         $person = $personCollection[$uniqueIdentifier];
                     }
                     if (null === $person) {
+                        $gender = $studentData['Sexo'];
+                        switch ($gender) {
+                            case 'H':
+                                $gender = Person::GENDER_MALE;
+                                break;
+                            case 'M':
+                                $gender = Person::GENDER_FEMALE;
+                                break;
+                            default:
+                                $gender = Person::GENDER_NEUTRAL;
+                        }
+
                         $person = new Person();
                         $person
                             ->setUniqueIdentifier($uniqueIdentifier)
@@ -155,7 +167,7 @@ class StudentImportController extends Controller
                                 $studentData['Primer apellido'] .
                                 ($studentData['Segundo apellido'] ? (' ' . $studentData['Segundo apellido']) : '')
                             )
-                            ->setGender(Person::GENDER_NEUTRAL);
+                            ->setGender($gender);
 
                         $entityManager->persist($person);
                         $newCount++;
