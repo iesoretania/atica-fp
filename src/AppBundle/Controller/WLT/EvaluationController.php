@@ -19,7 +19,6 @@
 namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Role;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Form\Type\WLT\AgreementEvaluationType;
 use AppBundle\Repository\Edu\GroupRepository;
@@ -104,7 +103,6 @@ class EvaluationController extends Controller
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        RoleRepository $roleRepository,
         TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
         Security $security,
@@ -156,13 +154,9 @@ class EvaluationController extends Controller
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
         $person = $this->getUser()->getPerson();
-        $isWltManager = $roleRepository->personHasRole(
-            $organization,
-            $person,
-            Role::ROLE_WLT_MANAGER
-        );
+        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
         $isDepartmentHead = $security->isGranted(OrganizationVoter::DEPARTMENT_HEAD, $organization);
         $isWorkTutor = $security->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization);
         $isGroupTutor = $security->isGranted(OrganizationVoter::WLT_GROUP_TUTOR, $organization);

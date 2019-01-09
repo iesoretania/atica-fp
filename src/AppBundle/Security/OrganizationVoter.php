@@ -48,6 +48,7 @@ class OrganizationVoter extends Voter
     const DEPARTMENT_HEAD = 'ORGANIZATION_DEPARTMENT_HEAD';
     const WLT_STUDENT = 'ORGANIZATION_WLT_STUDENT';
     const WLT_TEACHER = 'ORGANIZATION_WLT_TEACHER';
+    const WLT_MANAGER = 'ORGANIZATION_WLT_MANAGER';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -111,7 +112,8 @@ class OrganizationVoter extends Voter
             self::WLT_GROUP_TUTOR,
             self::DEPARTMENT_HEAD,
             self::WLT_STUDENT,
-            self::WLT_TEACHER
+            self::WLT_TEACHER,
+            self::WLT_MANAGER
         ], true)) {
             return false;
         }
@@ -158,10 +160,7 @@ class OrganizationVoter extends Voter
                 }
 
                 // 2) Coordinador de FP dual
-                if ($this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
-                    return true;
-                }
-                return false;
+                return $this->voteOnAttribute(self::WLT_MANAGER, $subject, $token);
 
             case self::VIEW_GRADE_WORK_LINKED_TRAINING:
             case self::GRADE_WORK_LINKED_TRAINING:
@@ -175,7 +174,7 @@ class OrganizationVoter extends Voter
                 // 6) los estudiantes que tengan acuerdos
 
                 // 1) Coordinador de FP dual
-                if ($this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
+                if ($this->voteOnAttribute(self::WLT_MANAGER, $subject, $token)) {
                     return true;
                 }
 
@@ -222,6 +221,8 @@ class OrganizationVoter extends Voter
                     }
                 }
                 break;
+            case self::WLT_MANAGER:
+                return $this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER);
 
             case self::WLT_GROUP_TUTOR:
                 $teacher = $this->teacherRepository->findOneByAcademicYearAndPerson(
