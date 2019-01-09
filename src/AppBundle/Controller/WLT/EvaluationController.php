@@ -28,6 +28,7 @@ use AppBundle\Repository\RoleRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\AgreementVoter;
 use AppBundle\Service\UserExtensionService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -222,5 +223,14 @@ class EvaluationController extends Controller
             'domain' => 'wlt_agreement_activity_realization',
             'academic_year' => $academicYear
         ]);
+    }
+
+    private function appendGroups(ArrayCollection $groups, $newGroups)
+    {
+        foreach ($newGroups as $group) {
+            if (false === $groups->contains($group)) {
+                $groups->add($group);
+            }
+        }
     }
 }
