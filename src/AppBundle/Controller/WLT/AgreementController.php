@@ -53,7 +53,9 @@ class AgreementController extends Controller
     public function newAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        TranslatorInterface $translator)
+        TranslatorInterface $translator,
+        MembershipRepository $membershipRepository,
+        AgreementActivityRealizationRepository $agreementActivityRealizationRepository)
     {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
@@ -61,7 +63,14 @@ class AgreementController extends Controller
         $agreement = new Agreement();
         $this->getDoctrine()->getManager()->persist($agreement);
 
-        return $this->indexAction($request, $userExtensionService, $translator, $agreement);
+        return $this->indexAction(
+            $request,
+            $userExtensionService,
+            $translator,
+            $membershipRepository,
+            $agreementActivityRealizationRepository,
+            $agreement
+        );
     }
 
     /**
@@ -119,8 +128,10 @@ class AgreementController extends Controller
                     $this->getDoctrine()->getManager()->persist($agreementActivityRealization);
                 }
 
-                $toRemove = array_diff($oldActivityRealizations->toArray(), $currentActivityRealizations->toArray());
-                $agreementActivityRealizationRepository->deleteFromList($agreement, $toRemove);
+                if ($agreement->getId()) {
+                    $toRemove = array_diff($oldActivityRealizations->toArray(), $currentActivityRealizations->toArray());
+                    $agreementActivityRealizationRepository->deleteFromList($agreement, $toRemove);
+                }
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_agreement'));

@@ -347,8 +347,10 @@ class Agreement
     {
         $result = new ArrayCollection();
 
-        foreach ($this->getEvaluatedActivityRealizations() as $evaluatedActivityRealization) {
-            $result->add($evaluatedActivityRealization->getActivityRealization());
+        if ($this->getEvaluatedActivityRealizations()) {
+            foreach ($this->getEvaluatedActivityRealizations() as $evaluatedActivityRealization) {
+                $result->add($evaluatedActivityRealization->getActivityRealization());
+            }
         }
         return $result;
     }
