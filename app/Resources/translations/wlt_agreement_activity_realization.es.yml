@@ -1,0 +1,24 @@
+form.description: Concreción
+form.grade: Evaluación
+
+form.grade_none: Sin valorar
+
+form.save: Guardar cambios
+form.back: Volver
+
+title.grade: Evaluación del convenio
+title.list: Convenios evaluables
+
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay convenios que mostrar
+table.filter: Filtrar...
+
+header.student_enrollment: Estudiante
+header.workcenter: Centro de trabajo
+header.work_tutor: Responsable laboral
+header.start_date: Fecha de inicio
+header.end_date: Fecha de finalización
+header.status: Estado
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.

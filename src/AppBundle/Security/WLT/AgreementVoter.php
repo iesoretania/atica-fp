@@ -35,6 +35,8 @@ class AgreementVoter extends Voter
     const ACCESS = 'WLT_AGREEMENT_ACCESS';
     const ATTENDANCE = 'WLT_AGREEMENT_ATTENDANCE';
     const LOCK = 'WLT_AGREEMENT_LOCK';
+    const GRADE = 'WLT_AGREEMENT_GRADE';
+    const VIEW_GRADE = 'WLT_AGREEMENT_VIEW_GRADE';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -45,18 +47,13 @@ class AgreementVoter extends Voter
     /** @var UserExtensionService */
     private $userExtensionService;
 
-    /** @var TeachingRepository */
-    private $teachingRepository;
-
     public function __construct(
         AccessDecisionManagerInterface $decisionManager,
         RoleRepository $roleRepository,
-        TeachingRepository $teachingRepository,
         UserExtensionService $userExtensionService
     ) {
         $this->decisionManager = $decisionManager;
         $this->roleRepository = $roleRepository;
-        $this->teachingRepository = $teachingRepository;
         $this->userExtensionService = $userExtensionService;
     }
 
@@ -74,7 +71,9 @@ class AgreementVoter extends Voter
             self::MANAGE,
             self::ACCESS,
             self::ATTENDANCE,
-            self::LOCK
+            self::LOCK,
+            self::GRADE,
+            self::VIEW_GRADE
         ], true)) {
             return false;
         }
@@ -158,10 +157,15 @@ class AgreementVoter extends Voter
             // Si es permiso de acceso, comprobar si es el estudiante, docente, el tutor de grupo o
             // el responsable laboral
             case self::ACCESS:
-                return $isTeacher || $isStudent || $isWorkTutor || $isGroupTutor;
+                return $isStudent || $isTeacher || $isWorkTutor || $isGroupTutor;
 
-            // Si es permiso para pasar lista, el tutor de grupo o el responsable laboral
+            // Si es permiso para ver la evaluación, el profesorado del grupo, el tutor o el responsable laboral
+            case self::VIEW_GRADE:
+                return $isTeacher || $isWorkTutor || $isGroupTutor;
+
+            // Si es permiso para pasar lista o evaluar, el tutor de grupo o el responsable laboral
             case self::ATTENDANCE:
+            case self::GRADE:
                 return $isWorkTutor || $isGroupTutor;
 
             // Si es permiso para bloquear/desbloquear jornadas, el tutor de grupo

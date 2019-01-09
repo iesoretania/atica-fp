@@ -61,6 +61,11 @@ class ActivityRealizationGrade
     private $notes;
 
 
+    public function __toString()
+    {
+        return $this->getDescription();
+    }
+
     /**
      * @return int
      */

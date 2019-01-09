@@ -79,8 +79,11 @@ menu.work_linked_training.learning_program.detail: Gestionar los programas forma
 menu.work_linked_training.training: Actividades formativo/productivas
 menu.work_linked_training.training.detail: Configurar las actividades de las enseñanzas de FP dual del centro
 
-menu.work_linked_training.activity_realization_grade: Configurar evaluación
+menu.work_linked_training.activity_realization_grade: Configuración de evaluación
 menu.work_linked_training.activity_realization_grade.detail: Configurar las calificaciones de las concreciones de las actividades formativo/productivas
+
+menu.work_linked_training.evaluation: Evaluación de actividades
+menu.work_linked_training.evaluation.detail: Evaluar las distintas concreciones de actividades formativo/productivas de los convenios
 
 menu.company: Empresas colaboradoras
 menu.company.detail: Gestionar las empresas colaboradoras y sus centros de trabajo

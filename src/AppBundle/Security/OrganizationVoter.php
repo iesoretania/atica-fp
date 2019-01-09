@@ -39,6 +39,8 @@ class OrganizationVoter extends Voter
     const ACCESS_TRAININGS = 'ORGANIZATION_ACCESS_TRAININGS';
     const ACCESS_WORK_LINKED_TRAINING = 'ORGANIZATION_ACCESS_WORKLINKED_TRAINING';
     const MANAGE_WORK_LINKED_TRAINING = 'ORGANIZATION_MANAGE_WORKLINKED_TRAINING';
+    const GRADE_WORK_LINKED_TRAINING = 'ORGANIZATION_GRADE_WORKLINKED_TRAINING';
+    const VIEW_GRADE_WORK_LINKED_TRAINING = 'ORGANIZATION_VIEW_GRADE_WORKLINKED_TRAINING';
     const MANAGE_COMPANIES = 'ORGANIZATION_MANAGE_COMPANIES';
 
     const WLT_GROUP_TUTOR = 'ORGANIZATION_WLT_GROUP_TUTOR';
@@ -102,6 +104,8 @@ class OrganizationVoter extends Voter
             self::ACCESS_TRAININGS,
             self::ACCESS_WORK_LINKED_TRAINING,
             self::MANAGE_WORK_LINKED_TRAINING,
+            self::GRADE_WORK_LINKED_TRAINING,
+            self::VIEW_GRADE_WORK_LINKED_TRAINING,
             self::MANAGE_COMPANIES,
             self::WLT_WORK_TUTOR,
             self::WLT_GROUP_TUTOR,
@@ -159,6 +163,8 @@ class OrganizationVoter extends Voter
                 }
                 return false;
 
+            case self::VIEW_GRADE_WORK_LINKED_TRAINING:
+            case self::GRADE_WORK_LINKED_TRAINING:
             case self::ACCESS_WORK_LINKED_TRAINING:
                 // pueden acceder:
                 // 1) los que gestionan la FP dual,
@@ -193,13 +199,15 @@ class OrganizationVoter extends Voter
                     return true;
                 }
 
-                // 6) Docentes de dual
-                if ($this->voteOnAttribute(self::WLT_TEACHER, $subject, $token)) {
+                // 6) Docentes de dual, salvo que sea realizar evaluación
+                if ($subject !== self::GRADE_WORK_LINKED_TRAINING &&
+                    $this->voteOnAttribute(self::WLT_TEACHER, $subject, $token)) {
                     return true;
                 }
 
-                // 7) Alumnado con acuerdos
-                return $this->voteOnAttribute(self::WLT_STUDENT, $subject, $token);
+                // 7) Alumnado con acuerdos, sólo si es acceso
+                return $subject === self::ACCESS_WORK_LINKED_TRAINING &&
+                    $this->voteOnAttribute(self::WLT_STUDENT, $subject, $token);
 
             case self::ACCESS:
                 // Si es permiso de acceso, comprobar que pertenece actualmente a la organización

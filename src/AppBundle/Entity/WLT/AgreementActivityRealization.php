@@ -125,7 +125,7 @@ class AgreementActivityRealization
      * @param ActivityRealizationGrade $grade
      * @return AgreementActivityRealization
      */
-    public function setGrade(ActivityRealizationGrade $grade)
+    public function setGrade(ActivityRealizationGrade $grade = null)
     {
         $this->grade = $grade;
         return $this;

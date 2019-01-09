@@ -96,7 +96,7 @@ class CoreMenu implements MenuBuilderInterface
                     ->setCaption('menu.work_linked_training.activity_realization_grade')
                     ->setDescription('menu.work_linked_training.activity_realization_grade.detail')
                     ->setIcon('list-ol')
-                    ->setPriority(6000);
+                    ->setPriority(7000);
 
                 $menu1->addChild($menu2);
             }
@@ -110,6 +110,19 @@ class CoreMenu implements MenuBuilderInterface
                     ->setDescription('menu.work_linked_training.training.detail')
                     ->setIcon('graduation-cap')
                     ->setPriority(5000);
+
+                $menu1->addChild($menu2);
+            }
+
+            if ($this->security->isGranted(OrganizationVoter::VIEW_GRADE_WORK_LINKED_TRAINING, $organization)) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('work_linked_training_evaluation')
+                    ->setRouteName('work_linked_training_evaluation_list')
+                    ->setCaption('menu.work_linked_training.evaluation')
+                    ->setDescription('menu.work_linked_training.evaluation.detail')
+                    ->setIcon('award')
+                    ->setPriority(6000);
 
                 $menu1->addChild($menu2);
             }
