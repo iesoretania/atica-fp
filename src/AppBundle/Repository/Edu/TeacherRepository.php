@@ -20,6 +20,7 @@ namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
+use AppBundle\Entity\Edu\Teaching;
 use AppBundle\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -70,12 +71,26 @@ class TeacherRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
-        }
-        catch(NonUniqueResultException $e) {
+        } catch (NonUniqueResultException $e) {
             return null;
         }
     }
 
+    public function findByAcademicYearAndWLT(AcademicYear $academicYear)
+    {
+        return $this->createQueryBuilder('t')
+            ->join('t.person', 'p')
+            ->join('p.user', 'u')
+            ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
+            ->andWhere('t.academicYear = :academic_year')
+            ->andWhere('te.workLinked = :work_linked')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('work_linked', true)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->getQuery()
+            ->getResult();
+    }
     public function findAllInListByIdAndAcademicYear(
         $items,
         AcademicYear $academicYear
