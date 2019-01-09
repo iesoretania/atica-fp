@@ -396,8 +396,8 @@ class LearningProgramController extends Controller
                                 // obtener código de la asignatura y buscarla
                                 preg_match('/^([A-Za-z]*)/', $lineData[0], $output);
                                 $lastCode = $output[0];
-                                $subject = $subjectRepository->findOneByAcademicYearAndCode(
-                                    $training->getAcademicYear(),
+                                $subject = $subjectRepository->findOneByTrainingAndCode(
+                                    $training,
                                     $lastCode
                                 );
                                 // si no hay asignatura, ignorar las actividades

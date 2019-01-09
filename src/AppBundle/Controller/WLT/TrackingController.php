@@ -19,14 +19,11 @@
 namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Role;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
-use AppBundle\Repository\RoleRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -49,7 +46,6 @@ class TrackingController extends Controller
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        RoleRepository $roleRepository,
         TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
         Security $security,
@@ -86,10 +82,11 @@ class TrackingController extends Controller
             ->addOrderBy('p.firstName')
             ->addOrderBy('c.name');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
+
         if ($q) {
             $queryBuilder
-                ->where('g.name LIKE :tq')
+                ->orWhere('g.name LIKE :tq')
                 ->orWhere('p.lastName LIKE :tq')
                 ->orWhere('p.firstName LIKE :tq')
                 ->orWhere('w.name LIKE :tq')
@@ -102,55 +99,38 @@ class TrackingController extends Controller
         }
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $person = $this->getUser()->getPerson();
-        $isWltManager = $roleRepository->personHasRole(
-            $organization,
-            $person,
-            Role::ROLE_WLT_MANAGER
-        );
-        $isDepartmentHead = $security->isGranted(OrganizationVoter::DEPARTMENT_HEAD, $organization);
+        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
         $isWorkTutor = $security->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization);
-        $isGroupTutor = $security->isGranted(OrganizationVoter::WLT_GROUP_TUTOR, $organization);
-        $isTeacher = $security->isGranted(OrganizationVoter::WLT_TEACHER, $organization);
 
         if (false === $isManager && false === $isWltManager) {
-            // si es tutor laboral, mostrar siempre
-            if ($isWorkTutor) {
-                $queryBuilder
-                    ->orWhere('a.workTutor = :person')
-                    ->setParameter('person', $person);
-            }
-
-            // si es estudiante, devolver sólo lo suyo
-            $queryBuilder
-                ->orWhere('se.person = :person')
-                ->setParameter('person', $person);
+            $person = $this->getUser()->getPerson();
 
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento, tutor de grupo o profesor
-
-            // vamos a buscar los grupos a los que tienen acceso
-            $groups = new ArrayCollection();
-
             $teacher =
                 $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
-            if ($isDepartmentHead) {
-                $newGroups = $groupRepository->findByAcademicYearAndWltHead($academicYear, $teacher);
-                $this->appendGroups($groups, $newGroups);
-            }
-            if ($isGroupTutor) {
-                $newGroups = $groupRepository->findByAcademicYearAndWltTutor($academicYear, $teacher);
-                $this->appendGroups($groups, $newGroups);
-            }
-            if ($isTeacher) {
-                $newGroups = $groupRepository->findByAcademicYearAndWltTeacher($academicYear, $teacher);
-                $this->appendGroups($groups, $newGroups);
-            }
-            if ($groups->count() > 0) {
-                $queryBuilder
-                    ->orWhere('g IN (:groups)')
-                    ->setParameter('groups', $groups);
+            if ($teacher) {
+                $groups = $groupRepository->findByAcademicYearAndTeacher($academicYear, $teacher);
+
+                if ($groups->count() > 0) {
+                    $queryBuilder
+                        ->andWhere('g IN (:groups)')
+                        ->setParameter('groups', $groups);
+                }
+                // si también es tutor laboral, mostrar los suyos aunque sean de otros grupos
+                if ($isWorkTutor) {
+                    $queryBuilder
+                        ->orWhere('a.workTutor = :person')
+                        ->setParameter('person', $person);
+                }
+            } else {
+                // si solo es tutor laboral, necesita ser el tutor para verlo
+                if ($isWorkTutor) {
+                    $queryBuilder
+                        ->andWhere('a.workTutor = :person')
+                        ->setParameter('person', $person);
+                }
             }
         }
 
@@ -174,14 +154,5 @@ class TrackingController extends Controller
             'domain' => 'wlt_tracking',
             'academic_year' => $academicYear
         ]);
-    }
-
-    private function appendGroups(ArrayCollection $groups, $newGroups)
-    {
-        foreach ($newGroups as $group) {
-            if (false === $groups->contains($group)) {
-                $groups->add($group);
-            }
-        }
     }
 }

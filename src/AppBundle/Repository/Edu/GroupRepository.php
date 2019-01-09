@@ -23,16 +23,24 @@ use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Edu\Teaching;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Security\Core\Security;
 
 class GroupRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @var Security
+     */
+    private $security;
+
+    public function __construct(ManagerRegistry $registry, Security $security)
     {
         parent::__construct($registry, Group::class);
+        $this->security = $security;
     }
 
     /**
@@ -170,7 +178,6 @@ class GroupRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-
     public function findByAcademicYearAndWltHead(AcademicYear $academicYear, Teacher $teacher)
     {
         return $this->findByAcademicYearAndWltQueryBuilder($academicYear)
@@ -179,5 +186,29 @@ class GroupRepository extends ServiceEntityRepository
             ->setParameter('teacher', $teacher)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findByAcademicYearAndTeacher(AcademicYear $academicYear, Teacher $teacher)
+    {
+        // vamos a buscar los grupos a los que tiene acceso
+        $groups = new ArrayCollection();
+
+        $newGroups = $this->findByAcademicYearAndWltHead($academicYear, $teacher);
+        $this->appendGroups($groups, $newGroups);
+        $newGroups = $this->findByAcademicYearAndWltTutor($academicYear, $teacher);
+        $this->appendGroups($groups, $newGroups);
+        $newGroups = $this->findByAcademicYearAndWltTeacher($academicYear, $teacher);
+        $this->appendGroups($groups, $newGroups);
+
+        return $groups;
+    }
+
+    private function appendGroups(ArrayCollection $groups, $newGroups)
+    {
+        foreach ($newGroups as $group) {
+            if (false === $groups->contains($group)) {
+                $groups->add($group);
+            }
+        }
     }
 }

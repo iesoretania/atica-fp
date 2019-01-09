@@ -20,6 +20,7 @@ namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Subject;
+use AppBundle\Entity\Edu\Training;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
@@ -85,16 +86,19 @@ class SubjectRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
+     * @param Training $training
      * @param string $code
      * @return Subject|null
      */
-    public function findOneByAcademicYearAndCode(AcademicYear $academicYear, $code)
+    public function findOneByTrainingAndCode(Training $training, $code)
     {
         try {
-            return $this->findByAcademicYearQueryBuilder($academicYear)
+            return $this->createQueryBuilder('s')
+                ->join('s.grade', 'g')
                 ->andWhere('s.code = :code')
+                ->andWhere('g.training = :training')
                 ->setParameter('code', $code)
+                ->setParameter('training', $training)
                 ->getQuery()
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
