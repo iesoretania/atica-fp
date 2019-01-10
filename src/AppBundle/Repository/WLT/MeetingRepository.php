@@ -31,8 +31,12 @@ class MeetingRepository extends ServiceEntityRepository
         parent::__construct($registry, Meeting::class);
     }
 
-    public function orWhereContainsText(QueryBuilder $queryBuilder, AcademicYear $academicYear, $text)
-    {
+    public function orWhereContainsTextAndInGroups(
+        QueryBuilder $queryBuilder,
+        AcademicYear $academicYear,
+        $text,
+        $groups = []
+    ) {
         $teacherMeetings = $this->createQueryBuilder('m')
             ->join('m.teachers', 't')
             ->join('t.person', 'p')
@@ -51,7 +55,15 @@ class MeetingRepository extends ServiceEntityRepository
             ->orWhere('p.firstName LIKE :tq')
             ->orWhere('p.lastName LIKE :tq')
             ->orWhere('g.name LIKE :tq')
-            ->andWhere('m.academicYear = :academic_year')
+            ->andWhere('m.academicYear = :academic_year');
+
+        if ($groups) {
+            $studentMeetings = $studentMeetings
+                ->andWhere('g IN (:groups)')
+                ->setParameter('groups', $groups);
+        }
+
+        $studentMeetings = $studentMeetings
             ->setParameter('academic_year', $academicYear)
             ->setParameter('tq', '%'.$text.'%')
             ->getQuery()
@@ -62,6 +74,27 @@ class MeetingRepository extends ServiceEntityRepository
             ->orWhere('m IN (:student_meetings)')
             ->setParameter('teacher_meetings', $teacherMeetings)
             ->setParameter('student_meetings', $studentMeetings);
+    }
+
+
+    public function orWhereInGroups(
+        QueryBuilder $queryBuilder,
+        $groups = []
+    ) {
+        if ($groups) {
+            $studentMeetings = $this->createQueryBuilder('m')
+                ->join('m.studentEnrollments', 'se')
+                ->join('se.group', 'g')
+                ->andWhere('g IN (:groups)')
+                ->setParameter('groups', $groups)
+                ->getQuery()
+                ->getResult();
+
+            return $queryBuilder
+                ->orWhere('m IN (:student_meetings)')
+                ->setParameter('student_meetings', $studentMeetings);
+        }
+        return $queryBuilder;
     }
 
     public function findAllInListByIdAndAcademicYear(

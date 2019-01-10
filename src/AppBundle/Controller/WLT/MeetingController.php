@@ -20,6 +20,8 @@ namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\WLT\Meeting;
 use AppBundle\Form\MeetingType;
+use AppBundle\Repository\Edu\GroupRepository;
+use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\MeetingRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
@@ -29,6 +31,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -42,7 +45,10 @@ class MeetingController extends Controller
     public function newAction(
         Request $request,
         TranslatorInterface $translator,
-        UserExtensionService $userExtensionService
+        UserExtensionService $userExtensionService,
+        Security $security,
+        TeacherRepository $teacherRepository,
+        GroupRepository $groupRepository
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
@@ -56,7 +62,15 @@ class MeetingController extends Controller
 
         $this->getDoctrine()->getManager()->persist($meeting);
 
-        return $this->indexAction($request, $translator, $userExtensionService, $meeting);
+        return $this->indexAction(
+            $request,
+            $translator,
+            $userExtensionService,
+            $security,
+            $teacherRepository,
+            $groupRepository,
+            $meeting
+        );
     }
 
     /**
@@ -67,17 +81,39 @@ class MeetingController extends Controller
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
+        Security $security,
+        TeacherRepository $teacherRepository,
+        GroupRepository $groupRepository,
         Meeting $meeting
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
+        $academicYear = $organization->getCurrentAcademicYear();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
 
         $em = $this->getDoctrine()->getManager();
 
         $readOnly = false === $this->isGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+
+        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+
+        $groups = [];
+        if (false === $isManager && false === $isWltManager) {
+            $person = $this->getUser()->getPerson();
+            // no es administrador ni coordinador de FP:
+            // puede ser jefe de departamento, tutor de grupo o profesor
+            $teacher =
+                $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+
+            if ($teacher) {
+                $groups = $groupRepository->findByAcademicYearAndTeacher($academicYear, $teacher);
+            }
+        }
+
         $form = $this->createForm(MeetingType::class, $meeting, [
-            'disabled' => $readOnly
+            'disabled' => $readOnly,
+            'groups' => $groups
         ]);
 
         $form->handleRequest($request);
@@ -119,6 +155,9 @@ class MeetingController extends Controller
         Request $request,
         UserExtensionService $userExtensionService,
         MeetingRepository $meetingRepository,
+        TeacherRepository $teacherRepository,
+        GroupRepository $groupRepository,
+        Security $security,
         TranslatorInterface $translator,
         $page = 1
     ) {
@@ -135,10 +174,29 @@ class MeetingController extends Controller
             ->from(Meeting::class, 'm')
             ->addOrderBy('m.date', 'DESC');
 
+        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+
+        $groups = [];
+        if (false === $isManager && false === $isWltManager) {
+            $person = $this->getUser()->getPerson();
+            // no es administrador ni coordinador de FP:
+            // puede ser jefe de departamento, tutor de grupo o profesor
+            $teacher =
+                $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+
+            if ($teacher) {
+                $groups = $groupRepository->findByAcademicYearAndTeacher($academicYear, $teacher);
+            }
+        }
+
         $q = $request->get('q');
 
         if ($q) {
-            $queryBuilder = $meetingRepository->orWhereContainsText($queryBuilder, $academicYear, $q);
+            $queryBuilder = $meetingRepository
+                ->orWhereContainsTextAndInGroups($queryBuilder, $academicYear, $q, $groups);
+        } else {
+            $queryBuilder = $meetingRepository->orWhereInGroups($queryBuilder, $groups);
         }
 
         $queryBuilder

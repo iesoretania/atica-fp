@@ -70,13 +70,20 @@ class MeetingType extends AbstractType
 
     private function addElements(
         FormInterface $form,
-        AcademicYear $academicYear = null)
-    {
+        AcademicYear $academicYear = null,
+        $groups = []
+    ) {
         if (
             $academicYear &&
             $academicYear->getOrganization() === $this->userExtensionService->getCurrentOrganization()
         ) {
-            $studentEnrollments = $this->studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
+            if ($groups) {
+                $studentEnrollments = $this->studentEnrollmentRepository
+                    ->findByAcademicYearAndGroupsAndWLT($academicYear, $groups);
+            } else {
+                $studentEnrollments = $this->studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
+            }
+
             $teachers = $this->teacherRepository->findByAcademicYearAndWLT($academicYear);
         } else {
             $studentEnrollments = [];
@@ -113,7 +120,8 @@ class MeetingType extends AbstractType
             ])
             ->add('detail', TextareaType::class, [
                 'label' => 'form.detail',
-                'required' => false
+                'required' => false,
+                'attr' => ['rows' => 10]
             ]);
 
     }
@@ -122,15 +130,15 @@ class MeetingType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
             $data = $event->getData();
 
             $academicYear = $data->getAcademicYear();
-            $this->addElements($form, $academicYear);
+            $this->addElements($form, $academicYear, $options['groups']);
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -139,7 +147,7 @@ class MeetingType extends AbstractType
                 $this->academicYearRepository->find($data['academicYear']) :
                 null;
 
-            $this->addElements($form, $academicYear);
+            $this->addElements($form, $academicYear, $options['groups']);
         });
     }
 
@@ -150,6 +158,7 @@ class MeetingType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Meeting::class,
+            'groups' => [],
             'translation_domain' => 'wlt_meeting'
         ]);
     }

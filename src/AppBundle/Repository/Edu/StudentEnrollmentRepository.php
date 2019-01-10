@@ -54,6 +54,16 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByAcademicYearAndGroupsAndWLT(AcademicYear $academicYear, $groups)
+    {
+        return $this->findByAcademicYearAndWLTQueryBuilder($academicYear)
+            ->andWhere('g IN (:groups)')
+            ->setParameter('groups', $groups)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByAcademicYearAndDepartmentHeadAndWLT(AcademicYear $academicYear, Person $person)
     {
         return $this->findByAcademicYearAndWLTQueryBuilder($academicYear)
