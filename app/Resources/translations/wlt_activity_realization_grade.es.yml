@@ -17,7 +17,7 @@ title.new: Nueva calificación
 title.delete: Eliminar calificaciones
 
 table.new: Nueva calificación
-title.list: Calificaciones de concreciones de actividad
+title.list: Configuración de evaluación de concreciones
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay calificaciones
 table.filter: Filtrar...

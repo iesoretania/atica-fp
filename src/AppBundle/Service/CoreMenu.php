@@ -88,17 +88,6 @@ class CoreMenu implements MenuBuilderInterface
                     ->setIcon('book');
 
                 $menu1->addChild($menu2);
-
-                $menu2 = new MenuItem();
-                $menu2
-                    ->setName('work_linked_training_activity_realization_grade')
-                    ->setRouteName('work_linked_training_activity_realization_grade_list')
-                    ->setCaption('menu.work_linked_training.activity_realization_grade')
-                    ->setDescription('menu.work_linked_training.activity_realization_grade.detail')
-                    ->setIcon('list-ol')
-                    ->setPriority(7000);
-
-                $menu1->addChild($menu2);
             }
 
             if ($this->security->isGranted(OrganizationVoter::ACCESS_TRAININGS, $organization)) {

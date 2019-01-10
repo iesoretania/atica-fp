@@ -2,7 +2,11 @@
 {% extends 'generic/list.html.twig' %}
 {% import 'macros.html.twig' as m %}
 
-{% block new_action %}{% endblock %}
+{% block new_action %}
+    <div class="form-group col-sm-7">
+        <a href="{{ path('work_linked_training_activity_realization_grade_list') }}" class="btn btn-primary"><i class="fa fa-list-ol"></i> {{ 'form.grades'|trans }}</a>
+    </div>
+{% endblock %}
 
 {% block table_header %}
     <th>{{ 'header.student_enrollment'|trans }}</th>

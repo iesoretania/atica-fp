@@ -32,7 +32,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * @Route("/dual/calificacion")
+ * @Route("/dual/evaluar/calificacion")
  */
 class ActivityRealizationGradeController extends Controller
 {
@@ -95,13 +95,18 @@ class ActivityRealizationGradeController extends Controller
         );
 
         $breadcrumb = [
+            [
+                'fixed' => $translator->trans('title.list', [], 'wlt_activity_realization_grade'),
+                'routeName' => 'work_linked_training_activity_realization_grade_list',
+                'routeParams' => []
+            ],
             $activityRealizationGrade->getId() ?
                 ['fixed' => $activityRealizationGrade->getDescription()] :
-                ['fixed' => $this->get('translator')->trans('title.new', [], 'wlt_activity')]
+                ['fixed' => $translator->trans('title.new', [], 'wlt_activity_realization_grade')]
         ];
 
         return $this->render('wlt/grade/form.html.twig', [
-            'menu_path' => 'work_linked_training_activity_realization_grade_list',
+            'menu_path' => 'work_linked_training_evaluation_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'form' => $form->createView()
@@ -151,7 +156,13 @@ class ActivityRealizationGradeController extends Controller
 
         $title = $translator->trans('title.list', [], 'wlt_activity_realization_grade');
 
+        $breadcrumb = [
+            ['fixed' => $title]
+        ];
+
         return $this->render('wlt/grade/list.html.twig', [
+            'menu_path' => 'work_linked_training_evaluation_list',
+            'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
@@ -198,11 +209,16 @@ class ActivityRealizationGradeController extends Controller
         }
 
         $breadcrumb = [
+            [
+                'fixed' => $translator->trans('title.list', [], 'wlt_activity_realization_grade'),
+                'routeName' => 'work_linked_training_activity_realization_grade_list',
+                'routeParams' => []
+            ],
             ['fixed' => $translator->trans('title.delete', [], 'wlt_activity_realization_grade')]
         ];
 
         return $this->render('wlt/grade/delete.html.twig', [
-            'menu_path' => 'work_linked_training_activity_realization_grade_list',
+            'menu_path' => 'work_linked_training_evaluation_list',
             'breadcrumb' => $breadcrumb,
             'title' => $translator->trans('title.delete', [], 'wlt_activity_realization_grade'),
             'items' => $grades
