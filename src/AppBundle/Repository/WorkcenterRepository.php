@@ -44,6 +44,19 @@ class WorkcenterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByAcademicYear(AcademicYear $academicYear)
+    {
+        return $this->createQueryBuilder('w')
+            ->join('w.company', 'c')
+            ->andWhere('w.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear)
+            ->orderBy('c.name')
+            ->addOrderBy('w.name')
+            ->addOrderBy('w.city')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllInListByIdAndCompany(
         $items,
         Company $company

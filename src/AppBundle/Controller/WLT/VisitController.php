@@ -18,11 +18,12 @@
 
 namespace AppBundle\Controller\WLT;
 
-use AppBundle\Entity\WLT\Meeting;
-use AppBundle\Form\Type\WLT\MeetingType;
+use AppBundle\Entity\WLT\Visit;
+use AppBundle\Form\Type\WLT\VisitType;
 use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
-use AppBundle\Repository\WLT\MeetingRepository;
+use AppBundle\Repository\WLT\Repository;
+use AppBundle\Repository\WLT\VisitRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -35,12 +36,12 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * @Route("/dual/reunion")
+ * @Route("/dual/visita")
  */
-class MeetingController extends Controller
+class VisitController extends Controller
 {
     /**
-     * @Route("/nueva", name="work_linked_training_meeting_new", methods={"GET", "POST"})
+     * @Route("/nueva", name="work_linked_training_visit_new", methods={"GET", "POST"})
      */
     public function newAction(
         Request $request,
@@ -51,16 +52,21 @@ class MeetingController extends Controller
         GroupRepository $groupRepository
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
 
         $academicYear = $organization->getCurrentAcademicYear();
+        $person = $this->getUser()->getPerson();
+        $teacher = $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
-        $meeting = new Meeting();
-        $meeting
-            ->setAcademicYear($academicYear)
-            ->setDate(new \DateTime());
+        $visit = new Visit();
+        $visit
+            ->setDateTime(new \DateTime());
 
-        $this->getDoctrine()->getManager()->persist($meeting);
+        if ($teacher) {
+            $visit->setTeacher($teacher);
+        }
+
+        $this->getDoctrine()->getManager()->persist($visit);
 
         return $this->indexAction(
             $request,
@@ -69,12 +75,12 @@ class MeetingController extends Controller
             $security,
             $teacherRepository,
             $groupRepository,
-            $meeting
+            $visit
         );
     }
 
     /**
-     * @Route("/{id}", name="work_linked_training_meeting_edit",
+     * @Route("/{id}", name="work_linked_training_visit_edit",
      *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
     public function indexAction(
@@ -84,7 +90,7 @@ class MeetingController extends Controller
         Security $security,
         TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
-        Meeting $meeting
+        Visit $visit
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
@@ -93,16 +99,20 @@ class MeetingController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $readOnly = false === $this->isGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $readOnly = false;
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
         $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
 
         $groups = [];
-        if (false === $isManager && false === $isWltManager) {
+        $teachers = [];
+
+        $teacher = null;
+
+        if (false === $isManager) {
             $person = $this->getUser()->getPerson();
             // no es administrador ni coordinador de FP:
-            // puede ser jefe de departamento, tutor de grupo o profesor
+            // puede ser jefe de departamento, tutor de grupo o profesor -> ver sólo sus grupos
             $teacher =
                 $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
@@ -111,9 +121,13 @@ class MeetingController extends Controller
             }
         }
 
-        $form = $this->createForm(MeetingType::class, $meeting, [
-            'disabled' => $readOnly,
-            'groups' => $groups
+        if ($groups) {
+            $teachers = $teacherRepository->findByGroups($groups);
+        }
+
+        $form = $this->createForm(VisitType::class, $visit, [
+            'disabled' => !$isManager && !$isWltManager && $teacher !== $visit->getTeacher(),
+            'teachers' => $teachers
         ]);
 
         $form->handleRequest($request);
@@ -121,25 +135,25 @@ class MeetingController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_meeting'));
-                return $this->redirectToRoute('work_linked_training_meeting_list');
+                $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_visit'));
+                return $this->redirectToRoute('work_linked_training_visit_list');
             } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_meeting'));
+                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_visit'));
             }
         }
 
         $title = $translator->trans(
-            $meeting->getId() ? 'title.edit' : 'title.new',
+            $visit->getId() ? 'title.edit' : 'title.new',
             [],
-            'wlt_meeting'
+            'wlt_visit'
         );
 
         $breadcrumb = [
                 ['fixed' => $title]
         ];
 
-        return $this->render('wlt/meeting/form.html.twig', [
-            'menu_path' => 'work_linked_training_meeting_list',
+        return $this->render('wlt/visit/form.html.twig', [
+            'menu_path' => 'work_linked_training_visit_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
@@ -148,13 +162,12 @@ class MeetingController extends Controller
     }
 
     /**
-     * @Route("/listar/{page}", name="work_linked_training_meeting_list",
+     * @Route("/listar/{page}", name="work_linked_training_visit_list",
      *     requirements={"page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
      */
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        MeetingRepository $meetingRepository,
         TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
         Security $security,
@@ -165,23 +178,33 @@ class MeetingController extends Controller
         $academicYear = $organization->getCurrentAcademicYear();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
-        $readOnly = false === $this->isGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $readOnly = false;
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
         $queryBuilder
-            ->select('m')
-            ->from(Meeting::class, 'm')
-            ->addOrderBy('m.date', 'DESC');
+            ->select('v')
+            ->addSelect('t')
+            ->addSelect('p')
+            ->addSelect('w')
+            ->addSelect('c')
+            ->from(Visit::class, 'v')
+            ->join('v.teacher', 't')
+            ->join('t.person', 'p')
+            ->join('v.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->addOrderBy('v.dateTime', 'DESC');
 
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+        $isManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+        $isDepartmentHead = $security->isGranted(OrganizationVoter::DEPARTMENT_HEAD, $organization);
 
         $groups = [];
-        if (false === $isManager && false === $isWltManager) {
+        $teacher = null;
+
+        if (false === $isManager) {
             $person = $this->getUser()->getPerson();
             // no es administrador ni coordinador de FP:
-            // puede ser jefe de departamento, tutor de grupo o profesor
+            // puede ser jefe de departamento, tutor de grupo o profesor -> ver sólo sus grupos
             $teacher =
                 $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
@@ -193,15 +216,27 @@ class MeetingController extends Controller
         $q = $request->get('q');
 
         if ($q) {
-            $queryBuilder = $meetingRepository
-                ->orWhereContainsTextAndInGroups($queryBuilder, $academicYear, $q, $groups);
-        } else {
-            $queryBuilder = $meetingRepository->orWhereInGroups($queryBuilder, $groups);
+            $queryBuilder
+                ->orWhere('p.firstName LIKE :tq')
+                ->orWhere('p.lastName LIKE :tq')
+                ->orWhere('w.name LIKE :tq')
+                ->orWhere('c.name LIKE :tq')
+                ->setParameter('tq', '%'.$q.'%');
         }
 
-        $queryBuilder
-            ->andWhere('m.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
+        if ($groups) {
+            $teachers = $teacherRepository->findByGroups($groups);
+            $queryBuilder
+                ->andWhere('t IN (:teachers)')
+                ->setParameter('teachers', $teachers);
+        }
+
+        if (!$isManager && !$isDepartmentHead && $teacher) {
+            // ver sólo las suyas
+            $queryBuilder
+                ->andWhere('v.teacher = :teacher')
+                ->setParameter('teacher', $teacher);
+        }
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -209,25 +244,25 @@ class MeetingController extends Controller
             ->setMaxPerPage($this->getParameter('page.size'))
             ->setCurrentPage($q ? 1 : $page);
 
-        $title = $translator->trans('title.list', [], 'wlt_meeting');
+        $title = $translator->trans('title.list', [], 'wlt_visit');
 
-        return $this->render('wlt/meeting/list.html.twig', [
+        return $this->render('wlt/visit/list.html.twig', [
             'title' => $title . ' - ' . $academicYear,
             'pager' => $pager,
             'q' => $q,
-            'domain' => 'wlt_meeting',
+            'domain' => 'wlt_visit',
             'read_only' => $readOnly,
             'academic_year' => $academicYear
         ]);
     }
 
     /**
-     * @Route("/eliminar", name="work_linked_training_meeting_operation",
+     * @Route("/eliminar", name="work_linked_training_visit_operation",
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
     public function operationAction(
         Request $request,
-        MeetingRepository $meetingRepository,
+        VisitRepository $visitRepository,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator
     ) {
@@ -240,33 +275,33 @@ class MeetingController extends Controller
 
         $items = $request->request->get('items', []);
         if (count($items) === 0) {
-            return $this->redirectToRoute('work_linked_training_meeting_list');
+            return $this->redirectToRoute('work_linked_training_visit_list');
         }
 
-        $meetings = $meetingRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
+        $visits = $visitRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
         if ($request->get('confirm', '') === 'ok') {
             try {
-                $meetingRepository->deleteFromList($meetings);
+                $visitRepository->deleteFromList($visits);
 
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_meeting'));
+                $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_visit'));
             } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_meeting'));
+                $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_visit'));
             }
-            return $this->redirectToRoute('work_linked_training_meeting_list');
+            return $this->redirectToRoute('work_linked_training_visit_list');
         }
 
-        $title = $this->get('translator')->trans('title.delete', [], 'wlt_meeting');
+        $title = $this->get('translator')->trans('title.delete', [], 'wlt_visit');
         $breadcrumb = [
             ['fixed' => $title]
         ];
 
-        return $this->render('wlt/meeting/delete.html.twig', [
-            'menu_path' => 'work_linked_training_meeting_list',
+        return $this->render('wlt/visit/delete.html.twig', [
+            'menu_path' => 'work_linked_training_visit_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'items' => $meetings
+            'items' => $visits
         ]);
     }
 }

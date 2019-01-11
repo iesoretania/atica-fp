@@ -1,0 +1,49 @@
+{% trans_default_domain 'wlt_visit' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('work_linked_training_visit_new') }}{% endblock %}
+
+{% block new_action %}{% if not read_only %}{{ parent() }}{% endif %}{% endblock %}
+
+{% block table_header %}
+    <th>{% if not read_only %}<label><input type="checkbox" id="select"> {% endif %}{{ 'header.datetime'|trans }}{% if not read_only %}</label>{% endif %}</th>
+    <th>{{ 'header.teacher'|trans }}</th>
+    <th>{{ 'header.workcenter'|trans }}</th>
+    <th>{{ 'header.detail'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('work_linked_training_visit_edit', {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        {% if not read_only %}<label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> {% endif %}<a href="{{ url }}">{{ item.datetime|date('format.datetime'|trans({}, 'general')) }}</a>{% if not read_only %}</label>{% endif %}
+                    </td>
+                    <td>
+                        {{ item.teacher }}
+                    </td>
+                    <td>
+                        {{ item.workcenter }}
+                    </td>
+                    <td>
+                        {{ item.detail|nl2br }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('work_linked_training_visit_operation') }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {% if not read_only %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}{% endif %}
+    </form>
+{% endblock %}
