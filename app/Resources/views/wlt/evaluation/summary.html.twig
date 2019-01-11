@@ -1,0 +1,42 @@
+{% trans_default_domain 'wlt_agreement_activity_realization' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}
+{% endblock %}
+
+{% block table_header %}
+    <th>{{ 'header.student_enrollment'|trans }}</th>
+    <th>{{ 'header.agreement_count'|trans }}</th>
+    <th>{{ 'header.activity_realization_count'|trans }}</th>
+    <th>{{ 'header.completed_activity_realization_count'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+    {% for item in pager %}
+        {% set url = path('work_linked_training_evaluation_form', {'id': item[0].id}) %}
+        <tr class="clickable-row" data-href="{{ url }}">
+            <td>
+                <a href="{{ url }}">{{ item[0] }}</a>
+            </td>
+            <td>
+                {{ item[1] }}
+            </td>
+            <td>
+                {{ item[2] }}
+            </td>
+            <td>
+                {{ item[3] }}{%  if item[2] %} ({{ (item[3]*100/item[2]) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %){% endif %}
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="4">{{ 'table.no_items'|trans }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}
