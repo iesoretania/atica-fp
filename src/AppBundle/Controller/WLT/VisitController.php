@@ -103,6 +103,7 @@ class VisitController extends Controller
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
         $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+        $isDepartmentHead = $security->isGranted(OrganizationVoter::DEPARTMENT_HEAD, $organization);
 
         $groups = [];
         $teachers = [];
@@ -120,8 +121,9 @@ class VisitController extends Controller
                 $groups = $groupRepository->findByAcademicYearAndTeacher($academicYear, $teacher);
             }
         }
-
-        if ($groups) {
+        if (!$isManager && !$isDepartmentHead && $teacher) {
+            $teachers = [$teacher];
+        } elseif ($groups) {
             $teachers = $teacherRepository->findByGroups($groups);
         }
 
