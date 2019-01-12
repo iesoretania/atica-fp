@@ -19,7 +19,10 @@ header.workcenter: Centro de trabajo
 header.work_tutor: Responsable laboral
 header.start_date: Fecha de inicio
 header.end_date: Fecha de finalización
-header.status: Estado
+header.status: Concreciones evaluadas
+header.agreement_count: Número de convenios
+header.activity_realization_count: Concreciones a evaluar
+header.completed_activity_realization_count: Concreciones ya evaluadas
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

@@ -69,7 +69,11 @@ class TrackingController extends Controller
             ->addSelect('se')
             ->addSelect('p')
             ->addSelect('g')
+            ->addSelect('SUM(wd.hours)')
+            ->addSelect('SUM(wd.locked * wd.hours * (1-wd.absence))')
+            ->addSelect('SUM(wd.absence)')
             ->from(Agreement::class, 'a')
+            ->leftJoin('a.workDays', 'wd')
             ->join('a.workcenter', 'w')
             ->join('w.company', 'c')
             ->join('a.studentEnrollment', 'se')
@@ -78,6 +82,7 @@ class TrackingController extends Controller
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->join('a.workTutor', 'wt')
+            ->groupBy('a')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
             ->addOrderBy('c.name');
@@ -133,7 +138,6 @@ class TrackingController extends Controller
                 }
             }
         }
-
 
         $queryBuilder
             ->andWhere('t.academicYear = :academic_year')

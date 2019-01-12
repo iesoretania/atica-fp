@@ -3,7 +3,7 @@ header.student: Estudiante
 header.workcenter: Empresa
 header.start_date: Fecha de inicio
 header.end_date: Fecha de fin
-header.status: Estado
+header.status: Horas bloqueadas/totales
 
 form.calendar: Calendario
 

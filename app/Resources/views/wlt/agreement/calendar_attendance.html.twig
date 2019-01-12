@@ -3,7 +3,7 @@
 {% import 'macros.html.twig' as m %}
 {% block content %}
     <form method="post">
-        {% for item in items if item.locked == false %}
+        {% for item in items %}
             <input type="hidden" name="items[]" value="{{ item.id }}">
         {% endfor %}
         <input type="hidden" name="confirm" value="ok">
@@ -17,7 +17,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for item in items if item.locked == false %}
+                    {% for item in items %}
                         <tr>
                             <td>{{ item.date|date('format.date'|trans({}, 'general')) }}</td>
                             <td>{{ 'caption.hours'|transchoice(item.hours) }}</td>

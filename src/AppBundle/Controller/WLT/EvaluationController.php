@@ -124,7 +124,10 @@ class EvaluationController extends Controller
             ->addSelect('se')
             ->addSelect('p')
             ->addSelect('g')
+            ->addSelect('COUNT(ear)')
+            ->addSelect('COUNT(ear.grade)')
             ->from(Agreement::class, 'a')
+            ->leftJoin('a.evaluatedActivityRealizations', 'ear')
             ->join('a.workcenter', 'w')
             ->join('w.company', 'c')
             ->join('a.studentEnrollment', 'se')
@@ -133,6 +136,7 @@ class EvaluationController extends Controller
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->join('a.workTutor', 'wt')
+            ->groupBy('a')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
             ->addOrderBy('c.name');

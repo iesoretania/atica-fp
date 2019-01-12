@@ -162,7 +162,7 @@ class TrackingCalendarController extends Controller
         $items = $request->request->get('items', []);
         if (count($items) === 0) {
             return $this->redirectToRoute(
-                'work_linked_training_agreement_calendar_list',
+                'work_linked_training_tracking_calendar_list',
                 ['id' => $agreement->getId()]
             );
         }

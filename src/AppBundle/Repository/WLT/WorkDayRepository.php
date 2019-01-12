@@ -274,10 +274,8 @@ class WorkDayRepository extends ServiceEntityRepository
             ->update(WorkDay::class, 'w')
             ->set('w.absence', ':value')
             ->where('w IN (:list)')
-            ->andWhere('w.locked = :locked')
             ->setParameter('list', $list)
             ->setParameter('value', $value)
-            ->setParameter('locked', false)
             ->getQuery()
             ->execute();
     }

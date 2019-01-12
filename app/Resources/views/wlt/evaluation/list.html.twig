@@ -18,18 +18,20 @@
 
 {% block table_body %}
     {% for item in pager %}
-        {% set stats = item.totalHours %}
-        {% set url = path('work_linked_training_evaluation_form', {'id': item.id}) %}
+        {% set url = path('work_linked_training_evaluation_form', {'id': item[0].id}) %}
         <tr class="clickable-row" data-href="{{ url }}">
             <td>
-                <a href="{{ url }}">{{ item.studentEnrollment }}</a>
+                <a href="{{ url }}">{{ item[0].studentEnrollment }}</a>
             </td>
             <td>
-                {{ item.workcenter }}
+                {{ item[0].workcenter }}
             </td>
-            <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}</td>
-            <td>{{ item.endDate ? item.endDate|date('format.date'|trans({}, 'general')) }}</td>
+            <td>{{ item[0].startDate ? item[0].startDate|date('format.date'|trans({}, 'general')) }}</td>
+            <td>{{ item[0].endDate ? item[0].endDate|date('format.date'|trans({}, 'general')) }}</td>
             <td>
+                {% if item[1] %}
+                    {{ item[2] }}/{{ item[1] }} ({{ (item[2]*100/item[1]) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %)
+                {% endif %}
             </td>
         </tr>
     {% else %}

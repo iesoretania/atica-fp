@@ -362,30 +362,4 @@ class Agreement
     {
         return $this->workDays;
     }
-
-    /**
-     * @return array
-     */
-    public function getTotalHours()
-    {
-        $total = 0;
-        $worked = 0;
-        $absences = 0;
-
-        foreach ($this->getWorkDays() as $workDay) {
-            $total += $workDay->getHours();
-            if (count($workDay->getActivityRealizations()) > 0) {
-                $worked += $total;
-            }
-            if ($workDay->isAbsence()) {
-                $absences++;
-            }
-        }
-
-        return [
-            'total' => $total,
-            'worked' => $worked,
-            'absences' => $absences
-        ];
-    }
 }
