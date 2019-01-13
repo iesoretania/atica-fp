@@ -1,0 +1,70 @@
+{% trans_default_domain 'wlt_activity_realization_grade' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    {% set last_subject_id = 0 %}
+    {% for subjectData in report %}
+        <div class="card mb-3">
+        <div class="card-header"><h3>{{ subjectData[0] }}{% if subjectData[0].code %} - {{ subjectData[0].code }}{% endif %}</h3></div>
+        <div class="card-body">
+        {% set subject_sum = 0 %}
+        {% set subject_count = 0 %}
+
+        {% set last_activity_id = 0 %}
+        {% set activity_sum = 0 %}
+        {% set activity_count = 0 %}
+        {% for activityRealizationData in subjectData[1] %}
+            {% if last_activity_id != activityRealizationData[0].id %}
+                {% if not loop.first %}
+                    <tr>
+                        <td class="text-right">{{ 'report.activity_average'|trans }}</td>
+                        <td class="w-10">{% if activity_count %}{{ (activity_sum/activity_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}{% endif %}</td>
+                    </tr>
+                    {% if activity_count %}
+                        {% set subject_sum = subject_sum + (activity_sum/activity_count) %}
+                        {% set subject_count = subject_count + 1 %}
+                    {% endif %}
+                    {% set activity_sum = 0 %}
+                    {% set activity_count = 0 %}
+                    </table>
+                {% endif %}
+                <table class="table table-bordered table-striped">
+                <tr>
+                    <th colspan="2">{{ activityRealizationData[0].activity }}</th>
+                </tr>
+                {% set last_activity_id = activityRealizationData[0].id %}
+            {% endif %}
+            <tr>
+                <td>{{ activityRealizationData[0] }}</td>
+                <td class="w-10">{{ activityRealizationData[1]  | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</td>
+                {% set activity_sum = activity_sum + activityRealizationData[1] %}
+                {% set activity_count = activity_count + 1 %}
+            </tr>
+        {% else %}
+            <h5 class="m-0">{{ 'report.no_data'|trans }}</h5>
+        {% endfor %}
+        {% if last_activity_id != 0 %}
+            <tr>
+                <td class="text-right">{{ 'report.activity_average'|trans }}</td>
+                <td class="w-10">{% if activity_count %}{{ (activity_sum/activity_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}{% endif %}</td>
+                {% if activity_count %}
+                    {% set subject_sum = subject_sum + (activity_sum/activity_count) %}
+                    {% set subject_count = subject_count + 1 %}
+                {% endif %}
+            </tr>
+            </table>
+        {% endif %}
+        {% if subject_count %}
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th class="text-right">{{ 'report.subject_average'|trans }}</th>
+                    <th class="w-10">{{ (subject_sum/subject_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</th>
+                </tr>
+            </table>
+        {% endif %}
+        </div>
+        </div>
+    {% endfor %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}

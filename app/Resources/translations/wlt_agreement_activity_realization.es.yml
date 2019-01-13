@@ -9,6 +9,7 @@ form.back: Volver
 
 title.grade: Evaluación del convenio
 title.list: Convenios evaluables
+title.report: Resumen de la evaluación
 
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay convenios que mostrar
@@ -21,8 +22,7 @@ header.start_date: Fecha de inicio
 header.end_date: Fecha de finalización
 header.status: Concreciones evaluadas
 header.agreement_count: Número de convenios
-header.activity_realization_count: Concreciones a evaluar
-header.completed_activity_realization_count: Concreciones ya evaluadas
+header.completed_activity_realization_count: Concreciones evaluadas
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

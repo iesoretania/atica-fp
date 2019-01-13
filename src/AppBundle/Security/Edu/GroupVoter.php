@@ -117,6 +117,8 @@ class GroupVoter extends Voter
             return true;
         }
 
+        $isGroupTutor = false;
+
         // tutores del grupo
         $tutors = $subject->getTutors();
         foreach ($tutors as $tutor) {
@@ -133,6 +135,10 @@ class GroupVoter extends Voter
         ) > 0;
 
         switch ($attribute) {
+            // Si es permiso de gestión, el tutor de grupo
+            case self::MANAGE:
+                return $isGroupTutor;
+
             // Si es permiso de acceso, el tutor de grupo o un docente
             case self::ACCESS:
                 return $isTeacher || $isGroupTutor;

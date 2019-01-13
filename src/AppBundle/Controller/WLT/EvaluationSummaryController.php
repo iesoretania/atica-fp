@@ -22,7 +22,10 @@ use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Repository\Edu\GroupRepository;
+use AppBundle\Repository\Edu\SubjectRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
+use AppBundle\Repository\WLT\ActivityRealizationRepository;
+use AppBundle\Security\Edu\GroupVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -31,7 +34,6 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -49,7 +51,6 @@ class EvaluationSummaryController extends Controller
         TranslatorInterface $translator,
         TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
-        Security $security,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
@@ -92,9 +93,9 @@ class EvaluationSummaryController extends Controller
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
-        $isWorkTutor = $security->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization);
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $this->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+        $isWorkTutor = $this->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization);
 
         if (false === $isManager && false === $isWltManager) {
             $person = $this->getUser()->getPerson();
@@ -146,6 +147,54 @@ class EvaluationSummaryController extends Controller
             'q' => $q,
             'domain' => 'wlt_agreement_activity_realization',
             'academic_year' => $academicYear
+        ]);
+    }
+    /**
+     * @Route("/{id}", name="work_linked_training_evaluation_summary_report",
+     *     requirements={"id" = "\d+"}, methods={"GET"})
+     */
+    public function reportAction(
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        SubjectRepository $subjectRepository,
+        GroupRepository $groupRepository,
+        ActivityRealizationRepository $activityRealizationRepository,
+        StudentEnrollment $studentEnrollment
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+
+        $this->denyAccessUnlessGranted(OrganizationVoter::VIEW_GRADE_WORK_LINKED_TRAINING, $organization);
+
+        $title = $translator->trans('title.report', [], 'wlt_agreement_activity_realization') .
+            ' - ' . $studentEnrollment;
+
+        $isGroupTutor = $this->isGranted(GroupVoter::MANAGE, $studentEnrollment->getGroup());
+
+        $subjects = $subjectRepository->findByGroupAndPerson(
+            $studentEnrollment->getGroup(),
+            $isGroupTutor ? null : $this->getUser()->getPerson()
+        );
+
+        $report = [];
+
+        foreach ($subjects as $subject) {
+            $item = [];
+            $item[0] = $subject;
+            $item[1] = $activityRealizationRepository->
+                reportByStudentEnrollmentAndSubject($studentEnrollment, $subject);
+
+            $report[] = $item;
+        }
+
+        $breadcrumb = [
+            ['fixed' => (string) $studentEnrollment]
+        ];
+
+        return $this->render('wlt/evaluation/summary_report.html.twig', [
+            'menu_path' => 'work_linked_training_evaluation_summary_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'report' => $report
         ]);
     }
 }

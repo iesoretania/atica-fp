@@ -19,8 +19,10 @@
 namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Edu\Subject;
 use AppBundle\Entity\Edu\Training;
+use AppBundle\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
@@ -146,6 +148,28 @@ class SubjectRepository extends ServiceEntityRepository
             ->orderBy('t.name', 'ASC')
             ->addOrderBy('s.name', 'ASC')
             ->addOrderBy('g.name', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByGroupAndPerson(Group $group, Person $person = null)
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->select('s')
+            ->join('s.grade', 'gr')
+            ->where(':group MEMBER OF gr.groups')
+            ->setParameter('group', $group)
+            ->orderBy('s.name', 'ASC');
+
+        if ($person) {
+            $qb
+                ->join('s.teachings', 't')
+                ->join('t.teacher', 'te')
+                ->andWhere('te.person = :person')
+                ->setParameter('person', $person);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }

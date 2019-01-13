@@ -19,6 +19,8 @@
 namespace AppBundle\Repository\WLT;
 
 use AppBundle\Entity\Company;
+use AppBundle\Entity\Edu\StudentEnrollment;
+use AppBundle\Entity\Edu\Subject;
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\WLT\Activity;
 use AppBundle\Entity\WLT\ActivityRealization;
@@ -126,6 +128,29 @@ class ActivityRealizationRepository extends ServiceEntityRepository
             ->where('aar.agreement = :agreement')
             ->andWhere('aar.grade IS NOT NULL')
             ->setParameter('agreement', $agreement)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function reportByStudentEnrollmentAndSubject(StudentEnrollment $studentEnrollment, Subject $subject)
+    {
+        return $this->createQueryBuilder('ar')
+            ->addSelect('AVG(gr.numericGrade)')
+            ->addSelect('COUNT(aar)')
+            ->join(AgreementActivityRealization::class, 'aar', 'WITH', 'aar.activityRealization = ar')
+            ->leftJoin('ar.learningOutcomes', 'l')
+            ->join('l.subject', 's')
+            ->join('aar.agreement', 'a')
+            ->leftJoin('aar.grade', 'gr')
+            ->leftJoin('aar.gradedBy', 'p')
+            ->andWhere('a.studentEnrollment = :student_enrollment')
+            ->andWhere('l.subject = :subject')
+            ->setParameter('student_enrollment', $studentEnrollment)
+            ->setParameter('subject', $subject)
+            ->orderBy('s.name')
+            ->addOrderBy('ar.code')
+            ->addGroupBy('ar')
+            ->addGroupBy('s')
             ->getQuery()
             ->getResult();
     }

@@ -26,6 +26,10 @@ header.description: Descripción
 header.numeric_grade: Calificación numérica
 header.notes: Notas
 
+report.no_data: No hay concreciones de este módulo en el programa formativo
+report.activity_average: Media de la actividad
+report.subject_average: Media de las actividades del módulo
+
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Calificaciones eliminadas del centro.
