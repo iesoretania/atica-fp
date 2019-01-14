@@ -3,9 +3,10 @@
 {% import 'macros.html.twig' as m %}
 
 {% block new_action %}
-    <div class="form-group col-sm-7">
+    {% if is_granted('ORGANIZATION_MANAGE_WORKLINKED_TRAINING', academic_year.organization) %}<div class="form-group col-sm-7">
         <a href="{{ path('work_linked_training_activity_realization_grade_list') }}" class="btn btn-primary"><i class="fa fa-list-ol"></i> {{ 'form.grades'|trans }}</a>
     </div>
+    {% endif %}
 {% endblock %}
 
 {% block table_header %}

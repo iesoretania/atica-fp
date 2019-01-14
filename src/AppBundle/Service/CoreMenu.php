@@ -114,7 +114,9 @@ class CoreMenu implements MenuBuilderInterface
                     ->setPriority(6000);
 
                 $menu1->addChild($menu2);
+            }
 
+            if ($this->security->isGranted(OrganizationVoter::VIEW_EVALUATION_WORK_LINKED_TRAINING, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('work_linked_training_evaluation_summary')

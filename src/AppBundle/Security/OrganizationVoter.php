@@ -41,6 +41,7 @@ class OrganizationVoter extends Voter
     const MANAGE_WORK_LINKED_TRAINING = 'ORGANIZATION_MANAGE_WORKLINKED_TRAINING';
     const GRADE_WORK_LINKED_TRAINING = 'ORGANIZATION_GRADE_WORKLINKED_TRAINING';
     const VIEW_GRADE_WORK_LINKED_TRAINING = 'ORGANIZATION_VIEW_GRADE_WORKLINKED_TRAINING';
+    const VIEW_EVALUATION_WORK_LINKED_TRAINING = 'ORGANIZATION_VIEW_EVALUATION_WORKLINKED_TRAINING';
     const MANAGE_COMPANIES = 'ORGANIZATION_MANAGE_COMPANIES';
 
     const WLT_GROUP_TUTOR = 'ORGANIZATION_WLT_GROUP_TUTOR';
@@ -107,6 +108,7 @@ class OrganizationVoter extends Voter
             self::MANAGE_WORK_LINKED_TRAINING,
             self::GRADE_WORK_LINKED_TRAINING,
             self::VIEW_GRADE_WORK_LINKED_TRAINING,
+            self::VIEW_EVALUATION_WORK_LINKED_TRAINING,
             self::MANAGE_COMPANIES,
             self::WLT_WORK_TUTOR,
             self::WLT_GROUP_TUTOR,
@@ -163,6 +165,7 @@ class OrganizationVoter extends Voter
                 return $this->voteOnAttribute(self::WLT_MANAGER, $subject, $token);
 
             case self::VIEW_GRADE_WORK_LINKED_TRAINING:
+            case self::VIEW_EVALUATION_WORK_LINKED_TRAINING:
             case self::GRADE_WORK_LINKED_TRAINING:
             case self::ACCESS_WORK_LINKED_TRAINING:
                 // pueden acceder:
@@ -191,6 +194,11 @@ class OrganizationVoter extends Voter
                 // 4) Jefe de departamento
                 if ($this->voteOnAttribute(self::DEPARTMENT_HEAD, $subject, $token)) {
                     return true;
+                }
+
+                // el tutor laboral no puede ver la evaluación
+                if ($attribute === self::VIEW_EVALUATION_WORK_LINKED_TRAINING) {
+                    return false;
                 }
 
                 // 5) Tutores laborales

@@ -112,7 +112,7 @@ class EvaluationController extends Controller
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::VIEW_GRADE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::VIEW_EVALUATION_WORK_LINKED_TRAINING, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
