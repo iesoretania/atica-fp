@@ -27,6 +27,7 @@ header.numeric_grade: Calificación numérica
 header.notes: Notas
 
 report.no_data: No hay concreciones de este módulo en el programa formativo
+report.no_grade: Sin evaluar
 report.activity_average: Media de la actividad
 report.subject_average: Media de las actividades del módulo
 

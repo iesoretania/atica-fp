@@ -36,9 +36,13 @@
             {% endif %}
             <tr>
                 <td>{{ activityRealizationData[0] }}</td>
-                <td class="w-10">{{ activityRealizationData[1]  | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</td>
-                {% set activity_sum = activity_sum + activityRealizationData[1] %}
-                {% set activity_count = activity_count + 1 %}
+                {% if activityRealizationData[1] is not null %}
+                    <td class="w-10">{{ activityRealizationData[1]  | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</td>
+                    {% set activity_sum = activity_sum + activityRealizationData[1] %}
+                    {% set activity_count = activity_count + 1 %}
+                {% else %}
+                    <td class="w-10">{{ 'report.no_grade'|trans }}</td>
+                {% endif %}
             </tr>
         {% else %}
             <h5 class="m-0">{{ 'report.no_data'|trans }}</h5>
