@@ -135,6 +135,11 @@ class TrackingController extends Controller
                     $queryBuilder
                         ->andWhere('a.workTutor = :person')
                         ->setParameter('person', $person);
+                } else {
+                    // es estudiante, sólo él
+                    $queryBuilder
+                        ->andWhere('p = :person')
+                        ->setParameter('person', $person);
                 }
             }
         }

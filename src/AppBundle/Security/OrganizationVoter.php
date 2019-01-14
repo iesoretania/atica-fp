@@ -207,13 +207,13 @@ class OrganizationVoter extends Voter
                 }
 
                 // 6) Docentes de dual, salvo que sea realizar evaluación
-                if ($subject !== self::GRADE_WORK_LINKED_TRAINING &&
+                if ($attribute !== self::GRADE_WORK_LINKED_TRAINING &&
                     $this->voteOnAttribute(self::WLT_TEACHER, $subject, $token)) {
                     return true;
                 }
 
                 // 7) Alumnado con acuerdos, sólo si es acceso
-                return $subject === self::ACCESS_WORK_LINKED_TRAINING &&
+                return $attribute === self::ACCESS_WORK_LINKED_TRAINING &&
                     $this->voteOnAttribute(self::WLT_STUDENT, $subject, $token);
 
             case self::ACCESS:
