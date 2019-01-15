@@ -157,7 +157,6 @@ class EvaluationSummaryController extends Controller
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         SubjectRepository $subjectRepository,
-        GroupRepository $groupRepository,
         ActivityRealizationRepository $activityRealizationRepository,
         StudentEnrollment $studentEnrollment
     ) {
@@ -169,10 +168,11 @@ class EvaluationSummaryController extends Controller
             ' - ' . $studentEnrollment;
 
         $isGroupTutor = $this->isGranted(GroupVoter::MANAGE, $studentEnrollment->getGroup());
+        $isWltManager = $this->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
 
         $subjects = $subjectRepository->findByGroupAndPerson(
             $studentEnrollment->getGroup(),
-            $isGroupTutor ? null : $this->getUser()->getPerson()
+            $isGroupTutor || $isWltManager ? null : $this->getUser()->getPerson()
         );
 
         $report = [];
