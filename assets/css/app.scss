@@ -281,6 +281,7 @@ table.calendar td {
 }
 
 $light-danger: lighten($danger, 20%);
+$light-warning: lighten($warning, 20%);
 
 table.calendar {
   td.workday {
@@ -299,6 +300,16 @@ table.calendar {
                     -45deg,
                     $light-danger,
                     $light-danger 2px,
+                    $table-bg 3px,
+                    $table-bg 8px
+    )
+  }
+
+  td.justified-absence {
+    background: repeating-linear-gradient(
+                    -45deg,
+                    $light-warning,
+                    $light-warning 2px,
                     $table-bg 3px,
                     $table-bg 8px
     )

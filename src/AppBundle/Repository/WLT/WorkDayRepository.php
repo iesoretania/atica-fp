@@ -270,12 +270,19 @@ class WorkDayRepository extends ServiceEntityRepository
      */
     public function updateAttendance($list, $value)
     {
+        /** @var WorkDay $workDay */
+        foreach ($list as $workDay) {
+            $workDay->setActivityRealizations([]);
+        }
+
         return $this->getEntityManager()->createQueryBuilder()
             ->update(WorkDay::class, 'w')
             ->set('w.absence', ':value')
             ->where('w IN (:list)')
+            ->andWhere('w.locked = :locked')
             ->setParameter('list', $list)
             ->setParameter('value', $value)
+            ->setParameter('locked' , false)
             ->getQuery()
             ->execute();
     }

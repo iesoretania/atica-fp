@@ -19,6 +19,7 @@ table.filter: Filtrar...
 
 table.hours: "%count% hora|%count% horas"
 table.absences: "%count% falta|%count% faltas"
+table.justified_absences: "%count% justificada|%count% justificadas"
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

@@ -9,8 +9,9 @@ form.training: Enseñanza
 
 form.activity_realizations: Actividades realizadas
 form.work_day.attendance: Asistencia
-form.work_day.attendance.yes: El estudiante ha acudido al centro de trabajo
-form.work_day.attendance.no: El estudiante no ha acudido al centro de trabajo
+form.work_day.attendance.no_absence: El estudiante ha acudido al centro de trabajo
+form.work_day.attendance.unjustified_absence: El estudiante no ha acudido al centro de trabajo de forma injustificada
+form.work_day.attendance.justified_absence: El estudiante no ha acudido al centro de trabajo de forma justificada
 form.start_date: Fecha de inicio
 form.total_hours: Horas enseñanza
 form.agreement_hours: Horas del acuerdo
@@ -57,7 +58,8 @@ form.week_unlock_action: Desbloquear semana
 form.print: Imprimir hoja semanal
 form.select_deselect: Seleccionar/deseleccionar jornadas
 
-form.attendance: Estudiante no asiste
+form.attendance: Falta injustificada
+form.attendance_justify: Falta justificada
 form.attendance_confirm: Confirmar faltas de asistencia
 
 form.save: Guardar cambios
@@ -68,6 +70,7 @@ form.back: Volver
 
 header.date: Fecha
 header.hours: Horas asignadas
+header.locked: BLOQUEADA, no cambiará
 
 message.saved: Cambios guardados con éxito.
 message.added: Jornadas añadidas al calendario del acuerdo.

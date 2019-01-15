@@ -30,6 +30,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class WorkDay
 {
+    const NO_ABSENCE = 0;
+    const UNJUSTIFIED_ABSENCE = 1;
+    const JUSTIFIED_ABSENCE = 2;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -70,8 +74,8 @@ class WorkDay
     private $locked;
 
     /**
-     * @ORM\Column(type="boolean")
-     * @var bool
+     * @ORM\Column(type="integer")
+     * @var int
      */
     private $absence;
 

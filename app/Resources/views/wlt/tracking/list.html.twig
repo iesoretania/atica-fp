@@ -27,7 +27,12 @@
                     <td>
                         {% if item[1] %}
                             {{ item[2] }}/{{ 'table.hours'|transchoice(item[1]) }} ({{ (item[2]*100/item[1]) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %)
-                            {% if item[3] != 0 %} - {{ 'table.absences'|transchoice(item[3]) }}{% endif %}
+                            {% if item[3] != 0 %}
+                                - {{ 'table.absences'|transchoice(item[3]) }}
+                                {% if item[4] != 0 %}
+                                    - {{ 'table.justified_absences'|transchoice(item[4]) }}
+                                {% endif %}
+                            {% endif %}
                         {% endif %}
                     </td>
                 </tr>
