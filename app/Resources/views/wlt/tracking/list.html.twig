@@ -25,7 +25,7 @@
                     <td>{{ item[0].startDate ? item[0].startDate|date('format.date'|trans({}, 'general')) }}</td>
                     <td>{{ item[0].endDate ? item[0].endDate|date('format.date'|trans({}, 'general')) }}</td>
                     <td>
-                        {% if item[2] %}
+                        {% if item[1] %}
                             {{ item[2] }}/{{ 'table.hours'|transchoice(item[1]) }} ({{ (item[2]*100/item[1]) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %)
                             {% if item[3] != 0 %} - {{ 'table.absences'|transchoice(item[3]) }}{% endif %}
                         {% endif %}
