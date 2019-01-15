@@ -12,7 +12,8 @@
             <table id="list" class="table table-bordered table-hover table-striped">
                 <thead>
                     <tr>
-                        <th>{{ 'header.date'|trans }}</label></th>
+                        <th>{{ 'header.datetime'|trans }}</label></th>
+                        <th>{{ 'header.created_by'|trans }}</label></th>
                         <th>{{ 'header.student_enrollments'|trans }}</label></th>
                         <th>{{ 'header.teachers'|trans }}</label></th>
                     </tr>
@@ -21,7 +22,10 @@
                     {% for item in items %}
                         <tr>
                             <td>
-                                {{ item.date|date('format.date'|trans({}, 'general')) }}
+                                {{ item.dateTime|date('format.datetime'|trans({}, 'general')) }}
+                            </td>
+                            <td>
+                                {{ item.createdBy }}
                             </td>
                             <td>
                                 {{ item.studentEnrollments|join(', ') }}

@@ -28,7 +28,7 @@ use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -71,10 +71,10 @@ class MeetingType extends AbstractType
     private function addElements(
         FormInterface $form,
         AcademicYear $academicYear = null,
+        $isManager = false,
         $groups = []
     ) {
-        if (
-            $academicYear &&
+        if ($academicYear &&
             $academicYear->getOrganization() === $this->userExtensionService->getCurrentOrganization()
         ) {
             if ($groups) {
@@ -96,9 +96,17 @@ class MeetingType extends AbstractType
                 'choices' => [$academicYear],
                 'required' => true
             ])
-            ->add('date', DateType::class, [
+            ->add('dateTime', DateTimeType::class, [
                 'label' => 'form.date',
-                'widget' => 'single_text',
+                'date_widget' => 'single_text',
+                'time_widget' => 'single_text',
+                'required' => true
+            ])
+            ->add('createdBy', EntityType::class, [
+                'label' => 'form.created_by',
+                'class' => Teacher::class,
+                'choices' => $teachers,
+                'disabled' => false === $isManager,
                 'required' => true
             ])
             ->add('studentEnrollments', EntityType::class, [
@@ -123,7 +131,6 @@ class MeetingType extends AbstractType
                 'required' => false,
                 'attr' => ['rows' => 10]
             ]);
-
     }
     /**
      * {@inheritdoc}
@@ -135,7 +142,7 @@ class MeetingType extends AbstractType
             $data = $event->getData();
 
             $academicYear = $data->getAcademicYear();
-            $this->addElements($form, $academicYear, $options['groups']);
+            $this->addElements($form, $academicYear, $options['is_manager'], $options['groups']);
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
@@ -147,7 +154,7 @@ class MeetingType extends AbstractType
                 $this->academicYearRepository->find($data['academicYear']) :
                 null;
 
-            $this->addElements($form, $academicYear, $options['groups']);
+            $this->addElements($form, $academicYear, $options['is_manager'], $options['groups']);
         });
     }
 
@@ -158,6 +165,7 @@ class MeetingType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Meeting::class,
+            'is_manager' => false,
             'groups' => [],
             'translation_domain' => 'wlt_meeting'
         ]);

@@ -19,6 +19,7 @@
 namespace AppBundle\Repository\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WLT\Meeting;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -97,16 +98,25 @@ class MeetingRepository extends ServiceEntityRepository
         return $queryBuilder;
     }
 
-    public function findAllInListByIdAndAcademicYear(
+    public function findAllInListByIdAndAcademicYearAndTeacher(
         $items,
-        AcademicYear $academicYear
+        AcademicYear $academicYear,
+        Teacher $teacher = null
     ) {
-        return $this->createQueryBuilder('m')
+        $qb = $this->createQueryBuilder('m')
             ->where('m IN (:items)')
             ->andWhere('m.academicYear = :academic_year')
             ->setParameter('items', $items)
-            ->setParameter('academic_year', $academicYear)
-            ->orderBy('m.date', 'DESC')
+            ->setParameter('academic_year', $academicYear);
+
+        if ($teacher) {
+            $qb
+                ->andWhere('m.createdBy = :teacher')
+                ->setParameter('teacher', $teacher);
+        }
+
+        return $qb
+            ->orderBy('m.dateTime', 'DESC')
             ->getQuery()
             ->getResult();
     }

@@ -1,4 +1,5 @@
 form.academic_year: Curso académico
+form.created_by: Registrada por
 form.date: Fecha
 form.students: Estudiantes
 form.teachers: Docentes
@@ -25,9 +26,10 @@ table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% res
 table.no_items: No hay reuniones que mostrar
 table.filter: Filtrar...
 
+header.created_by: Registrada por
 header.student_enrollments: Estudiantes
 header.teachers: Docentes
-header.date: Fecha
+header.datetime: Fecha y hora
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

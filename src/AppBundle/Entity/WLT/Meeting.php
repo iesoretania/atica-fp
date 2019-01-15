@@ -45,10 +45,10 @@ class Meeting
     private $academicYear;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      * @var \DateTime
      */
-    private $date;
+    private $dateTime;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Edu\StudentEnrollment", fetch="EAGER")
@@ -56,6 +56,13 @@ class Meeting
      * @var StudentEnrollment[]
      */
     private $studentEnrollments;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\Teacher", fetch="EAGER")
+     * @ORM\JoinColumn(nullable=false)
+     * @var Teacher
+     */
+    private $createdBy;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Edu\Teacher", fetch="EAGER")
@@ -98,18 +105,18 @@ class Meeting
     /**
      * @return \DateTime
      */
-    public function getDate()
+    public function getDateTime()
     {
-        return $this->date;
+        return $this->dateTime;
     }
 
     /**
-     * @param \DateTime $date
+     * @param \DateTime $dateTime
      * @return Meeting
      */
-    public function setDate($date)
+    public function setDateTime($dateTime)
     {
-        $this->date = $date;
+        $this->dateTime = $dateTime;
         return $this;
     }
 
@@ -128,6 +135,24 @@ class Meeting
     public function setStudentEnrollments($studentEnrollments)
     {
         $this->studentEnrollments = $studentEnrollments;
+        return $this;
+    }
+
+    /**
+     * @return Teacher
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * @param Teacher $createdBy
+     * @return Meeting
+     */
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
         return $this;
     }
 

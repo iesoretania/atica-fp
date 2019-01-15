@@ -51,14 +51,19 @@ class MeetingController extends Controller
         GroupRepository $groupRepository
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
 
         $academicYear = $organization->getCurrentAcademicYear();
+
+        $person = $this->getUser()->getPerson();
+        $teacher =
+            $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
         $meeting = new Meeting();
         $meeting
             ->setAcademicYear($academicYear)
-            ->setDate(new \DateTime());
+            ->setCreatedBy($teacher)
+            ->setDateTime(new \DateTime());
 
         $this->getDoctrine()->getManager()->persist($meeting);
 
@@ -93,13 +98,11 @@ class MeetingController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $readOnly = false === $this->isGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
-
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization)
+                     || $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
 
         $groups = [];
-        if (false === $isManager && false === $isWltManager) {
+        if (false === $isManager) {
             $person = $this->getUser()->getPerson();
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento, tutor de grupo o profesor
@@ -109,10 +112,15 @@ class MeetingController extends Controller
             if ($teacher) {
                 $groups = $groupRepository->findByAcademicYearAndTeacher($academicYear, $teacher);
             }
+
+            $readOnly = $meeting->getCreatedBy() !== $teacher;
+        } else {
+            $readOnly = false;
         }
 
         $form = $this->createForm(MeetingType::class, $meeting, [
             'disabled' => $readOnly,
+            'is_manager' => $isManager,
             'groups' => $groups
         ]);
 
@@ -165,14 +173,14 @@ class MeetingController extends Controller
         $academicYear = $organization->getCurrentAcademicYear();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
-        $readOnly = false === $this->isGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $readOnly = false;
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
         $queryBuilder
             ->select('m')
             ->from(Meeting::class, 'm')
-            ->addOrderBy('m.date', 'DESC');
+            ->addOrderBy('m.dateTime', 'DESC');
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
         $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
@@ -188,6 +196,8 @@ class MeetingController extends Controller
             if ($teacher) {
                 $groups = $groupRepository->findByAcademicYearAndTeacher($academicYear, $teacher);
             }
+        } else {
+            $teacher = null;
         }
 
         $q = $request->get('q');
@@ -217,6 +227,7 @@ class MeetingController extends Controller
             'q' => $q,
             'domain' => 'wlt_meeting',
             'read_only' => $readOnly,
+            'teacher' => $teacher,
             'academic_year' => $academicYear
         ]);
     }
@@ -229,12 +240,13 @@ class MeetingController extends Controller
         Request $request,
         MeetingRepository $meetingRepository,
         UserExtensionService $userExtensionService,
+        TeacherRepository $teacherRepository,
         TranslatorInterface $translator
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
 
         $em = $this->getDoctrine()->getManager();
 
@@ -243,7 +255,11 @@ class MeetingController extends Controller
             return $this->redirectToRoute('work_linked_training_meeting_list');
         }
 
-        $meetings = $meetingRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
+        $person = $this->getUser()->getPerson();
+        $teacher =
+            $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+
+        $meetings = $meetingRepository->findAllInListByIdAndAcademicYearAndTeacher($items, $academicYear, $teacher);
 
         if ($request->get('confirm', '') === 'ok') {
             try {
