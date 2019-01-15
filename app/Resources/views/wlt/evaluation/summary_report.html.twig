@@ -17,7 +17,7 @@
             {% if last_activity_id != activityRealizationData[0].id %}
                 {% if not loop.first %}
                     <tr>
-                        <td class="text-right">{{ 'report.activity_average'|trans }}</td>
+                        <td class="text-right" colspan="2">{{ 'report.activity_average'|trans }}</td>
                         <td class="w-10">{% if activity_count %}{{ (activity_sum/activity_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}{% endif %}</td>
                     </tr>
                     {% if activity_count %}
@@ -30,14 +30,15 @@
                 {% endif %}
                 <table class="table table-bordered table-striped">
                 <tr>
-                    <th colspan="2">{{ activityRealizationData[0].activity }}</th>
+                    <th colspan="3">{{ activityRealizationData[0].activity }}</th>
                 </tr>
                 {% set last_activity_id = activityRealizationData[0].id %}
             {% endif %}
             <tr>
                 <td>{{ activityRealizationData[0] }}</td>
                 {% if activityRealizationData[1] is not null %}
-                    <td class="w-10">{{ activityRealizationData[1]  | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</td>
+                    <td class="w-10">{{ activityRealizationData[2] ? activityRealizationData[2]|date('format.date'|trans({}, 'general')) }}</td>
+                    <td class="w-10">{{ activityRealizationData[1] | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</td>
                     {% set activity_sum = activity_sum + activityRealizationData[1] %}
                     {% set activity_count = activity_count + 1 %}
                 {% else %}
@@ -49,7 +50,7 @@
         {% endfor %}
         {% if last_activity_id != 0 %}
             <tr>
-                <td class="text-right">{{ 'report.activity_average'|trans }}</td>
+                <td class="text-right" colspan="2">{{ 'report.activity_average'|trans }}</td>
                 <td class="w-10">{% if activity_count %}{{ (activity_sum/activity_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}{% endif %}</td>
                 {% if activity_count %}
                     {% set subject_sum = subject_sum + (activity_sum/activity_count) %}
