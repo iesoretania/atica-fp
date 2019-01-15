@@ -92,7 +92,7 @@ class PersonalDataController extends Controller
             $newEmail = null;
         }
 
-        if ($user->isGlobalAdministrator() || null === $newEmail) {
+        if (null === $newEmail || $user->isGlobalAdministrator()) {
             $user->setEmailAddress($newEmail);
         } else {
             $user->setTokenType($newEmail);

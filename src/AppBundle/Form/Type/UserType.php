@@ -59,7 +59,6 @@ class UserType extends AbstractType
             ])
             ->add('emailAddress', EmailType::class, [
                 'label' => 'form.email_address',
-                'disabled' => !$options['admin'],
                 'required' => false,
             ])
             ->add('personGender', ChoiceType::class, [
