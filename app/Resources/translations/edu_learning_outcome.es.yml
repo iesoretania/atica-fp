@@ -6,6 +6,11 @@ form.save: Guardar cambios
 form.delete: Eliminar los resultados seleccionados
 form.back: Volver
 form.delete_confirm: Confirmar borrado
+form.import: Importar desde el texto indicado
+form.import.placeholder: |
+  Por ejemplo: (los dos puntos separan el código del resultado)
+  RA1: Realiza...
+  RA2: Configura...
 
 table.new: Nuevo resultado de aprendizaje
 
@@ -17,6 +22,7 @@ prompt.delete_confirm: |
 title.edit: Datos del resultado de aprendizaje
 title.new: Nuevo resultado de aprendizaje
 title.delete: Eliminar resultados de aprendizaje
+title.import: Importación masiva
 
 title.list: Resultados de aprendizaje
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"

@@ -230,4 +230,66 @@ class LearningOutcomeController extends Controller
             'learning_outcomes' => $learningOutcomes
         ]);
     }
+
+    /**
+     * @Route("/materia/resultado/importar/{id}", name="organization_training_learning_outcome_import",
+     *     requirements={"id" = "\d+"}, methods={"POST"})
+     */
+    public function importAction(
+        Request $request,
+        LearningOutcomeRepository $learningOutcomeRepository,
+        TranslatorInterface $translator,
+        Subject $subject
+    ) {
+        $training = $subject->getGrade()->getTraining();
+
+        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $lines = trim($request->request->get('data', []));
+        if ($lines === '') {
+            return $this->redirectToRoute('organization_training_learning_outcome_list', ['id' => $subject->getId()]);
+        }
+
+        $items = $this->parseImport($lines);
+        foreach ($items as $code => $item) {
+            if (null === $learningOutcomeRepository->findOneByCodeAndSubject($code, $subject)) {
+                $learningOutcome = new LearningOutcome();
+                $learningOutcome
+                    ->setSubject($subject)
+                    ->setCode($code)
+                    ->setDescription($item);
+                $em->persist($learningOutcome);
+            }
+        }
+        try {
+            $em->flush();
+            $this->addFlash('success', $translator->trans('message.saved', [], 'edu_competency'));
+        } catch (\Exception $e) {
+            $this->addFlash('error', $translator->trans('message.error', [], 'edu_competency'));
+        }
+        return $this->redirectToRoute('organization_training_learning_outcome_list', ['id' => $subject->getId()]);
+    }
+
+    /**
+     * @param $lines
+     *
+     * @return array
+     */
+    private function parseImport($lines)
+    {
+        $items = explode("\n", $lines);
+        $output = [];
+        $matches = [];
+
+        foreach ($items as $item) {
+            preg_match('/^(.{1,10})\: (.*)/u', $item, $matches);
+            if ($matches) {
+                $output[$matches[1]] = $matches[2];
+            }
+        }
+
+        return $output;
+    }
 }

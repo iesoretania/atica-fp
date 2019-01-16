@@ -36,4 +36,11 @@
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
 </form>
+<p class="clearfix"></p>
+<h4>{{ 'title.import'|trans }}</h4>
+<form action="{{ path('organization_training_learning_outcome_import', {'id': subject.id}) }}" method="post">
+    <textarea class="form form-control" name="data" rows="10" placeholder="{{ 'form.import.placeholder'|trans }}"></textarea>
+    <p class="clearfix"></p>
+    {{ m.submit_button('import', 'download', 'btn-warning', 'form.import'|trans) }}
+</form>
 {% endblock %}
