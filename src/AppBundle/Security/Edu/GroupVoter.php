@@ -19,16 +19,16 @@
 namespace AppBundle\Security\Edu;
 
 use AppBundle\Entity\Edu\Group;
-use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Repository\Edu\TeachingRepository;
-use AppBundle\Repository\RoleRepository;
+use AppBundle\Security\CachedVoter;
+use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class GroupVoter extends Voter
+class GroupVoter extends CachedVoter
 {
     const MANAGE = 'EDU_GROUP_MANAGE';
     const ACCESS = 'EDU_GROUP_ACCESS';
@@ -37,9 +37,6 @@ class GroupVoter extends Voter
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
 
-    /** @var RoleRepository */
-    private $roleRepository;
-
     /** @var UserExtensionService */
     private $userExtensionService;
 
@@ -47,13 +44,13 @@ class GroupVoter extends Voter
     private $teachingRepository;
 
     public function __construct(
+        CacheItemPoolInterface $cacheItemPoolItemPool,
         AccessDecisionManagerInterface $decisionManager,
-        RoleRepository $roleRepository,
         TeachingRepository $teachingRepository,
         UserExtensionService $userExtensionService
     ) {
+        parent::__construct($cacheItemPoolItemPool);
         $this->decisionManager = $decisionManager;
-        $this->roleRepository = $roleRepository;
         $this->teachingRepository = $teachingRepository;
         $this->userExtensionService = $userExtensionService;
     }
@@ -104,7 +101,7 @@ class GroupVoter extends Voter
         $organization = $this->userExtensionService->getCurrentOrganization();
 
         // Si es administrador de la organización, permitir siempre
-        if ($this->roleRepository->personHasRole($organization, $user->getPerson(), Role::ROLE_LOCAL_ADMIN)) {
+        if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
             return true;
         }
 

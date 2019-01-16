@@ -19,16 +19,16 @@
 namespace AppBundle\Security\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Repository\Edu\TeacherRepository;
-use AppBundle\Repository\RoleRepository;
+use AppBundle\Security\CachedVoter;
+use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class AcademicYearVoter extends Voter
+class AcademicYearVoter extends CachedVoter
 {
     const MANAGE = 'ACADEMIC_YEAR_MANAGE';
     const ACCESS = 'ACADEMIC_YEAR_ACCESS';
@@ -39,21 +39,18 @@ class AcademicYearVoter extends Voter
     /** @var UserExtensionService $userExtensionService */
     private $userExtensionService;
 
-    /** @var RoleRepository */
-    private $roleRepository;
-
     /** @var TeacherRepository */
     private $teacherRepository;
 
     public function __construct(
+        CacheItemPoolInterface $cacheItemPool,
         AccessDecisionManagerInterface $decisionManager,
         UserExtensionService $userExtensionService,
-        RoleRepository $roleRepository,
         TeacherRepository $teacherRepository
     ) {
+        parent::__construct($cacheItemPool);
         $this->decisionManager = $decisionManager;
         $this->userExtensionService = $userExtensionService;
-        $this->roleRepository = $roleRepository;
         $this->teacherRepository = $teacherRepository;
     }
 
@@ -103,7 +100,7 @@ class AcademicYearVoter extends Voter
         }
 
         // Si es administrador de la organización, permitir siempre
-        if ($this->roleRepository->personHasRole($organization, $user->getPerson(), Role::ROLE_LOCAL_ADMIN)) {
+        if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
             return true;
         }
 

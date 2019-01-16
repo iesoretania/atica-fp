@@ -22,11 +22,10 @@ namespace AppBundle\Form\Type\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Training;
-use AppBundle\Entity\Role;
+use AppBundle\Entity\User;
 use AppBundle\Form\Model\LearningProgramImport;
 use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\TrainingRepository;
-use AppBundle\Repository\RoleRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -47,9 +46,6 @@ class LearningProgramImportType extends AbstractType
     /** @var AcademicYearRepository */
     private $academicYearRepository;
 
-    /** @var RoleRepository */
-    private $roleRepository;
-
     /** @var Security */
     private $security;
 
@@ -59,13 +55,11 @@ class LearningProgramImportType extends AbstractType
     public function __construct(
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
-        RoleRepository $roleRepository,
         TrainingRepository $trainingRepository,
         Security $security
     ) {
         $this->userExtensionService = $userExtensionService;
         $this->academicYearRepository = $academicYearRepository;
-        $this->roleRepository = $roleRepository;
         $this->trainingRepository = $trainingRepository;
         $this->security = $security;
     }
@@ -82,11 +76,7 @@ class LearningProgramImportType extends AbstractType
         /** @var User $user */
         $user = $this->security->getUser();
         if (false === $this->security->isGranted(OrganizationVoter::MANAGE, $organization) &&
-            false === $this->roleRepository->personHasRole(
-                $organization,
-                $user->getPerson(),
-                Role::ROLE_WLT_MANAGER
-            )
+            false === $this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization)
         ) {
             $trainings = $this->trainingRepository->findByAcademicYearAndDepartmentHead(
                 $academicYear,

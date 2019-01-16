@@ -19,14 +19,12 @@
 namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Role;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\AgreementActivityRealization;
 use AppBundle\Form\Model\CalendarCopy;
 use AppBundle\Form\Type\WLT\AgreementType;
 use AppBundle\Form\Type\WLT\CalendarCopyType;
 use AppBundle\Repository\MembershipRepository;
-use AppBundle\Repository\RoleRepository;
 use AppBundle\Repository\WLT\AgreementActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
@@ -36,9 +34,9 @@ use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -171,7 +169,6 @@ class AgreementController extends Controller
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        RoleRepository $roleRepository,
         Security $security,
         $page = 1,
         AcademicYear $academicYear = null
@@ -230,11 +227,7 @@ class AgreementController extends Controller
             ->setParameter('academic_year', $academicYear);
 
         if (false === $security->isGranted(OrganizationVoter::MANAGE, $organization) &&
-            false === $roleRepository->personHasRole(
-                $organization,
-                $this->getUser()->getPerson(),
-                Role::ROLE_WLT_MANAGER
-            )
+            false === $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization)
         ) {
             $queryBuilder
                 ->join('t.department', 'd')

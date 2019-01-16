@@ -18,18 +18,17 @@
 
 namespace AppBundle\Security\WLT;
 
-use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Entity\WLT\Agreement;
-use AppBundle\Repository\Edu\TeachingRepository;
-use AppBundle\Repository\RoleRepository;
+use AppBundle\Security\CachedVoter;
 use AppBundle\Security\Edu\GroupVoter;
+use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class AgreementVoter extends Voter
+class AgreementVoter extends CachedVoter
 {
     const MANAGE = 'WLT_AGREEMENT_MANAGE';
     const ACCESS = 'WLT_AGREEMENT_ACCESS';
@@ -41,19 +40,16 @@ class AgreementVoter extends Voter
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
 
-    /** @var RoleRepository */
-    private $roleRepository;
-
     /** @var UserExtensionService */
     private $userExtensionService;
 
     public function __construct(
+        CacheItemPoolInterface $cacheItemPoolItemPool,
         AccessDecisionManagerInterface $decisionManager,
-        RoleRepository $roleRepository,
         UserExtensionService $userExtensionService
     ) {
+        parent::__construct($cacheItemPoolItemPool);
         $this->decisionManager = $decisionManager;
-        $this->roleRepository = $roleRepository;
         $this->userExtensionService = $userExtensionService;
     }
 
@@ -106,7 +102,7 @@ class AgreementVoter extends Voter
         $organization = $this->userExtensionService->getCurrentOrganization();
 
         // Si es administrador de la organización, permitir siempre
-        if ($this->roleRepository->personHasRole($organization, $user->getPerson(), Role::ROLE_LOCAL_ADMIN)) {
+        if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
             return true;
         }
 
@@ -123,7 +119,7 @@ class AgreementVoter extends Voter
         }
 
         // Coordinador de FP dual
-        if ($this->roleRepository->personHasRole($organization, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
+        if ($this->decisionManager->decide($token, [OrganizationVoter::WLT_MANAGER], $organization)) {
             return true;
         }
 

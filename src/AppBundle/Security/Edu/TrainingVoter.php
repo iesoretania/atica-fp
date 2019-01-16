@@ -19,15 +19,16 @@
 namespace AppBundle\Security\Edu;
 
 use AppBundle\Entity\Edu\Training;
-use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Repository\Edu\TeacherRepository;
-use AppBundle\Repository\RoleRepository;
+use AppBundle\Security\CachedVoter;
+use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Security;
 
-class TrainingVoter extends Voter
+class TrainingVoter extends CachedVoter
 {
     const MANAGE = 'TRAINING_MANAGE';
     const ACCESS = 'TRAINING_ACCESS';
@@ -35,20 +36,23 @@ class TrainingVoter extends Voter
     /** @var UserExtensionService $userExtensionService */
     private $userExtensionService;
 
-    /** @var RoleRepository */
-    private $roleRepository;
-
     /** @var TeacherRepository */
     private $teacherRepository;
+    /**
+     * @var Security
+     */
+    private $security;
 
     public function __construct(
+        CacheItemPoolInterface $cacheItemPoolItemPool,
         UserExtensionService $userExtensionService,
-        RoleRepository $roleRepository,
-        TeacherRepository $teacherRepository
+        TeacherRepository $teacherRepository,
+        Security $security
     ) {
+        parent::__construct($cacheItemPoolItemPool);
         $this->userExtensionService = $userExtensionService;
-        $this->roleRepository = $roleRepository;
         $this->teacherRepository = $teacherRepository;
+        $this->security = $security;
     }
 
     /**
@@ -97,12 +101,12 @@ class TrainingVoter extends Voter
         }
 
         // Si es administrador de la organización, permitir siempre
-        if ($this->roleRepository->personHasRole($organization, $user->getPerson(), Role::ROLE_LOCAL_ADMIN)) {
+        if ($this->security->isGranted(OrganizationVoter::MANAGE, $organization)) {
             return true;
         }
 
         // Si es el coordinador de FP dual, permitir si el ciclo es dual
-        if ($subject->isWorkLinked() && $this->roleRepository->personHasRole($organization, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
+        if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization)) {
             return true;
         }
 
@@ -113,7 +117,8 @@ class TrainingVoter extends Voter
 
         // Si es permiso de acceso, comprobar que es un profesor de ese curso académico
         if ($attribute === self::ACCESS) {
-            return null !== $this->teacherRepository->findOneByPersonAndAcademicYear($user->getPerson(), $subject->getAcademicYear());
+            return null !== $this->teacherRepository->
+                findOneByPersonAndAcademicYear($user->getPerson(), $subject->getAcademicYear());
         }
 
         // denegamos en cualquier otro caso

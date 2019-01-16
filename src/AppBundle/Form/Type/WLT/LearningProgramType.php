@@ -22,13 +22,11 @@ use AppBundle\Entity\Company;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Edu\Training;
-use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Entity\WLT\ActivityRealization;
 use AppBundle\Entity\WLT\LearningProgram;
 use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\TrainingRepository;
-use AppBundle\Repository\RoleRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
@@ -50,9 +48,6 @@ class LearningProgramType extends AbstractType
     /** @var AcademicYearRepository */
     private $academicYearRepository;
 
-    /** @var RoleRepository */
-    private $roleRepository;
-
     /** @var Security */
     private $security;
 
@@ -65,14 +60,12 @@ class LearningProgramType extends AbstractType
     public function __construct(
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
-        RoleRepository $roleRepository,
         ActivityRealizationRepository $activityRealizationRepository,
         TrainingRepository $trainingRepository,
         Security $security
     ) {
         $this->userExtensionService = $userExtensionService;
         $this->academicYearRepository = $academicYearRepository;
-        $this->roleRepository = $roleRepository;
         $this->activityRealizationRepository = $activityRealizationRepository;
         $this->trainingRepository = $trainingRepository;
         $this->security = $security;
@@ -91,11 +84,7 @@ class LearningProgramType extends AbstractType
         /** @var User $user */
         $user = $this->security->getUser();
         if (false === $this->security->isGranted(OrganizationVoter::MANAGE, $organization) &&
-            false === $this->roleRepository->personHasRole(
-                $organization,
-                $user->getPerson(),
-                Role::ROLE_WLT_MANAGER
-            )
+            false === $this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization)
         ) {
             $trainings = $this->trainingRepository->findByAcademicYearAndDepartmentHead(
                 $academicYear,

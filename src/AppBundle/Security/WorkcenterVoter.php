@@ -18,18 +18,16 @@
 
 namespace AppBundle\Security;
 
-use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Workcenter;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\Edu\TrainingRepository;
-use AppBundle\Repository\RoleRepository;
 use AppBundle\Service\UserExtensionService;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class WorkcenterVoter extends Voter
+class WorkcenterVoter extends CachedVoter
 {
     const MANAGE = 'WORKCENTER_MANAGE';
     const ACCESS = 'WORKCENTER_ACCESS';
@@ -40,9 +38,6 @@ class WorkcenterVoter extends Voter
     /** @var UserExtensionService $userExtensionService */
     private $userExtensionService;
 
-    /** @var RoleRepository */
-    private $roleRepository;
-
     /** @var TeacherRepository */
     private $teacherRepository;
 
@@ -50,15 +45,15 @@ class WorkcenterVoter extends Voter
     private $trainingRepository;
 
     public function __construct(
+        CacheItemPoolInterface $cacheItemPoolItemPool,
         AccessDecisionManagerInterface $decisionManager,
         UserExtensionService $userExtensionService,
-        RoleRepository $roleRepository,
         TeacherRepository $teacherRepository,
         TrainingRepository $trainingRepository
     ) {
+        parent::__construct($cacheItemPoolItemPool);
         $this->decisionManager = $decisionManager;
         $this->userExtensionService = $userExtensionService;
-        $this->roleRepository = $roleRepository;
         $this->teacherRepository = $teacherRepository;
         $this->trainingRepository = $trainingRepository;
     }
@@ -108,7 +103,7 @@ class WorkcenterVoter extends Voter
         }
 
         // Si es administrador de la organización, permitir siempre
-        if ($this->roleRepository->personHasRole($organization, $user->getPerson(), Role::ROLE_LOCAL_ADMIN)) {
+        if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
             return true;
         }
 
@@ -122,14 +117,14 @@ class WorkcenterVoter extends Voter
             case self::MANAGE:
                 // 1) Jefe de departamento
                 if ($this->trainingRepository->countAcademicYearAndDepartmentHead(
-                        $subject->getAcademicYear(),
-                        $user->getPerson()
-                    ) > 0) {
+                    $subject->getAcademicYear(),
+                    $user->getPerson()
+                ) > 0) {
                     return true;
                 }
 
                 // 2) Coordinador de FP dual
-                if ($this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER)) {
+                if ($this->decisionManager->decide($token, [OrganizationVoter::WLT_MANAGER], $organization)) {
                     return true;
                 }
                 break;
