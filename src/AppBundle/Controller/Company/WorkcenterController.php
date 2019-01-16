@@ -107,10 +107,14 @@ class WorkcenterController extends Controller
         $breadcrumb = [
             [
                 'fixed' => $workcenter->getCompany()->getName(),
-                'routeName' => 'company_workcenter_list',
+                'routeName' => 'company_edit',
                 'routeParams' => ['id' => $workcenter->getCompany()->getId()]
             ],
-            ['fixed' => $this->get('translator')->trans('title.list', [], 'workcenter')],
+            [
+                'fixed' => $this->get('translator')->trans('title.list', [], 'workcenter'),
+                'routeName' => 'company_workcenter_list',
+                'routeParams' => ['id' => $workcenter->getCompany()->getId()]
+        ],
             $workcenter->getId() ?
                 ['fixed' => $workcenter->getName()] :
                 ['fixed' => $this->get('translator')->trans('title.new', [], 'workcenter')]
@@ -131,6 +135,7 @@ class WorkcenterController extends Controller
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
         Company $company,
         $page = 1
     ) {
@@ -166,10 +171,17 @@ class WorkcenterController extends Controller
             ->setMaxPerPage($this->getParameter('page.size'))
             ->setCurrentPage($q ? 1 : $page);
 
-        $title = $company->getName() . ' - ' . $this->get('translator')->trans('title.list', [], 'workcenter');
+        $title = $company->getName() . ' - ' . $translator->trans('title.list', [], 'workcenter');
 
         $breadcrumb = [
-            ['fixed' => $company->getName()]
+            [
+                'fixed' => $company->getName(),
+                'routeName' => 'company',
+                'routeParams' => ['id' => $company->getId()]
+            ],
+            [
+                'fixed' => $translator->trans('title.list', [], 'workcenter')
+            ]
         ];
 
         return $this->render('company/workcenter_list.html.twig', [
@@ -219,7 +231,16 @@ class WorkcenterController extends Controller
         }
 
         $breadcrumb = [
-            ['fixed' => $company->getName(), 'routeName' => 'company_workcenter_list', 'routeParams' => ['id' => $company->getId()]],
+            [
+                'fixed' => $company->getName(),
+                'routeName' => 'company_edit',
+                'routeParams' => ['id' => $company->getId()]
+            ],
+            [
+                'fixed' => $this->get('translator')->trans('title.list', [], 'workcenter'),
+                'routeName' => 'company_workcenter_list',
+                'routeParams' => ['id' => $company->getId()]
+            ],
             ['fixed' => $this->get('translator')->trans('title.delete', [], 'workcenter')]
         ];
 

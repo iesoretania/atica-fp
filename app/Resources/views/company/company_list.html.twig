@@ -5,11 +5,11 @@
 {% block path_new %}{{ path('company_new') }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-20">{{ 'header.code'|trans }}</th>
-    <th class="w-40">{{ 'header.name'|trans }}</th>
-    <th class="w-10">{{ 'header.city'|trans }}</th>
-    <th class="w-20">{{ 'header.email_address'|trans }}</th>
-    <th class="w-10"></th>
+    <th>{{ 'header.code'|trans }}</th>
+    <th>{{ 'header.name'|trans }}</th>
+    <th>{{ 'header.city'|trans }}</th>
+    <th>{{ 'header.email_address'|trans }}</th>
+    <th>{{ 'header.manager'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
@@ -29,7 +29,7 @@
                         {{ company.emailAddress }}
                     </td>
                     <td>
-                        {{ m.link_button(path('company_workcenter_list', {'id': company.id}), 'store', 'btn-info btn-sm btn-block', 'table.workcenters'|trans) }}
+                        {{ company.manager }}
                     </td>
                 </tr>
             {% else %}

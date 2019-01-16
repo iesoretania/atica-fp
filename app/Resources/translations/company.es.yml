@@ -37,6 +37,7 @@ header.code: CIF
 header.name: Nombre de la empresa
 header.city: Ciudad
 header.email_address: Correo-e
+header.manager: Gerente
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

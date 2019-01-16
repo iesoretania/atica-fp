@@ -128,6 +128,7 @@ class CompanyController extends Controller
             'menu_path' => 'company',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
+            'company' => $company,
             'form' => $form->createView()
         ]);
     }
