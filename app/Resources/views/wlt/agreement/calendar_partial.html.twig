@@ -26,7 +26,7 @@
                                 {% set day = dayData ? dayData[0] : null  %}
                                 {% if loop.index < 6 %}
                                 {% block day %}
-                                <td {% if day %}class="bg-info"{% endif %}>
+                                <td class="w-20{% if day %} workday{% endif %}">
                                     {% if day %}
                                         <b>{{ n }}</b><br/>
                                         {{ 'caption.hours'|transchoice(day.hours) }}
