@@ -47,7 +47,7 @@ class TrackingCalendarController extends Controller
     ) {
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
 
-        $workDays = $workDayRepository->findByAgreementGroupByMonthAndWeekNumber($agreement);
+        $workDaysData = $workDayRepository->findByAgreementGroupByMonthAndWeekNumber($agreement);
 
         $title = $translator->trans('title.calendar', [], 'wlt_tracking');
 
@@ -65,7 +65,7 @@ class TrackingCalendarController extends Controller
             'title' => $title,
             'agreement' => $agreement,
             'selectable' => $selectable,
-            'calendar' => $workDays
+            'calendar' => $workDaysData
         ]);
     }
 

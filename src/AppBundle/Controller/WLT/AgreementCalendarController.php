@@ -26,9 +26,9 @@ use AppBundle\Form\Type\WLT\WorkDayType;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
 use AppBundle\Security\WLT\AgreementVoter;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -47,7 +47,7 @@ class AgreementCalendarController extends Controller
     ) {
         $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
 
-        $workDays = $workDayRepository->findByAgreementGroupByMonthAndWeekNumber($agreement);
+        $workDaysData = $workDayRepository->findByAgreementGroupByMonthAndWeekNumber($agreement);
 
         $title = $translator->trans('title.calendar', [], 'wlt_agreement');
 
@@ -61,7 +61,7 @@ class AgreementCalendarController extends Controller
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'agreement' => $agreement,
-            'calendar' => $workDays
+            'calendar' => $workDaysData
         ]);
     }
 

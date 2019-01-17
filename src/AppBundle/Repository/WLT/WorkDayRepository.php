@@ -49,6 +49,19 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findAndCountByAgreement(Agreement $agreement)
+    {
+        return $this->createQueryBuilder('wr')
+            ->addSelect('COUNT(ar)')
+            ->leftJoin('wr.activityRealizations', 'ar')
+            ->where('wr.agreement = :agreement')
+            ->setParameter('agreement', $agreement)
+            ->addOrderBy('wr.date')
+            ->groupBy('wr')
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @param array $list
      * @param Agreement $agreement
@@ -99,7 +112,7 @@ class WorkDayRepository extends ServiceEntityRepository
 
     public function findByAgreementGroupByMonthAndWeekNumber(Agreement $agreement)
     {
-        return self::groupByMonthAndWeekNumber($this->findByAgreement($agreement));
+        return self::groupByMonthAndWeekNumber($this->findAndCountByAgreement($agreement));
     }
 
     /**
@@ -220,7 +233,9 @@ class WorkDayRepository extends ServiceEntityRepository
 
         $oneDayMore = new \DateInterval('P1D');
 
-        foreach ($workDays as $workDay) {
+        foreach ($workDays as $workDayData) {
+            /** @var WorkDay $workDay */
+            $workDay = $workDayData[0];
             $date = $workDay->getDate();
             $month = (int) $date->format('n');
             $monthCode = (int) $date->format('Y') * 12 + $month - 1;
@@ -243,7 +258,7 @@ class WorkDayRepository extends ServiceEntityRepository
 
             $currentWeek = (int) $date->format('W');
             $currentDay = (int) $date->format('d');
-            $collection[$monthCode][$currentWeek]['days'][$currentDay] = $workDay;
+            $collection[$monthCode][$currentWeek]['days'][$currentDay] = $workDayData;
         }
 
         return $collection;

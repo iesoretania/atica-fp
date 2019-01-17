@@ -22,7 +22,8 @@
                     <tbody>
                     {% for week in month %}
                         <tr>
-                            {% for n, day in week.days %}
+                            {% for n, dayData in week.days %}
+                                {% set day = dayData ? dayData[0] : null  %}
                                 {% if loop.index < 6 %}
                                 {% block day %}
                                 <td {% if day %}class="bg-info"{% endif %}>
