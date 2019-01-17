@@ -205,8 +205,8 @@ class OrganizationVoter extends CachedVoter
                     return true;
                 }
 
-                // el tutor laboral no puede ver la evaluación
-                if ($attribute === self::VIEW_EVALUATION_WORK_LINKED_TRAINING) {
+                // el tutor laboral no puede ver la evaluación numérica
+                if ($attribute === self::VIEW_GRADE_WORK_LINKED_TRAINING) {
                     return false;
                 }
 

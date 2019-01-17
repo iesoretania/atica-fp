@@ -103,7 +103,7 @@ class CoreMenu implements MenuBuilderInterface
                 $menu1->addChild($menu2);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::VIEW_GRADE_WORK_LINKED_TRAINING, $organization)) {
+            if ($this->security->isGranted(OrganizationVoter::VIEW_EVALUATION_WORK_LINKED_TRAINING, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('work_linked_training_evaluation')
@@ -116,7 +116,7 @@ class CoreMenu implements MenuBuilderInterface
                 $menu1->addChild($menu2);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::VIEW_EVALUATION_WORK_LINKED_TRAINING, $organization)) {
+            if ($this->security->isGranted(OrganizationVoter::VIEW_GRADE_WORK_LINKED_TRAINING, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('work_linked_training_evaluation_summary')
