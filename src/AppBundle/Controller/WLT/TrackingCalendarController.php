@@ -117,21 +117,25 @@ class TrackingCalendarController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $currentActivityRealizations = $workDay->getActivityRealizations();
-                $toInsert = array_diff($currentActivityRealizations->toArray(), $oldActivityRealizations->toArray());
+                if ($workDay->getAbsence() === WorkDay::NO_ABSENCE) {
+                    $currentActivityRealizations = $workDay->getActivityRealizations();
+                    $toInsert = array_diff($currentActivityRealizations->toArray(), $oldActivityRealizations->toArray());
 
-                // comprobar que no se intenta activar una concreción ya bloqueada
-                $invalid = array_intersect($toInsert, $lockedActivityRealizations);
-                if (count($invalid) > 0) {
-                    throw $this->createAccessDeniedException();
-                }
-
-                // asegurar que no se pierden las concreciones marcadas pero bloqueadas
-                $toInsert = array_intersect($lockedActivityRealizations, $oldActivityRealizations->toArray());
-                foreach ($toInsert as $activityRealization) {
-                    if ($workDay->getActivityRealizations()->contains($activityRealization) === false) {
-                        $workDay->getActivityRealizations()->add($activityRealization);
+                    // comprobar que no se intenta activar una concreción ya bloqueada
+                    $invalid = array_intersect($toInsert, $lockedActivityRealizations);
+                    if (count($invalid) > 0) {
+                        throw $this->createAccessDeniedException();
                     }
+
+                    // asegurar que no se pierden las concreciones marcadas pero bloqueadas
+                    $toInsert = array_intersect($lockedActivityRealizations, $oldActivityRealizations->toArray());
+                    foreach ($toInsert as $activityRealization) {
+                        if ($workDay->getActivityRealizations()->contains($activityRealization) === false) {
+                            $workDay->getActivityRealizations()->add($activityRealization);
+                        }
+                    }
+                } else {
+                    $workDay->getActivityRealizations()->clear();
                 }
                 $this->getDoctrine()->getManager()->flush();
 

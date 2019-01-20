@@ -220,15 +220,15 @@ class WorkDay
     }
 
     /**
-     * @return bool
+     * @return int
      */
-    public function isAbsence()
+    public function getAbsence()
     {
         return $this->absence;
     }
 
     /**
-     * @param bool $absence
+     * @param int $absence
      * @return WorkDay
      */
     public function setAbsence($absence)

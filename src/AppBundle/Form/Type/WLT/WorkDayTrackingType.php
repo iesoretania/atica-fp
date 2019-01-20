@@ -52,7 +52,7 @@ class WorkDayTrackingType extends AbstractType
         $activityRealizations = $agreement->getActivityRealizations();
 
         $locked = $workDay->isLocked();
-        $absence = $workDay->isAbsence();
+        $absence = $workDay->getAbsence() !== WorkDay::NO_ABSENCE;
 
         $lockManager = $this->security->isGranted(AgreementVoter::LOCK, $agreement);
         $attendanceManager = $this->security->isGranted(AgreementVoter::ATTENDANCE, $agreement);
