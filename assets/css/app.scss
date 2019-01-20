@@ -281,6 +281,7 @@ table.calendar td {
 }
 
 $light-danger: lighten($danger, 20%);
+$light-success: lighten($success, 20%);
 $light-warning: lighten($warning, 20%);
 
 table.calendar {
@@ -327,4 +328,12 @@ h5.checkbox-category {
 
 div.progress.progress-stat {
   margin-bottom: 1em;
+}
+
+.collapse-zone {
+  cursor: pointer;
+}
+
+.bg-light-success {
+  background-color: $light-success !important;
 }

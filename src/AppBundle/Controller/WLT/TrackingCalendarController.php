@@ -50,11 +50,13 @@ class TrackingCalendarController extends Controller
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
 
         $workDaysData = $workDayRepository->findByAgreementGroupByMonthAndWeekNumber($agreement);
+
         $today = new \DateTime('', new \DateTimeZone('UTC'));
         $today->setTime(0, 0);
         $workDayToday = $workDayRepository->findOneByAgreementAndDate($agreement, $today);
 
         $workDayStats = $workDayRepository->hoursStatsByAgreement($agreement);
+
         $activityRealizations = $agreementActivityRealizationRepository->findByAgreementSorted($agreement);
 
         $title = $translator->trans('title.calendar', [], 'wlt_tracking');

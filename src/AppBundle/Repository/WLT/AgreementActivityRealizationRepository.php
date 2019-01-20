@@ -33,7 +33,10 @@ class AgreementActivityRealizationRepository extends ServiceEntityRepository
     public function findByAgreementSorted(Agreement $agreement)
     {
         return $this->createQueryBuilder('aar')
+            ->addSelect('ar')
+            ->addSelect('gr')
             ->join('aar.activityRealization', 'ar')
+            ->leftJoin('aar.grade', 'gr')
             ->where('aar.agreement = :agreement')
             ->setParameter('agreement', $agreement)
             ->orderBy('ar.code')
