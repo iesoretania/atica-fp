@@ -1,0 +1,22 @@
+version: '2'
+services:
+    db:
+        image: mysql:5.7
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: aticafp
+            MYSQL_USER: atica
+            MYSQL_PASSWORD: atica
+        volumes:
+            - db:/var/lib/mysql
+        restart: always
+
+    app:
+        build: .
+        ports:
+           - 9999:80
+        restart: always
+        depends_on:
+           - db
+volumes:
+   db:

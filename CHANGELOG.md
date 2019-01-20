@@ -6,6 +6,7 @@ en la distintas versiones de la misma.
 
 1.0.x (2019-??-??)
 ------------------
+* (feat) Se ha incluido una configuración para permitir el despliegue en Docker de la aplicación
 * (perf) Se ha optimizado el número de consultas a la base de datos
 * (UX) Las sedes se gestionan ahora desde el formulario de empresas
 * (feat) Importación masiva de resultados de aprendizaje mediante un cuadro de texto

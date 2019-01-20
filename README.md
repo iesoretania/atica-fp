@@ -15,6 +15,13 @@ Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos comp
 - PHP [Composer].
 - [Node.js] y [npmjs] (si se ha descargado una build completa, no serán necesarios).
 
+## Instalación mediante Docker Compose
+
+- Ejecutar `docker-compose up` desde la carpeta del proyecto
+- Esperar...
+- Acceder desde el navegador a la dirección http://127.0.0.1:9999
+- ¡Listo!
+
 ## Instalación
 
 - Ejecutar `composer install` desde la carpeta del proyecto.
@@ -29,6 +36,11 @@ Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos comp
   - `php bin/console doctrine:schema:create`
   - `php bin/console doctrine:migrations:version --add --all`
 - Para insertar los datos iniciales: `php bin/console doctrine:fixtures:load -n` (¡cuidado! Esto elimina todos los datos existentes en la base de datos).
+
+## Configuración
+
+- Entrar en la plataforma con el nombre de usuario `admin` y la contraseña `admin`
+- No te olvides de cambiar la contraseña del usuario administrador desde la sección "Datos personales"
 
 ## Actualizaciones
 
