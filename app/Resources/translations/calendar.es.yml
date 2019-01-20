@@ -67,6 +67,7 @@ form.calculate: Vista previa
 form.add: Añadir jornadas
 form.delete_confirm: Confirmar borrado
 form.back: Volver
+form.today: Ir a hoy
 
 header.date: Fecha
 header.hours: Horas asignadas

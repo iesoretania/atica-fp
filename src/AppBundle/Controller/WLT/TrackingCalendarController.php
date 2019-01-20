@@ -50,6 +50,10 @@ class TrackingCalendarController extends Controller
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
 
         $workDaysData = $workDayRepository->findByAgreementGroupByMonthAndWeekNumber($agreement);
+        $today = new \DateTime('', new \DateTimeZone('UTC'));
+        $today->setTime(0, 0);
+        $workDayToday = $workDayRepository->findOneByAgreementAndDate($agreement, $today);
+
         $workDayStats = $workDayRepository->hoursStatsByAgreement($agreement);
         $activityRealizations = $agreementActivityRealizationRepository->findByAgreementSorted($agreement);
 
@@ -67,10 +71,12 @@ class TrackingCalendarController extends Controller
             'menu_path' => 'work_linked_training_tracking_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
+            'show_title' => false,
             'agreement' => $agreement,
             'selectable' => $selectable,
             'activity_realizations' => $activityRealizations,
             'work_day_stats' => $workDayStats,
+            'work_day_today' => $workDayToday,
             'calendar' => $workDaysData
         ]);
     }

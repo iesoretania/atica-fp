@@ -51,7 +51,7 @@
             </ol>
 
             {% block content_header %}
-                {% if title is defined %}
+                {% if title is defined and (show_title is not defined or show_title == true) %}
                     <h1 class="well">{{ title }}</h1>
                 {% endif %}
                 {% include 'layout/partial_flash.html.twig' %}
