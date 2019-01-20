@@ -25,7 +25,7 @@ form.stats.hours.total.hours: "%count% hora|%count% horas"
 form.stats.hours.locked.days: "%count% jornada de %total%|%count% jornadas de %total%"
 form.stats.hours.locked.hours: "%count% horas de %total%|%count% horas de %total%"
 form.stats.hours.locked.caption: "Bloqueadas"
-form.stats.hours.worked.caption: "Realizadas"
+form.stats.hours.worked.caption: "Presencia confirmada"
 form.stats.hours.absence.caption: "Ausencias"
 form.stats.hours.justified_absence.caption: "Ausencias justificadas"
 
