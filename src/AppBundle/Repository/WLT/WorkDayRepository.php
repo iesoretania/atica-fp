@@ -62,6 +62,21 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function hoursStatsByAgreement(Agreement $agreement)
+    {
+        return $this->createQueryBuilder('wd')
+            ->select('SUM(wd.hours)')
+            ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked * wd.hours ELSE 0 END)')
+            ->addSelect('SUM(CASE WHEN wd.absence = 1 THEN wd.hours ELSE 0 END)')
+            ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN wd.hours ELSE 0 END)')
+            ->join('wd.agreement', 'a')
+            ->where('wd .agreement = :agreement')
+            ->setParameter('agreement', $agreement)
+            ->groupBy('a')
+            ->getQuery()
+            ->getSingleResult();
+    }
+
     /**
      * @param array $list
      * @param Agreement $agreement

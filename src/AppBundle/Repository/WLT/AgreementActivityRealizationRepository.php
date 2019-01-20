@@ -30,6 +30,17 @@ class AgreementActivityRealizationRepository extends ServiceEntityRepository
         parent::__construct($registry, AgreementActivityRealization::class);
     }
 
+    public function findByAgreementSorted(Agreement $agreement)
+    {
+        return $this->createQueryBuilder('aar')
+            ->join('aar.activityRealization', 'ar')
+            ->where('aar.agreement = :agreement')
+            ->setParameter('agreement', $agreement)
+            ->orderBy('ar.code')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function deleteFromList(Agreement $agreement, $items)
     {
         return $this->getEntityManager()->createQueryBuilder()

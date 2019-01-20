@@ -2,6 +2,7 @@
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
+{% include 'wlt/tracking/calendar_stats_partial.html.twig' %}
 <section id="exchange">
     <form action="{{ path('work_linked_training_tracking_calendar_operation', {'id': agreement.id}) }}" class="list" method="post">
     {% embed 'wlt/tracking/calendar_partial.html.twig' %}

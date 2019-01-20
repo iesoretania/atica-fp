@@ -10,6 +10,14 @@ form.calendar: Calendario
 form.save: Guardar cambios
 form.back: Volver
 
+form.stats: Estadísticas
+form.stats.activities_bar: "%count%/%total% act."
+form.stats.activities_hint: "%count% actividades evaluadas de un total de %total%"
+form.stats.hours_bar: "%count%/%total% h."
+form.stats.hours_locked_hint: "%count% horas realizadas en alternancia"
+form.stats.hours_absence_hint: "%count% horas de ausencia"
+form.stats.hours_justified_absence_hint: "%count% horas de ausencia justificada"
+
 title.agreement.list: Convenios
 title.calendar: Calendario en alternancia
 

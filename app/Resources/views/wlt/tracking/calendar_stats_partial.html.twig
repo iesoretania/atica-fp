@@ -1,0 +1,39 @@
+{% trans_default_domain 'wlt_tracking' %}
+{% set activity_realizations_total = activity_realizations|length %}
+{% set activity_realizations_graded = 0 %}
+{% for activity_realization in activity_realizations %}
+    {% if activity_realization.grade is not null %}{% set activity_realizations_graded = activity_realizations_graded + 1 %}{% endif %}
+{% endfor %}
+{% set percentage = 100 * activity_realizations_graded / activity_realizations_total %}
+<div class="progress progress-stat" title="{{ 'form.stats.activities_hint' | trans({'%count%' : activity_realizations_graded, '%total%' : activity_realizations_total}) }}">
+    <div class="progress-bar progress-bar-{{ percentage == 100 ? 'success' : 'warning' }}" role="progressbar" aria-valuenow="{{ percentage }}"
+         aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage }}%">
+        {{ 'form.stats.activities_bar' | trans({'%count%' : activity_realizations_graded, '%total%' : activity_realizations_total}) }}
+    </div>
+</div>
+{% if work_day_stats and work_day_stats[1] %}
+    {% set percentage_locked = 100 * work_day_stats[2] / work_day_stats[1] %}
+    {% set percentage_absence = 100 * work_day_stats[3] / work_day_stats[1] %}
+    {% set percentage_justified_absence = 100 * work_day_stats[4] / work_day_stats[1] %}
+    <div class="progress progress-stat">
+        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{ percentage_locked }}"
+             aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_locked }}%"
+             title="{{ 'form.stats.hours_locked_hint' | trans({'%count%' : work_day_stats[2]}) }}">
+            {{ 'form.stats.hours_bar' | trans({'%count%' : work_day_stats[2], '%total%' : work_day_stats[1]}) }}
+        </div>
+        {% if work_day_stats[3] %}
+        <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="{{ percentage_justified_absence }}"
+             aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_justified_absence }}%"
+             title="{{ 'form.stats.hours_absence_hint' | trans({'%count%' : work_day_stats[3]}) }}">
+            {{ 'form.stats.hours_bar' | trans({'%count%' : work_day_stats[3], '%total%' : work_day_stats[1]}) }}
+        </div>
+        {% endif %}
+        {% if work_day_stats[4] %}
+        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="{{ percentage_absence }}"
+             aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_absence }}%"
+             title="{{ 'form.stats.hours_justified_absence_hint' | trans({'%count%' : work_day_stats[4]}) }}">
+            {{ 'form.stats.hours_bar' | trans({'%count%' : work_day_stats[4], '%total%' : work_day_stats[1]}) }}
+        </div>
+        {% endif %}
+    </div>
+{% endif %}

@@ -22,6 +22,7 @@ use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\WorkDay;
 use AppBundle\Form\Type\WLT\WorkDayTrackingType;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
+use AppBundle\Repository\WLT\AgreementActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
 use AppBundle\Security\WLT\AgreementVoter;
@@ -42,12 +43,15 @@ class TrackingCalendarController extends Controller
      */
     public function indexAction(
         WorkDayRepository $workDayRepository,
+        AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
         TranslatorInterface $translator,
         Agreement $agreement
     ) {
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
 
         $workDaysData = $workDayRepository->findByAgreementGroupByMonthAndWeekNumber($agreement);
+        $workDayStats = $workDayRepository->hoursStatsByAgreement($agreement);
+        $activityRealizations = $agreementActivityRealizationRepository->findByAgreementSorted($agreement);
 
         $title = $translator->trans('title.calendar', [], 'wlt_tracking');
 
@@ -65,6 +69,8 @@ class TrackingCalendarController extends Controller
             'title' => $title,
             'agreement' => $agreement,
             'selectable' => $selectable,
+            'activity_realizations' => $activityRealizations,
+            'work_day_stats' => $workDayStats,
             'calendar' => $workDaysData
         ]);
     }
