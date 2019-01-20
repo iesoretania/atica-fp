@@ -132,6 +132,24 @@ class ActivityRealizationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByAgreement(Agreement $agreement)
+    {
+        return $this->createQueryBuilder('ar')
+            ->select('ar')
+            ->addSelect('a')
+            ->join('ar.activity', 'a')
+            ->join(
+                AgreementActivityRealization::class,
+                'aar',
+                'WITH',
+                'aar.activityRealization = ar'
+            )
+            ->where('aar.agreement = :agreement')
+            ->setParameter('agreement', $agreement)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function reportByStudentEnrollmentAndSubject(StudentEnrollment $studentEnrollment, Subject $subject)
     {
         return $this->createQueryBuilder('ar')

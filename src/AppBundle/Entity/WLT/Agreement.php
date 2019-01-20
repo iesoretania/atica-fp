@@ -125,7 +125,7 @@ class Agreement
     public function __construct()
     {
         $this->studentPollSubmitted = false;
-        $this->activityRealizations = new ArrayCollection();
+        $this->evaluatedActivityRealizations = new ArrayCollection();
         $this->workDays = new ArrayCollection();
     }
 

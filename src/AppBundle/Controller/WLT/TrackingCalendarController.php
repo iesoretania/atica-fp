@@ -102,6 +102,10 @@ class TrackingCalendarController extends Controller
         $title .= ' - ' . $translator->transChoice('caption.hours', $workDay->getHours(), [], 'calendar');
 
         $lockedActivityRealizations = $activityRealizationRepository->findLockedByAgreement($agreement);
+
+        // precaching
+        $activityRealizationRepository->findByAgreement($agreement);
+
         $oldActivityRealizations = clone $workDay->getActivityRealizations();
 
         $form = $this->createForm(WorkDayTrackingType::class, $workDay, [
