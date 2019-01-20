@@ -21,8 +21,10 @@ form.reset.submit: COMENZAR PROCESO
 form.reset.back: Volver al formulario de entrada
 form.reset.notfound: No se ha encontrado la dirección indicada.
 form.reset.notvalid: No se ha encontrado la petición de restablecimiento o bien ha caducado. Vuelva a solicitarla.
+form.reset.password_old: Introduzca la contraseña actual
 form.reset.password_new: Introduzca la nueva contraseña
 form.reset.password_repeat: Vuelva a introducirla
+form.reset.min_password_length: Longitud mínima de 7 caracteres
 form.reset.submit_set: CONFIGURAR NUEVA CONTRASEÑA
 form.reset.sent: Se han enviado instrucciones a la dirección %email%.
 form.reset.error: No se han podido enviar las instrucciones a la dirección indicada.
@@ -42,6 +44,7 @@ form.reset.email.body: |
     Un cordial saludo.
 
 form.reset.message: Contraseña restablecida con éxito
+form.reset.same_password.error: La contraseña nueva no puede coincidir con la actual
 
 form.change_email.notvalid: No se ha encontrado la petición de cambio de dirección o bien ha caducado. Vuelva a solicitarla
 form.change_email.message: La nueva dirección de correo ha sido confirmada con éxito.

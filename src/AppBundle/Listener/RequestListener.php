@@ -18,19 +18,30 @@
 
 namespace AppBundle\Listener;
 
+use AppBundle\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class RequestListener implements EventSubscriberInterface
 {
+    /**
+     * @var RouterInterface
+     */
     private $router;
 
-    public function __construct(RouterInterface $router)
+    /**
+     * @var TokenStorageInterface
+     */
+    private $token;
+
+    public function __construct(RouterInterface $router, TokenStorageInterface $token)
     {
         $this->router = $router;
+        $this->token = $token;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
@@ -43,10 +54,25 @@ class RequestListener implements EventSubscriberInterface
 
         if (($session->get('organization_id', '') === '') && $event->isMasterRequest()) {
             $route = $event->getRequest()->get('_route');
-            if ($route && substr($route, 0, 3) !== 'log' && $route[0] !== '_') {
+            if ($route && strpos($route, 'log') !== 0 && $route[0] !== '_') {
                 $session->set('_security.organization.target_path', $event->getRequest()->getUri());
                 $event->setResponse(
                     new RedirectResponse($this->router->generate('login_organization'))
+                );
+            }
+        }
+
+        if (
+            $this->token->getToken() &&
+            $this->token->getToken()->getUser() instanceof User &&
+            $this->token->getToken()->getUser()->isForcePasswordChange() &&
+            $event->isMasterRequest()
+        ) {
+            $route = $event->getRequest()->get('_route');
+            if ($route && strpos($route, 'log') !== 0 && strpos($route, 'force') !== 0 && $route[0] !== '_') {
+                $session->set('_security.force_password_change.target_path', $event->getRequest()->getUri());
+                $event->setResponse(
+                    new RedirectResponse($this->router->generate('force_password_reset_do'))
                 );
             }
         }
@@ -54,6 +80,8 @@ class RequestListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return [KernelEvents::REQUEST => 'onKernelRequest'];
+        return [
+            KernelEvents::REQUEST => 'onKernelRequest'
+        ];
     }
 }

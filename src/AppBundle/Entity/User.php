@@ -64,6 +64,12 @@ class User implements AdvancedUserInterface
     private $password;
 
     /**
+     * @ORM\Column(type="boolean", nullable=false)
+     * @var bool
+     */
+    private $forcePasswordChange;
+
+    /**
      * @ORM\Column(type="boolean")
      * @var bool
      */
@@ -175,6 +181,7 @@ class User implements AdvancedUserInterface
         $this->allowExternalCheck = false;
         $this->enabled = true;
         $this->globalAdministrator = false;
+        $this->forcePasswordChange = false;
     }
 
     /**
@@ -233,6 +240,24 @@ class User implements AdvancedUserInterface
     public function getPassword()
     {
         return $this->password;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForcePasswordChange()
+    {
+        return $this->forcePasswordChange;
+    }
+
+    /**
+     * @param bool $forcePasswordChange
+     * @return User
+     */
+    public function setForcePasswordChange($forcePasswordChange)
+    {
+        $this->forcePasswordChange = $forcePasswordChange;
+        return $this;
     }
 
     /**

@@ -27,14 +27,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class PersonAPIController extends Controller
 {
     /**
      * @Route("/api/persona/crear", name="api_person_new", methods={"GET", "POST"})
      */
-    public function apiNewPersonAction(Request $request, UserExtensionService $userExtensionService)
-    {
+    public function apiNewPersonAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        UserPasswordEncoderInterface $passwordEncoder
+    ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
@@ -61,6 +65,11 @@ class PersonAPIController extends Controller
                 $newUser
                     ->setEmailAddress($emailAddress);
             }
+            $newUser
+                ->setEnabled(true)
+                ->setPassword($passwordEncoder->encodePassword($newUser, $newPerson->getUniqueIdentifier()))
+                ->setForcePasswordChange(true);
+
             $em->persist($newUser);
             $em->persist($newPerson);
             $em->flush();

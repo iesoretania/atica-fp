@@ -20,6 +20,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\User;
+use AppBundle\Form\Type\ForceNewPasswordType;
 use AppBundle\Form\Type\NewPasswordType;
 use AppBundle\Form\Type\PasswordResetType;
 use AppBundle\Repository\OrganizationRepository;
@@ -33,6 +34,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -165,6 +167,78 @@ class SecurityController extends Controller
     }
 
     /**
+     * @Route("/forzar/reestablecer", name="force_password_reset_do", methods={"GET", "POST"})
+     */
+    public function oldPasswordResetAction(
+        Request $request,
+        UserPasswordEncoderInterface $passwordEncoder,
+        TranslatorInterface $translator,
+        Session $session
+    ) {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        // si no hay usuario activo, volver
+        if (null === $this->getUser()) {
+            return $this->redirectToRoute('login');
+        }
+
+        if (false === $user->isForcePasswordChange()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $data = [
+            'currentPassword' => '',
+            'newPassword' => ''
+        ];
+
+        $form = $this->createForm(ForceNewPasswordType::class, $data);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $newPassword = $form->get('newPassword')->get('first')->getData();
+            if ($newPassword !== $form->get('currentPassword')->getData()) {
+                //codificar la nueva contraseña y asignarla al usuario
+                $password = $passwordEncoder->encodePassword($user, $newPassword);
+
+                $user
+                    ->setPassword($password)
+                    ->setToken(null)
+                    ->setTokenExpiration(null)
+                    ->setTokenType(null)
+                    ->setForcePasswordChange(false);
+
+                $this->getDoctrine()->getManager()->flush();
+
+                // indicar que los cambios se han realizado con éxito y volver a la página original o a la de inicio
+                $message = $translator->trans('form.reset.message', [], 'security');
+                $this->addFlash('success', $message);
+
+                $url = $session->get('_security.force_password_change.target_path', $this->generateUrl('frontpage'));
+                $session->remove('_security.force_password_change.target_path');
+                return new RedirectResponse($url);
+            }
+            $this->addFlash(
+                'error',
+                $translator->trans('form.reset.same_password.error', [], 'security')
+            );
+        }
+
+        return $this->render(
+            'security/force_password_new.html.twig',
+            [
+                'menu_path' => 'frontpage',
+                'breadcrumb' => [
+                    ['fixed' => $translator->trans('title.force_password_change', [], 'user')]
+                ],
+                'user' => $user,
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
      * @Route("/restablecer/{userId}/{token}", name="login_password_reset_do", methods={"GET", "POST"})
      */
     public function passwordResetAction(
@@ -207,7 +281,8 @@ class SecurityController extends Controller
                 ->setPassword($password)
                 ->setToken(null)
                 ->setTokenExpiration(null)
-                ->setTokenType(null);
+                ->setTokenType(null)
+                ->setForcePasswordChange(false);
 
             $this->getDoctrine()->getManager()->flush();
 

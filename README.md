@@ -40,7 +40,7 @@ Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos comp
 ## Configuración
 
 - Entrar en la plataforma con el nombre de usuario `admin` y la contraseña `admin`
-- No te olvides de cambiar la contraseña del usuario administrador desde la sección "Datos personales"
+- Será necesario cambiar la contraseña por defecto tras el primer acceso
 
 ## Actualizaciones
 

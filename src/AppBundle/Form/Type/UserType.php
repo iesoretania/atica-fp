@@ -126,6 +126,16 @@ class UserType extends AbstractType
                     ]);
             }
 
+            $builder
+                ->add('forcePasswordChange', ChoiceType::class, [
+                    'label' => 'form.force_password_change',
+                    'expanded' => true,
+                    'choices' => [
+                        'form.force_password_change.no' => false,
+                        'form.force_password_change.yes' => true
+                    ]
+                ]);
+
             $passwordChangeAllowed = !($data->getAllowExternalCheck() && $data->getExternalCheck());
 
             if (!$options['new']) {

@@ -16,7 +16,6 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-
 namespace AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -24,10 +23,11 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotNull;
 
-class NewPasswordType extends AbstractType
+class ForceNewPasswordType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -35,8 +35,17 @@ class NewPasswordType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('currentPassword', PasswordType::class, [
+                'label' => 'form.reset.password_old',
+                'constraints' => [
+                    new UserPassword()
+                ],
+                'mapped' => false,
+                'attr' => ['tabindex' => 2, 'autofocus' => ''],
+                'required' => true
+            ])
             ->add('newPassword', RepeatedType::class, [
-                'required' => false,
+                'required' => true,
                 'type' => PasswordType::class,
                 'mapped' => false,
                 'invalid_message' => 'password.no_match',
@@ -49,11 +58,11 @@ class NewPasswordType extends AbstractType
                         ]),
                         new NotNull()
                     ],
-                    'attr' => ['tabindex' => 2, 'autofocus' => '', 'placeholder' => 'form.reset.min_password_length']
+                    'attr' => ['tabindex' => 3, 'autofocus' => '', 'placeholder' => 'form.reset.min_password_length'],
                 ],
                 'second_options' => [
                     'label' => 'form.reset.password_repeat',
-                    'attr' => ['tabindex' => 3, 'placeholder' => 'form.reset.min_password_length']
+                    'attr' => ['tabindex' => 4, 'placeholder' => 'form.reset.min_password_length']
                 ]
             ]);
     }

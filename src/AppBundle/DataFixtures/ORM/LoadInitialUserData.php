@@ -50,7 +50,8 @@ class LoadInitialUserData extends Fixture
             ->setLoginUsername('admin')
             ->setEnabled(true)
             ->setGlobalAdministrator(true)
-            ->setPassword($this->passwordEncoder->encodePassword($userAdmin, 'admin'));
+            ->setPassword($this->passwordEncoder->encodePassword($userAdmin, 'admin'))
+            ->setForcePasswordChange(true);
 
         $person
             ->setUser($userAdmin);

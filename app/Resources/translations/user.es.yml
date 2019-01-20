@@ -11,6 +11,12 @@ form.enabled.no: El acceso a la aplicación le está denegado
 form.enabled.yes: El acceso a la aplicación le está permitido
 form.global_administrator: El usuario puede administrar todos los centros
 
+form.force_password_change: Forzar cambio de contraseña en el próximo inicio
+form.force_password_change.no: No
+form.force_password_change.yes: Sí, se forzará un cambio de contraseña en el próximo inicio de sesión
+
+form.disconnect: Salir de la aplicación
+
 form.allow_external_check: Permitir comprobación de contraseña externa
 form.allow_external_check.yes: "El usuario puede activar la autenticación desde Séneca. NOTA: el nombre de usuario deberá ser su usuario IdEA"
 form.allow_external_check.no: El usuario solamente puede utilizar la contraseña almacenada en local
@@ -30,6 +36,9 @@ prompt.delete_confirm: |
 
   Esta operación no se puede deshacer.
 
+prompt.forced_password_change: |
+  ¡Atención! Es necesario cambiar la contraseña actual para poder acceder a la plataforma.
+
 form.old_password: Contraseña actual
 form.new_password: Nueva contraseña
 form.new_password_repeat: Repetir contraseña
@@ -43,7 +52,7 @@ message.error: No se han podido actualizar los datos personales.
 message.deleted: Los usuarios seleccionados han sido eliminados con éxito.
 message.delete_error: No se han podido eliminar los usuarios seleccionados.
 
-
+title.force_password_change: Cambio obligatorio de contraseña
 title.new: Nuevo usuario
 title.edit: Datos del usuario
 title.delete: Eliminar usuarios

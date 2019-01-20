@@ -30,10 +30,10 @@ use AppBundle\Repository\MembershipRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use AppBundle\Utils\CsvImporter;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class TeacherImportController extends Controller
 {
@@ -167,7 +167,8 @@ class TeacherImportController extends Controller
 
                             if ($generatePassword) {
                                 $user
-                                    ->setPassword($encoder->encodePassword($user, $userData['Usuario IdEA']));
+                                    ->setPassword($encoder->encodePassword($user, $userData['Usuario IdEA']))
+                                    ->setForcePasswordChange(true);
                             }
 
                             $em->persist($person);
