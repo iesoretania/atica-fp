@@ -84,3 +84,19 @@ swiftmailer:
 sensio_framework_extra:
    router:
         annotations: false
+
+simple_things_entity_audit:
+    audited_entities:
+        - AppBundle\Entity\Company
+        - AppBundle\Entity\Person
+        - AppBundle\Entity\Role
+        - AppBundle\Entity\User
+        - AppBundle\Entity\Workcenter
+        - AppBundle\Entity\Edu\AcademicYear
+        - AppBundle\Entity\WLT\AgreementActivityRealization
+        - AppBundle\Entity\WLT\LearningProgram
+        - AppBundle\Entity\WLT\Meeting
+        - AppBundle\Entity\WLT\Visit
+        - AppBundle\Entity\WLT\WorkDay
+    global_ignore_columns:
+        - last_access

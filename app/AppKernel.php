@@ -1,8 +1,8 @@
 <?php
 
+use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Component\Config\Loader\LoaderInterface;
 
 class AppKernel extends Kernel
 {
@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
+            new SimpleThings\EntityAudit\SimpleThingsEntityAuditBundle(),
             new AppBundle\AppBundle(),
         ];
 
