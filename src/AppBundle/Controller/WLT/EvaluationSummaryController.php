@@ -177,6 +177,9 @@ class EvaluationSummaryController extends Controller
 
         $report = [];
 
+        // precaching
+        $activityRealizationRepository->findByStudentEnrollment($studentEnrollment);
+
         foreach ($subjects as $subject) {
             $item = [];
             $item[0] = $subject;
