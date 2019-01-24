@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+1.1.x (2019-01-24)
+------------------
+* fix: Solucionado un problema al restablecer la contraseña vía correo electrónico
+
 1.1.0 (2019-01-22)
 ------------------
 * feat: Auditoría de cambios en la base de datos
