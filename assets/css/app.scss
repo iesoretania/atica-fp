@@ -337,3 +337,11 @@ div.progress.progress-stat {
 .bg-light-success {
   background-color: $light-success !important;
 }
+
+table.agreement-grading .form-group {
+  margin-bottom: 0;
+}
+
+table.agreement-grading td {
+  vertical-align: middle;
+}

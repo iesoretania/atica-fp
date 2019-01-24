@@ -6,6 +6,7 @@ en la distintas versiones de la misma.
 
 1.1.x (2019-01-24)
 ------------------
+* UX: Mejorada la pantalla de evaluación del convenio
 * fix: Solucionado un problema al restablecer la contraseña vía correo electrónico
 
 1.1.0 (2019-01-22)

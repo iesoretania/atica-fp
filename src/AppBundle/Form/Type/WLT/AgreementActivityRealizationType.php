@@ -55,7 +55,7 @@ class AgreementActivityRealizationType extends AbstractType
 
             $form
                 ->add('grade', EntityType::class, [
-                    'label' => (string) $data->getActivityRealization(),
+                    'label' => false,
                     'choice_translation_domain' => false,
                     'class' => ActivityRealizationGrade::class,
                     'expanded' => true,

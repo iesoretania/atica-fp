@@ -5,7 +5,31 @@
 {% block content %}
     <h3>{{ agreement }} {{ agreement.startDate ? ' - ' ~ agreement.startDate|date('format.date'|trans({}, 'general')) }} {{ agreement.endDate ? ' - ' ~ agreement.endDate|date('format.date'|trans({}, 'general')) }}</h3>
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_label(form.evaluatedActivityRealizations) }}
+    {{ form_errors(form.evaluatedActivityRealizations) }}
+    {% set last_activity_id = 0 %}
+    {% for activity_realization in form.evaluatedActivityRealizations %}
+        {% set current_activity_id = activity_realization.vars.data.activityRealization.activity.id %}
+        {% if current_activity_id != last_activity_id %}
+            {% if not loop.first %}</tbody></table>{% endif %}
+            {% set last_activity_id = current_activity_id %}
+            <table class="table table-sm table-bordered table-striped table-hover agreement-grading">
+                <thead>
+                <tr>
+                    <th colspan="2"><h5>{{ activity_realization.vars.data.activityRealization.activity }}</h5></th>
+                </tr>
+                </thead>
+                <tbody>
+        {% endif %}
+        <tr>
+            <td class="w-50">{{ activity_realization.vars.data.activityRealization }}</td>
+            <td class="w-50">
+                {{ form_errors(activity_realization) }}
+                {{ form_widget(activity_realization) }}
+            </td>
+        </tr>
+    {% endfor %}
+    {% if last_activity_id != 0 %}</tbody></table>{% endif %}
     {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ form_end(form) }}
