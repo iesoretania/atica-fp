@@ -33,7 +33,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -244,7 +243,7 @@ class SecurityController extends Controller
     public function passwordResetAction(
         Request $request,
         UserRepository $userRepository,
-        PasswordEncoderInterface $passwordEncoder,
+        UserPasswordEncoderInterface $passwordEncoder,
         TranslatorInterface $translator,
         $userId,
         $token
