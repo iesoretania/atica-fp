@@ -30,6 +30,7 @@ use Symfony\Component\Security\Core\AuthenticationEvents;
 use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\Event\SwitchUserEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
 class LoggerListener implements EventSubscriberInterface
@@ -82,14 +83,14 @@ class LoggerListener implements EventSubscriberInterface
         $this->createLogEntry($eventName, $user, $ip, $data);
     }
 
-    public function onSecuritySwitchUser(InteractiveLoginEvent $event)
+    public function onSecuritySwitchUser(SwitchUserEvent $event)
     {
         /** @var User $user */
-        $user = $event->getAuthenticationToken()->getUser();
+        $user = $event->getTargetUser();
 
         $ip = $event->getRequest()->getClientIp();
         $eventName = EventLog::SWITCH_USER;
-        $data = $user->getLoginUsername();
+        $data = $event->getTargetUser()->getLoginUsername();
 
         $this->createLogEntry($eventName, $user, $ip, $data);
     }
