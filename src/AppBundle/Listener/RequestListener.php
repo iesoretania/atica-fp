@@ -63,10 +63,10 @@ class RequestListener implements EventSubscriberInterface
         }
 
         if (
+            $event->isMasterRequest() &&
             $this->token->getToken() &&
             $this->token->getToken()->getUser() instanceof User &&
-            $this->token->getToken()->getUser()->isForcePasswordChange() &&
-            $event->isMasterRequest()
+            $this->token->getToken()->getUser()->isForcePasswordChange()
         ) {
             $route = $event->getRequest()->get('_route');
             if ($route && strpos($route, 'log') !== 0 && strpos($route, 'force') !== 0 && $route[0] !== '_') {
