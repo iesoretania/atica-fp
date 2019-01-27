@@ -57,6 +57,19 @@ class AgreementRepository extends ServiceEntityRepository
             ->setParameter('academic_year', $academicYear);
     }
 
+    public function findByAcademicYear(AcademicYear $academicYear)
+    {
+        return $this->createQueryBuilder('a')
+            ->join('a.studentEnrollment', 'sr')
+            ->join('sr.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->where('t.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear)
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @param AcademicYear $academicYear
      * @param Person $student

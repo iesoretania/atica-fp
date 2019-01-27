@@ -46,3 +46,16 @@ table.justified_absences: "%count% justificada|%count% justificadas"
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
+
+notification.inactivity_warning.subject: "%organization% - Retraso en la cumplimentación de actividades"
+
+notification.inactivity_warning.body: |
+  Estimado/a %name%:
+
+  Hemos detectado un retraso en la cumplimentación de las actividades realizadas en la empresa %company%
+  dentro de la plataforma de seguimiento de la FP dual. Por favor, no olvides que no debe pasar mucho tiempo
+  entre la asistencia al centro de trabajo y la cumplimentación de las actividades que has realizado en ella.
+
+  Si tienes cualquier problema, no dudes en ponerte en contacto con el centro educativo.
+
+  Un saludo desde %organization%

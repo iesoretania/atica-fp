@@ -6,6 +6,7 @@ en la distintas versiones de la misma.
 
 1.2.0 (????-??-??)
 ------------------
+* feat: Tareas de mantenimiento periódicas desde la línea de comandos
 * feat: Añadido registro de eventos para auditoría
 
 1.1.x (2019-01-24)

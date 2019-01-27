@@ -1,0 +1,11 @@
+title.cron: Tareas de mantenimiento periódicas
+
+title.wlt.inactivity_warning: Aviso de no cumplimentación de tareas en la FP dual
+table.wlt.inactivity_warning: Centro|Curso escolar|Estudiante|Empresa|Estado
+table.wlt.inactivity_warning.status.ok: Correcto
+table.wlt.inactivity_warning.status.warning: "Aviso: %count% jornadas"
+message.wlt_inactivity_warning.sending_warnings: Enviando correos...
+message.wlt_inactivity_warning.sending_warnings.no_user: No tiene usuario
+message.wlt_inactivity_warning.sending_warnings.no_email_address: No tiene correo electrónico
+message.wlt_inactivity_warning.sending_warnings.sent: Notificado
+message.wlt_inactivity_warning.done: Terminado

@@ -299,6 +299,22 @@ class WorkDayRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function countUnfilledWorkDaysBeforeDateByAgreement(Agreement $agreement, \DateTime $date)
+    {
+        return $this->createQueryBuilder('wd')
+            ->select('COUNT(wd)')
+            ->where('wd.agreement = :agreement')
+            ->andWhere('SIZE(wd.activityRealizations) = 0')
+            ->andWhere('wd.date < :date')
+            ->andWhere('wd.absence = :absence')
+            ->setParameter('agreement', $agreement)
+            ->setParameter('date', $date)
+            ->setParameter('absence', WorkDay::NO_ABSENCE)
+            ->addOrderBy('wd.date', 'DESC')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     /**
      * @param WorkDay[]
      * @param bool
@@ -318,7 +334,7 @@ class WorkDayRepository extends ServiceEntityRepository
             ->andWhere('w.locked = :locked')
             ->setParameter('list', $list)
             ->setParameter('value', $value)
-            ->setParameter('locked' , false)
+            ->setParameter('locked', false)
             ->getQuery()
             ->execute();
     }

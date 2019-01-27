@@ -67,4 +67,22 @@ class AcademicYearRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByDate(\DateTime $date)
+    {
+        $startDate = clone $date;
+        $startDate->setTime(0, 0);
+
+        $endDate = clone $date;
+        $endDate->setTime(23, 59, 59);
+
+        return $this->createQueryBuilder('ay')
+            ->where('ay.startDate <= :start_date')
+            ->andWhere('ay.endDate >= :end_date')
+            ->setParameter('start_date', $startDate)
+            ->setParameter('end_date', $endDate)
+            ->orderBy('ay.organization')
+            ->getQuery()
+            ->getResult();
+    }
 }
