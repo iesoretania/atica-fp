@@ -58,9 +58,7 @@ class LoggerListener implements EventSubscriberInterface
     public function onKernelRequest(GetResponseEvent $event)
     {
         if ($event->isMasterRequest()) {
-            $user = ($this->token->getToken() && $this->token->getToken()->getUser()) ?
-                $this->token->getToken()->getUser() :
-                null;
+            $user = $this->token->getToken() ? $this->token->getToken()->getUser() : null;
             $user = is_string($user) ? null : $user;
 
             $ip = $event->getRequest()->getClientIp();
@@ -111,7 +109,7 @@ class LoggerListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::REQUEST => [['onKernelRequest', 192]],
+            KernelEvents::REQUEST => 'onKernelRequest',
             SecurityEvents::INTERACTIVE_LOGIN => 'onSecurityInteractiveLogin',
             SecurityEvents::SWITCH_USER => 'onSecuritySwitchUser',
             AuthenticationEvents::AUTHENTICATION_FAILURE => 'onAuthenticationFailure'
