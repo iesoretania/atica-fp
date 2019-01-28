@@ -338,6 +338,14 @@ div.progress.progress-stat {
   background-color: $light-success !important;
 }
 
+div.subject-header {
+  background-color: $table-dark-bg;
+  color: $table-dark-color;
+  h3 {
+    margin-bottom: 0;
+  }
+}
+
 table.agreement-grading .form-group {
   margin-bottom: 0;
 }

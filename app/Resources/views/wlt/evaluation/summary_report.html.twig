@@ -5,7 +5,7 @@
     {% set last_subject_id = 0 %}
     {% for subjectData in report %}
         <div class="card mb-3">
-        <div class="card-header"><h3>{{ subjectData[0] }}{% if subjectData[0].code %} - {{ subjectData[0].code }}{% endif %}</h3></div>
+        <div class="card-header subject-header"><h3>{{ subjectData[0] }}{% if subjectData[0].code %} - {{ subjectData[0].code }}{% endif %}</h3></div>
         <div class="card-body">
         {% set subject_sum = 0 %}
         {% set subject_count = 0 %}
@@ -18,7 +18,7 @@
                 {% if not loop.first %}
                     <tr>
                         <td class="text-right" colspan="2">{{ 'report.activity_average'|trans }}</td>
-                        <td class="w-10">{% if activity_count %}{{ (activity_sum/activity_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}{% endif %}</td>
+                        <td class="w-10">{% if activity_count %}{{ (activity_sum/activity_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}{% else %}{{ 'report.no_grade'|trans }}{% endif %}</td>
                     </tr>
                     {% if activity_count %}
                         {% set subject_sum = subject_sum + (activity_sum/activity_count) %}
@@ -52,7 +52,7 @@
         {% if last_activity_id != 0 %}
             <tr>
                 <td class="text-right" colspan="2">{{ 'report.activity_average'|trans }}</td>
-                <td class="w-10">{% if activity_count %}{{ (activity_sum/activity_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}{% endif %}</td>
+                <td class="w-10">{% if activity_count %}{{ (activity_sum/activity_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}{% else %}{{ 'report.no_grade'|trans }}{% endif %}</td>
                 {% if activity_count %}
                     {% set subject_sum = subject_sum + (activity_sum/activity_count) %}
                     {% set subject_count = subject_count + 1 %}
@@ -63,8 +63,15 @@
         {% if subject_count %}
             <table class="table table-bordered table-striped">
                 <tr>
-                    <th class="text-right">{{ 'report.subject_average'|trans }}</th>
+                    <th class="text-right">{{ 'report.subject_average'|trans }} {{ subjectData[0].code }}</th>
                     <th class="w-10">{{ (subject_sum/subject_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</th>
+                </tr>
+            </table>
+        {% elseif last_activity_id != 0 %}
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th class="text-right">{{ 'report.subject_average'|trans }} {{ subjectData[0].code }}</th>
+                    <th class="w-10">{{ 'report.no_grade'|trans }}</th>
                 </tr>
             </table>
         {% endif %}
