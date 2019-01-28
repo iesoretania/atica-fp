@@ -20,6 +20,7 @@ namespace AppBundle\Command;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\WLT\Agreement;
+use AppBundle\Entity\WLT\WorkDay;
 use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
@@ -84,7 +85,8 @@ class CronCommand extends Command
         $academicYears = $this->academicYearRepository->findByDate($now);
 
         $limit = clone $now;
-        $limit->modify('-1 week');
+        $days = 7;
+        $limit->modify('-' . $days . ' days');
 
         $table = new Table($output);
 
@@ -97,7 +99,8 @@ class CronCommand extends Command
             $agreements = $this->agreementRepository->findByAcademicYear($academicYear);
             /** @var Agreement $agreement */
             foreach ($agreements as $agreement) {
-                $count = $this->workDayRepository->countUnfilledWorkDaysBeforeDateByAgreement($agreement, $limit);
+                $workDays = $this->workDayRepository->findUnfilledWorkDaysBeforeDateByAgreement($agreement, $limit);
+                $count = count($workDays);
                 $table
                     ->addRow([
                         $academicYear->getOrganization()->getName(),
@@ -112,7 +115,7 @@ class CronCommand extends Command
                         )
                     ]);
                 if ($count > 0) {
-                    $warning[] = [$agreement, $count];
+                    $warning[] = [$agreement, $workDays];
                 }
             }
         }
@@ -123,6 +126,18 @@ class CronCommand extends Command
             $style->text($this->translator->trans('message.wlt_inactivity_warning.sending_warnings', [], 'cron'));
             $style->progressStart(count($warning));
             foreach ($warning as $agreementData) {
+                $workDays = $agreementData[1];
+                $workDaysText = '';
+                /** @var WorkDay $workDay */
+                foreach ($workDays as $workDay) {
+                    $day = $workDay->getDate()->setTimezone(new \DateTimeZone('UTC'));
+                    $workDaysText .= '- ' .
+                        $this->translator->trans(
+                            'dow' . $day->format('w'), [], 'calendar'
+                        ) . ', ' .
+                        $day->format($this->translator->trans('format.date', [], 'general')) .
+                        "\n";
+                }
                 /** @var Agreement $agreement */
                 $agreement = $agreementData[0];
                 $studentEnrollment = $agreement->getStudentEnrollment();
@@ -133,16 +148,17 @@ class CronCommand extends Command
                     $result = 'message.wlt_inactivity_warning.sending_warnings.no_email_address';
                 } else {
                     $params = [
-                        '%name%' => (string) $studentEnrollment->getPerson(),
-                        '%count%' => $agreementData[1],
+                        '%name%' => (string) $studentEnrollment->getPerson()->getFirstName(),
                         '%company%' => $agreement->getWorkcenter()->getCompany()->getName(),
+                        '%days%' => $days,
                         '%organization%' => $studentEnrollment
                             ->getGroup()
                             ->getGrade()
                             ->getTraining()
                             ->getAcademicYear()
                             ->getOrganization()
-                            ->getName()
+                            ->getName(),
+                        '%workdays%' => $workDaysText
                     ];
 
                     $this->mailerService->sendEmail(
