@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-1.2.0 (????-??-??)
+1.2.0 (2019-01-28)
 ------------------
 * feat: Tareas de mantenimiento periódicas desde la línea de comandos
 * feat: Añadido registro de eventos para auditoría
