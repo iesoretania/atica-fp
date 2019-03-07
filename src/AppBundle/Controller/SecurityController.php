@@ -318,7 +318,7 @@ class SecurityController extends Controller
 
         $data = ['organization' => $this->getUser()->getDefaultOrganization()];
 
-        $count = $$organizationRepository->countOrganizationsByUser($this->getUser(), new \DateTime());
+        $count = $organizationRepository->countOrganizationsByUser($this->getUser(), new \DateTime());
 
         $form = $this->createFormBuilder($data)
             ->add('organization', EntityType::class, [
