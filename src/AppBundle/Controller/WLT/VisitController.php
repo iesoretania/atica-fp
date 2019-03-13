@@ -221,6 +221,7 @@ class VisitController extends Controller
             $queryBuilder
                 ->orWhere('p.firstName LIKE :tq')
                 ->orWhere('p.lastName LIKE :tq')
+                ->orWhere('v.detail LIKE :tq')
                 ->orWhere('w.name LIKE :tq')
                 ->orWhere('c.name LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
