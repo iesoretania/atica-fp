@@ -100,6 +100,7 @@ class MeetingType extends AbstractType
                 'label' => 'form.date',
                 'date_widget' => 'single_text',
                 'time_widget' => 'single_text',
+                'model_timezone' => 'UTC',
                 'required' => true
             ])
             ->add('createdBy', EntityType::class, [
