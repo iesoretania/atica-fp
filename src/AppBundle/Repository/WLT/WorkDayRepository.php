@@ -208,7 +208,7 @@ class WorkDayRepository extends ServiceEntityRepository
 
                 $this->getEntityManager()->persist($workDay);
 
-                $collection[] = $workDay;
+                $collection[] = [$workDay, 0];
                 $hours -= $min;
             }
             $date->add($oneMoreDay);
