@@ -27,7 +27,6 @@ use AppBundle\Form\Type\WLT\CalendarCopyType;
 use AppBundle\Repository\MembershipRepository;
 use AppBundle\Repository\WLT\AgreementActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
-use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\AgreementVoter;
 use AppBundle\Service\UserExtensionService;
@@ -262,7 +261,7 @@ class AgreementController extends Controller
         AgreementRepository $agreementRepository,
         AcademicYear $academicYear
     ) {
-        $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
+        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_MANAGER, $academicYear->getOrganization());
 
         if ($academicYear->getOrganization() !== $userExtensionService->getCurrentOrganization()) {
             return $this->createNotFoundException();
