@@ -31,16 +31,24 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class WorkDayTrackingType extends AbstractType
 {
     /** @var Security */
     private $security;
 
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
     public function __construct(
-        Security $security
+        Security $security,
+        TranslatorInterface $translator
     ) {
         $this->security = $security;
+        $this->translator = $translator;
     }
 
     public function addElements(
@@ -62,8 +70,17 @@ class WorkDayTrackingType extends AbstractType
             ->add('activityRealizations', EntityType::class, [
                 'label' => 'form.activity_realizations',
                 'class' => ActivityRealization::class,
-                'choice_attr' => function (ActivityRealization $ar) use ($lockedActivityRealizations) {
-                    return in_array($ar, $lockedActivityRealizations, true) ? ['disabled' => 'disabled'] : [];
+                'choice_attr' => function (ActivityRealization $ar) use ($lockedActivityRealizations, $lockManager) {
+                    return (!$lockManager && in_array($ar, $lockedActivityRealizations, true)) ?
+                        ['disabled' => 'disabled'] :
+                        [];
+                },
+                'choice_label' => function (ActivityRealization $ar) use ($lockedActivityRealizations) {
+                    $label = $ar->__toString();
+                    if (in_array($ar, $lockedActivityRealizations, true)) {
+                        $label .= $this->translator->trans('form.caption.locked', [], 'wlt_tracking');
+                    }
+                    return $label;
                 },
                 'choice_translation_domain' => false,
                 'choices' => $activityRealizations,

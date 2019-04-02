@@ -29,7 +29,7 @@ form.stats.hours.worked.caption: "Presencia confirmada"
 form.stats.hours.absence.caption: "Ausencias"
 form.stats.hours.justified_absence.caption: "Ausencias justificadas"
 
-
+form.caption.locked: " (ya evaluada)"
 table.activity_realization.graded.yes: "Evaluada"
 table.activity_realization.graded.no: "Sin evaluar"
 
