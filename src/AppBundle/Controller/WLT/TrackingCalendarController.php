@@ -117,13 +117,15 @@ class TrackingCalendarController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+
                 if ($workDay->getAbsence() === WorkDay::NO_ABSENCE) {
+                    $lockManager = $this->isGranted(AgreementVoter::LOCK, $agreement);
                     $currentActivityRealizations = $workDay->getActivityRealizations();
                     $toInsert = array_diff($currentActivityRealizations->toArray(), $oldActivityRealizations->toArray());
 
                     // comprobar que no se intenta activar una concreción ya bloqueada
                     $invalid = array_intersect($toInsert, $lockedActivityRealizations);
-                    if (count($invalid) > 0) {
+                    if (!$lockManager && count($invalid) > 0) {
                         throw $this->createAccessDeniedException();
                     }
 
