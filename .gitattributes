@@ -1,0 +1,2 @@
+# Asegurar que los scripts mantienen el cambio de línea
+*.sh    eol=lf
