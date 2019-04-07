@@ -96,9 +96,3 @@ menu.company.detail: Gestionar las empresas colaboradoras y sus centros de traba
 
 menu.personal_data: Datos personales
 menu.personal_data.detail: Modificar los datos personales
-
-menu.logout: Desconectar
-menu.logout.detail: Salir de la aplicación
-
-menu.exit_impersonation: Volver al usuario normal
-menu.exit_impersonation.detail: Retorna al listado de usuarios

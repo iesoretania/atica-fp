@@ -4,8 +4,9 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-1.3.0 (????-??-??)
+1.3.0 (2019-04-07)
 ------------------
+* UX: Eliminada duplicidad de enlaces para salir de la aplicación
 * fix: Impedir que el script de Docker falle en Windows
 * fix: Permitir actualizar concreciones bloqueadas a los responsables
 * feat: Permitir actualizar concreciones a los responsables tras la evaluación
