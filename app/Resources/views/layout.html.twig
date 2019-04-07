@@ -17,9 +17,18 @@
             {{ 'user.logged.as'|trans({'%user%': app.user}, 'layout') }}
         </span>
         <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('logout') }}"><i class="fas fa-power-off"></i> {{ 'user.logout'|trans({}, 'layout') }}</a>
-            </li>
+            {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('admin_user_list', {'_switch_user': '_exit'}) }}">
+                        <i class="fas fa-user-slash"></i>
+                        {{ 'user.exit_impersonation'|trans({}, 'layout') }}
+                    </a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('logout') }}"><i class="fas fa-power-off"></i> {{ 'user.logout'|trans({}, 'layout') }}</a>
+                </li>
+            {% endif %}
         </ul>
     </nav>
 

@@ -414,16 +414,6 @@ class CoreMenu implements MenuBuilderInterface
 
         $root[] = $menu;
 
-        $menu = new MenuItem();
-        $menu
-            ->setName('logout')
-            ->setRouteName('logout')
-            ->setCaption('menu.logout')
-            ->setDescription('menu.logout.detail')
-            ->setIcon('power-off')
-            ->setPriority(10000);
-
-        $root[] = $menu;
         return $root;
     }
 }
