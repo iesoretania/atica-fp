@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+1.3.x (2019-xx-xx)
+------------------
+* fix: Mostrar correctamente los días de ausencia
+
 1.3.0 (2019-04-07)
 ------------------
 * UX: Eliminada duplicidad de enlaces para salir de la aplicación
