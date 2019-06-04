@@ -7,6 +7,7 @@ en la distintas versiones de la misma.
 1.3.x (2019-xx-xx)
 ------------------
 * fix: Mostrar correctamente los días de ausencia
+* core: Actualizados componentes a la última versión
 
 1.3.0 (2019-04-07)
 ------------------
