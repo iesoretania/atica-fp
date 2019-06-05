@@ -36,6 +36,7 @@ class TeacherRepository extends ServiceEntityRepository
     public function findByAcademicYear(AcademicYear $academicYear)
     {
         return $this->createQueryBuilder('t')
+            ->addSelect('p')
             ->join('t.person', 'p')
             ->join('p.user', 'u')
             ->andWhere('t.academicYear = :academic_year')

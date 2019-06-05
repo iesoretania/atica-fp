@@ -4,6 +4,7 @@ form.principal: Director/a
 form.financial_manager: Secretario/a
 form.start_date: Fecha de inicio
 form.end_date: Fecha final
+
 form.save: Guardar cambios
 form.delete: Eliminar cursos seleccionados
 form.back: Volver

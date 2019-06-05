@@ -1,0 +1,22 @@
+header.training: Ciclo formativo
+header.student: Estudiante
+header.workcenter: Empresa
+header.work_tutor: Reponsable laboral
+header.dates: Fechas
+header.status: ¿Cumplimentada?
+
+title.survey.agreement.list: Encuestas de convenios
+title.fill: Cumplimentar encuesta
+
+form.back: Volver
+form.save: Guardar encuesta
+
+table.answered.yes: Sí
+table.answered.no: No
+
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay resultados que mostrar
+table.filter: Filtrar...
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.

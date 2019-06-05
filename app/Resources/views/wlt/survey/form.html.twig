@@ -1,0 +1,46 @@
+{% trans_default_domain 'wlt_survey' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    <h3>{{ agreement }} {{ agreement.startDate ? ' - ' ~ agreement.startDate|date('format.date'|trans({}, 'general')) }} {{ agreement.endDate ? ' - ' ~ agreement.endDate|date('format.date'|trans({}, 'general')) }}</h3>
+    {{ form_start(form) }}
+    {{ form_label(form.answers) }}
+    {{ form_errors(form.answers) }}
+
+    <div class="card">
+        <div class="card-body">
+    {% set table = false %}
+        {% for answer in form.answers %}
+            {% if answer.vars.data.surveyQuestion.type == 'fixed' %}
+                {% if table %}
+                    </tbody>
+                </table>
+                    {% set table = false %}
+                {% endif %}
+                <h3>{{ answer.vars.data.surveyQuestion.description }}</h3>
+            {% else %}
+                {% if not table %}
+                    <table class="table table-sm table-bordered table-striped table-hover survey">
+                    <tbody>
+                    {% set table = true %}
+                {% endif %}
+                <tr>
+                    <td class="w-50 question">{{ answer.vars.data.surveyQuestion.description }}</td>
+                    <td class="w-50 response">
+                        {{ form_errors(answer) }}
+                        {{ form_widget(answer) }}
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% if table %}
+        </tbody>
+    </table>
+    {% endif %}
+    </div>
+    </div>
+    {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ form_end(form) }}
+{% endblock %}

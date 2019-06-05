@@ -353,3 +353,19 @@ table.agreement-grading .form-group {
 table.agreement-grading td {
   vertical-align: middle;
 }
+
+table.survey {
+  td {
+    padding: 0.5em;
+    vertical-align: middle;
+    font-size: 120%;
+    fieldset {
+      margin: 0;
+    }
+    margin: 0;
+  }
+
+  td.question {
+    text-align: right;
+  }
+}

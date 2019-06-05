@@ -20,7 +20,8 @@ namespace AppBundle\Form\Type\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
-use Doctrine\ORM\EntityManagerInterface;
+use AppBundle\Repository\Edu\TeacherRepository;
+use AppBundle\Repository\SurveyRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,12 +29,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AcademicYearType extends AbstractType
 {
-    /** @var EntityManagerInterface */
-    private $entityManager;
+    private $teacherRepository;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    private $surveyRepository;
+
+    public function __construct(TeacherRepository $teacherRepository, SurveyRepository $surveyRepository)
     {
-        $this->entityManager = $entityManager;
+        $this->teacherRepository = $teacherRepository;
+        $this->surveyRepository = $surveyRepository;
     }
 
     /**
@@ -41,8 +44,8 @@ class AcademicYearType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $teachers = $options['academic_year'] ? $this->entityManager->getRepository(Teacher::class)->
-            findBy(['academicYear' => $options['academic_year']]) : [];
+        $teachers = $options['academic_year'] ? $this->teacherRepository->
+            findByAcademicYear($options['academic_year']) : [];
 
         $builder
             ->add('description', null, [

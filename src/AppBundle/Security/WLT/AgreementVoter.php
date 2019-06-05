@@ -36,6 +36,8 @@ class AgreementVoter extends CachedVoter
     const LOCK = 'WLT_AGREEMENT_LOCK';
     const GRADE = 'WLT_AGREEMENT_GRADE';
     const VIEW_GRADE = 'WLT_AGREEMENT_VIEW_GRADE';
+    const VIEW_STUDENT_SURVEY = 'WLT_AGREEMENT_VIEW_STUDENT_SURVEY';
+    const FILL_STUDENT_SURVEY = 'WLT_AGREEMENT_FILL_STUDENT_SURVEY';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -62,14 +64,15 @@ class AgreementVoter extends CachedVoter
         if (!$subject instanceof Agreement) {
             return false;
         }
-
         if (!in_array($attribute, [
             self::MANAGE,
             self::ACCESS,
             self::ATTENDANCE,
             self::LOCK,
             self::GRADE,
-            self::VIEW_GRADE
+            self::VIEW_GRADE,
+            self::VIEW_STUDENT_SURVEY,
+            self::FILL_STUDENT_SURVEY
         ], true)) {
             return false;
         }
@@ -167,6 +170,10 @@ class AgreementVoter extends CachedVoter
             // Si es permiso para bloquear/desbloquear jornadas, el tutor de grupo
             case self::LOCK:
                 return $isGroupTutor;
+
+            case self::VIEW_STUDENT_SURVEY:
+            case self::FILL_STUDENT_SURVEY:
+                return $isStudent || $isGroupTutor;
         }
 
         // denegamos en cualquier otro caso

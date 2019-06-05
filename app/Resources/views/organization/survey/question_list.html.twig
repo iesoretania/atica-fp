@@ -1,0 +1,61 @@
+{% trans_default_domain 'survey_question' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('organization_survey_question_new', {'id': survey.id}) }}{% endblock %}
+
+{% block new_action %}
+    {% if not locked %}{{ parent() }}{% endif %}
+{% endblock %}
+
+{% block table_header %}
+    <th class="w-50"><label><input type="checkbox" id="select"> {{ 'header.description'|trans }}</label></th>
+    <th class="w-20">{{ 'header.type'|trans }}</th>
+    <th class="w-20">{{ 'header.mandatory'|trans }}</th>
+    <th class="w-10"></th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('organization_survey_question_edit', {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.description }}</a></label>
+                    </td>
+                    <td>
+                        {{ ('type.'~item.type)|trans }}
+                    </td>
+                    <td>
+                        {{ (item.mandatory ? 'table.mandatory.yes' : 'table.mandatory.no')|trans }}
+                    </td>
+                    <td>
+                        {{ m.submit_button('up', 'arrow-up', 'btn-link', null, false, item.id) }}
+                        {{ m.submit_button('down', 'arrow-down', 'btn-link', null, false, item.id) }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('organization_survey_question_operation', {'id': survey.id}) }}" method="post">
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'id': survey.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {% if not locked %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}{% endif %}
+    </form>
+{% endblock %}
+
+{% block content %}
+    {% if locked %}<div class="alert alert-warning">{{ 'prompt.locked_warning'|trans|nl2br }}</div>{% endif %}
+    {{ parent() }}
+{% endblock %}

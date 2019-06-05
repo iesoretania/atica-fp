@@ -20,7 +20,9 @@ namespace AppBundle\Form\Type\Edu;
 
 use AppBundle\Entity\Edu\Department;
 use AppBundle\Entity\Edu\Training;
+use AppBundle\Entity\Survey;
 use AppBundle\Repository\Edu\DepartmentRepository;
+use AppBundle\Repository\SurveyRepository;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -35,13 +37,19 @@ class TrainingType extends AbstractType
 
     /** @var UserExtensionService */
     private $userExtensionService;
+    /**
+     * @var SurveyRepository
+     */
+    private $surveyRepository;
 
     public function __construct(
         DepartmentRepository $departmentRepository,
-        UserExtensionService $userExtensionService
+        UserExtensionService $userExtensionService,
+        SurveyRepository $surveyRepository
     ) {
         $this->departmentRepository = $departmentRepository;
         $this->userExtensionService = $userExtensionService;
+        $this->surveyRepository = $surveyRepository;
     }
 
     /**
@@ -52,6 +60,8 @@ class TrainingType extends AbstractType
         $academicYear = $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
 
         $departments = $this->departmentRepository->findByAcademicYear($academicYear);
+
+        $surveys = $this->surveyRepository->findByOrganization($this->userExtensionService->getCurrentOrganization());
 
         $builder
             ->add('department', EntityType::class, [
@@ -78,6 +88,33 @@ class TrainingType extends AbstractType
                 'label' => 'form.internal_code',
                 'required' => false,
                 'disabled' => true
+            ])
+            ->add('wltStudentSurvey', EntityType::class, [
+                'label' => 'form.wlt_student_survey',
+                'class' => Survey::class,
+                'choice_label' => 'title',
+                'choice_translation_domain' => false,
+                'choices' => $surveys,
+                'placeholder' => 'form.no_survey',
+                'required' => false
+            ])
+            ->add('wltCompanySurvey', EntityType::class, [
+                'label' => 'form.wlt_company_survey',
+                'class' => Survey::class,
+                'choice_label' => 'title',
+                'choice_translation_domain' => false,
+                'choices' => $surveys,
+                'placeholder' => 'form.no_survey',
+                'required' => false
+            ])
+            ->add('wltTeacherSurvey', EntityType::class, [
+                'label' => 'form.wlt_teacher_survey',
+                'class' => Survey::class,
+                'choice_label' => 'title',
+                'choice_translation_domain' => false,
+                'choices' => $surveys,
+                'placeholder' => 'form.no_survey',
+                'required' => false
             ]);
     }
 

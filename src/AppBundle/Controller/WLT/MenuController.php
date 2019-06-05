@@ -20,8 +20,8 @@ namespace AppBundle\Controller\WLT;
 
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
 
 class MenuController extends Controller
 {

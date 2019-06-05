@@ -152,6 +152,56 @@ class CoreMenu implements MenuBuilderInterface
 
                 $menu1->addChild($menu2);
             }
+
+            $menu2 = new MenuItem();
+            $menu2
+                ->setName('work_linked_training_survey')
+                ->setRouteName('work_linked_training_survey')
+                ->setCaption('menu.work_linked_training.survey')
+                ->setDescription('menu.work_linked_training.survey.detail')
+                ->setIcon('chart-pie')
+                ->setPriority(10000);
+
+            $menu1->addChild($menu2);
+
+            if ($this->security->isGranted(OrganizationVoter::WLT_STUDENT, $organization)) {
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('work_linked_training_survey_student')
+                    ->setRouteName('work_linked_training_survey_student_list')
+                    ->setCaption('menu.work_linked_training.survey.student')
+                    ->setDescription('menu.work_linked_training.survey.student.detail')
+                    ->setIcon('chart-pie')
+                    ->setPriority(1000);
+
+                $menu2->addChild($menu3);
+            }
+
+            if ($this->security->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization)) {
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('work_linked_training_survey_company')
+                    ->setRouteName('work_linked_training_survey_company_list')
+                    ->setCaption('menu.work_linked_training.survey.company')
+                    ->setDescription('menu.work_linked_training.survey.company.detail')
+                    ->setIcon('chart-pie')
+                    ->setPriority(2000);
+
+                $menu2->addChild($menu3);
+            }
+
+            if ($this->security->isGranted(OrganizationVoter::WLT_TEACHER, $organization)) {
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('work_linked_training_survey_teacher')
+                    ->setRouteName('work_linked_training_survey')
+                    ->setCaption('menu.work_linked_training.survey.teacher')
+                    ->setDescription('menu.work_linked_training.survey.teacher.detail')
+                    ->setIcon('chart-pie')
+                    ->setPriority(5000);
+
+                $menu2->addChild($menu3);
+            }
         }
 
         if ($this->security->isGranted(OrganizationVoter::MANAGE_COMPANIES, $organization)) {
@@ -324,12 +374,23 @@ class CoreMenu implements MenuBuilderInterface
 
             $menu2 = new MenuItem();
             $menu2
+                ->setName('organization_survey')
+                ->setRouteName('organization_survey_list')
+                ->setCaption('menu.organization.survey')
+                ->setDescription('menu.organization.survey.detail')
+                ->setIcon('chart-pie')
+                ->setPriority(12000);
+
+            $menu1->addChild($menu2);
+
+            $menu2 = new MenuItem();
+            $menu2
                 ->setName('organization_import')
                 ->setRouteName('organization_import')
                 ->setCaption('menu.organization.import')
                 ->setDescription('menu.organization.import.detail')
                 ->setIcon('download')
-                ->setPriority(12000);
+                ->setPriority(13000);
 
             $menu1->addChild($menu2);
 

@@ -18,6 +18,7 @@
 
 namespace AppBundle\Entity\WLT;
 
+use AppBundle\Entity\AnsweredSurvey;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\Workcenter;
@@ -77,10 +78,18 @@ class Agreement
     private $endDate;
 
     /**
-     * @ORM\Column(type="boolean")
-     * @var bool
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AnsweredSurvey")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @var AnsweredSurvey
      */
-    private $studentPollSubmitted;
+    private $studentSurvey;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AnsweredSurvey")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @var AnsweredSurvey
+     */
+    private $companySurvey;
 
     /**
      * @ORM\Column(type="string", length=5, nullable=true)
@@ -124,7 +133,6 @@ class Agreement
 
     public function __construct()
     {
-        $this->studentPollSubmitted = false;
         $this->evaluatedActivityRealizations = new ArrayCollection();
         $this->workDays = new ArrayCollection();
     }
@@ -233,20 +241,38 @@ class Agreement
     }
 
     /**
-     * @return bool
+     * @return AnsweredSurvey
      */
-    public function isStudentPollSubmitted()
+    public function getStudentSurvey()
     {
-        return $this->studentPollSubmitted;
+        return $this->studentSurvey;
     }
 
     /**
-     * @param bool $studentPollSubmitted
+     * @param AnsweredSurvey $studentSurvey
      * @return Agreement
      */
-    public function setStudentPollSubmitted($studentPollSubmitted)
+    public function setStudentSurvey(AnsweredSurvey $studentSurvey = null)
     {
-        $this->studentPollSubmitted = $studentPollSubmitted;
+        $this->studentSurvey = $studentSurvey;
+        return $this;
+    }
+
+    /**
+     * @return AnsweredSurvey
+     */
+    public function getCompanySurvey()
+    {
+        return $this->companySurvey;
+    }
+
+    /**
+     * @param AnsweredSurvey $companySurvey
+     * @return Agreement
+     */
+    public function setCompanySurvey(AnsweredSurvey $companySurvey = null)
+    {
+        $this->companySurvey = $companySurvey;
         return $this;
     }
 

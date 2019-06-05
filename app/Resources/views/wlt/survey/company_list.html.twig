@@ -1,0 +1,46 @@
+{% trans_default_domain 'wlt_survey' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th>{{ 'header.student'|trans }}</th>
+    <th>{{ 'header.workcenter'|trans }}</th>
+    <th>{{ 'header.work_tutor'|trans }}</th>
+    <th>{{ 'header.dates'|trans }}</th>
+    <th>{{ 'header.status'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path(route_name, {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">{{ item.studentEnrollment }}</a>
+                    </td>
+                    <td>
+                        {{ item.workcenter }}
+                    </td>
+                    <td>
+                        {{ item.workTutor }}
+                    </td>
+                    <td>
+                        {{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }} -
+                        {{ item.endDate ? item.endDate|date('format.date'|trans({}, 'general')) }}
+                    </td>
+                    <td>
+                        {{ (item.companySurvey ? 'table.answered.yes' : 'table.answered.no')|trans }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}

@@ -1,0 +1,52 @@
+{% trans_default_domain 'survey' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('organization_survey_new') }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-40"><label><input type="checkbox" id="select"> {{ 'header.title'|trans }}</label></th>
+    <th class="w-20">{{ 'header.start_timestamp'|trans }}</th>
+    <th class="w-20">{{ 'header.end_timestamp'|trans }}</th>
+    <th class="w-10">{{ 'header.answer_count'|trans }}</th>
+    <th class="w-10"></th>
+{% endblock %}
+
+{% block table_body %}
+            {% for survey in pager %}
+                {% set url = path('organization_survey_edit', {'id': survey.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ survey.id }}" class="selectable"> <a href="{{ url }}">{{ survey.title }}</a></label>
+                    </td>
+                    <td>
+                        {{ survey.startTimestamp ? survey.startTimestamp|date('format.datetime'|trans({}, 'general')) }}
+                    </td>
+                    <td>
+                        {{ survey.endTimestamp ? survey.endTimestamp|date('format.datetime'|trans({}, 'general')) }}
+                    </td>
+                    <td>
+                        {{ survey.answers|length }}
+                    </td>
+                    <td>
+                        {{ m.link_button(path('organization_survey_question_list',{'id': survey.id}), 'question-circle', 'btn-info btn-block btn-sm', 'table.questions'|trans, null, 'd-md-none d-lg-inline') }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('organization_survey_operation') }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+        {{ m.submit_button('purge', 'eraser', 'btn-danger enable-on-items', 'form.purge'|trans) }}
+    </form>
+{% endblock %}

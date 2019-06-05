@@ -18,6 +18,7 @@
 
 namespace AppBundle\Entity\Edu;
 
+use AppBundle\Entity\Survey;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -72,6 +73,27 @@ class Training
      * @var bool
      */
     private $workLinked;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @var Survey
+     */
+    private $wltStudentSurvey;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @var Survey
+     */
+    private $wltCompanySurvey;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @var Survey
+     */
+    private $wltTeacherSurvey;
 
     public function __construct()
     {
@@ -187,6 +209,60 @@ class Training
     public function setWorkLinked($workLinked)
     {
         $this->workLinked = $workLinked;
+        return $this;
+    }
+
+    /**
+     * @return Survey
+     */
+    public function getWltStudentSurvey()
+    {
+        return $this->wltStudentSurvey;
+    }
+
+    /**
+     * @param Survey $wltStudentSurvey
+     * @return Training
+     */
+    public function setWltStudentSurvey($wltStudentSurvey)
+    {
+        $this->wltStudentSurvey = $wltStudentSurvey;
+        return $this;
+    }
+
+    /**
+     * @return Survey
+     */
+    public function getWltCompanySurvey()
+    {
+        return $this->wltCompanySurvey;
+    }
+
+    /**
+     * @param Survey $wltCompanySurvey
+     * @return Training
+     */
+    public function setWltCompanySurvey($wltCompanySurvey)
+    {
+        $this->wltCompanySurvey = $wltCompanySurvey;
+        return $this;
+    }
+
+    /**
+     * @return Survey
+     */
+    public function getWltTeacherSurvey()
+    {
+        return $this->wltTeacherSurvey;
+    }
+
+    /**
+     * @param Survey $wltTeacherSurvey
+     * @return Training
+     */
+    public function setWltTeacherSurvey($wltTeacherSurvey)
+    {
+        $this->wltTeacherSurvey = $wltTeacherSurvey;
         return $this;
     }
 }
