@@ -194,7 +194,7 @@ class CoreMenu implements MenuBuilderInterface
                 $menu3 = new MenuItem();
                 $menu3
                     ->setName('work_linked_training_survey_teacher')
-                    ->setRouteName('work_linked_training_survey')
+                    ->setRouteName('work_linked_training_survey_teacher_list')
                     ->setCaption('menu.work_linked_training.survey.teacher')
                     ->setDescription('menu.work_linked_training.survey.teacher.detail')
                     ->setIcon('chart-pie')

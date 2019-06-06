@@ -21,6 +21,7 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\AnsweredSurvey;
 use AppBundle\Entity\AnsweredSurveyQuestion;
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\Teaching;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Form\Type\AnsweredSurveyType;
 use AppBundle\Repository\Edu\GroupRepository;
@@ -400,6 +401,154 @@ class SurveyController extends Controller
             'q' => $q,
             'domain' => 'wlt_survey',
             'route_name' => $routeName,
+            'academic_year' => $academicYear
+        ]);
+    }
+    /**
+     * @Route("/profesorado/cumplimentar/{id}",
+     *     name="work_linked_training_survey_teacher_form", methods={"GET", "POST"})
+     */
+    public function teacherFillAction(Request $request, TranslatorInterface $translator, Teaching $teaching)
+    {
+        $readOnly = false;
+        $teacherSurvey = $teaching->getTeacher()->getWltTeacherSurvey();
+        if ($teacherSurvey === null) {
+            $teacherSurvey = new AnsweredSurvey();
+            $survey = $teaching
+                ->getGroup()
+                ->getGrade()
+                ->getTraining()
+                ->getWltTeacherSurvey();
+
+            $teacherSurvey->setSurvey($survey);
+
+            $this->getDoctrine()->getManager()->persist($teacherSurvey);
+
+            foreach ($survey->getQuestions() as $question) {
+                $answeredQuestion = new AnsweredSurveyQuestion();
+                $answeredQuestion
+                    ->setAnsweredSurvey($teacherSurvey)
+                    ->setSurveyQuestion($question);
+
+                $teacherSurvey->getAnswers()->add($answeredQuestion);
+
+                $this->getDoctrine()->getManager()->persist($answeredQuestion);
+            }
+
+            $teaching->getTeacher()->setWltTeacherSurvey($teacherSurvey);
+        }
+
+        $form = $this->createForm(AnsweredSurveyType::class, $teacherSurvey, [
+            'disabled' => $readOnly
+        ]);
+
+        $form->handleRequest($request);
+
+        $em = $this->getDoctrine()->getManager();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $teacherSurvey->setTimestamp(new \DateTime());
+                $em->flush();
+                $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
+                return $this->redirectToRoute('work_linked_training_survey_teacher_list', [
+                    'academicYear' => $teaching->getGroup()->getGrade()->getTraining()->getAcademicYear()
+                ]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
+            }
+        }
+
+        $title = $translator->trans('title.fill', [], 'wlt_survey');
+
+        $breadcrumb = [
+            ['fixed' => $teaching->getTeacher() . ' - ' . $teaching->getGroup()->getGrade()->getTraining()],
+            ['fixed' => $title]
+        ];
+
+        return $this->render('wlt/survey/form.html.twig', [
+            'menu_path' => 'work_linked_training_survey_teacher_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'read_only' => $readOnly,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/profesorado/{academicYear}/{page}", name="work_linked_training_survey_teacher_list",
+     *     requirements={"page" = "\d+"}, defaults={"academicYear" = null, "page" = 1}, methods={"GET"})
+     */
+    public function teacherListAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        \Symfony\Component\Security\Core\Security $security,
+        $page = 1,
+        AcademicYear $academicYear = null
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        if (null === $academicYear) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
+
+        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
+
+        $title = $translator->trans('title.survey.teacher.list', [], 'wlt_survey');
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+
+        $queryBuilder
+            ->select('te')
+            ->addSelect('t')
+            ->addSelect('p')
+            ->from(Teaching::class, 'te')
+            ->join('te.teacher', 't')
+            ->join('t.person', 'p')
+            ->join('p.user', 'u')
+            ->join('te.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 'tr')
+            ->groupBy('t')
+            ->addGroupBy('tr')
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName');
+
+        $q = $request->get('q');
+
+        if ($q) {
+            $queryBuilder
+                ->orWhere('p.lastName LIKE :tq')
+                ->orWhere('p.firstName LIKE :tq')
+                ->setParameter('tq', '%' . $q . '%');
+        }
+        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+
+        if (!$isManager && !$isWltManager) {
+            // puede ser profesor o jefe de departamento (de momento sólo soportamos el primer caso)
+            $queryBuilder
+                ->andWhere('u = :user')
+                ->setParameter('user', $this->getUser());
+        }
+        $queryBuilder
+            ->andWhere('t.academicYear = :academic_year')
+            ->andWhere('te.workLinked = :work_linked')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('work_linked', true);
+
+        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $pager = new Pagerfanta($adapter);
+        $pager
+            ->setMaxPerPage($this->getParameter('page.size'))
+            ->setCurrentPage($q ? 1 : $page);
+
+        return $this->render('wlt/survey/teacher_list.html.twig', [
+            'title' => $title . ' - ' . $academicYear,
+            'pager' => $pager,
+            'q' => $q,
+            'domain' => 'wlt_survey',
             'academic_year' => $academicYear
         ]);
     }

@@ -5,7 +5,12 @@ header.work_tutor: Reponsable laboral
 header.dates: Fechas
 header.status: ¿Cumplimentada?
 
+header.teacher: Docente
+header.department: Departamento
+
 title.survey.agreement.list: Encuestas de convenios
+title.survey.teacher.list: Encuestas de profesorado
+
 title.fill: Cumplimentar encuesta
 
 form.back: Volver

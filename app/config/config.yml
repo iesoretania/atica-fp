@@ -96,7 +96,6 @@ simple_things_entity_audit:
         - AppBundle\Entity\WLT\AgreementActivityRealization
         - AppBundle\Entity\WLT\LearningProgram
         - AppBundle\Entity\WLT\Meeting
-        - AppBundle\Entity\WLT\TeacherSurvey
         - AppBundle\Entity\WLT\Visit
         - AppBundle\Entity\WLT\WorkDay
         - AppBundle\Entity\Survey

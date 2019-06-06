@@ -3,7 +3,7 @@
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
-    <h3>{{ agreement }} {{ agreement.startDate ? ' - ' ~ agreement.startDate|date('format.date'|trans({}, 'general')) }} {{ agreement.endDate ? ' - ' ~ agreement.endDate|date('format.date'|trans({}, 'general')) }}</h3>
+    {% if agreement is defined %}<h3>{{ agreement }} {{ agreement.startDate ? ' - ' ~ agreement.startDate|date('format.date'|trans({}, 'general')) }} {{ agreement.endDate ? ' - ' ~ agreement.endDate|date('format.date'|trans({}, 'general')) }}</h3>{% endif %}
     {{ form_start(form) }}
     {{ form_label(form.answers) }}
     {{ form_errors(form.answers) }}
