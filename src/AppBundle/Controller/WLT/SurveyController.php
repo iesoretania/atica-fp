@@ -115,6 +115,7 @@ class SurveyController extends Controller
             'title' => $title,
             'agreement' => $agreement,
             'read_only' => $readOnly,
+            'survey' => $studentSurvey->getSurvey(),
             'form' => $form->createView()
         ]);
     }
@@ -190,6 +191,7 @@ class SurveyController extends Controller
             'title' => $title,
             'agreement' => $agreement,
             'read_only' => $readOnly,
+            'survey' => $companySurvey->getSurvey(),
             'form' => $form->createView()
         ]);
     }
@@ -471,6 +473,8 @@ class SurveyController extends Controller
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
+            'survey' => $teacherSurvey->getSurvey(),
+            'teaching' => $teaching,
             'form' => $form->createView()
         ]);
     }

@@ -176,12 +176,43 @@ class AgreementVoter extends CachedVoter
                 return $isGroupTutor;
 
             case self::VIEW_STUDENT_SURVEY:
+                return ($isStudent || $isGroupTutor) && $subject->getStudentEnrollment()
+                    ->getGroup()->getGrade()->getTraining()->getWltStudentSurvey();
+
             case self::FILL_STUDENT_SURVEY:
-                return $isStudent || $isGroupTutor;
+                $wltStudentSurvey = $subject->getStudentEnrollment()
+                    ->getGroup()->getGrade()->getTraining()->getWltStudentSurvey();
+                $now = new \DateTime();
+
+                if ((!$isStudent && !$isGroupTutor) || !$wltStudentSurvey) {
+                    return false;
+                }
+                if ($wltStudentSurvey->getStartTimestamp() && $wltStudentSurvey->getStartTimestamp() > $now) {
+                    return false;
+                }
+                if ($wltStudentSurvey->getEndTimestamp() && $wltStudentSurvey->getEndTimestamp() < $now) {
+                    return false;
+                }
+                return true;
 
             case self::VIEW_COMPANY_SURVEY:
-            case self::FILL_COMPANY_SURVEY:
                 return $isWorkTutor || $isGroupTutor;
+
+            case self::FILL_COMPANY_SURVEY:
+                $wltCompanySurvey = $subject->getStudentEnrollment()
+                    ->getGroup()->getGrade()->getTraining()->getWltCompanySurvey();
+                $now = new \DateTime();
+
+                if ((!$isWorkTutor && !$isGroupTutor) || !$wltCompanySurvey) {
+                    return false;
+                }
+                if ($wltCompanySurvey->getStartTimestamp() && $wltCompanySurvey->getStartTimestamp() > $now) {
+                    return false;
+                }
+                if ($wltCompanySurvey->getEndTimestamp() && $wltCompanySurvey->getEndTimestamp() < $now) {
+                    return false;
+                }
+                return true;
         }
 
         // denegamos en cualquier otro caso

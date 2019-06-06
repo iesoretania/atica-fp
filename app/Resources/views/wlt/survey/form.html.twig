@@ -3,42 +3,67 @@
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
-    {% if agreement is defined %}<h3>{{ agreement }} {{ agreement.startDate ? ' - ' ~ agreement.startDate|date('format.date'|trans({}, 'general')) }} {{ agreement.endDate ? ' - ' ~ agreement.endDate|date('format.date'|trans({}, 'general')) }}</h3>{% endif %}
-    {{ form_start(form) }}
-    {{ form_label(form.answers) }}
-    {{ form_errors(form.answers) }}
+    {% if read_only %}
+        <div class="alert alert-warning">{{ 'prompt.read_only_warning'|trans|nl2br }}</div>
+    {% endif %}
 
     <div class="card mb-4">
-        <div class="card-body">
-    {% set table = false %}
-        {% for answer in form.answers %}
-            {% if answer.vars.data.surveyQuestion.type == 'fixed' %}
-                {% if table %}
-                    </tbody>
-                </table>
-                    {% set table = false %}
-                {% endif %}
-                <div class="survey-text">{{ answer.vars.data.surveyQuestion.description|markdown }}</div>
+        <div class="card-header">
+            {% if agreement is defined %}
+                <h3>
+                    {{ agreement }} {{ agreement.startDate ? ' - ' ~ agreement.startDate|date('format.date'|trans({}, 'general')) }} {{ agreement.endDate ? ' - ' ~ agreement.endDate|date('format.date'|trans({}, 'general')) }}
+                </h3>
             {% else %}
-                {% if not table %}
-                    <table class="table table-sm table-bordered table-striped table-hover survey">
-                    <tbody>
-                    {% set table = true %}
-                {% endif %}
-                <tr>
-                    <td class="w-50 question{% if answer.vars.data.surveyQuestion.mandatory %} required{% endif %}">{{ answer.vars.data.surveyQuestion.description|markdown }}</td>
-                    <td class="w-50 response">
-                        {{ form_errors(answer) }}
-                        {{ form_widget(answer) }}
-                    </td>
-                </tr>
+                <h3>
+                    {{ teaching.group.grade.training }}
+                </h3>
             {% endif %}
-        {% endfor %}
-    {% if table %}
-        </tbody>
-    </table>
-    {% endif %}
-    </div>
+            {% if survey.startTimestamp or survey.endTimestamp%}
+                <h5>
+                    {{ 'title.available'|trans }}
+                    {% if survey.startTimestamp %}
+                        {{ 'title.start_timestamp'|trans({'%date%': survey.startTimestamp|date('format.datetime'|trans({}, 'general'))}) }}
+                    {% endif %}
+                    {% if survey.endTimestamp %}
+                        {{ 'title.end_timestamp'|trans({'%date%': survey.endTimestamp|date('format.datetime'|trans({}, 'general'))}) }}
+                    {% endif %}
+                </h5>
+            {% endif %}
+        </div>
+        {{ form_start(form) }}
+        {{ form_label(form.answers) }}
+        {{ form_errors(form.answers) }}
+
+        <div class="card-body">
+            {% set table = false %}
+            {% for answer in form.answers %}
+                {% if answer.vars.data.surveyQuestion.type == 'fixed' %}
+                    {% if table %}
+                        </tbody>
+                    </table>
+                        {% set table = false %}
+                    {% endif %}
+                    <div class="survey-text">{{ answer.vars.data.surveyQuestion.description|markdown }}</div>
+                {% else %}
+                    {% if not table %}
+                        <table class="table table-sm table-bordered table-striped table-hover survey">
+                        <tbody>
+                        {% set table = true %}
+                    {% endif %}
+                    <tr>
+                        <td class="w-50 question{% if answer.vars.data.surveyQuestion.mandatory %} required{% endif %}">{{ answer.vars.data.surveyQuestion.description|markdown }}</td>
+                        <td class="w-50 response">
+                            {{ form_errors(answer) }}
+                            {{ form_widget(answer) }}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            {% if table %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
     </div>
     {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
