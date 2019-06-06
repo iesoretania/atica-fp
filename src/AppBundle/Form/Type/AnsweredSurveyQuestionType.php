@@ -74,6 +74,11 @@ class AnsweredSurveyQuestionType extends AbstractType
                             'label' => false,
                             'label_attr' => ['class' => 'radio-inline'],
                             'choices' => [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5],
+                            'placeholder' => $this->translator->trans(
+                                'form.no_response',
+                                [],
+                                'wlt_survey'
+                            ),
                             'expanded' => true,
                             'required' => $data->getSurveyQuestion()->isMandatory()
                         ]);

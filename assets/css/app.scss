@@ -354,6 +354,10 @@ table.agreement-grading td {
   vertical-align: middle;
 }
 
+.survey-text {
+  font-size: 120%;
+}
+
 table.survey {
   td {
     padding: 0.5em;
@@ -367,5 +371,9 @@ table.survey {
 
   td.question {
     text-align: right;
+  }
+
+  p:last-of-type {
+    margin-bottom: 0;
   }
 }

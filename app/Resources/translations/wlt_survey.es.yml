@@ -11,6 +11,8 @@ title.fill: Cumplimentar encuesta
 form.back: Volver
 form.save: Guardar encuesta
 
+form.no_response: Sin respuesta
+
 table.answered.yes: Sí
 table.answered.no: No
 

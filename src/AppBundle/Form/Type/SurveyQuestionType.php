@@ -21,7 +21,7 @@ namespace AppBundle\Form\Type;
 use AppBundle\Entity\SurveyQuestion;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -33,9 +33,10 @@ class SurveyQuestionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('description', TextType::class, [
+            ->add('description', TextareaType::class, [
                 'label' => 'form.description',
-                'required' => true
+                'required' => true,
+                'attr' => ['rows' => 4]
             ])
             ->add('type', ChoiceType::class, [
                 'label' => 'form.type',

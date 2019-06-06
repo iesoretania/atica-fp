@@ -108,7 +108,7 @@ class SurveyQuestionController extends Controller
                 'routeParams' => ['id' => $survey->getId()]
             ],
             $surveyQuestion->getId() ?
-                ['fixed' => $surveyQuestion->getDescription()] :
+                ['fixed' => $translator->trans('title.edit', [], 'survey_question')] :
                 ['fixed' => $translator->trans('title.new', [], 'survey_question')]
         ];
 

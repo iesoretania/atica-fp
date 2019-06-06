@@ -18,7 +18,7 @@
                 </table>
                     {% set table = false %}
                 {% endif %}
-                <h3>{{ answer.vars.data.surveyQuestion.description }}</h3>
+                <div class="survey-text">{{ answer.vars.data.surveyQuestion.description|markdown }}</div>
             {% else %}
                 {% if not table %}
                     <table class="table table-sm table-bordered table-striped table-hover survey">
@@ -26,7 +26,7 @@
                     {% set table = true %}
                 {% endif %}
                 <tr>
-                    <td class="w-50 question">{{ answer.vars.data.surveyQuestion.description }}</td>
+                    <td class="w-50 question">{{ answer.vars.data.surveyQuestion.description|markdown }}</td>
                     <td class="w-50 response">
                         {{ form_errors(answer) }}
                         {{ form_widget(answer) }}
