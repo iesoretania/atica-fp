@@ -34,6 +34,7 @@ use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -118,6 +119,81 @@ class SurveyController extends Controller
     }
 
     /**
+     * @Route("/empresa/cumplimentar/{id}", name="work_linked_training_survey_company_form", methods={"GET", "POST"})
+     * @Security("is_granted('WLT_AGREEMENT_VIEW_COMPANY_SURVEY', agreement)")
+     */
+    public function companyFillAction(Request $request, TranslatorInterface $translator, Agreement $agreement)
+    {
+        $readOnly = !$this->isGranted(AgreementVoter::FILL_COMPANY_SURVEY, $agreement);
+
+        $academicYear = $agreement->getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getAcademicYear();
+        $companySurvey = $agreement->getCompanySurvey();
+        if ($companySurvey === null) {
+            $companySurvey = new AnsweredSurvey();
+            $survey = $agreement
+                ->getStudentEnrollment()
+                ->getGroup()
+                ->getGrade()
+                ->getTraining()
+                ->getWltCompanySurvey();
+
+            $companySurvey->setSurvey($survey);
+
+            $this->getDoctrine()->getManager()->persist($companySurvey);
+
+            foreach ($survey->getQuestions() as $question) {
+                $answeredQuestion = new AnsweredSurveyQuestion();
+                $answeredQuestion
+                    ->setAnsweredSurvey($companySurvey)
+                    ->setSurveyQuestion($question);
+
+                $companySurvey->getAnswers()->add($answeredQuestion);
+
+                $this->getDoctrine()->getManager()->persist($answeredQuestion);
+            }
+
+            $agreement->setCompanySurvey($companySurvey);
+        }
+
+        $form = $this->createForm(AnsweredSurveyType::class, $companySurvey, [
+            'disabled' => $readOnly
+        ]);
+
+        $form->handleRequest($request);
+
+        $em = $this->getDoctrine()->getManager();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $companySurvey->setTimestamp(new \DateTime());
+                $em->flush();
+                $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
+                return $this->redirectToRoute('work_linked_training_survey_company_list', [
+                    'academicYear' => $academicYear
+                ]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
+            }
+        }
+
+        $title = $translator->trans('title.fill', [], 'wlt_survey');
+
+        $breadcrumb = [
+            ['fixed' => (string) $agreement],
+            ['fixed' => $title]
+        ];
+
+        return $this->render('wlt/survey/form.html.twig', [
+            'menu_path' => 'work_linked_training_survey_company_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'agreement' => $agreement,
+            'read_only' => $readOnly,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
      * @Route("/", name="work_linked_training_survey", methods={"GET"})
      */
     public function indexAction(UserExtensionService $userExtensionService)
@@ -158,7 +234,8 @@ class SurveyController extends Controller
             $page,
             'work_linked_training_survey_student_form',
             'wlt/survey/student_list.html.twig',
-            $academicYear);
+            $academicYear
+        );
     }
 
     /**
@@ -183,9 +260,10 @@ class SurveyController extends Controller
             $groupRepository,
             $security,
             $page,
-            'work_linked_training_survey_student_form',
+            'work_linked_training_survey_company_form',
             'wlt/survey/company_list.html.twig',
-            $academicYear);
+            $academicYear
+        );
     }
 
     /**
@@ -199,7 +277,7 @@ class SurveyController extends Controller
      * @param $routeName
      * @param $template
      * @param AcademicYear $academicYear
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     private function agreementList(
         Request $request,
@@ -243,6 +321,7 @@ class SurveyController extends Controller
             ->join('gr.training', 't')
             ->join('a.workTutor', 'wt')
             ->join('t.wltStudentSurvey', 'ss')
+            ->join('t.wltCompanySurvey', 'cs')
             ->groupBy('a')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')

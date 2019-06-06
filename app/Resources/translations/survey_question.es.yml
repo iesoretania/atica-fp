@@ -1,5 +1,7 @@
 form.description: Enunciado
 form.type: Tipo de respuesta
+form.items: Lista de ítems
+form.items.placeholder: Elementos separados por un punto y coma
 form.mandatory: Obligatoriedad
 form.mandatory.yes: Es de contestación obligatoria
 form.mandatory.no: No es obligatorio contestarla

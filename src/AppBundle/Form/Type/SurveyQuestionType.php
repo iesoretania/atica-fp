@@ -22,6 +22,7 @@ use AppBundle\Entity\SurveyQuestion;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -47,6 +48,12 @@ class SurveyQuestionType extends AbstractType
                 },
                 'choice_translation_domain' => 'survey_question',
                 'required' => true
+            ])
+            ->add('items', TextType::class, [
+                'label' => 'form.items',
+                'disabled' => $options['locked'],
+                'required' => false,
+                'attr' => ['placeholder' => 'form.items.placeholder']
             ])
             ->add('mandatory', ChoiceType::class, [
                 'label' => 'form.mandatory',

@@ -38,6 +38,8 @@ class AgreementVoter extends CachedVoter
     const VIEW_GRADE = 'WLT_AGREEMENT_VIEW_GRADE';
     const VIEW_STUDENT_SURVEY = 'WLT_AGREEMENT_VIEW_STUDENT_SURVEY';
     const FILL_STUDENT_SURVEY = 'WLT_AGREEMENT_FILL_STUDENT_SURVEY';
+    const VIEW_COMPANY_SURVEY = 'WLT_AGREEMENT_VIEW_COMPANY_SURVEY';
+    const FILL_COMPANY_SURVEY = 'WLT_AGREEMENT_FILL_COMPANY_SURVEY';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -72,7 +74,9 @@ class AgreementVoter extends CachedVoter
             self::GRADE,
             self::VIEW_GRADE,
             self::VIEW_STUDENT_SURVEY,
-            self::FILL_STUDENT_SURVEY
+            self::FILL_STUDENT_SURVEY,
+            self::VIEW_COMPANY_SURVEY,
+            self::FILL_COMPANY_SURVEY
         ], true)) {
             return false;
         }
@@ -174,6 +178,10 @@ class AgreementVoter extends CachedVoter
             case self::VIEW_STUDENT_SURVEY:
             case self::FILL_STUDENT_SURVEY:
                 return $isStudent || $isGroupTutor;
+
+            case self::VIEW_COMPANY_SURVEY:
+            case self::FILL_COMPANY_SURVEY:
+                return $isWorkTutor || $isGroupTutor;
         }
 
         // denegamos en cualquier otro caso
