@@ -171,7 +171,7 @@ class CoreMenu implements MenuBuilderInterface
                     ->setRouteName('work_linked_training_survey_student_list')
                     ->setCaption('menu.work_linked_training.survey.student')
                     ->setDescription('menu.work_linked_training.survey.student.detail')
-                    ->setIcon('chart-pie')
+                    ->setIcon('child')
                     ->setPriority(1000);
 
                 $menu2->addChild($menu3);
@@ -184,7 +184,7 @@ class CoreMenu implements MenuBuilderInterface
                     ->setRouteName('work_linked_training_survey_company_list')
                     ->setCaption('menu.work_linked_training.survey.company')
                     ->setDescription('menu.work_linked_training.survey.company.detail')
-                    ->setIcon('chart-pie')
+                    ->setIcon('industry')
                     ->setPriority(2000);
 
                 $menu2->addChild($menu3);
@@ -197,7 +197,7 @@ class CoreMenu implements MenuBuilderInterface
                     ->setRouteName('work_linked_training_survey_teacher_list')
                     ->setCaption('menu.work_linked_training.survey.teacher')
                     ->setDescription('menu.work_linked_training.survey.teacher.detail')
-                    ->setIcon('chart-pie')
+                    ->setIcon('chalkboard-teacher')
                     ->setPriority(5000);
 
                 $menu2->addChild($menu3);
