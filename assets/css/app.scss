@@ -373,7 +373,16 @@ table.survey {
     text-align: right;
   }
 
+  td.question.required p:last-of-type:after {
+    content: "*";
+    color: red;
+  }
+
   p:last-of-type {
     margin-bottom: 0;
+  }
+
+  label.required:after {
+    content: "";
   }
 }

@@ -68,6 +68,12 @@ class SurveyQuestion
     private $type;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     * @var string
+     */
+    private $items;
+
+    /**
      * @ORM\Column(type="boolean")
      * @var bool
      */
@@ -144,6 +150,24 @@ class SurveyQuestion
     public function setType($type)
     {
         $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    /**
+     * @param string $items
+     * @return SurveyQuestion
+     */
+    public function setItems($items)
+    {
+        $this->items = $items;
         return $this;
     }
 

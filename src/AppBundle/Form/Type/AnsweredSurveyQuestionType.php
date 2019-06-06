@@ -69,27 +69,29 @@ class AnsweredSurveyQuestionType extends AbstractType
                         ]);
                     break;
                 case SurveyQuestion::RANGE_1_5:
+                case SurveyQuestion::RANGE_1_10:
+                    $itemCount = $data->getSurveyQuestion()->getType() === SurveyQuestion::RANGE_1_5 ? 5 : 10;
+                    $items = explode(';', $data->getSurveyQuestion()->getItems());
+
+                    $choices = [];
+                    for ($i = 1; $i <= $itemCount; $i++) {
+                        if (isset($items[$i - 1]) && $items[$i - 1] !== null && $items[$i - 1] !== '') {
+                            $choices[trim($items[$i - 1])] = $i;
+                        } else {
+                            $choices[$i] = $i;
+                        }
+                    }
+
                     $form
                         ->add('numericValue', ChoiceType::class, [
                             'label' => false,
                             'label_attr' => ['class' => 'radio-inline'],
-                            'choices' => [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5],
+                            'choices' => $choices,
                             'placeholder' => $this->translator->trans(
                                 'form.no_response',
                                 [],
                                 'wlt_survey'
                             ),
-                            'expanded' => true,
-                            'required' => $data->getSurveyQuestion()->isMandatory()
-                        ]);
-                    break;
-                case SurveyQuestion::RANGE_1_10:
-                    $form
-                        ->add('numericValue', ChoiceType::class, [
-                            'label' => false,
-                            'label_attr' => ['class' => 'radio-inline'],
-                            'choices' => [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5,
-                                6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10],
                             'expanded' => true,
                             'required' => $data->getSurveyQuestion()->isMandatory()
                         ]);

@@ -8,7 +8,7 @@
     {{ form_label(form.answers) }}
     {{ form_errors(form.answers) }}
 
-    <div class="card">
+    <div class="card mb-4">
         <div class="card-body">
     {% set table = false %}
         {% for answer in form.answers %}
@@ -26,7 +26,7 @@
                     {% set table = true %}
                 {% endif %}
                 <tr>
-                    <td class="w-50 question">{{ answer.vars.data.surveyQuestion.description|markdown }}</td>
+                    <td class="w-50 question{% if answer.vars.data.surveyQuestion.mandatory %} required{% endif %}">{{ answer.vars.data.surveyQuestion.description|markdown }}</td>
                     <td class="w-50 response">
                         {{ form_errors(answer) }}
                         {{ form_widget(answer) }}
