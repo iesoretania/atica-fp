@@ -514,6 +514,7 @@ class SurveyController extends Controller
             ->join('te.group', 'g')
             ->join('g.grade', 'gr')
             ->join('gr.training', 'tr')
+            ->join('tr.wltTeacherSurvey', 'ts')
             ->groupBy('t')
             ->addGroupBy('tr')
             ->orderBy('p.lastName')
