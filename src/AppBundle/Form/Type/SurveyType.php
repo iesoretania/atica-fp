@@ -27,10 +27,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SurveyType extends AbstractType
 {
-    public function __construct(
-    ) {
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -43,11 +39,13 @@ class SurveyType extends AbstractType
             ])
             ->add('startTimestamp', DateTimeType::class, [
                 'label' => 'form.start_timestamp',
+                'model_timezone' => 'UTC',
                 'widget' => 'single_text',
                 'required' => false
             ])
             ->add('endTimestamp', DateTimeType::class, [
                 'label' => 'form.end_timestamp',
+                'model_timezone' => 'UTC',
                 'widget' => 'single_text',
                 'required' => false
             ]);
