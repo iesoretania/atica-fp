@@ -11,6 +11,10 @@ form.enabled: Acceso
 form.enabled.no: El acceso a la aplicación le está denegado
 form.enabled.yes: El acceso a la aplicación le está permitido
 
+form.wlt_educational_tutor: Responsable de seguimiento de FP dual
+form.wlt_educational_tutor.yes: El docente realiza seguimiento al alumnado de FP dual
+form.wlt_educational_tutor.no: El docente no realiza seguimiento al alumnado de FP dual
+
 form.allow_external_check: Permitir comprobación de contraseña externa
 form.allow_external_check.yes: "El usuario puede activar la autenticación desde Séneca. NOTA: el nombre de usuario deberá ser su usuario IdEA"
 form.allow_external_check.no: El usuario solamente puede utilizar la contraseña almacenada en local
@@ -42,6 +46,7 @@ table.filter: Filtrar...
 header.username: Usuario
 header.name: Nombre completo
 header.subjects: Docencia
+header.work_linked_training: DUAL
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

@@ -15,7 +15,7 @@
                 {% set person = teacher.person %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="users[]" value="{{ teacher.id }}" class="selectable"> <a href="{{ url }}">{{ person.lastName }}, {{ teacher.person.firstName }}</a></label>
+                        <label><input type="checkbox" name="users[]" value="{{ teacher.id }}" class="selectable"> <a href="{{ url }}">{{ person.lastName }}, {{ teacher.person.firstName }}{% if teacher.wltEducationalTutor %} <span class="badge badge-success">{{ 'header.work_linked_training'|trans }}</span>{% endif %}</a></label>
                     </td>
                     {% set user = person.user %}
                     <td>

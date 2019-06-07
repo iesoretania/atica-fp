@@ -407,11 +407,15 @@ class SurveyController extends Controller
         ]);
     }
     /**
-     * @Route("/profesorado/cumplimentar/{id}",
-     *     name="work_linked_training_survey_teacher_form", methods={"GET", "POST"})
+     * @Route("/seguimiento/cumplimentar/{id}",
+     *     name="work_linked_training_survey_organization_form", methods={"GET", "POST"})
      */
-    public function teacherFillAction(Request $request, TranslatorInterface $translator, Teaching $teaching)
+    public function organizationFillAction(Request $request, TranslatorInterface $translator, Teaching $teaching)
     {
+        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR,
+            $teaching->getTeacher()->getAcademicYear()
+        );
+
         $readOnly = false;
         $teacherSurvey = $teaching->getTeacher()->getWltTeacherSurvey();
         if ($teacherSurvey === null) {
@@ -453,7 +457,7 @@ class SurveyController extends Controller
                 $teacherSurvey->setTimestamp(new \DateTime());
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
-                return $this->redirectToRoute('work_linked_training_survey_teacher_list', [
+                return $this->redirectToRoute('work_linked_training_survey_organization_list', [
                     'academicYear' => $teaching->getGroup()->getGrade()->getTraining()->getAcademicYear()
                 ]);
             } catch (\Exception $e) {
@@ -469,7 +473,7 @@ class SurveyController extends Controller
         ];
 
         return $this->render('wlt/survey/form.html.twig', [
-            'menu_path' => 'work_linked_training_survey_teacher_list',
+            'menu_path' => 'work_linked_training_survey_organization_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
@@ -480,7 +484,7 @@ class SurveyController extends Controller
     }
 
     /**
-     * @Route("/profesorado/{academicYear}/{page}", name="work_linked_training_survey_teacher_list",
+     * @Route("/seguimiento/{academicYear}/{page}", name="work_linked_training_survey_organization_list",
      *     requirements={"page" = "\d+"}, defaults={"academicYear" = null, "page" = 1}, methods={"GET"})
      */
     public function teacherListAction(
@@ -496,9 +500,9 @@ class SurveyController extends Controller
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization);
 
-        $title = $translator->trans('title.survey.teacher.list', [], 'wlt_survey');
+        $title = $translator->trans('title.survey.organization.list', [], 'wlt_survey');
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -539,9 +543,9 @@ class SurveyController extends Controller
         }
         $queryBuilder
             ->andWhere('t.academicYear = :academic_year')
-            ->andWhere('te.workLinked = :work_linked')
+            ->andWhere('t.wltEducationalTutor = :is_teacher')
             ->setParameter('academic_year', $academicYear)
-            ->setParameter('work_linked', true);
+            ->setParameter('is_teacher', true);
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);

@@ -72,9 +72,16 @@ class Teacher
      */
     private $wltTeacherSurvey;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @var bool
+     */
+    private $wltEducationalTutor;
+
     public function __construct()
     {
         $this->teachings = new ArrayCollection();
+        $this->wltEducationalTutor = false;
     }
 
     public function __toString()
@@ -167,6 +174,24 @@ class Teacher
     public function setWltTeacherSurvey($wltTeacherSurvey)
     {
         $this->wltTeacherSurvey = $wltTeacherSurvey;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWltEducationalTutor()
+    {
+        return $this->wltEducationalTutor;
+    }
+
+    /**
+     * @param bool $wltEducationalTutor
+     * @return Teacher
+     */
+    public function setWltEducationalTutor($wltEducationalTutor)
+    {
+        $this->wltEducationalTutor = $wltEducationalTutor;
         return $this;
     }
 }

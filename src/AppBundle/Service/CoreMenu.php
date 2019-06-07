@@ -190,14 +190,14 @@ class CoreMenu implements MenuBuilderInterface
                 $menu2->addChild($menu3);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::WLT_TEACHER, $organization)) {
+            if ($this->security->isGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization)) {
                 $menu3 = new MenuItem();
                 $menu3
-                    ->setName('work_linked_training_survey_teacher')
-                    ->setRouteName('work_linked_training_survey_teacher_list')
-                    ->setCaption('menu.work_linked_training.survey.teacher')
-                    ->setDescription('menu.work_linked_training.survey.teacher.detail')
-                    ->setIcon('chalkboard-teacher')
+                    ->setName('work_linked_training_survey_organization')
+                    ->setRouteName('work_linked_training_survey_organization_list')
+                    ->setCaption('menu.work_linked_training.survey.organization')
+                    ->setDescription('menu.work_linked_training.survey.organization.detail')
+                    ->setIcon('school')
                     ->setPriority(5000);
 
                 $menu2->addChild($menu3);

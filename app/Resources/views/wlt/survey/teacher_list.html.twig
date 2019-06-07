@@ -12,7 +12,7 @@
 
 {% block table_body %}
             {% for item in pager %}
-                {% set url = path('work_linked_training_survey_teacher_form', {'id': item.id}) %}
+                {% set url = path('work_linked_training_survey_organization_form', {'id': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <a href="{{ url }}">{{ item.teacher.person.lastName }}, {{ item.teacher.person.firstName }}</a>

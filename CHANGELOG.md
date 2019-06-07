@@ -13,6 +13,7 @@ en la distintas versiones de la misma.
 * feat: Añadir un texto fijo como tipo de respuesta en una encuesta
 * feat: Registro de eventos de auditoría para las encuestas
 * fix: Al eliminar las respuestas de una encuesta se actualiza correctamente su estado
+* feat: La encuesta de profesorado es solo para quien hace seguimiento
 
 1.3.0 (2019-04-07)
 ------------------

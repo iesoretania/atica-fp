@@ -13,7 +13,7 @@ prompt.read_only_warning: >
   Póngase en contacto con el centro educativo para más información.
 
 title.survey.agreement.list: Encuestas de convenios
-title.survey.teacher.list: Encuestas de profesorado
+title.survey.organization.list: Encuestas de seguimiento
 
 title.available: Encuesta disponible para cumplimentar
 title.start_timestamp: desde el %date%

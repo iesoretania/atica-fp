@@ -51,6 +51,7 @@ class OrganizationVoter extends CachedVoter
     const WLT_STUDENT = 'ORGANIZATION_WLT_STUDENT';
     const WLT_TEACHER = 'ORGANIZATION_WLT_TEACHER';
     const WLT_MANAGER = 'ORGANIZATION_WLT_MANAGER';
+    const WLT_EDUCATIONAL_TUTOR = 'ORGANIZATION_WLT_EDUCATIONAL_TUTOR';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -119,7 +120,8 @@ class OrganizationVoter extends CachedVoter
             self::DEPARTMENT_HEAD,
             self::WLT_STUDENT,
             self::WLT_TEACHER,
-            self::WLT_MANAGER
+            self::WLT_MANAGER,
+            self::WLT_EDUCATIONAL_TUTOR
         ], true)) {
             return false;
         }
@@ -280,6 +282,14 @@ class OrganizationVoter extends CachedVoter
                         $subject->getCurrentAcademicYear(),
                         $user->getPerson()
                     ) > 0;
+
+            case self::WLT_EDUCATIONAL_TUTOR:
+                $teacher = $this->teacherRepository->findOneByAcademicYearAndPerson(
+                    $subject->getCurrentAcademicYear(),
+                    $user->getPerson()
+                );
+
+                return $teacher && $teacher->isWltEducationalTutor();
         }
 
         // denegamos en cualquier otro caso

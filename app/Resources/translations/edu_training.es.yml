@@ -9,7 +9,7 @@ form.work_linked_training.no: No se aplica a la enseñanza
 
 form.wlt_student_survey: Encuesta de alumnado de FP dual
 form.wlt_company_survey: Encuesta de empresa de FP dual
-form.wlt_teacher_survey: Encuesta de profesorado de FP dual
+form.wlt_teacher_survey: Encuesta de seguimiento de FP dual
 form.no_survey: Ninguna
 
 form.save: Guardar cambios

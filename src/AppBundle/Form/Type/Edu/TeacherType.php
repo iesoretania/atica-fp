@@ -39,26 +39,32 @@ class TeacherType extends AbstractType
     {
         $builder
             ->add('academicYear', null, [
-                'label' => 'form.academic_year'
+                'label' => 'form.academic_year',
+                'disabled' => true
             ])
             ->add('loginUsername', null, [
                 'label' => 'form.user_name',
-                'property_path' => 'person.user.loginUsername'
+                'property_path' => 'person.user.loginUsername',
+                'disabled' => true
             ])
             ->add('personFirstName', null, [
                 'label' => 'form.first_name',
-                'property_path' => 'person.firstName'
+                'property_path' => 'person.firstName',
+                'disabled' => true
             ])
             ->add('personLastName', null, [
                 'label' => 'form.last_name',
-                'property_path' => 'person.lastName'
+                'property_path' => 'person.lastName',
+                'disabled' => true
             ])
             ->add('emailAddress', EmailType::class, [
                 'label' => 'form.email_address',
-                'property_path' => 'person.user.emailAddress'
+                'property_path' => 'person.user.emailAddress',
+                'disabled' => true
             ])
             ->add('personGender', ChoiceType::class, [
                 'label' => 'form.gender',
+                'disabled' => true,
                 'expanded' => true,
                 'property_path' => 'person.gender',
                 'choices' => [
@@ -66,6 +72,16 @@ class TeacherType extends AbstractType
                     'form.gender.male' => User::GENDER_MALE,
                     'form.gender.female' => User::GENDER_FEMALE
                 ]
+            ])
+            ->add('wltEducationalTutor', ChoiceType::class, [
+                'label' => 'form.wlt_educational_tutor',
+                'disabled' => false,
+                'required' => true,
+                'expanded' => true,
+                'choices' => [
+                    'form.wlt_educational_tutor.yes' => true,
+                    'form.wlt_educational_tutor.no' => false
+                ],
             ])
             ->add('enabled', ChoiceType::class, [
                 'label' => 'form.enabled',
@@ -80,6 +96,7 @@ class TeacherType extends AbstractType
             ])
             ->add('allowExternalCheck', ChoiceType::class, [
                 'label' => 'form.allow_external_check',
+                'disabled' => true,
                 'required' => true,
                 'expanded' => true,
                 'choices' => [
@@ -106,6 +123,7 @@ class TeacherType extends AbstractType
                 $builder
                     ->add('externalCheck', ChoiceType::class, [
                         'label' => 'form.external_check',
+                        'disabled' => true,
                         'required' => true,
                         'expanded' => true,
                         'choices' => [
@@ -126,7 +144,7 @@ class TeacherType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Teacher::class,
             'translation_domain' => 'edu_teacher',
-            'disabled' => true
+            'disabled' => false
         ]);
     }
 }
