@@ -91,7 +91,7 @@ class SurveyVoter extends CachedVoter
         switch ($attribute) {
             case self::MANAGE:
                 return $this->roleRepository->
-                    personHasRole($subject, $user->getPerson(), Role::ROLE_LOCAL_ADMIN);
+                    personHasRole($subject->getOrganization(), $user->getPerson(), Role::ROLE_LOCAL_ADMIN);
 
         }
 
