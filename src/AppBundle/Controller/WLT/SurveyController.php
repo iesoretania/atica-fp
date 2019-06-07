@@ -410,11 +410,21 @@ class SurveyController extends Controller
      * @Route("/seguimiento/cumplimentar/{id}",
      *     name="work_linked_training_survey_organization_form", methods={"GET", "POST"})
      */
-    public function organizationFillAction(Request $request, TranslatorInterface $translator, Teaching $teaching)
-    {
-        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR,
-            $teaching->getTeacher()->getAcademicYear()
-        );
+    public function organizationFillAction(
+        Request $request,
+        TranslatorInterface $translator,
+        \Symfony\Component\Security\Core\Security $security,
+        Teaching $teaching
+    ) {
+        $organization = $teaching->getTeacher()->getAcademicYear()->getOrganization();
+        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization);
+
+        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+
+        if (!$isManager && !$isWltManager && $teaching->getTeacher()->getPerson()->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
 
         $readOnly = false;
         $teacherSurvey = $teaching->getTeacher()->getWltTeacherSurvey();

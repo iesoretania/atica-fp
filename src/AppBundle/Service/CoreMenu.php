@@ -164,7 +164,9 @@ class CoreMenu implements MenuBuilderInterface
 
             $menu1->addChild($menu2);
 
-            if ($this->security->isGranted(OrganizationVoter::WLT_STUDENT, $organization)) {
+            if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization) ||
+                $this->security->isGranted(OrganizationVoter::WLT_STUDENT, $organization)
+            ) {
                 $menu3 = new MenuItem();
                 $menu3
                     ->setName('work_linked_training_survey_student')
@@ -177,7 +179,9 @@ class CoreMenu implements MenuBuilderInterface
                 $menu2->addChild($menu3);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization)) {
+            if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization) ||
+                $this->security->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization)
+            ) {
                 $menu3 = new MenuItem();
                 $menu3
                     ->setName('work_linked_training_survey_company')
@@ -190,7 +194,9 @@ class CoreMenu implements MenuBuilderInterface
                 $menu2->addChild($menu3);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization)) {
+            if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization) ||
+                $this->security->isGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization)
+            ) {
                 $menu3 = new MenuItem();
                 $menu3
                     ->setName('work_linked_training_survey_organization')
