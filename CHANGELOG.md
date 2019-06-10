@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-1.4.x (2019-xx-xx)
+1.4.0 (2019-06-10)
 ------------------
 * fix: Mostrar correctamente los días de ausencia
 * core: Actualizados componentes a la última versión
