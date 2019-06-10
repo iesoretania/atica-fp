@@ -204,6 +204,7 @@ class AgreementController extends Controller
             ->orderBy('g.name')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
+            ->addOrderBy('a.startDate')
             ->addOrderBy('c.name');
 
         $q = $request->get('q', null);

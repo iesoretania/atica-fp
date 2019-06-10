@@ -139,6 +139,7 @@ class EvaluationController extends Controller
             ->groupBy('a')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
+            ->addOrderBy('a.startDate')
             ->addOrderBy('c.name');
 
         $q = $request->get('q');
