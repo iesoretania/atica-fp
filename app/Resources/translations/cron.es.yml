@@ -4,8 +4,18 @@ title.wlt.inactivity_warning: Aviso de no cumplimentación de tareas en la FP du
 table.wlt.inactivity_warning: Centro|Curso escolar|Estudiante|Empresa|Estado
 table.wlt.inactivity_warning.status.ok: Correcto
 table.wlt.inactivity_warning.status.warning: "Aviso: %count% jornadas"
-message.wlt_inactivity_warning.sending_warnings: Enviando correos...
-message.wlt_inactivity_warning.sending_warnings.no_user: No tiene usuario
-message.wlt_inactivity_warning.sending_warnings.no_email_address: No tiene correo electrónico
-message.wlt_inactivity_warning.sending_warnings.sent: Notificado
 message.wlt_inactivity_warning.done: Terminado
+
+message.sending_warnings: Enviando correos...
+message.sending_warnings.no_user: No tiene usuario
+message.sending_warnings.no_email_address: No tiene correo electrónico
+message.sending_warnings.sent: Notificado
+
+title.wlt.unaswered_survey_warning: Aviso de encuesta no cumplimentada
+table.wlt.unaswered_survey_warning.student: Estudiante|Curso escolar|Empresa|Estado
+table.wlt.unaswered_survey_warning.company: Tutor laboral|Empresa|Curso escolar|Estudiante|Estado
+table.wlt.unaswered_survey_warning.status.ok: Cumplimentada
+table.wlt.unaswered_survey_warning.status.on_time: No cumplimentada, en plazo
+table.wlt.unaswered_survey_warning.status.warning: "Aviso: quedan %count% días"
+table.wlt.unaswered_survey_warning.status.closed: Plazo cerrado. Sin cumplimentar
+message.unaswered_survey_warning.done: Terminado

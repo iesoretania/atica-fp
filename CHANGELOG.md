@@ -15,6 +15,7 @@ en la distintas versiones de la misma.
 * fix: Al eliminar las respuestas de una encuesta se actualiza correctamente su estado
 * feat: La encuesta de profesorado es solo para quien hace seguimiento
 * fix: Restringir las encuestas de seguimiento al usuario propio
+* feat: Aviso de encuestas no cumplimentadas en plazo
  
 1.3.0 (2019-04-07)
 ------------------
