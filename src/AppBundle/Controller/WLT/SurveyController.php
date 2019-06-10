@@ -21,7 +21,7 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\AnsweredSurvey;
 use AppBundle\Entity\AnsweredSurveyQuestion;
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\Teaching;
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Form\Type\AnsweredSurveyType;
 use AppBundle\Repository\Edu\GroupRepository;
@@ -414,27 +414,24 @@ class SurveyController extends Controller
         Request $request,
         TranslatorInterface $translator,
         \Symfony\Component\Security\Core\Security $security,
-        Teaching $teaching
+        Teacher $teacher
     ) {
-        $organization = $teaching->getTeacher()->getAcademicYear()->getOrganization();
+        $organization = $teacher->getAcademicYear()->getOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization);
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
         $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
 
-        if (!$isManager && !$isWltManager && $teaching->getTeacher()->getPerson()->getUser() !== $this->getUser()) {
+        if (!$isManager && !$isWltManager && $teacher->getPerson()->getUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }
 
         $readOnly = false;
-        $teacherSurvey = $teaching->getTeacher()->getWltTeacherSurvey();
+        $teacherSurvey = $teacher->getWltTeacherSurvey();
+
         if ($teacherSurvey === null) {
             $teacherSurvey = new AnsweredSurvey();
-            $survey = $teaching
-                ->getGroup()
-                ->getGrade()
-                ->getTraining()
-                ->getWltTeacherSurvey();
+            $survey = $teacher->getAcademicYear()->getWltOrganizationSurvey();
 
             $teacherSurvey->setSurvey($survey);
 
@@ -451,7 +448,7 @@ class SurveyController extends Controller
                 $this->getDoctrine()->getManager()->persist($answeredQuestion);
             }
 
-            $teaching->getTeacher()->setWltTeacherSurvey($teacherSurvey);
+            $teacher->setWltTeacherSurvey($teacherSurvey);
         }
 
         $form = $this->createForm(AnsweredSurveyType::class, $teacherSurvey, [
@@ -468,7 +465,7 @@ class SurveyController extends Controller
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
                 return $this->redirectToRoute('work_linked_training_survey_organization_list', [
-                    'academicYear' => $teaching->getGroup()->getGrade()->getTraining()->getAcademicYear()
+                    'academicYear' => $teacher->getAcademicYear()
                 ]);
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
@@ -478,7 +475,7 @@ class SurveyController extends Controller
         $title = $translator->trans('title.fill', [], 'wlt_survey');
 
         $breadcrumb = [
-            ['fixed' => $teaching->getTeacher() . ' - ' . $teaching->getGroup()->getGrade()->getTraining()],
+            ['fixed' => $teacher . ' - ' . $teacher->getAcademicYear()->getOrganization()],
             ['fixed' => $title]
         ];
 
@@ -488,7 +485,7 @@ class SurveyController extends Controller
             'title' => $title,
             'read_only' => $readOnly,
             'survey' => $teacherSurvey->getSurvey(),
-            'teaching' => $teaching,
+            'teacher' => $teacher,
             'form' => $form->createView()
         ]);
     }
@@ -497,7 +494,7 @@ class SurveyController extends Controller
      * @Route("/seguimiento/{academicYear}/{page}", name="work_linked_training_survey_organization_list",
      *     requirements={"page" = "\d+"}, defaults={"academicYear" = null, "page" = 1}, methods={"GET"})
      */
-    public function teacherListAction(
+    public function organizationListAction(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -518,19 +515,12 @@ class SurveyController extends Controller
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
 
         $queryBuilder
-            ->select('te')
-            ->addSelect('t')
+            ->select('t')
             ->addSelect('p')
-            ->from(Teaching::class, 'te')
-            ->join('te.teacher', 't')
+            ->from(Teacher::class, 't')
             ->join('t.person', 'p')
             ->join('p.user', 'u')
-            ->join('te.group', 'g')
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 'tr')
-            ->join('tr.wltTeacherSurvey', 'ts')
-            ->groupBy('t')
-            ->addGroupBy('tr')
+            ->join('t.academicYear', 'ay')
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName');
 
@@ -554,6 +544,7 @@ class SurveyController extends Controller
         $queryBuilder
             ->andWhere('t.academicYear = :academic_year')
             ->andWhere('t.wltEducationalTutor = :is_teacher')
+            ->andWhere('ay.wltOrganizationSurvey IS NOT NULL')
             ->setParameter('academic_year', $academicYear)
             ->setParameter('is_teacher', true);
 

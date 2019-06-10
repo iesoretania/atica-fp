@@ -19,9 +19,11 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\WorkDay;
 use AppBundle\Repository\Edu\AcademicYearRepository;
+use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
 use AppBundle\Service\MailerService;
@@ -39,13 +41,15 @@ class CronCommand extends Command
     private $workDayRepository;
     private $academicYearRepository;
     private $agreementRepository;
+    private $teacherRepository;
 
     public function __construct(
         TranslatorInterface $translator,
         MailerService $mailerService,
         WorkDayRepository $workDayRepository,
         AgreementRepository $agreementRepository,
-        AcademicYearRepository $academicYearRepository
+        AcademicYearRepository $academicYearRepository,
+        TeacherRepository $teacherRepository
     ) {
         parent::__construct();
         $this->translator = $translator;
@@ -53,6 +57,7 @@ class CronCommand extends Command
         $this->workDayRepository = $workDayRepository;
         $this->academicYearRepository = $academicYearRepository;
         $this->agreementRepository = $agreementRepository;
+        $this->teacherRepository = $teacherRepository;
     }
 
     protected function configure()
@@ -422,6 +427,117 @@ class CronCommand extends Command
                         ],
                         [
                             'id' => 'notification.unanswered_survey_warning.body.company',
+                            'parameters' => $params
+                        ],
+                        'wlt_survey'
+                    );
+                    $result = 'message.sending_warnings.sent';
+                }
+
+                $result =
+                    $this->translator->trans(
+                        $result,
+                        [],
+                        'cron'
+                    );
+                $style->progressAdvance();
+                $resultList[] = $person . ': ' . $result;
+            }
+            $style->progressFinish();
+            $output->writeln('');
+            if (count($resultList) > 0) {
+                $style->listing($resultList);
+            }
+        }
+
+        $style->success($this->translator->trans('message.unaswered_survey_warning.done', [], 'cron'));
+
+        // Tutores docentes del centro educativo
+        $table = new Table($output);
+
+        $table
+            ->setHeaders(
+                explode(
+                    '|',
+                    $this->translator->trans('table.wlt.unaswered_survey_warning.organization', [], 'cron')
+                )
+            );
+
+        $warning = [];
+        /** @var AcademicYear $academicYear */
+        foreach ($academicYears as $academicYear) {
+            $teachers = $this->teacherRepository->findByAcademicYearAndWLT($academicYear);
+            /** @var Teacher $teacher */
+            foreach ($teachers as $teacher) {
+                $referenceSurvey = $teacher->getAcademicYear()->getWltOrganizationSurvey();
+                $count = 0;
+                if ($referenceSurvey) {
+                    if ($teacher->getWltTeacherSurvey()) {
+                        $status = 'table.wlt.unaswered_survey_warning.status.ok';
+                    } else {
+                        $status = 'table.wlt.unaswered_survey_warning.status.on_time';
+                        $closed = false;
+                        if ($referenceSurvey->getStartTimestamp() && $referenceSurvey->getStartTimestamp() > $now) {
+                            $closed = true;
+                        }
+                        if ($referenceSurvey->getEndTimestamp() && $referenceSurvey->getEndTimestamp() < $now) {
+                            $closed = true;
+                        }
+                        if (!$closed) {
+                            if ($referenceSurvey->getEndTimestamp() && $referenceSurvey->getEndTimestamp() > $limit) {
+                                $status = 'table.wlt.unaswered_survey_warning.status.warning';
+                                $count = (int) $now->diff($referenceSurvey->getEndTimestamp())->format('%R%a');
+                            }
+                        } else {
+                            $status = 'table.wlt.unaswered_survey_warning.status.closed';
+                        }
+                    }
+                    $table
+                        ->addRow([
+                            (string) $teacher,
+                            $academicYear->getDescription(),
+                            $this->translator->trans(
+                                $status,
+                                ['%count%' => $count],
+                                'cron'
+                            )
+                        ]);
+                    if ($count > 0) {
+                        $warning[] = [$teacher, $referenceSurvey->getEndTimestamp(), $count];
+                    }
+                }
+            }
+        }
+        $table->render();
+
+        if (count($warning) > 0) {
+            $resultList = [];
+            $style->text($this->translator->trans('message.sending_warnings', [], 'cron'));
+            $style->progressStart(count($warning));
+            foreach ($warning as $personData) {
+                $teacher = $personData[0];
+                $person = $teacher->getPerson();
+                if (null === $person->getUser()) {
+                    $result = 'message.sending_warnings.no_user';
+                } elseif (!$person->getUser()->getEmailAddress()) {
+                    $result = 'message.sending_warnings.no_email_address';
+                } else {
+                    $params = [
+                        '%name%' => (string) $person->getFirstName(),
+                        '%academic_year%' => $teacher->getAcademicYear()->getDescription(),
+                        '%limit%' => $personData[1],
+                        '%count%' => $personData[2],
+                        '%organization%' => $teacher->getAcademicYear()->getOrganization()->getName()
+                    ];
+
+                    $this->mailerService->sendEmail(
+                        [$person->getUser()],
+                        [
+                            'id' => 'notification.unanswered_survey_warning.subject',
+                            'parameters' => $params
+                        ],
+                        [
+                            'id' => 'notification.unanswered_survey_warning.body.organization',
                             'parameters' => $params
                         ],
                         'wlt_survey'

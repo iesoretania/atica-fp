@@ -4,6 +4,8 @@ form.principal: Director/a
 form.financial_manager: Secretario/a
 form.start_date: Fecha de inicio
 form.end_date: Fecha final
+form.wlt_organization_survey: Encuesta de satisfacción de centro de FP dual
+form.no_survey: Ninguna
 
 form.save: Guardar cambios
 form.delete: Eliminar cursos seleccionados

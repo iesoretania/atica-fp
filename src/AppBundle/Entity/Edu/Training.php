@@ -88,13 +88,6 @@ class Training
      */
     private $wltCompanySurvey;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var Survey
-     */
-    private $wltTeacherSurvey;
-
     public function __construct()
     {
         $this->competencies = new ArrayCollection();
@@ -245,24 +238,6 @@ class Training
     public function setWltCompanySurvey($wltCompanySurvey)
     {
         $this->wltCompanySurvey = $wltCompanySurvey;
-        return $this;
-    }
-
-    /**
-     * @return Survey
-     */
-    public function getWltTeacherSurvey()
-    {
-        return $this->wltTeacherSurvey;
-    }
-
-    /**
-     * @param Survey $wltTeacherSurvey
-     * @return Training
-     */
-    public function setWltTeacherSurvey($wltTeacherSurvey)
-    {
-        $this->wltTeacherSurvey = $wltTeacherSurvey;
         return $this;
     }
 }

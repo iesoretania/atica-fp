@@ -106,15 +106,6 @@ class TrainingType extends AbstractType
                 'choices' => $surveys,
                 'placeholder' => 'form.no_survey',
                 'required' => false
-            ])
-            ->add('wltTeacherSurvey', EntityType::class, [
-                'label' => 'form.wlt_teacher_survey',
-                'class' => Survey::class,
-                'choice_label' => 'title',
-                'choice_translation_domain' => false,
-                'choices' => $surveys,
-                'placeholder' => 'form.no_survey',
-                'required' => false
             ]);
     }
 

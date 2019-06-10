@@ -6,7 +6,6 @@
 
 {% block table_header %}
     <th>{{ 'header.teacher'|trans }}</th>
-    <th>{{ 'header.training'|trans }}</th>
     <th>{{ 'header.status'|trans }}</th>
 {% endblock %}
 
@@ -15,18 +14,15 @@
                 {% set url = path('work_linked_training_survey_organization_form', {'id': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <a href="{{ url }}">{{ item.teacher.person.lastName }}, {{ item.teacher.person.firstName }}</a>
+                        <a href="{{ url }}">{{ item.person.lastName }}, {{ item.person.firstName }}</a>
                     </td>
                     <td>
-                        {{ item.group.grade.training }}
-                    </td>
-                    <td>
-                        {{ (item.teacher.wltTeacherSurvey ? 'table.answered.yes' : 'table.answered.no')|trans }}
+                        {{ (item.wltTeacherSurvey ? 'table.answered.yes' : 'table.answered.no')|trans }}
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="2">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

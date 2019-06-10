@@ -14,6 +14,7 @@ message.sending_warnings.sent: Notificado
 title.wlt.unaswered_survey_warning: Aviso de encuesta no cumplimentada
 table.wlt.unaswered_survey_warning.student: Estudiante|Curso escolar|Empresa|Estado
 table.wlt.unaswered_survey_warning.company: Tutor laboral|Empresa|Curso escolar|Estudiante|Estado
+table.wlt.unaswered_survey_warning.organization: Tutor docente|Curso escolar|Estado
 table.wlt.unaswered_survey_warning.status.ok: Cumplimentada
 table.wlt.unaswered_survey_warning.status.on_time: No cumplimentada, en plazo
 table.wlt.unaswered_survey_warning.status.warning: "Aviso: quedan %count% días"
