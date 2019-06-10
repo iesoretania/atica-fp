@@ -208,6 +208,21 @@ class CoreMenu implements MenuBuilderInterface
 
                 $menu2->addChild($menu3);
             }
+
+            if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization) ||
+                $this->security->isGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization)
+            ) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('work_linked_training_report')
+                    ->setRouteName('work_linked_training_report')
+                    ->setCaption('menu.work_linked_training.report')
+                    ->setDescription('menu.work_linked_training.report.detail')
+                    ->setIcon('file-alt')
+                    ->setPriority(11000);
+
+                $menu1->addChild($menu2);
+            }
         }
 
         if ($this->security->isGranted(OrganizationVoter::MANAGE_COMPANIES, $organization)) {

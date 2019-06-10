@@ -106,6 +106,9 @@ menu.work_linked_training.survey.company.detail: Cumplimentar la encuesta de sat
 menu.work_linked_training.survey.organization: Satisfacción de seguimiento
 menu.work_linked_training.survey.organization.detail: Cumplimentar la encuesta de satisfacción de seguimiento del centro educativo
 
+menu.work_linked_training.report: Informes
+menu.work_linked_training.report.detail: Generar informes relacionados con la FP dual
+
 menu.company: Empresas colaboradoras
 menu.company.detail: Gestionar las empresas colaboradoras y sus centros de trabajo
 
