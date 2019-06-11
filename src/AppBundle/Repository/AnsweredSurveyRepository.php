@@ -47,7 +47,7 @@ class AnsweredSurveyRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findByWltSurveyAndTraining(Survey $survey, Training $training)
+    public function findByWltStudentSurveyAndTraining(Survey $survey, Training $training)
     {
         return $this->createQueryBuilder('asu')
             ->join('asu.survey', 's')
@@ -61,6 +61,20 @@ class AnsweredSurveyRepository extends ServiceEntityRepository
             ->setParameter('training', $training)
             ->getQuery()
             ->getResult();
-
+    }
+    public function findByWltCompanySurveyAndTraining(Survey $survey, Training $training)
+    {
+        return $this->createQueryBuilder('asu')
+            ->join('asu.survey', 's')
+            ->innerJoin(Agreement::class, 'a', 'WITH', 'a.companySurvey = asu')
+            ->join('a.studentEnrollment', 'se')
+            ->join('se.group', 'gro')
+            ->join('gro.grade', 'gra')
+            ->where('s = :survey')
+            ->andWhere('gra.training = :training')
+            ->setParameter('survey', $survey)
+            ->setParameter('training', $training)
+            ->getQuery()
+            ->getResult();
     }
 }

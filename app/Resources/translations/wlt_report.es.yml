@@ -1,6 +1,9 @@
 title.student_survey: Encuestas de satisfacción del alumnado con la FP dual
 title.student_survey.summary: Resumen de convenios
 
+title.company_survey: Encuestas de satisfacción de las empresas con la FP dual
+title.company_survey.summary: Resumen de convenios
+
 report.academic_year: "Curso académico:"
 report.student: "Estudiante:"
 report.workcenter: "Centro de trabajo:"

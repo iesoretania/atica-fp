@@ -60,12 +60,19 @@ class AgreementRepository extends ServiceEntityRepository
     public function findByAcademicYear(AcademicYear $academicYear)
     {
         return $this->createQueryBuilder('a')
+            ->addSelect('sr')
+            ->addSelect('p')
+            ->addSelect('g')
             ->join('a.studentEnrollment', 'sr')
+            ->join('sr.person', 'p')
             ->join('sr.group', 'g')
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->where('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->addOrderBy('a.startDate')
             ->getQuery()
             ->getResult();
     }
@@ -167,9 +174,6 @@ class AgreementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @param Agreement $agreement
-     */
     public function updateDates(Agreement $agreement)
     {
         $workDays = $this->workDayRepository->findByAgreement($agreement);
@@ -187,9 +191,6 @@ class AgreementRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    /**
-     * @param Agreement $agreement
-     */
     public function cloneCalendarFromAgreement(Agreement $destination, Agreement $source, $overwrite = false)
     {
         $workDays = $this->workDayRepository->findByAgreement($source);

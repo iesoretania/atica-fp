@@ -1,7 +1,7 @@
 {% trans_default_domain 'wlt_report' %}
 <html>
 <head>
-    <title>{{ 'title.student_survey'|trans }} - {{ academic_year.organization }} - {{ academic_year }}</title>
+    <title>{{ 'title.company_survey'|trans }} - {{ academic_year.organization }} - {{ academic_year }}</title>
     <style>
         body {
             font-family: sans-serif;
@@ -98,8 +98,8 @@
 {% endif %}
 
     <h1>{{ app_name }} - {{ academic_year.organization }} - {{ academic_year }}</h1>
-    <h2>{{ 'title.student_survey'|trans }}</h2>
-    <h3>{{ 'title.student_survey.summary'|trans }}</h3>
+    <h2>{{ 'title.company_survey'|trans }}</h2>
+    <h3>{{ 'title.company_survey.summary'|trans }}</h3>
     <table class="survey">
         <thead>
         <tr>
@@ -117,10 +117,10 @@
                 <td>{{ agreement.studentEnrollment }}</td>
                 <td>{{ agreement.workcenter }}</td>
                 <td class="center">{{ agreement.startDate|date('format.date'|trans({}, 'general')) }} - {{ agreement.endDate|date('format.date'|trans({}, 'general')) }}</td>
-                <td class="center">{{ (agreement.studentSurvey ? 'report.status.answered' : 'report.status.unanswered')|trans }}</td>
+                <td class="center">{{ (agreement.companySurvey ? 'report.status.answered' : 'report.status.unanswered')|trans }}</td>
             </tr>
             {% set total = total + 1 %}
-            {% if agreement.studentSurvey %}{% set answered = answered + 1 %}{% endif %}
+            {% if agreement.companySurvey %}{% set answered = answered + 1 %}{% endif %}
         {% else %}
             <tr colspan="4">{{ 'report.no_surveys'|trans }}</tr>
         {% endfor %}
@@ -136,10 +136,10 @@
 
     <pagebreak></pagebreak>
 
-    {% for stat in stats if stat[0].wltStudentSurvey %}
+    {% for stat in stats if stat[0].wltCompanySurvey %}
     <h1>{{ app_name }} - {{ academic_year.organization }}</h1>
         <h1>{{ stat[0].name }}</h1>
-        <h2>{{ 'title.student_survey'|trans }}</h2>
+        <h2>{{ 'title.company_survey'|trans }}</h2>
 
         <table class="survey">
             <thead>
@@ -186,9 +186,9 @@
     {% endfor %}
 
     {% for agreement in agreements %}
-        {% if agreement.studentSurvey %}
+        {% if agreement.companySurvey %}
             <h1>{{ app_name }} - {{ academic_year.organization }}</h1>
-            <h2>{{ 'title.student_survey'|trans }}</h2>
+            <h2>{{ 'title.company_survey'|trans }}</h2>
             <table class="data">
                 <tr>
                     <td class="info">{{ 'report.academic_year'|trans }}</td>
@@ -212,11 +212,11 @@
                 </tr>
                 <tr>
                     <td class="info">{{ 'report.answered_on'|trans }}</td>
-                    <td>{{ agreement.studentSurvey.timestamp|date('format.datetime'|trans({}, 'general')) }}</td>
+                    <td>{{ agreement.companySurvey.timestamp|date('format.datetime'|trans({}, 'general')) }}</td>
                 </tr>
             </table>
 
-            {% if agreement.studentSurvey %}
+            {% if agreement.companySurvey %}
             <table class="survey">
                 <thead>
                     <tr>
@@ -225,7 +225,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for answer in agreement.studentSurvey.answers if answer.surveyQuestion.type != "fixed"  %}
+                {% for answer in agreement.companySurvey.answers if answer.surveyQuestion.type != "fixed"  %}
                     <tr>
                         <td class="right">{{ answer.surveyQuestion.description|markdown }}</td>
                         <td>{{ answer.numericValue|default(answer.textValue)|default('report.no_answer'|trans) }}</td>

@@ -85,10 +85,16 @@ class ReportController extends Controller
         $trainings = $trainingRepository->findByAcademicYearAndWLT($academicYear);
 
         $stats = [];
-        foreach($trainings as $training) {
-            $list = $answeredSurveyRepository->findByWltSurveyAndTraining($training->getWltStudentSurvey(), $training);
-            $surveyStats = $surveyQuestionRepository->answerStatsBySurveyAndAnsweredSurveyList($training->getWltStudentSurvey(), $list);
-            $answers = $answeredSurveyQuestionRepository->notNumericAnswersBySurveyAndAnsweredSurveyList($training->getWltStudentSurvey(), $list);
+        foreach ($trainings as $training) {
+            $survey = $training->getWltStudentSurvey();
+            $list = $answeredSurveyRepository->findByWltStudentSurveyAndTraining($survey, $training);
+
+            $surveyStats = $surveyQuestionRepository
+                ->answerStatsBySurveyAndAnsweredSurveyList($survey, $list);
+
+            $answers = $answeredSurveyQuestionRepository
+                ->notNumericAnswersBySurveyAndAnsweredSurveyList($survey, $list);
+
             $stats[] = [$training, $surveyStats, $answers];
         }
 
@@ -98,7 +104,70 @@ class ReportController extends Controller
             'stats' => $stats
         ]);
 
-        $fileName = $translator->trans('title.student_survey', [], 'wlt_report') . ' - ' . $academicYear->getOrganization() . ' - ' . $academicYear . '.pdf';
+        $fileName = $translator->trans('title.student_survey', [], 'wlt_report')
+            . ' - ' . $academicYear->getOrganization() . ' - '
+            . $academicYear . '.pdf';
+
+        $response = $mpdfService->generatePdfResponse($html);
+        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/encuesta/empresas/{academicYear}", name="work_linked_training_report_company_survey_report",
+     *     defaults={"academicYear" = null}, methods={"GET"})
+     */
+    public function companyReportAction(
+        TranslatorInterface $translator,
+        Environment $engine,
+        UserExtensionService $userExtensionService,
+        AgreementRepository $agreementRepository,
+        AnsweredSurveyRepository $answeredSurveyRepository,
+        SurveyQuestionRepository $surveyQuestionRepository,
+        AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
+        TrainingRepository $trainingRepository,
+        AcademicYear $academicYear = null
+    ) {
+        $this->denyAccessUnlessGranted(
+            OrganizationVoter::WLT_MANAGER,
+            $userExtensionService->getCurrentOrganization()
+        );
+
+        if (!$academicYear) {
+            $academicYear = $userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
+        }
+
+        $mpdfService = new MpdfService();
+
+        $agreements = $agreementRepository->findByAcademicYear($academicYear);
+
+        $trainings = $trainingRepository->findByAcademicYearAndWLT($academicYear);
+
+        $stats = [];
+        foreach ($trainings as $training) {
+            $survey = $training->getWltCompanySurvey();
+            $list = $answeredSurveyRepository->findByWltCompanySurveyAndTraining($survey, $training);
+
+            $surveyStats = $surveyQuestionRepository
+                ->answerStatsBySurveyAndAnsweredSurveyList($survey, $list);
+
+            $answers = $answeredSurveyQuestionRepository
+                ->notNumericAnswersBySurveyAndAnsweredSurveyList($survey, $list);
+
+            $stats[] = [$training, $surveyStats, $answers];
+        }
+
+        $html = $engine->render('wlt/report/company_survey_report.html.twig', [
+            'agreements' => $agreements,
+            'academic_year' => $academicYear,
+            'stats' => $stats
+        ]);
+
+        $fileName = $translator->trans('title.company_survey', [], 'wlt_report')
+            . ' - ' . $academicYear->getOrganization() . ' - '
+            . $academicYear . '.pdf';
+
         $response = $mpdfService->generatePdfResponse($html);
         $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
 
