@@ -10,6 +10,7 @@ en la distintas versiones de la misma.
 * feat: Listar los acuerdos del mismo estudiante ordenados por fecha de comienzo
 * feat: Generación del informe de satisfacción de alumnado en la FP dual
 * feat: Generación del informe de satisfacción de empresas en la FP dual
+* feat: Personalización del encabezado y pie de página de los informes
 
 1.4.0 (2019-06-10)
 ------------------

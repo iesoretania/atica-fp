@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
             new SimpleThings\EntityAudit\SimpleThingsEntityAuditBundle(),
             new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle(),
+            new FOS\CKEditorBundle\FOSCKEditorBundle(),
             new AppBundle\AppBundle(),
         ];
 

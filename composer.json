@@ -30,6 +30,7 @@
         "doctrine/doctrine-fixtures-bundle": "^3.0",
         "doctrine/doctrine-migrations-bundle": "^1.2",
         "doctrine/orm": "^2.5",
+        "friendsofsymfony/ckeditor-bundle": "^1.2",
         "incenteev/composer-parameter-handler": "^2.0",
         "johngrogg/ics-parser": "^2.1",
         "knplabs/knp-markdown-bundle": "^1.7",

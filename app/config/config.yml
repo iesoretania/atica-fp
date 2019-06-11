@@ -38,6 +38,7 @@ twig:
     strict_variables: '%kernel.debug%'
     form_themes:
         - 'bootstrap_4_horizontal_layout.html.twig'
+        - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
     globals:
         app_name:     '%app_name%'
         app_repository: 'https://github.com/iesoretania/atica-fp'
@@ -84,6 +85,10 @@ swiftmailer:
 sensio_framework_extra:
    router:
         annotations: false
+
+fos_ck_editor:
+    base_path: "build/ckeditor"
+    js_path:   "build/ckeditor/ckeditor.js"
 
 simple_things_entity_audit:
     audited_entities:

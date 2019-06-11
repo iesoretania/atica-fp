@@ -2,7 +2,9 @@
   "name": "atica-fp",
   "version": "1.0.0",
   "description": "Aplicación web para el seguimiento del alumnado durante el período de alternancia y en la FCT",
-  "dependencies": {},
+  "dependencies": {
+    "ckeditor": "^4.11.4"
+  },
   "scripts": {
     "test": "phpunit -c app/"
   },
