@@ -19,6 +19,7 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\AnsweredSurveyQuestion;
+use AppBundle\Entity\Survey;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -37,5 +38,23 @@ class AnsweredSurveyQuestionRepository extends ServiceEntityRepository
             ->setParameter('list', $list)
             ->getQuery()
             ->execute();
+    }
+
+    public function notNumericAnswersBySurveyAndAnsweredSurveyList(Survey $survey, $list)
+    {
+        return $this->createQueryBuilder('asq')
+            ->select('asq')
+            ->addSelect('sq')
+            ->leftJoin('asq.surveyQuestion', 'sq')
+            ->leftJoin('asq.answeredSurvey', 'asu')
+            ->where('asq.answeredSurvey IN (:list)')
+            ->andWhere('asu.survey = :survey')
+            ->andWhere('asq.textValue IS NOT NULL')
+            ->andWhere('asq.textValue != \'\'')
+            ->setParameter('list', $list)
+            ->setParameter('survey', $survey)
+            ->orderBy('sq.orderNr')
+            ->getQuery()
+            ->getResult();
     }
 }

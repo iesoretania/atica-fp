@@ -19,7 +19,9 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\AnsweredSurvey;
+use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\Survey;
+use AppBundle\Entity\WLT\Agreement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -43,5 +45,22 @@ class AnsweredSurveyRepository extends ServiceEntityRepository
             ->setParameter('list', $list)
             ->getQuery()
             ->execute();
+    }
+
+    public function findByWltSurveyAndTraining(Survey $survey, Training $training)
+    {
+        return $this->createQueryBuilder('asu')
+            ->join('asu.survey', 's')
+            ->innerJoin(Agreement::class, 'a', 'WITH', 'a.studentSurvey = asu')
+            ->join('a.studentEnrollment', 'se')
+            ->join('se.group', 'gro')
+            ->join('gro.grade', 'gra')
+            ->where('s = :survey')
+            ->andWhere('gra.training = :training')
+            ->setParameter('survey', $survey)
+            ->setParameter('training', $training)
+            ->getQuery()
+            ->getResult();
+
     }
 }

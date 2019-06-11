@@ -1,0 +1,29 @@
+title.student_survey: Encuestas de satisfacción del alumnado con la FP dual
+title.student_survey.summary: Resumen de convenios
+
+report.academic_year: "Curso académico:"
+report.student: "Estudiante:"
+report.workcenter: "Centro de trabajo:"
+report.work_tutor: "Tutor/a laboral:"
+report.dates: "Fechas del convenio:"
+report.answered_on: "Contestada el:"
+
+report.no_survey: Encuesta no cumplimentada
+report.no_surveys: No hay encuestas cumplimentadas
+report.no_answer: Sin respuesta
+report.no_data: "---"
+
+header.question: Pregunta
+header.answer: Respuesta
+header.count: Núm. resp.
+header.average: Media
+header.min: Mín.
+header.max: Máx.
+
+header.student: Estudiante
+header.workcenter: Centro de trabajo
+header.dates: Fechas convenio
+header.status: ¿Cumplimentada?
+
+report.status.answered: Sí
+report.status.unanswered: No

@@ -18,6 +18,7 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\AnsweredSurveyQuestion;
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\Survey;
 use AppBundle\Entity\SurveyQuestion;
@@ -107,5 +108,25 @@ class SurveyQuestionRepository extends ServiceEntityRepository
             ->setParameter('list', $list)
             ->getQuery()
             ->execute();
+    }
+
+    public function answerStatsBySurveyAndAnsweredSurveyList(Survey $survey, $list)
+    {
+        return $this->createQueryBuilder('sq')
+            ->select('sq')
+            ->addSelect('COUNT(asq.numericValue)')
+            ->addSelect('AVG(asq.numericValue)')
+            ->addSelect('MIN(asq.numericValue)')
+            ->addSelect('MAX(asq.numericValue)')
+            ->leftJoin(AnsweredSurveyQuestion::class, 'asq', 'WITH', 'asq.surveyQuestion = sq')
+            ->leftJoin('asq.answeredSurvey', 'asu')
+            ->groupBy('sq')
+            ->where('asu IN (:list)')
+            ->andWhere('sq.survey = :survey')
+            ->setParameter('list', $list)
+            ->setParameter('survey', $survey)
+            ->orderBy('sq.orderNr')
+            ->getQuery()
+            ->getResult();
     }
 }

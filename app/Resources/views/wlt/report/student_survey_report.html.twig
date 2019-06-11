@@ -1,0 +1,216 @@
+{% trans_default_domain 'wlt_report' %}
+<html>
+<head>
+    <title>{{ 'title.student_survey'|trans }} - {{ academic_year.organization }} - {{ academic_year }}</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        table {
+            font-family: dejavusanscondensed, sans-serif;
+            border-style: solid;
+            border-width: 1px;
+            border-collapse: collapse;
+        }
+
+        table td {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        table th {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        table.data {
+            width: 100%;
+        }
+
+        table.data td {
+            padding: 0.3em;
+        }
+
+        table.data td.info {
+            font-family: dejavusanscondensed, sans-serif;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        table.survey {
+            margin-top: 1em;
+            width: 100%;
+        }
+
+        table.survey td {
+            padding: 0.3em;
+        }
+
+        table.survey th {
+            background-color: #cccccc;
+            padding: 0.3em;
+        }
+
+        table.survey {
+            font-size: 80%;
+        }
+
+        table.survey tfoot th {
+            font-size: 120%;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ app_name }} - {{ academic_year.organization }} - {{ academic_year }}</h1>
+    <h2>{{ 'title.student_survey'|trans }}</h2>
+    <h3>{{ 'title.student_survey.summary'|trans }}</h3>
+    <table class="survey">
+        <thead>
+        <tr>
+            <th width="30%">{{ 'header.student'|trans }}</th>
+            <th width="30%">{{ 'header.workcenter'|trans }}</th>
+            <th width="30%">{{ 'header.dates'|trans }}</th>
+            <th width="10%">{{ 'header.status'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set total = 0 %}
+        {% set answered = 0 %}
+        {% for agreement in agreements %}
+            <tr>
+                <td>{{ agreement.studentEnrollment }}</td>
+                <td>{{ agreement.workcenter }}</td>
+                <td class="center">{{ agreement.startDate|date('format.date'|trans({}, 'general')) }} - {{ agreement.endDate|date('format.date'|trans({}, 'general')) }}</td>
+                <td class="center">{{ (agreement.studentSurvey ? 'report.status.answered' : 'report.status.unanswered')|trans }}</td>
+            </tr>
+            {% set total = total + 1 %}
+            {% if agreement.studentSurvey %}{% set answered = answered + 1 %}{% endif %}
+        {% else %}
+            <tr colspan="4">{{ 'report.no_surveys'|trans }}</tr>
+        {% endfor %}
+        </tbody>
+        {% if total %}
+            <tfoot>
+                <tr>
+                    <td class="right" colspan="4"><b>Contestadas {{ answered }}/{{ total }} ({{ (answered*100/total)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
+                </tr>
+            </tfoot>
+        {% endif %}
+    </table>
+
+    <pagebreak></pagebreak>
+
+    {% for stat in stats if stat[0].wltStudentSurvey %}
+    <h1>{{ app_name }} - {{ academic_year.organization }}</h1>
+        <h1>{{ stat[0].name }}</h1>
+        <h2>{{ 'title.student_survey'|trans }}</h2>
+
+        <table class="survey">
+            <thead>
+            <tr>
+                <th width="68%">{{ 'header.question'|trans }}</th>
+                <th width="8%">{{ 'header.count'|trans }}</th>
+                <th width="8%">{{ 'header.min'|trans }}</th>
+                <th width="8%">{{ 'header.max'|trans }}</th>
+                <th width="8%">{{ 'header.average'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for answer in stat[1] if answer[0].type starts with "range" %}
+                <tr>
+                    <td class="right">{{ answer[0].description|markdown }}</td>
+                    <td class="center">{{ answer[1]|default('report.no_data'|trans) }}</td>
+                    <td class="center">{{ answer[3] ? answer[3]|number_format(2, 'format.decimal_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
+                    <td class="center">{{ answer[4] ? answer[4]|number_format(2, 'format.decimal_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
+                    <td class="center">{{ answer[2] ? answer[2]|number_format(2, 'format.decimal_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if stat[2] %}
+        <table class="survey">
+            <thead>
+            <tr>
+                <th width="40%">{{ 'header.question'|trans }}</th>
+                <th width="60%">{{ 'header.answer'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for answer in stat[2] %}
+                <tr>
+                    <td class="right">{{ answer.surveyQuestion.description|markdown }}</td>
+                    <td>{{ answer.textValue }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+        <pagebreak></pagebreak>
+    {% endfor %}
+
+    {% for agreement in agreements %}
+        {% if agreement.studentSurvey %}
+            <h1>{{ app_name }} - {{ academic_year.organization }}</h1>
+            <h2>{{ 'title.student_survey'|trans }}</h2>
+            <table class="data">
+                <tr>
+                    <td class="info">{{ 'report.academic_year'|trans }}</td>
+                    <td>{{ agreement.workcenter.academicYear }}</td>
+                </tr>
+                <tr>
+                    <td class="info">{{ 'report.student'|trans }}</td>
+                    <td>{{ agreement.studentEnrollment }}</td>
+                </tr>
+                <tr>
+                    <td class="info">{{ 'report.workcenter'|trans }}</td>
+                    <td>{{ agreement.workcenter }}</td>
+                </tr>
+                <tr>
+                    <td class="info">{{ 'report.work_tutor'|trans }}</td>
+                    <td>{{ agreement.workTutor }}</td>
+                </tr>
+                <tr>
+                    <td class="info">{{ 'report.dates'|trans }}</td>
+                    <td>{{ agreement.startDate|date('format.date'|trans({}, 'general')) }} - {{ agreement.endDate|date('format.date'|trans({}, 'general')) }}</td>
+                </tr>
+                <tr>
+                    <td class="info">{{ 'report.answered_on'|trans }}</td>
+                    <td>{{ agreement.studentSurvey.timestamp|date('format.datetime'|trans({}, 'general')) }}</td>
+                </tr>
+            </table>
+
+            {% if agreement.studentSurvey %}
+            <table class="survey">
+                <thead>
+                    <tr>
+                        <th width="70%">{{ 'header.question'|trans }}</th>
+                        <th width="30%">{{ 'header.answer'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for answer in agreement.studentSurvey.answers if answer.surveyQuestion.type != "fixed"  %}
+                    <tr>
+                        <td class="right">{{ answer.surveyQuestion.description|markdown }}</td>
+                        <td>{{ answer.numericValue|default(answer.textValue)|default('report.no_answer'|trans) }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <h2>{{ 'report.no_survey'|trans }}</h2>
+            {% endif %}
+            {% if not loop.last %}<pagebreak></pagebreak>{% endif %}
+        {% endif %}
+    {% endfor %}
+</body>
+</html>

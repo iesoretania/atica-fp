@@ -18,10 +18,19 @@
 
 namespace AppBundle\Controller\WLT;
 
+use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Repository\AnsweredSurveyQuestionRepository;
+use AppBundle\Repository\AnsweredSurveyRepository;
+use AppBundle\Repository\Edu\TrainingRepository;
+use AppBundle\Repository\SurveyQuestionRepository;
+use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Translation\TranslatorInterface;
+use TFox\MpdfPortBundle\Service\MpdfService;
+use Twig\Environment;
 
 /**
  * @Route("/dual/informe")
@@ -34,7 +43,7 @@ class ReportController extends Controller
     public function indexAction(UserExtensionService $userExtensionService)
     {
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::WLT_EDUCATIONAL_TUTOR,
+            OrganizationVoter::WLT_MANAGER,
             $userExtensionService->getCurrentOrganization()
         );
         return $this->render(
@@ -43,5 +52,56 @@ class ReportController extends Controller
                 'menu' => true
             ]
         );
+    }
+
+    /**
+     * @Route("/encuesta/estudiantes/{academicYear}", name="work_linked_training_report_student_survey_report",
+     *     defaults={"academicYear" = null}, methods={"GET"})
+     */
+    public function studentsReportAction(
+        TranslatorInterface $translator,
+        Environment $engine,
+        UserExtensionService $userExtensionService,
+        AgreementRepository $agreementRepository,
+        AnsweredSurveyRepository $answeredSurveyRepository,
+        SurveyQuestionRepository $surveyQuestionRepository,
+        AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
+        TrainingRepository $trainingRepository,
+        AcademicYear $academicYear = null
+    ) {
+        $this->denyAccessUnlessGranted(
+            OrganizationVoter::WLT_MANAGER,
+            $userExtensionService->getCurrentOrganization()
+        );
+
+        if (!$academicYear) {
+            $academicYear = $userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
+        }
+
+        $mpdfService = new MpdfService();
+
+        $agreements = $agreementRepository->findByAcademicYear($academicYear);
+
+        $trainings = $trainingRepository->findByAcademicYearAndWLT($academicYear);
+
+        $stats = [];
+        foreach($trainings as $training) {
+            $list = $answeredSurveyRepository->findByWltSurveyAndTraining($training->getWltStudentSurvey(), $training);
+            $surveyStats = $surveyQuestionRepository->answerStatsBySurveyAndAnsweredSurveyList($training->getWltStudentSurvey(), $list);
+            $answers = $answeredSurveyQuestionRepository->notNumericAnswersBySurveyAndAnsweredSurveyList($training->getWltStudentSurvey(), $list);
+            $stats[] = [$training, $surveyStats, $answers];
+        }
+
+        $html = $engine->render('wlt/report/student_survey_report.html.twig', [
+            'agreements' => $agreements,
+            'academic_year' => $academicYear,
+            'stats' => $stats
+        ]);
+
+        $fileName = $translator->trans('title.student_survey', [], 'wlt_report') . ' - ' . $academicYear->getOrganization() . ' - ' . $academicYear . '.pdf';
+        $response = $mpdfService->generatePdfResponse($html);
+        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+        return $response;
     }
 }

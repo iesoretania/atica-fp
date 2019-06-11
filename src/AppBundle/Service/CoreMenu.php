@@ -209,8 +209,7 @@ class CoreMenu implements MenuBuilderInterface
                 $menu2->addChild($menu3);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization) ||
-                $this->security->isGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization)
+            if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization)
             ) {
                 $menu2 = new MenuItem();
                 $menu2
@@ -222,6 +221,17 @@ class CoreMenu implements MenuBuilderInterface
                     ->setPriority(11000);
 
                 $menu1->addChild($menu2);
+
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('work_linked_training_report_student_survey')
+                    ->setRouteName('work_linked_training_report_student_survey_report')
+                    ->setCaption('menu.work_linked_training.report.student_survey')
+                    ->setDescription('menu.work_linked_training.report.student_survey.detail')
+                    ->setIcon('chart-pie')
+                    ->setPriority(1000);
+
+                $menu2->addChild($menu3);
             }
         }
 
