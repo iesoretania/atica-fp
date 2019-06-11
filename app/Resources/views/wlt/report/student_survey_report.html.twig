@@ -67,9 +67,36 @@
         .right {
             text-align: right;
         }
+
+        .header table {
+            width: 100%;
+        }
+
+        .footer table {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
+{% if academic_year.organization.header %}
+    <htmlpageheader name="header">
+        <div class="header">
+        {{ academic_year.organization.header|markdown }}
+        </div>
+    </htmlpageheader>
+    <sethtmlpageheader name="header" value="on" show-this-page="1" />
+{% endif %}
+
+{% if academic_year.organization.footer %}
+    <htmlpagefooter name="footer">
+        <div class="footer">
+       {{ academic_year.organization.footer|markdown }}
+        </div>
+    </htmlpagefooter>
+
+    <sethtmlpagefooter name="footer" value="on" show-this-page="1" />
+{% endif %}
+
     <h1>{{ app_name }} - {{ academic_year.organization }} - {{ academic_year }}</h1>
     <h2>{{ 'title.student_survey'|trans }}</h2>
     <h3>{{ 'title.student_survey.summary'|trans }}</h3>

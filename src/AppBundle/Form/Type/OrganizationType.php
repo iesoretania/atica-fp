@@ -59,6 +59,16 @@ class OrganizationType extends AbstractType
             ->add('webSite', null, [
                 'label' => 'form.web_site'
             ])
+            ->add('header', TextareaType::class, [
+                'label' => 'form.report_header',
+                'attr' => ['rows' => 10],
+                'required' => false
+            ])
+            ->add('footer', TextareaType::class, [
+                'label' => 'form.report_footer',
+                'attr' => ['rows' => 10],
+                'required' => false
+            ])
             ->add('description', TextareaType::class, [
                 'label' => 'form.description',
                 'required' => false

@@ -8,6 +8,8 @@ form.zip_code: Código postal
 form.phone_number: Número de teléfono
 form.fax_number: Número de fax
 form.web_site: Sitio web
+form.report_header: Encabezamiento de informes
+form.report_footer: Pie de página de informes
 form.description: Notas
 
 form.enabled: Acceso
