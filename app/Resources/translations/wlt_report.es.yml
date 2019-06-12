@@ -9,6 +9,9 @@ title.organization_survey.summary: Resumen de profesorado que realiza seguimient
 
 title.attendance: Resumen de asistencia
 
+title.meeting: Reuniones de tutorización
+title.meeting_teacher: Resumen de tutorización por docente
+
 report.academic_year: "Curso académico:"
 report.student: "Estudiante:"
 report.workcenter: "Centro de trabajo:"
@@ -35,9 +38,17 @@ header.dates: Fechas convenio
 header.status: ¿Cumplimentada?
 header.educational_tutor: Tutor/a docente
 
+header.datetime: Fecha y hora
+header.teachers: Profesorado
+header.info: Información
+
 report.status.answered: Sí
 report.status.unanswered: No
 report.answered_surveys: Contestadas
+
+report.no_meetings: No hay reuniones registradas
+report.meeting_count: "Reuniones totales:"
+header.meeting_count: Reuniones
 
 prompt.no_survey_warning: |
   No se ha definido cuál es la encuesta que tiene que cumplimentarse.

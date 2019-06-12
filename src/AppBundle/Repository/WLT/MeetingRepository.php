@@ -19,6 +19,7 @@
 namespace AppBundle\Repository\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WLT\Meeting;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -129,5 +130,19 @@ class MeetingRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();
+    }
+
+    public function findByStudentEnrollment(StudentEnrollment $studentEnrollment)
+    {
+        return $this->createQueryBuilder('m')
+            ->addSelect('se')
+            ->addSelect('p')
+            ->join('m.studentEnrollments', 'se')
+            ->join('se.person', 'p')
+            ->andWhere('se = :student_enrollment')
+            ->setParameter('student_enrollment', $studentEnrollment)
+            ->orderBy('m.dateTime')
+            ->getQuery()
+            ->getResult();
     }
 }

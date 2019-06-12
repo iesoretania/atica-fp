@@ -67,6 +67,9 @@ doctrine:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
+        dql:
+            datetime_functions:
+                date: Oro\ORM\Query\AST\Functions\SimpleFunction
 
 doctrine_migrations:
     dir_name: "%kernel.project_dir%/src/AppBundle/Migrations"

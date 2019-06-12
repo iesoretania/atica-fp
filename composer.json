@@ -34,6 +34,7 @@
         "incenteev/composer-parameter-handler": "^2.0",
         "johngrogg/ics-parser": "^2.1",
         "knplabs/knp-markdown-bundle": "^1.7",
+        "oro/doctrine-extensions": "^1.2",
         "sensio/distribution-bundle": "^5.0.19",
         "sensio/framework-extra-bundle": "^5.0.0",
         "simplethings/entity-audit-bundle": "^1.0",

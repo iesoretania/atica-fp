@@ -19,8 +19,10 @@
 namespace AppBundle\Repository\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\WLT\Agreement;
+use AppBundle\Entity\WLT\Meeting;
 use AppBundle\Entity\WLT\WorkDay;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -228,5 +230,27 @@ class AgreementRepository extends ServiceEntityRepository
             ->setParameter('list', $list)
             ->getQuery()
             ->execute();
+    }
+
+    public function meetingStatsByTeacher(Teacher $teacher)
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a')
+            ->addSelect('se')
+            ->addSelect('p')
+            ->addSelect('SUM(CASE WHEN DATE(m.dateTime) >= a.startDate AND DATE(m.dateTime) <= a.endDate THEN 1 ELSE 0 END)')
+            ->addSelect('COUNT(m.dateTime)')
+            ->join('a.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->leftJoin(Meeting::class, 'm', 'WITH', 'se MEMBER OF m.studentEnrollments')
+            ->leftJoin(Teacher::class, 't', 'WITH', 't MEMBER OF m.teachers')
+            ->groupBy('a')
+            ->andWhere('t = :teacher')
+            ->setParameter('teacher', $teacher)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->addOrderBy('a.startDate')
+            ->getQuery()
+            ->getResult();
     }
 }

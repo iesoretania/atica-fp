@@ -21,10 +21,12 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Repository\AnsweredSurveyQuestionRepository;
 use AppBundle\Repository\AnsweredSurveyRepository;
+use AppBundle\Repository\Edu\StudentEnrollmentRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\Edu\TrainingRepository;
 use AppBundle\Repository\SurveyQuestionRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
+use AppBundle\Repository\WLT\MeetingRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -248,6 +250,68 @@ class ReportController extends Controller
             . ' - ' . $academicYear->getOrganization() . ' - '
             . $academicYear . '.pdf';
 
+        $response = $mpdfService->generatePdfResponse($html);
+        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/reuniones/{academicYear}", name="work_linked_training_report_teacher_meeting_report",
+     *     defaults={"academicYear" = null}, methods={"GET"})
+     */
+    public function meetingnReportAction(
+        TranslatorInterface $translator,
+        Environment $engine,
+        UserExtensionService $userExtensionService,
+        TeacherRepository $teacherRepository,
+        AgreementRepository $agreementRepository,
+        StudentEnrollmentRepository $studentEnrollmentRepository,
+        MeetingRepository $meetingRepository,
+        AcademicYear $academicYear = null
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+
+        $this->denyAccessUnlessGranted(
+            OrganizationVoter::WLT_MANAGER,
+            $organization
+        );
+
+        if (!$academicYear) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
+
+        if ($academicYear->getOrganization() !== $organization) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $teachers = $teacherRepository->findByAcademicYearAndWLT($academicYear);
+
+        $teacherStats = [];
+
+        foreach ($teachers as $teacher) {
+            $teacherStats[] = [$teacher, $agreementRepository->meetingStatsByTeacher($teacher)];
+        }
+
+        $studentEnrollments = $studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
+
+        $studentData = [];
+
+        foreach ($studentEnrollments as $studentEnrollment) {
+            $studentData[] = [$studentEnrollment, $meetingRepository->findByStudentEnrollment($studentEnrollment)];
+        }
+
+        $html = $engine->render('wlt/report/meeting_report.html.twig', [
+            'academic_year' => $academicYear,
+            'teacher_stats' => $teacherStats,
+            'student_data' => $studentData
+        ]);
+
+        $fileName = $translator->trans('title.meeting', [], 'wlt_report')
+            . ' - ' . $academicYear->getOrganization() . ' - '
+            . $academicYear . '.pdf';
+
+        $mpdfService = new MpdfService();
         $response = $mpdfService->generatePdfResponse($html);
         $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
 
