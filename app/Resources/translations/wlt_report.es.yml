@@ -4,10 +4,14 @@ title.student_survey.summary: Resumen de convenios
 title.company_survey: Encuestas de satisfacción de las empresas con la FP dual
 title.company_survey.summary: Resumen de convenios
 
+title.organization_survey: Encuestas de satisfacción del seguimiento de la FP dual
+title.organization_survey.summary: Resumen de profesorado que realiza seguimiento
+
 report.academic_year: "Curso académico:"
 report.student: "Estudiante:"
 report.workcenter: "Centro de trabajo:"
 report.work_tutor: "Tutor/a laboral:"
+report.educational_tutor: "Tutor/a docente:"
 report.dates: "Fechas del convenio:"
 report.answered_on: "Contestada el:"
 
@@ -27,6 +31,14 @@ header.student: Estudiante
 header.workcenter: Centro de trabajo
 header.dates: Fechas convenio
 header.status: ¿Cumplimentada?
+header.educational_tutor: Tutor/a docente
 
 report.status.answered: Sí
 report.status.unanswered: No
+report.answered_surveys: Contestadas
+
+prompt.no_survey_warning: |
+  No se ha definido cuál es la encuesta que tiene que cumplimentarse.
+  Configúrela para que los usuarios tengan acceso a la misma y pueda generarse el informe.
+
+form.back: Volver

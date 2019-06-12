@@ -19,6 +19,8 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\AnsweredSurvey;
+use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\Survey;
 use AppBundle\Entity\WLT\Agreement;
@@ -62,6 +64,7 @@ class AnsweredSurveyRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
     public function findByWltCompanySurveyAndTraining(Survey $survey, Training $training)
     {
         return $this->createQueryBuilder('asu')
@@ -74,6 +77,19 @@ class AnsweredSurveyRepository extends ServiceEntityRepository
             ->andWhere('gra.training = :training')
             ->setParameter('survey', $survey)
             ->setParameter('training', $training)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByWltOrganizationSurvey(Survey $survey, AcademicYear $academicYear)
+    {
+        return $this->createQueryBuilder('asu')
+            ->join('asu.survey', 's')
+            ->innerJoin(Teacher::class, 't', 'WITH', 't.wltTeacherSurvey = asu')
+            ->where('s = :survey')
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('survey', $survey)
+            ->setParameter('academic_year', $academicYear)
             ->getQuery()
             ->getResult();
     }

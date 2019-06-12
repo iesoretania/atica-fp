@@ -243,6 +243,17 @@ class CoreMenu implements MenuBuilderInterface
                     ->setPriority(2000);
 
                 $menu2->addChild($menu3);
+
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('work_linked_training_report_organization_survey')
+                    ->setRouteName('work_linked_training_report_organization_survey_report')
+                    ->setCaption('menu.work_linked_training.report.organization_survey')
+                    ->setDescription('menu.work_linked_training.report.organization_survey.detail')
+                    ->setIcon('chart-pie')
+                    ->setPriority(3000);
+
+                $menu2->addChild($menu3);
             }
         }
 

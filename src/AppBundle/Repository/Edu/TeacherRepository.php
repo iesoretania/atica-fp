@@ -93,6 +93,21 @@ class TeacherRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByAcademicYearAndWLTEducationalTutor(AcademicYear $academicYear)
+    {
+        return $this->createQueryBuilder('t')
+            ->join('t.person', 'p')
+            ->join('p.user', 'u')
+            ->andWhere('t.academicYear = :academic_year')
+            ->andWhere('t.wltEducationalTutor = :educational_tutor')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('educational_tutor', true)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByGroups($groups)
     {
         return $this->createQueryBuilder('t')

@@ -115,6 +115,9 @@ menu.work_linked_training.report.student_survey.detail: Generar el informe de la
 menu.work_linked_training.report.company_survey: Encuesta de satisfacción de empresas
 menu.work_linked_training.report.company_survey.detail: Generar el informe de la encuesta de satisfacción de empresas con la FP dual
 
+menu.work_linked_training.report.organization_survey: Encuesta de satisfacción de seguimiento
+menu.work_linked_training.report.organization_survey.detail: Generar el informe de la encuesta de satisfacción del profesorado que realiza seguimiento de la FP dual
+
 menu.company: Empresas colaboradoras
 menu.company.detail: Gestionar las empresas colaboradoras y sus centros de trabajo
 

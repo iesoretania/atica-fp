@@ -112,7 +112,7 @@ class SurveyQuestionRepository extends ServiceEntityRepository
 
     public function answerStatsBySurveyAndAnsweredSurveyList(Survey $survey, $list)
     {
-        return $this->createQueryBuilder('sq')
+        $qb = $this->createQueryBuilder('sq')
             ->select('sq')
             ->addSelect('COUNT(asq.numericValue)')
             ->addSelect('AVG(asq.numericValue)')
@@ -121,9 +121,13 @@ class SurveyQuestionRepository extends ServiceEntityRepository
             ->leftJoin(AnsweredSurveyQuestion::class, 'asq', 'WITH', 'asq.surveyQuestion = sq')
             ->leftJoin('asq.answeredSurvey', 'asu')
             ->groupBy('sq')
-            ->where('asu IN (:list)')
-            ->andWhere('sq.survey = :survey')
-            ->setParameter('list', $list)
+            ->andWhere('sq.survey = :survey');
+        if ($list) {
+            $qb
+                ->andWhere('asu IN (:list)')
+                ->setParameter('list', $list);
+        }
+        return $qb
             ->setParameter('survey', $survey)
             ->orderBy('sq.orderNr')
             ->getQuery()

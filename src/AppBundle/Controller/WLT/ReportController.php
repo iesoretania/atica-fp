@@ -21,6 +21,7 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Repository\AnsweredSurveyQuestionRepository;
 use AppBundle\Repository\AnsweredSurveyRepository;
+use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\Edu\TrainingRepository;
 use AppBundle\Repository\SurveyQuestionRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
@@ -85,17 +86,25 @@ class ReportController extends Controller
         $trainings = $trainingRepository->findByAcademicYearAndWLT($academicYear);
 
         $stats = [];
+
         foreach ($trainings as $training) {
             $survey = $training->getWltStudentSurvey();
-            $list = $answeredSurveyRepository->findByWltStudentSurveyAndTraining($survey, $training);
 
-            $surveyStats = $surveyQuestionRepository
-                ->answerStatsBySurveyAndAnsweredSurveyList($survey, $list);
+            if ($survey) {
+                $list = $answeredSurveyRepository->findByWltStudentSurveyAndTraining($survey, $training);
 
-            $answers = $answeredSurveyQuestionRepository
-                ->notNumericAnswersBySurveyAndAnsweredSurveyList($survey, $list);
+                $surveyStats = $surveyQuestionRepository
+                    ->answerStatsBySurveyAndAnsweredSurveyList($survey, $list);
 
-            $stats[] = [$training, $surveyStats, $answers];
+                $answers = $answeredSurveyQuestionRepository
+                    ->notNumericAnswersBySurveyAndAnsweredSurveyList($survey, $list);
+
+                $stats[] = [$training, $surveyStats, $answers];
+            }
+        }
+
+        if (empty($stats)) {
+            return $this->render('wlt/report/no_survey.html.twig');
         }
 
         $html = $engine->render('wlt/report/student_survey_report.html.twig', [
@@ -147,15 +156,21 @@ class ReportController extends Controller
         $stats = [];
         foreach ($trainings as $training) {
             $survey = $training->getWltCompanySurvey();
-            $list = $answeredSurveyRepository->findByWltCompanySurveyAndTraining($survey, $training);
+            if ($survey) {
+                $list = $answeredSurveyRepository->findByWltCompanySurveyAndTraining($survey, $training);
 
-            $surveyStats = $surveyQuestionRepository
-                ->answerStatsBySurveyAndAnsweredSurveyList($survey, $list);
+                $surveyStats = $surveyQuestionRepository
+                    ->answerStatsBySurveyAndAnsweredSurveyList($survey, $list);
 
-            $answers = $answeredSurveyQuestionRepository
-                ->notNumericAnswersBySurveyAndAnsweredSurveyList($survey, $list);
+                $answers = $answeredSurveyQuestionRepository
+                    ->notNumericAnswersBySurveyAndAnsweredSurveyList($survey, $list);
 
-            $stats[] = [$training, $surveyStats, $answers];
+                $stats[] = [$training, $surveyStats, $answers];
+            }
+        }
+
+        if (empty($stats)) {
+            return $this->render('wlt/report/no_survey.html.twig');
         }
 
         $html = $engine->render('wlt/report/company_survey_report.html.twig', [
@@ -165,6 +180,71 @@ class ReportController extends Controller
         ]);
 
         $fileName = $translator->trans('title.company_survey', [], 'wlt_report')
+            . ' - ' . $academicYear->getOrganization() . ' - '
+            . $academicYear . '.pdf';
+
+        $response = $mpdfService->generatePdfResponse($html);
+        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/encuesta/centro/{academicYear}", name="work_linked_training_report_organization_survey_report",
+     *     defaults={"academicYear" = null}, methods={"GET"})
+     */
+    public function organizationReportAction(
+        TranslatorInterface $translator,
+        Environment $engine,
+        UserExtensionService $userExtensionService,
+        AnsweredSurveyRepository $answeredSurveyRepository,
+        SurveyQuestionRepository $surveyQuestionRepository,
+        AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
+        TeacherRepository $teacherRepository,
+        AcademicYear $academicYear = null
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+
+        $this->denyAccessUnlessGranted(
+            OrganizationVoter::WLT_MANAGER,
+            $organization
+        );
+
+        if (!$academicYear) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
+
+        if ($academicYear->getOrganization() !== $organization) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $survey = $academicYear->getWltOrganizationSurvey();
+
+        if (!$survey) {
+            return $this->render('wlt/report/no_survey.html.twig');
+        }
+
+        $mpdfService = new MpdfService();
+
+        $teachers = $teacherRepository->findByAcademicYearAndWLTEducationalTutor($academicYear);
+
+        $list = $answeredSurveyRepository->findByWltOrganizationSurvey($survey, $academicYear);
+
+        $surveyStats = $surveyQuestionRepository
+            ->answerStatsBySurveyAndAnsweredSurveyList($survey, $list);
+
+        $answers = $answeredSurveyQuestionRepository
+            ->notNumericAnswersBySurveyAndAnsweredSurveyList($survey, $list);
+
+        $stat = [null, $surveyStats, $answers];
+
+        $html = $engine->render('wlt/report/organization_survey_report.html.twig', [
+            'teachers' => $teachers,
+            'academic_year' => $academicYear,
+            'stat' => $stat
+        ]);
+
+        $fileName = $translator->trans('title.organization_survey', [], 'wlt_report')
             . ' - ' . $academicYear->getOrganization() . ' - '
             . $academicYear . '.pdf';
 

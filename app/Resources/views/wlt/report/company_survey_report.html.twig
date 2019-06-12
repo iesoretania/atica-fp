@@ -116,7 +116,7 @@
         {% if total %}
             <tfoot>
                 <tr>
-                    <td class="right" colspan="4"><b>Contestadas {{ answered }}/{{ total }} ({{ (answered*100/total)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
+                    <td class="right" colspan="4"><b>{{ 'report.answered_surveys'|trans }} {{ answered }}/{{ total }} ({{ (answered*100/total)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
                 </tr>
             </tfoot>
         {% endif %}
