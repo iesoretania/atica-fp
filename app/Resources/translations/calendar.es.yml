@@ -61,6 +61,7 @@ form.select_deselect: Seleccionar/deseleccionar jornadas
 form.attendance: Falta injustificada
 form.attendance_justify: Falta justificada
 form.attendance_confirm: Confirmar faltas de asistencia
+form.attendance_report: Informe de acreditación de asistencia
 
 form.save: Guardar cambios
 form.calculate: Vista previa

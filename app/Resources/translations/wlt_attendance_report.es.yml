@@ -1,0 +1,37 @@
+form.visit_report: "Acreditación de asistencia"
+report.page: Página %page% de %total%
+
+form.start_time1: Hora de inicio jornada normal
+form.end_time1: Hora de fin jornada normal
+
+form.start_time2: Hora de inicio segundo tramo (opcional)
+form.end_time2: Hora de fin segundo tramo (opcional)
+
+form.start_time3: Hora de inicio última jornada (opcional)
+form.end_time3: Hora de fin última jornada (opcional)
+
+form.sign_date: Fecha de firma
+
+report.title: "Acreditación de asistencia al centro de trabajo para alumnado de FP dual"
+
+report.organization.title: "Centro docente:"
+report.academic_year.title: "Curso:"
+report.workcenter.title: "Empresa o entidad:"
+report.student.title: "Alumno/a:"
+report.work_tutor.title: "Tutor/a laboral:"
+
+report.date.header: Fecha
+report.in.header: Horario entrada
+report.out.header: Horario salida
+
+report.date_format: "d/m/Y"
+
+report.total.title: "Nº total de jornadas realizadas:"
+report.signature: En %city%, a %day% de %month_string% de %year%
+
+report.work_tutor.signature: Firma del tutor/a laboral
+report.work_tutor.stamp: Sello de la empresa o entidad
+
+report.signed: Fdo.
+
+report.no_data: "---"

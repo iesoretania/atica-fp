@@ -20,17 +20,21 @@ namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\WorkDay;
+use AppBundle\Form\Model\Attendance;
 use AppBundle\Form\Type\WLT\WorkDayTrackingType;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
 use AppBundle\Security\WLT\AgreementVoter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Translation\TranslatorInterface;
+use TFox\MpdfPortBundle\Service\MpdfService;
+use Twig\Environment;
 
 /**
  * @Route("/dual/seguimiento/calendario")
@@ -247,5 +251,34 @@ class TrackingCalendarController extends Controller
             'agreement' => $agreement,
             'items' => $workDays
         ]);
+    }
+
+    /**
+     * @Route("/{id}/asistencia", name="work_linked_training_tracking_calendar_attendance_report", methods={"GET"})
+     * @Security("is_granted('WLT_AGREEMENT_ACCESS', agreement)")
+     */
+    public function attendanceReportAction(
+        Environment $engine,
+        TranslatorInterface $translator,
+        Agreement $agreement
+    ) {
+        $mpdfService = new MpdfService();
+        $mpdfService->setAddDefaultConstructorArgs(false);
+
+        $title = $translator->trans('title.attendance', [], 'wlt_report')
+            . ' - ' . $agreement->getStudentEnrollment() . ' - '
+            . $agreement->getWorkcenter();
+
+        $fileName = $title . '.pdf';
+
+        $html = $engine->render('wlt/tracking/attendance_report.html.twig', [
+            'agreement' => $agreement,
+            'title' => $title
+        ]);
+
+        $response = $mpdfService->generatePdfResponse($html, ['constructorArgs' => [['mode' => 'utf-8', 'format' => 'A4-L']]]);
+        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+        return $response;
     }
 }

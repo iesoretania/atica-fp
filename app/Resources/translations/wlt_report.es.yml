@@ -7,6 +7,8 @@ title.company_survey.summary: Resumen de convenios
 title.organization_survey: Encuestas de satisfacción del seguimiento de la FP dual
 title.organization_survey.summary: Resumen de profesorado que realiza seguimiento
 
+title.attendance: Resumen de asistencia
+
 report.academic_year: "Curso académico:"
 report.student: "Estudiante:"
 report.workcenter: "Centro de trabajo:"
