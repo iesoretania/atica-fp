@@ -253,4 +253,38 @@ class AgreementRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function attendanceStatsByAcademicYear(AcademicYear $academicYear)
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a')
+            ->addSelect('w')
+            ->addSelect('c')
+            ->addSelect('se')
+            ->addSelect('p')
+            ->addSelect('g')
+            ->addSelect('SUM(wd.hours)')
+            ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked * wd.hours ELSE 0 END)')
+            ->addSelect('SUM(CASE WHEN wd.absence = 1 THEN wd.locked * wd.hours ELSE 0 END)')
+            ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN wd.locked * wd.hours ELSE 0 END)')
+            ->addSelect('COUNT(wd.hours)')
+            ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked ELSE 0 END)')
+            ->addSelect('SUM(CASE WHEN wd.absence = 1 THEN wd.locked ELSE 0 END)')
+            ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN wd.locked ELSE 0 END)')
+            ->leftJoin('a.workDays', 'wd')
+            ->join('a.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->join('a.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('se.group', 'g')
+            ->groupBy('a')
+            ->addOrderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->addOrderBy('a.startDate')
+            ->addOrderBy('c.name')
+            ->where('w.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear)
+            ->getQuery()
+            ->getResult();
+    }
 }

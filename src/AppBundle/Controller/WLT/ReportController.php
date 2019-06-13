@@ -401,6 +401,7 @@ class ReportController extends Controller
         UserExtensionService $userExtensionService,
         StudentEnrollmentRepository $studentEnrollmentRepository,
         WorkDayRepository $workDayRepository,
+        AgreementRepository $agreementRepository,
         AcademicYear $academicYear = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -418,8 +419,9 @@ class ReportController extends Controller
             throw $this->createAccessDeniedException();
         }
 
-        $studentEnrollments = $studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
+        $agreementData = $agreementRepository->attendanceStatsByAcademicYear($academicYear);
 
+        $studentEnrollments = $studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
         $studentData = [];
 
         /** @var StudentEnrollment $studentEnrollment */
@@ -431,6 +433,7 @@ class ReportController extends Controller
 
         $html = $engine->render('wlt/report/attendance_report.html.twig', [
             'academic_year' => $academicYear,
+            'agreement_data' => $agreementData,
             'student_data' => $studentData
         ]);
 

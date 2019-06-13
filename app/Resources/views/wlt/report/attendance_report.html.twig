@@ -3,6 +3,21 @@
 <head>
     <title>{{ 'title.attendance'|trans }} - {{ academic_year.organization }} - {{ academic_year }}</title>
     <style>
+        @page {
+            margin-left: 1.5cm;
+            margin-right: 1.5cm;
+        {% if academic_year.organization.header %}
+            margin-top: 2cm;
+            odd-header-name: header;
+            even-header-name: header;
+        {% endif %}
+        {% if academic_year.organization.footer %}
+            margin-bottom: 3cm;
+            odd-footer-name: footer;
+            even-footer-name: footer;
+        {% endif %}
+        }
+
         body {
             font-family: sans-serif;
         }
@@ -88,11 +103,110 @@
 
     <sethtmlpagefooter name="footer" value="on" show-this-page="1" />
 {% endif %}
-    {% set first = true %}
+
+    <h1>{{ app_name }} - {{ academic_year.organization }} - {{ academic_year }}</h1>
+    <h2>{{ 'title.attendance'|trans }}</h2>
+    <h3>{{ 'title.attendance.hours_summary'|trans }}</h3>
+    <table class="survey">
+        <thead>
+        <tr>
+            <th width="30%">{{ 'header.student'|trans }}</th>
+            <th width="30%">{{ 'header.workcenter'|trans }}</th>
+            <th width="10%">{{ 'header.total_hours'|trans }}</th>
+            <th width="10%">{{ 'header.no_absence'|trans }}</th>
+            <th width="10%">{{ 'header.unjustified_absence'|trans }}</th>
+            <th width="10%">{{ 'header.justified_absence'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set sum1 = 0 %}
+        {% set sum2 = 0 %}
+        {% set sum3 = 0 %}
+        {% set sum4 = 0 %}
+        {% for data in agreement_data %}
+            <tr>
+                <td>{{ data[0].studentEnrollment }}</td>
+                <td>{{ data[0].workcenter }}</td>
+                <td class="center">{{ data[1] }}</td>
+                <td class="center">{{ data[2] }} ({{ (data[2]*100/data[1])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                <td class="center">{{ data[3] }} ({{ (data[3]*100/data[1])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                <td class="center">{{ data[4] }} ({{ (data[4]*100/data[1])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                {% set sum1 = sum1 + data[1] %}
+                {% set sum2 = sum2 + data[2] %}
+                {% set sum3 = sum3 + data[3] %}
+                {% set sum4 = sum4 + data[4] %}
+            </tr>
+        {% else %}
+            <tr colspan="6">{{ 'report.no_agreements'|trans }}</tr>
+        {% endfor %}
+        </tbody>
+        {% if agreement_data|length > 0 %}
+            <tfoot>
+            <tr>
+                <td class="right" colspan="2"></td>
+                <td class="center"><b>{{ sum1 }}</b></td>
+                <td class="center"><b>{{ sum2 }} ({{ (sum2*100/sum1)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
+                <td class="center"><b>{{ sum3 }} ({{ (sum3*100/sum1)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
+                <td class="center"><b>{{ sum4 }} ({{ (sum4*100/sum1)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
+            </tr>
+            </tfoot>
+        {% endif %}
+    </table>
+
+    <pagebreak></pagebreak>
+
+    <h1>{{ app_name }} - {{ academic_year.organization }} - {{ academic_year }}</h1>
+    <h2>{{ 'title.attendance'|trans }}</h2>
+    <h3>{{ 'title.attendance.workday_summary'|trans }}</h3>
+    <table class="survey">
+        <thead>
+        <tr>
+            <th width="30%">{{ 'header.student'|trans }}</th>
+            <th width="30%">{{ 'header.workcenter'|trans }}</th>
+            <th width="10%">{{ 'header.total_workdays'|trans }}</th>
+            <th width="10%">{{ 'header.no_absence'|trans }}</th>
+            <th width="10%">{{ 'header.unjustified_absence'|trans }}</th>
+            <th width="10%">{{ 'header.justified_absence'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set sum5 = 0 %}
+        {% set sum6 = 0 %}
+        {% set sum7 = 0 %}
+        {% set sum8 = 0 %}
+        {% for data in agreement_data %}
+            <tr>
+                <td>{{ data[0].studentEnrollment }}</td>
+                <td>{{ data[0].workcenter }}</td>
+                <td class="center">{{ data[5] }}</td>
+                <td class="center">{{ data[6] }} ({{ (data[6]*100/data[5])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                <td class="center">{{ data[7] }} ({{ (data[7]*100/data[5])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                <td class="center">{{ data[8] }} ({{ (data[8]*100/data[5])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                {% set sum5 = sum5 + data[5] %}
+                {% set sum6 = sum6 + data[6] %}
+                {% set sum7 = sum7 + data[7] %}
+                {% set sum8 = sum8 + data[8] %}
+            </tr>
+        {% else %}
+            <tr colspan="6">{{ 'report.no_agreements'|trans }}</tr>
+        {% endfor %}
+        </tbody>
+        {% if agreement_data|length > 0 %}
+            <tfoot>
+            <tr>
+                <td class="right" colspan="2"></td>
+                <td class="center"><b>{{ sum5 }}</b></td>
+                <td class="center"><b>{{ sum6 }} ({{ (sum6*100/sum5)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
+                <td class="center"><b>{{ sum7 }} ({{ (sum7*100/sum5)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
+                <td class="center"><b>{{ sum8 }} ({{ (sum8*100/sum5)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
+            </tr>
+            </tfoot>
+        {% endif %}
+    </table>
+
     {% for data in student_data %}
         {% if data[1]|length > 0 %}
-            {% if not first %}<pagebreak></pagebreak>{% endif %}
-            {% set first = false %}
+            <pagebreak></pagebreak>
 
             <h1>{{ app_name }} - {{ academic_year.organization }}</h1>
             <h2>{{ 'title.attendance'|trans }}</h2>
@@ -111,7 +225,8 @@
                 <thead>
                 <tr>
                     <th width="15%">{{ 'header.date'|trans }}</th>
-                    <th width="60%">{{ 'header.workcenter'|trans }}</th>
+                    <th width="50%">{{ 'header.workcenter'|trans }}</th>
+                    <th width="10%">{{ 'header.hours'|trans }}</th>
                     <th width="25%">{{ 'header.absence'|trans }}</th>
                 </tr>
                 </thead>
@@ -125,6 +240,7 @@
                     <tr{% if work_day.absence > 0 %} class="mark"{% endif %}>
                         <td class="center">{{ work_day.date|date('format.date'|trans({}, 'general')) }}</td>
                         <td>{{ work_day.agreement.workcenter }}</td>
+                        <td class="center">{{ work_day.hours }}</td>
                         <td class="center">
                             {% if work_day.locked %}
                                 {{ ['report.no_absence', 'report.unjustified_absence', 'report.justified_absence'][work_day.absence]|trans }}

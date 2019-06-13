@@ -7,8 +7,6 @@ title.company_survey.summary: Resumen de convenios
 title.organization_survey: Encuestas de satisfacción del seguimiento de la FP dual
 title.organization_survey.summary: Resumen de profesorado que realiza seguimiento
 
-title.attendance: Resumen de asistencia
-
 title.meeting: Reuniones de tutorización
 title.meeting_teacher: Resumen de tutorización por docente
 
@@ -56,8 +54,18 @@ report.no_meetings: No hay reuniones registradas
 report.meeting_count: "Reuniones totales:"
 header.meeting_count: Reuniones
 
+title.attendance: Resumen de asistencia
+title.attendance.hours_summary: Estadísticas por convenio (horas)
+title.attendance.workday_summary: Estadísticas por convenio (jornadas)
+
 header.date: Fecha
 header.absence: Asistencia
+header.total_workdays: Jornadas totales
+header.total_hours: Horas totales
+header.hours: Horas jornada
+header.no_absence: Asiste
+header.unjustified_absence: Injustific.
+header.justified_absence: Justific.
 
 report.unlocked: Jornada sin bloquear
 report.no_absence: Asiste
@@ -67,6 +75,8 @@ report.justified_absence: Falta justificada
 report.no_absences: Asiste al centro de trabajo
 report.unjustified_absences: Faltas injustificadas
 report.justified_absences: Faltas justificadas
+
+report.no_agreements: No hay acuerdos
 
 prompt.no_survey_warning: |
   No se ha definido cuál es la encuesta que tiene que cumplimentarse.
