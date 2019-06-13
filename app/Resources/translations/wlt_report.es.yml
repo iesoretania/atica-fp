@@ -56,6 +56,18 @@ report.no_meetings: No hay reuniones registradas
 report.meeting_count: "Reuniones totales:"
 header.meeting_count: Reuniones
 
+header.date: Fecha
+header.absence: Asistencia
+
+report.unlocked: Jornada sin bloquear
+report.no_absence: Asiste
+report.unjustified_absence: Falta injustificada
+report.justified_absence: Falta justificada
+
+report.no_absences: Asiste al centro de trabajo
+report.unjustified_absences: Faltas injustificadas
+report.justified_absences: Faltas justificadas
+
 prompt.no_survey_warning: |
   No se ha definido cuál es la encuesta que tiene que cumplimentarse.
   Configúrela para que los usuarios tengan acceso a la misma y pueda generarse el informe.

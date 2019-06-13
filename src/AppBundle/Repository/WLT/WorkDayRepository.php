@@ -18,6 +18,7 @@
 
 namespace AppBundle\Repository\WLT;
 
+use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\WorkDay;
 use AppBundle\Repository\Edu\NonWorkingDayRepository;
@@ -353,5 +354,16 @@ class WorkDayRepository extends ServiceEntityRepository
             ->setParameter('value', $value)
             ->getQuery()
             ->execute();
+    }
+
+    public function findByStudentEnrollment(StudentEnrollment $studentEnrollment)
+    {
+        return $this->createQueryBuilder('wr')
+            ->join('wr.agreement', 'a')
+            ->where('a.studentEnrollment = :student_enrollment')
+            ->setParameter('student_enrollment', $studentEnrollment)
+            ->addOrderBy('wr.date')
+            ->getQuery()
+            ->getResult();
     }
 }

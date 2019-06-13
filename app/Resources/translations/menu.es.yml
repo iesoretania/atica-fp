@@ -121,6 +121,9 @@ menu.work_linked_training.report.organization_survey.detail: Generar el informe 
 menu.work_linked_training.report.meeting: Reuniones de tutorización
 menu.work_linked_training.report.meeting.detail: Generar el informe de reuniones de tutorización de la FP dual
 
+menu.work_linked_training.report.attendance: Resumen de asistencia
+menu.work_linked_training.report.attendance.detail: Generar el informe resumen de asistencia del alumnado de FP dual
+
 menu.work_linked_training.report.grading: Resumen de evaluación
 menu.work_linked_training.report.grading.detail: Generar el informe resumen de evaluación del alumnado de FP dual
 

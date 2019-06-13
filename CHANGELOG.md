@@ -13,7 +13,8 @@ en la distintas versiones de la misma.
 * feat: Generación del informe de satisfacción del seguimiento de FP dual
 * feat: Generación del informe de acreditación de asistencia del alumnado
 * feat: Generación del informe de reuniones de tutorización
-* feat: Generación del informe de resumen de evaluación
+* feat: Generación del informe resumen de asistencia del alumnado
+* feat: Generación del informe resumen de evaluación
 * feat: Personalización del encabezado y pie de página de los informes
 
 1.4.0 (2019-06-10)

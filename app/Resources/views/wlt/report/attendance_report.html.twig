@@ -1,0 +1,160 @@
+{% trans_default_domain 'wlt_report' %}
+<html>
+<head>
+    <title>{{ 'title.attendance'|trans }} - {{ academic_year.organization }} - {{ academic_year }}</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        table {
+            font-family: dejavusanscondensed, sans-serif;
+            border-style: solid;
+            border-width: 1px;
+            border-collapse: collapse;
+        }
+
+        table td {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        table th {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        table.data {
+            width: 100%;
+        }
+
+        table.data td {
+            padding: 0.3em;
+        }
+
+        table.data td.info {
+            font-family: dejavusanscondensed, sans-serif;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        tr.mark {
+            background-color: #eeeeee;
+        }
+
+        table.survey {
+            margin-top: 1em;
+            width: 100%;
+        }
+
+        table.survey td {
+            padding: 0.3em;
+        }
+
+        table.survey th {
+            background-color: #cccccc;
+            padding: 0.3em;
+        }
+
+        table.survey {
+            font-size: 80%;
+        }
+
+        table.survey tfoot th {
+            font-size: 120%;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+{% if academic_year.organization.header %}
+    <htmlpageheader name="header">
+        {{ academic_year.organization.header|raw }}
+    </htmlpageheader>
+    <sethtmlpageheader name="header" value="on" show-this-page="1" />
+{% endif %}
+
+{% if academic_year.organization.footer %}
+    <htmlpagefooter name="footer">
+       {{ academic_year.organization.footer|raw }}
+    </htmlpagefooter>
+
+    <sethtmlpagefooter name="footer" value="on" show-this-page="1" />
+{% endif %}
+    {% set first = true %}
+    {% for data in student_data %}
+        {% if data[1]|length > 0 %}
+            {% if not first %}<pagebreak></pagebreak>{% endif %}
+            {% set first = false %}
+
+            <h1>{{ app_name }} - {{ academic_year.organization }}</h1>
+            <h2>{{ 'title.attendance'|trans }}</h2>
+            <table class="data">
+                <tr>
+                    <td class="info">{{ 'report.academic_year'|trans }}</td>
+                    <td>{{ academic_year }}</td>
+                </tr>
+                <tr>
+                    <td class="info">{{ 'report.student'|trans }}</td>
+                    <td>{{ data[0] }}</td>
+                </tr>
+            </table>
+
+            <table class="survey">
+                <thead>
+                <tr>
+                    <th width="15%">{{ 'header.date'|trans }}</th>
+                    <th width="60%">{{ 'header.workcenter'|trans }}</th>
+                    <th width="25%">{{ 'header.absence'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% set total = 0 %}
+                {% set sum0 = 0 %}
+                {% set sum1 = 0 %}
+                {% set sum2 = 0 %}
+                {% for work_day in data[1] %}
+                    {% set total = total + 1 %}
+                    <tr{% if work_day.absence > 0 %} class="mark"{% endif %}>
+                        <td class="center">{{ work_day.date|date('format.date'|trans({}, 'general')) }}</td>
+                        <td>{{ work_day.agreement.workcenter }}</td>
+                        <td class="center">
+                            {% if work_day.locked %}
+                                {{ ['report.no_absence', 'report.unjustified_absence', 'report.justified_absence'][work_day.absence]|trans }}
+                                {% if work_day.absence == 0 %}{% set sum0 = sum0 + 1 %}{% endif %}
+                                {% if work_day.absence == 1 %}{% set sum1 = sum1 + 1 %}{% endif %}
+                                {% if work_day.absence == 2 %}{% set sum2 = sum2 + 1 %}{% endif %}
+                            {% else %}
+                                {{ 'report.unlocked'|trans }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <table class="data">
+                <tr>
+                    <td class="info">{{ 'report.no_absences'|trans }}</td>
+                    <td>{{ sum0 }}/{{ total }} ({{ (100*sum0/total)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                </tr>
+                <tr>
+                    <td class="info">{{ 'report.unjustified_absences'|trans }}</td>
+                    <td>{{ sum1 }}/{{ total }} ({{ (100*sum1/total)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                </tr>
+                <tr>
+                    <td class="info">{{ 'report.justified_absences'|trans }}</td>
+                    <td>{{ sum2 }}/{{ total }} ({{ (100*sum2/total)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                </tr>
+            </table>
+        {% endif %}
+    {% endfor %}
+    </body>
+</html>
