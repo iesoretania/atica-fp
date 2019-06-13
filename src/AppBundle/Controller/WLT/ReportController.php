@@ -19,12 +19,15 @@
 namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Repository\AnsweredSurveyQuestionRepository;
 use AppBundle\Repository\AnsweredSurveyRepository;
 use AppBundle\Repository\Edu\StudentEnrollmentRepository;
+use AppBundle\Repository\Edu\SubjectRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\Edu\TrainingRepository;
 use AppBundle\Repository\SurveyQuestionRepository;
+use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\MeetingRepository;
 use AppBundle\Security\OrganizationVoter;
@@ -257,10 +260,10 @@ class ReportController extends Controller
     }
 
     /**
-     * @Route("/reuniones/{academicYear}", name="work_linked_training_report_teacher_meeting_report",
+     * @Route("/reuniones/{academicYear}", name="work_linked_training_report_meeting_report",
      *     defaults={"academicYear" = null}, methods={"GET"})
      */
-    public function meetingnReportAction(
+    public function meetingReportAction(
         TranslatorInterface $translator,
         Environment $engine,
         UserExtensionService $userExtensionService,
@@ -308,6 +311,75 @@ class ReportController extends Controller
         ]);
 
         $fileName = $translator->trans('title.meeting', [], 'wlt_report')
+            . ' - ' . $academicYear->getOrganization() . ' - '
+            . $academicYear . '.pdf';
+
+        $mpdfService = new MpdfService();
+        $response = $mpdfService->generatePdfResponse($html);
+        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/evaluacion/{academicYear}", name="work_linked_training_report_grading_report",
+     *     defaults={"academicYear" = null}, methods={"GET"})
+     */
+    public function gradingReportAction(
+        TranslatorInterface $translator,
+        Environment $engine,
+        UserExtensionService $userExtensionService,
+        StudentEnrollmentRepository $studentEnrollmentRepository,
+        SubjectRepository $subjectRepository,
+        ActivityRealizationRepository $activityRealizationRepository,
+        AcademicYear $academicYear = null
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+
+        $this->denyAccessUnlessGranted(
+            OrganizationVoter::WLT_MANAGER,
+            $organization
+        );
+
+        if (!$academicYear) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
+
+        if ($academicYear->getOrganization() !== $organization) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $studentEnrollments = $studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
+
+        $studentData = [];
+
+        /** @var StudentEnrollment $studentEnrollment */
+        foreach ($studentEnrollments as $studentEnrollment) {
+            $subjects = $subjectRepository->findByGroupAndPerson($studentEnrollment->getGroup());
+
+            $report = [];
+
+            // precaching
+            $activityRealizationRepository->findByStudentEnrollment($studentEnrollment);
+
+            foreach ($subjects as $subject) {
+                $item = [];
+                $item[0] = $subject;
+                $item[1] = $activityRealizationRepository->
+                reportByStudentEnrollmentAndSubject($studentEnrollment, $subject);
+
+                $report[] = $item;
+            }
+
+            $studentData[] = [$studentEnrollment, $report];
+        }
+
+        $html = $engine->render('wlt/report/grading_report.html.twig', [
+            'academic_year' => $academicYear,
+            'student_data' => $studentData
+        ]);
+
+        $fileName = $translator->trans('title.grading', [], 'wlt_report')
             . ' - ' . $academicYear->getOrganization() . ' - '
             . $academicYear . '.pdf';
 

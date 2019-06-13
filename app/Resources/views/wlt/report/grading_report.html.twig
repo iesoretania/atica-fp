@@ -1,0 +1,182 @@
+{% trans_default_domain 'wlt_report' %}
+<html>
+<head>
+    <title>{{ 'title.grading'|trans }} - {{ academic_year.organization }} - {{ academic_year }}</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        table {
+            font-family: dejavusanscondensed, sans-serif;
+            border-style: solid;
+            border-width: 1px;
+            border-collapse: collapse;
+        }
+
+        table td {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        table th {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        table.data {
+            width: 100%;
+        }
+
+        table.data td {
+            padding: 0.3em;
+        }
+
+        table.data td.info {
+            font-family: dejavusanscondensed, sans-serif;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        table.survey {
+            margin-top: 1em;
+            width: 100%;
+        }
+
+        table.survey td {
+            padding: 0.3em;
+        }
+
+        table.survey th {
+            background-color: #cccccc;
+            padding: 0.3em;
+        }
+
+        table.survey {
+            font-size: 80%;
+        }
+
+        table.survey tfoot th {
+            font-size: 120%;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+{% if academic_year.organization.header %}
+    <htmlpageheader name="header">
+        {{ academic_year.organization.header|raw }}
+    </htmlpageheader>
+    <sethtmlpageheader name="header" value="on" show-this-page="1" />
+{% endif %}
+
+{% if academic_year.organization.footer %}
+    <htmlpagefooter name="footer">
+       {{ academic_year.organization.footer|raw }}
+    </htmlpagefooter>
+
+    <sethtmlpagefooter name="footer" value="on" show-this-page="1" />
+{% endif %}
+    {% set first = true %}
+    {% for data in student_data %}
+        {% if data[1]|length > 0 %}
+            {% if not first %}<pagebreak></pagebreak>{% endif %}
+            {% set first = false %}
+
+            <h1>{{ app_name }} - {{ academic_year.organization }}</h1>
+            <h2>{{ 'title.grading'|trans }}</h2>
+            <table class="data">
+                <tr>
+                    <td class="info">{{ 'report.academic_year'|trans }}</td>
+                    <td>{{ academic_year }}</td>
+                </tr>
+                <tr>
+                    <td class="info">{{ 'report.student'|trans }}</td>
+                    <td>{{ data[0] }}</td>
+                </tr>
+            </table>
+            {% for subjectData in data[1] %}
+
+                <h3>{{ subjectData[0] }}{% if subjectData[0].code %} - {{ subjectData[0].code }}{% endif %}</h3>
+
+                {% set subject_sum = 0 %}
+                {% set subject_count = 0 %}
+
+                {% set last_activity_id = 0 %}
+                {% set activity_sum = 0 %}
+                {% set activity_count = 0 %}
+                {% for activityRealizationData in subjectData[1] %}
+                {% if last_activity_id != activityRealizationData[0].activity.id %}
+                {% if not loop.first %}
+                    <tr>
+                        <td class="right" colspan="2">{{ 'report.activity_average'|trans }}</td>
+                        <td width="10%" class="center">{% if activity_count %}{{ (activity_sum/activity_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}{% else %}{{ 'report.no_grade'|trans }}{% endif %}</td>
+                    </tr>
+                    {% if activity_count %}
+                        {% set subject_sum = subject_sum + (activity_sum/activity_count) %}
+                        {% set subject_count = subject_count + 1 %}
+                    {% endif %}
+                    {% set activity_sum = 0 %}
+                    {% set activity_count = 0 %}
+                    </table>
+                {% endif %}
+                <table class="survey">
+                    <tr>
+                        <th colspan="3">{{ activityRealizationData[0].activity }}</th>
+                    </tr>
+                    {% set last_activity_id = activityRealizationData[0].activity.id %}
+                    {% endif %}
+                    <tr>
+                        <td>{{ activityRealizationData[0] }}</td>
+                        {% if activityRealizationData[1] is not null %}
+                            <td width="10%">{{ activityRealizationData[2] ? activityRealizationData[2]|date('format.date'|trans({}, 'general')) }}</td>
+                            <td width="10%" class="center">{{ activityRealizationData[1] | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</td>
+                            {% set activity_sum = activity_sum + activityRealizationData[1] %}
+                            {% set activity_count = activity_count + 1 %}
+                        {% else %}
+                            <td width="10%"></td>
+                            <td width="10% class="center"">{{ 'report.no_grade'|trans }}</td>
+                        {% endif %}
+                    </tr>
+                {% else %}
+                    <h5>{{ 'report.no_data'|trans }}</h5>
+                {% endfor %}
+                {% if last_activity_id != 0 %}
+                    <tr>
+                        <td class="right" colspan="2">{{ 'report.activity_average'|trans }}</td>
+                        <td width="10%" class="center">{% if activity_count %}{{ (activity_sum/activity_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}{% else %}{{ 'report.no_grade'|trans }}{% endif %}</td>
+                        {% if activity_count %}
+                            {% set subject_sum = subject_sum + (activity_sum/activity_count) %}
+                            {% set subject_count = subject_count + 1 %}
+                        {% endif %}
+                    </tr>
+                </table>
+                {% endif %}
+                {% if subject_count %}
+                    <table class="survey">
+                        <tr>
+                            <th class="right">{{ 'report.subject_average'|trans }} "{{ subjectData[0] }}"</th>
+                            <th width="10%" class="center">{{ (subject_sum/subject_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</th>
+                        </tr>
+                    </table>
+                {% elseif last_activity_id != 0 %}
+                    <table class="survey">
+                        <tr>
+                            <th class="right">{{ 'report.subject_average'|trans }} "{{ subjectData[0] }}"</th>
+                            <th width="10%" class="center">{{ 'report.no_grade'|trans }}</th>
+                        </tr>
+                    </table>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+    </body>
+</html>

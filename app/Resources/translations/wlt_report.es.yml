@@ -12,6 +12,8 @@ title.attendance: Resumen de asistencia
 title.meeting: Reuniones de tutorización
 title.meeting_teacher: Resumen de tutorización por docente
 
+title.grading: Resumen de evaluación por estudiante
+
 report.academic_year: "Curso académico:"
 report.student: "Estudiante:"
 report.workcenter: "Centro de trabajo:"
@@ -24,6 +26,10 @@ report.no_survey: Encuesta no cumplimentada
 report.no_surveys: No hay encuestas cumplimentadas
 report.no_answer: Sin respuesta
 report.no_data: "---"
+
+report.activity_average: "Media de la actividad"
+report.subject_average: "Media del módulo profesional"
+report.no_grade: Sin evaluar
 
 header.question: Pregunta
 header.answer: Respuesta

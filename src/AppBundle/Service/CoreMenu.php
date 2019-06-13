@@ -258,11 +258,22 @@ class CoreMenu implements MenuBuilderInterface
                 $menu3 = new MenuItem();
                 $menu3
                     ->setName('work_linked_training_report_meeting')
-                    ->setRouteName('work_linked_training_report_teacher_meeting_report')
+                    ->setRouteName('work_linked_training_report_meeting_report')
                     ->setCaption('menu.work_linked_training.report.meeting')
                     ->setDescription('menu.work_linked_training.report.meeting.detail')
                     ->setIcon('user-friends')
                     ->setPriority(4000);
+
+                $menu2->addChild($menu3);
+
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('work_linked_training_report_grading')
+                    ->setRouteName('work_linked_training_report_grading_report')
+                    ->setCaption('menu.work_linked_training.report.grading')
+                    ->setDescription('menu.work_linked_training.report.grading.detail')
+                    ->setIcon('chart-bar')
+                    ->setPriority(5000);
 
                 $menu2->addChild($menu3);
             }
