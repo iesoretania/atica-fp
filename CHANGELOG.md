@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-1.5.x (xxxx-xx-xx)
+1.5.0 (2019-06-13)
 ------------------
 * feat: Creada sección de generación de informes
 * feat: Listar los acuerdos del mismo estudiante ordenados por fecha de comienzo
