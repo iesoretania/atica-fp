@@ -18,7 +18,6 @@
 
 namespace AppBundle\Entity\Edu;
 
-use AppBundle\Entity\AnsweredSurvey;
 use AppBundle\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -64,19 +63,6 @@ class Teacher
      * @var Teaching[]
      */
     private $teachings;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AnsweredSurvey")
-     * @ORM\JoinColumn(nullable=true)
-     * @var AnsweredSurvey
-     */
-    private $wltTeacherSurvey;
-
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $wltEducationalTutor;
 
     public function __construct()
     {
@@ -157,41 +143,5 @@ class Teacher
     public function getTeachings()
     {
         return $this->teachings;
-    }
-
-    /**
-     * @return AnsweredSurvey
-     */
-    public function getWltTeacherSurvey()
-    {
-        return $this->wltTeacherSurvey;
-    }
-
-    /**
-     * @param AnsweredSurvey $wltTeacherSurvey
-     * @return Teacher
-     */
-    public function setWltTeacherSurvey($wltTeacherSurvey)
-    {
-        $this->wltTeacherSurvey = $wltTeacherSurvey;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isWltEducationalTutor()
-    {
-        return $this->wltEducationalTutor;
-    }
-
-    /**
-     * @param bool $wltEducationalTutor
-     * @return Teacher
-     */
-    public function setWltEducationalTutor($wltEducationalTutor)
-    {
-        $this->wltEducationalTutor = $wltEducationalTutor;
-        return $this;
     }
 }

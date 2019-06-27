@@ -45,6 +45,13 @@ class Agreement
     private $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\WLT\Project")
+     * @ORM\JoinColumn(nullable=false)
+     * @var Project
+     */
+    private $project;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Workcenter")
      * @ORM\JoinColumn(nullable=false)
      * @var Workcenter
@@ -64,6 +71,13 @@ class Agreement
      * @var Person
      */
     private $workTutor;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="EducationalTutor")
+     * @ORM\JoinColumn(nullable=false)
+     * @var EducationalTutor
+     */
+    private $educationalTutor;
 
     /**
      * @ORM\Column(type="date", nullable=true)
@@ -151,6 +165,24 @@ class Agreement
     }
 
     /**
+     * @return Project
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     * @param Project $project
+     * @return Agreement
+     */
+    public function setProject($project)
+    {
+        $this->project = $project;
+        return $this;
+    }
+
+    /**
      * @return Workcenter
      */
     public function getWorkcenter()
@@ -201,6 +233,24 @@ class Agreement
     public function setWorkTutor(Person $workTutor)
     {
         $this->workTutor = $workTutor;
+        return $this;
+    }
+
+    /**
+     * @return EducationalTutor
+     */
+    public function getEducationalTutor()
+    {
+        return $this->educationalTutor;
+    }
+
+    /**
+     * @param EducationalTutor $educationalTutor
+     * @return Agreement
+     */
+    public function setEducationalTutor($educationalTutor)
+    {
+        $this->educationalTutor = $educationalTutor;
         return $this;
     }
 
