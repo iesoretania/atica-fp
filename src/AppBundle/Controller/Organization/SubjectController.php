@@ -30,9 +30,9 @@ use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/centro/materia")
@@ -136,16 +136,6 @@ class SubjectController extends Controller
 
         switch ($f) {
             case 1:
-                $queryBuilder
-                    ->andWhere('t.workLinked = :on')
-                    ->setParameter('on', true);
-                break;
-            case 2:
-                $queryBuilder
-                    ->andWhere('s.workplaceTraining = :on')
-                    ->setParameter('on', true);
-                break;
-            case 3:
                 $queryBuilder
                     ->andWhere('SIZE(s.teachings) = 0');
                 break;

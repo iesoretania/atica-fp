@@ -73,17 +73,10 @@ class Subject
      */
     private $teachings;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $workplaceTraining;
-
     public function __construct()
     {
         $this->learningOutcomes = new ArrayCollection();
         $this->teachings = new ArrayCollection();
-        $this->workplaceTraining = false;
     }
 
     public function __toString()
@@ -205,24 +198,6 @@ class Subject
     public function setTeachings($teachings)
     {
         $this->teachings = $teachings;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isWorkplaceTraining()
-    {
-        return $this->workplaceTraining;
-    }
-
-    /**
-     * @param bool $workplaceTraining
-     * @return Subject
-     */
-    public function setWorkplaceTraining($workplaceTraining)
-    {
-        $this->workplaceTraining = $workplaceTraining;
         return $this;
     }
 }

@@ -15,7 +15,7 @@
                 {% set url = path('work_linked_training_training_activity_list', {'id': subject.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <a href="{{ url }}">{{ subject.name }}</a>{% if subject.workplaceTraining %} <span class="badge badge-success">{{ 'header.workplace_training'|trans }}</span>{% endif %}
+                        <a href="{{ url }}">{{ subject.name }}</a>
                     </td>
                     <td>
                         {{ subject.code }}
