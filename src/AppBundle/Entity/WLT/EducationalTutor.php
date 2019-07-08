@@ -24,7 +24,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="wlt_educational_tutor")
+ * @ORM\Table(name="wlt_educational_tutor",
+ *     uniqueConstraints={@ORM\UniqueConstraint(columns={"project_id", "teacher_id"})})))))
  */
 class EducationalTutor
 {

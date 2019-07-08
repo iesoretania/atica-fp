@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+2.0.0 (2019-xx-xx)
+------------------
+* feat: ¡IMPORTANTE! Soporte de FP dual basado en proyectos, no en cursos académicos
+
 1.5.3 (2019-11-17)
 ------------------
 * fix: Solucionado error al mostrar un calendario sin jornadas
