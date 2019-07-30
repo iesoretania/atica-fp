@@ -22,7 +22,6 @@ use AppBundle\Entity\WLT\Visit;
 use AppBundle\Form\Type\WLT\VisitType;
 use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
-use AppBundle\Repository\WLT\Repository;
 use AppBundle\Repository\WLT\VisitRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
@@ -52,7 +51,7 @@ class VisitController extends Controller
         GroupRepository $groupRepository
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::ACCESS_WORK_LINKED_TRAINING_VISIT, $organization);
 
         $academicYear = $organization->getCurrentAcademicYear();
         $person = $this->getUser()->getPerson();
@@ -95,7 +94,7 @@ class VisitController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::ACCESS_WORK_LINKED_TRAINING_VISIT, $organization);
 
         $em = $this->getDoctrine()->getManager();
 
@@ -179,8 +178,8 @@ class VisitController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
-        $readOnly = false;
+        $this->denyAccessUnlessGranted(OrganizationVoter::ACCESS_WORK_LINKED_TRAINING_VISIT, $organization);
+        $readOnly = !$this->isGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING_VISIT, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -272,7 +271,7 @@ class VisitController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING_VISIT, $organization);
 
         $em = $this->getDoctrine()->getManager();
 

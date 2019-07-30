@@ -26,7 +26,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\WLT\ProjectRepository")
  * @ORM\Table(name="wlt_project")
  */
 class Project

@@ -28,6 +28,7 @@ use AppBundle\Repository\Edu\TeachingRepository;
 use AppBundle\Repository\Edu\TrainingRepository;
 use AppBundle\Repository\RoleRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
+use AppBundle\Repository\WLT\ProjectRepository;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
@@ -43,6 +44,8 @@ class OrganizationVoter extends CachedVoter
     const GRADE_WORK_LINKED_TRAINING = 'ORGANIZATION_GRADE_WORKLINKED_TRAINING';
     const VIEW_GRADE_WORK_LINKED_TRAINING = 'ORGANIZATION_VIEW_GRADE_WORKLINKED_TRAINING';
     const VIEW_EVALUATION_WORK_LINKED_TRAINING = 'ORGANIZATION_VIEW_EVALUATION_WORKLINKED_TRAINING';
+    const ACCESS_WORK_LINKED_TRAINING_VISIT = 'ORGANIZATION_ACCESS_WORKLINKED_TRAINING_VISIT';
+    const MANAGE_WORK_LINKED_TRAINING_VISIT = 'ORGANIZATION_MANAGE_WORKLINKED_TRAINING_VISIT';
     const MANAGE_COMPANIES = 'ORGANIZATION_MANAGE_COMPANIES';
 
     const WLT_GROUP_TUTOR = 'ORGANIZATION_WLT_GROUP_TUTOR';
@@ -73,6 +76,10 @@ class OrganizationVoter extends CachedVoter
 
     /** @var TeacherRepository */
     private $teacherRepository;
+    /**
+     * @var ProjectRepository
+     */
+    private $projectRepository;
 
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
@@ -82,7 +89,8 @@ class OrganizationVoter extends CachedVoter
         TeachingRepository $teachingRepository,
         AgreementRepository $agreementRepository,
         TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository
+        GroupRepository $groupRepository,
+        ProjectRepository $projectRepository
     ) {
         parent::__construct($cacheItemPoolItemPool);
         $this->decisionManager = $decisionManager;
@@ -92,6 +100,7 @@ class OrganizationVoter extends CachedVoter
         $this->agreementRepository = $agreementRepository;
         $this->teacherRepository = $teacherRepository;
         $this->groupRepository = $groupRepository;
+        $this->projectRepository = $projectRepository;
     }
 
     /**
@@ -114,6 +123,8 @@ class OrganizationVoter extends CachedVoter
             self::GRADE_WORK_LINKED_TRAINING,
             self::VIEW_GRADE_WORK_LINKED_TRAINING,
             self::VIEW_EVALUATION_WORK_LINKED_TRAINING,
+            self::ACCESS_WORK_LINKED_TRAINING_VISIT,
+            self::MANAGE_WORK_LINKED_TRAINING_VISIT,
             self::MANAGE_COMPANIES,
             self::WLT_WORK_TUTOR,
             self::WLT_GROUP_TUTOR,
@@ -184,7 +195,7 @@ class OrganizationVoter extends CachedVoter
                 // 2) los profesores que imparten en dual,
                 // 3) los tutores de grupo duales,
                 // 4) los jefes de departamento,
-                // 5) los tutores laborales de los acuerdos de colaboración y
+                // 5) los tutores laborales y docentes de los acuerdos de colaboración y
                 // 6) los estudiantes que tengan acuerdos
 
                 // 1) Coordinador de FP dual
@@ -213,7 +224,8 @@ class OrganizationVoter extends CachedVoter
                 }
 
                 // 5) Tutores laborales
-                if ($this->decisionManager->decide($token, [self::WLT_WORK_TUTOR], $subject)) {
+                if ($this->decisionManager->decide($token, [self::WLT_WORK_TUTOR], $subject) ||
+                    $this->decisionManager->decide($token, [self::WLT_EDUCATIONAL_TUTOR], $subject)) {
                     return true;
                 }
 
@@ -226,6 +238,22 @@ class OrganizationVoter extends CachedVoter
                 // 7) Alumnado con acuerdos, sólo si es acceso
                 return $attribute === self::ACCESS_WORK_LINKED_TRAINING &&
                     $this->decisionManager->decide($token, [self::WLT_STUDENT], $subject);
+
+            case self::ACCESS_WORK_LINKED_TRAINING_VISIT:
+            case self::MANAGE_WORK_LINKED_TRAINING_VISIT:
+                // coordinadores de proyectos de FP dual, ok
+                if ($this->decisionManager->decide($token, [self::WLT_MANAGER], $subject)) {
+                    return true;
+                }
+
+                // jefes de departamento: solo ver
+                if ( $attribute === self::ACCESS_WORK_LINKED_TRAINING_VISIT &&
+                    $this->decisionManager->decide($token, [self::DEPARTMENT_HEAD], $subject)) {
+                    return true;
+                }
+
+                // tutores de seguimiento
+                return $this->decisionManager->decide($token, [self::WLT_EDUCATIONAL_TUTOR], $subject);
 
             case self::ACCESS:
                 // Si es permiso de acceso, comprobar que pertenece actualmente a la organización
@@ -241,7 +269,7 @@ class OrganizationVoter extends CachedVoter
                 }
                 break;
             case self::WLT_MANAGER:
-                return $this->roleRepository->personHasRole($subject, $user->getPerson(), Role::ROLE_WLT_MANAGER);
+                return $this->projectRepository->countByOrganizationAndManager($subject, $user->getPerson()) > 0;
 
             case self::WLT_GROUP_TUTOR:
                 $teacher = $this->teacherRepository->findOneByAcademicYearAndPerson(
@@ -284,12 +312,11 @@ class OrganizationVoter extends CachedVoter
                     ) > 0;
 
             case self::WLT_EDUCATIONAL_TUTOR:
-                $teacher = $this->teacherRepository->findOneByAcademicYearAndPerson(
-                    $subject->getCurrentAcademicYear(),
-                    $user->getPerson()
-                );
-
-                return $teacher && $teacher->isWltEducationalTutor();
+                return
+                    $this->agreementRepository->countAcademicYearAndEducationalTutor(
+                        $subject->getCurrentAcademicYear(),
+                        $user->getPerson()
+                    ) > 0;
         }
 
         // denegamos en cualquier otro caso
