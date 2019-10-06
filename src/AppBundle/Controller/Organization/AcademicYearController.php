@@ -26,9 +26,9 @@ use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/centro/cursoacademico")
@@ -62,7 +62,7 @@ class AcademicYearController extends Controller
         }
 
         $form = $this->createForm(AcademicYearType::class, $academicYear, [
-            'academic_year' => $academicYear
+            'academic_year' => $academicYear->getId() ? $academicYear : null
         ]);
 
         $form->handleRequest($request);
