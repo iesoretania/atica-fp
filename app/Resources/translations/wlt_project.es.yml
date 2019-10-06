@@ -1,0 +1,33 @@
+form.subject: Nombre
+form.manager: Coordinador/a
+form.groups: Grupos asociados
+
+form.save: Guardar cambios
+form.delete: Eliminar los proyectos seleccionados
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nuevo proyecto
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminarlos siguientes proyectos? En el caso de que alguno tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Modificar proyecto
+title.new: Nuevo proyecto
+title.delete: Eliminar proyectos
+
+title.list: Proyectos de FP dual
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay proyectos
+table.filter: Filtrar...
+
+header.name: Proyecto
+header.manager: Coordinador/a
+header.student_count: Estudiantes adheridos
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Proyectos eliminados con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los proyectos.

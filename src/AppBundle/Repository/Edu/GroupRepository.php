@@ -22,25 +22,33 @@ use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Edu\Teaching;
+use AppBundle\Entity\Organization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\Security\Core\Security;
 
 class GroupRepository extends ServiceEntityRepository
 {
-    /**
-     * @var Security
-     */
-    private $security;
-
-    public function __construct(ManagerRegistry $registry, Security $security)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Group::class);
-        $this->security = $security;
+    }
+
+    public function findByOrganization(Organization $organization)
+    {
+        return $this->createQueryBuilder('g')
+            ->innerJoin('g.grade', 'gr')
+            ->innerJoin('gr.training', 't')
+            ->join('t.academicYear', 'a')
+            ->where('a.organization = :organization')
+            ->setParameter('organization', $organization)
+            ->addOrderBy('a.description', 'DESC')
+            ->addOrderBy('g.name')
+            ->getQuery()
+            ->getResult();
     }
 
     /**

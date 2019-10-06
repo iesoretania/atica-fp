@@ -21,6 +21,7 @@ namespace AppBundle\Repository\Edu;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Edu\Teaching;
+use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -31,6 +32,21 @@ class TeacherRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Teacher::class);
+    }
+
+    public function findByOrganization(Organization $organization)
+    {
+        return $this->createQueryBuilder('t')
+            ->addSelect('p')
+            ->join('t.person', 'p')
+            ->join('p.user', 'u')
+            ->join('t.academicYear', 'a')
+            ->andWhere('a.organization = :organization')
+            ->setParameter('organization', $organization)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->getQuery()
+            ->getResult();
     }
 
     public function findByAcademicYear(AcademicYear $academicYear)

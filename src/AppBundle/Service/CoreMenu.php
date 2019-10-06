@@ -58,6 +58,18 @@ class CoreMenu implements MenuBuilderInterface
 
             $root[] = $menu1;
 
+            if ($this->security->isGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization)) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('work_linked_tracking_project')
+                    ->setRouteName('work_linked_training_project_list')
+                    ->setCaption('menu.work_linked_training.project')
+                    ->setDescription('menu.work_linked_training.project.detail')
+                    ->setIcon('folder-open');
+
+                $menu1->addChild($menu2);
+            }
+
             $menu2 = new MenuItem();
             $menu2
                 ->setName('work_linked_tracking_tracking')
