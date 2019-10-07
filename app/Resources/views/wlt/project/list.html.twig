@@ -5,7 +5,7 @@
 {% block path_new %}{{ path('work_linked_training_project_new') }}{% endblock %}
 
 {% block table_header %}
-    <th>{{ 'header.name'|trans }}</th>
+    <th><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
     <th>{{ 'header.manager'|trans }}</th>
     <th>{{ 'header.student_count'|trans }}</th>
     <th></th>
@@ -16,7 +16,9 @@
                 {% set url = path('work_linked_training_project_edit', {'id': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <a href="{{ url }}">{{ item.name }}</a>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
+                            <a href="{{ url }}">{{ item.name }}</a>
+                        </label>
                     </td>
                     <td>
                         {{ item.manager }}
@@ -35,8 +37,12 @@
             {% endfor %}
 {% endblock %}
 
+{% block before_table %}
+    <form action="{{ path('work_linked_training_project_operation') }}" method="post">
+{% endblock %}
 
 {% block after_table %}
     <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
 {% endblock %}

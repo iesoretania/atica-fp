@@ -21,6 +21,7 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\WLT\Project;
 use AppBundle\Form\Type\WLT\ProjectStudentEnrollmentType;
 use AppBundle\Form\Type\WLT\ProjectType;
+use AppBundle\Repository\WLT\ProjectRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -206,6 +207,53 @@ class ProjectController extends Controller
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/eliminar", name="work_linked_training_project_operation",
+     *     requirements={"id" = "\d+"}, methods={"POST"})
+     */
+    public function operationAction(
+        Request $request,
+        ProjectRepository $projectRepository,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $items = $request->request->get('items', []);
+        if (count($items) === 0) {
+            return $this->redirectToRoute('work_linked_training_project_list');
+        }
+        $selectedItems = $projectRepository->findAllInListByIdAndOrganization($items, $organization);
+
+        if ($request->get('confirm', '') === 'ok') {
+            try {
+                $projectRepository->deleteFromList($selectedItems);
+
+                $em->flush();
+                $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_project'));
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_project'));
+            }
+            return $this->redirectToRoute('work_linked_training_project_list');
+        }
+
+        $title = $this->get('translator')->trans('title.delete', [], 'wlt_project');
+        $breadcrumb = [
+            ['fixed' => $title]
+        ];
+
+        return $this->render('wlt/project/delete.html.twig', [
+            'menu_path' => 'work_linked_training_project_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'items' => $selectedItems
         ]);
     }
 }
