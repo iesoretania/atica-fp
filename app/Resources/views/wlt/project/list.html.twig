@@ -8,6 +8,7 @@
     <th>{{ 'header.name'|trans }}</th>
     <th>{{ 'header.manager'|trans }}</th>
     <th>{{ 'header.student_count'|trans }}</th>
+    <th></th>
 {% endblock %}
 
 {% block table_body %}
@@ -23,10 +24,13 @@
                     <td>
                         {{ item.studentEnrollments.count() }}
                     </td>
+                    <td>
+                        {{ m.link_button(path('work_linked_training_project_student_enrollment', {'id': item.id}), 'users', 'btn-info btn-sm btn-block', 'table.student_enrollment'|trans) }}
+                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

@@ -1,6 +1,7 @@
-form.subject: Nombre
+form.name: Nombre
 form.manager: Coordinador/a
 form.groups: Grupos asociados
+form.student_enrollments: Estudiantes adheridos
 
 form.save: Guardar cambios
 form.delete: Eliminar los proyectos seleccionados
@@ -10,7 +11,7 @@ form.delete_confirm: Confirmar borrado
 table.new: Nuevo proyecto
 
 prompt.delete_confirm: |
-  ¿Está seguro de que desea eliminarlos siguientes proyectos? En el caso de que alguno tenga elementos asociados, el borrado no tendrá lugar.
+  ¿Está seguro de que desea eliminar los siguientes proyectos? En el caso de que alguno tenga elementos asociados, el borrado no tendrá lugar.
 
   Esta operación no se puede deshacer.
 
@@ -19,6 +20,9 @@ title.new: Nuevo proyecto
 title.delete: Eliminar proyectos
 
 title.list: Proyectos de FP dual
+title.student_enrollment: Alumnado adherido
+
+table.student_enrollment: Alumnado
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay proyectos
 table.filter: Filtrar...

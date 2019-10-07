@@ -19,6 +19,7 @@
 namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\WLT\Project;
+use AppBundle\Form\Type\WLT\ProjectStudentEnrollmentType;
 use AppBundle\Form\Type\WLT\ProjectType;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
@@ -123,9 +124,7 @@ class ProjectController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm(ProjectType::class, $project, [
-            'organization' => $organization
-        ]);
+        $form = $this->createForm(ProjectType::class, $project);
 
         $form->handleRequest($request);
 
@@ -152,6 +151,57 @@ class ProjectController extends Controller
         ];
 
         return $this->render('wlt/project/form.html.twig', [
+            'menu_path' => 'work_linked_training_project_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/estudiantes/{id}", name="work_linked_training_project_student_enrollment",
+     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
+     */
+    public function studentEnrollmentsAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        Project $project
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $this->createForm(ProjectStudentEnrollmentType::class, $project, [
+            'groups' => $project->getGroups()
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $em->flush();
+                $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_project'));
+                return $this->redirectToRoute('work_linked_training_project_list');
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_project'));
+            }
+        }
+
+        $title = $translator->trans(
+            'title.student_enrollment',
+            [],
+            'wlt_project'
+        );
+
+        $breadcrumb = [
+            $project->getId() ?
+                ['fixed' => $project->getName()] :
+                ['fixed' => $translator->trans('title.student_enrollment', [], 'wlt_project')]
+        ];
+
+        return $this->render('wlt/project/student_enrollment_form.html.twig', [
             'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,

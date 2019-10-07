@@ -19,31 +19,22 @@
 namespace AppBundle\Form\Type\WLT;
 
 use AppBundle\Entity\Edu\Group;
-use AppBundle\Entity\Edu\Teacher;
-use AppBundle\Entity\Person;
+use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\WLT\Project;
-use AppBundle\Repository\Edu\GroupRepository;
-use AppBundle\Repository\Edu\TeacherRepository;
-use AppBundle\Service\UserExtensionService;
+use AppBundle\Repository\Edu\StudentEnrollmentRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProjectType extends AbstractType
+class ProjectStudentEnrollmentType extends AbstractType
 {
-    private $teacherRepository;
-    private $groupRepository;
-    private $userExtensionService;
+    private $studentEnrollmentRepository;
 
     public function __construct(
-        TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository,
-        UserExtensionService $userExtensionService
+        StudentEnrollmentRepository $studentEnrollmentRepository
     ) {
-        $this->teacherRepository = $teacherRepository;
-        $this->groupRepository = $groupRepository;
-        $this->userExtensionService = $userExtensionService;
+        $this->studentEnrollmentRepository = $studentEnrollmentRepository;
     }
 
     /**
@@ -51,26 +42,10 @@ class ProjectType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $organization = $this->userExtensionService->getCurrentOrganization();
+        $groups = $options['groups'];
+        $studentEnrollments = $this->studentEnrollmentRepository->findByGroups($groups);
 
-        $teachers = $this->teacherRepository->findByOrganization($organization);
-        $teacherPersons = array_map(static function(Teacher $teacher) {
-            return $teacher->getPerson();
-        }, $teachers);
-        $groups = $this->groupRepository->findByOrganization($organization);
         $builder
-            ->add('name', null, [
-                'label' => 'form.name',
-                'required' => true
-            ])
-            ->add('manager', EntityType::class, [
-                'label' => 'form.manager',
-                'class' => Person::class,
-                'choice_translation_domain' => false,
-                'choices' => $teacherPersons,
-                'multiple' => false,
-                'required' => false
-            ])
             ->add('groups', EntityType::class, [
                 'label' => 'form.groups',
                 'class' => Group::class,
@@ -84,6 +59,24 @@ class ProjectType extends AbstractType
                             ->getDescription() . ' - ' . $group->getName();
                 },
                 'multiple' => true,
+                'disabled' => true,
+                'required' => false
+            ])
+            ->add('studentEnrollments', EntityType::class, [
+                'label' => 'form.student_enrollments',
+                'class' => StudentEnrollment::class,
+                'choice_translation_domain' => false,
+                'choices' => $studentEnrollments,
+                'choice_label' => function (StudentEnrollment $studentEnrollment) {
+                    return $studentEnrollment
+                            ->getGroup()->getGrade()->getTraining()->getAcademicYear()->getDescription() . ' - '
+                        . $studentEnrollment->getGroup() . ' - '
+                        . $studentEnrollment->getPerson()->getLastName() . ', '
+                        . $studentEnrollment->getPerson()->getFirstName() . ' ('
+                        . $studentEnrollment->getPerson()->getUniqueIdentifier() . ')';
+                },
+                'multiple' => true,
+                'expanded' => true,
                 'required' => false
             ]);
     }
@@ -95,6 +88,7 @@ class ProjectType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Project::class,
+            'groups' => [],
             'translation_domain' => 'wlt_project'
         ]);
     }

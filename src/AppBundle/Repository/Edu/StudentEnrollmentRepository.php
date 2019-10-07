@@ -32,6 +32,23 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
         parent::__construct($registry, StudentEnrollment::class);
     }
 
+    public function findByGroups($groups) {
+        return $this->createQueryBuilder('se')
+            ->join('se.person', 's')
+            ->join('se.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->join('t.academicYear', 'a')
+            ->where('se.group IN (:groups)')
+            ->addOrderBy('a.description')
+            ->addOrderBy('g.name')
+            ->addOrderBy('s.lastName')
+            ->addOrderBy('s.firstName')
+            ->setParameter('groups', $groups)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByAcademicYearAndWLTQueryBuilder(AcademicYear $academicYear)
     {
         return $this->createQueryBuilder('se')
