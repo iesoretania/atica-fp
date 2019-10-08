@@ -57,6 +57,17 @@ class ProjectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findAllByOrganization(
+        Organization $organization
+    ) {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.organization = :organization')
+            ->setParameter('organization', $organization)
+            ->orderBy('p.name', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function deleteFromList($items)
     {
         return $this->getEntityManager()->createQueryBuilder()

@@ -79,6 +79,11 @@ class Project
         $this->studentEnrollments = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
     /**
      * @return int
      */

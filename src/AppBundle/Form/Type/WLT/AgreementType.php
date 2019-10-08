@@ -19,19 +19,18 @@
 namespace AppBundle\Form\Type\WLT;
 
 use AppBundle\Entity\Company;
-use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Person;
-use AppBundle\Entity\User;
 use AppBundle\Entity\WLT\ActivityRealization;
 use AppBundle\Entity\WLT\Agreement;
+use AppBundle\Entity\WLT\Project;
 use AppBundle\Entity\Workcenter;
 use AppBundle\Repository\CompanyRepository;
 use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\StudentEnrollmentRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
+use AppBundle\Repository\WLT\ProjectRepository;
 use AppBundle\Repository\WorkcenterRepository;
-use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -65,6 +64,10 @@ class AgreementType extends AbstractType
 
     /** @var ActivityRealizationRepository */
     private $activityRealizationRepository;
+    /**
+     * @var ProjectRepository
+     */
+    private $projectRepository;
 
     public function __construct(
         UserExtensionService $userExtensionService,
@@ -73,6 +76,7 @@ class AgreementType extends AbstractType
         AcademicYearRepository $academicYearRepository,
         CompanyRepository $companyRepository,
         ActivityRealizationRepository $activityRealizationRepository,
+        ProjectRepository $projectRepository,
         Security $security
     ) {
         $this->userExtensionService = $userExtensionService;
@@ -82,45 +86,34 @@ class AgreementType extends AbstractType
         $this->companyRepository = $companyRepository;
         $this->activityRealizationRepository = $activityRealizationRepository;
         $this->security = $security;
+        $this->projectRepository = $projectRepository;
     }
 
     public function addElements(
         FormInterface $form,
-        AcademicYear $academicYear = null,
+        Project $project = null,
         Company $company = null,
         StudentEnrollment $studentEnrollment = null,
         $currentActivityRealizations = []
     ) {
         $organization = $this->userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
-            $academicYear = $organization->getCurrentAcademicYear();
-        }
 
-        /** @var User $user */
-        $user = $this->security->getUser();
-        if (false === $this->security->isGranted(OrganizationVoter::MANAGE, $organization) &&
-            false === $this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization)
-        ) {
-            $studentEnrollments = $this->studentEnrollmentRepository->findByAcademicYearAndDepartmentHeadAndWLT(
-                $academicYear,
-                $user->getPerson()
-            );
-        } else {
-            $studentEnrollments = $this->studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
-        }
-        $workcenters = $company ?
-            $this->workcenterRepository->findByAcademicYearAndCompany($academicYear, $company) :
+        $studentEnrollments = $project ? $project->getStudentEnrollments() : [];
+
+        $workcenters = ($studentEnrollment && $company) ?
+            $this->workcenterRepository->findByAcademicYearAndCompany(
+                $studentEnrollment->getGroup()->getGrade()->getTraining()->getAcademicYear(),
+                $company) :
             [];
 
-        $academicYears = $this->security->isGranted(OrganizationVoter::MANAGE, $organization) ?
-            $this->academicYearRepository->findAllByOrganization($organization) :
-            [$academicYear];
+        $projects =
+            $this->projectRepository->findAllByOrganization($organization);
 
         if ($studentEnrollment) {
             $training = $studentEnrollment->getGroup()->getGrade()->getTraining();
             if ($company) {
                 $activityRealizations = $this->activityRealizationRepository->
-                findByTrainingAndCompany($training, $company);
+                    findByTrainingAndCompany($training, $company);
             } else {
                 $activityRealizations = [];
             }
@@ -130,13 +123,12 @@ class AgreementType extends AbstractType
             $companies = [];
         }
         $form
-            ->add('academicYear', EntityType::class, [
-                'label' => 'form.academic_year',
+            ->add('project', EntityType::class, [
+                'label' => 'form.project',
                 'mapped' => false,
-                'class' => AcademicYear::class,
+                'class' => Project::class,
                 'choice_translation_domain' => false,
-                'choices' => $academicYears,
-                'data' => $academicYear,
+                'choices' => $projects,
                 'required' => true
             ])
             ->add('studentEnrollment', EntityType::class, [
@@ -236,16 +228,16 @@ class AgreementType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData();
 
-            $academicYear = $data->getStudentEnrollment() ?
-                $data->getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getAcademicYear() :
+            $project = $data->getProject() ?:
                 null;
+
             $company = $data->getWorkcenter() ? $data->getWorkcenter()->getCompany() : null;
 
             $studentEnrollment = $data->getStudentEnrollment();
 
             $currentActivityRealizations = $data->getActivityRealizations();
 
-            $this->addElements($form, $academicYear, $company, $studentEnrollment, $currentActivityRealizations);
+            $this->addElements($form, $project, $company, $studentEnrollment, $currentActivityRealizations);
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
@@ -255,9 +247,9 @@ class AgreementType extends AbstractType
             /** @var Company|null $company */
             $company = isset($data['company']) ? $this->companyRepository->find($data['company']) : null;
 
-            /** @var AcademicYear $academicYear */
-            $academicYear = isset($data['academicYear']) ?
-                $this->academicYearRepository->find($data['academicYear']) :
+            /** @var Project $project */
+            $project = isset($data['project']) ?
+                $this->projectRepository->find($data['project']) :
                 null;
 
             /** @var StudentEnrollment $studentEnrollment */
@@ -265,7 +257,7 @@ class AgreementType extends AbstractType
                 $this->studentEnrollmentRepository->find($data['studentEnrollment']) :
                 null;
 
-            $this->addElements($form, $academicYear, $company, $studentEnrollment, null);
+            $this->addElements($form, $project, $company, $studentEnrollment, null);
         });
     }
 

@@ -1,6 +1,6 @@
 $(function ()
 {
-    function academicYearChange()
+    function projectChange()
     {
         var form = $(this).closest('form');
         var data = {};
@@ -10,7 +10,7 @@ $(function ()
         var workcenter = $("#agreement_workcenter");
         var activityRealizations = $("#agreement_activityRealizations");
 
-        data[academicYear.attr('name')] = academicYear.val();
+        data[project.attr('name')] = project.val();
         data[studentEnrollment.attr('name')] = studentEnrollment.val();
         data[company.attr('name')] = company.val();
         data[workcenter.attr('name')] = workcenter.val();
@@ -82,7 +82,7 @@ $(function ()
 
         var form = $(this).closest('form');
         var data = {};
-        data[academicYear.attr('name')] = academicYear.val();
+        data[project.attr('name')] = project.val();
         data[studentEnrollment.attr('name')] = studentEnrollment.val();
         data[company.attr('name')] = company.val();
         data[workcenter.attr('name')] = workcenter.val();
@@ -142,7 +142,7 @@ $(function ()
 
         var form = $(this).closest('form');
         var data = {};
-        data[academicYear.attr('name')] = academicYear.val();
+        data[project.attr('name')] = project.val();
         data[studentEnrollment.attr('name')] = studentEnrollment.val();
         data[company.attr('name')] = company.val();
         data[workcenter.attr('name')] = workcenter.val();
@@ -181,12 +181,12 @@ $(function ()
         });
     }
 
-    var academicYear = $("#agreement_academicYear");
+    var project = $("#agreement_project");
     var company = $("#agreement_company");
     var studentEnrollment = $("#agreement_studentEnrollment");
     var workTutor = $("#agreement_workTutor");
 
-    academicYear.change(academicYearChange);
+    project.change(projectChange);
     company.change(companyChange);
     studentEnrollment.change(studentEnrollmentChange);
 });
