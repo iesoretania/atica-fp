@@ -73,16 +73,6 @@ class TeacherType extends AbstractType
                     'form.gender.female' => User::GENDER_FEMALE
                 ]
             ])
-            ->add('wltEducationalTutor', ChoiceType::class, [
-                'label' => 'form.wlt_educational_tutor',
-                'disabled' => false,
-                'required' => true,
-                'expanded' => true,
-                'choices' => [
-                    'form.wlt_educational_tutor.yes' => true,
-                    'form.wlt_educational_tutor.no' => false
-                ],
-            ])
             ->add('enabled', ChoiceType::class, [
                 'label' => 'form.enabled',
                 'disabled' => true,

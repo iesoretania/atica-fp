@@ -29,6 +29,18 @@
             {% endfor %}
 {% endblock %}
 
+{% block before_filter %}
+    <div class="row">
+        <div class="form-group col-sm-5">
+            <select name="project" id="item" class="form w-100">
+                {% for item in academic_years %}
+                    <option value="{{ item.id }}" {% if academic_year.id == item.id %}selected{% endif %}>{{ item.description }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+{% endblock %}
+
 {% block before_table %}
     <form action="{{ path('organization_teacher_delete', {'academicYear': academic_year.id}) }}" method="post">
 {% endblock %}

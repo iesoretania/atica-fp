@@ -21,15 +21,16 @@ namespace AppBundle\Controller\Organization;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Form\Type\Edu\TeacherType;
+use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/centro/profesorado")
@@ -92,11 +93,12 @@ class TeacherController extends Controller
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
+        $organization = $userExtensionService->getCurrentOrganization();
         if (null === $academicYear) {
-            $organization = $userExtensionService->getCurrentOrganization();
             $academicYear = $organization->getCurrentAcademicYear();
         }
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
@@ -139,11 +141,12 @@ class TeacherController extends Controller
         $title = $this->get('translator')->trans('title.list', [], 'edu_teacher');
 
         return $this->render('organization/teacher/list.html.twig', [
-            'title' => $title . ' - ' . $academicYear,
+            'title' => $title,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'edu_teacher',
-            'academic_year' => $academicYear
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
 
