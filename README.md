@@ -9,7 +9,7 @@ Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos comp
 
 ## Requisitos
 
-- PHP 5.6 o superior.
+- PHP 5.6.17 o superior.
 - Servidor web Apache2 (podría funcionar con nginx, pero no se ha probado aún).
 - Servidor de base de datos MySQL 5 o derivado (como MariaDB, Percona, etc).
 - PHP [Composer].
@@ -27,9 +27,8 @@ Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos comp
 
 - Ejecutar `composer install` desde la carpeta del proyecto.
   - Puedes modificar la configuración de la aplicación contestando ahora las preguntas o bien posteriormente modificando el fichero `app/config/parameters.yml`.
-- Ejecutar `npm install -g gulp` (usar `sudo` si fuera necesario).
 - Ejecutar `npm install`
-- Ejecutar `gulp`. [Gulp.js] se instala automáticamente con los comandos anteriores.
+- Ejecutar el comando `node_modules/.bin/encore prod` para generar los assets.
 - Configurar el sitio de Apache2 para que el `DocumentRoot` sea la carpeta `web/` dentro de la carpeta de instalación.
 - Si aún no se ha hecho, modificar el fichero `parameters.yml` con los datos de acceso al sistema gestor de bases de datos deseados y otros parámetros de configuración globales que considere interesantes.
 - Para crear la base de datos: `php bin/console doctrine:database:create`
@@ -57,5 +56,4 @@ Esta aplicación se ofrece bajo licencia [AGPL versión 3].
 [AGPL versión 3]: http://www.gnu.org/licenses/agpl.html
 [Node.js]: https://nodejs.org/en/
 [npmjs]: https://www.npmjs.com/
-[Gulp.js]: http://gulpjs.com/
 [@aticaFP]: https://twitter.com/aticaFP
