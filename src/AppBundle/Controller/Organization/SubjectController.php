@@ -23,6 +23,7 @@ use AppBundle\Entity\Edu\Subject;
 use AppBundle\Entity\Edu\Teaching;
 use AppBundle\Form\Type\Edu\SubjectType;
 use AppBundle\Form\Type\Edu\TeachingType;
+use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\SubjectRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;
@@ -105,11 +106,13 @@ class SubjectController extends Controller
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+
         if (null === $academicYear) {
-            $organization = $userExtensionService->getCurrentOrganization();
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -126,7 +129,6 @@ class SubjectController extends Controller
             ->orderBy('s.name');
 
         $q = $request->get('q', null);
-        $f = $request->get('f', 0);
         if ($q) {
             $queryBuilder
                 ->where('s.name LIKE :tq')
@@ -134,12 +136,6 @@ class SubjectController extends Controller
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        switch ($f) {
-            case 1:
-                $queryBuilder
-                    ->andWhere('SIZE(s.teachings) = 0');
-                break;
-        }
         $queryBuilder
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear);
@@ -153,12 +149,12 @@ class SubjectController extends Controller
         $title = $this->get('translator')->trans('title.list', [], 'edu_subject');
 
         return $this->render('organization/subject/list.html.twig', [
-            'title' => $title . ' - ' . $academicYear,
+            'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'f' => $f,
             'domain' => 'edu_subject',
-            'academic_year' => $academicYear
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
 
