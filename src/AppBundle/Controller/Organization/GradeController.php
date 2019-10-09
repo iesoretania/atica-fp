@@ -21,6 +21,7 @@ namespace AppBundle\Controller\Organization;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Grade;
 use AppBundle\Form\Type\Edu\GradeType;
+use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\GradeRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;
@@ -28,9 +29,9 @@ use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/centro/nivel")
@@ -96,11 +97,13 @@ class GradeController extends Controller
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+
         if (null === $academicYear) {
-            $organization = $userExtensionService->getCurrentOrganization();
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -136,11 +139,12 @@ class GradeController extends Controller
         $title = $this->get('translator')->trans('title.list', [], 'edu_grade');
 
         return $this->render('organization/grade/list.html.twig', [
-            'title' => $title . ' - ' . $academicYear,
+            'title' => $title,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'edu_grade',
-            'academic_year' => $academicYear
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
 

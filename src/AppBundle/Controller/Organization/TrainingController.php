@@ -21,6 +21,7 @@ namespace AppBundle\Controller\Organization;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Form\Type\Edu\TrainingType;
+use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\TrainingRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;
@@ -28,9 +29,9 @@ use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/centro/ensenanza")
@@ -103,11 +104,13 @@ class TrainingController extends Controller
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+
         if (null === $academicYear) {
-            $organization = $userExtensionService->getCurrentOrganization();
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -122,24 +125,11 @@ class TrainingController extends Controller
             ->orderBy('t.name');
 
         $q = $request->get('q', null);
-        $f = $request->get('f', 0);
         if ($q) {
             $queryBuilder
                 ->where('t.name LIKE :tq')
                 ->orWhere('t.name LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
-        }
-
-        switch ($f) {
-            case 1:
-                $queryBuilder
-                    ->andWhere('t.workLinked = :on')
-                    ->setParameter('on', true);
-                break;
-            case 2:
-                $queryBuilder
-                    ->andWhere('t.department IS NULL');
-                break;
         }
 
         $queryBuilder
@@ -158,9 +148,9 @@ class TrainingController extends Controller
             'title' => $title . ' - ' . $academicYear,
             'pager' => $pager,
             'q' => $q,
-            'f' => $f,
             'domain' => 'edu_training',
-            'academic_year' => $academicYear
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
 

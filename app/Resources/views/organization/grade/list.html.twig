@@ -15,7 +15,7 @@
                 {% set url = path('organization_grade_edit', {'id': grade.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="items[]" value="{{ grade.id }}" class="selectable"> <a href="{{ url }}">{{ grade.name }}{% if grade.training.workLinked %} <span class="badge badge-success">{{ 'header.work_linked_training'|trans({}, 'edu_training') }}</span>{% endif %}</a></label>
+                        <label><input type="checkbox" name="items[]" value="{{ grade.id }}" class="selectable"> <a href="{{ url }}">{{ grade.name }}</a></label>
                     </td>
                     <td>
                         {{ grade.training.name }}
@@ -29,6 +29,10 @@
                     <td colspan="3">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
 {% endblock %}
 
 {% block before_table %}
