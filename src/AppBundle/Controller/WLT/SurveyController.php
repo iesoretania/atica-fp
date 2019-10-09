@@ -57,11 +57,8 @@ class SurveyController extends Controller
         if ($studentSurvey === null) {
             $studentSurvey = new AnsweredSurvey();
             $survey = $agreement
-                ->getStudentEnrollment()
-                ->getGroup()
-                ->getGrade()
-                ->getTraining()
-                ->getWltStudentSurvey();
+                ->getProject()
+                ->getStudentSurvey();
 
             $studentSurvey->setSurvey($survey);
 
@@ -133,11 +130,8 @@ class SurveyController extends Controller
         if ($companySurvey === null) {
             $companySurvey = new AnsweredSurvey();
             $survey = $agreement
-                ->getStudentEnrollment()
-                ->getGroup()
-                ->getGrade()
-                ->getTraining()
-                ->getWltCompanySurvey();
+                ->getProject()
+                ->getCompanySurvey();
 
             $companySurvey->setSurvey($survey);
 
@@ -323,8 +317,9 @@ class SurveyController extends Controller
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->join('a.workTutor', 'wt')
-            ->join('t.wltStudentSurvey', 'ss')
-            ->join('t.wltCompanySurvey', 'cs')
+            ->join('a.project', 'pr')
+            ->leftJoin('pr.studentSurvey', 'ss')
+            ->leftJoin('pr.companySurvey', 'cs')
             ->groupBy('a')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')

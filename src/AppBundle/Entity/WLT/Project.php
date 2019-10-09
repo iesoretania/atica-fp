@@ -22,6 +22,7 @@ use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
+use AppBundle\Entity\Survey;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -72,6 +73,20 @@ class Project
      * @var StudentEnrollment[]
      */
     private $studentEnrollments;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @var Survey
+     */
+    private $studentSurvey;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @var Survey
+     */
+    private $companySurvey;
 
     public function __construct()
     {
@@ -179,6 +194,42 @@ class Project
     public function setStudentEnrollments($studentEnrollments)
     {
         $this->studentEnrollments = $studentEnrollments;
+        return $this;
+    }
+
+    /**
+     * @return Survey
+     */
+    public function getStudentSurvey()
+    {
+        return $this->studentSurvey;
+    }
+
+    /**
+     * @param Survey $studentSurvey
+     * @return Project
+     */
+    public function setStudentSurvey(Survey $studentSurvey = null)
+    {
+        $this->studentSurvey = $studentSurvey;
+        return $this;
+    }
+
+    /**
+     * @return Survey
+     */
+    public function getCompanySurvey()
+    {
+        return $this->companySurvey;
+    }
+
+    /**
+     * @param Survey $companySurvey
+     * @return Project
+     */
+    public function setCompanySurvey(Survey $companySurvey = null)
+    {
+        $this->companySurvey = $companySurvey;
         return $this;
     }
 }

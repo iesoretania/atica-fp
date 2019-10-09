@@ -34,6 +34,13 @@ class Version20190707224036 extends AbstractMigration
         $this->addSql('ALTER TABLE wlt_educational_tutor ADD CONSTRAINT FK_39E0FD9641807E1D FOREIGN KEY (teacher_id) REFERENCES edu_teacher (id)');
         $this->addSql('ALTER TABLE wlt_educational_tutor ADD CONSTRAINT FK_39E0FD96A97283E6 FOREIGN KEY (answered_survey_id) REFERENCES answered_survey (id)');
         $this->addSql('ALTER TABLE wlt_agreement ADD project_id INT NULL, ADD educational_tutor_id INT NULL');
+
+        $this->addSql('ALTER TABLE wlt_project ADD student_survey_id INT DEFAULT NULL, ADD company_survey_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE wlt_project ADD CONSTRAINT FK_E4D36E41D490911D FOREIGN KEY (student_survey_id) REFERENCES survey (id) ON DELETE SET NULL');
+        $this->addSql('ALTER TABLE wlt_project ADD CONSTRAINT FK_E4D36E4180E5DA6D FOREIGN KEY (company_survey_id) REFERENCES survey (id) ON DELETE SET NULL');
+        $this->addSql('CREATE INDEX IDX_E4D36E41D490911D ON wlt_project (student_survey_id)');
+        $this->addSql('CREATE INDEX IDX_E4D36E4180E5DA6D ON wlt_project (company_survey_id)');
+
     }
 
     /**

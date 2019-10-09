@@ -26,7 +26,6 @@ use AppBundle\Repository\SurveyRepository;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -75,14 +74,6 @@ class TrainingType extends AbstractType
             ->add('name', null, [
                 'label' => 'form.name',
                 'required' => true
-            ])
-            ->add('workLinked', ChoiceType::class, [
-                'label' => 'form.work_linked_training',
-                'expanded' => true,
-                'choices' => [
-                    'form.work_linked_training.no' => false,
-                    'form.work_linked_training.yes' => true
-                ]
             ])
             ->add('internalCode', null, [
                 'label' => 'form.internal_code',
