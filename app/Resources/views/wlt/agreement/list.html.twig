@@ -43,7 +43,7 @@
     {% if projects %}
         <div class="row">
             <div class="form-group col-sm-5">
-                <select name="project" id="project" class="form w-100">
+                <select name="project" id="item" class="form w-100">
                     <option value="0" {% if not project %}selected{% endif %}>{{ 'filter.all_projects'|trans }}</option>
                     {% for item in projects %}
                         <option value="{{ item.id }}" {% if project and project.id == item.id %}selected{% endif %}>{{ item.name }}</option>
@@ -68,9 +68,4 @@
         {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
         {{ m.submit_button('copy', 'copy', 'btn-primary enable-on-items', 'form.calendar_copy'|trans) }}
     </form>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('build/wlt_agreement_list.js') }}"></script>
 {% endblock %}

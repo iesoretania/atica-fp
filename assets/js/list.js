@@ -1,6 +1,25 @@
 const debounce = require('lodash.debounce');
 var last_value_q = "";
 var last_value_f = "";
+
+function updateTable(url) {
+// obtener nueva tabla
+    $('table#list').addClass('loading');
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (html) {
+            $('table#list').removeClass('loading');
+            $('div#table').replaceWith(
+                $(html).find('div#table')
+            );
+        },
+        error: function () {
+            window.location.replace(url);
+        }
+    });
+}
+
 var reload = function(filter) {
     var url = window.location.href;
     var q = $('input#search').val();
@@ -28,29 +47,35 @@ var reload = function(filter) {
         url = url + '?q=' + encodeURIComponent(q);
     }
 
-    // obtener nueva tabla
-    $('table#list').addClass('loading');
-    $.ajax({
-        url: url,
-        type: 'GET',
-        success: function(html) {
-            $('table#list').removeClass('loading');
-            $('div#table').replaceWith(
-                $(html).find('div#table')
-            );
-        },
-        error: function() {
-            window.location.replace(url);
-        }
-    });
+    updateTable(url);
 };
+var dynamicFormInit = function () {
 
-var dynamicFormInit = function() {
+    function itemChange()
+    {
+        var url = window.location.href;
+
+        // quitar parámetros
+        url = url.replace(/\/([0-9]*?)(&|$)/,'');
+        url = url.replace(/\/([0-9]*?)(&|$)/,'');
+        url = url.replace(/(\?|&q=).*?(&|$)/,'');
+        url = url.replace(/(\?f=).*?(&|$)/,'');
+
+        url = url + '/' + item.val();
+        $('input#search').val('');
+        updateTable(url);
+    }
+
+    var item = $("select#item");
+    item.change(itemChange);
+
     $('input#search').on("change paste keyup", debounce(reload, 500));
     var f = $("input[name='filter']");
-    if (f) f.parent().on('click', reload);
+    if (f) {
+        f.parent().on('click', reload);
+    }
 
-    $("#search-clear").click(function(){
+    $("#search-clear").click(function (){
         $('input#search').val('');
         reload();
     });
