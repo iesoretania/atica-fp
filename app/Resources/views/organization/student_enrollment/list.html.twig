@@ -37,6 +37,10 @@
             {% endfor %}
 {% endblock %}
 
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
 {% block before_table %}
     <form action="{{ path('organization_student_enrollment_operation', {'academicYear': academic_year.id}) }}" method="post">
 {% endblock %}
