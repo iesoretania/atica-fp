@@ -21,15 +21,16 @@ namespace AppBundle\Controller\Organization;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\NonWorkingDay;
 use AppBundle\Form\Type\Edu\NonWorkingDayType;
+use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\NonWorkingDayRepository;
 use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -114,12 +115,14 @@ class NonWorkingDayController extends Controller
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
         TranslatorInterface $translator,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+
         if (null === $academicYear) {
-            $organization = $userExtensionService->getCurrentOrganization();
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -154,11 +157,12 @@ class NonWorkingDayController extends Controller
         $title = $translator->trans('title.list', [], 'edu_non_working_day');
 
         return $this->render('organization/non_working_day/list.html.twig', [
-            'title' => $title . ' - ' . $academicYear,
+            'title' => $title,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'edu_non_working_day',
-            'academic_year' => $academicYear
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
 

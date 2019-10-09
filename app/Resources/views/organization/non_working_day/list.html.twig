@@ -27,6 +27,10 @@
             {% endfor %}
 {% endblock %}
 
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
 {% block before_table %}
     <form action="{{ path('organization_non_working_day_delete', {'academicYear': academic_year.id}) }}" method="post">
 {% endblock %}
