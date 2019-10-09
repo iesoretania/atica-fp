@@ -3,6 +3,7 @@
 {% import 'macros.html.twig' as m %}
 
 {% block content %}
+    {% block before_filter %}{% endblock %}
     <div class="row">
         <div class="form-group col-sm-5">
             <input type="search" id="search" class="form-control" autofocus="autofocus" placeholder="&#xF002; {{ 'table.filter'|trans }}" autocomplete="off" value="{{ q }}">

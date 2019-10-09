@@ -20,6 +20,7 @@ namespace AppBundle\Repository\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
+use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\Meeting;
@@ -151,12 +152,12 @@ class AgreementRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param AcademicYear $academicYear
+     * @param Organization $organization
      * @return Agreement[]
      */
-    public function findAllInListByIdAndAcademicYear(
+    public function findAllInListByIdAndOrganization(
         $items,
-        AcademicYear $academicYear
+        Organization $organization
     ) {
         return $this->createQueryBuilder('a')
             ->join('a.studentEnrollment', 'se')
@@ -164,10 +165,11 @@ class AgreementRepository extends ServiceEntityRepository
             ->join('se.person', 'p')
             ->join('g.grade', 'gr')
             ->join('gr.training', 'tr')
+            ->join('tr.academicYear', 'ay')
             ->where('a.id IN (:items)')
-            ->andWhere('tr.academicYear = :academic_year')
+            ->andWhere('ay.organization = :organization')
             ->setParameter('items', $items)
-            ->setParameter('academic_year', $academicYear)
+            ->setParameter('organization', $organization)
             ->orderBy('g.name')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
@@ -177,12 +179,12 @@ class AgreementRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param AcademicYear $academicYear
+     * @param Organization $organization
      * @return Agreement[]
      */
-    public function findAllInListByNotIdAndAcademicYear(
+    public function findAllInListByNotIdAndOrganization(
         $items,
-        AcademicYear $academicYear
+        Organization $organization
     ) {
         return $this->createQueryBuilder('a')
             ->join('a.studentEnrollment', 'se')
@@ -190,10 +192,11 @@ class AgreementRepository extends ServiceEntityRepository
             ->join('se.person', 'p')
             ->join('g.grade', 'gr')
             ->join('gr.training', 'tr')
+            ->join('tr.academicYear', 'ay')
             ->where('a.id NOT IN (:items)')
-            ->andWhere('tr.academicYear = :academic_year')
+            ->andWhere('ay.organization = :organization')
             ->setParameter('items', $items)
-            ->setParameter('academic_year', $academicYear)
+            ->setParameter('organization', $organization)
             ->orderBy('g.name')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')

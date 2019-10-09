@@ -18,15 +18,17 @@
 
 namespace AppBundle\Controller\WLT;
 
-use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Organization;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\AgreementActivityRealization;
+use AppBundle\Entity\WLT\Project;
 use AppBundle\Form\Model\CalendarCopy;
 use AppBundle\Form\Type\WLT\AgreementType;
 use AppBundle\Form\Type\WLT\CalendarCopyType;
 use AppBundle\Repository\MembershipRepository;
 use AppBundle\Repository\WLT\AgreementActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
+use AppBundle\Repository\WLT\ProjectRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\AgreementVoter;
 use AppBundle\Service\UserExtensionService;
@@ -161,23 +163,25 @@ class AgreementController extends Controller
     }
 
     /**
-     * @Route("/listar/{academicYear}/{page}", name="work_linked_training_agreement_list",
-     *     requirements={"page" = "\d+"}, defaults={"academicYear" = null, "page" = 1}, methods={"GET"})
+     * @Route("/listar/{project}/{page}", name="work_linked_training_agreement_list",
+     *     requirements={"page" = "\d+"}, methods={"GET"})
      */
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        ProjectRepository $projectRepository,
         TranslatorInterface $translator,
         Security $security,
-        $page = 1,
-        AcademicYear $academicYear = null
+        Project $project = null,
+        $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
-            $academicYear = $organization->getCurrentAcademicYear();
-        }
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+
+        if ($project && $project->getOrganization() !== $organization) {
+            throw $this->createAccessDeniedException();
+        }
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -201,6 +205,7 @@ class AgreementController extends Controller
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->join('a.workTutor', 'wt')
+            ->join('a.project', 'pr')
             ->orderBy('g.name')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
@@ -222,9 +227,15 @@ class AgreementController extends Controller
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        $queryBuilder
-            ->andWhere('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
+        if ($project) {
+            $queryBuilder
+                ->andWhere('a.project = :project')
+                ->setParameter('project', $project);
+        } else {
+            $queryBuilder
+                ->andWhere('pr.organization = :organization')
+                ->setParameter('organization', $organization);
+        }
 
         if (false === $security->isGranted(OrganizationVoter::MANAGE, $organization) &&
             false === $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization)
@@ -244,44 +255,43 @@ class AgreementController extends Controller
         $title = $translator->trans('title.list', [], 'wlt_agreement');
 
         return $this->render('wlt/agreement/list.html.twig', [
-            'title' => $title . ' - ' . $academicYear,
+            'title' => $title,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'wlt_agreement',
-            'academic_year' => $academicYear
+            'project' => $project,
+            'projects' => $projectRepository->findAllByOrganization($organization)
         ]);
     }
 
     /**
-     * @Route("/operacion/{academicYear}", name="work_linked_training_agreement_operation", methods={"POST"})
+     * @Route("/operacion/{project}", name="work_linked_training_agreement_operation", methods={"POST"})
      */
     public function operationAction(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
-        AcademicYear $academicYear
+        Project $project = null
     ) {
-        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_MANAGER, $academicYear->getOrganization());
+        $organization = $userExtensionService->getCurrentOrganization();
 
-        if ($academicYear->getOrganization() !== $userExtensionService->getCurrentOrganization()) {
-            return $this->createNotFoundException();
-        }
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
 
         $items = $request->request->get('items', []);
 
         if (count($items) !== 0) {
             if ('' === $request->get('delete')) {
-                return $this->deleteAction($items, $request, $translator, $agreementRepository, $academicYear);
+                return $this->deleteAction($items, $request, $translator, $agreementRepository, $organization);
             }
             if ('' === $request->get('copy')) {
-                return $this->copyAction($items, $request, $translator, $agreementRepository, $academicYear);
+                return $this->copyAction($items, $request, $translator, $agreementRepository, $organization);
             }
         }
 
         return $this->redirectToRoute(
             'work_linked_training_agreement_list',
-            ['academicYear' => $academicYear->getId()]
+            $project ? ['project' => $project->getId()] : []
         );
     }
 
@@ -290,12 +300,12 @@ class AgreementController extends Controller
         Request $request,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
-        AcademicYear $academicYear
+        Organization $organization
     ) {
         $em = $this->getDoctrine()->getManager();
 
 
-        $agreements = $agreementRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
+        $agreements = $agreementRepository->findAllInListByIdAndOrganization($items, $organization);
 
         if ($request->get('confirm', '') === 'ok') {
             try {
@@ -308,7 +318,7 @@ class AgreementController extends Controller
             }
             return $this->redirectToRoute(
                 'work_linked_training_agreement_list',
-                ['academicYear' => $academicYear->getId()]
+                ['academicYear' => $organization->getId()]
             );
         }
 
@@ -325,12 +335,12 @@ class AgreementController extends Controller
         Request $request,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
-        AcademicYear $academicYear
+        Organization $organization
     ) {
         $em = $this->getDoctrine()->getManager();
 
-        $selectedAgreements = $agreementRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
-        $agreementChoices = $agreementRepository->findAllInListByNotIdAndAcademicYear($items, $academicYear);
+        $selectedAgreements = $agreementRepository->findAllInListByIdAndOrganization($items, $organization);
+        $agreementChoices = $agreementRepository->findAllInListByNotIdAndOrganization($items, $organization);
 
         $calendarCopy = new CalendarCopy();
 
@@ -355,7 +365,7 @@ class AgreementController extends Controller
                 }
                 $this->addFlash('success', $translator->trans('message.copied', [], 'wlt_agreement'));
                 return $this->redirectToRoute('work_linked_training_agreement_list', [
-                    'academicYear' => $academicYear
+                    'academicYear' => $organization
                 ]);
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.copy_error', [], 'wlt_agreement'));

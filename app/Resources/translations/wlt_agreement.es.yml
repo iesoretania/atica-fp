@@ -47,6 +47,8 @@ table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% res
 table.no_items: No hay convenios que mostrar
 table.filter: Filtrar...
 
+filter.all_projects: Todos los proyectos
+
 header.student_enrollment: Estudiante
 header.workcenter: Centro de trabajo
 header.work_tutor: Responsable laboral
