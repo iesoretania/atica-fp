@@ -16,17 +16,17 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
+namespace AppBundle\Entity\WLT;
 
-namespace AppBundle\Entity\Edu;
-
+use AppBundle\Entity\AnsweredSurvey;
+use AppBundle\Entity\Edu\AcademicYear;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="AppBundle\Repository\Edu\TeachingRepository")
- * @ORM\Table(name="edu_teaching",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"teacher_id", "group_id", "subject_id"})}))
+ * @ORM\Entity
+ * @ORM\Table(name="wlt_academic_year_project_answered_survey")
  */
-class Teaching
+class AcademicYearProjectAnsweredSurvey
 {
     /**
      * @ORM\Id
@@ -37,31 +37,25 @@ class Teaching
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Teacher", inversedBy="teachings")
+     * @ORM\ManyToOne(targetEntity="Project")
      * @ORM\JoinColumn(nullable=false)
-     * @var Teacher
+     * @var Project
      */
-    private $teacher;
+    private $project;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Group", inversedBy="teachings")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\AcademicYear")
      * @ORM\JoinColumn(nullable=false)
-     * @var Group
+     * @var AcademicYear
      */
-    private $group;
+    private $academicYear;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Subject", inversedBy="teachings")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AnsweredSurvey")
      * @ORM\JoinColumn(nullable=false)
-     * @var Subject
+     * @var AnsweredSurvey
      */
-    private $subject;
-
-    public function __construct()
-    {
-        $this->workLinked = false;
-    }
-
+    private $answeredSurvey;
 
     /**
      * @return int
@@ -72,56 +66,56 @@ class Teaching
     }
 
     /**
-     * @return Teacher
+     * @return Project
      */
-    public function getTeacher()
+    public function getProject()
     {
-        return $this->teacher;
+        return $this->project;
     }
 
     /**
-     * @param Teacher $teacher
-     * @return Teaching
+     * @param Project $project
+     * @return AcademicYearProjectAnsweredSurvey
      */
-    public function setTeacher($teacher)
+    public function setProject($project)
     {
-        $this->teacher = $teacher;
+        $this->project = $project;
         return $this;
     }
 
     /**
-     * @return Group
+     * @return AcademicYear
      */
-    public function getGroup()
+    public function getAcademicYear()
     {
-        return $this->group;
+        return $this->academicYear;
     }
 
     /**
-     * @param Group $group
-     * @return Teaching
+     * @param AcademicYear $academicYear
+     * @return AcademicYearProjectAnsweredSurvey
      */
-    public function setGroup($group)
+    public function setAcademicYear($academicYear)
     {
-        $this->group = $group;
+        $this->academicYear = $academicYear;
         return $this;
     }
 
     /**
-     * @return Subject
+     * @return AnsweredSurvey
      */
-    public function getSubject()
+    public function getAnsweredSurvey()
     {
-        return $this->subject;
+        return $this->answeredSurvey;
     }
 
     /**
-     * @param Subject $subject
-     * @return Teaching
+     * @param AnsweredSurvey $answeredSurvey
+     * @return AcademicYearProjectAnsweredSurvey
      */
-    public function setSubject($subject)
+    public function setAnsweredSurvey($answeredSurvey)
     {
-        $this->subject = $subject;
+        $this->answeredSurvey = $answeredSurvey;
         return $this;
     }
 }

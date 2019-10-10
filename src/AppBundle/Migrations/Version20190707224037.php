@@ -26,6 +26,7 @@ class Version20190707224037 extends AbstractMigration
             ->addSelect('ay.description AS academic_year')
             ->addSelect('ay.id AS academic_year_id')
             ->addSelect('o.id AS organization_id')
+            ->addSelect('ay.wlt_organization_survey_id AS wlt_organization_survey_id')
             ->from('edu_training', 't')
             ->where('t.work_linked = :status')
             ->join('t', 'edu_academic_year', 'ay', 't.academic_year_id = ay.id')
@@ -59,6 +60,8 @@ class Version20190707224037 extends AbstractMigration
                     'manager_id' => $managerId,
                     'student_survey_id' => $workLinkedTraining['wlt_student_survey_id'],
                     'company_survey_id' => $workLinkedTraining['wlt_company_survey_id'],
+                    'manager_survey_id' => $workLinkedTraining['wlt_organization_survey_id'],
+                    'academic_year_manager_survey_id' => $workLinkedTraining['wlt_organization_survey_id'],
                 ]);
                 $teacher = $this->connection->createQueryBuilder()
                     ->select('t.id')
@@ -160,6 +163,12 @@ class Version20190707224037 extends AbstractMigration
         $this->addSql('DROP INDEX IDX_2692AD501294B084 ON edu_training');
         $this->addSql('DROP INDEX IDX_2692AD5046E1FBF4 ON edu_training');
         $this->addSql('ALTER TABLE edu_training DROP wlt_student_survey_id, DROP wlt_company_survey_id, DROP work_linked');
+        $this->addSql('ALTER TABLE edu_teaching DROP work_linked');
+        $this->addSql('ALTER TABLE edu_academic_year DROP FOREIGN KEY FK_CFBE31D0D5F8DFB5');
+        $this->addSql('DROP INDEX IDX_CFBE31D0D5F8DFB5 ON edu_academic_year');
+        $this->addSql('ALTER TABLE edu_academic_year DROP wlt_organization_survey_id');
+        $this->addSql('ALTER TABLE edu_academic_year_audit DROP wlt_organization_survey_id');
+
     }
 
     /**

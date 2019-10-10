@@ -21,9 +21,11 @@ namespace AppBundle\Form\Type\WLT;
 use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Person;
+use AppBundle\Entity\Survey;
 use AppBundle\Entity\WLT\Project;
 use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
+use AppBundle\Repository\SurveyRepository;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -35,15 +37,21 @@ class ProjectType extends AbstractType
     private $teacherRepository;
     private $groupRepository;
     private $userExtensionService;
+    /**
+     * @var SurveyRepository
+     */
+    private $surveyRepository;
 
     public function __construct(
         TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
+        SurveyRepository $surveyRepository,
         UserExtensionService $userExtensionService
     ) {
         $this->teacherRepository = $teacherRepository;
         $this->groupRepository = $groupRepository;
         $this->userExtensionService = $userExtensionService;
+        $this->surveyRepository = $surveyRepository;
     }
 
     /**
@@ -57,7 +65,11 @@ class ProjectType extends AbstractType
         $teacherPersons = array_map(static function(Teacher $teacher) {
             return $teacher->getPerson();
         }, $teachers);
+
         $groups = $this->groupRepository->findByOrganization($organization);
+
+        $surveys = $this->surveyRepository->findByOrganization($organization);
+
         $builder
             ->add('name', null, [
                 'label' => 'form.name',
@@ -76,7 +88,7 @@ class ProjectType extends AbstractType
                 'class' => Group::class,
                 'choice_translation_domain' => false,
                 'choices' => $groups,
-                'choice_label' => function(Group $group) {
+                'choice_label' => function (Group $group) {
                     return $group
                             ->getGrade()
                             ->getTraining()
@@ -84,6 +96,42 @@ class ProjectType extends AbstractType
                             ->getDescription() . ' - ' . $group->getName();
                 },
                 'multiple' => true,
+                'required' => false
+            ])
+            ->add('studentSurvey', EntityType::class, [
+                'label' => 'form.student_survey',
+                'class' => Survey::class,
+                'choice_label' => 'title',
+                'choice_translation_domain' => false,
+                'choices' => $surveys,
+                'placeholder' => 'form.no_survey',
+                'required' => false
+            ])
+            ->add('companySurvey', EntityType::class, [
+                'label' => 'form.company_survey',
+                'class' => Survey::class,
+                'choice_label' => 'title',
+                'choice_translation_domain' => false,
+                'choices' => $surveys,
+                'placeholder' => 'form.no_survey',
+                'required' => false
+            ])
+            ->add('academicYearManagerSurvey', EntityType::class, [
+                'label' => 'form.academic_year_manager_survey',
+                'class' => Survey::class,
+                'choice_label' => 'title',
+                'choice_translation_domain' => false,
+                'choices' => $surveys,
+                'placeholder' => 'form.no_survey',
+                'required' => false
+            ])
+            ->add('managerSurvey', EntityType::class, [
+                'label' => 'form.manager_survey',
+                'class' => Survey::class,
+                'choice_label' => 'title',
+                'choice_translation_domain' => false,
+                'choices' => $surveys,
+                'placeholder' => 'form.no_survey',
                 'required' => false
             ]);
     }

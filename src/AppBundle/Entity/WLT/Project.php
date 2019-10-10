@@ -18,6 +18,7 @@
 
 namespace AppBundle\Entity\WLT;
 
+use AppBundle\Entity\AnsweredSurvey;
 use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Organization;
@@ -87,6 +88,29 @@ class Project
      * @var Survey
      */
     private $companySurvey;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @var Survey
+     */
+    private $academicYearManagerSurvey;
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @var Survey
+     */
+    private $managerSurvey;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AnsweredSurvey")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @var AnsweredSurvey
+     */
+    private $answeredManagerSurvey;
+
 
     public function __construct()
     {
@@ -230,6 +254,60 @@ class Project
     public function setCompanySurvey(Survey $companySurvey = null)
     {
         $this->companySurvey = $companySurvey;
+        return $this;
+    }
+
+    /**
+     * @return Survey
+     */
+    public function getAcademicYearManagerSurvey()
+    {
+        return $this->academicYearManagerSurvey;
+    }
+
+    /**
+     * @param Survey $academicYearManagerSurvey
+     * @return Project
+     */
+    public function setAcademicYearManagerSurvey(Survey $academicYearManagerSurvey = null)
+    {
+        $this->academicYearManagerSurvey = $academicYearManagerSurvey;
+        return $this;
+    }
+
+    /**
+     * @return Survey
+     */
+    public function getManagerSurvey()
+    {
+        return $this->managerSurvey;
+    }
+
+    /**
+     * @param Survey $managerSurvey
+     * @return Project
+     */
+    public function setManagerSurvey(Survey $managerSurvey = null)
+    {
+        $this->managerSurvey = $managerSurvey;
+        return $this;
+    }
+
+    /**
+     * @return AnsweredSurvey
+     */
+    public function getAnsweredManagerSurvey()
+    {
+        return $this->answeredManagerSurvey;
+    }
+
+    /**
+     * @param AnsweredSurvey $answeredManagerSurvey
+     * @return Project
+     */
+    public function setAnsweredManagerSurvey($answeredManagerSurvey)
+    {
+        $this->answeredManagerSurvey = $answeredManagerSurvey;
         return $this;
     }
 }

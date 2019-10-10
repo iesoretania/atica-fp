@@ -3,22 +3,10 @@ form.internal_code: Código Séneca
 form.name: Nombre
 form.no_department: No es una enseñanza de FP
 
-form.work_linked_training: FP dual
-form.work_linked_training.yes: Enseñanza asociada a un proyecto de FP dual
-form.work_linked_training.no: No se aplica a la enseñanza
-
-form.wlt_student_survey: Encuesta de alumnado de FP dual
-form.wlt_company_survey: Encuesta de empresa de FP dual
-form.no_survey: Ninguna
-
 form.save: Guardar cambios
 form.delete: Eliminar las enseñanzas seleccionadas
 form.back: Volver
 form.delete_confirm: Confirmar borrado
-
-form.filter.all: Mostrar todo
-form.filter.work_linked_training: FP dual
-form.filter.unassigned: Sin asignar
 
 table.new: Nueva enseñanza
 

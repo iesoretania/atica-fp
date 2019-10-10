@@ -19,7 +19,6 @@
 namespace AppBundle\Entity\Edu;
 
 use AppBundle\Entity\Organization;
-use AppBundle\Entity\Survey;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -74,13 +73,6 @@ class AcademicYear
      * @var \DateTime
      */
     private $endDate;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var Survey
-     */
-    private $wltOrganizationSurvey;
 
     public function __toString()
     {
@@ -200,24 +192,6 @@ class AcademicYear
     public function setEndDate($endDate)
     {
         $this->endDate = $endDate;
-        return $this;
-    }
-
-    /**
-     * @return Survey
-     */
-    public function getWltOrganizationSurvey()
-    {
-        return $this->wltOrganizationSurvey;
-    }
-
-    /**
-     * @param Survey $wltOrganizationSurvey
-     * @return AcademicYear
-     */
-    public function setWltOrganizationSurvey($wltOrganizationSurvey)
-    {
-        $this->wltOrganizationSurvey = $wltOrganizationSurvey;
         return $this;
     }
 }

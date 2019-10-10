@@ -20,7 +20,6 @@ namespace AppBundle\Form\Type\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
-use AppBundle\Entity\Survey;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\SurveyRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -47,10 +46,6 @@ class AcademicYearType extends AbstractType
     {
         $teachers = $options['academic_year'] ? $this->teacherRepository->
             findByAcademicYear($options['academic_year']) : [];
-
-        $surveys = $options['academic_year']
-            ? $this->surveyRepository->findByOrganization($options['academic_year']->getOrganization())
-            : [];
 
         $builder
             ->add('description', null, [
@@ -80,15 +75,6 @@ class AcademicYearType extends AbstractType
                 'choice_translation_domain' => false,
                 'choices' => $teachers,
                 'placeholder' => 'form.none',
-                'required' => false
-            ])
-            ->add('wltOrganizationSurvey', EntityType::class, [
-                'label' => 'form.wlt_organization_survey',
-                'class' => Survey::class,
-                'choice_label' => 'title',
-                'choice_translation_domain' => false,
-                'choices' => $surveys,
-                'placeholder' => 'form.no_survey',
                 'required' => false
             ]);
     }
