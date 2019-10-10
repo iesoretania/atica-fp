@@ -5,6 +5,8 @@ header.start_date: Fecha de inicio
 header.end_date: Fecha de fin
 header.status: Horas bloqueadas/totales
 
+filter.all_projects: Todos los proyectos
+
 form.calendar: Calendario
 
 form.save: Guardar cambios

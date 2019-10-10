@@ -57,7 +57,7 @@ class ProjectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAllByOrganization(
+    public function findByOrganization(
         Organization $organization
     ) {
         return $this->createQueryBuilder('p')
@@ -67,14 +67,16 @@ class ProjectRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-    public function deleteFromList($items)
-    {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->delete(Project::class, 'p')
-            ->where('p IN (:items)')
-            ->setParameter('items', $items)
+    public function findByGroups(
+        $groups
+    ) {
+        return $this->createQueryBuilder('p')
+            ->distinct(true)
+            ->join('p.groups', 'g')
+            ->andWhere('g IN (:groups)')
+            ->setParameter('groups', $groups)
+            ->orderBy('p.name', 'DESC')
             ->getQuery()
-            ->execute();
+            ->getResult();
     }
 }

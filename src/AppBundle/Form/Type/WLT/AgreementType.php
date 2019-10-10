@@ -107,7 +107,7 @@ class AgreementType extends AbstractType
             [];
 
         $projects =
-            $this->projectRepository->findAllByOrganization($organization);
+            $this->projectRepository->findByOrganization($organization);
 
         if ($studentEnrollment) {
             $training = $studentEnrollment->getGroup()->getGrade()->getTraining();

@@ -18,10 +18,11 @@
 
 namespace AppBundle\Controller\WLT;
 
-use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\WLT\Agreement;
+use AppBundle\Entity\WLT\Project;
 use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
+use AppBundle\Repository\WLT\ProjectRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -39,8 +40,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 class TrackingController extends Controller
 {
     /**
-     * @Route("/estudiante/listar/{academicYear}/{page}", name="work_linked_training_tracking_list",
-     *     requirements={"page" = "\d+"}, defaults={"academicYear" = null, "page" = 1}, methods={"GET"})
+     * @Route("/estudiante/listar/{project}/{page}", name="work_linked_training_tracking_list",
+     *     requirements={"page" = "\d+"}, defaults={"project" = null, "page" = 1}, methods={"GET"})
      */
     public function listAction(
         Request $request,
@@ -48,14 +49,12 @@ class TrackingController extends Controller
         TranslatorInterface $translator,
         TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
+        ProjectRepository $projectRepository,
         Security $security,
         $page = 1,
-        AcademicYear $academicYear = null
+        Project $project = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
-            $academicYear = $organization->getCurrentAcademicYear();
-        }
 
         $this->denyAccessUnlessGranted(OrganizationVoter::ACCESS_WORK_LINKED_TRAINING, $organization);
 
@@ -64,6 +63,7 @@ class TrackingController extends Controller
 
         $queryBuilder
             ->select('a')
+            ->addSelect('pro')
             ->addSelect('w')
             ->addSelect('c')
             ->addSelect('se')
@@ -75,6 +75,7 @@ class TrackingController extends Controller
             ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN 1 ELSE 0 END)')
             ->from(Agreement::class, 'a')
             ->leftJoin('a.workDays', 'wd')
+            ->join('a.project', 'pro')
             ->join('a.workcenter', 'w')
             ->join('w.company', 'c')
             ->join('a.studentEnrollment', 'se')
@@ -109,22 +110,23 @@ class TrackingController extends Controller
         $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
         $isWorkTutor = $security->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization);
 
+        $projects = $projectRepository->findByOrganization($organization);
+
         if (false === $isManager && false === $isWltManager) {
             $person = $this->getUser()->getPerson();
 
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento, tutor de grupo o profesor
-            $teacher =
-                $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+            $groups =
+                $groupRepository->findByOrganizationAndPerson($organization, $person);
 
-            if ($teacher) {
-                $groups = $groupRepository->findByAcademicYearAndTeacher($academicYear, $teacher);
+            if ($groups) {
+                $projects = $projectRepository->findByGroups($groups);
 
-                if ($groups->count() > 0) {
-                    $queryBuilder
-                        ->andWhere('g IN (:groups)')
-                        ->setParameter('groups', $groups);
-                }
+                $queryBuilder
+                    ->andWhere('g IN (:groups)')
+                    ->setParameter('groups', $groups);
+
                 // si también es tutor laboral, mostrar los suyos aunque sean de otros grupos
                 if ($isWorkTutor) {
                     $queryBuilder
@@ -132,6 +134,8 @@ class TrackingController extends Controller
                         ->setParameter('person', $person);
                 }
             } else {
+                $projects = [];
+
                 // si solo es tutor laboral, necesita ser el tutor para verlo
                 if ($isWorkTutor) {
                     $queryBuilder
@@ -146,9 +150,15 @@ class TrackingController extends Controller
             }
         }
 
+        if ($project) {
+            $queryBuilder
+                ->andWhere('a.project = :project')
+                ->setParameter('project', $project);
+        }
+
         $queryBuilder
-            ->andWhere('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
+            ->andWhere('pro.organization = :organization')
+            ->setParameter('organization', $organization);
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -159,11 +169,12 @@ class TrackingController extends Controller
         $title = $translator->trans('title.agreement.list', [], 'wlt_tracking');
 
         return $this->render('wlt/tracking/list.html.twig', [
-            'title' => $title . ' - ' . $academicYear,
+            'title' => $title,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'wlt_tracking',
-            'academic_year' => $academicYear
+            'project' => $project,
+            'projects' => $projects
         ]);
     }
 }

@@ -260,7 +260,7 @@ class AgreementController extends Controller
             'q' => $q,
             'domain' => 'wlt_agreement',
             'project' => $project,
-            'projects' => $projectRepository->findAllByOrganization($organization)
+            'projects' => $projectRepository->findByOrganization($organization)
         ]);
     }
 
