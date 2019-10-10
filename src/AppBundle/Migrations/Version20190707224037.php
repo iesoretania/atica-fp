@@ -60,8 +60,7 @@ class Version20190707224037 extends AbstractMigration
                     'manager_id' => $managerId,
                     'student_survey_id' => $workLinkedTraining['wlt_student_survey_id'],
                     'company_survey_id' => $workLinkedTraining['wlt_company_survey_id'],
-                    'manager_survey_id' => $workLinkedTraining['wlt_organization_survey_id'],
-                    'academic_year_manager_survey_id' => $workLinkedTraining['wlt_organization_survey_id'],
+                    'manager_survey_id' => $workLinkedTraining['wlt_organization_survey_id']
                 ]);
                 $teacher = $this->connection->createQueryBuilder()
                     ->select('t.id')

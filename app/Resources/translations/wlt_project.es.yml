@@ -3,7 +3,6 @@ form.manager: Coordinador/a
 form.groups: Grupos asociados
 form.student_survey: Modelo de encuesta de satisfacción de alumnado
 form.company_survey: Modelo de encuesta de satisfacción de empresa colaboradora
-form.academic_year_manager_survey: Modelo de encuesta de satisfacción anual de coordinación
 form.manager_survey: Modelo de encuesta de satisfacción final de coordinación
 form.student_enrollments: Estudiantes adheridos
 form.no_survey: Ninguna

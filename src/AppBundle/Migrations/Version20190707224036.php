@@ -41,15 +41,9 @@ class Version20190707224036 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_E4D36E41D490911D ON wlt_project (student_survey_id)');
         $this->addSql('CREATE INDEX IDX_E4D36E4180E5DA6D ON wlt_project (company_survey_id)');
 
-        $this->addSql('ALTER TABLE wlt_project ADD manager_survey_id INT DEFAULT NULL, ADD answered_manager_survey_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE wlt_project ADD manager_survey_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE wlt_project ADD CONSTRAINT FK_E4D36E41F9D59FA4 FOREIGN KEY (manager_survey_id) REFERENCES survey (id) ON DELETE SET NULL');
-        $this->addSql('ALTER TABLE wlt_project ADD CONSTRAINT FK_E4D36E41D1E6503A FOREIGN KEY (answered_manager_survey_id) REFERENCES answered_survey (id) ON DELETE SET NULL');
         $this->addSql('CREATE INDEX IDX_E4D36E41F9D59FA4 ON wlt_project (manager_survey_id)');
-        $this->addSql('CREATE INDEX IDX_E4D36E41D1E6503A ON wlt_project (answered_manager_survey_id)');
-
-        $this->addSql('ALTER TABLE wlt_project ADD academic_year_manager_survey_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE wlt_project ADD CONSTRAINT FK_E4D36E4141B184F4 FOREIGN KEY (academic_year_manager_survey_id) REFERENCES survey (id) ON DELETE SET NULL');
-        $this->addSql('CREATE INDEX IDX_E4D36E4141B184F4 ON wlt_project (academic_year_manager_survey_id)');
 
         $this->addSql('CREATE TABLE wlt_academic_year_project_answered_survey (id INT AUTO_INCREMENT NOT NULL, project_id INT NOT NULL, academic_year_id INT NOT NULL, answered_survey_id INT NOT NULL, INDEX IDX_F1EBB3CB166D1F9C (project_id), INDEX IDX_F1EBB3CBC54F3401 (academic_year_id), INDEX IDX_F1EBB3CBA97283E6 (answered_survey_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
         $this->addSql('ALTER TABLE wlt_academic_year_project_answered_survey ADD CONSTRAINT FK_F1EBB3CB166D1F9C FOREIGN KEY (project_id) REFERENCES wlt_project (id)');
