@@ -57,6 +57,16 @@ class ProjectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function deleteFromList($items)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(Project::class, 'p')
+            ->where('p IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
+
     public function findByOrganization(
         Organization $organization
     ) {
