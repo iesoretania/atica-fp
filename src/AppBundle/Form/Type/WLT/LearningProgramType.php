@@ -20,7 +20,6 @@ namespace AppBundle\Form\Type\WLT;
 
 use AppBundle\Entity\Company;
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\User;
 use AppBundle\Entity\WLT\ActivityRealization;
@@ -29,6 +28,7 @@ use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\TrainingRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -84,7 +84,7 @@ class LearningProgramType extends AbstractType
         /** @var User $user */
         $user = $this->security->getUser();
         if (false === $this->security->isGranted(OrganizationVoter::MANAGE, $organization) &&
-            false === $this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization)
+            false === $this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization)
         ) {
             $trainings = $this->trainingRepository->findByAcademicYearAndDepartmentHead(
                 $academicYear,
@@ -174,7 +174,7 @@ class LearningProgramType extends AbstractType
                 $this->academicYearRepository->find($data['academicYear']) :
                 null;
 
-            /** @var StudentEnrollment $studentEnrollment */
+            /** @var Training $training */
             $training = isset($data['training']) ?
                 $this->trainingRepository->find($data['training']) :
                 null;

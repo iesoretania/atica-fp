@@ -23,7 +23,9 @@ use AppBundle\Form\Type\WLT\VisitType;
 use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\VisitRepository;
+use AppBundle\Security\Edu\EduOrganizationVoter;
 use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -51,7 +53,7 @@ class VisitController extends Controller
         GroupRepository $groupRepository
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::ACCESS_WORK_LINKED_TRAINING_VISIT, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization);
 
         $academicYear = $organization->getCurrentAcademicYear();
         $person = $this->getUser()->getPerson();
@@ -94,15 +96,15 @@ class VisitController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::ACCESS_WORK_LINKED_TRAINING_VISIT, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization);
 
         $em = $this->getDoctrine()->getManager();
 
         $readOnly = false;
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
-        $isDepartmentHead = $security->isGranted(OrganizationVoter::DEPARTMENT_HEAD, $organization);
+        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+        $isDepartmentHead = $security->isGranted(EduOrganizationVoter::EDU_DEPARTMENT_HEAD, $organization);
 
         $groups = [];
         $teachers = [];
@@ -178,8 +180,8 @@ class VisitController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::ACCESS_WORK_LINKED_TRAINING_VISIT, $organization);
-        $readOnly = !$this->isGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING_VISIT, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization);
+        $readOnly = !$this->isGranted(WLTOrganizationVoter::WLT_MANAGE_VISIT, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -196,8 +198,8 @@ class VisitController extends Controller
             ->join('w.company', 'c')
             ->addOrderBy('v.dateTime', 'DESC');
 
-        $isManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
-        $isDepartmentHead = $security->isGranted(OrganizationVoter::DEPARTMENT_HEAD, $organization);
+        $isManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+        $isDepartmentHead = $security->isGranted(EduOrganizationVoter::EDU_DEPARTMENT_HEAD, $organization);
 
         $groups = [];
         $teacher = null;
@@ -271,7 +273,7 @@ class VisitController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING_VISIT, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE_VISIT, $organization);
 
         $em = $this->getDoctrine()->getManager();
 

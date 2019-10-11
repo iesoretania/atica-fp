@@ -18,7 +18,7 @@
 
 namespace AppBundle\Controller\WLT;
 
-use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,7 +31,7 @@ class MenuController extends Controller
     public function indexAction(UserExtensionService $userExtensionService)
     {
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::ACCESS_WORK_LINKED_TRAINING,
+            WLTOrganizationVoter::WLT_ACCESS,
             $userExtensionService->getCurrentOrganization()
         );
         return $this->render(

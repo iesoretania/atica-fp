@@ -21,7 +21,7 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\WLT\ActivityRealizationGrade;
 use AppBundle\Form\Type\WLT\ActivityRealizationGradeType;
 use AppBundle\Repository\WLT\ActivityRealizationGradeRepository;
-use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -46,7 +46,7 @@ class ActivityRealizationGradeController extends Controller
         UserExtensionService $userExtensionService
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         $activityRealizationGrade = new ActivityRealizationGrade();
         $activityRealizationGrade
@@ -68,7 +68,7 @@ class ActivityRealizationGradeController extends Controller
         ActivityRealizationGrade $activityRealizationGrade
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         if ($activityRealizationGrade->getAcademicYear() !== $organization->getCurrentAcademicYear()) {
             throw $this->createAccessDeniedException();
@@ -124,7 +124,7 @@ class ActivityRealizationGradeController extends Controller
         $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -181,7 +181,7 @@ class ActivityRealizationGradeController extends Controller
         TranslatorInterface $translator
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         $em = $this->getDoctrine()->getManager();
 

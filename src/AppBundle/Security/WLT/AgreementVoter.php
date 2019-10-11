@@ -126,7 +126,7 @@ class AgreementVoter extends CachedVoter
         }
 
         // Coordinador de FP dual
-        if ($this->decisionManager->decide($token, [OrganizationVoter::WLT_MANAGER], $organization)) {
+        if ($this->decisionManager->decide($token, [WLTOrganizationVoter::WLT_MANAGER], $organization)) {
             return true;
         }
 
@@ -166,7 +166,9 @@ class AgreementVoter extends CachedVoter
             case self::VIEW_GRADE:
                 return $isTeacher || $isWorkTutor || $isGroupTutor;
 
-            // Si es permiso para pasar lista o evaluar, el tutor de grupo o el responsable laboral
+            // Si es permiso para pasar lista, evaluar o revisar la encuesta de empresa
+            // puede hacerlo el tutor de grupo o el responsable laboral
+            case self::VIEW_COMPANY_SURVEY:
             case self::ATTENDANCE:
             case self::GRADE:
                 return $isWorkTutor || $isGroupTutor;
@@ -180,8 +182,8 @@ class AgreementVoter extends CachedVoter
                     ->getGroup()->getGrade()->getTraining()->getWltStudentSurvey();
 
             case self::FILL_STUDENT_SURVEY:
-                $wltStudentSurvey = $subject->getStudentEnrollment()
-                    ->getGroup()->getGrade()->getTraining()->getWltStudentSurvey();
+                $wltStudentSurvey = $subject->getProject()->getStudentSurvey();
+
                 $now = new \DateTime();
 
                 if ((!$isStudent && !$isGroupTutor) || !$wltStudentSurvey) {
@@ -194,9 +196,6 @@ class AgreementVoter extends CachedVoter
                     return false;
                 }
                 return true;
-
-            case self::VIEW_COMPANY_SURVEY:
-                return $isWorkTutor || $isGroupTutor;
 
             case self::FILL_COMPANY_SURVEY:
                 $wltCompanySurvey = $subject->getStudentEnrollment()

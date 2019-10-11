@@ -22,7 +22,7 @@ use AppBundle\Entity\WLT\Project;
 use AppBundle\Form\Type\WLT\ProjectStudentEnrollmentType;
 use AppBundle\Form\Type\WLT\ProjectType;
 use AppBundle\Repository\WLT\ProjectRepository;
-use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -48,7 +48,7 @@ class ProjectController extends Controller
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -99,7 +99,7 @@ class ProjectController extends Controller
         TranslatorInterface $translator
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         $project = new Project();
         $project
@@ -121,7 +121,7 @@ class ProjectController extends Controller
         Project $project
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         $em = $this->getDoctrine()->getManager();
 
@@ -170,7 +170,7 @@ class ProjectController extends Controller
         Project $project
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         $em = $this->getDoctrine()->getManager();
 
@@ -222,7 +222,7 @@ class ProjectController extends Controller
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         $em = $this->getDoctrine()->getManager();
 

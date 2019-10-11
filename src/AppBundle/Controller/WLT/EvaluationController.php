@@ -25,6 +25,7 @@ use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\AgreementVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -112,7 +113,7 @@ class EvaluationController extends Controller
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::VIEW_EVALUATION_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_VIEW_EVALUATION, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -158,8 +159,8 @@ class EvaluationController extends Controller
         }
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
-        $isWorkTutor = $security->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization);
+        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+        $isWorkTutor = $security->isGranted(WLTOrganizationVoter::WLT_WORK_TUTOR, $organization);
 
         if (false === $isManager && false === $isWltManager) {
             $person = $this->getUser()->getPerson();

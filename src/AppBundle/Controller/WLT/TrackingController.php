@@ -21,9 +21,9 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\Project;
 use AppBundle\Repository\Edu\GroupRepository;
-use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\ProjectRepository;
 use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -47,7 +47,6 @@ class TrackingController extends Controller
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
         ProjectRepository $projectRepository,
         Security $security,
@@ -56,7 +55,7 @@ class TrackingController extends Controller
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::ACCESS_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -107,8 +106,8 @@ class TrackingController extends Controller
         }
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
-        $isWorkTutor = $security->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization);
+        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+        $isWorkTutor = $security->isGranted(WLTOrganizationVoter::WLT_WORK_TUTOR, $organization);
 
         $projects = $projectRepository->findByOrganization($organization);
 

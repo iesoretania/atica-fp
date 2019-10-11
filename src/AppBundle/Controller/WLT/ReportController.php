@@ -31,7 +31,7 @@ use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\MeetingRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
-use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,7 +50,7 @@ class ReportController extends Controller
     public function indexAction(UserExtensionService $userExtensionService)
     {
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::WLT_MANAGER,
+            WLTOrganizationVoter::WLT_MANAGER,
             $userExtensionService->getCurrentOrganization()
         );
         return $this->render(
@@ -77,7 +77,7 @@ class ReportController extends Controller
         AcademicYear $academicYear = null
     ) {
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::WLT_MANAGER,
+            WLTOrganizationVoter::WLT_MANAGER,
             $userExtensionService->getCurrentOrganization()
         );
 
@@ -145,7 +145,7 @@ class ReportController extends Controller
         AcademicYear $academicYear = null
     ) {
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::WLT_MANAGER,
+            WLTOrganizationVoter::WLT_MANAGER,
             $userExtensionService->getCurrentOrganization()
         );
 
@@ -212,7 +212,7 @@ class ReportController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::WLT_MANAGER,
+            WLTOrganizationVoter::WLT_MANAGER,
             $organization
         );
 
@@ -277,7 +277,7 @@ class ReportController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::WLT_MANAGER,
+            WLTOrganizationVoter::WLT_MANAGER,
             $organization
         );
 
@@ -338,7 +338,7 @@ class ReportController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::WLT_MANAGER,
+            WLTOrganizationVoter::WLT_MANAGER,
             $organization
         );
 
@@ -407,7 +407,7 @@ class ReportController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::WLT_MANAGER,
+            WLTOrganizationVoter::WLT_MANAGER,
             $organization
         );
 

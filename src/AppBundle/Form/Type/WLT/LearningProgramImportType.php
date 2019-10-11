@@ -27,6 +27,7 @@ use AppBundle\Form\Model\LearningProgramImport;
 use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\TrainingRepository;
 use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -76,7 +77,7 @@ class LearningProgramImportType extends AbstractType
         /** @var User $user */
         $user = $this->security->getUser();
         if (false === $this->security->isGranted(OrganizationVoter::MANAGE, $organization) &&
-            false === $this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization)
+            false === $this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization)
         ) {
             $trainings = $this->trainingRepository->findByAcademicYearAndDepartmentHead(
                 $academicYear,

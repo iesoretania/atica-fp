@@ -20,6 +20,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Menu\MenuItem;
 use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use Symfony\Component\Security\Core\Security;
 
 class CoreMenu implements MenuBuilderInterface
@@ -46,7 +47,7 @@ class CoreMenu implements MenuBuilderInterface
 
         $root = [];
 
-        if ($this->security->isGranted(OrganizationVoter::ACCESS_WORK_LINKED_TRAINING, $organization)) {
+        if ($this->security->isGranted(WLTOrganizationVoter::WLT_ACCESS, $organization)) {
             $menu1 = new MenuItem();
             $menu1
                 ->setName('work_linked_training')
@@ -58,7 +59,7 @@ class CoreMenu implements MenuBuilderInterface
 
             $root[] = $menu1;
 
-            if ($this->security->isGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization)) {
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGE, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('work_linked_tracking_project')
@@ -80,7 +81,7 @@ class CoreMenu implements MenuBuilderInterface
 
             $menu1->addChild($menu2);
 
-            if ($this->security->isGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization)) {
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGE, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('work_linked_training_agreement')
@@ -102,7 +103,7 @@ class CoreMenu implements MenuBuilderInterface
                 $menu1->addChild($menu2);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::ACCESS_TRAININGS, $organization)) {
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_ACCESS_LEARNING_PROGRAM, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('work_linked_training_training')
@@ -115,7 +116,7 @@ class CoreMenu implements MenuBuilderInterface
                 $menu1->addChild($menu2);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::VIEW_EVALUATION_WORK_LINKED_TRAINING, $organization)) {
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_VIEW_EVALUATION, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('work_linked_training_evaluation')
@@ -128,7 +129,7 @@ class CoreMenu implements MenuBuilderInterface
                 $menu1->addChild($menu2);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::VIEW_GRADE_WORK_LINKED_TRAINING, $organization)) {
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_VIEW_GRADE, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('work_linked_training_evaluation_summary')
@@ -141,7 +142,7 @@ class CoreMenu implements MenuBuilderInterface
                 $menu1->addChild($menu2);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::WLT_TEACHER, $organization)) {
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_TEACHER, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('work_linked_training_meeting')
@@ -153,7 +154,7 @@ class CoreMenu implements MenuBuilderInterface
 
                 $menu1->addChild($menu2);
             }
-            if ($this->security->isGranted(OrganizationVoter::ACCESS_WORK_LINKED_TRAINING_VISIT, $organization)) {
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('work_linked_training_visit')
@@ -177,8 +178,8 @@ class CoreMenu implements MenuBuilderInterface
 
             $menu1->addChild($menu2);
 
-            if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization) ||
-                $this->security->isGranted(OrganizationVoter::WLT_STUDENT, $organization)
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization) ||
+                $this->security->isGranted(WLTOrganizationVoter::WLT_STUDENT, $organization)
             ) {
                 $menu3 = new MenuItem();
                 $menu3
@@ -192,8 +193,8 @@ class CoreMenu implements MenuBuilderInterface
                 $menu2->addChild($menu3);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization) ||
-                $this->security->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization)
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization) ||
+                $this->security->isGranted(WLTOrganizationVoter::WLT_WORK_TUTOR, $organization)
             ) {
                 $menu3 = new MenuItem();
                 $menu3
@@ -207,8 +208,8 @@ class CoreMenu implements MenuBuilderInterface
                 $menu2->addChild($menu3);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization) ||
-                $this->security->isGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization)
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization) ||
+                $this->security->isGranted(WLTOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization)
             ) {
                 $menu3 = new MenuItem();
                 $menu3
@@ -222,7 +223,7 @@ class CoreMenu implements MenuBuilderInterface
                 $menu2->addChild($menu3);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization)
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization)
             ) {
                 $menu2 = new MenuItem();
                 $menu2

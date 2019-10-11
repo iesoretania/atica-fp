@@ -20,6 +20,7 @@ namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -47,7 +48,7 @@ class TrainingController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::ACCESS_TRAININGS, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_LEARNING_PROGRAM, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -73,7 +74,7 @@ class TrainingController extends Controller
             ->setParameter('academic_year', $academicYear);
 
         if (false === $security->isGranted(OrganizationVoter::MANAGE, $organization) &&
-            false === $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization)
+            false === $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization)
         ) {
             $queryBuilder
                 ->join('t.department', 'd')

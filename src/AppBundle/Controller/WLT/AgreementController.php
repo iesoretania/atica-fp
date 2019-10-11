@@ -31,6 +31,7 @@ use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\ProjectRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\AgreementVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -57,7 +58,7 @@ class AgreementController extends Controller
         AgreementActivityRealizationRepository $agreementActivityRealizationRepository)
     {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         $agreement = new Agreement();
         $this->getDoctrine()->getManager()->persist($agreement);
@@ -177,7 +178,7 @@ class AgreementController extends Controller
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         if ($project && $project->getOrganization() !== $organization) {
             throw $this->createAccessDeniedException();
@@ -238,7 +239,7 @@ class AgreementController extends Controller
         }
 
         if (false === $security->isGranted(OrganizationVoter::MANAGE, $organization) &&
-            false === $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization)
+            false === $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization)
         ) {
             $queryBuilder
                 ->join('t.department', 'd')
@@ -276,7 +277,7 @@ class AgreementController extends Controller
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         $items = $request->request->get('items', []);
 

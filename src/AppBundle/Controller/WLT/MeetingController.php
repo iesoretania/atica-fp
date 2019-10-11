@@ -24,6 +24,7 @@ use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\MeetingRepository;
 use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -51,7 +52,7 @@ class MeetingController extends Controller
         GroupRepository $groupRepository
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_TEACHER, $organization);
 
         $academicYear = $organization->getCurrentAcademicYear();
 
@@ -94,12 +95,12 @@ class MeetingController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_TEACHER, $organization);
 
         $em = $this->getDoctrine()->getManager();
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization)
-                     || $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+                     || $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
 
         $groups = [];
         if (false === $isManager) {
@@ -172,7 +173,7 @@ class MeetingController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_TEACHER, $organization);
         $readOnly = false;
 
         /** @var QueryBuilder $queryBuilder */
@@ -183,7 +184,7 @@ class MeetingController extends Controller
             ->addOrderBy('m.dateTime', 'DESC');
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
 
         $groups = [];
         if (false === $isManager && false === $isWltManager) {
@@ -246,7 +247,7 @@ class MeetingController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_TEACHER, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_TEACHER, $organization);
 
         $em = $this->getDoctrine()->getManager();
 

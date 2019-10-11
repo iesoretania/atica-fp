@@ -27,6 +27,7 @@ use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Security\Edu\GroupVoter;
 use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -59,7 +60,7 @@ class EvaluationSummaryController extends Controller
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::VIEW_GRADE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_VIEW_GRADE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -94,8 +95,8 @@ class EvaluationSummaryController extends Controller
         }
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $this->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
-        $isWorkTutor = $this->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization);
+        $isWltManager = $this->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+        $isWorkTutor = $this->isGranted(WLTOrganizationVoter::WLT_WORK_TUTOR, $organization);
 
         if (false === $isManager && false === $isWltManager) {
             $person = $this->getUser()->getPerson();
@@ -162,13 +163,13 @@ class EvaluationSummaryController extends Controller
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::VIEW_GRADE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_VIEW_GRADE, $organization);
 
         $title = $translator->trans('title.report', [], 'wlt_agreement_activity_realization') .
             ' - ' . $studentEnrollment;
 
         $isGroupTutor = $this->isGranted(GroupVoter::MANAGE, $studentEnrollment->getGroup());
-        $isWltManager = $this->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+        $isWltManager = $this->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
 
         $subjects = $subjectRepository->findByGroupAndPerson(
             $studentEnrollment->getGroup(),

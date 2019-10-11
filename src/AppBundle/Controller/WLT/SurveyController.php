@@ -28,6 +28,7 @@ use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\AgreementVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -196,7 +197,7 @@ class SurveyController extends Controller
     public function indexAction(UserExtensionService $userExtensionService)
     {
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::ACCESS_WORK_LINKED_TRAINING,
+            WLTOrganizationVoter::WLT_ACCESS,
             $userExtensionService->getCurrentOrganization()
         );
         return $this->render(
@@ -293,7 +294,7 @@ class SurveyController extends Controller
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::ACCESS_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS, $organization);
 
         $title = $translator->trans('title.survey.agreement.list', [], 'wlt_survey');
 
@@ -342,8 +343,8 @@ class SurveyController extends Controller
         }
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
-        $isWorkTutor = $security->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization);
+        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+        $isWorkTutor = $security->isGranted(WLTOrganizationVoter::WLT_WORK_TUTOR, $organization);
 
         if (false === $isManager && false === $isWltManager) {
             $person = $this->getUser()->getPerson();
@@ -412,10 +413,10 @@ class SurveyController extends Controller
         Teacher $teacher
     ) {
         $organization = $teacher->getAcademicYear()->getOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization);
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
 
         if (!$isManager && !$isWltManager && $teacher->getPerson()->getUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
@@ -502,7 +503,7 @@ class SurveyController extends Controller
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization);
 
         $title = $translator->trans('title.survey.organization.list', [], 'wlt_survey');
 
@@ -528,7 +529,7 @@ class SurveyController extends Controller
                 ->setParameter('tq', '%' . $q . '%');
         }
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
+        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
 
         if (!$isManager && !$isWltManager) {
             // puede ser profesor o jefe de departamento (de momento sólo soportamos el primer caso)

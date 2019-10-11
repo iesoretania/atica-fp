@@ -18,6 +18,7 @@
 
 namespace AppBundle\Controller\WLT;
 
+use AppBundle\Entity\Company;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\WLT\Activity;
@@ -31,7 +32,7 @@ use AppBundle\Repository\Edu\SubjectRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Repository\WLT\ActivityRepository;
 use AppBundle\Repository\WLT\LearningProgramRepository;
-use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use AppBundle\Utils\CsvImporter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -57,7 +58,7 @@ class LearningProgramController extends Controller
         TranslatorInterface $translator
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         $learningProgram = new LearningProgram();
         $this->getDoctrine()->getManager()->persist($learningProgram);
@@ -82,7 +83,7 @@ class LearningProgramController extends Controller
         }
 
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::MANAGE_WORK_LINKED_TRAINING,
+            WLTOrganizationVoter::WLT_MANAGE,
             $academicYear->getOrganization()
         );
 
@@ -145,7 +146,7 @@ class LearningProgramController extends Controller
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_WORK_LINKED_TRAINING, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
         if (false === $userExtensionService->isUserLocalAdministrator() &&
             $academicYear->getOrganization() !== $userExtensionService->getCurrentOrganization()) {
             return $this->createAccessDeniedException();
@@ -204,7 +205,7 @@ class LearningProgramController extends Controller
         AcademicYear $academicYear
     ) {
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::MANAGE_WORK_LINKED_TRAINING,
+            WLTOrganizationVoter::WLT_MANAGE,
             $academicYear->getOrganization()
         );
 
@@ -279,7 +280,7 @@ class LearningProgramController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::MANAGE_WORK_LINKED_TRAINING,
+            WLTOrganizationVoter::WLT_MANAGE,
             $organization
         );
 
@@ -361,6 +362,7 @@ class LearningProgramController extends Controller
                         $count = count($lineData);
                         for ($i = 3; $i <= $count - 1; $i++) {
                             if ($lineData[$i]) {
+                                /** @var Company $company */
                                 $company = $companyRepository->findOneBy(['code' => $lineData[$i]]);
                                 if ($company) {
                                     $learningProgram = $learningProgramRepository->findOneBy(

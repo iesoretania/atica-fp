@@ -16,37 +16,32 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Security;
+namespace AppBundle\Security\Edu;
 
-use AppBundle\Entity\Membership;
 use AppBundle\Entity\Organization;
-use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
-use AppBundle\Repository\RoleRepository;
-use AppBundle\Security\Edu\EduOrganizationVoter;
-use AppBundle\Security\WLT\WLTOrganizationVoter;
+use AppBundle\Repository\Edu\TrainingRepository;
+use AppBundle\Security\CachedVoter;
+use AppBundle\Security\OrganizationVoter;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
-class OrganizationVoter extends CachedVoter
+class EduOrganizationVoter extends CachedVoter
 {
-    const MANAGE = 'ORGANIZATION_MANAGE';
-    const ACCESS = 'ORGANIZATION_ACCESS';
-    const LOCAL_MANAGE = 'ORGANIZATION_LOCAL_MANAGE';
-    const MANAGE_COMPANIES = 'ORGANIZATION_MANAGE_COMPANIES';
+    const EDU_DEPARTMENT_HEAD = 'ORGANIZATION_DEPARTMENT_HEAD';
 
     private $decisionManager;
-    private $roleRepository;
+    private $trainingRepository;
 
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
         AccessDecisionManagerInterface $decisionManager,
-        RoleRepository $roleRepository
+        TrainingRepository $trainingRepository
     ) {
         parent::__construct($cacheItemPoolItemPool);
         $this->decisionManager = $decisionManager;
-        $this->roleRepository = $roleRepository;
+        $this->trainingRepository = $trainingRepository;
     }
 
     /**
@@ -60,10 +55,7 @@ class OrganizationVoter extends CachedVoter
         }
 
         if (!in_array($attribute, [
-            self::MANAGE,
-            self::ACCESS,
-            self::LOCAL_MANAGE,
-            self::MANAGE_COMPANIES
+            self::EDU_DEPARTMENT_HEAD,
         ], true)) {
             return false;
         }
@@ -94,40 +86,18 @@ class OrganizationVoter extends CachedVoter
         }
 
         // Si es administrador de la organización, permitir siempre
-        if ($attribute !== self::LOCAL_MANAGE && $this->decisionManager->decide($token, [self::LOCAL_MANAGE], $subject)
-            ) {
+        if ($this->decisionManager->decide($token, [OrganizationVoter::LOCAL_MANAGE], $subject)
+        ) {
             return true;
         }
 
         switch ($attribute) {
-            case self::LOCAL_MANAGE:
-                return $this->roleRepository->
-                    personHasRole($subject, $user->getPerson(), Role::ROLE_LOCAL_ADMIN);
-
-            // acceder a las enseñanzas del centro y a la gestión de empresas
-            case self::MANAGE_COMPANIES:
-                // Si es jefe de algún departamento o coordinador de FP dual, permitir acceder
-                // 1) Jefe de departamento
-                if ($this->decisionManager->decide($token, [EduOrganizationVoter::EDU_DEPARTMENT_HEAD], $subject)) {
-                    return true;
-                }
-
-                // 2) Coordinador de FP dual
-                return $this->decisionManager->decide($token, [WLTOrganizationVoter::WLT_MANAGER], $subject);
-
-            case self::ACCESS:
-                // Si es permiso de acceso, comprobar que pertenece actualmente a la organización
-                if ($attribute === self::ACCESS) {
-                    $date = new \DateTime();
-                    /** @var Membership $membership */
-                    foreach ($user->getMemberships() as $membership) {
-                        if ($membership->getOrganization() === $subject && $membership->getValidFrom() <= $date &&
-                            ($membership->getValidUntil() === null || $membership->getValidUntil() >= $date)) {
-                            return true;
-                        }
-                    }
-                }
-                break;
+            case self::EDU_DEPARTMENT_HEAD:
+                return
+                    $this->trainingRepository->countAcademicYearAndDepartmentHead(
+                        $subject->getCurrentAcademicYear(),
+                        $user->getPerson()
+                    ) > 0;
         }
 
         // denegamos en cualquier otro caso
