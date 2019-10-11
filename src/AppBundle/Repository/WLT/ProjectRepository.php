@@ -31,7 +31,7 @@ class ProjectRepository extends ServiceEntityRepository
         parent::__construct($registry, Project::class);
     }
 
-    public function countByOrganizationAndManager(Organization $organization, Person $manager)
+    public function countByOrganizationAndManagerPerson(Organization $organization, Person $manager)
     {
         return $this->createQueryBuilder('p')
             ->select('COUNT(p)')

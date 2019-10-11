@@ -20,11 +20,9 @@ namespace AppBundle\Security\WLT;
 
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\User;
-use AppBundle\Repository\Edu\GroupRepository;
-use AppBundle\Repository\Edu\TeacherRepository;
-use AppBundle\Repository\Edu\TeachingRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\ProjectRepository;
+use AppBundle\Repository\WLT\WLTGroupRepository;
 use AppBundle\Security\CachedVoter;
 use AppBundle\Security\Edu\EduOrganizationVoter;
 use AppBundle\Security\OrganizationVoter;
@@ -50,30 +48,25 @@ class WLTOrganizationVoter extends CachedVoter
     const WLT_TEACHER = 'ORGANIZATION_WLT_TEACHER';
     const WLT_MANAGER = 'ORGANIZATION_WLT_MANAGER';
     const WLT_EDUCATIONAL_TUTOR = 'ORGANIZATION_WLT_EDUCATIONAL_TUTOR';
+    const WLT_DEPARTMENT_HEAD = 'ORGANIZATION_WLT_DEPARTMENT_HEAD';
 
     private $decisionManager;
-    private $teachingRepository;
     private $agreementRepository;
-    private $groupRepository;
-    private $teacherRepository;
     private $projectRepository;
+    private $WLTGroupRepository;
 
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
         AccessDecisionManagerInterface $decisionManager,
-        TeachingRepository $teachingRepository,
         AgreementRepository $agreementRepository,
-        TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository,
-        ProjectRepository $projectRepository
+        ProjectRepository $projectRepository,
+        WLTGroupRepository $WLTGroupRepository
     ) {
         parent::__construct($cacheItemPoolItemPool);
         $this->decisionManager = $decisionManager;
-        $this->teachingRepository = $teachingRepository;
         $this->agreementRepository = $agreementRepository;
-        $this->teacherRepository = $teacherRepository;
-        $this->groupRepository = $groupRepository;
         $this->projectRepository = $projectRepository;
+        $this->WLTGroupRepository = $WLTGroupRepository;
     }
 
     /**
@@ -100,7 +93,8 @@ class WLTOrganizationVoter extends CachedVoter
             self::WLT_STUDENT,
             self::WLT_TEACHER,
             self::WLT_MANAGER,
-            self::WLT_EDUCATIONAL_TUTOR
+            self::WLT_EDUCATIONAL_TUTOR,
+            self::WLT_DEPARTMENT_HEAD
         ], true)) {
             return false;
         }
@@ -176,7 +170,7 @@ class WLTOrganizationVoter extends CachedVoter
                 }
 
                 // 4) Jefe de departamento
-                if ($this->decisionManager->decide($token, [EduOrganizationVoter::EDU_DEPARTMENT_HEAD], $subject)) {
+                if ($this->decisionManager->decide($token, [self::WLT_DEPARTMENT_HEAD], $subject)) {
                     return true;
                 }
 
@@ -210,7 +204,7 @@ class WLTOrganizationVoter extends CachedVoter
 
                 // jefes de departamento: solo ver
                 if ( $attribute === self::WLT_ACCESS_VISIT &&
-                    $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_DEPARTMENT_HEAD], $subject)) {
+                    $this->decisionManager->decide($token, [self::WLT_DEPARTMENT_HEAD], $subject)) {
                     return true;
                 }
 
@@ -218,44 +212,46 @@ class WLTOrganizationVoter extends CachedVoter
                 return $this->decisionManager->decide($token, [self::WLT_EDUCATIONAL_TUTOR], $subject);
 
             case self::WLT_MANAGER:
-                return $this->projectRepository->countByOrganizationAndManager($subject, $user->getPerson()) > 0;
+                return $this->projectRepository->countByOrganizationAndManagerPerson($subject, $user->getPerson()) > 0;
 
             case self::WLT_GROUP_TUTOR:
-                $teacher = $this->teacherRepository->findOneByAcademicYearAndPerson(
-                    $subject->getCurrentAcademicYear(),
-                    $user->getPerson()
-                );
-
-                return $teacher &&
-                    $this->groupRepository->countAcademicYearAndWltTutor(
+                return
+                    $this->WLTGroupRepository->countAcademicYearAndWLTGroupTutorPerson(
                         $subject->getCurrentAcademicYear(),
-                        $teacher
+                        $user->getPerson()
                     ) > 0;
 
             case self::WLT_STUDENT:
                 return
-                    $this->agreementRepository->countAcademicYearAndStudent(
+                    $this->agreementRepository->countAcademicYearAndStudentPerson(
                         $subject->getCurrentAcademicYear(),
                         $user->getPerson()
                     ) > 0;
 
             case self::WLT_WORK_TUTOR:
                 return
-                    $this->agreementRepository->countAcademicYearAndWorkTutor(
+                    $this->agreementRepository->countAcademicYearAndWorkTutorPerson(
                         $subject->getCurrentAcademicYear(),
                         $user->getPerson()
                     ) > 0;
 
             case self::WLT_TEACHER:
                 return
-                    $this->teachingRepository->countAcademicYearAndWltPerson(
+                    $this->WLTGroupRepository->countAcademicYearAndWLTTeacherPerson(
                         $subject->getCurrentAcademicYear(),
                         $user->getPerson()
                     ) > 0;
 
             case self::WLT_EDUCATIONAL_TUTOR:
                 return
-                    $this->agreementRepository->countAcademicYearAndEducationalTutor(
+                    $this->agreementRepository->countAcademicYearAndEducationalTutorPerson(
+                        $subject->getCurrentAcademicYear(),
+                        $user->getPerson()
+                    ) > 0;
+
+            case self::WLT_DEPARTMENT_HEAD:
+                return
+                    $this->WLTGroupRepository->countAcademicYearAndWLTDepartmentHeadPerson(
                         $subject->getCurrentAcademicYear(),
                         $user->getPerson()
                     ) > 0;
