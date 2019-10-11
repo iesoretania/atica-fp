@@ -20,14 +20,15 @@ namespace AppBundle\Form\Type\WLT;
 
 use AppBundle\Entity\Company;
 use AppBundle\Entity\Edu\StudentEnrollment;
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\WLT\ActivityRealization;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\Project;
 use AppBundle\Entity\Workcenter;
 use AppBundle\Repository\CompanyRepository;
-use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\StudentEnrollmentRepository;
+use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Repository\WLT\ProjectRepository;
 use AppBundle\Repository\WorkcenterRepository;
@@ -40,53 +41,33 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\Security;
 
 class AgreementType extends AbstractType
 {
-    /** @var UserExtensionService */
     private $userExtensionService;
-
-    /** @var StudentEnrollmentRepository */
     private $studentEnrollmentRepository;
-
-    /** @var WorkcenterRepository */
     private $workcenterRepository;
-
-    /** @var AcademicYearRepository */
-    private $academicYearRepository;
-
-    /** @var CompanyRepository */
     private $companyRepository;
-
-    /** @var Security */
-    private $security;
-
-    /** @var ActivityRealizationRepository */
     private $activityRealizationRepository;
-    /**
-     * @var ProjectRepository
-     */
     private $projectRepository;
+    private $teacherRepository;
 
     public function __construct(
         UserExtensionService $userExtensionService,
         StudentEnrollmentRepository $studentEnrollmentRepository,
         WorkcenterRepository $workcenterRepository,
-        AcademicYearRepository $academicYearRepository,
         CompanyRepository $companyRepository,
         ActivityRealizationRepository $activityRealizationRepository,
         ProjectRepository $projectRepository,
-        Security $security
+        TeacherRepository $teacherRepository
     ) {
         $this->userExtensionService = $userExtensionService;
         $this->studentEnrollmentRepository = $studentEnrollmentRepository;
         $this->workcenterRepository = $workcenterRepository;
-        $this->academicYearRepository = $academicYearRepository;
         $this->companyRepository = $companyRepository;
         $this->activityRealizationRepository = $activityRealizationRepository;
-        $this->security = $security;
         $this->projectRepository = $projectRepository;
+        $this->teacherRepository = $teacherRepository;
     }
 
     public function addElements(
@@ -103,11 +84,17 @@ class AgreementType extends AbstractType
         $workcenters = ($studentEnrollment && $company) ?
             $this->workcenterRepository->findByAcademicYearAndCompany(
                 $studentEnrollment->getGroup()->getGrade()->getTraining()->getAcademicYear(),
-                $company) :
-            [];
+                $company
+            ) : [];
 
         $projects =
             $this->projectRepository->findByOrganization($organization);
+
+        $teachers = $studentEnrollment ?
+            $this
+                ->teacherRepository->findByAcademicYear(
+                    $studentEnrollment->getGroup()->getGrade()->getTraining()->getAcademicYear()
+                ) : [];
 
         if ($studentEnrollment) {
             $training = $studentEnrollment->getGroup()->getGrade()->getTraining();
@@ -176,6 +163,13 @@ class AgreementType extends AbstractType
                 },
                 'placeholder' => 'form.work_tutor.none',
                 'attr' => ['class' => 'person'],
+                'required' => true
+            ])
+            ->add('educationalTutor', EntityType::class, [
+                'label' => 'form.educational_tutor',
+                'class' => Teacher::class,
+                'choices' => $teachers,
+                'placeholder' => 'form.educational_tutor.none',
                 'required' => true
             ])
             ->add('startDate', null, [

@@ -24,9 +24,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="wlt_academic_year_project_answered_survey")
+ * @ORM\Table(name="wlt_educational_tutor_answered_survey")
  */
-class AcademicYearProjectAnsweredSurvey
+class EducationalTutorAnsweredSurvey
 {
     /**
      * @ORM\Id
@@ -75,7 +75,7 @@ class AcademicYearProjectAnsweredSurvey
 
     /**
      * @param Project $project
-     * @return AcademicYearProjectAnsweredSurvey
+     * @return EducationalTutorAnsweredSurvey
      */
     public function setProject($project)
     {
@@ -93,7 +93,7 @@ class AcademicYearProjectAnsweredSurvey
 
     /**
      * @param AcademicYear $academicYear
-     * @return AcademicYearProjectAnsweredSurvey
+     * @return EducationalTutorAnsweredSurvey
      */
     public function setAcademicYear($academicYear)
     {
@@ -111,7 +111,7 @@ class AcademicYearProjectAnsweredSurvey
 
     /**
      * @param AnsweredSurvey $answeredSurvey
-     * @return AcademicYearProjectAnsweredSurvey
+     * @return EducationalTutorAnsweredSurvey
      */
     public function setAnsweredSurvey($answeredSurvey)
     {

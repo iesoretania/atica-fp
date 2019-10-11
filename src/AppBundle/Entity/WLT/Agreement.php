@@ -20,6 +20,7 @@ namespace AppBundle\Entity\WLT;
 
 use AppBundle\Entity\AnsweredSurvey;
 use AppBundle\Entity\Edu\StudentEnrollment;
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\Workcenter;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -73,9 +74,9 @@ class Agreement
     private $workTutor;
 
     /**
-     * @ORM\ManyToOne(targetEntity="EducationalTutor")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\Teacher")
      * @ORM\JoinColumn(nullable=false)
-     * @var EducationalTutor
+     * @var Teacher
      */
     private $educationalTutor;
 
@@ -237,7 +238,7 @@ class Agreement
     }
 
     /**
-     * @return EducationalTutor
+     * @return Teacher
      */
     public function getEducationalTutor()
     {
@@ -245,7 +246,7 @@ class Agreement
     }
 
     /**
-     * @param EducationalTutor $educationalTutor
+     * @param Teacher $educationalTutor
      * @return Agreement
      */
     public function setEducationalTutor($educationalTutor)

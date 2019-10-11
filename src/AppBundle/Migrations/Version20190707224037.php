@@ -86,32 +86,6 @@ class Version20190707224037 extends AbstractMigration
                 ->execute()
                 ->fetchAll();
 
-            if (!$this->connection->createQueryBuilder()
-                ->select('et.id')
-                ->from('wlt_educational_tutor', 'et')
-                ->where('et.project_id = :project_id')
-                ->andWhere('et.teacher_id = :teacher_id')
-                ->setParameter('project_id', $project[0]['id'])
-                ->setParameter('teacher_id', $teacherId)
-                ->execute()->fetch()
-            ) {
-                $this->connection->insert('wlt_educational_tutor', [
-                    'project_id' => $project[0]['id'],
-                    'teacher_id' => $teacherId
-                ]);
-            }
-
-            $tutor = $this->connection->createQueryBuilder()
-                ->select('et.id')
-                ->from('wlt_educational_tutor', 'et')
-                ->where('et.project_id = :project_id')
-                ->andWhere('et.teacher_id = :teacher_id')
-                ->setParameter('project_id', $project[0]['id'])
-                ->setParameter('teacher_id', $teacherId)
-                ->setMaxResults(1)
-                ->execute()
-                ->fetchAll();
-
             // buscar acuerdos de colaboración y añadirles el proyecto tutor/a de seguimiento
             $students = $this->connection->createQueryBuilder()
                 ->select('se.id')
@@ -126,7 +100,7 @@ class Version20190707224037 extends AbstractMigration
             foreach ($students as $student) {
                 $this->connection->createQueryBuilder()
                     ->update('wlt_agreement', 'a')
-                    ->set('a.educational_tutor_id', $tutor[0]['id'])
+                    ->set('a.educational_tutor_id', $teacherId)
                     ->set('a.project_id', $project[0]['id'])
                     ->where('a.student_enrollment_id = ' . $student['id'])
                     ->execute();
@@ -150,7 +124,7 @@ class Version20190707224037 extends AbstractMigration
         $this->addSql('ALTER TABLE wlt_agreement MODIFY project_id INT NOT NULL, MODIFY educational_tutor_id INT NOT NULL');
 
         $this->addSql('ALTER TABLE wlt_agreement ADD CONSTRAINT FK_2B23AFE9166D1F9C FOREIGN KEY (project_id) REFERENCES wlt_project (id)');
-        $this->addSql('ALTER TABLE wlt_agreement ADD CONSTRAINT FK_2B23AFE9E7F72E80 FOREIGN KEY (educational_tutor_id) REFERENCES wlt_educational_tutor (id)');
+        $this->addSql('ALTER TABLE wlt_agreement ADD CONSTRAINT FK_2B23AFE9E7F72E80 FOREIGN KEY (educational_tutor_id) REFERENCES edu_teacher (id)');
         $this->addSql('CREATE INDEX IDX_2B23AFE9166D1F9C ON wlt_agreement (project_id)');
         $this->addSql('CREATE INDEX IDX_2B23AFE9E7F72E80 ON wlt_agreement (educational_tutor_id)');
         $this->addSql('ALTER TABLE edu_teacher DROP FOREIGN KEY FK_89A031C7F913D1F');

@@ -19,15 +19,14 @@
 namespace AppBundle\Entity\WLT;
 
 use AppBundle\Entity\AnsweredSurvey;
-use AppBundle\Entity\Edu\Teacher;
+use AppBundle\Entity\Edu\AcademicYear;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="wlt_educational_tutor",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"project_id", "teacher_id"})})))))
+ * @ORM\Table(name="wlt_manager_answered_survey")
  */
-class EducationalTutor
+class ManagerAnsweredSurvey
 {
     /**
      * @ORM\Id
@@ -45,15 +44,15 @@ class EducationalTutor
     private $project;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\Teacher")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\AcademicYear")
      * @ORM\JoinColumn(nullable=false)
-     * @var Teacher
+     * @var AcademicYear
      */
-    private $teacher;
+    private $academicYear;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AnsweredSurvey")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(nullable=false)
      * @var AnsweredSurvey
      */
     private $answeredSurvey;
@@ -76,7 +75,7 @@ class EducationalTutor
 
     /**
      * @param Project $project
-     * @return EducationalTutor
+     * @return ManagerAnsweredSurvey
      */
     public function setProject($project)
     {
@@ -85,20 +84,20 @@ class EducationalTutor
     }
 
     /**
-     * @return Teacher
+     * @return AcademicYear
      */
-    public function getTeacher()
+    public function getAcademicYear()
     {
-        return $this->teacher;
+        return $this->academicYear;
     }
 
     /**
-     * @param Teacher $teacher
-     * @return EducationalTutor
+     * @param AcademicYear $academicYear
+     * @return ManagerAnsweredSurvey
      */
-    public function setTeacher($teacher)
+    public function setAcademicYear($academicYear)
     {
-        $this->teacher = $teacher;
+        $this->academicYear = $academicYear;
         return $this;
     }
 
@@ -112,7 +111,7 @@ class EducationalTutor
 
     /**
      * @param AnsweredSurvey $answeredSurvey
-     * @return EducationalTutor
+     * @return ManagerAnsweredSurvey
      */
     public function setAnsweredSurvey($answeredSurvey)
     {
