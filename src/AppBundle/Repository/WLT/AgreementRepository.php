@@ -289,7 +289,9 @@ class AgreementRepository extends ServiceEntityRepository
             ->select('a')
             ->addSelect('se')
             ->addSelect('p')
-            ->addSelect('SUM(CASE WHEN DATE(m.dateTime) >= a.startDate AND DATE(m.dateTime) <= a.endDate THEN 1 ELSE 0 END)')
+            ->addSelect(
+                'SUM(CASE WHEN DATE(m.dateTime) >= a.startDate AND DATE(m.dateTime) <= a.endDate THEN 1 ELSE 0 END)'
+            )
             ->addSelect('COUNT(m.dateTime)')
             ->join('a.studentEnrollment', 'se')
             ->join('se.person', 'p')
@@ -380,6 +382,41 @@ class AgreementRepository extends ServiceEntityRepository
             $queryBuilder
                 ->orWhere('p = :person')
                 ->setParameter('person', $person);
+        }
+
+        if ($project) {
+            $queryBuilder
+                ->andWhere('a.project = :project')
+                ->setParameter('project', $project);
+        } elseif ($projects && !$isManager) {
+            $queryBuilder
+                ->andWhere('a.project IN (:projects)')
+                ->setParameter('projects', $projects);
+        }
+
+        $queryBuilder
+            ->andWhere('pro.organization = :organization')
+            ->setParameter('organization', $organization);
+
+        return $projects;
+    }
+
+    public function setQueryBuilderFilterByOrganizationManagerPersonProjectAndReturnProjects(
+        QueryBuilder $queryBuilder,
+        Organization $organization,
+        Person $person,
+        Project $project = null
+    ) {
+        $isManager = $this->security->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+
+        $projects = [];
+        if ($isWltManager) {
+            if (!$isManager) {
+                $projects = $this->projectRepository->findByOrganizationAndManagerPerson($organization, $person);
+            } else {
+                $projects = $this->projectRepository->findByOrganization($organization);
+            }
         }
 
         if ($project) {

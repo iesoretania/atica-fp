@@ -28,9 +28,8 @@ use AppBundle\Form\Type\WLT\CalendarCopyType;
 use AppBundle\Repository\MembershipRepository;
 use AppBundle\Repository\WLT\AgreementActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
-use AppBundle\Repository\WLT\ProjectRepository;
-use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\AgreementVoter;
+use AppBundle\Security\WLT\ProjectVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -39,7 +38,6 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -55,8 +53,8 @@ class AgreementController extends Controller
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         MembershipRepository $membershipRepository,
-        AgreementActivityRealizationRepository $agreementActivityRealizationRepository)
-    {
+        AgreementActivityRealizationRepository $agreementActivityRealizationRepository
+    ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
@@ -129,7 +127,10 @@ class AgreementController extends Controller
                 }
 
                 if ($agreement->getId()) {
-                    $toRemove = array_diff($oldActivityRealizations->toArray(), $currentActivityRealizations->toArray());
+                    $toRemove = array_diff(
+                        $oldActivityRealizations->toArray(),
+                        $currentActivityRealizations->toArray()
+                    );
                     $agreementActivityRealizationRepository->deleteFromList($agreement, $toRemove);
                 }
 
@@ -170,15 +171,18 @@ class AgreementController extends Controller
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        ProjectRepository $projectRepository,
         TranslatorInterface $translator,
-        Security $security,
+        AgreementRepository $agreementRepository,
         Project $project = null,
         $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+        if ($project) {
+            $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
+        } else {
+            $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+        }
 
         if ($project && $project->getOrganization() !== $organization) {
             throw $this->createAccessDeniedException();
@@ -206,7 +210,7 @@ class AgreementController extends Controller
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->join('a.workTutor', 'wt')
-            ->join('a.project', 'pr')
+            ->join('a.project', 'pro')
             ->orderBy('g.name')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
@@ -228,25 +232,15 @@ class AgreementController extends Controller
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        if ($project) {
-            $queryBuilder
-                ->andWhere('a.project = :project')
-                ->setParameter('project', $project);
-        } else {
-            $queryBuilder
-                ->andWhere('pr.organization = :organization')
-                ->setParameter('organization', $organization);
-        }
+        $person = $this->getUser()->getPerson();
 
-        if (false === $security->isGranted(OrganizationVoter::MANAGE, $organization) &&
-            false === $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization)
-        ) {
-            $queryBuilder
-                ->join('t.department', 'd')
-                ->join('d.head', 'ht')
-                ->andWhere('ht.person = :person')
-                ->setParameter('person', $this->getUser()->getPerson());
-        }
+        $projects = $agreementRepository->setQueryBuilderFilterByOrganizationManagerPersonProjectAndReturnProjects(
+            $queryBuilder,
+            $organization,
+            $person,
+            $project
+        );
+
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         $pager
@@ -261,7 +255,7 @@ class AgreementController extends Controller
             'q' => $q,
             'domain' => 'wlt_agreement',
             'project' => $project,
-            'projects' => $projectRepository->findByOrganization($organization)
+            'projects' => $projects
         ]);
     }
 
@@ -305,8 +299,12 @@ class AgreementController extends Controller
     ) {
         $em = $this->getDoctrine()->getManager();
 
-
         $agreements = $agreementRepository->findAllInListByIdAndOrganization($items, $organization);
+
+        // comprobar individualmente que tenemos acceso
+        foreach ($agreements as $agreement) {
+            $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
+        }
 
         if ($request->get('confirm', '') === 'ok') {
             try {
@@ -341,8 +339,11 @@ class AgreementController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $selectedAgreements = $agreementRepository->findAllInListByIdAndOrganization($items, $organization);
+        // comprobar individualmente que tenemos acceso
+        foreach ($selectedAgreements as $agreement) {
+            $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
+        }
         $agreementChoices = $agreementRepository->findAllInListByNotIdAndOrganization($items, $organization);
-
         $calendarCopy = new CalendarCopy();
 
         $form = $this->createForm(CalendarCopyType::class, $calendarCopy, [

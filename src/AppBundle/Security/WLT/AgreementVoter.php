@@ -108,6 +108,11 @@ class AgreementVoter extends CachedVoter
 
         $organization = $this->userExtensionService->getCurrentOrganization();
 
+        // si es de otra organización, denegar
+        if ($organization !== $this->userExtensionService->getCurrentOrganization()) {
+            return false;
+        }
+
         // Si es administrador de la organización, permitir siempre
         if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
             return true;
@@ -126,7 +131,7 @@ class AgreementVoter extends CachedVoter
         }
 
         // Coordinador de FP dual
-        if ($this->decisionManager->decide($token, [WLTOrganizationVoter::WLT_MANAGER], $organization)) {
+        if ($subject->getProject()->getManager() !== $user->getPerson()) {
             return true;
         }
 
@@ -178,8 +183,7 @@ class AgreementVoter extends CachedVoter
                 return $isGroupTutor;
 
             case self::VIEW_STUDENT_SURVEY:
-                return ($isStudent || $isGroupTutor) && $subject->getStudentEnrollment()
-                    ->getGroup()->getGrade()->getTraining()->getWltStudentSurvey();
+                return ($isStudent || $isGroupTutor) && $subject->getProject()->getStudentSurvey();
 
             case self::FILL_STUDENT_SURVEY:
                 $wltStudentSurvey = $subject->getProject()->getStudentSurvey();
@@ -198,8 +202,7 @@ class AgreementVoter extends CachedVoter
                 return true;
 
             case self::FILL_COMPANY_SURVEY:
-                $wltCompanySurvey = $subject->getStudentEnrollment()
-                    ->getGroup()->getGrade()->getTraining()->getWltCompanySurvey();
+                $wltCompanySurvey = $subject->getProject()->getCompanySurvey();
                 $now = new \DateTime();
 
                 if ((!$isWorkTutor && !$isGroupTutor) || !$wltCompanySurvey) {
