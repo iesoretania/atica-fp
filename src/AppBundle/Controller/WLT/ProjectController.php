@@ -22,6 +22,8 @@ use AppBundle\Entity\WLT\Project;
 use AppBundle\Form\Type\WLT\ProjectStudentEnrollmentType;
 use AppBundle\Form\Type\WLT\ProjectType;
 use AppBundle\Repository\WLT\ProjectRepository;
+use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\ProjectVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -50,6 +52,8 @@ class ProjectController extends Controller
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
 
@@ -73,6 +77,12 @@ class ProjectController extends Controller
         $queryBuilder
             ->andWhere('p.organization = :organization')
             ->setParameter('organization', $organization);
+
+        if (!$isManager) {
+            $queryBuilder
+                ->andWhere('p.manager = :manager')
+                ->setParameter('manager', $this->getUser()->getPerson());
+        }
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -101,9 +111,16 @@ class ProjectController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+
         $project = new Project();
         $project
             ->setOrganization($organization);
+
+        if (!$isManager) {
+            $project
+                ->setManager($this->getUser()->getPerson());
+        }
 
         $this->getDoctrine()->getManager()->persist($project);
 
@@ -120,12 +137,16 @@ class ProjectController extends Controller
         TranslatorInterface $translator,
         Project $project
     ) {
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
+
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm(ProjectType::class, $project);
+        $form = $this->createForm(ProjectType::class, $project, [
+            'lock_manager' => !$isManager
+        ]);
 
         $form->handleRequest($request);
 

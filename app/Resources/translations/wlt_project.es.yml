@@ -6,6 +6,7 @@ form.company_survey: Modelo de encuesta de satisfacción de empresa colaboradora
 form.manager_survey: Modelo de encuesta de satisfacción final de coordinación
 form.student_enrollments: Estudiantes adheridos
 form.no_survey: Ninguna
+form.no_manager: Seleccione coordinador/a
 
 form.save: Guardar cambios
 form.delete: Eliminar los proyectos seleccionados

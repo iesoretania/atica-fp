@@ -80,7 +80,9 @@ class ProjectType extends AbstractType
                 'class' => Person::class,
                 'choice_translation_domain' => false,
                 'choices' => $teacherPersons,
+                'disabled' => $options['lock_manager'],
                 'multiple' => false,
+                'placeholder' => 'form.no_manager',
                 'required' => false
             ])
             ->add('groups', EntityType::class, [
@@ -134,6 +136,7 @@ class ProjectType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Project::class,
+            'lock_manager' => false,
             'translation_domain' => 'wlt_project'
         ]);
     }
