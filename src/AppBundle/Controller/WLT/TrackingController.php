@@ -20,8 +20,8 @@ namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\Project;
-use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\WLT\ProjectRepository;
+use AppBundle\Repository\WLT\WLTGroupRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
@@ -47,7 +47,7 @@ class TrackingController extends Controller
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        GroupRepository $groupRepository,
+        WLTGroupRepository $WLTGroupRepository,
         ProjectRepository $projectRepository,
         Security $security,
         $page = 1,
@@ -109,50 +109,49 @@ class TrackingController extends Controller
         $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
         $isWorkTutor = $security->isGranted(WLTOrganizationVoter::WLT_WORK_TUTOR, $organization);
 
-        $projects = $projectRepository->findByOrganization($organization);
+        $person = $this->getUser()->getPerson();
+
+        $projects= [];
+        if ($isWltManager) {
+            if (!$isManager) {
+                $projects = $projectRepository->findByOrganizationAndManagerPerson($organization, $person);
+            } else {
+                $projects = $projectRepository->findByOrganization($organization);
+            }
+        }
 
         if (false === $isManager && false === $isWltManager) {
-            $person = $this->getUser()->getPerson();
-
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento, tutor de grupo o profesor
             $groups =
-                $groupRepository->findByOrganizationAndPerson($organization, $person);
+                $WLTGroupRepository->findByOrganizationAndPerson($organization, $person);
 
-            if ($groups) {
-                $projects = $projectRepository->findByGroups($groups);
-
+            if (!$groups->isEmpty()) {
                 $queryBuilder
                     ->andWhere('g IN (:groups)')
                     ->setParameter('groups', $groups);
-
-                // si también es tutor laboral, mostrar los suyos aunque sean de otros grupos
-                if ($isWorkTutor) {
-                    $queryBuilder
-                        ->orWhere('a.workTutor = :person')
-                        ->setParameter('person', $person);
-                }
-            } else {
-                $projects = [];
-
-                // si solo es tutor laboral, necesita ser el tutor para verlo
-                if ($isWorkTutor) {
-                    $queryBuilder
-                        ->andWhere('a.workTutor = :person')
-                        ->setParameter('person', $person);
-                } else {
-                    // es estudiante, sólo él
-                    $queryBuilder
-                        ->andWhere('p = :person')
-                        ->setParameter('person', $person);
-                }
             }
+
+            // si solo es tutor laboral, necesita ser el tutor para verlo
+            if ($isWorkTutor) {
+                $queryBuilder
+                    ->andWhere('a.workTutor = :person')
+                    ->setParameter('person', $person);
+            }
+
+            $queryBuilder
+                ->orWhere('p = :person')
+                ->setParameter('person', $person);
         }
 
         if ($project) {
             $queryBuilder
                 ->andWhere('a.project = :project')
                 ->setParameter('project', $project);
+        } elseif ($projects && !$isManager) {
+            $queryBuilder
+                ->andWhere('a.project IN (:projects)')
+                ->setParameter('projects', $projects);
         }
 
         $queryBuilder

@@ -68,7 +68,7 @@ class VisitType extends AbstractType
         if ($academicYear &&
             $academicYear->getOrganization() === $this->userExtensionService->getCurrentOrganization()
         ) {
-            $workcenters = $this->workcenterRepository->findByAcademicYear($academicYear);
+            $workcenters = $this->workcenterRepository->findAll();
             if (!$teachers) {
                 $teachers = $this->teacherRepository->findByAcademicYearAndWLT($academicYear);
             }

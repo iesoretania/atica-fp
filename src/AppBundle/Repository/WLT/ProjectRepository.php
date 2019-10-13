@@ -77,6 +77,21 @@ class ProjectRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByOrganizationAndManagerPerson(
+        Organization $organization,
+        Person $person
+    ) {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.organization = :organization')
+            ->andWhere('p.manager = :person')
+            ->setParameter('organization', $organization)
+            ->setParameter('person', $person)
+            ->orderBy('p.name', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByGroups(
         $groups
     ) {

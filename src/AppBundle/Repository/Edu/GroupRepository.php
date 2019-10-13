@@ -23,12 +23,10 @@ use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Edu\Teaching;
 use AppBundle\Entity\Organization;
-use AppBundle\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 
 class GroupRepository extends ServiceEntityRepository
@@ -141,20 +139,6 @@ class GroupRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function countAcademicYearAndWltTutor(AcademicYear $academicYear, Teacher $tutor)
-    {
-        try {
-            return $this->findByAcademicYearAndWltTutorQueryBuilder($academicYear, $tutor)
-                ->select('COUNT(g)')
-                ->getQuery()
-                ->getSingleScalarResult();
-        } catch (NoResultException $e) {
-        } catch (NonUniqueResultException $e) {
-        }
-
-        return 0;
-    }
-
     public function findByAcademicYearAndWltTeacherQueryBuilder(AcademicYear $academicYear, Teacher $teacher)
     {
         $groups = array_map(function (Teaching $t) {
@@ -173,20 +157,6 @@ class GroupRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function countAcademicYearAndWltTeacher(AcademicYear $academicYear, Teacher $teacher)
-    {
-        $groups = array_map(function (Teaching $t) {
-            return $t->getGroup();
-        }, $teacher->getTeachings()->toArray());
-
-        return $this->findByAcademicYearAndWltQueryBuilder($academicYear)
-            ->select('COUNT(g)')
-            ->andWhere('g IN (:groups)')
-            ->setParameter('groups', $groups)
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
     public function findByAcademicYearAndWltHead(AcademicYear $academicYear, Teacher $teacher)
     {
         return $this->findByAcademicYearAndWltQueryBuilder($academicYear)
@@ -195,75 +165,6 @@ class GroupRepository extends ServiceEntityRepository
             ->setParameter('teacher', $teacher)
             ->getQuery()
             ->getResult();
-    }
-
-    public function findByOrganizationAndTeacherPerson(Organization $organization, Person $person)
-    {
-        return $this->createQueryBuilder('g')
-            ->distinct(true)
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 't')
-            ->join('t.academicYear', 'ay')
-            ->join('g.teachings', 'te')
-            ->join('te.teacher', 'tea')
-            ->andWhere('ay.organization = :organization')
-            ->andWhere('tea.person = :person')
-            ->setParameter('organization', $organization)
-            ->setParameter('person', $person)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByOrganizationAndHeadPerson(Organization $organization, Person $person)
-    {
-        return $this->createQueryBuilder('g')
-            ->distinct(true)
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 't')
-            ->join('t.academicYear', 'ay')
-            ->join('t.department', 'd')
-            ->join('d.head', 'h')
-            ->andWhere('ay.organization = :organization')
-            ->andWhere('h.person = :person')
-            ->setParameter('organization', $organization)
-            ->setParameter('person', $person)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByOrganizationAndGroupTutorPerson(Organization $organization, Person $person)
-    {
-        return $this->createQueryBuilder('g')
-            ->distinct(true)
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 't')
-            ->join('t.academicYear', 'ay')
-            ->join('g.tutors', 'tea')
-            ->andWhere('ay.organization = :organization')
-            ->andWhere('tea.person = :person')
-            ->setParameter('organization', $organization)
-            ->setParameter('person', $person)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByOrganizationAndPerson(Organization $organization, Person $person)
-    {
-        $groups = new ArrayCollection();
-
-        // grupos donde imparte clase
-        $newGroups = $this->findByOrganizationAndTeacherPerson($organization, $person);
-        $this->appendGroups($groups, $newGroups);
-
-        // grupos de las familias profesionales donde es jefe/a de departamento
-        $newGroups = $this->findByOrganizationAndHeadPerson($organization, $person);
-        $this->appendGroups($groups, $newGroups);
-
-        // grupos donde es tutor
-        $newGroups = $this->findByOrganizationAndGroupTutorPerson($organization, $person);
-        $this->appendGroups($groups, $newGroups);
-
-        return $groups;
     }
 
     public function findByAcademicYearAndTeacher(AcademicYear $academicYear, Teacher $teacher)

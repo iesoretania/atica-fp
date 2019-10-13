@@ -82,8 +82,7 @@ class AgreementType extends AbstractType
         $studentEnrollments = $project ? $project->getStudentEnrollments() : [];
 
         $workcenters = ($studentEnrollment && $company) ?
-            $this->workcenterRepository->findByAcademicYearAndCompany(
-                $studentEnrollment->getGroup()->getGrade()->getTraining()->getAcademicYear(),
+            $this->workcenterRepository->findByCompany(
                 $company
             ) : [];
 

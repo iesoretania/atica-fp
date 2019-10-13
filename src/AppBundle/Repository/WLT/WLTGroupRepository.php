@@ -24,6 +24,7 @@ use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 class WLTGroupRepository extends ServiceEntityRepository
@@ -146,5 +147,35 @@ class WLTGroupRepository extends ServiceEntityRepository
             ->select('COUNT(DISTINCT g)')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function findByOrganizationAndPerson(Organization $organization, Person $person)
+    {
+        $groups = new ArrayCollection();
+
+        $academicYear = $organization->getCurrentAcademicYear();
+
+        // grupos donde imparte clase
+        $newGroups = $this->findByAcademicYearAndWLTTeacherPerson($academicYear, $person);
+        $this->appendGroups($groups, $newGroups);
+
+        // grupos de las familias profesionales donde es jefe/a de departamento
+        $newGroups = $this->findByAcademicYearAndWLTDepartmentHeadPerson($academicYear, $person);
+        $this->appendGroups($groups, $newGroups);
+
+        // grupos donde es tutor
+        $newGroups = $this->findByAcademicYearAndWLTGroupTutorPerson($academicYear, $person);
+        $this->appendGroups($groups, $newGroups);
+
+        return $groups;
+    }
+
+    private function appendGroups(ArrayCollection $groups, $newGroups)
+    {
+        foreach ($newGroups as $group) {
+            if (false === $groups->contains($group)) {
+                $groups->add($group);
+            }
+        }
     }
 }
