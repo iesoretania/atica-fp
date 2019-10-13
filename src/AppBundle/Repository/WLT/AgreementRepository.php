@@ -24,21 +24,36 @@ use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\Meeting;
+use AppBundle\Entity\WLT\Project;
 use AppBundle\Entity\WLT\WorkDay;
+use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Security\Core\Security;
 
 class AgreementRepository extends ServiceEntityRepository
 {
     private $workDayRepository;
+    private $WLTGroupRepository;
+    private $projectRepository;
+    private $security;
 
-    public function __construct(ManagerRegistry $registry, WorkDayRepository $workDayRepository)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        WorkDayRepository $workDayRepository,
+        WLTGroupRepository $WLTGroupRepository,
+        ProjectRepository $projectRepository,
+        Security $security
+    ) {
         parent::__construct($registry, Agreement::class);
         $this->workDayRepository = $workDayRepository;
+        $this->WLTGroupRepository = $WLTGroupRepository;
+        $this->projectRepository = $projectRepository;
+        $this->security = $security;
     }
 
     /**
@@ -322,5 +337,65 @@ class AgreementRepository extends ServiceEntityRepository
             ->setParameter('academic_year', $academicYear)
             ->getQuery()
             ->getResult();
+    }
+
+    public function setQueryBuilderFilterByOrganizationPersonProjectAndReturnProjects(
+        QueryBuilder $queryBuilder,
+        Organization $organization,
+        Person $person,
+        Project $project = null
+    ) {
+        $isManager = $this->security->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+        $isWorkTutor = $this->security->isGranted(WLTOrganizationVoter::WLT_WORK_TUTOR, $organization);
+
+        $projects = [];
+        if ($isWltManager) {
+            if (!$isManager) {
+                $projects = $this->projectRepository->findByOrganizationAndManagerPerson($organization, $person);
+            } else {
+                $projects = $this->projectRepository->findByOrganization($organization);
+            }
+        }
+
+        if (false === $isManager && false === $isWltManager) {
+            // no es administrador ni coordinador de FP:
+            // puede ser jefe de departamento, tutor de grupo o profesor
+            $groups =
+                $this->WLTGroupRepository->findByOrganizationAndPerson($organization, $person);
+
+            if (!$groups->isEmpty()) {
+                $queryBuilder
+                    ->andWhere('g IN (:groups)')
+                    ->setParameter('groups', $groups);
+            }
+
+            // si solo es tutor laboral, necesita ser el tutor para verlo
+            if ($isWorkTutor) {
+                $queryBuilder
+                    ->andWhere('a.workTutor = :person')
+                    ->setParameter('person', $person);
+            }
+
+            $queryBuilder
+                ->orWhere('p = :person')
+                ->setParameter('person', $person);
+        }
+
+        if ($project) {
+            $queryBuilder
+                ->andWhere('a.project = :project')
+                ->setParameter('project', $project);
+        } elseif ($projects && !$isManager) {
+            $queryBuilder
+                ->andWhere('a.project IN (:projects)')
+                ->setParameter('projects', $projects);
+        }
+
+        $queryBuilder
+            ->andWhere('pro.organization = :organization')
+            ->setParameter('organization', $organization);
+
+        return $projects;
     }
 }

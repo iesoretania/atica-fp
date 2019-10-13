@@ -20,9 +20,7 @@ namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\Project;
-use AppBundle\Repository\WLT\ProjectRepository;
-use AppBundle\Repository\WLT\WLTGroupRepository;
-use AppBundle\Security\OrganizationVoter;
+use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -31,7 +29,6 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -47,9 +44,7 @@ class TrackingController extends Controller
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        WLTGroupRepository $WLTGroupRepository,
-        ProjectRepository $projectRepository,
-        Security $security,
+        AgreementRepository $agreementRepository,
         $page = 1,
         Project $project = null
     ) {
@@ -105,58 +100,14 @@ class TrackingController extends Controller
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
-        $isWorkTutor = $security->isGranted(WLTOrganizationVoter::WLT_WORK_TUTOR, $organization);
-
         $person = $this->getUser()->getPerson();
 
-        $projects= [];
-        if ($isWltManager) {
-            if (!$isManager) {
-                $projects = $projectRepository->findByOrganizationAndManagerPerson($organization, $person);
-            } else {
-                $projects = $projectRepository->findByOrganization($organization);
-            }
-        }
-
-        if (false === $isManager && false === $isWltManager) {
-            // no es administrador ni coordinador de FP:
-            // puede ser jefe de departamento, tutor de grupo o profesor
-            $groups =
-                $WLTGroupRepository->findByOrganizationAndPerson($organization, $person);
-
-            if (!$groups->isEmpty()) {
-                $queryBuilder
-                    ->andWhere('g IN (:groups)')
-                    ->setParameter('groups', $groups);
-            }
-
-            // si solo es tutor laboral, necesita ser el tutor para verlo
-            if ($isWorkTutor) {
-                $queryBuilder
-                    ->andWhere('a.workTutor = :person')
-                    ->setParameter('person', $person);
-            }
-
-            $queryBuilder
-                ->orWhere('p = :person')
-                ->setParameter('person', $person);
-        }
-
-        if ($project) {
-            $queryBuilder
-                ->andWhere('a.project = :project')
-                ->setParameter('project', $project);
-        } elseif ($projects && !$isManager) {
-            $queryBuilder
-                ->andWhere('a.project IN (:projects)')
-                ->setParameter('projects', $projects);
-        }
-
-        $queryBuilder
-            ->andWhere('pro.organization = :organization')
-            ->setParameter('organization', $organization);
+        $projects = $agreementRepository->setQueryBuilderFilterByOrganizationPersonProjectAndReturnProjects(
+            $queryBuilder,
+            $organization,
+            $person,
+            $project
+        );
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
