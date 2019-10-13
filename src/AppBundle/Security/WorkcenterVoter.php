@@ -83,12 +83,7 @@ class WorkcenterVoter extends CachedVoter
         if (!$subject instanceof Workcenter) {
             return false;
         }
-
-        // si el curso académico no pertenece a la organización actual, denegar
         $organization = $this->userExtensionService->getCurrentOrganization();
-        if ($subject->getAcademicYear()->getOrganization() !== $organization) {
-            return false;
-        }
 
         // los administradores globales siempre tienen permiso
         if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {

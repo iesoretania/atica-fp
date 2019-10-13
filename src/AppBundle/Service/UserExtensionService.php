@@ -18,6 +18,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Organization;
 use AppBundle\Entity\User;
 use AppBundle\Security\OrganizationVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -53,7 +54,7 @@ class UserExtensionService
     }
 
     /**
-     * @return \AppBundle\Entity\Organization|null|object
+     * @return Organization|null|object
      */
     public function getCurrentOrganization()
     {

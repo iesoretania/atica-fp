@@ -21,7 +21,6 @@ namespace AppBundle\Controller\Company;
 use AppBundle\Entity\Company;
 use AppBundle\Entity\Workcenter;
 use AppBundle\Form\Type\WorkcenterType;
-use AppBundle\Repository\MembershipRepository;
 use AppBundle\Repository\WorkcenterRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WorkcenterVoter;
@@ -29,9 +28,9 @@ use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -44,7 +43,6 @@ class WorkcenterController extends Controller
      **/
     public function newAction(
         Request $request,
-        MembershipRepository $membershipRepository,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
         Company $company
@@ -55,12 +53,11 @@ class WorkcenterController extends Controller
         $workcenter = new Workcenter();
 
         $workcenter
-            ->setCompany($company)
-            ->setAcademicYear($organization->getCurrentAcademicYear());
+            ->setCompany($company);
 
         $this->getDoctrine()->getManager()->persist($workcenter);
 
-        return $this->formAction($request, $membershipRepository, $translator, $workcenter);
+        return $this->formAction($request, $translator, $workcenter);
     }
 
     /**
@@ -69,7 +66,6 @@ class WorkcenterController extends Controller
      */
     public function formAction(
         Request $request,
-        MembershipRepository $membershipRepository,
         TranslatorInterface $translator,
         Workcenter $workcenter
     ) {
@@ -81,15 +77,6 @@ class WorkcenterController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                if ($workcenter->getManager() && $workcenter->getManager()->getUser()) {
-                    $organization = $workcenter->getAcademicYear()->getOrganization();
-                    $membershipRepository->addNewOrganizationMembership(
-                        $organization,
-                        $workcenter->getManager()->getUser(),
-                        $organization->getCurrentAcademicYear()->getStartDate(),
-                        $organization->getCurrentAcademicYear()->getEndDate()
-                    );
-                }
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'workcenter'));
                 return $this->redirectToRoute('company_workcenter_list', ['id' => $workcenter->getCompany()->getId()]);
@@ -114,7 +101,7 @@ class WorkcenterController extends Controller
                 'fixed' => $this->get('translator')->trans('title.list', [], 'workcenter'),
                 'routeName' => 'company_workcenter_list',
                 'routeParams' => ['id' => $workcenter->getCompany()->getId()]
-        ],
+            ],
             $workcenter->getId() ?
                 ['fixed' => $workcenter->getName()] :
                 ['fixed' => $this->get('translator')->trans('title.new', [], 'workcenter')]

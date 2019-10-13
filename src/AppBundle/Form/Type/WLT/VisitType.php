@@ -124,15 +124,8 @@ class VisitType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
-            $data = $event->getData();
 
-            /** @var Workcenter $workcenter */
-            $workcenter = isset($data['workcenter']) ?
-                $this->workcenterRepository->find($data['workcenter']) : null;
-
-            $academicYear = (null === $workcenter) ?
-                $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear() :
-                $workcenter->getAcademicYear();
+            $academicYear = $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
 
             $this->addElements($form, $academicYear, $options['teachers']);
         });

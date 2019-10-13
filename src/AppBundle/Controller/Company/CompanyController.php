@@ -22,15 +22,14 @@ use AppBundle\Entity\Company;
 use AppBundle\Entity\Workcenter;
 use AppBundle\Form\Type\CompanyType;
 use AppBundle\Repository\CompanyRepository;
-use AppBundle\Repository\MembershipRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -40,15 +39,9 @@ class CompanyController extends Controller
 {
     /**
      * @Route("/nueva", name="company_new", methods={"GET", "POST"})
-     * @param Request $request
-     * @param MembershipRepository $membershipRepository
-     * @param TranslatorInterface $translator
-     * @param UserExtensionService $userExtensionService
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function newAction(
         Request $request,
-        MembershipRepository $membershipRepository,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService
     ) {
@@ -56,22 +49,15 @@ class CompanyController extends Controller
 
         $this->getDoctrine()->getManager()->persist($company);
 
-        return $this->formAction($request, $membershipRepository, $translator, $userExtensionService, $company);
+        return $this->formAction($request, $translator, $userExtensionService, $company);
     }
 
     /**
      * @Route("/{id}", name="company_edit",
      *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     * @param Request $request
-     * @param MembershipRepository $membershipRepository
-     * @param TranslatorInterface $translator
-     * @param UserExtensionService $userExtensionService
-     * @param Company $company
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function formAction(
         Request $request,
-        MembershipRepository $membershipRepository,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
         Company $company
@@ -89,19 +75,9 @@ class CompanyController extends Controller
                     $workcenter = new Workcenter();
                     $workcenter
                         ->initFromCompany($company)
-                        ->setAcademicYear($organization->getCurrentAcademicYear())
                         ->setName($translator->trans('title.main_workcenter', [], 'workcenter'));
 
                     $this->getDoctrine()->getManager()->persist($workcenter);
-
-                    if ($workcenter->getManager() && $workcenter->getManager()->getUser()) {
-                        $membershipRepository->addNewOrganizationMembership(
-                            $organization,
-                            $workcenter->getManager()->getUser(),
-                            $organization->getCurrentAcademicYear()->getStartDate(),
-                            $organization->getCurrentAcademicYear()->getEndDate()
-                        );
-                    }
                 }
 
                 $this->getDoctrine()->getManager()->flush();
