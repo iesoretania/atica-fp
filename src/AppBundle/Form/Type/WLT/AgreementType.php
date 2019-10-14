@@ -96,14 +96,13 @@ class AgreementType extends AbstractType
                 ) : [];
 
         if ($studentEnrollment) {
-            $training = $studentEnrollment->getGroup()->getGrade()->getTraining();
             if ($company) {
                 $activityRealizations = $this->activityRealizationRepository->
-                    findByTrainingAndCompany($training, $company);
+                    findByProjectAndCompany($project, $company);
             } else {
                 $activityRealizations = [];
             }
-            $companies = $this->companyRepository->findByLearningProgramFromTraining($training);
+            $companies = $this->companyRepository->findByLearningProgramFromProject($project);
         } else {
             $activityRealizations = [];
             $companies = [];

@@ -69,20 +69,16 @@ class ActivityRealizationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByTrainingAndCompany(Training $training, Company $company)
+    public function findByProjectAndCompany(Project $project, Company $company)
     {
         return $this->createQueryBuilder('ar')
             ->join('ar.activity', 'a')
-            ->join('a.subject', 's')
-            ->join('s.grade', 'g')
             ->join(LearningProgram::class, 'lp', 'WITH', 'ar MEMBER OF lp.activityRealizations')
-            ->andWhere('g.training = :training')
+            ->andWhere('lp.project = :project')
             ->andWhere('lp.company = :company')
-            ->setParameter('training', $training)
+            ->setParameter('project', $project)
             ->setParameter('company', $company)
-            ->orderBy('s.code')
-            ->addOrderBy('s.name')
-            ->addOrderBy('a.code')
+            ->orderBy('a.code')
             ->addOrderBy('ar.code')
             ->getQuery()
             ->getResult();
