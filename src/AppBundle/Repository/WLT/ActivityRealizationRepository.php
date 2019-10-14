@@ -27,6 +27,7 @@ use AppBundle\Entity\WLT\ActivityRealization;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\AgreementActivityRealization;
 use AppBundle\Entity\WLT\LearningProgram;
+use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
@@ -87,16 +88,14 @@ class ActivityRealizationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findOneByTrainingAndCode(Training $training, $code)
+    public function findOneByProjectAndCode(Project $project, $code)
     {
         try {
             return $this->createQueryBuilder('ar')
                 ->join('ar.activity', 'a')
-                ->join('a.subject', 's')
-                ->join('s.grade', 'g')
-                ->andWhere('g.training = :training')
+                ->andWhere('a.project = :project')
                 ->andWhere('ar.code = :code')
-                ->setParameter('training', $training)
+                ->setParameter('project', $project)
                 ->setParameter('code', $code)
                 ->getQuery()
                 ->setMaxResults(1)
@@ -104,6 +103,20 @@ class ActivityRealizationRepository extends ServiceEntityRepository
         } catch (NonUniqueResultException $e) {
             return null;
         }
+    }
+
+    public function findByProject(Project $project)
+    {
+        return $this->createQueryBuilder('ar')
+            ->join('ar.activity', 'a')
+            ->andWhere('a.project = :project')
+            ->setParameter('project', $project)
+            ->orderBy('a.code')
+            ->addOrderBy('a.description')
+            ->addOrderBy('ar.code')
+            ->addOrderBy('ar.description')
+            ->getQuery()
+            ->getResult();
     }
 
     public function deleteFromList($items)

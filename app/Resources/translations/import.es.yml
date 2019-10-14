@@ -94,9 +94,8 @@ instructions.non_working_day.import: |
 link.non_working_day.import: "https://www.juntadeandalucia.es/educacion/secretariavirtual/consulta/calendario-escolar/"
 
 title.learning_program.import: Importación de programas formativos
-form.learning_program.academic_year: Curso académico
-form.learning_program.training: Enseñanza
-form.learning_program.training.none: Seleccione enseñanza
+form.learning_program.project: Proyecto
+form.learning_program.project.none: Seleccione proyecto de FP dual
 form.learning_program.do_import: Importar programas formativos
 
 report.learning_program.activity.list: Concreciones de actividad procesadas

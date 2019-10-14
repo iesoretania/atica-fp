@@ -18,34 +18,34 @@
 
 namespace AppBundle\Controller\WLT;
 
-use AppBundle\Entity\Edu\Subject;
 use AppBundle\Entity\WLT\Activity;
+use AppBundle\Entity\WLT\Project;
 use AppBundle\Form\Type\WLT\ActivityType;
 use AppBundle\Repository\WLT\ActivityRepository;
-use AppBundle\Security\Edu\TrainingVoter;
+use AppBundle\Security\WLT\ProjectVoter;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * @Route("/dual/ensenanza")
+ * @Route("/dual/proyecto")
  */
 class ActivityController extends Controller
 {
     /**
-     * @Route("/materia/{id}/actividad/nueva", name="work_linked_training_training_activity_new", methods={"GET", "POST"})
+     * @Route("/programa/{id}/actividad/nueva", name="work_linked_training_training_activity_new", methods={"GET", "POST"})
      **/
-    public function newAction(Request $request, TranslatorInterface $translator, Subject $subject)
+    public function newAction(Request $request, TranslatorInterface $translator, Project $project)
     {
-        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $subject->getGrade()->getTraining());
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $activity = new Activity();
         $activity
-            ->setSubject($subject);
+            ->setProject($project);
 
         $this->getDoctrine()->getManager()->persist($activity);
 
@@ -53,7 +53,7 @@ class ActivityController extends Controller
     }
 
     /**
-     * @Route("/materia/actividad/{id}", name="work_linked_training_training_activity_edit",
+     * @Route("/programa/actividad/{id}", name="work_linked_training_training_activity_edit",
      *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
     public function formAction(
@@ -61,13 +61,12 @@ class ActivityController extends Controller
         TranslatorInterface $translator,
         Activity $activity
     ) {
-        $subject = $activity->getSubject();
-        $training = $subject->getGrade()->getTraining();
+        $project = $activity->getProject();
 
-        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $form = $this->createForm(ActivityType::class, $activity, [
-            'subject' => $subject
+            'project' => $project
         ]);
 
         $form->handleRequest($request);
@@ -76,8 +75,8 @@ class ActivityController extends Controller
             try {
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_activity'));
-                return $this->redirectToRoute('work_linked_training_training_activity_list', [
-                    'id' => $subject->getId()
+                return $this->redirectToRoute('work_linked_training_project_activity_list', [
+                    'id' => $project->getId()
                 ]);
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_activity'));
@@ -92,40 +91,35 @@ class ActivityController extends Controller
 
         $breadcrumb = [
             [
-                'fixed' => $training->getName(),
-                'routeName' => 'work_linked_training_training_subject_list',
-                'routeParams' => ['id' => $training->getId()]
+                'fixed' => $project->getName(),
+                'routeName' => 'work_linked_training_project_activity_list',
+                'routeParams' => ['id' => $project->getId()]
             ],
-            [
-                'fixed' => $subject->getName(),
-                'routeName' => 'work_linked_training_training_activity_list',
-                'routeParams' => ['id' => $subject->getId()]
-            ],
-            $activity->getId() ?
-                ['fixed' => $activity->getCode()] :
-                ['fixed' => $this->get('translator')->trans('title.new', [], 'wlt_activity')]
+            ['fixed' => $translator->trans(
+                $activity->getId() ? 'title.edit' : 'title.new', [], 'wlt_activity')
+            ]
         ];
 
         return $this->render('wlt/training/activity_form.html.twig', [
-            'menu_path' => 'work_linked_training_training',
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'subject' => $subject,
+            'subject' => $project,
             'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("/materia/{id}/actividad/{page}/", name="work_linked_training_training_activity_list",
+     * @Route("/programa/{id}/actividad/{page}", name="work_linked_training_project_activity_list",
      *     requirements={"id" = "\d+", "page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
      */
     public function listAction(
         Request $request,
         TranslatorInterface $translator,
-        Subject $subject,
+        Project $project,
         $page = 1
     ) {
-        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $subject->getGrade()->getTraining());
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -144,8 +138,8 @@ class ActivityController extends Controller
         }
 
         $queryBuilder
-            ->andWhere('a.subject = :subject')
-            ->setParameter('subject', $subject);
+            ->andWhere('a.project = :project')
+            ->setParameter('project', $project);
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -153,51 +147,44 @@ class ActivityController extends Controller
             ->setMaxPerPage($this->getParameter('page.size'))
             ->setCurrentPage($q ? 1 : $page);
 
-        $title = $subject->getName() . ' - ' . $translator->trans('title.list', [], 'wlt_activity');
+        $title = $project->getName() . ' - ' . $translator->trans('title.list', [], 'wlt_activity');
 
         $breadcrumb = [
-            [
-                'fixed' => $subject->getGrade()->getTraining()->getName(),
-                'routeName' => 'work_linked_training_training_subject_list',
-                'routeParams' => ['id' => $subject->getGrade()->getTraining()->getId()]
-            ],
-            ['fixed' => $subject->getName()],
+            ['fixed' => $project->getName()],
             ['fixed' => $translator->trans('title.list', [], 'wlt_activity')]
         ];
 
         return $this->render('wlt/training/activity_list.html.twig', [
-            'menu_path' => 'work_linked_training_training',
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'subject' => $subject,
+            'project' => $project,
             'domain' => 'wlt_activity'
         ]);
     }
 
     /**
-     * @Route("/materia/actividad/eliminar/{id}", name="work_linked_training_training_activity_delete",
+     * @Route("/programa/{id}/actividad/eliminar", name="work_linked_training_training_activity_delete",
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
     public function deleteAction(
         Request $request,
         ActivityRepository $activityRepository,
         TranslatorInterface $translator,
-        Subject $subject)
+        Project $project)
     {
-        $training = $subject->getGrade()->getTraining();
-
-        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
         if (count($items) === 0) {
-            return $this->redirectToRoute('work_linked_training_training_activity_list', ['id' => $subject->getId()]);
+            return $this->redirectToRoute('work_linked_training_project_activity_list', ['id' => $project->getId()]);
         }
 
-        $activities = $activityRepository->findAllInListByIdAndSubject($items, $subject);
+        $activities = $activityRepository->findAllInListByIdAndProject($items, $project);
 
         if ($request->get('confirm', '') === 'ok') {
             try {
@@ -208,25 +195,22 @@ class ActivityController extends Controller
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_activity'));
             }
-            return $this->redirectToRoute('work_linked_training_training_activity_list', ['id' => $subject->getId()]);
+            return $this->redirectToRoute('work_linked_training_project_activity_list', ['id' => $project->getId()]);
         }
 
         $breadcrumb = [
             [
-                'fixed' => $training->getName(),
-                'routeName' => 'work_linked_training_training_subject_list',
-                'routeParams' => ['id' => $training->getId()]
+                'fixed' => $project->getName(),
+                'routeName' => 'work_linked_training_project_activity_list',
+                'routeParams' => ['id' => $project->getId()]
             ],
             [
-                'fixed' => $subject->getName(),
-                'routeName' => 'training_activity_list',
-                'routeParams' => ['id' => $subject->getId()]
-            ],
-            ['fixed' => $this->get('translator')->trans('title.delete', [], 'wlt_activity')]
+                'fixed' => $translator->trans('title.delete' , [], 'wlt_activity')
+            ]
         ];
 
         return $this->render('wlt/training/activity_delete.html.twig', [
-            'menu_path' => 'training',
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $translator->trans('title.delete', [], 'wlt_activity'),
             'items' => $activities

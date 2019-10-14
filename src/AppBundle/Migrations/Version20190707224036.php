@@ -51,6 +51,24 @@ class Version20190707224036 extends AbstractMigration
         $this->addSql('ALTER TABLE wlt_manager_answered_survey ADD CONSTRAINT FK_FA50ACDCA97283E6 FOREIGN KEY (answered_survey_id) REFERENCES answered_survey (id)');
 
         $this->addSql('CREATE TABLE wlt_project_audit (id INT NOT NULL, rev INT NOT NULL, organization_id INT DEFAULT NULL, manager_id INT DEFAULT NULL, student_survey_id INT DEFAULT NULL, company_survey_id INT DEFAULT NULL, manager_survey_id INT DEFAULT NULL, name VARCHAR(255) DEFAULT NULL, revtype VARCHAR(4) NOT NULL, INDEX rev_e55594229ab1a86fcf85548ae1e37a5e_idx (rev), PRIMARY KEY(id, rev)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
+
+        $this->addSql('ALTER TABLE wlt_learning_program DROP FOREIGN KEY FK_5EB2E44DBEFD98D1');
+        $this->addSql('DROP INDEX UNIQ_5EB2E44D979B1AD6BEFD98D1 ON wlt_learning_program');
+        $this->addSql('DROP INDEX IDX_5EB2E44DBEFD98D1 ON wlt_learning_program');
+
+        $this->addSql('ALTER TABLE wlt_learning_program ADD project_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE wlt_learning_program ADD CONSTRAINT FK_5EB2E44D166D1F9C FOREIGN KEY (project_id) REFERENCES wlt_project (id)');
+        $this->addSql('CREATE INDEX IDX_5EB2E44D166D1F9C ON wlt_learning_program (project_id)');
+        $this->addSql('ALTER TABLE wlt_learning_program_audit DROP training_id');
+        $this->addSql('ALTER TABLE wlt_learning_program_audit ADD project_id INT DEFAULT NULL');
+
+        $this->addSql('ALTER TABLE wlt_activity DROP FOREIGN KEY FK_EAD6D79D23EDC87');
+        $this->addSql('DROP INDEX UNIQ_EAD6D79D23EDC8777153098 ON wlt_activity');
+        $this->addSql('DROP INDEX IDX_EAD6D79D23EDC87 ON wlt_activity');
+        $this->addSql('ALTER TABLE wlt_activity ADD project_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE wlt_activity ADD CONSTRAINT FK_EAD6D79D166D1F9C FOREIGN KEY (project_id) REFERENCES wlt_project (id)');
+        $this->addSql('CREATE INDEX IDX_EAD6D79D166D1F9C ON wlt_activity (project_id)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_EAD6D79D166D1F9C77153098 ON wlt_activity (project_id, code)');
     }
 
     /**

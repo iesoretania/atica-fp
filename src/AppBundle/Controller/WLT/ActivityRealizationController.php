@@ -22,27 +22,27 @@ use AppBundle\Entity\WLT\Activity;
 use AppBundle\Entity\WLT\ActivityRealization;
 use AppBundle\Form\Type\WLT\ActivityRealizationType;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
-use AppBundle\Security\Edu\TrainingVoter;
+use AppBundle\Security\WLT\ProjectVoter;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * @Route("/dual/ensenanza")
+ * @Route("/dual/proyecto")
  */
 class ActivityRealizationController extends Controller
 {
     /**
-     * @Route("/materia/actividad/{id}/concrecion/nueva", name="work_linked_training_training_activity_realization_new",
+     * @Route("/programa/{id}/concrecion/nueva", name="work_linked_training_project_activity_realization_new",
      *     methods={"GET", "POST"})
      **/
     public function newAction(Request $request, TranslatorInterface $translator, Activity $activity)
     {
-        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $activity->getSubject()->getGrade()->getTraining());
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $activity->getProject());
 
         $activityRealization = new ActivityRealization();
         $activityRealization
@@ -55,7 +55,7 @@ class ActivityRealizationController extends Controller
     }
 
     /**
-     * @Route("/materia/actividad/concrecion/{id}", name="work_linked_training_training_activity_realization_edit",
+     * @Route("/programa/{id}/detalles/concrecion", name="work_linked_training_project_activity_realization_edit",
      *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
     public function formAction(
@@ -64,10 +64,9 @@ class ActivityRealizationController extends Controller
         ActivityRealization $activityRealization
     ) {
         $activity = $activityRealization->getActivity();
-        $subject = $activity->getSubject();
-        $training = $subject->getGrade()->getTraining();
+        $project = $activity->getProject();
 
-        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $form = $this->createForm(ActivityRealizationType::class, $activityRealization, [
             'activity' => $activity
@@ -79,7 +78,7 @@ class ActivityRealizationController extends Controller
             try {
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_activity_realization'));
-                return $this->redirectToRoute('work_linked_training_training_activity_realization_list', [
+                return $this->redirectToRoute('work_linked_training_project_activity_realization_list', [
                     'id' => $activity->getId()
                 ]);
             } catch (\Exception $e) {
@@ -95,18 +94,13 @@ class ActivityRealizationController extends Controller
 
         $breadcrumb = [
             [
-                'fixed' => $training->getName(),
-                'routeName' => 'work_linked_training_training_subject_list',
-                'routeParams' => ['id' => $training->getId()]
-            ],
-            [
-                'fixed' => $subject->getName(),
-                'routeName' => 'work_linked_training_training_activity_list',
-                'routeParams' => ['id' => $subject->getId()]
+                'fixed' => $project->getName(),
+                'routeName' => 'work_linked_training_project_activity_list',
+                'routeParams' => ['id' => $project->getId()]
             ],
             [
                 'fixed' => $activity->getCode(),
-                'routeName' => 'work_linked_training_training_activity_realization_list',
+                'routeName' => 'work_linked_training_project_activity_realization_list',
                 'routeParams' => ['id' => $activity->getId()]
             ],
             $activityRealization->getId() ?
@@ -115,7 +109,7 @@ class ActivityRealizationController extends Controller
         ];
 
         return $this->render('wlt/training/activity_realization_form.html.twig', [
-            'menu_path' => 'work_linked_training_training',
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'form' => $form->createView()
@@ -123,7 +117,7 @@ class ActivityRealizationController extends Controller
     }
 
     /**
-     * @Route("/materia/actividad/{id}/concrecion/{page}/", name="work_linked_training_training_activity_realization_list",
+     * @Route("/programa/{id}/concrecion/{page}", name="work_linked_training_project_activity_realization_list",
      *     requirements={"id" = "\d+", "page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
      */
     public function listAction(
@@ -132,9 +126,8 @@ class ActivityRealizationController extends Controller
         Activity $activity,
         $page = 1
     ) {
-        $subject = $activity->getSubject();
-        $training = $subject->getGrade()->getTraining();
-        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+        $project = $activity->getProject();
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -166,14 +159,9 @@ class ActivityRealizationController extends Controller
 
         $breadcrumb = [
             [
-                'fixed' => $training->getName(),
-                'routeName' => 'work_linked_training_training_subject_list',
-                'routeParams' => ['id' => $training->getId()]
-            ],
-            [
-                'fixed' => $subject->getName(),
-                'routeName' => 'work_linked_training_training_activity_list',
-                'routeParams' => ['id' => $subject->getId()]
+                'fixed' => $project->getName(),
+                'routeName' => 'work_linked_training_project_activity_list',
+                'routeParams' => ['id' => $project->getId()]
             ],
             [
                 'fixed' => $activity->getCode(),
@@ -182,7 +170,7 @@ class ActivityRealizationController extends Controller
         ];
 
         return $this->render('wlt/training/activity_realization_list.html.twig', [
-            'menu_path' => 'work_linked_training_training',
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,
@@ -193,7 +181,7 @@ class ActivityRealizationController extends Controller
     }
 
     /**
-     * @Route("/materia/actividad/concrecion/eliminar/{id}", name="work_linked_training_training_activity_realization_delete",
+     * @Route("/programa/{id}/eliminar/concrecion", name="work_linked_training_project_activity_realization_delete",
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
     public function deleteAction(
@@ -202,15 +190,17 @@ class ActivityRealizationController extends Controller
         TranslatorInterface $translator,
         Activity $activity)
     {
-        $training = $activity->getSubject()->getGrade()->getTraining();
-
-        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+        $project = $activity->getProject();
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
         if (count($items) === 0) {
-            return $this->redirectToRoute('work_linked_training_training_activity_realization_list', ['id' => $activity->getId()]);
+            return $this->redirectToRoute(
+                'work_linked_training_project_activity_realization_list',
+                ['id' => $activity->getId()]
+            );
         }
 
         $activityRealizations = $activityRealizationRepository->findAllInListByIdAndActivity($items, $activity);
@@ -224,23 +214,18 @@ class ActivityRealizationController extends Controller
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_activity_realization'));
             }
-            return $this->redirectToRoute('work_linked_training_training_activity_realization_list', ['id' => $activity->getId()]);
+            return $this->redirectToRoute('work_linked_training_project_activity_realization_list', ['id' => $activity->getId()]);
         }
 
         $breadcrumb = [
             [
-                'fixed' => $training->getName(),
-                'routeName' => 'work_linked_training_training_subject_list',
-                'routeParams' => ['id' => $training->getId()]
-            ],
-            [
-                'fixed' => $activity->getSubject()->getName(),
-                'routeName' => 'work_linked_training_training_activity_list',
-                'routeParams' => ['id' => $activity->getSubject()->getId()]
+                'fixed' => $project->getName(),
+                'routeName' => 'work_linked_training_project_activity_list',
+                'routeParams' => ['id' => $project->getId()]
             ],
             [
                 'fixed' => $activity->getCode(),
-                'routeName' => 'work_linked_training_training_activity_realization_list',
+                'routeName' => 'work_linked_training_project_activity_realization_list',
                 'routeParams' => ['id' => $activity->getId()]
             ],
             ['fixed' => $this->get('translator')->trans('title.delete', [], 'wlt_activity_realization')]

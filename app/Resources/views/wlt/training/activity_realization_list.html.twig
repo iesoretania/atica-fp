@@ -2,7 +2,7 @@
 {% extends 'generic/list.html.twig' %}
 {% import 'macros.html.twig' as m %}
 
-{% block path_new %}{{ path('work_linked_training_training_activity_realization_new', {'id': activity.id}) }}{% endblock %}
+{% block path_new %}{{ path('work_linked_training_project_activity_realization_new', {'id': activity.id}) }}{% endblock %}
 
 {% block table_header %}
     <th><label><input type="checkbox" id="select"> {{ 'header.code'|trans }}</label></th>
@@ -12,7 +12,7 @@
 
 {% block table_body %}
             {% for activity_realization in pager %}
-                {% set url = path('work_linked_training_training_activity_realization_edit', {'id': activity_realization.id}) %}
+                {% set url = path('work_linked_training_project_activity_realization_edit', {'id': activity_realization.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="items[]" value="{{ activity_realization.id }}" class="selectable"> <a href="{{ url }}">{{ activity_realization.code }}</a></label>
@@ -41,7 +41,7 @@
 {% endblock %}
 
 {% block before_table %}
-    <form action="{{ path('work_linked_training_training_activity_realization_delete', {'id': activity.id}) }}" method="post">
+    <form action="{{ path('work_linked_training_project_activity_realization_delete', {'id': activity.id}) }}" method="post">
 {% endblock %}
 
 {% block after_table %}

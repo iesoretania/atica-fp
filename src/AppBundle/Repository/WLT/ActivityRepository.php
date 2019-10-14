@@ -18,9 +18,8 @@
 
 namespace AppBundle\Repository\WLT;
 
-use AppBundle\Entity\Edu\Subject;
-use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\WLT\Activity;
+use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
@@ -32,15 +31,17 @@ class ActivityRepository extends ServiceEntityRepository
         parent::__construct($registry, Activity::class);
     }
 
-    public function findOneByTrainingAndCode(Training $training, $code)
+    public function findOneByProjectAndCode(Project $project, $code)
     {
         try {
             return $this->createQueryBuilder('a')
+                ->distinct(true)
                 ->join('a.subject', 's')
                 ->join('s.grade', 'g')
-                ->where('g.training = :training')
+                ->join('g.groups', 'gr')
+                ->where('gr IN (:groups)')
                 ->andWhere('a.code = :code')
-                ->setParameter('training', $training)
+                ->setParameter('groups', $project->getGroups())
                 ->setParameter('code', $code)
                 ->getQuery()
                 ->getOneOrNullResult();
@@ -49,15 +50,15 @@ class ActivityRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAllInListByIdAndSubject(
+    public function findAllInListByIdAndProject(
         $items,
-        Subject $subject
+        Project $project
     ) {
         return $this->createQueryBuilder('a')
             ->where('a IN (:items)')
-            ->andWhere('a.subject = :subject')
+            ->andWhere('a.project = :project')
             ->setParameter('items', $items)
-            ->setParameter('subject', $subject)
+            ->setParameter('project', $project)
             ->orderBy('a.code')
             ->getQuery()
             ->getResult();

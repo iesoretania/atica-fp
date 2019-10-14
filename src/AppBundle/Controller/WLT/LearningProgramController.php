@@ -19,11 +19,10 @@
 namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\Company;
-use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\WLT\Activity;
 use AppBundle\Entity\WLT\ActivityRealization;
 use AppBundle\Entity\WLT\LearningProgram;
+use AppBundle\Entity\WLT\Project;
 use AppBundle\Form\Model\LearningProgramImport;
 use AppBundle\Form\Type\WLT\LearningProgramImportType;
 use AppBundle\Form\Type\WLT\LearningProgramType;
@@ -32,8 +31,7 @@ use AppBundle\Repository\Edu\SubjectRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Repository\WLT\ActivityRepository;
 use AppBundle\Repository\WLT\LearningProgramRepository;
-use AppBundle\Security\WLT\WLTOrganizationVoter;
-use AppBundle\Service\UserExtensionService;
+use AppBundle\Security\WLT\ProjectVoter;
 use AppBundle\Utils\CsvImporter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -50,20 +48,20 @@ use Symfony\Component\Translation\TranslatorInterface;
 class LearningProgramController extends Controller
 {
     /**
-     * @Route("/nuevo", name="work_linked_training_learning_program_new", methods={"GET", "POST"})
+     * @Route("/nuevo/{project}", name="work_linked_training_learning_program_new", methods={"GET", "POST"})
      */
     public function newAction(
         Request $request,
-        UserExtensionService $userExtensionService,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        Project $project
     ) {
-        $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $learningProgram = new LearningProgram();
+        $learningProgram->setProject($project);
         $this->getDoctrine()->getManager()->persist($learningProgram);
 
-        return $this->indexAction($request, $userExtensionService, $translator, $learningProgram);
+        return $this->indexAction($request, $translator, $learningProgram);
     }
 
     /**
@@ -72,29 +70,17 @@ class LearningProgramController extends Controller
      */
     public function indexAction(
         Request $request,
-        UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         LearningProgram $learningProgram
     ) {
-        if ($learningProgram->getTraining()) {
-            $academicYear = $learningProgram->getTraining()->getAcademicYear();
-        } else {
-            $academicYear = $userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
-        }
-
-        $this->denyAccessUnlessGranted(
-            WLTOrganizationVoter::WLT_MANAGE,
-            $academicYear->getOrganization()
-        );
-
-        if (false === $userExtensionService->isUserLocalAdministrator() &&
-            $academicYear->getOrganization() !== $userExtensionService->getCurrentOrganization()) {
-            return $this->createAccessDeniedException();
-        }
+        $project = $learningProgram->getProject();
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm(LearningProgramType::class, $learningProgram);
+        $form = $this->createForm(LearningProgramType::class, $learningProgram, [
+            'project' => $project
+        ]);
 
         $form->handleRequest($request);
 
@@ -103,7 +89,8 @@ class LearningProgramController extends Controller
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_learning_program'));
                 return $this->redirectToRoute('work_linked_training_learning_program_list', [
-                    'academicYear' => $academicYear
+                    'project' => $project,
+                    'page' => 1
                 ]);
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_learning_program'));
@@ -117,13 +104,18 @@ class LearningProgramController extends Controller
         );
 
         $breadcrumb = [
+            [
+                'fixed' => $project->getName(),
+                'routeName' => 'work_linked_training_learning_program_list',
+                'routeParams' => ['project' => $project->getId()]
+            ],
             $learningProgram->getId() ?
-                ['fixed' => (string) $learningProgram] :
+                ['fixed' => $learningProgram->getCompany()] :
                 ['fixed' => $translator->trans('title.new', [], 'wlt_learning_program')]
         ];
 
-        return $this->render('wlt/learning_program/form.html.twig', [
-            'menu_path' => 'work_linked_training_learning_program_list',
+        return $this->render('wlt/project/company/form.html.twig', [
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'form' => $form->createView()
@@ -131,26 +123,16 @@ class LearningProgramController extends Controller
     }
 
     /**
-     * @Route("/listar/{academicYear}/{page}", name="work_linked_training_learning_program_list",
-     *     requirements={"page" = "\d+"}, defaults={"academicYear" = null, "page" = 1}, methods={"GET"})
+     * @Route("/{project}/listar/{page}", name="work_linked_training_learning_program_list",
+     *     requirements={"page" = "\d+"}, methods={"GET"})
      */
     public function listAction(
         Request $request,
-        UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        $page = 1,
-        AcademicYear $academicYear = null
+        Project $project,
+        $page = 1
     ) {
-        $organization = $userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
-            $academicYear = $organization->getCurrentAcademicYear();
-        }
-
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
-        if (false === $userExtensionService->isUserLocalAdministrator() &&
-            $academicYear->getOrganization() !== $userExtensionService->getCurrentOrganization()) {
-            return $this->createAccessDeniedException();
-        }
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -160,22 +142,19 @@ class LearningProgramController extends Controller
             ->addSelect('SIZE(cp.activityRealizations)')
             ->from(LearningProgram::class, 'cp')
             ->join('cp.company', 'c')
-            ->join('cp.training', 't')
-            ->addOrderBy('c.name')
-            ->addOrderBy('t.name');
+            ->addOrderBy('c.name');
 
         $q = $request->get('q', null);
         if ($q) {
             $queryBuilder
                 ->where('c.name LIKE :tq')
                 ->orWhere('c.code LIKE :tq')
-                ->orWhere('cp.name LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
 
         $queryBuilder
-            ->andWhere('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
+            ->andWhere('cp.project = :project')
+            ->setParameter('project', $project);
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -185,46 +164,46 @@ class LearningProgramController extends Controller
 
         $title = $translator->trans('title.list', [], 'wlt_learning_program');
 
-        return $this->render('wlt/learning_program/list.html.twig', [
-            'title' => $title . ' - ' . $academicYear,
+        $breadcrumb = [
+            [
+                'fixed' => $project->getName(),
+            ],
+            ['fixed' => $title]
+        ];
+
+        return $this->render('wlt/project/company/list.html.twig', [
+            'menu_path' => 'work_linked_training_project_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title . ' - ' . $project,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'wlt_learning_program',
-            'academic_year' => $academicYear
+            'project' => $project
         ]);
     }
 
     /**
-     * @Route("/operacion/{academicYear}", name="work_linked_training_learning_program_operation", methods={"POST"})
+     * @Route("/operacion/{project}", name="work_linked_training_learning_program_operation", methods={"POST"})
      */
     public function operationAction(
         Request $request,
-        UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         LearningProgramRepository $learningProgramRepository,
-        AcademicYear $academicYear
+        Project $project
     ) {
-        $this->denyAccessUnlessGranted(
-            WLTOrganizationVoter::WLT_MANAGE,
-            $academicYear->getOrganization()
-        );
-
-        if (false === $userExtensionService->isUserLocalAdministrator() &&
-            $academicYear->getOrganization() !== $userExtensionService->getCurrentOrganization()) {
-            return $this->createAccessDeniedException();
-        }
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $items = $request->request->get('items', []);
 
         if (count($items) !== 0) {
             if ('' === $request->get('delete')) {
-                return $this->deleteAction($items, $request, $translator, $learningProgramRepository, $academicYear);
+                return $this->deleteAction($items, $request, $translator, $learningProgramRepository, $project);
             }
         }
 
         return $this->redirectToRoute(
             'work_linked_training_learning_program_list',
-            ['academicYear' => $academicYear->getId()]
+            ['project' => $project->getId()]
         );
     }
 
@@ -233,12 +212,11 @@ class LearningProgramController extends Controller
         Request $request,
         TranslatorInterface $translator,
         LearningProgramRepository $learningProgramRepository,
-        AcademicYear $academicYear
+        Project $project
     ) {
         $em = $this->getDoctrine()->getManager();
 
-
-        $learningPrograms = $learningProgramRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
+        $learningPrograms = $learningProgramRepository->findAllInListByIdAndProject($items, $project);
 
         if ($request->get('confirm', '') === 'ok') {
             try {
@@ -251,11 +229,11 @@ class LearningProgramController extends Controller
             }
             return $this->redirectToRoute(
                 'work_linked_training_learning_program_list',
-                ['academicYear' => $academicYear->getId()]
+                ['project' => $project->getId()]
             );
         }
 
-        return $this->render('wlt/learning_program/delete.html.twig', [
+        return $this->render('wlt/project/company/delete.html.twig', [
             'menu_path' => 'work_linked_training_learning_program_list',
             'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'wlt_learning_program')]],
             'title' => $translator->trans('title.delete', [], 'wlt_learning_program'),
@@ -264,10 +242,9 @@ class LearningProgramController extends Controller
     }
 
     /**
-     * @Route("/importar", name="work_linked_training_learning_program_import", methods={"GET", "POST"})
+     * @Route("/importar/{project}", name="work_linked_training_learning_program_import", methods={"GET", "POST"})
      */
     public function importAction(
-        UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         ActivityRepository $activityRepository,
         ActivityRealizationRepository $activityRealizationRepository,
@@ -275,19 +252,16 @@ class LearningProgramController extends Controller
         CompanyRepository $companyRepository,
         SubjectRepository $subjectRepository,
         EntityManagerInterface $entityManager,
+        Project $project,
         Request $request
     ) {
-        $organization = $userExtensionService->getCurrentOrganization();
-
-        $this->denyAccessUnlessGranted(
-            WLTOrganizationVoter::WLT_MANAGE,
-            $organization
-        );
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $formData = new LearningProgramImport();
-        $formData->setAcademicYear($organization->getCurrentAcademicYear());
+        $formData->setProject($project);
 
         $form = $this->createForm(LearningProgramImportType::class, $formData);
+
         $form->handleRequest($request);
 
         $title = $translator->trans('title.learning_program.import', [], 'import');
@@ -298,7 +272,7 @@ class LearningProgramController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $stats = $this->importFromCsv(
                 $formData->getFile()->getPathname(),
-                $formData->getTraining(),
+                $formData->getProject(),
                 $activityRepository,
                 $activityRealizationRepository,
                 $learningProgramRepository,
@@ -314,7 +288,7 @@ class LearningProgramController extends Controller
                 $this->addFlash('error', $translator->trans('message.import_error', [], 'import'));
             }
         }
-        return $this->render('wlt/learning_program/import_form.html.twig', [
+        return $this->render('wlt/project/company/import_form.html.twig', [
             'menu_path' => 'work_linked_training_learning_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
@@ -325,7 +299,7 @@ class LearningProgramController extends Controller
 
     private function importFromCsv(
         $file,
-        Training $training,
+        Project $project,
         ActivityRepository $activityRepository,
         ActivityRealizationRepository $activityRealizationRepository,
         LearningProgramRepository $learningProgramRepository,
@@ -368,13 +342,13 @@ class LearningProgramController extends Controller
                                     $learningProgram = $learningProgramRepository->findOneBy(
                                         [
                                             'company' => $company,
-                                            'training' => $training
+                                            'project' => $project
                                         ]
                                     );
                                     if (null === $learningProgram) {
                                         $learningProgram = new LearningProgram();
                                         $learningProgram
-                                            ->setTraining($training)
+                                            ->setProject($project)
                                             ->setCompany($company);
                                         $entityManager->persist($learningProgram);
                                         $newCompanyCount++;
@@ -393,20 +367,20 @@ class LearningProgramController extends Controller
                     if ($companiesParsed) {
                         // Nueva actividad
                         if ($lineData[0] !== '' && $lineData[0] === $lineData[2]) {
-                            $activity = $activityRepository->findOneByTrainingAndCode($training, $lineData[0]);
+                            $activity = $activityRepository->findOneByProjectAndCode($project, $lineData[0]);
                             if (null === $activity) {
                                 // obtener código de la asignatura y buscarla
                                 preg_match('/^([A-Za-z]*)/', $lineData[0], $output);
                                 $lastCode = $output[0];
-                                $subject = $subjectRepository->findOneByTrainingAndCode(
-                                    $training,
+                                $subject = $subjectRepository->findOneByProjectAndCode(
+                                    $project,
                                     $lastCode
                                 );
                                 // si no hay asignatura, ignorar las actividades
                                 if (null !== $subject) {
                                     $activity = new Activity();
                                     $activity
-                                        ->setSubject($subject)
+                                        ->setProject($project)
                                         ->setDescription($lineData[1])
                                         ->setCode($lineData[0]);
                                     $entityManager->persist($activity);
@@ -420,8 +394,8 @@ class LearningProgramController extends Controller
                             if ($activity && strpos($lineData[0], $lastCode) === 0 &&
                                 (strlen($lineData[2]) === 2 || strlen($lineData[2]) === 1)) {
                                 // Procesar concreción
-                                $activityRealization = $activityRealizationRepository->findOneByTrainingAndCode(
-                                    $training,
+                                $activityRealization = $activityRealizationRepository->findOneByProjectAndCode(
+                                    $project,
                                     $lineData[0]
                                 );
                                 if (null === $activityRealization) {

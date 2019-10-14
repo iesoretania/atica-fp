@@ -218,9 +218,8 @@ class ProjectController extends Controller
         );
 
         $breadcrumb = [
-            $project->getId() ?
-                ['fixed' => $project->getName()] :
-                ['fixed' => $translator->trans('title.student_enrollment', [], 'wlt_project')]
+            ['fixed' => $project->getName()],
+            ['fixed' => $translator->trans('title.student_enrollment', [], 'wlt_project')]
         ];
 
         return $this->render('wlt/project/student_enrollment_form.html.twig', [

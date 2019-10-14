@@ -18,11 +18,10 @@
 
 namespace AppBundle\Repository\WLT;
 
-use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\WLT\LearningProgram;
+use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\QueryBuilder;
 
 class LearningProgramRepository extends ServiceEntityRepository
 {
@@ -32,42 +31,27 @@ class LearningProgramRepository extends ServiceEntityRepository
         parent::__construct($registry, LearningProgram::class);
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @return QueryBuilder
-     */
-    private function findByAcademicYearQueryBuilder(AcademicYear $academicYear)
+    private function findByProjectQueryBuilder(Project $project)
     {
         return $this->createQueryBuilder('lp')
             ->join('lp.company', 'c')
-            ->join('lp.training', 't')
-            ->where('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear)
-            ->orderBy('c.name')
-            ->addOrderBy('t.name');
+            ->where('lp.project = :project')
+            ->setParameter('project', $project)
+            ->orderBy('c.name');
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @return LearningProgram[]
-     */
-    public function findByAcademicYear(AcademicYear $academicYear)
+    public function findByProject(Project $project)
     {
-        return $this->findByAcademicYearQueryBuilder($academicYear)
+        return $this->findByProjectQueryBuilder($project)
             ->getQuery()
             ->getResult();
     }
 
-    /**
-     * @param $items
-     * @param AcademicYear $academicYear
-     * @return LearningProgram[]
-     */
-    public function findAllInListByIdAndAcademicYear(
+    public function findAllInListByIdAndProject(
         $items,
-        AcademicYear $academicYear
+        Project $project
     ) {
-        return $this->findByAcademicYearQueryBuilder($academicYear)
+        return $this->findByProjectQueryBuilder($project)
             ->andWhere('lp.id IN (:items)')
             ->setParameter('items', $items)
             ->getQuery()

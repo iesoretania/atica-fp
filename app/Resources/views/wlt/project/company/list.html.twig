@@ -2,11 +2,10 @@
 {% extends 'generic/list.html.twig' %}
 {% import 'macros.html.twig' as m %}
 
-{% block path_new %}{{ path('work_linked_training_learning_program_new') }}{% endblock %}
+{% block path_new %}{{ path('work_linked_training_learning_program_new', {'project': project.id}) }}{% endblock %}
 
 {% block table_header %}
     <th><label><input type="checkbox" id="select"> {{ 'header.company'|trans }}</label></th>
-    <th>{{ 'header.training'|trans }}</th>
     <th>{{ 'header.items'|trans }}</th>
 {% endblock %}
 
@@ -18,31 +17,28 @@
                         <label><input type="checkbox" name="items[]" value="{{ item[0].id }}" class="selectable"> <a href="{{ url }}">{{ item[0].company }}</a></label>
                     </td>
                     <td>
-                        {{ item[0].training }}
-                    </td>
-                    <td>
                         {{ item[1] }}
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="2">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}
 
 {% block before_table %}
-    <form action="{{ path('work_linked_training_learning_program_operation', {'academicYear': academic_year.id}) }}" method="post">
+    <form action="{{ path('work_linked_training_learning_program_operation', {'project': project.id}) }}" method="post">
 {% endblock %}
 
 {% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'project': project.id }}) }}
 {% endblock %}
 
 {% block after_table %}
         <div class="clearfix"></div>
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
         {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
-        {{ m.link_button(path('work_linked_training_learning_program_import'), 'download', 'btn-primary enable-on-items', 'form.import'|trans) }}
+        {{ m.link_button(path('work_linked_training_learning_program_import', {'project': project.id}), 'download', 'btn-primary enable-on-items', 'form.import'|trans) }}
     </form>
 {% endblock %}

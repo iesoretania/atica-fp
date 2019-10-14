@@ -19,7 +19,6 @@
 namespace AppBundle\Entity\WLT;
 
 use AppBundle\Entity\Company;
-use AppBundle\Entity\Edu\Training;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,9 +26,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\WLT\LearningProgramRepository")
- * @ORM\Table(name="wlt_learning_program",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"company_id", "training_id"})}))))
- * @UniqueEntity(fields={"company", "training"}, message="company_program.company_training.unique")
+ * @ORM\Table(name="wlt_learning_program"),
+ *     uniqueConstraints={@ORM\UniqueConstraint(columns={"company_id", "project_id"})}))))
+ * @UniqueEntity(fields={"company", "project"}, message="company_program.company_training.unique")
  */
 class LearningProgram
 {
@@ -49,11 +48,11 @@ class LearningProgram
     private $company;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\Training")
+     * @ORM\ManyToOne(targetEntity="Project")
      * @ORM\JoinColumn(nullable=false)
-     * @var Training
+     * @var Project
      */
-    private $training;
+    private $project;
 
     /**
      * @ORM\ManyToMany(targetEntity="ActivityRealization")
@@ -69,7 +68,7 @@ class LearningProgram
 
     public function __toString()
     {
-        return $this->getCompany() . ' - ' . $this->getTraining();
+        return $this->getCompany() . ' - ' . $this->getProject();
     }
 
     /**
@@ -99,20 +98,20 @@ class LearningProgram
     }
 
     /**
-     * @return Training
+     * @return Project
      */
-    public function getTraining()
+    public function getProject()
     {
-        return $this->training;
+        return $this->project;
     }
 
     /**
-     * @param Training $training
+     * @param Project $project
      * @return LearningProgram
      */
-    public function setTraining(Training $training)
+    public function setProject(Project $project)
     {
-        $this->training = $training;
+        $this->project = $project;
         return $this;
     }
 

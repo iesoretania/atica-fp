@@ -6,4 +6,4 @@ login_username.invalid_chars: El nombre de usuario no puede contener espacios ni
 
 calendar.week_hours.invalid: Debe especificarse al menos una hora a la semana
 agreement.student_workcenter.unique: Este estudiante ya tiene un acuerdo en esta sede
-company_program.company_training.unique: Esta empresa ya tiene un programa asociado a la enseñanza
+company_program.company_training.unique: Esta empresa ya tiene un programa asociado al proyecto

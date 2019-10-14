@@ -46,7 +46,7 @@ class ActivityRealizationType extends AbstractType
         $activity = $options['activity'];
 
         $learningOutcomes = $this->learningOutcomeRepository
-            ->findByTraining($activity->getSubject()->getGrade()->getTraining());
+            ->findByGroups($activity->getProject()->getGroups());
 
         $builder
             ->add('activity', EntityType::class, [

@@ -86,6 +86,29 @@ class Version20190707224037 extends AbstractMigration
                 ->execute()
                 ->fetchAll();
 
+            $subjects = $this->connection->createQueryBuilder()
+                ->select('s.id')
+                ->from('edu_subject', 's')
+                ->join('s', 'edu_grade', 'g', 'g.id = s.grade_id')
+                ->where('g.training_id = :training_id')
+                ->setParameter('training_id', $workLinkedTraining['id'])
+                ->execute();
+
+            $this->connection->createQueryBuilder()
+                ->update('wlt_learning_program', 'lp')
+                ->set('lp.project_id', $project[0]['id'])
+                ->where('lp.training_id = ' . $workLinkedTraining['id'])
+                ->execute();
+
+            foreach ($subjects as $subject) {
+                $this->connection->createQueryBuilder()
+                    ->update('wlt_activity', 'a')
+                    ->set('a.project_id', $project[0]['id'])
+                    ->where('a.subject_id = :subject_id')
+                    ->setParameter('subject_id', $subject['id'])
+                    ->execute();
+            }
+
             // buscar acuerdos de colaboración y añadirles el proyecto tutor/a de seguimiento
             $students = $this->connection->createQueryBuilder()
                 ->select('se.id')
@@ -98,29 +121,37 @@ class Version20190707224037 extends AbstractMigration
                 ->execute();
 
             foreach ($students as $student) {
-                $this->connection->createQueryBuilder()
+                $rows = $this->connection->createQueryBuilder()
                     ->update('wlt_agreement', 'a')
                     ->set('a.educational_tutor_id', $teacherId)
                     ->set('a.project_id', $project[0]['id'])
                     ->where('a.student_enrollment_id = ' . $student['id'])
                     ->execute();
 
-                if (!$this->connection->createQueryBuilder()
-                    ->select('pg.project_id')
-                    ->from('wlt_project_group', 'pg')
-                    ->where('pg.project_id = :project_id')
-                    ->andWhere('pg.group_id = :group_id')
-                    ->setParameter('project_id', $project[0]['id'])
-                    ->setParameter('group_id', $student['group_id'])
-                    ->execute()->fetch()
-                ) {
-                    $this->connection->insert('wlt_project_group', [
+                if ($rows > 0) {
+                    $this->connection->insert('wlt_project_student_enrollment', [
                         'project_id' => $project[0]['id'],
-                        'group_id' => $student['group_id']
+                        'student_enrollment_id' => $student['id']
                     ]);
+
+                    if (!$this->connection->createQueryBuilder()
+                        ->select('pg.project_id')
+                        ->from('wlt_project_group', 'pg')
+                        ->where('pg.project_id = :project_id')
+                        ->andWhere('pg.group_id = :group_id')
+                        ->setParameter('project_id', $project[0]['id'])
+                        ->setParameter('group_id', $student['group_id'])
+                        ->execute()->fetch()
+                    ) {
+                        $this->connection->insert('wlt_project_group', [
+                            'project_id' => $project[0]['id'],
+                            'group_id' => $student['group_id']
+                        ]);
+                    }
                 }
             }
         }
+
         $this->addSql('ALTER TABLE wlt_agreement MODIFY project_id INT NOT NULL, MODIFY educational_tutor_id INT NOT NULL');
 
         $this->addSql('ALTER TABLE wlt_agreement ADD CONSTRAINT FK_2B23AFE9166D1F9C FOREIGN KEY (project_id) REFERENCES wlt_project (id)');
@@ -142,6 +173,11 @@ class Version20190707224037 extends AbstractMigration
         $this->addSql('ALTER TABLE edu_academic_year DROP wlt_organization_survey_id');
         $this->addSql('ALTER TABLE edu_academic_year_audit DROP wlt_organization_survey_id');
 
+        $this->addSql('ALTER TABLE wlt_learning_program DROP training_id');
+        $this->addSql('ALTER TABLE wlt_learning_program MODIFY project_id INT NOT NULL');
+
+        $this->addSql('ALTER TABLE wlt_activity MODIFY project_id INT NOT NULL');
+        $this->addSql('ALTER TABLE wlt_activity DROP subject_id');
     }
 
     /**

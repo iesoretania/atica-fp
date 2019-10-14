@@ -79,12 +79,6 @@ menu.work_linked_training.tracking.detail: Realizar el seguimiento de actividade
 menu.work_linked_training.agreement: Convenios de colaboración
 menu.work_linked_training.agreement.detail: Gestionar los convenios de colaboración de FP dual
 
-menu.work_linked_training.learning_program: Programas formativos
-menu.work_linked_training.learning_program.detail: Gestionar los programas formativos de las empresas colaboradoras
-
-menu.work_linked_training.training: Actividades formativo/productivas
-menu.work_linked_training.training.detail: Configurar las actividades de las enseñanzas de FP dual del centro
-
 menu.work_linked_training.evaluation: Evaluación de actividades
 menu.work_linked_training.evaluation.detail: Evaluar las distintas concreciones de actividades formativo/productivas de los convenios
 

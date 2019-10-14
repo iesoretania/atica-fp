@@ -18,22 +18,16 @@
 
 namespace AppBundle\Form\Model;
 
-use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\Training;
+use AppBundle\Entity\WLT\Project;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class LearningProgramImport
 {
     /**
-     * @var AcademicYear
+     * @var Project
      */
-    private $academicYear;
-
-    /**
-     * @var Training
-     */
-    private $training;
+    private $project;
 
     /**
      * @Assert\File
@@ -42,38 +36,20 @@ class LearningProgramImport
     private $file;
 
     /**
-     * @return AcademicYear
+     * @return Project
      */
-    public function getAcademicYear()
+    public function getProject()
     {
-        return $this->academicYear;
+        return $this->project;
     }
 
     /**
-     * @param AcademicYear $academicYear
+     * @param Project $project
      * @return LearningProgramImport
      */
-    public function setAcademicYear($academicYear)
+    public function setProject($project)
     {
-        $this->academicYear = $academicYear;
-        return $this;
-    }
-
-    /**
-     * @return Training
-     */
-    public function getTraining()
-    {
-        return $this->training;
-    }
-
-    /**
-     * @param Training $training
-     * @return LearningProgramImport
-     */
-    public function setTraining($training)
-    {
-        $this->training = $training;
+        $this->project = $project;
         return $this;
     }
 

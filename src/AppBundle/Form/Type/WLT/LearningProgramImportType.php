@@ -20,128 +20,35 @@
 
 namespace AppBundle\Form\Type\WLT;
 
-use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\Training;
-use AppBundle\Entity\User;
+use AppBundle\Entity\WLT\Project;
 use AppBundle\Form\Model\LearningProgramImport;
-use AppBundle\Repository\Edu\AcademicYearRepository;
-use AppBundle\Repository\Edu\TrainingRepository;
-use AppBundle\Security\OrganizationVoter;
-use AppBundle\Security\WLT\WLTOrganizationVoter;
-use AppBundle\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\Security;
 
 class LearningProgramImportType extends AbstractType
 {
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
-    /** @var AcademicYearRepository */
-    private $academicYearRepository;
-
-    /** @var Security */
-    private $security;
-
-    /** @var TrainingRepository */
-    private $trainingRepository;
-
-    public function __construct(
-        UserExtensionService $userExtensionService,
-        AcademicYearRepository $academicYearRepository,
-        TrainingRepository $trainingRepository,
-        Security $security
-    ) {
-        $this->userExtensionService = $userExtensionService;
-        $this->academicYearRepository = $academicYearRepository;
-        $this->trainingRepository = $trainingRepository;
-        $this->security = $security;
-    }
-
-    public function addElements(
-        FormInterface $form,
-        AcademicYear $academicYear = null
-    ) {
-        $organization = $this->userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
-            $academicYear = $organization->getCurrentAcademicYear();
-        }
-
-        /** @var User $user */
-        $user = $this->security->getUser();
-        if (false === $this->security->isGranted(OrganizationVoter::MANAGE, $organization) &&
-            false === $this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization)
-        ) {
-            $trainings = $this->trainingRepository->findByAcademicYearAndDepartmentHead(
-                $academicYear,
-                $user->getPerson()
-            );
-        } else {
-            $trainings = $this->trainingRepository->findByAcademicYearAndWLT($academicYear);
-        }
-
-        $academicYears = $this->security->isGranted(OrganizationVoter::MANAGE, $organization) ?
-            $this->academicYearRepository->findAllByOrganization($organization) :
-            [$academicYear];
-
-        $form
-            ->add('academicYear', EntityType::class, [
-                'label' => 'form.learning_program.academic_year',
-                'mapped' => false,
-                'class' => AcademicYear::class,
-                'choice_translation_domain' => false,
-                'choices' => $academicYears,
-                'data' => $academicYear,
-                'required' => true
-            ])
-            ->add('training', EntityType::class, [
-                'label' => 'form.learning_program.training',
-                'class' => Training::class,
-                'choice_translation_domain' => false,
-                'choices' => $trainings,
-                'placeholder' => 'form.learning_program.training.none',
-                'required' => true
-            ])
-            ->add('file', FileType::class, [
-                'label' => 'form.file',
-                'required' => true
-            ]);
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $form = $event->getForm();
-            $data = $event->getData();
-
-            $academicYear = $data->getTraining() ?
-                $data->getTraining()->getAcademicYear() :
-                null;
-
-            $this->addElements($form, $academicYear);
-        });
-
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-            $form = $event->getForm();
-            $data = $event->getData();
-
-            /** @var AcademicYear $academicYear */
-            $academicYear = isset($data['academicYear']) ?
-                $this->academicYearRepository->find($data['academicYear']) :
-                null;
-
-            $this->addElements($form, $academicYear);
-        });
+        $builder
+                ->add('project', EntityType::class, [
+                    'label' => 'form.learning_program.project',
+                    'class' => Project::class,
+                    'choice_translation_domain' => false,
+                    'choices' => $options['projects'],
+                    'disabled' => true,
+                    'placeholder' => 'form.learning_program.project.none',
+                    'required' => true
+                ])
+                ->add('file', FileType::class, [
+                    'label' => 'form.file',
+                    'required' => true
+                ]);
     }
 
     /**
@@ -151,7 +58,7 @@ class LearningProgramImportType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => LearningProgramImport::class,
-            'organization' => null,
+            'projects' => [],
             'translation_domain' => 'import'
         ]);
     }

@@ -23,6 +23,7 @@ use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Edu\Subject;
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\Person;
+use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
@@ -101,6 +102,30 @@ class SubjectRepository extends ServiceEntityRepository
                 ->andWhere('g.training = :training')
                 ->setParameter('code', $code)
                 ->setParameter('training', $training)
+                ->getQuery()
+                ->setMaxResults(1)
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param Training $training
+     * @param string $code
+     * @return Subject|null
+     */
+    public function findOneByProjectAndCode(Project $project, $code)
+    {
+        try {
+            return $this->createQueryBuilder('s')
+                ->distinct(true)
+                ->join('s.grade', 'g')
+                ->join('g.groups', 'gr')
+                ->andWhere('s.code = :code')
+                ->andWhere('gr IN (:groups)')
+                ->setParameter('code', $code)
+                ->setParameter('groups', $project->getGroups())
                 ->getQuery()
                 ->setMaxResults(1)
                 ->getOneOrNullResult();

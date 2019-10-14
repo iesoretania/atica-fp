@@ -19,7 +19,6 @@
 namespace AppBundle\Entity\WLT;
 
 use AppBundle\Entity\Edu\Competency;
-use AppBundle\Entity\Edu\Subject;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,7 +26,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\WLT\ActivityRepository")
  * @ORM\Table(name="wlt_activity",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"subject_id", "code"})}))))
+ *     uniqueConstraints={@ORM\UniqueConstraint(columns={"project_id", "code"})}))))
  */
 class Activity
 {
@@ -40,11 +39,11 @@ class Activity
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\Subject")
+     * @ORM\ManyToOne(targetEntity="Project")
      * @ORM\JoinColumn(nullable=false)
-     * @var Subject
+     * @var Project
      */
-    private $subject;
+    private $project;
 
     /**
      * @ORM\Column(type="string")
@@ -91,20 +90,20 @@ class Activity
     }
 
     /**
-     * @return Subject
+     * @return Project
      */
-    public function getSubject()
+    public function getProject()
     {
-        return $this->subject;
+        return $this->project;
     }
 
     /**
-     * @param Subject $subject
+     * @param Project $project
      * @return Activity
      */
-    public function setSubject(Subject $subject)
+    public function setProject(Project $project)
     {
-        $this->subject = $subject;
+        $this->project = $project;
         return $this;
     }
 

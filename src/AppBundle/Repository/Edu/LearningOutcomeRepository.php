@@ -20,7 +20,6 @@ namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\LearningOutcome;
 use AppBundle\Entity\Edu\Subject;
-use AppBundle\Entity\Edu\Training;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -65,18 +64,14 @@ class LearningOutcomeRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    /**
-     * @param Training $training
-     * @return Subject[]
-     */
-    public function findByTraining(Training $training)
+    public function findByGroups($groups)
     {
         return $this->createQueryBuilder('lo')
             ->join('lo.subject', 's')
             ->join('s.grade', 'g')
-            ->join('g.training', 't')
-            ->where('t = :training')
-            ->setParameter('training', $training)
+            ->join('g.groups', 'gr')
+            ->where('gr IN (:groups)')
+            ->setParameter('groups', $groups)
             ->addOrderBy('g.name')
             ->addOrderBy('s.name')
             ->addOrderBy('lo.code')

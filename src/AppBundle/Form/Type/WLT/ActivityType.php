@@ -19,9 +19,9 @@
 namespace AppBundle\Form\Type\WLT;
 
 use AppBundle\Entity\Edu\Competency;
-use AppBundle\Entity\Edu\Subject;
 use AppBundle\Entity\WLT\Activity;
-use AppBundle\Repository\Edu\CompetencyRepository;
+use AppBundle\Entity\WLT\Project;
+use AppBundle\Repository\WLT\WLTCompetencyRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,12 +29,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ActivityType extends AbstractType
 {
-    /** @var CompetencyRepository $competencyRepository */
-    private $competencyRepository;
+    private $WLTCompetencyRepository;
 
-    public function __construct(CompetencyRepository $competencyRepository)
+    public function __construct(WLTCompetencyRepository $WLTCompetencyRepository)
     {
-        $this->competencyRepository = $competencyRepository;
+        $this->WLTCompetencyRepository = $WLTCompetencyRepository;
     }
 
     /**
@@ -42,20 +41,12 @@ class ActivityType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var Subject $subject */
-        $subject = $options['subject'];
+        /** @var Project $project */
+        $project = $options['project'];
 
-        $competencies = $this->competencyRepository->findByTraining($subject->getGrade()->getTraining());
+        $competencies = $this->WLTCompetencyRepository->findByProject($project);
 
         $builder
-            ->add('subject', EntityType::class, [
-                'label' => 'form.subject',
-                'class' => Subject::class,
-                'choice_translation_domain' => false,
-                'choices' => [$subject],
-                'disabled' => true,
-                'required' => true
-            ])
             ->add('code', null, [
                 'label' => 'form.code',
                 'required' => true
@@ -85,7 +76,7 @@ class ActivityType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Activity::class,
-            'subject' => null,
+            'project' => null,
             'translation_domain' => 'wlt_activity'
         ]);
     }
