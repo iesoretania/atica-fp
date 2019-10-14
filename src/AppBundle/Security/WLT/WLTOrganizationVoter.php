@@ -40,8 +40,6 @@ class WLTOrganizationVoter extends CachedVoter
     const WLT_ACCESS_VISIT = 'ORGANIZATION_ACCESS_WORKLINKED_TRAINING_VISIT';
     const WLT_MANAGE_VISIT = 'ORGANIZATION_MANAGE_WORKLINKED_TRAINING_VISIT';
 
-    const WLT_ACCESS_LEARNING_PROGRAM = 'WLT_ACCESS_LEARNING_PROGRAM';
-
     const WLT_GROUP_TUTOR = 'ORGANIZATION_WLT_GROUP_TUTOR';
     const WLT_WORK_TUTOR = 'ORGANIZATION_WLT_WORK_TUTOR';
     const WLT_STUDENT = 'ORGANIZATION_WLT_STUDENT';
@@ -80,7 +78,6 @@ class WLTOrganizationVoter extends CachedVoter
         }
 
         if (!in_array($attribute, [
-            self::WLT_ACCESS_LEARNING_PROGRAM,
             self::WLT_ACCESS,
             self::WLT_MANAGE,
             self::WLT_GRADE,
@@ -131,7 +128,6 @@ class WLTOrganizationVoter extends CachedVoter
         }
 
         switch ($attribute) {
-            case self::WLT_ACCESS_LEARNING_PROGRAM:
             case self::WLT_MANAGE:
                 // Si es jefe de algún departamento o coordinador de FP dual, permitir acceder
                 // 1) Jefe de departamento
@@ -203,7 +199,7 @@ class WLTOrganizationVoter extends CachedVoter
                 }
 
                 // jefes de departamento: solo ver
-                if ( $attribute === self::WLT_ACCESS_VISIT &&
+                if ($attribute === self::WLT_ACCESS_VISIT &&
                     $this->decisionManager->decide($token, [self::WLT_DEPARTMENT_HEAD], $subject)) {
                     return true;
                 }
