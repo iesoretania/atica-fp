@@ -23,7 +23,8 @@ class Version20190707224037 extends AbstractMigration
             ->addSelect('t.name')
             ->addSelect('t.wlt_student_survey_id')
             ->addSelect('t.wlt_company_survey_id')
-            ->addSelect('ay.description AS academic_year')
+            ->addSelect('ay.start_date AS start_date')
+            ->addSelect('ay.end_date AS end_date')
             ->addSelect('ay.id AS academic_year_id')
             ->addSelect('o.id AS organization_id')
             ->addSelect('ay.wlt_organization_survey_id AS wlt_organization_survey_id')
@@ -49,7 +50,16 @@ class Version20190707224037 extends AbstractMigration
                 ->execute();
 
             // crear el proyecto
-            $projectName = $workLinkedTraining['name'] . ' - ' . $workLinkedTraining['academic_year'];
+            $startDate = new \DateTime($workLinkedTraining['start_date']);
+            $startYear = $startDate->format('Y');
+            $endDate = new \DateTime($workLinkedTraining['end_date']);
+            $endYear = $endDate->format('Y');
+            $projectName = $workLinkedTraining['name'] .
+                ' - ' .
+                $startYear .
+                '-' .
+                ((int) $endYear + 1);
+
             $managerId = null;
             $teacherId = null;
             foreach ($roles as $role) {
