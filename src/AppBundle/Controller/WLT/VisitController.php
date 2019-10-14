@@ -20,9 +20,9 @@ namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\WLT\Visit;
 use AppBundle\Form\Type\WLT\VisitType;
-use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\VisitRepository;
+use AppBundle\Repository\WLT\WLTGroupRepository;
 use AppBundle\Security\Edu\EduOrganizationVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
@@ -50,7 +50,7 @@ class VisitController extends Controller
         UserExtensionService $userExtensionService,
         Security $security,
         TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository
+        WLTGroupRepository $WLTgroupRepository
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization);
@@ -75,7 +75,7 @@ class VisitController extends Controller
             $userExtensionService,
             $security,
             $teacherRepository,
-            $groupRepository,
+            $WLTgroupRepository,
             $visit
         );
     }
@@ -90,7 +90,7 @@ class VisitController extends Controller
         UserExtensionService $userExtensionService,
         Security $security,
         TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository,
+        WLTGroupRepository $WLTgroupRepository,
         Visit $visit
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -119,7 +119,7 @@ class VisitController extends Controller
                 $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
             if ($teacher) {
-                $groups = $groupRepository->findByAcademicYearAndTeacher($academicYear, $teacher);
+                $groups = $WLTgroupRepository->findByAcademicYearAndWLTTeacherPerson($academicYear, $person);
             }
         }
         if (!$isManager && !$isDepartmentHead && $teacher) {
@@ -172,7 +172,7 @@ class VisitController extends Controller
         Request $request,
         UserExtensionService $userExtensionService,
         TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository,
+        WLTGroupRepository $groupRepository,
         Security $security,
         TranslatorInterface $translator,
         $page = 1
@@ -182,6 +182,7 @@ class VisitController extends Controller
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization);
         $readOnly = !$this->isGranted(WLTOrganizationVoter::WLT_MANAGE_VISIT, $organization);
+        $allowNew = $this->isGranted(WLTOrganizationVoter::WLT_CREATE_VISIT, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -202,18 +203,12 @@ class VisitController extends Controller
         $isDepartmentHead = $security->isGranted(EduOrganizationVoter::EDU_DEPARTMENT_HEAD, $organization);
 
         $groups = [];
-        $teacher = null;
 
         if (false === $isManager) {
             $person = $this->getUser()->getPerson();
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento, tutor de grupo o profesor -> ver sólo sus grupos
-            $teacher =
-                $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
-
-            if ($teacher) {
-                $groups = $groupRepository->findByAcademicYearAndTeacher($academicYear, $teacher);
-            }
+            $groups = $groupRepository->findByAcademicYearAndWLTTeacherPerson($academicYear, $person);
         }
 
         $q = $request->get('q');
@@ -235,8 +230,10 @@ class VisitController extends Controller
                 ->setParameter('teachers', $teachers);
         }
 
-        if (!$isManager && !$isDepartmentHead && $teacher) {
+        if (!$isManager && !$isDepartmentHead && count($groups) > 0) {
             // ver sólo las suyas
+            $teacher =
+                $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $this->getUser()->getPerson());
             $queryBuilder
                 ->andWhere('v.teacher = :teacher')
                 ->setParameter('teacher', $teacher);
@@ -256,6 +253,7 @@ class VisitController extends Controller
             'q' => $q,
             'domain' => 'wlt_visit',
             'read_only' => $readOnly,
+            'allow_new' => $allowNew,
             'academic_year' => $academicYear
         ]);
     }

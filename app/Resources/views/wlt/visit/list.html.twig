@@ -4,7 +4,7 @@
 
 {% block path_new %}{{ path('work_linked_training_visit_new') }}{% endblock %}
 
-{% block new_action %}{% if not read_only %}{{ parent() }}{% endif %}{% endblock %}
+{% block new_action %}{% if not read_only or allow_new %}{{ parent() }}{% endif %}{% endblock %}
 
 {% block table_header %}
     <th>{% if not read_only %}<label><input type="checkbox" id="select"> {% endif %}{{ 'header.datetime'|trans }}{% if not read_only %}</label>{% endif %}</th>
