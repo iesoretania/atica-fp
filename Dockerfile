@@ -14,6 +14,7 @@ RUN apt-get update \
         php-xml \
         php-zip \
         php-pdo-mysql \
+        php-gd \
         mysql-client \
         zip \
     && rm -rf /var/lib/apt/lists/*
