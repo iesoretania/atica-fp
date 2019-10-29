@@ -15,6 +15,9 @@ source /etc/apache2/envvars
 # Instalar componentes de composer
 sudo -u www-data composer install
 
+# Compilar assets de CSS y JS
+sudo -u www-data node_modules/.bin/encore prod
+
 # Ejecutar migración
 sudo -u www-data php bin/console --no-interaction d:m:m
 

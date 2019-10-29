@@ -17,6 +17,8 @@ RUN apt-get update \
         php-gd \
         mysql-client \
         zip \
+    && curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - \
+    && apt -yq install nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 # Descargar composer
