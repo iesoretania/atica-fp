@@ -49,7 +49,7 @@ RUN chmod 0755 /run.sh \
 COPY ./docker/parameters.yml /var/www/symfony/app/config/
 
 # Asegurar los permisos correctos en la aplicación
-RUN chown -R www-data:www-data /var/www/symfony
+RUN chown -R www-data:www-data /var/www
 
 # Directorio de trabajo, el de la aplicación
 WORKDIR /var/www/symfony

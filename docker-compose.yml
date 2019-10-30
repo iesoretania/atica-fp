@@ -12,6 +12,7 @@ services:
         restart: always
 
     app:
+        image: iesoretania/atica-fp-app
         build: .
         ports:
            - 9999:80
