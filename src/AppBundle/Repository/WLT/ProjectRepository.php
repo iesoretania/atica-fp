@@ -18,9 +18,12 @@
 
 namespace AppBundle\Repository\WLT;
 
+use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
+use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\Project;
+use AppBundle\Entity\Workcenter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -57,6 +60,25 @@ class ProjectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByManager(Person $person)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.manager = :person')
+            ->setParameter('person', $person)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByIds(
+        $items
+    ) {
+        return $this->createQueryBuilder('p')
+            ->where('p IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function deleteFromList($items)
     {
         return $this->getEntityManager()->createQueryBuilder()
@@ -73,6 +95,40 @@ class ProjectRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.organization = :organization')
             ->setParameter('organization', $organization)
+            ->orderBy('p.name', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByAcademicYear(
+        AcademicYear $academicYear
+    ) {
+        return $this->createQueryBuilder('p')
+            ->distinct(true)
+            ->join('p.groups', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear)
+            ->orderBy('p.name', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByAcademicYearAndWorkcenter(
+        AcademicYear $academicYear,
+        Workcenter $workcenter
+    ) {
+        return $this->createQueryBuilder('p')
+            ->distinct(true)
+            ->join('p.groups', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->join(Agreement::class, 'a', 'WITH', 'a.project = p')
+            ->andWhere('t.academicYear = :academic_year')
+            ->andWhere('a.workcenter = :workcenter')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('workcenter', $workcenter)
             ->orderBy('p.name', 'DESC')
             ->getQuery()
             ->getResult();

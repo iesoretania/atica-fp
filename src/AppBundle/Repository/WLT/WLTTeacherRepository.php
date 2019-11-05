@@ -18,39 +18,33 @@
 
 namespace AppBundle\Repository\WLT;
 
-use AppBundle\Entity\WLT\Visit;
+use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\Teacher;
+use AppBundle\Entity\Edu\Teaching;
+use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-class VisitRepository extends ServiceEntityRepository
+class WLTTeacherRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Visit::class);
+        parent::__construct($registry, Teacher::class);
     }
 
-    public function findAllInListById($items)
+    public function findByAcademicYearAndWLT(AcademicYear $academicYear)
     {
-        return $this->createQueryBuilder('v')
-            ->where('v IN (:items)')
-            ->join('v.workcenter', 'w')
-            ->setParameter('items', $items)
-            ->orderBy('v.dateTime', 'DESC')
+        return $this->createQueryBuilder('t')
+            ->join('t.person', 'p')
+            ->join('p.user', 'u')
+            ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
+            ->join('te.group', 'g')
+            ->join(Project::class, 'pr', 'WITH', 'g MEMBER OF pr.groups')
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
             ->getQuery()
             ->getResult();
-    }
-
-    /**
-     * @param Visit[]
-     * @return mixed
-     */
-    public function deleteFromList($list)
-    {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->delete(Visit::class, 'v')
-            ->where('v IN (:list)')
-            ->setParameter('list', $list)
-            ->getQuery()
-            ->execute();
     }
 }

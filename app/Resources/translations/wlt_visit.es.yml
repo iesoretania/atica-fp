@@ -1,6 +1,12 @@
 form.datetime: Fecha y hora
 form.teacher: Docente
+form.teacher.none: Seleccione un docente
 form.workcenter: Centro de trabajo
+form.workcenter.none: Seleccione uno para continuar
+form.projects: Proyectos asociados
+form.projects.none: No hay proyectos asociados al centro de trabajo
+form.student_enrollments: Estudiantes visitados
+form.student_enrollments.none: Ninguno disponible
 form.detail: Observaciones
 
 form.save: Guardar cambios
@@ -27,7 +33,8 @@ table.filter: Filtrar...
 header.datetime: Fecha y hora
 header.teacher: Docente
 header.workcenter: Centro de trabajo
-header.detail: Observaciones
+header.projects: Proyectos
+header.student_enrollments: Estudiantes visitados
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

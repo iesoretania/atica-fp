@@ -5,8 +5,13 @@
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ m.start_button() }}
-        {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+        {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('build/wlt_visit.js') }}"></script>
 {% endblock %}

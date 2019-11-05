@@ -19,10 +19,15 @@
 namespace AppBundle\Form\Type\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Edu\Teacher;
+use AppBundle\Entity\WLT\Project;
 use AppBundle\Entity\WLT\Visit;
 use AppBundle\Entity\Workcenter;
-use AppBundle\Repository\Edu\TeacherRepository;
+use AppBundle\Repository\Edu\StudentEnrollmentRepository;
+use AppBundle\Repository\WLT\ProjectRepository;
+use AppBundle\Repository\WLT\WLTStudentEnrollmentRepository;
+use AppBundle\Repository\WLT\WLTTeacherRepository;
 use AppBundle\Repository\WorkcenterRepository;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -42,40 +47,69 @@ class VisitType extends AbstractType
      */
     private $workcenterRepository;
     /**
-     * @var TeacherRepository
+     * @var WLTTeacherRepository
      */
-    private $teacherRepository;
+    private $wltTeacherRepository;
     /**
      * @var UserExtensionService
      */
     private $userExtensionService;
+    /**
+     * @var ProjectRepository
+     */
+    private $projectRepository;
+    /**
+     * @var StudentEnrollmentRepository
+     */
+    private $wltStudentEnrollmentRepository;
 
     public function __construct(
         WorkcenterRepository $workcenterRepository,
-        TeacherRepository $teacherRepository,
+        WLTTeacherRepository $wltTeacherRepository,
+        ProjectRepository $projectRepository,
+        WLTStudentEnrollmentRepository $wltStudentEnrollmentRepository,
         UserExtensionService $userExtensionService
     ) {
         $this->workcenterRepository = $workcenterRepository;
-        $this->teacherRepository = $teacherRepository;
+        $this->wltTeacherRepository = $wltTeacherRepository;
+        $this->projectRepository = $projectRepository;
         $this->userExtensionService = $userExtensionService;
+        $this->wltStudentEnrollmentRepository = $wltStudentEnrollmentRepository;
     }
 
     private function addElements(
         FormInterface $form,
         AcademicYear $academicYear = null,
-        $teachers = []
+        Workcenter $workcenter = null,
+        $selectedProjects = [],
+        $teachers = [],
+        \DateTime $dateTime = null
     ) {
+        $workcenters = $this->workcenterRepository->findAll();
+
         if ($academicYear &&
             $academicYear->getOrganization() === $this->userExtensionService->getCurrentOrganization()
         ) {
-            $workcenters = $this->workcenterRepository->findAll();
             if (!$teachers) {
-                $teachers = $this->teacherRepository->findByAcademicYearAndWLT($academicYear);
+                $teachers = $this->wltTeacherRepository->findByAcademicYearAndWLT($academicYear);
             }
         } else {
-            $workcenters = [];
             $teachers = [];
         }
+        $studentEnrollments = [];
+        if ($workcenter) {
+            $projects = $this->projectRepository->findByAcademicYearAndWorkcenter($academicYear, $workcenter);
+            if (count($projects) > 0) {
+                $studentEnrollments =
+                    $this
+                        ->wltStudentEnrollmentRepository
+                        ->findByWorkcenterProjectsAndDate($workcenter, $selectedProjects, $dateTime);
+            }
+        } else {
+            $projects = [];
+        }
+        $canSelectProjects = count($projects) > 0;
+        $canSelectStudentEnrollments = count($studentEnrollments) > 0;
 
         $form
             ->add('dateTime', DateTimeType::class, [
@@ -89,13 +123,37 @@ class VisitType extends AbstractType
                 'label' => 'form.teacher',
                 'class' => Teacher::class,
                 'choices' => $teachers,
+                'placeholder' => 'form.teacher.none',
                 'required' => true
             ])
             ->add('workcenter', EntityType::class, [
                 'label' => 'form.workcenter',
                 'class' => Workcenter::class,
                 'choices' => $workcenters,
+                'placeholder' => 'form.workcenter.none',
                 'required' => true
+            ])
+            ->add('projects', EntityType::class, [
+                'label' => 'form.projects',
+                'class' => Project::class,
+                'choices' => $projects,
+                'disabled' => !$canSelectProjects,
+                'expanded' => $canSelectProjects,
+                'mapped' => $canSelectProjects,
+                'multiple' => $canSelectProjects,
+                'placeholder' => 'form.projects.none',
+                'required' => false
+            ])
+            ->add('studentEnrollments', EntityType::class, [
+                'label' => 'form.student_enrollments',
+                'class' => StudentEnrollment::class,
+                'choices' => $studentEnrollments,
+                'disabled' => !$canSelectStudentEnrollments,
+                'expanded' => $canSelectStudentEnrollments,
+                'mapped' => $canSelectStudentEnrollments,
+                'multiple' => $canSelectStudentEnrollments,
+                'placeholder' => 'form.student_enrollments.none',
+                'required' => false
             ])
             ->add('detail', TextareaType::class, [
                 'label' => 'form.detail',
@@ -113,21 +171,52 @@ class VisitType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData();
 
-            if ($data->getWorkcenter()) {
-                $academicYear = $data->getWorkcenter()->getAcademicYear();
+            if ($data->getTeacher()) {
+                $academicYear = $data->getTeacher()->getAcademicYear();
             } else {
                 $academicYear = $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
             }
 
-            $this->addElements($form, $academicYear, $options['teachers']);
+            $this->addElements(
+                $form,
+                $academicYear,
+                $data->getWorkcenter(),
+                $data->getProjects(),
+                $options['teachers'],
+                $data->getDateTime()
+            );
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
+            $data = $event->getData();
 
-            $academicYear = $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
+            if ($data['teacher']) {
+                $academicYear = $this->wltTeacherRepository->find($data['teacher'])->getAcademicYear();
+            } else {
+                $academicYear = $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
+            }
 
-            $this->addElements($form, $academicYear, $options['teachers']);
+            if ($data['workcenter']) {
+                /** @var Workcenter $workcenter */
+                $workcenter = $this->workcenterRepository->find($data['workcenter']);
+                $selectedProjects = isset($data['projects'])
+                    ? $this->projectRepository->findByIds($data['projects'])
+                    : [];
+            } else {
+                $workcenter = null;
+                $selectedProjects = [];
+            }
+
+            dump($data);
+            $this->addElements(
+                $form,
+                $academicYear,
+                $workcenter,
+                $selectedProjects,
+                $options['teachers'],
+                date_create($data['dateTime']['date'] . ' ' . $data['dateTime']['time'])
+            );
         });
     }
 

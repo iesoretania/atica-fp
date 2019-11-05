@@ -23,8 +23,8 @@ use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\WorkDay;
 use AppBundle\Repository\Edu\AcademicYearRepository;
-use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
+use AppBundle\Repository\WLT\WLTTeacherRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
 use AppBundle\Service\MailerService;
 use Symfony\Component\Console\Command\Command;
@@ -41,7 +41,7 @@ class CronCommand extends Command
     private $workDayRepository;
     private $academicYearRepository;
     private $agreementRepository;
-    private $teacherRepository;
+    private $wltTeacherRepository;
 
     public function __construct(
         TranslatorInterface $translator,
@@ -49,7 +49,7 @@ class CronCommand extends Command
         WorkDayRepository $workDayRepository,
         AgreementRepository $agreementRepository,
         AcademicYearRepository $academicYearRepository,
-        TeacherRepository $teacherRepository
+        WLTTeacherRepository $wltTeacherRepository
     ) {
         parent::__construct();
         $this->translator = $translator;
@@ -57,7 +57,7 @@ class CronCommand extends Command
         $this->workDayRepository = $workDayRepository;
         $this->academicYearRepository = $academicYearRepository;
         $this->agreementRepository = $agreementRepository;
-        $this->teacherRepository = $teacherRepository;
+        $this->wltTeacherRepository = $wltTeacherRepository;
     }
 
     protected function configure()
@@ -222,7 +222,9 @@ class CronCommand extends Command
         $table = new Table($output);
 
         $table
-            ->setHeaders(explode('|', $this->translator->trans('table.wlt.unaswered_survey_warning.student', [], 'cron')));
+            ->setHeaders(
+                explode('|', $this->translator->trans('table.wlt.unaswered_survey_warning.student', [], 'cron'))
+            );
 
         $warning = [];
         /** @var AcademicYear $academicYear */
@@ -230,7 +232,12 @@ class CronCommand extends Command
             $agreements = $this->agreementRepository->findByAcademicYear($academicYear);
             /** @var Agreement $agreement */
             foreach ($agreements as $agreement) {
-                $referenceSurvey = $agreement->getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getWltStudentSurvey();
+                $referenceSurvey = $agreement
+                    ->getStudentEnrollment()
+                    ->getGroup()
+                    ->getGrade()
+                    ->getTraining()
+                    ->getWltStudentSurvey();
                 $count = 0;
                 if ($referenceSurvey) {
                     if ($agreement->getStudentSurvey()) {
@@ -339,7 +346,9 @@ class CronCommand extends Command
         $table = new Table($output);
 
         $table
-            ->setHeaders(explode('|', $this->translator->trans('table.wlt.unaswered_survey_warning.company', [], 'cron')));
+            ->setHeaders(
+                explode('|', $this->translator->trans('table.wlt.unaswered_survey_warning.company', [], 'cron'))
+            );
 
         $warning = [];
         /** @var AcademicYear $academicYear */
@@ -347,7 +356,12 @@ class CronCommand extends Command
             $agreements = $this->agreementRepository->findByAcademicYear($academicYear);
             /** @var Agreement $agreement */
             foreach ($agreements as $agreement) {
-                $referenceSurvey = $agreement->getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getWltCompanySurvey();
+                $referenceSurvey = $agreement
+                    ->getStudentEnrollment()
+                    ->getGroup()
+                    ->getGrade()
+                    ->getTraining()
+                    ->getWltCompanySurvey();
                 $count = 0;
                 if ($referenceSurvey) {
                     if ($agreement->getCompanySurvey()) {
@@ -466,7 +480,7 @@ class CronCommand extends Command
         $warning = [];
         /** @var AcademicYear $academicYear */
         foreach ($academicYears as $academicYear) {
-            $teachers = $this->teacherRepository->findByAcademicYearAndWLT($academicYear);
+            $teachers = $this->wltTeacherRepository->findByAcademicYearAndWLT($academicYear);
             /** @var Teacher $teacher */
             foreach ($teachers as $teacher) {
                 $referenceSurvey = $teacher->getAcademicYear()->getWltOrganizationSurvey();

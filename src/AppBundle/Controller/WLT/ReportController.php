@@ -30,6 +30,7 @@ use AppBundle\Repository\SurveyQuestionRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\MeetingRepository;
+use AppBundle\Repository\WLT\WLTTeacherRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
@@ -268,7 +269,7 @@ class ReportController extends Controller
         TranslatorInterface $translator,
         Environment $engine,
         UserExtensionService $userExtensionService,
-        TeacherRepository $teacherRepository,
+        WLTTeacherRepository $wltTeacherRepository,
         AgreementRepository $agreementRepository,
         StudentEnrollmentRepository $studentEnrollmentRepository,
         MeetingRepository $meetingRepository,
@@ -289,7 +290,7 @@ class ReportController extends Controller
             throw $this->createAccessDeniedException();
         }
 
-        $teachers = $teacherRepository->findByAcademicYearAndWLT($academicYear);
+        $teachers = $wltTeacherRepository->findByAcademicYearAndWLT($academicYear);
 
         $teacherStats = [];
 

@@ -18,8 +18,10 @@
 
 namespace AppBundle\Entity\WLT;
 
+use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Workcenter;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -57,10 +59,30 @@ class Visit
     private $workcenter;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Project")
+     * @ORM\JoinTable(name="wlt_visit_project")
+     * @var Project[]
+     */
+    private $projects;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Edu\StudentEnrollment", fetch="EAGER")
+     * @ORM\JoinTable(name="wlt_visit_student_enrollment")
+     * @var StudentEnrollment[]
+     */
+    private $studentEnrollments;
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      * @var string
      */
     private $detail;
+
+    public function __construct()
+    {
+        $this->projects = new ArrayCollection();
+        $this->studentEnrollments = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -82,7 +104,7 @@ class Visit
      * @param \DateTime $dateTime
      * @return Visit
      */
-    public function setDateTime(\DateTime $dateTime)
+    public function setDateTime($dateTime)
     {
         $this->dateTime = $dateTime;
         return $this;
@@ -121,6 +143,42 @@ class Visit
     public function setWorkcenter(Workcenter $workcenter)
     {
         $this->workcenter = $workcenter;
+        return $this;
+    }
+
+    /**
+     * @return Project[]
+     */
+    public function getProjects()
+    {
+        return $this->projects;
+    }
+
+    /**
+     * @param Project[] $projects
+     * @return Visit
+     */
+    public function setProjects($projects)
+    {
+        $this->projects = $projects;
+        return $this;
+    }
+
+    /**
+     * @return StudentEnrollment[]
+     */
+    public function getStudentEnrollments()
+    {
+        return $this->studentEnrollments;
+    }
+
+    /**
+     * @param StudentEnrollment[] $studentEnrollments
+     * @return Visit
+     */
+    public function setStudentEnrollments($studentEnrollments)
+    {
+        $this->studentEnrollments = $studentEnrollments;
         return $this;
     }
 

@@ -38,7 +38,6 @@ class WLTOrganizationVoter extends CachedVoter
     const WLT_VIEW_GRADE = 'ORGANIZATION_VIEW_GRADE_WORKLINKED_TRAINING';
     const WLT_VIEW_EVALUATION = 'ORGANIZATION_VIEW_EVALUATION_WORKLINKED_TRAINING';
     const WLT_ACCESS_VISIT = 'ORGANIZATION_ACCESS_WORKLINKED_TRAINING_VISIT';
-    const WLT_MANAGE_VISIT = 'ORGANIZATION_MANAGE_WORKLINKED_TRAINING_VISIT';
     const WLT_CREATE_VISIT = 'ORGANIZATION_CREATE_WORKLINKED_TRAINING_VISIT';
 
     const WLT_GROUP_TUTOR = 'ORGANIZATION_WLT_GROUP_TUTOR';
@@ -85,7 +84,6 @@ class WLTOrganizationVoter extends CachedVoter
             self::WLT_VIEW_GRADE,
             self::WLT_VIEW_EVALUATION,
             self::WLT_ACCESS_VISIT,
-            self::WLT_MANAGE_VISIT,
             self::WLT_CREATE_VISIT,
             self::WLT_WORK_TUTOR,
             self::WLT_GROUP_TUTOR,
@@ -194,15 +192,10 @@ class WLTOrganizationVoter extends CachedVoter
                     $this->decisionManager->decide($token, [self::WLT_STUDENT], $subject);
 
             case self::WLT_ACCESS_VISIT:
-            case self::WLT_MANAGE_VISIT:
             case self::WLT_CREATE_VISIT:
                 // coordinadores de proyectos de FP dual, ok
                 if ($this->decisionManager->decide($token, [self::WLT_MANAGER], $subject)) {
                     return true;
-                }
-
-                if ($attribute === self::WLT_MANAGE_VISIT) {
-                    return false;
                 }
 
                 // jefes de departamento: solo ver

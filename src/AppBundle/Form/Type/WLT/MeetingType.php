@@ -24,7 +24,7 @@ use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WLT\Meeting;
 use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\StudentEnrollmentRepository;
-use AppBundle\Repository\Edu\TeacherRepository;
+use AppBundle\Repository\WLT\WLTTeacherRepository;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -48,9 +48,9 @@ class MeetingType extends AbstractType
      */
     private $studentEnrollmentRepository;
     /**
-     * @var TeacherRepository
+     * @var WLTTeacherRepository
      */
-    private $teacherRepository;
+    private $wltTeacherRepository;
     /**
      * @var UserExtensionService
      */
@@ -59,12 +59,12 @@ class MeetingType extends AbstractType
     public function __construct(
         AcademicYearRepository $academicYearRepository,
         StudentEnrollmentRepository $studentEnrollmentRepository,
-        TeacherRepository $teacherRepository,
+        WLTTeacherRepository $wltTeacherRepository,
         UserExtensionService $userExtensionService
     ) {
         $this->academicYearRepository = $academicYearRepository;
         $this->studentEnrollmentRepository = $studentEnrollmentRepository;
-        $this->teacherRepository = $teacherRepository;
+        $this->wltTeacherRepository = $wltTeacherRepository;
         $this->userExtensionService = $userExtensionService;
     }
 
@@ -84,7 +84,7 @@ class MeetingType extends AbstractType
                 $studentEnrollments = $this->studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
             }
 
-            $teachers = $this->teacherRepository->findByAcademicYearAndWLT($academicYear);
+            $teachers = $this->wltTeacherRepository->findByAcademicYearAndWLT($academicYear);
         } else {
             $studentEnrollments = [];
             $teachers = [];
