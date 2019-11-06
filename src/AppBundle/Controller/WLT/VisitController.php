@@ -134,7 +134,7 @@ class VisitController extends Controller
             }
         }
         $teachers = [];
-        if (!$isManager && !$isDepartmentHead && $teacher) {
+        if (!$isManager && !$isDepartmentHead && $teacher && !$readOnly) {
             $teachers = [$teacher];
         } elseif ($groups) {
             $teachers = $teacherRepository->findByGroups($groups);
@@ -169,6 +169,7 @@ class VisitController extends Controller
 
         return $this->render('wlt/visit/form.html.twig', [
             'menu_path' => 'work_linked_training_visit_list',
+            'academic_year' => $academicYear,
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,

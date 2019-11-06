@@ -7,6 +7,7 @@ en la distintas versiones de la misma.
 2.0.0 (2019-xx-xx)
 ------------------
 * feat: ¡IMPORTANTE! Soporte de FP dual basado en proyectos, no en cursos académicos
+* feat: Las visitas a los centros de trabajo pueden estar asociadas a proyectos y/o estudiantes en alternancia
 
 1.5.3 (2019-11-17)
 ------------------
