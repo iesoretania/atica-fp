@@ -25,7 +25,6 @@ use AppBundle\Entity\Edu\Teaching;
 use AppBundle\Repository\Edu\TeacherRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -80,14 +79,6 @@ class TeachingType extends AbstractType
                 'choices' => $teachers,
                 'placeholder' => 'form.none',
                 'required' => true
-            ])
-            ->add('workLinked', ChoiceType::class, [
-                'label' => 'form.work_linked_training',
-                'expanded' => true,
-                'choices' => [
-                    'form.work_linked_training.no' => false,
-                    'form.work_linked_training.yes' => true
-                ]
             ]);
     }
 
