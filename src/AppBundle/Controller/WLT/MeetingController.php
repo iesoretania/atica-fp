@@ -22,7 +22,6 @@ use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\WLT\Meeting;
 use AppBundle\Form\Type\WLT\MeetingType;
 use AppBundle\Repository\Edu\AcademicYearRepository;
-use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\MeetingRepository;
 use AppBundle\Repository\WLT\ProjectRepository;
@@ -57,7 +56,9 @@ class MeetingController extends Controller
         UserExtensionService $userExtensionService,
         Security $security,
         TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository,
+        WLTTeacherRepository $wltTeacherRepository,
+        WLTGroupRepository $groupRepository,
+        ProjectRepository $projectRepository,
         AcademicYear $academicYear = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -84,15 +85,17 @@ class MeetingController extends Controller
             $userExtensionService,
             $security,
             $teacherRepository,
+            $wltTeacherRepository,
             $groupRepository,
+            $projectRepository,
             $meeting,
             $academicYear
         );
     }
 
     /**
-     * @Route("/{id}/{academicYear}", name="work_linked_training_meeting_edit",
-     *     requirements={"academicYear" = "\d+", "id" = "\d+"}, methods={"GET", "POST"})
+     * @Route("/{id}", name="work_linked_training_meeting_edit",
+     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
     public function indexAction(
         Request $request,
@@ -108,7 +111,7 @@ class MeetingController extends Controller
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         if ($academicYear === null) {
-            $academicYear = $organization->getCurrentAcademicYear();
+            $academicYear = $meeting->getCreatedBy()->getAcademicYear();
         }
 
         $this->denyAccessUnlessGranted(MeetingVoter::ACCESS, $meeting);
@@ -190,6 +193,7 @@ class MeetingController extends Controller
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
+            'academic_year' => $academicYear,
             'form' => $form->createView()
         ]);
     }
@@ -201,7 +205,6 @@ class MeetingController extends Controller
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        MeetingRepository $meetingRepository,
         TeacherRepository $teacherRepository,
         WLTGroupRepository $groupRepository,
         ProjectRepository $projectRepository,
@@ -265,25 +268,21 @@ class MeetingController extends Controller
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        if ($groups) {
-            $queryBuilder
-                ->andWhere('se.group IN (:groups)')
-                ->setParameter('groups', $groups);
-        }
-
-        if ($projects) {
-            $queryBuilder
-                ->andWhere('pr IN (:projects)')
-                ->setParameter('projects', $projects);
-        }
-
         // ver siempre las propias
         $teacher =
             $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $this->getUser()->getPerson());
 
-        if ($teacher) {
+        if ($groups) {
             $queryBuilder
-                ->orWhere('v.teacher = :teacher')
+                ->andWhere('se.group IN (:groups) OR te = :teacher')
+                ->setParameter('groups', $groups)
+                ->setParameter('teacher', $teacher);
+        }
+
+        if ($projects) {
+            $queryBuilder
+                ->andWhere('pr IN (:projects) OR te = :teacher')
+                ->setParameter('projects', $projects)
                 ->setParameter('teacher', $teacher);
         }
 
@@ -324,7 +323,6 @@ class MeetingController extends Controller
         TranslatorInterface $translator
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $academicYear = $organization->getCurrentAcademicYear();
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_TEACHER, $organization);
 
@@ -335,11 +333,10 @@ class MeetingController extends Controller
             return $this->redirectToRoute('work_linked_training_meeting_list');
         }
 
-        $person = $this->getUser()->getPerson();
-        $teacher =
-            $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
-
-        $meetings = $meetingRepository->findAllInListByIdAndAcademicYearAndTeacher($items, $academicYear, $teacher);
+        $meetings = $meetingRepository->findByIds($items);
+        foreach ($meetings as $meeting) {
+            $this->denyAccessUnlessGranted(MeetingVoter::MANAGE, $meeting);
+        }
 
         if ($request->get('confirm', '') === 'ok') {
             try {

@@ -99,6 +99,16 @@ class MeetingRepository extends ServiceEntityRepository
         return $queryBuilder;
     }
 
+    public function findByIds($items)
+    {
+        return $this->createQueryBuilder('m')
+            ->where('m IN (:items)')
+            ->setParameter('items', $items)
+            ->orderBy('m.dateTime', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllInListByIdAndAcademicYearAndTeacher(
         $items,
         AcademicYear $academicYear,

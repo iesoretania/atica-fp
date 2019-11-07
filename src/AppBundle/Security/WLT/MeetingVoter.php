@@ -92,7 +92,8 @@ class MeetingVoter extends CachedVoter
         $organization = $this->userExtensionService->getCurrentOrganization();
 
         // Si no es de la organización actual, denegar
-        if ($subject->getTeacher()->getAcademicYear()->getOrganization() !== $organization) {
+        if ($subject->getCreatedBy()
+            && $subject->getCreatedBy()->getAcademicYear()->getOrganization() !== $organization) {
             return false;
         }
 
@@ -108,7 +109,8 @@ class MeetingVoter extends CachedVoter
                     && $subject->getCreatedBy()->getAcademicYear() === $organization->getCurrentAcademicYear();
             case self::ACCESS:
                 // Puede acceder a los datos de la visita el propio docente
-                if ($subject->getTeacher()->getPerson() === $user->getPerson()) {
+                if ($subject->getCreatedBy()
+                    && $subject->getCreatedBy()->getPerson() === $user->getPerson()) {
                     return true;
                 }
                 // Puede acceder a los datos de la visita cualquier docente asociado a ella
