@@ -210,6 +210,10 @@ class VisitController extends Controller
             ->addSelect('p')
             ->addSelect('w')
             ->addSelect('c')
+            ->addSelect('pr')
+            ->addSelect('se')
+            ->addSelect('sep')
+            ->addSelect('seg')
             ->from(Visit::class, 'v')
             ->join('v.teacher', 't')
             ->join('t.person', 'p')
@@ -217,6 +221,8 @@ class VisitController extends Controller
             ->join('w.company', 'c')
             ->leftJoin('v.projects', 'pr')
             ->leftJoin('v.studentEnrollments', 'se')
+            ->leftJoin('se.person', 'sep')
+            ->leftJoin('se.group', 'seg')
             ->addOrderBy('v.dateTime', 'DESC');
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
@@ -243,6 +249,9 @@ class VisitController extends Controller
                 ->orWhere('p.lastName LIKE :tq')
                 ->orWhere('w.name LIKE :tq')
                 ->orWhere('c.name LIKE :tq')
+                ->orWhere('(pr.name IS NOT NULL AND pr.name LIKE :tq)')
+                ->orWhere('(seg.name IS NOT NULL AND seg.name LIKE :tq)')
+                ->orWhere('(sep.firstName IS NOT NULL AND (sep.firstName LIKE :tq OR sep.lastName LIKE :tq))')
                 ->setParameter('tq', '%'.$q.'%');
         }
 
