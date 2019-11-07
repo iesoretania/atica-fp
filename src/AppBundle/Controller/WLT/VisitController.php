@@ -227,18 +227,21 @@ class VisitController extends Controller
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
         $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+        $isDepartmentHead = $security->isGranted(WLTOrganizationVoter::WLT_DEPARTMENT_HEAD, $organization);
 
         $groups = [];
         $projects = [];
 
         $person = $this->getUser()->getPerson();
-        if (false === $isWltManager && false === $isManager) {
-            // no es administrador ni coordinador de FP:
-            // puede ser jefe de departamento o tutor de grupo  -> ver sólo visitas de los
+        if (false === $isWltManager && false === $isManager && false === $isDepartmentHead) {
+            // no es administrador ni coordinador de FP ni jefe de familia profesional:
+            // puede ser tutor de grupo  -> ver sólo visitas de los
             // estudiantes de sus grupos
             $groups = $groupRepository->findByAcademicYearAndGrupTutorOrDepartmentHeadPerson($academicYear, $person);
         } elseif ($isWltManager) {
             $projects = $projectRepository->findByManager($person);
+        } elseif ($isDepartmentHead) {
+            $projects = $projectRepository->findByDepartmentHeadPerson($person);
         }
 
         $q = $request->get('q');
@@ -255,25 +258,21 @@ class VisitController extends Controller
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        if ($groups) {
-            $queryBuilder
-                ->andWhere('se.group IN (:groups)')
-                ->setParameter('groups', $groups);
-        }
-
-        if ($projects) {
-            $queryBuilder
-                ->andWhere('pr IN (:projects)')
-                ->setParameter('projects', $projects);
-        }
-
         // ver siempre las propias
         $teacher =
             $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $this->getUser()->getPerson());
 
-        if ($teacher) {
+        if ($groups) {
             $queryBuilder
-                ->orWhere('v.teacher = :teacher')
+                ->andWhere('se.group IN (:groups) OR v.teacher = :teacher')
+                ->setParameter('groups', $groups)
+                ->setParameter('teacher', $teacher);
+        }
+
+        if ($projects) {
+            $queryBuilder
+                ->andWhere('pr IN (:projects) OR v.teacher = :teacher')
+                ->setParameter('projects', $projects)
                 ->setParameter('teacher', $teacher);
         }
 

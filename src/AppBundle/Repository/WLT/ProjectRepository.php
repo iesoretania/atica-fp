@@ -82,6 +82,22 @@ class ProjectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByDepartmentHeadPerson(Person $person)
+    {
+        return $this->createQueryBuilder('p')
+            ->distinct(true)
+            ->join('p.groups', 'g')
+            ->join('g.teachings', 'te')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->join('t.department', 'd')
+            ->join('d.head', 'h')
+            ->where('h.person = :person')
+            ->setParameter('person', $person)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByIds(
         $items
     ) {
