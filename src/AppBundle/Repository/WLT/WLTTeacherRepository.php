@@ -32,7 +32,7 @@ class WLTTeacherRepository extends ServiceEntityRepository
         parent::__construct($registry, Teacher::class);
     }
 
-    public function findByAcademicYearAndWLT(AcademicYear $academicYear)
+    public function findByAcademicYear(AcademicYear $academicYear)
     {
         return $this->createQueryBuilder('t')
             ->join('t.person', 'p')
@@ -42,6 +42,22 @@ class WLTTeacherRepository extends ServiceEntityRepository
             ->join(Project::class, 'pr', 'WITH', 'g MEMBER OF pr.groups')
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByProject(Project $project)
+    {
+        return $this->createQueryBuilder('t')
+            ->join('t.person', 'p')
+            ->join('p.user', 'u')
+            ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
+            ->join('te.group', 'g')
+            ->join(Project::class, 'pr', 'WITH', 'g MEMBER OF pr.groups')
+            ->where('pr = :project')
+            ->setParameter('project', $project)
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName')
             ->getQuery()

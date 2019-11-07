@@ -33,8 +33,10 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
         parent::__construct($registry, StudentEnrollment::class);
     }
 
-    public function findByWorkcenterProjectsAndDate(Workcenter $workcenter, $projects, \DateTime $dateTime = null)
-    {
+    public function findByProjectsAndDateQueryBuilder(
+        $projects,
+        \DateTime $dateTime = null
+    ) {
         $qb = $this->createQueryBuilder('se')
             ->join('se.person', 's')
             ->join('se.group', 'g')
@@ -43,8 +45,7 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
             ->join('t.academicYear', 'a')
             ->join(Project::class, 'p', 'WITH', 'se MEMBER OF p.studentEnrollments')
             ->join(Agreement::class, 'ag', 'WITH', 'ag.studentEnrollment = se')
-            ->andWhere('p IN (:projects)')
-            ->andWhere('ag.workcenter = :workcenter');
+            ->andWhere('p IN (:projects)');
         if ($dateTime) {
             $qb
                 ->andWhere('ag.startDate <= :datetime')
@@ -53,12 +54,25 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
         }
 
         return $qb
-            ->setParameter('workcenter', $workcenter)
             ->setParameter('projects', $projects)
             ->addOrderBy('a.description')
             ->addOrderBy('g.name')
             ->addOrderBy('s.lastName')
-            ->addOrderBy('s.firstName')
+            ->addOrderBy('s.firstName');
+    }
+
+    public function findByWorkcenterProjectsAndDate(Workcenter $workcenter, $projects, \DateTime $dateTime = null)
+    {
+        return $this->findByProjectsAndDateQueryBuilder($projects, $dateTime)
+            ->andWhere('ag.workcenter = :workcenter')
+            ->setParameter('workcenter', $workcenter)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByProjectAndDate(Project $project, \DateTime $dateTime = null)
+    {
+        return $this->findByProjectsAndDateQueryBuilder([$project], $dateTime)
             ->getQuery()
             ->getResult();
     }

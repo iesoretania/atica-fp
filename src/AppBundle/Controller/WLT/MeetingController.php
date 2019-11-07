@@ -27,7 +27,10 @@ use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\MeetingRepository;
 use AppBundle\Repository\WLT\ProjectRepository;
 use AppBundle\Repository\WLT\WLTGroupRepository;
+use AppBundle\Repository\WLT\WLTTeacherRepository;
+use AppBundle\Security\Edu\EduOrganizationVoter;
 use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\MeetingVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -45,7 +48,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 class MeetingController extends Controller
 {
     /**
-     * @Route("/nueva", name="work_linked_training_meeting_new", methods={"GET", "POST"})
+     * @Route("/nueva/{academicYear}", name="work_linked_training_meeting_new",
+     *      requirements={"academicYear" = "\d+"}, methods={"GET", "POST"})
      */
     public function newAction(
         Request $request,
@@ -53,12 +57,15 @@ class MeetingController extends Controller
         UserExtensionService $userExtensionService,
         Security $security,
         TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository
+        GroupRepository $groupRepository,
+        AcademicYear $academicYear = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_TEACHER, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_MEETING, $organization);
 
-        $academicYear = $organization->getCurrentAcademicYear();
+        if ($academicYear === null) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
 
         $person = $this->getUser()->getPerson();
         $teacher =
@@ -66,7 +73,6 @@ class MeetingController extends Controller
 
         $meeting = new Meeting();
         $meeting
-            ->setProject($academicYear)
             ->setCreatedBy($teacher)
             ->setDateTime(new \DateTime());
 
@@ -79,13 +85,14 @@ class MeetingController extends Controller
             $security,
             $teacherRepository,
             $groupRepository,
-            $meeting
+            $meeting,
+            $academicYear
         );
     }
 
     /**
-     * @Route("/{id}", name="work_linked_training_meeting_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
+     * @Route("/{id}/{academicYear}", name="work_linked_training_meeting_edit",
+     *     requirements={"academicYear" = "\d+", "id" = "\d+"}, methods={"GET", "POST"})
      */
     public function indexAction(
         Request $request,
@@ -93,40 +100,67 @@ class MeetingController extends Controller
         UserExtensionService $userExtensionService,
         Security $security,
         TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository,
-        Meeting $meeting
+        WLTTeacherRepository $wltTeacherRepository,
+        WLTGroupRepository $wltGroupRepository,
+        ProjectRepository $projectRepository,
+        Meeting $meeting,
+        AcademicYear $academicYear = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $academicYear = $organization->getCurrentAcademicYear();
+        if ($academicYear === null) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
 
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_TEACHER, $organization);
+        $this->denyAccessUnlessGranted(MeetingVoter::ACCESS, $meeting);
 
         $em = $this->getDoctrine()->getManager();
 
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization)
-                     || $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+        $readOnly = !$this->isGranted(MeetingVoter::MANAGE, $meeting);
+
+        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+        $isDepartmentHead = $security->isGranted(EduOrganizationVoter::EDU_DEPARTMENT_HEAD, $organization);
 
         $groups = [];
+        $teacher = null;
+
         if (false === $isManager) {
             $person = $this->getUser()->getPerson();
-            // no es administrador ni coordinador de FP:
-            // puede ser jefe de departamento, tutor de grupo o profesor
-            $teacher =
-                $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
-            if ($teacher) {
-                $groups = $groupRepository->findByAcademicYearAndTeacher($academicYear, $teacher);
+            if (!$isWltManager) {
+                // no es administrador ni coordinador de FP:
+                // puede ser jefe de departamento, tutor de grupo o profesor -> ver sólo sus grupos
+                $teacher =
+                    $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+
+                if ($teacher) {
+                    $groups = $wltGroupRepository->findByAcademicYearAndWLTTeacherPerson($academicYear, $person);
+                }
+            } else {
+                $groups = $wltGroupRepository->findByAcademicYearAndWLTTeacherPerson($academicYear, $person);
             }
+        }
+        $teachers = [];
+        if (!$isManager && !$isDepartmentHead && $teacher && !$readOnly) {
+            $teachers = [$teacher];
+        } elseif ($groups) {
+            $teachers = $teacherRepository->findByGroups($groups);
+        }
 
-            $readOnly = $meeting->getCreatedBy() !== $teacher;
+        if ($groups) {
+            $projects = $projectRepository->findByGroups($groups);
         } else {
-            $readOnly = false;
+            $projects = $projectRepository->findByOrganization($organization);
+        }
+
+        if (!$teachers) {
+            $teachers = $wltTeacherRepository->findByAcademicYear($academicYear);
         }
 
         $form = $this->createForm(MeetingType::class, $meeting, [
             'disabled' => $readOnly,
-            'is_manager' => $isManager,
-            'groups' => $groups
+            'teachers' => $teachers,
+            'projects' => $projects
         ]);
 
         $form->handleRequest($request);

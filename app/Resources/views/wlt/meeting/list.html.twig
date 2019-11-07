@@ -2,7 +2,7 @@
 {% extends 'generic/list.html.twig' %}
 {% import 'macros.html.twig' as m %}
 
-{% block path_new %}{{ path('work_linked_training_meeting_new') }}{% endblock %}
+{% block path_new %}{{ path('work_linked_training_meeting_new', {'academicYear': academic_year.id }) }}{% endblock %}
 
 {% block new_action %}{% if allow_new %}{{ parent() }}{% endif %}{% endblock %}
 

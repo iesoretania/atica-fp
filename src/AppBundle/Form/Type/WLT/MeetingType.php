@@ -18,12 +18,12 @@
 
 namespace AppBundle\Form\Type\WLT;
 
-use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WLT\Meeting;
-use AppBundle\Repository\Edu\AcademicYearRepository;
-use AppBundle\Repository\Edu\StudentEnrollmentRepository;
+use AppBundle\Entity\WLT\Project;
+use AppBundle\Repository\WLT\ProjectRepository;
+use AppBundle\Repository\WLT\WLTStudentEnrollmentRepository;
 use AppBundle\Repository\WLT\WLTTeacherRepository;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -40,13 +40,13 @@ use Symfony\Component\Validator\Constraints\Count;
 class MeetingType extends AbstractType
 {
     /**
-     * @var AcademicYearRepository
+     * @var ProjectRepository
      */
-    private $academicYearRepository;
+    private $projectRepository;
     /**
-     * @var StudentEnrollmentRepository
+     * @var WLTStudentEnrollmentRepository
      */
-    private $studentEnrollmentRepository;
+    private $wltStudentEnrollmentRepository;
     /**
      * @var WLTTeacherRepository
      */
@@ -57,45 +57,39 @@ class MeetingType extends AbstractType
     private $userExtensionService;
 
     public function __construct(
-        AcademicYearRepository $academicYearRepository,
-        StudentEnrollmentRepository $studentEnrollmentRepository,
+        ProjectRepository $projectRepository,
+        WLTStudentEnrollmentRepository $wltStudentEnrollmentRepository,
         WLTTeacherRepository $wltTeacherRepository,
         UserExtensionService $userExtensionService
     ) {
-        $this->academicYearRepository = $academicYearRepository;
-        $this->studentEnrollmentRepository = $studentEnrollmentRepository;
+        $this->projectRepository = $projectRepository;
+        $this->wltStudentEnrollmentRepository = $wltStudentEnrollmentRepository;
         $this->wltTeacherRepository = $wltTeacherRepository;
         $this->userExtensionService = $userExtensionService;
     }
 
     private function addElements(
         FormInterface $form,
-        AcademicYear $academicYear = null,
-        $isManager = false,
-        $groups = []
+        $createdByTeachers,
+        \DateTime $dateTime = null,
+        Project $project = null,
+        $projects = []
     ) {
-        if ($academicYear &&
-            $academicYear->getOrganization() === $this->userExtensionService->getCurrentOrganization()
+        if ($project &&
+            $project->getOrganization() === $this->userExtensionService->getCurrentOrganization()
         ) {
-            if ($groups) {
-                $studentEnrollments = $this->studentEnrollmentRepository
-                    ->findByAcademicYearAndGroupsAndWLT($academicYear, $groups);
-            } else {
-                $studentEnrollments = $this->studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
-            }
+            $studentEnrollments = $this->wltStudentEnrollmentRepository
+                ->findByProjectAndDate($project, $dateTime);
 
-            $teachers = $this->wltTeacherRepository->findByAcademicYearAndWLT($academicYear);
+            $teachers = $this->wltTeacherRepository->findByProject($project);
         } else {
             $studentEnrollments = [];
             $teachers = [];
         }
 
+        $canSelectStudentEnrollments = count($studentEnrollments) > 0;
+
         $form
-            ->add('academicYear', null, [
-                'label' => 'form.academic_year',
-                'choices' => [$academicYear],
-                'required' => true
-            ])
             ->add('dateTime', DateTimeType::class, [
                 'label' => 'form.date',
                 'date_widget' => 'single_text',
@@ -106,15 +100,24 @@ class MeetingType extends AbstractType
             ->add('createdBy', EntityType::class, [
                 'label' => 'form.created_by',
                 'class' => Teacher::class,
-                'choices' => $teachers,
-                'disabled' => false === $isManager,
+                'choices' => $createdByTeachers,
+                'required' => true
+            ])
+            ->add('project', EntityType::class, [
+                'label' => 'form.project',
+                'class' => Project::class,
+                'choices' => $projects,
                 'required' => true
             ])
             ->add('studentEnrollments', EntityType::class, [
                 'label' => 'form.students',
                 'class' => StudentEnrollment::class,
                 'choices' => $studentEnrollments,
-                'multiple' => true,
+                'disabled' => !$canSelectStudentEnrollments,
+                'expanded' => $canSelectStudentEnrollments,
+                'mapped' => $canSelectStudentEnrollments,
+                'multiple' => $canSelectStudentEnrollments,
+                'placeholder' => 'form.student_enrollments.none',
                 'required' => false
             ])
             ->add('teachers', EntityType::class, [
@@ -142,20 +145,26 @@ class MeetingType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData();
 
-            $academicYear = $data->getAcademicYear();
-            $this->addElements($form, $academicYear, $options['is_manager'], $options['groups']);
+            $project = $data->getProject();
+            $this->addElements($form, $options['teachers'], $data->getDateTime(), $project, $options['projects']);
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
             $data = $event->getData();
 
-            /** @var AcademicYear $academicYear */
-            $academicYear = isset($data['academicYear']) ?
-                $this->academicYearRepository->find($data['academicYear']) :
+            /** @var Project $project */
+            $project = isset($data['project']) ?
+                $this->projectRepository->find($data['project']) :
                 null;
 
-            $this->addElements($form, $academicYear, $options['is_manager'], $options['groups']);
+            $this->addElements(
+                $form,
+                $options['teachers'],
+                date_create($data['dateTime']['date'] . ' ' . $data['dateTime']['time']),
+                $project,
+                $options['projects']
+            );
         });
     }
 
@@ -166,8 +175,8 @@ class MeetingType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Meeting::class,
-            'is_manager' => false,
-            'groups' => [],
+            'projects' => [],
+            'teachers' => [],
             'translation_domain' => 'wlt_meeting'
         ]);
     }

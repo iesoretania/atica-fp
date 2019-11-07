@@ -480,7 +480,7 @@ class CronCommand extends Command
         $warning = [];
         /** @var AcademicYear $academicYear */
         foreach ($academicYears as $academicYear) {
-            $teachers = $this->wltTeacherRepository->findByAcademicYearAndWLT($academicYear);
+            $teachers = $this->wltTeacherRepository->findByAcademicYear($academicYear);
             /** @var Teacher $teacher */
             foreach ($teachers as $teacher) {
                 $referenceSurvey = $teacher->getAcademicYear()->getWltOrganizationSurvey();

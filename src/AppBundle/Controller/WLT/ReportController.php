@@ -290,7 +290,7 @@ class ReportController extends Controller
             throw $this->createAccessDeniedException();
         }
 
-        $teachers = $wltTeacherRepository->findByAcademicYearAndWLT($academicYear);
+        $teachers = $wltTeacherRepository->findByAcademicYear($academicYear);
 
         $teacherStats = [];
 
