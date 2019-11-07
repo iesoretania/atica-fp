@@ -18,7 +18,6 @@
 
 namespace AppBundle\Entity\WLT;
 
-use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Edu\Teacher;
 use Doctrine\ORM\Mapping as ORM;
@@ -38,11 +37,11 @@ class Meeting
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\AcademicYear")
+     * @ORM\ManyToOne(targetEntity="Project")
      * @ORM\JoinColumn(nullable=false)
-     * @var AcademicYear
+     * @var Project
      */
-    private $academicYear;
+    private $project;
 
     /**
      * @ORM\Column(type="datetime")
@@ -85,20 +84,20 @@ class Meeting
     }
 
     /**
-     * @return AcademicYear
+     * @return Project
      */
-    public function getAcademicYear()
+    public function getProject()
     {
-        return $this->academicYear;
+        return $this->project;
     }
 
     /**
-     * @param AcademicYear $academicYear
+     * @param Project $project
      * @return Meeting
      */
-    public function setAcademicYear(AcademicYear $academicYear)
+    public function setProject(Project $project)
     {
-        $this->academicYear = $academicYear;
+        $this->project = $project;
         return $this;
     }
 

@@ -62,7 +62,7 @@ class MeetingController extends Controller
 
         $meeting = new Meeting();
         $meeting
-            ->setAcademicYear($academicYear)
+            ->setProject($academicYear)
             ->setCreatedBy($teacher)
             ->setDateTime(new \DateTime());
 

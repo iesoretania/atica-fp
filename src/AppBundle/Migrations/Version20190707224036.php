@@ -69,6 +69,11 @@ class Version20190707224036 extends AbstractMigration
         $this->addSql('ALTER TABLE wlt_activity ADD CONSTRAINT FK_EAD6D79D166D1F9C FOREIGN KEY (project_id) REFERENCES wlt_project (id)');
         $this->addSql('CREATE INDEX IDX_EAD6D79D166D1F9C ON wlt_activity (project_id)');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_EAD6D79D166D1F9C77153098 ON wlt_activity (project_id, code)');
+
+        $this->addSql('ALTER TABLE wlt_meeting DROP FOREIGN KEY FK_3E755F96C54F3401');
+        $this->addSql('DROP INDEX IDX_3E755F96C54F3401 ON wlt_meeting');
+        $this->addSql('ALTER TABLE wlt_meeting ADD project_id INT DEFAULT NULL');
+
     }
 
     /**

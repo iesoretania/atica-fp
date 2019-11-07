@@ -139,6 +139,14 @@ class Version20190707224037 extends AbstractMigration
                     ->execute();
 
                 if ($rows > 0) {
+
+                    // actualizar reuniones de los estudiantes
+                    $this->connection->createQueryBuilder()
+                        ->update('wlt_meeting', 'm')
+                        ->set('m.project_id', $project[0]['id'])
+                        ->where('m.id IN (SELECT mse.meeting_id FROM wlt_meeting_student_enrollment mse WHERE mse.student_enrollment_id = ' . $student['id'] . ')')
+                        ->execute();
+
                     $this->connection->insert('wlt_project_student_enrollment', [
                         'project_id' => $project[0]['id'],
                         'student_enrollment_id' => $student['id']
@@ -188,6 +196,14 @@ class Version20190707224037 extends AbstractMigration
 
         $this->addSql('ALTER TABLE wlt_activity MODIFY project_id INT NOT NULL');
         $this->addSql('ALTER TABLE wlt_activity DROP subject_id');
+
+        $this->addSql('ALTER TABLE wlt_meeting MODIFY project_id INT NOT NULL');
+        $this->addSql('ALTER TABLE wlt_meeting DROP academic_year_id');
+        $this->addSql('ALTER TABLE wlt_meeting ADD CONSTRAINT FK_3E755F96166D1F9C FOREIGN KEY (project_id) REFERENCES wlt_project (id)');
+        $this->addSql('CREATE INDEX IDX_3E755F96166D1F9C ON wlt_meeting (project_id)');
+        $this->addSql('ALTER TABLE wlt_meeting_audit DROP academic_year_id');
+        $this->addSql('ALTER TABLE wlt_meeting_audit ADD project_id INT DEFAULT NULL');
+
     }
 
     /**
