@@ -39,6 +39,8 @@ class WLTOrganizationVoter extends CachedVoter
     const WLT_VIEW_EVALUATION = 'ORGANIZATION_VIEW_EVALUATION_WORKLINKED_TRAINING';
     const WLT_ACCESS_VISIT = 'ORGANIZATION_ACCESS_WORKLINKED_TRAINING_VISIT';
     const WLT_CREATE_VISIT = 'ORGANIZATION_CREATE_WORKLINKED_TRAINING_VISIT';
+    const WLT_ACCESS_MEETING = 'ORGANIZATION_ACCESS_WORKLINKED_MEETING_VISIT';
+    const WLT_CREATE_MEETING = 'ORGANIZATION_CREATE_WORKLINKED_MEETING_VISIT';
 
     const WLT_GROUP_TUTOR = 'ORGANIZATION_WLT_GROUP_TUTOR';
     const WLT_WORK_TUTOR = 'ORGANIZATION_WLT_WORK_TUTOR';
@@ -85,6 +87,8 @@ class WLTOrganizationVoter extends CachedVoter
             self::WLT_VIEW_EVALUATION,
             self::WLT_ACCESS_VISIT,
             self::WLT_CREATE_VISIT,
+            self::WLT_ACCESS_MEETING,
+            self::WLT_CREATE_MEETING,
             self::WLT_WORK_TUTOR,
             self::WLT_GROUP_TUTOR,
             self::WLT_STUDENT,
@@ -193,6 +197,8 @@ class WLTOrganizationVoter extends CachedVoter
 
             case self::WLT_ACCESS_VISIT:
             case self::WLT_CREATE_VISIT:
+            case self::WLT_ACCESS_MEETING:
+            case self::WLT_CREATE_MEETING:
                 // coordinadores de proyectos de FP dual, ok
                 if ($this->decisionManager->decide($token, [self::WLT_MANAGER], $subject)) {
                     return true;

@@ -119,7 +119,7 @@ class CoreMenu implements MenuBuilderInterface
                 $menu1->addChild($menu2);
             }
 
-            if ($this->security->isGranted(WLTOrganizationVoter::WLT_TEACHER, $organization)) {
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_ACCESS_MEETING, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('work_linked_training_meeting')
@@ -131,6 +131,7 @@ class CoreMenu implements MenuBuilderInterface
 
                 $menu1->addChild($menu2);
             }
+
             if ($this->security->isGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2

@@ -27,6 +27,7 @@ table.no_items: No hay reuniones que mostrar
 table.filter: Filtrar...
 
 header.created_by: Registrada por
+header.project: Proyecto
 header.student_enrollments: Estudiantes
 header.teachers: Docentes
 header.datetime: Fecha y hora
