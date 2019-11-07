@@ -150,12 +150,6 @@ class MeetingController extends Controller
             $teachers = $teacherRepository->findByGroups($groups);
         }
 
-        if ($groups) {
-            $projects = $projectRepository->findByGroups($groups);
-        } else {
-            $projects = $projectRepository->findByOrganization($organization);
-        }
-
         if (!$teachers) {
             $teachers = $wltTeacherRepository->findByAcademicYear($academicYear);
         }
@@ -163,7 +157,6 @@ class MeetingController extends Controller
         $form = $this->createForm(MeetingType::class, $meeting, [
             'disabled' => $readOnly,
             'teachers' => $teachers,
-            'projects' => $projects
         ]);
 
         $form->handleRequest($request);
@@ -274,14 +267,14 @@ class MeetingController extends Controller
 
         if ($groups) {
             $queryBuilder
-                ->andWhere('se.group IN (:groups) OR te = :teacher')
+                ->andWhere('se.group IN (:groups) OR te = :teacher OR m.createdBy = :teacher')
                 ->setParameter('groups', $groups)
                 ->setParameter('teacher', $teacher);
         }
 
         if ($projects) {
             $queryBuilder
-                ->andWhere('pr IN (:projects) OR te = :teacher')
+                ->andWhere('pr IN (:projects) OR te = :teacher OR m.createdBy = :teacher')
                 ->setParameter('projects', $projects)
                 ->setParameter('teacher', $teacher);
         }

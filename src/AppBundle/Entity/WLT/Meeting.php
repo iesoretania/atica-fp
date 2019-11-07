@@ -95,7 +95,7 @@ class Meeting
      * @param Project $project
      * @return Meeting
      */
-    public function setProject(Project $project)
+    public function setProject($project)
     {
         $this->project = $project;
         return $this;

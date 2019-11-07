@@ -21,6 +21,7 @@ namespace AppBundle\Repository\WLT;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Edu\Teaching;
+use AppBundle\Entity\Organization;
 use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -46,6 +47,24 @@ class WLTTeacherRepository extends ServiceEntityRepository
             ->addOrderBy('p.firstName')
             ->getQuery()
             ->getResult();
+    }
+    public function findOneByOrganizationAndId(Organization $organization, $id)
+    {
+        return $this->createQueryBuilder('t')
+            ->join('t.person', 'p')
+            ->join('p.user', 'u')
+            ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
+            ->join('te.group', 'g')
+            ->join(Project::class, 'pr', 'WITH', 'g MEMBER OF pr.groups')
+            ->join('t.academicYear', 'ay')
+            ->andWhere('ay.organization = :organization')
+            ->andWhere('t.id = :id')
+            ->setParameter('organization', $organization)
+            ->setParameter('id', $id)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     public function findByProject(Project $project)

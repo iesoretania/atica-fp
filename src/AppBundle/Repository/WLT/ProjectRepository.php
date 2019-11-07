@@ -19,6 +19,7 @@
 namespace AppBundle\Repository\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\WLT\Agreement;
@@ -65,6 +66,18 @@ class ProjectRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.manager = :person')
             ->setParameter('person', $person)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByTeacher(Teacher $teacher)
+    {
+        return $this->createQueryBuilder('p')
+            ->distinct(true)
+            ->join('p.groups', 'g')
+            ->join('g.teachings', 'te')
+            ->where('te.teacher = :teacher')
+            ->setParameter('teacher', $teacher)
             ->getQuery()
             ->getResult();
     }

@@ -1,7 +1,10 @@
-form.project: Proyecto
-form.created_by: Registrada por
 form.date: Fecha
+form.created_by: Registrada por
+form.created_by.none: Seleccione docente
+form.project: Proyecto
+form.project.none: Seleccione proyecto
 form.students: Estudiantes
+form.students.none: No hay estudiantes en el proyecto
 form.teachers: Docentes
 form.detail: Detalles
 

@@ -19,6 +19,7 @@ Encore
     .addEntry('person', './assets/js/person.js')
     .addEntry('wlt_agreement', './assets/js/wlt/agreement.js')
     .addEntry('wlt_visit', './assets/js/wlt/visit.js')
+    .addEntry('wlt_meeting', './assets/js/wlt/meeting.js')
 
     // CKEditor
     .copyFiles([

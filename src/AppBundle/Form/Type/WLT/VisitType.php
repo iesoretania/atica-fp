@@ -103,7 +103,7 @@ class VisitType extends AbstractType
                 $studentEnrollments =
                     $this
                         ->wltStudentEnrollmentRepository
-                        ->findByWorkcenterProjectsAndDate($workcenter, $selectedProjects, $dateTime);
+                        ->findByWorkcenterProjectsAndAgreementDate($workcenter, $selectedProjects, $dateTime);
             }
         } else {
             $projects = [];

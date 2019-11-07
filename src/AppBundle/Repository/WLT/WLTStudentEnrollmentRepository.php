@@ -33,27 +33,17 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
         parent::__construct($registry, StudentEnrollment::class);
     }
 
-    public function findByProjectsAndDateQueryBuilder(
-        $projects,
-        \DateTime $dateTime = null
+    public function findByProjectsQueryBuilder(
+        $projects
     ) {
-        $qb = $this->createQueryBuilder('se')
+        return $this->createQueryBuilder('se')
             ->join('se.person', 's')
             ->join('se.group', 'g')
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->join('t.academicYear', 'a')
             ->join(Project::class, 'p', 'WITH', 'se MEMBER OF p.studentEnrollments')
-            ->join(Agreement::class, 'ag', 'WITH', 'ag.studentEnrollment = se')
-            ->andWhere('p IN (:projects)');
-        if ($dateTime) {
-            $qb
-                ->andWhere('ag.startDate <= :datetime')
-                ->andWhere('ag.endDate >= :datetime')
-                ->setParameter('datetime', $dateTime);
-        }
-
-        return $qb
+            ->andWhere('p IN (:projects)')
             ->setParameter('projects', $projects)
             ->addOrderBy('a.description')
             ->addOrderBy('g.name')
@@ -61,18 +51,45 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
             ->addOrderBy('s.firstName');
     }
 
-    public function findByWorkcenterProjectsAndDate(Workcenter $workcenter, $projects, \DateTime $dateTime = null)
-    {
-        return $this->findByProjectsAndDateQueryBuilder($projects, $dateTime)
+    public function findByProjectsAndAgreementDateQueryBuilder(
+        $projects,
+        \DateTime $dateTime = null
+    ) {
+        $qb = $this->findByProjectsQueryBuilder($projects);
+        if ($dateTime) {
+            $qb
+                ->join(Agreement::class, 'ag', 'WITH', 'ag.studentEnrollment = se')
+                ->andWhere('ag.startDate <= :datetime')
+                ->andWhere('ag.endDate >= :datetime')
+                ->setParameter('datetime', $dateTime);
+        }
+
+        return $qb;
+    }
+
+    public function findByWorkcenterProjectsAndAgreementDate(
+        Workcenter $workcenter,
+        $projects,
+        \DateTime $dateTime = null
+    ) {
+        return $this->findByProjectsAndAgreementDateQueryBuilder($projects, $dateTime)
             ->andWhere('ag.workcenter = :workcenter')
             ->setParameter('workcenter', $workcenter)
             ->getQuery()
             ->getResult();
     }
 
-    public function findByProjectAndDate(Project $project, \DateTime $dateTime = null)
+    public function findByProjectAndAcademicYearDate(Project $project, \DateTime $dateTime = null)
     {
-        return $this->findByProjectsAndDateQueryBuilder([$project], $dateTime)
+        $qb = $this->findByProjectsQueryBuilder([$project]);
+
+        if ($dateTime) {
+            $qb
+                ->andWhere('a.startDate <= :datetime')
+                ->andWhere('a.endDate >= :datetime')
+                ->setParameter('datetime', $dateTime);
+        }
+        return $qb
             ->getQuery()
             ->getResult();
     }

@@ -79,7 +79,7 @@ class MeetingType extends AbstractType
             $project->getOrganization() === $this->userExtensionService->getCurrentOrganization()
         ) {
             $studentEnrollments = $this->wltStudentEnrollmentRepository
-                ->findByProjectAndDate($project, $dateTime);
+                ->findByProjectAndAcademicYearDate($project, $dateTime);
 
             $teachers = $this->wltTeacherRepository->findByProject($project);
         } else {
@@ -101,12 +101,15 @@ class MeetingType extends AbstractType
                 'label' => 'form.created_by',
                 'class' => Teacher::class,
                 'choices' => $createdByTeachers,
+                'placeholder' => 'form.created_by.none',
+
                 'required' => true
             ])
             ->add('project', EntityType::class, [
                 'label' => 'form.project',
                 'class' => Project::class,
                 'choices' => $projects,
+                'placeholder' => 'form.project.none',
                 'required' => true
             ])
             ->add('studentEnrollments', EntityType::class, [
@@ -117,7 +120,7 @@ class MeetingType extends AbstractType
                 'expanded' => $canSelectStudentEnrollments,
                 'mapped' => $canSelectStudentEnrollments,
                 'multiple' => $canSelectStudentEnrollments,
-                'placeholder' => 'form.student_enrollments.none',
+                'placeholder' => 'form.students.none',
                 'required' => false
             ])
             ->add('teachers', EntityType::class, [
@@ -144,16 +147,33 @@ class MeetingType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
             $data = $event->getData();
-
+            $projects = $data->getCreatedBy()
+                ? $this->projectRepository->findByTeacher($data->getCreatedBy())
+                : [];
             $project = $data->getProject();
-            $this->addElements($form, $options['teachers'], $data->getDateTime(), $project, $options['projects']);
+            $this->addElements(
+                $form,
+                $options['teachers'],
+                $data->getDateTime(),
+                $project,
+                $projects
+            );
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
             $data = $event->getData();
 
-            /** @var Project $project */
+            /** @var Teacher */
+            $createdBy = $this->wltTeacherRepository->findOneByOrganizationAndId(
+                $this->userExtensionService->getCurrentOrganization(),
+                $data['createdBy']
+            );
+            $projects = $createdBy
+                ? $this->projectRepository->findByTeacher($createdBy)
+                : [];
+
+            /** @var Project */
             $project = isset($data['project']) ?
                 $this->projectRepository->find($data['project']) :
                 null;
@@ -163,7 +183,7 @@ class MeetingType extends AbstractType
                 $options['teachers'],
                 date_create($data['dateTime']['date'] . ' ' . $data['dateTime']['time']),
                 $project,
-                $options['projects']
+                $projects
             );
         });
     }
@@ -175,7 +195,6 @@ class MeetingType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Meeting::class,
-            'projects' => [],
             'teachers' => [],
             'translation_domain' => 'wlt_meeting'
         ]);
