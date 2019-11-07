@@ -42,8 +42,16 @@
             {% endfor %}
 {% endblock %}
 
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
 {% block before_table %}
-    <form action="{{ path('work_linked_training_meeting_operation') }}" method="post">
+    <form action="{{ path('work_linked_training_meeting_operation', {'academicYear': academic_year.id}) }}" method="post">
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
 {% endblock %}
 
 {% block after_table %}

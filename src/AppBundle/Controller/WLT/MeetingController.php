@@ -21,6 +21,7 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\WLT\Meeting;
 use AppBundle\Form\Type\WLT\MeetingType;
+use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\MeetingRepository;
@@ -170,6 +171,7 @@ class MeetingController extends Controller
         TeacherRepository $teacherRepository,
         WLTGroupRepository $groupRepository,
         ProjectRepository $projectRepository,
+        AcademicYearRepository $academicYearRepository,
         Security $security,
         TranslatorInterface $translator,
         AcademicYear $academicYear = null,
@@ -271,7 +273,8 @@ class MeetingController extends Controller
             'domain' => 'wlt_meeting',
             'allow_new' => $allowNew,
             'teacher' => $teacher,
-            'academic_year' => $academicYear
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
 
