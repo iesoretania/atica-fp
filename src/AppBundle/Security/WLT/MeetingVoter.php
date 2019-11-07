@@ -121,19 +121,19 @@ class MeetingVoter extends CachedVoter
                 }
                 // Puede acceder el coordinador de cualquier proyecto asociado a las visitas, el jefe/a de departamento
                 // de los grupos de los proyectos
-                foreach ($subject->getProjects() as $project) {
-                    if ($project->getManager() === $user->getPerson()) {
+                $project = $subject->getProject();
+                if ($project->getManager() === $user->getPerson()) {
+                    return true;
+                }
+                foreach ($project->getGroups() as $group) {
+                    if ($group->getGrade()->getTraining()->getDepartment() &&
+                        $group->getGrade()->getTraining()->getDepartment()->getHead() &&
+                        $group->getGrade()->getTraining()->getDepartment()->getHead()->getPerson()
+                            === $user->getPerson()) {
                         return true;
                     }
-                    foreach ($project->getGroups() as $group) {
-                        if ($group->getGrade()->getTraining()->getDepartment() &&
-                            $group->getGrade()->getTraining()->getDepartment()->getHead() &&
-                            $group->getGrade()->getTraining()->getDepartment()->getHead()->getPerson()
-                                === $user->getPerson()) {
-                            return true;
-                        }
-                    }
                 }
+
                 // Puede acceder el tutor de los estudiantes visitados
                 foreach ($subject->getStudentEnrollments() as $studentEnrollment) {
                     foreach ($studentEnrollment->getGroup()->getTutors() as $tutor) {
