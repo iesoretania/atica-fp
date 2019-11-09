@@ -93,6 +93,9 @@ prompt.session_deletion_warning: >
 prompt.locked_warning: >
     ¡ATENCIÓN! La jornada está bloqueada. No se podrán realizar cambios en ella. Si existe alguna incidencia, póngase en contacto con el centro educativo.
 
+prompt.read_only_warning: >
+    ¡ATENCIÓN! No está autorizado a modificar la jornada.
+
 month0: Enero
 month1: Febrero
 month2: Marzo

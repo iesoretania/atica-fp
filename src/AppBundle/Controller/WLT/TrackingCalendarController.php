@@ -53,6 +53,8 @@ class TrackingCalendarController extends Controller
     ) {
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
 
+        $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
+
         $workDaysData = $workDayRepository->findByAgreementGroupByMonthAndWeekNumber($agreement);
 
         $today = new \DateTime('', new \DateTimeZone('UTC'));
@@ -83,7 +85,8 @@ class TrackingCalendarController extends Controller
             'activity_realizations' => $activityRealizations,
             'work_day_stats' => $workDayStats,
             'work_day_today' => $workDayToday,
-            'calendar' => $workDaysData
+            'calendar' => $workDaysData,
+            'read_only' => $readOnly
         ]);
     }
 
@@ -100,6 +103,7 @@ class TrackingCalendarController extends Controller
     ) {
         $agreement = $workDay->getAgreement();
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
+        $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
 
         $title = $translator->trans('dow' . ($workDay->getDate()->format('N') - 1), [], 'calendar');
         $title .= ' - ' . $workDay->getDate()->format($translator->trans('format.date', [], 'general'));
@@ -113,6 +117,7 @@ class TrackingCalendarController extends Controller
         $oldActivityRealizations = clone $workDay->getActivityRealizations();
 
         $form = $this->createForm(WorkDayTrackingType::class, $workDay, [
+            'disabled' => $readOnly,
             'work_day' => $workDay,
             'locked_activity_realizations' => $lockedActivityRealizations
         ]);
@@ -170,6 +175,7 @@ class TrackingCalendarController extends Controller
             'menu_path' => 'work_linked_training_tracking_list',
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
+            'read_only' => $readOnly,
             'work_day' => $workDay,
             'title' => $title
         ]);

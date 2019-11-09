@@ -3,13 +3,16 @@
 {% import 'macros.html.twig' as m %}
 {% form_theme form _self %}
 {% block content %}
-    {% if work_day.locked %}
+    {% if work_day.locked and not read_only %}
         <div class="alert alert-warning">{{ 'prompt.locked_warning'|trans|nl2br }}</div>
+    {% endif %}
+    {% if read_only %}
+        <div class="alert alert-warning">{{ 'prompt.read_only_warning'|trans|nl2br }}</div>
     {% endif %}
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ m.start_button() }}
-        {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+        {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}

@@ -64,6 +64,11 @@ var dynamicFormInit = function () {
         url = url + '/' + item.val();
         $('input#search').val('');
         updateTable(url);
+        if (history.pushState) {
+            window.history.replaceState({}, document.title, url);
+        } else {
+            document.location.href = url;
+        }
     }
 
     var item = $("select#item");

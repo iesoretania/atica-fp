@@ -18,6 +18,7 @@
 
 namespace AppBundle\Security\WLT;
 
+use AppBundle\Entity\Survey;
 use AppBundle\Entity\User;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Security\CachedVoter;
@@ -120,18 +121,23 @@ class AgreementVoter extends CachedVoter
 
         // Si es jefe de su departamento o coordinador de FP dual, permitir acceder siempre
 
-        // Jefe del departamento del estudiante
-        if (null !== $subject->getStudentEnrollment()) {
+        // Jefe del departamento del estudiante, autorizado salvo modificar si el acuerdo es de otro curso académico
+        if ($subject->getStudentEnrollment()) {
             $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
-            if (null !== $training->getDepartment() && $training->getDepartment()->getHead() &&
+            if ($training->getDepartment() && $training->getDepartment()->getHead() &&
                 $training->getDepartment()->getHead()->getPerson() === $user->getPerson()
             ) {
-                return true;
+                return !($attribute === self::MANAGE
+                    && $organization->getCurrentAcademicYear() !== $training->getAcademicYear());
             }
         }
 
-        // Coordinador de FP dual
+        // Coordinador de FP dual, autorizado salvo modificar si el acuerdo es de otro curso académico
         if ($subject->getProject()->getManager() !== $user->getPerson()) {
+            if ($subject->getStudentEnrollment()) {
+                $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
+                return $organization->getCurrentAcademicYear() === $training->getAcademicYear();
+            }
             return true;
         }
 
@@ -139,7 +145,6 @@ class AgreementVoter extends CachedVoter
 
         // Tutor laboral
         $isWorkTutor = $user === $subject->getWorkTutor()->getUser();
-
         $isGroupTutor = false;
 
         // Tutor del grupo del acuerdo
@@ -187,37 +192,37 @@ class AgreementVoter extends CachedVoter
 
             case self::FILL_STUDENT_SURVEY:
                 $wltStudentSurvey = $subject->getProject()->getStudentSurvey();
-
-                $now = new \DateTime();
-
-                if ((!$isStudent && !$isGroupTutor) || !$wltStudentSurvey) {
-                    return false;
-                }
-                if ($wltStudentSurvey->getStartTimestamp() && $wltStudentSurvey->getStartTimestamp() > $now) {
-                    return false;
-                }
-                if ($wltStudentSurvey->getEndTimestamp() && $wltStudentSurvey->getEndTimestamp() < $now) {
-                    return false;
-                }
-                return true;
+                return $this->checkSurvey($isStudent, $isGroupTutor, $wltStudentSurvey);
 
             case self::FILL_COMPANY_SURVEY:
                 $wltCompanySurvey = $subject->getProject()->getCompanySurvey();
-                $now = new \DateTime();
-
-                if ((!$isWorkTutor && !$isGroupTutor) || !$wltCompanySurvey) {
-                    return false;
-                }
-                if ($wltCompanySurvey->getStartTimestamp() && $wltCompanySurvey->getStartTimestamp() > $now) {
-                    return false;
-                }
-                if ($wltCompanySurvey->getEndTimestamp() && $wltCompanySurvey->getEndTimestamp() < $now) {
-                    return false;
-                }
-                return true;
+                return $this->checkSurvey($isWorkTutor, $isGroupTutor, $wltCompanySurvey);
         }
 
         // denegamos en cualquier otro caso
         return false;
+    }
+
+    /**
+     * @param $hasProfile
+     * @param $isGroupTutor
+     * @param Survey $wltCompanySurvey
+     * @return bool
+     * @throws \Exception
+     */
+    private function checkSurvey($hasProfile, $isGroupTutor, Survey $wltCompanySurvey)
+    {
+        $now = new \DateTime();
+
+        if ((!$hasProfile && !$isGroupTutor) || !$wltCompanySurvey) {
+            return false;
+        }
+        if ($wltCompanySurvey->getStartTimestamp() && $wltCompanySurvey->getStartTimestamp() > $now) {
+            return false;
+        }
+        if ($wltCompanySurvey->getEndTimestamp() && $wltCompanySurvey->getEndTimestamp() < $now) {
+            return false;
+        }
+        return true;
     }
 }

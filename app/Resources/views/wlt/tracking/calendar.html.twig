@@ -13,7 +13,7 @@
             {% set url = day ? path('work_linked_training_tracking_calendar_form', {'id': day.id}) : '' %}
             <td class="w-20{% if day %} clickable-row {{ day.absence ? (day.absence == 1 ? 'absence' : 'justified-absence') : (dayData[1] == 0 ? 'workday' : 'submitted') }}" data-href="{{ url }}{% endif %}">
                 {% if day %}
-                    {% if selectable %}<label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> {% endif %}<a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a>{% if selectable %}</label>{% endif %}{% if day and day.locked %} <i class="fas fa-lock"></i>{% endif %}<br/>
+                    {% if not read_only|default(false) and selectable %}<label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> {% endif %}<a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a>{% if selectable %}</label>{% endif %}{% if day and day.locked %} <i class="fas fa-lock"></i>{% endif %}<br/>
                     {{ 'caption.hours'|transchoice(day.hours, {}, 'calendar') }}
                 {% elseif n > 0 %}
                     {{ n }}
@@ -23,12 +23,14 @@
     {% endembed %}
 
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {% if selectable %}{{ m.link_button('', 'check-square', 'btn-primary', 'form.select_deselect'|trans, 'toggle') }}{% endif %}
-    {% if is_granted('WLT_AGREEMENT_LOCK', agreement) %}
-        {{ m.submit_button('lock', 'lock', 'btn-danger enable-on-items', 'form.lock_action'|trans) }}
-        {{ m.submit_button('unlock', 'lock-open', 'btn-danger enable-on-items', 'form.unlock_action'|trans) }}
+    {% if not read_only|default(false) %}
+        {% if selectable %}{{ m.link_button('', 'check-square', 'btn-primary', 'form.select_deselect'|trans, 'toggle') }}{% endif %}
+        {% if is_granted('WLT_AGREEMENT_LOCK', agreement) %}
+            {{ m.submit_button('lock', 'lock', 'btn-danger enable-on-items', 'form.lock_action'|trans) }}
+            {{ m.submit_button('unlock', 'lock-open', 'btn-danger enable-on-items', 'form.unlock_action'|trans) }}
+        {% endif %}
+        {% if is_granted('WLT_AGREEMENT_ATTENDANCE', agreement) %}{{ m.submit_button('attendance', 'user-slash', 'btn-danger enable-on-items', 'form.attendance'|trans) }}{% endif %}
     {% endif %}
-    {% if is_granted('WLT_AGREEMENT_ATTENDANCE', agreement) %}{{ m.submit_button('attendance', 'user-slash', 'btn-danger enable-on-items', 'form.attendance'|trans) }}{% endif %}
     {{ m.link_button(path('work_linked_training_tracking_calendar_attendance_report', {'id': agreement.id}), 'file-alt', 'btn-primary', 'form.attendance_report'|trans) }}
     </form>
 </section>

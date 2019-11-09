@@ -18,9 +18,12 @@
 
 namespace AppBundle\Controller\WLT;
 
+use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\WLT\Agreement;
-use AppBundle\Entity\WLT\Project;
-use AppBundle\Repository\WLT\AgreementRepository;
+use AppBundle\Repository\Edu\AcademicYearRepository;
+use AppBundle\Repository\WLT\ProjectRepository;
+use AppBundle\Repository\WLT\WLTGroupRepository;
+use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -37,18 +40,23 @@ use Symfony\Component\Translation\TranslatorInterface;
 class TrackingController extends Controller
 {
     /**
-     * @Route("/estudiante/listar/{project}/{page}", name="work_linked_training_tracking_list",
-     *     requirements={"page" = "\d+"}, defaults={"project" = null, "page" = 1}, methods={"GET"})
+     * @Route("/acuerdo/listar/{academicYear}/{page}", name="work_linked_training_tracking_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
      */
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        AgreementRepository $agreementRepository,
-        $page = 1,
-        Project $project = null
+        AcademicYearRepository $academicYearRepository,
+        WLTGroupRepository $wltGroupRepository,
+        ProjectRepository $projectRepository,
+        AcademicYear $academicYear = null,
+        $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
+        if ($academicYear === null) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS, $organization);
 
@@ -97,17 +105,49 @@ class TrackingController extends Controller
                 ->orWhere('wt.firstName LIKE :tq')
                 ->orWhere('wt.lastName LIKE :tq')
                 ->orWhere('wt.uniqueIdentifier LIKE :tq')
+                ->orWhere('pro.name LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        $person = $this->getUser()->getPerson();
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $this->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
 
-        $projects = $agreementRepository->setQueryBuilderFilterByOrganizationPersonProjectAndReturnProjects(
-            $queryBuilder,
-            $organization,
-            $person,
-            $project
-        );
+        $groups = [];
+        $projects = [];
+
+        $person = $this->getUser()->getPerson();
+        if (false === $isWltManager && false === $isManager) {
+            // no es administrador ni coordinador de FP:
+            // puede ser jefe de departamento o tutor de grupo  -> ver los acuerdos de los
+            // estudiantes de sus grupos
+            $groups = $wltGroupRepository->findByAcademicYearAndGrupTutorOrDepartmentHeadPerson($academicYear, $person);
+        } elseif ($isWltManager) {
+            $projects = $projectRepository->findByManager($person);
+        }
+
+        // ver siempre las propias
+        if ($groups) {
+            $queryBuilder
+                ->andWhere('se.group IN (:groups) OR se.person = :person')
+                ->setParameter('groups', $groups)
+                ->setParameter('person', $person);
+        }
+        if ($projects) {
+            $queryBuilder
+                ->andWhere('pro IN (:projects) OR se.person = :person')
+                ->setParameter('projects', $projects)
+                ->setParameter('person', $person);
+        }
+
+        if (false === $isWltManager && false === $isManager && !$projects && !$groups) {
+            $queryBuilder
+                ->andWhere('se.person = :person')
+                ->setParameter('person', $person);
+        }
+
+        $queryBuilder
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear);
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -122,8 +162,8 @@ class TrackingController extends Controller
             'pager' => $pager,
             'q' => $q,
             'domain' => 'wlt_tracking',
-            'project' => $project,
-            'projects' => $projects
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
 }

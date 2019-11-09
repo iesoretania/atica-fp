@@ -6,9 +6,9 @@
 
 {% block table_header %}
     <th>{{ 'header.student'|trans }}</th>
+    <th>{{ 'header.project'|trans }}</th>
     <th>{{ 'header.workcenter'|trans }}</th>
-    <th>{{ 'header.start_date'|trans }}</th>
-    <th>{{ 'header.end_date'|trans }}</th>
+    <th>{{ 'header.dates'|trans }}</th>
     <th>{{ 'header.status'|trans }}</th>
 {% endblock %}
 
@@ -19,11 +19,9 @@
                     <td>
                         <a href="{{ url }}">{{ item[0].studentEnrollment }}</a>
                     </td>
-                    <td>
-                        {{ item[0].workcenter }}
-                    </td>
-                    <td>{{ item[0].startDate ? item[0].startDate|date('format.date'|trans({}, 'general')) }}</td>
-                    <td>{{ item[0].endDate ? item[0].endDate|date('format.date'|trans({}, 'general')) }}</td>
+                    <td>{{ item[0].project }}</td>
+                    <td>{{ item[0].workcenter }}</td>
+                    <td>{{ item[0].startDate ? item[0].startDate|date('format.date'|trans({}, 'general')) }}{{ item[0].endDate ? ' - ' ~ (item[0].endDate|date('format.date'|trans({}, 'general'))) }}</td>
                     <td>
                         {% if item[1] %}
                             {{ item[2] }}/{{ 'table.hours'|transchoice(item[1]) }} ({{ (item[2]*100/item[1]) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %)
@@ -44,18 +42,7 @@
 {% endblock %}
 
 {% block before_filter %}
-    {% if projects %}
-        <div class="row">
-            <div class="form-group col-sm-5">
-                <select name="project" id="item" class="form w-100">
-                    <option value="0" {% if not project %}selected{% endif %}>{{ 'filter.all_projects'|trans }}</option>
-                    {% for item in projects %}
-                        <option value="{{ item.id }}" {% if project and project.id == item.id %}selected{% endif %}>{{ item.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-    {% endif %}
+    {% include 'organization/partial_academic_year.html.twig' %}
 {% endblock %}
 
 {% block after_table %}

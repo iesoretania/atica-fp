@@ -1,8 +1,8 @@
 header.training: Ciclo formativo
 header.student: Estudiante
+header.project: Proyecto
 header.workcenter: Empresa
-header.start_date: Fecha de inicio
-header.end_date: Fecha de fin
+header.dates: Fecha de inicio/fin
 header.status: Horas bloqueadas/totales
 
 filter.all_projects: Todos los proyectos

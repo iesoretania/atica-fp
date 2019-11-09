@@ -279,6 +279,12 @@ class MeetingController extends Controller
                 ->setParameter('teacher', $teacher);
         }
 
+        if (false === $isWltManager && false === $isManager && !$projects && !$groups) {
+            $queryBuilder
+                ->andWhere('m.createdBy = :teacher')
+                ->setParameter('teacher', $teacher);
+        }
+
         $queryBuilder
             ->andWhere('cb.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear);
