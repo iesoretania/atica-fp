@@ -153,7 +153,7 @@ class TrackingController extends Controller
         $pager = new Pagerfanta($adapter);
         $pager
             ->setMaxPerPage($this->getParameter('page.size'))
-            ->setCurrentPage($q ? 1 : $page);
+            ->setCurrentPage($page);
 
         $title = $translator->trans('title.agreement.list', [], 'wlt_tracking');
 

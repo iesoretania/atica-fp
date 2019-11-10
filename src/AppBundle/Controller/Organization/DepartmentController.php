@@ -137,7 +137,7 @@ class DepartmentController extends Controller
         $pager = new Pagerfanta($adapter);
         $pager
             ->setMaxPerPage($this->getParameter('page.size'))
-            ->setCurrentPage($q ? 1 : $page);
+            ->setCurrentPage($page);
 
         $title = $this->get('translator')->trans('title.list', [], 'edu_department');
 

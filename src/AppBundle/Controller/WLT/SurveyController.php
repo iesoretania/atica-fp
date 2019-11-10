@@ -391,7 +391,7 @@ class SurveyController extends Controller
         $pager = new Pagerfanta($adapter);
         $pager
             ->setMaxPerPage($this->getParameter('page.size'))
-            ->setCurrentPage($q ? 1 : $page);
+            ->setCurrentPage($page);
 
         return $this->render($template, [
             'title' => $title . ' - ' . $academicYear,
@@ -548,7 +548,7 @@ class SurveyController extends Controller
         $pager = new Pagerfanta($adapter);
         $pager
             ->setMaxPerPage($this->getParameter('page.size'))
-            ->setCurrentPage($q ? 1 : $page);
+            ->setCurrentPage($page);
 
         return $this->render('wlt/survey/teacher_list.html.twig', [
             'title' => $title . ' - ' . $academicYear,

@@ -153,7 +153,7 @@ class ActivityRealizationController extends Controller
         $pager = new Pagerfanta($adapter);
         $pager
             ->setMaxPerPage($this->getParameter('page.size'))
-            ->setCurrentPage($q ? 1 : $page);
+            ->setCurrentPage($page);
 
         $title = $activity->getCode() . ' - ' . $translator->trans('title.list', [], 'wlt_activity_realization');
 

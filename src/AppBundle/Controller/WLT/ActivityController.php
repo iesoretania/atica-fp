@@ -145,7 +145,7 @@ class ActivityController extends Controller
         $pager = new Pagerfanta($adapter);
         $pager
             ->setMaxPerPage($this->getParameter('page.size'))
-            ->setCurrentPage($q ? 1 : $page);
+            ->setCurrentPage($page);
 
         $title = $project->getName() . ' - ' . $translator->trans('title.list', [], 'wlt_activity');
 

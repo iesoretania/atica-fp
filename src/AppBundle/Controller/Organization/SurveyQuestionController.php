@@ -157,7 +157,7 @@ class SurveyQuestionController extends Controller
         $pager = new Pagerfanta($adapter);
         $pager
             ->setMaxPerPage($this->getParameter('page.size'))
-            ->setCurrentPage($q ? 1 : $page);
+            ->setCurrentPage($page);
 
         $title = $translator->trans('title.list', [], 'survey_question') . ' - ' . $survey->getTitle();
 

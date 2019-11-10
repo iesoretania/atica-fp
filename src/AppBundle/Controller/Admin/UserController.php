@@ -24,12 +24,12 @@ use AppBundle\Form\Type\UserType;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/admin/usuarios")
@@ -92,9 +92,9 @@ class UserController extends Controller
 
     /**
      * @Route("/listar/{page}", name="admin_user_list", requirements={"page" = "\d+"},
-     *     defaults={"page" = "1"}, methods={"GET"})
+     *     methods={"GET"})
      */
-    public function listAction($page, Request $request)
+    public function listAction($page = 1, Request $request)
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -122,7 +122,7 @@ class UserController extends Controller
         $pager = new Pagerfanta($adapter);
         $pager
             ->setMaxPerPage($this->getParameter('page.size'))
-            ->setCurrentPage($q ? 1 : $page);
+            ->setCurrentPage($page);
 
         $title = $this->get('translator')->trans('title.list', [], 'user');
 
