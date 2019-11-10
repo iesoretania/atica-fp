@@ -51,7 +51,7 @@ class ProjectStudentEnrollmentType extends AbstractType
                 'class' => Group::class,
                 'choice_translation_domain' => false,
                 'choices' => $groups,
-                'choice_label' => function(Group $group) {
+                'choice_label' => function (Group $group) {
                     return $group
                             ->getGrade()
                             ->getTraining()
@@ -68,12 +68,14 @@ class ProjectStudentEnrollmentType extends AbstractType
                 'choice_translation_domain' => false,
                 'choices' => $studentEnrollments,
                 'choice_label' => function (StudentEnrollment $studentEnrollment) {
-                    return $studentEnrollment
-                            ->getGroup()->getGrade()->getTraining()->getAcademicYear()->getDescription() . ' - '
-                        . $studentEnrollment->getGroup() . ' - '
-                        . $studentEnrollment->getPerson()->getLastName() . ', '
+                    return $studentEnrollment->getPerson()->getLastName() . ', '
                         . $studentEnrollment->getPerson()->getFirstName() . ' ('
                         . $studentEnrollment->getPerson()->getUniqueIdentifier() . ')';
+                },
+                'group_by' => function (StudentEnrollment $studentEnrollment) {
+                    return $studentEnrollment
+                            ->getGroup()->getGrade()->getTraining()->getAcademicYear()->getDescription() . ' - '
+                        . $studentEnrollment->getGroup()->getName();
                 },
                 'multiple' => true,
                 'expanded' => true,

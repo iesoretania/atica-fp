@@ -5,6 +5,7 @@ form.student_survey: Modelo de encuesta de satisfacción de alumnado
 form.company_survey: Modelo de encuesta de satisfacción de empresa colaboradora
 form.manager_survey: Modelo de encuesta de satisfacción final de coordinación
 form.student_enrollments: Estudiantes adheridos
+form.no_student_enrollments: No hay ninguno, asegúrese de especificar los grupos que pertenecen al proyecto
 form.no_survey: Ninguna
 form.no_manager: Seleccione coordinador/a
 
