@@ -133,7 +133,7 @@ class AgreementVoter extends CachedVoter
         }
 
         // Coordinador de FP dual, autorizado salvo modificar si el acuerdo es de otro curso académico
-        if ($subject->getProject()->getManager() !== $user->getPerson()) {
+        if ($subject->getProject()->getManager() === $user->getPerson()) {
             if ($subject->getStudentEnrollment()) {
                 $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
                 return $organization->getCurrentAcademicYear() === $training->getAcademicYear();
