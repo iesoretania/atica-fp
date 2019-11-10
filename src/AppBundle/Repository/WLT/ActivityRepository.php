@@ -35,13 +35,9 @@ class ActivityRepository extends ServiceEntityRepository
     {
         try {
             return $this->createQueryBuilder('a')
-                ->distinct(true)
-                ->join('a.subject', 's')
-                ->join('s.grade', 'g')
-                ->join('g.groups', 'gr')
-                ->where('gr IN (:groups)')
+                ->where('a.project = :project')
                 ->andWhere('a.code = :code')
-                ->setParameter('groups', $project->getGroups())
+                ->setParameter('project', $project)
                 ->setParameter('code', $code)
                 ->getQuery()
                 ->getOneOrNullResult();
