@@ -114,6 +114,7 @@ class AgreementType extends AbstractType
                 'class' => Project::class,
                 'choice_translation_domain' => false,
                 'choices' => $projects,
+                'disabled' => true,
                 'required' => true
             ])
             ->add('studentEnrollment', EntityType::class, [

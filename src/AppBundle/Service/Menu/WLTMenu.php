@@ -80,18 +80,6 @@ class WLTMenu implements MenuBuilderInterface
 
             $menu1->addChild($menu2);
 
-            if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGE, $organization)) {
-                $menu2 = new MenuItem();
-                $menu2
-                    ->setName('work_linked_training_agreement')
-                    ->setRouteName('work_linked_training_agreement_list')
-                    ->setCaption('menu.work_linked_training.agreement')
-                    ->setDescription('menu.work_linked_training.agreement.detail')
-                    ->setIcon('handshake');
-
-                $menu1->addChild($menu2);
-            }
-
             if ($this->security->isGranted(WLTOrganizationVoter::WLT_VIEW_EVALUATION, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2

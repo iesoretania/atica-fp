@@ -44,7 +44,7 @@ title.copy: Copiar calendarios
 title.calendar: Calendario en alternancia
 title.calendar.add: Añadir jornadas
 
-title.list: Listado de convenios de colaboración
+title.list: Convenios de colaboración
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay convenios que mostrar
 table.filter: Filtrar...

@@ -54,8 +54,8 @@
 {% set column = 0 %}
 <table style="width: 100%; vertical-align: top; font-weight: bold">
     <tr>
-        <td width="50%">{{ 'report.organization.title'|trans }} {{ agreement.workcenter.academicYear.organization }}</td>
-        <td width="50%">{{ 'report.academic_year.title'|trans }} {{ agreement.workcenter.academicYear }}</td>
+        <td width="50%">{{ 'report.organization.title'|trans }} {{ agreement.project.organization }}</td>
+        <td width="50%">{{ 'report.academic_year.title'|trans }} {{ agreement.studentEnrollment.group.grade.training.academicYear }}</td>
     </tr>
     <tr>
         <td colspan="2">{{ 'report.student.title'|trans }} {{ agreement.studentEnrollment }}</td>

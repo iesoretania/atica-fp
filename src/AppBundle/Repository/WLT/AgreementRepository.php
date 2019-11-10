@@ -175,12 +175,12 @@ class AgreementRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param Organization $organization
+     * @param Project $project
      * @return Agreement[]
      */
-    public function findAllInListByIdAndOrganization(
+    public function findAllInListByIdAndProject(
         $items,
-        Organization $organization
+        Project $project
     ) {
         return $this->createQueryBuilder('a')
             ->join('a.studentEnrollment', 'se')
@@ -190,9 +190,9 @@ class AgreementRepository extends ServiceEntityRepository
             ->join('gr.training', 'tr')
             ->join('tr.academicYear', 'ay')
             ->where('a.id IN (:items)')
-            ->andWhere('ay.organization = :organization')
+            ->andWhere('a.project = :project')
             ->setParameter('items', $items)
-            ->setParameter('organization', $organization)
+            ->setParameter('project', $project)
             ->orderBy('g.name')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
@@ -202,12 +202,12 @@ class AgreementRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param Organization $organization
+     * @param Project $project
      * @return Agreement[]
      */
-    public function findAllInListByNotIdAndOrganization(
+    public function findAllInListByNotIdAndProject(
         $items,
-        Organization $organization
+        Project $project
     ) {
         return $this->createQueryBuilder('a')
             ->join('a.studentEnrollment', 'se')
@@ -217,9 +217,9 @@ class AgreementRepository extends ServiceEntityRepository
             ->join('gr.training', 'tr')
             ->join('tr.academicYear', 'ay')
             ->where('a.id NOT IN (:items)')
-            ->andWhere('ay.organization = :organization')
+            ->andWhere('a.project = :project')
             ->setParameter('items', $items)
-            ->setParameter('organization', $organization)
+            ->setParameter('project', $project)
             ->orderBy('g.name')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')

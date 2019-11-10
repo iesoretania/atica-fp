@@ -89,7 +89,7 @@ class LearningProgramController extends Controller
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_learning_program'));
                 return $this->redirectToRoute('work_linked_training_learning_program_list', [
-                    'project' => $project,
+                    'project' => $project->getId(),
                     'page' => 1
                 ]);
             } catch (\Exception $e) {

@@ -3,10 +3,10 @@
 {% import 'macros.html.twig' as m %}
 {% form_theme form _self %}
 {% block content %}
-    {{ form_start(form, {'attr': {'data-ajax': path('work_linked_training_agreement_new')}}) }}
+    {{ form_start(form, {'attr': {'data-ajax': path('work_linked_training_agreement_new', {'project': agreement.project.id})}}) }}
     {{ form_widget(form) }}
     {{ m.start_button() }}
-        {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+        {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}

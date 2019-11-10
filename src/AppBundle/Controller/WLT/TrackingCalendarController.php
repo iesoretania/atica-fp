@@ -126,11 +126,13 @@ class TrackingCalendarController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-
                 if ($workDay->getAbsence() === WorkDay::NO_ABSENCE) {
                     $lockManager = $this->isGranted(AgreementVoter::LOCK, $agreement);
                     $currentActivityRealizations = $workDay->getActivityRealizations();
-                    $toInsert = array_diff($currentActivityRealizations->toArray(), $oldActivityRealizations->toArray());
+                    $toInsert = array_diff(
+                        $currentActivityRealizations->toArray(),
+                        $oldActivityRealizations->toArray()
+                    );
 
                     // comprobar que no se intenta activar una concreción ya bloqueada
                     $invalid = array_intersect($toInsert, $lockedActivityRealizations);
@@ -282,7 +284,10 @@ class TrackingCalendarController extends Controller
             'title' => $title
         ]);
 
-        $response = $mpdfService->generatePdfResponse($html, ['constructorArgs' => [['mode' => 'utf-8', 'format' => 'A4-L']]]);
+        $response = $mpdfService->generatePdfResponse(
+            $html,
+            ['constructorArgs' => [['mode' => 'utf-8', 'format' => 'A4-L']]]
+        );
         $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
 
         return $response;

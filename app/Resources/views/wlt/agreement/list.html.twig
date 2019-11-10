@@ -2,7 +2,7 @@
 {% extends 'generic/list.html.twig' %}
 {% import 'macros.html.twig' as m %}
 
-{% block path_new %}{{ path('work_linked_training_agreement_new') }}{% endblock %}
+{% block path_new %}{{ path('work_linked_training_agreement_new', {'project': project.id}) }}{% endblock %}
 
 {% block table_header %}
     <th><label><input type="checkbox" id="select"> {{ 'header.student_enrollment'|trans }}</label></th>
@@ -18,7 +18,7 @@
                 {% set url = path('work_linked_training_agreement_edit', {'id': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.studentEnrollment }}</a></label>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}"{% if is_granted('WLT_AGREEMENT_MANAGE', item) %} class="selectable"{% else %} disabled="disabled"{% endif %}> <a href="{{ url }}">{{ item.studentEnrollment }}</a></label>
                     </td>
                     <td>
                         {{ item.workcenter }}
@@ -37,21 +37,6 @@
                     <td colspan="6">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
-{% endblock %}
-
-{% block before_filter %}
-    {% if projects %}
-        <div class="row">
-            <div class="form-group col-sm-5">
-                <select name="project" id="item" class="form w-100">
-                    <option value="0" {% if not project %}selected{% endif %}>{{ 'filter.all_projects'|trans }}</option>
-                    {% for item in projects %}
-                        <option value="{{ item.id }}" {% if project and project.id == item.id %}selected{% endif %}>{{ item.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-    {% endif %}
 {% endblock %}
 
 {% block before_table %}

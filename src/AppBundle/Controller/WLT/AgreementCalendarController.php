@@ -26,6 +26,8 @@ use AppBundle\Form\Type\WLT\WorkDayType;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
 use AppBundle\Security\WLT\AgreementVoter;
+use AppBundle\Security\WLT\WLTOrganizationVoter;
+use AppBundle\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,25 +45,42 @@ class AgreementCalendarController extends Controller
     public function indexAction(
         WorkDayRepository $workDayRepository,
         TranslatorInterface $translator,
+        UserExtensionService $userExtensionService,
         Agreement $agreement
     ) {
-        $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
+        $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
 
         $workDaysData = $workDayRepository->findByAgreementGroupByMonthAndWeekNumber($agreement);
 
         $title = $translator->trans('title.calendar', [], 'wlt_agreement');
 
         $breadcrumb = [
-            ['fixed' => (string) $agreement],
+            [
+                'fixed' => $agreement->getProject()->getName(),
+                'routeName' => 'work_linked_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getProject()->getId()]
+            ],
+            [
+                'fixed' => $translator->trans('title.agreements', [], 'wlt_project'),
+                'routeName' => 'work_linked_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getProject()->getId()]
+            ],
+            [
+                'fixed' => (string) $agreement,
+            ],
             ['fixed' => $title]
         ];
 
         return $this->render('wlt/agreement/calendar.html.twig', [
-            'menu_path' => 'work_linked_training_agreement_list',
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'agreement' => $agreement,
-            'calendar' => $workDaysData
+            'calendar' => $workDaysData,
+            'read_only' => $readOnly
         ]);
     }
 
@@ -117,8 +136,17 @@ class AgreementCalendarController extends Controller
                 }
             }
         }
-
         $breadcrumb = [
+            [
+                'fixed' => $agreement->getProject()->getName(),
+                'routeName' => 'work_linked_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getProject()->getId()]
+            ],
+            [
+                'fixed' => $translator->trans('title.agreements', [], 'wlt_project'),
+                'routeName' => 'work_linked_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getProject()->getId()]
+            ],
             [
                 'fixed' => (string) $agreement,
                 'routeName' => 'work_linked_training_agreement_calendar_list',
@@ -128,7 +156,7 @@ class AgreementCalendarController extends Controller
         ];
 
         return $this->render('wlt/agreement/calendar_add.html.twig', [
-            'menu_path' => 'work_linked_training_agreement_list',
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
             'title' => $title,
@@ -144,15 +172,22 @@ class AgreementCalendarController extends Controller
         Request $request,
         AgreementRepository $agreementRepository,
         TranslatorInterface $translator,
+        UserExtensionService $userExtensionService,
         WorkDay $workDay
     ) {
         $agreement = $workDay->getAgreement();
-        $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
+
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
+        $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
 
         $title = $translator->trans('dow' . ($workDay->getDate()->format('N') - 1), [], 'calendar');
         $title .= ' - ' . $workDay->getDate()->format($translator->trans('format.date', [], 'general'));
 
-        $form = $this->createForm(WorkDayType::class, $workDay);
+        $form = $this->createForm(WorkDayType::class, $workDay, [
+            'disabled' => $readOnly
+        ]);
 
         $form->handleRequest($request);
 
@@ -168,8 +203,17 @@ class AgreementCalendarController extends Controller
                 $this->addFlash('error', $translator->trans('message.save_error', [], 'calendar'));
             }
         }
-
         $breadcrumb = [
+            [
+                'fixed' => $agreement->getProject()->getName(),
+                'routeName' => 'work_linked_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getProject()->getId()]
+            ],
+            [
+                'fixed' => $translator->trans('title.agreements', [], 'wlt_project'),
+                'routeName' => 'work_linked_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getProject()->getId()]
+            ],
             [
                 'fixed' => (string) $agreement,
                 'routeName' => 'work_linked_training_agreement_calendar_list',
@@ -179,10 +223,11 @@ class AgreementCalendarController extends Controller
         ];
 
         return $this->render('wlt/agreement/calendar_form.html.twig', [
-            'menu_path' => 'work_linked_training_agreement_list',
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
-            'title' => $title
+            'title' => $title,
+            'read_only' => $readOnly
         ]);
     }
 
@@ -229,6 +274,16 @@ class AgreementCalendarController extends Controller
 
         $breadcrumb = [
             [
+                'fixed' => $agreement->getProject()->getName(),
+                'routeName' => 'work_linked_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getProject()->getId()]
+            ],
+            [
+                'fixed' => $translator->trans('title.agreements', [], 'wlt_project'),
+                'routeName' => 'work_linked_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getProject()->getId()]
+            ],
+            [
                 'fixed' => (string) $agreement,
                 'routeName' => 'work_linked_training_agreement_calendar_list',
                 'routeParams' => ['id' => $agreement->getId()]
@@ -237,7 +292,7 @@ class AgreementCalendarController extends Controller
         ];
 
         return $this->render('wlt/agreement/calendar_delete.html.twig', [
-            'menu_path' => 'work_linked_training_agreement_list',
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'agreement' => $agreement,

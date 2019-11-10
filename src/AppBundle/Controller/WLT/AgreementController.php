@@ -18,7 +18,6 @@
 
 namespace AppBundle\Controller\WLT;
 
-use AppBundle\Entity\Organization;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\AgreementActivityRealization;
 use AppBundle\Entity\WLT\Project;
@@ -46,19 +45,24 @@ use Symfony\Component\Translation\TranslatorInterface;
 class AgreementController extends Controller
 {
     /**
-     * @Route("/nuevo", name="work_linked_training_agreement_new", methods={"GET", "POST"})
+     * @Route("/nuevo/{project}", name="work_linked_training_agreement_new",
+     *     requirements={"project": "\d+"}, methods={"GET", "POST"})
      */
     public function newAction(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         MembershipRepository $membershipRepository,
-        AgreementActivityRealizationRepository $agreementActivityRealizationRepository
+        AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
+        Project $project
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
         $agreement = new Agreement();
+        $agreement
+            ->setProject($project);
+
         $this->getDoctrine()->getManager()->persist($agreement);
 
         return $this->indexAction(
@@ -82,14 +86,15 @@ class AgreementController extends Controller
         AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
         Agreement $agreement
     ) {
-        if ($agreement->getId()) {
-            $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
-        }
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
+        $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
 
         $oldWorkTutor = $agreement->getWorkTutor();
 
         if (null === $agreement->getStudentEnrollment()) {
-            $academicYear = $userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
+            $academicYear = $organization->getCurrentAcademicYear();
         } else {
             $academicYear = $agreement->
                 getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getAcademicYear();
@@ -97,7 +102,9 @@ class AgreementController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm(AgreementType::class, $agreement);
+        $form = $this->createForm(AgreementType::class, $agreement, [
+            'disabled' => $readOnly
+        ]);
 
         $oldActivityRealizations = $agreement->getActivityRealizations();
 
@@ -151,21 +158,33 @@ class AgreementController extends Controller
         );
 
         $breadcrumb = [
+            [
+                'fixed' => $agreement->getProject()->getName(),
+                'routeName' => 'work_linked_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getProject()->getId()]
+            ],
+            [
+                'fixed' => $translator->trans('title.agreements', [], 'wlt_project'),
+                'routeName' => 'work_linked_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getProject()->getId()]
+            ],
             $agreement->getId() ?
                 ['fixed' => (string) $agreement] :
                 ['fixed' => $translator->trans('title.new', [], 'wlt_agreement')]
         ];
 
         return $this->render('wlt/agreement/form.html.twig', [
-            'menu_path' => 'work_linked_training_agreement_list',
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'agreement' => $agreement,
+            'read_only' => $readOnly
         ]);
     }
 
     /**
-     * @Route("/listar/{project}/{page}", name="work_linked_training_agreement_list",
+     * @Route("/listar/{id}/{page}", name="work_linked_training_agreement_list",
      *     requirements={"page" = "\d+"}, methods={"GET"})
      */
     public function listAction(
@@ -249,7 +268,14 @@ class AgreementController extends Controller
 
         $title = $translator->trans('title.list', [], 'wlt_agreement');
 
+        $breadcrumb = [
+            ['fixed' => $project->getName()],
+            ['fixed' => $translator->trans('title.agreements', [], 'wlt_project')]
+        ];
+
         return $this->render('wlt/agreement/list.html.twig', [
+            'menu_path' => 'work_linked_training_project_list',
+            'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
@@ -260,14 +286,15 @@ class AgreementController extends Controller
     }
 
     /**
-     * @Route("/operacion/{project}", name="work_linked_training_agreement_operation", methods={"POST"})
+     * @Route("/operacion/{project}", name="work_linked_training_agreement_operation",
+     *     requirements={"project": "\d+"}, methods={"POST"})
      */
     public function operationAction(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
-        Project $project = null
+        Project $project
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
@@ -277,16 +304,16 @@ class AgreementController extends Controller
 
         if (count($items) !== 0) {
             if ('' === $request->get('delete')) {
-                return $this->deleteAction($items, $request, $translator, $agreementRepository, $organization);
+                return $this->deleteAction($items, $request, $translator, $agreementRepository, $project);
             }
             if ('' === $request->get('copy')) {
-                return $this->copyAction($items, $request, $translator, $agreementRepository, $organization);
+                return $this->copyAction($items, $request, $translator, $agreementRepository, $project);
             }
         }
 
         return $this->redirectToRoute(
             'work_linked_training_agreement_list',
-            $project ? ['project' => $project->getId()] : []
+            ['id' => $project->getId()]
         );
     }
 
@@ -295,11 +322,11 @@ class AgreementController extends Controller
         Request $request,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
-        Organization $organization
+        Project $project
     ) {
         $em = $this->getDoctrine()->getManager();
 
-        $agreements = $agreementRepository->findAllInListByIdAndOrganization($items, $organization);
+        $agreements = $agreementRepository->findAllInListByIdAndProject($items, $project);
 
         // comprobar individualmente que tenemos acceso
         foreach ($agreements as $agreement) {
@@ -317,13 +344,20 @@ class AgreementController extends Controller
             }
             return $this->redirectToRoute(
                 'work_linked_training_agreement_list',
-                ['academicYear' => $organization->getId()]
+                ['id' => $project->getId()]
             );
         }
-
+        $breadcrumb = [
+            [
+                'fixed' => $agreement->getProject()->getName(),
+                'routeName' => 'work_linked_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getProject()->getId()]
+            ],
+            ['fixed' => $translator->trans('title.delete', [], 'wlt_agreement')]
+        ];
         return $this->render('wlt/agreement/delete.html.twig', [
-            'menu_path' => 'work_linked_training_agreement_list',
-            'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'wlt_agreement')]],
+            'menu_path' => 'work_linked_training_project_list',
+            'breadcrumb' => $breadcrumb,
             'title' => $translator->trans('title.delete', [], 'wlt_agreement'),
             'items' => $agreements
         ]);
@@ -334,16 +368,16 @@ class AgreementController extends Controller
         Request $request,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
-        Organization $organization
+        Project $project
     ) {
         $em = $this->getDoctrine()->getManager();
 
-        $selectedAgreements = $agreementRepository->findAllInListByIdAndOrganization($items, $organization);
+        $selectedAgreements = $agreementRepository->findAllInListByIdAndProject($items, $project);
         // comprobar individualmente que tenemos acceso
         foreach ($selectedAgreements as $agreement) {
             $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
         }
-        $agreementChoices = $agreementRepository->findAllInListByNotIdAndOrganization($items, $organization);
+        $agreementChoices = $agreementRepository->findAllInListByNotIdAndProject($items, $project);
         $calendarCopy = new CalendarCopy();
 
         $form = $this->createForm(CalendarCopyType::class, $calendarCopy, [
@@ -367,16 +401,25 @@ class AgreementController extends Controller
                 }
                 $this->addFlash('success', $translator->trans('message.copied', [], 'wlt_agreement'));
                 return $this->redirectToRoute('work_linked_training_agreement_list', [
-                    'academicYear' => $organization
+                    'id' => $project->getId()
                 ]);
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.copy_error', [], 'wlt_agreement'));
             }
         }
+
         $title = $translator->trans('title.copy', [], 'wlt_agreement');
+        $breadcrumb = [
+            [
+                'fixed' => $agreement->getProject()->getName(),
+                'routeName' => 'work_linked_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getProject()->getId()]
+            ],
+            ['fixed' => $title]
+        ];
         return $this->render('wlt/agreement/copy.html.twig', [
-            'menu_path' => 'work_linked_training_agreement_list',
-            'breadcrumb' => [['fixed' => $title]],
+            'menu_path' => 'work_linked_training_project_list',
+            'breadcrumb' => $breadcrumb,
             'title' => $title,
             'form' => $form->createView(),
             'items' => $selectedAgreements
