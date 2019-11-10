@@ -1,13 +1,13 @@
 form.description: Concreción
-form.grade: Evaluación
+form.grade: Valoración
 
 form.grade_none: Sin valorar
 
-form.grades: Configuración de evaluación
+form.grades: Configuración de la valoración
 form.save: Guardar cambios
 form.back: Volver
 
-title.grade: Evaluación del convenio
+title.grade: Valoración de actividades
 title.list: Convenios evaluables
 title.report: Resumen de la evaluación
 
@@ -18,8 +18,7 @@ table.filter: Filtrar...
 header.student_enrollment: Estudiante
 header.workcenter: Centro de trabajo
 header.work_tutor: Responsable laboral
-header.start_date: Fecha de inicio
-header.end_date: Fecha de finalización
+header.dates: Fecha de inicio y fin
 header.status: Concreciones evaluadas
 header.agreement_count: Número de convenios
 header.completed_activity_realization_count: Concreciones evaluadas

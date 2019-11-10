@@ -119,35 +119,31 @@ class AgreementVoter extends CachedVoter
             return true;
         }
 
-        // Si es jefe de su departamento o coordinador de FP dual, permitir acceder siempre
+        $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
+        $person = $user->getPerson();
 
+        // Si es jefe de su departamento o coordinador de FP dual, permitir acceder siempre
+        $isDepartmentHead = false;
         // Jefe del departamento del estudiante, autorizado salvo modificar si el acuerdo es de otro curso académico
-        if ($subject->getStudentEnrollment()) {
-            $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
-            if ($training->getDepartment() && $training->getDepartment()->getHead() &&
-                $training->getDepartment()->getHead()->getPerson() === $user->getPerson()
-            ) {
-                return !($attribute === self::MANAGE
-                    && $organization->getCurrentAcademicYear() !== $training->getAcademicYear());
-            }
+        if ($subject->getStudentEnrollment() && $training->getDepartment() && $training->getDepartment()->getHead() &&
+            $training->getDepartment()->getHead()->getPerson() === $person) {
+            $isDepartmentHead = true;
         }
 
         // Coordinador de FP dual, autorizado salvo modificar si el acuerdo es de otro curso académico
-        if ($subject->getProject()->getManager() === $user->getPerson()) {
-            if ($subject->getStudentEnrollment()) {
-                $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
-                return $organization->getCurrentAcademicYear() === $training->getAcademicYear();
-            }
-            return true;
+        $isWltManager = false;
+        if ($subject->getProject()->getManager() === $person) {
+            $isWltManager = true;
         }
 
         // Otros casos: ver qué permisos tiene el usuario
 
-        // Tutor laboral
+        // Tutor laboral y de seguimiento
         $isWorkTutor = $user === $subject->getWorkTutor()->getUser();
-        $isGroupTutor = false;
+        $isEducationalTutor = $subject->getEducationalTutor()->getPerson() === $person;
 
         // Tutor del grupo del acuerdo
+        $isGroupTutor = false;
         $tutors = $subject->getStudentEnrollment()->getGroup()->getTutors();
         foreach ($tutors as $tutor) {
             if ($tutor->getPerson()->getUser() === $user) {
@@ -165,38 +161,57 @@ class AgreementVoter extends CachedVoter
             [GroupVoter::TEACH],
             $subject->getStudentEnrollment()->getGroup()
         );
+        $academicYearIsCurrent = $organization->getCurrentAcademicYear() === $training->getAcademicYear();
 
         switch ($attribute) {
+            case self::MANAGE:
+                if ($isDepartmentHead || $isWltManager || $isEducationalTutor) {
+                    return $academicYearIsCurrent;
+                }
+                return false;
+
             // Si es permiso de acceso, comprobar si es el estudiante, docente, el tutor de grupo o
             // el responsable laboral
             case self::ACCESS:
-                return $isStudent || $isTeacher || $isWorkTutor || $isGroupTutor;
+                return $isDepartmentHead || $isWltManager || $isEducationalTutor
+                    || $isStudent || $isTeacher || $isWorkTutor || $isGroupTutor;
 
             // Si es permiso para ver la evaluación, el profesorado del grupo, el tutor o el responsable laboral
             case self::VIEW_GRADE:
-                return $isTeacher || $isWorkTutor || $isGroupTutor;
+                return $isDepartmentHead || $isWltManager || $isEducationalTutor
+                    || $isTeacher || $isWorkTutor || $isGroupTutor;
 
             // Si es permiso para pasar lista, evaluar o revisar la encuesta de empresa
             // puede hacerlo el tutor de grupo o el responsable laboral
             case self::VIEW_COMPANY_SURVEY:
+                return $isDepartmentHead || $isWltManager || $isEducationalTutor || $isWorkTutor || $isGroupTutor;
             case self::ATTENDANCE:
             case self::GRADE:
-                return $isWorkTutor || $isGroupTutor;
+                return $academicYearIsCurrent && ($isDepartmentHead || $isWltManager || $isEducationalTutor
+                    || $isWorkTutor || $isGroupTutor);
 
             // Si es permiso para bloquear/desbloquear jornadas, el tutor de grupo
             case self::LOCK:
-                return $isGroupTutor;
+                return $academicYearIsCurrent && ($isDepartmentHead || $isWltManager || $isEducationalTutor
+                    || $isGroupTutor);
 
             case self::VIEW_STUDENT_SURVEY:
-                return ($isStudent || $isGroupTutor) && $subject->getProject()->getStudentSurvey();
+                return ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isStudent || $isGroupTutor)
+                    && $subject->getProject()->getStudentSurvey();
 
             case self::FILL_STUDENT_SURVEY:
                 $wltStudentSurvey = $subject->getProject()->getStudentSurvey();
-                return $this->checkSurvey($isStudent, $isGroupTutor, $wltStudentSurvey);
+                return $academicYearIsCurrent
+                    && ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isStudent || $isGroupTutor
+                        || $this->checkSurvey($wltStudentSurvey)
+                    );
 
             case self::FILL_COMPANY_SURVEY:
                 $wltCompanySurvey = $subject->getProject()->getCompanySurvey();
-                return $this->checkSurvey($isWorkTutor, $isGroupTutor, $wltCompanySurvey);
+                return $academicYearIsCurrent
+                    && ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isWorkTutor || $isGroupTutor
+                        || $this->checkSurvey($wltCompanySurvey)
+                    );
         }
 
         // denegamos en cualquier otro caso
@@ -204,17 +219,15 @@ class AgreementVoter extends CachedVoter
     }
 
     /**
-     * @param $hasProfile
-     * @param $isGroupTutor
      * @param Survey $wltCompanySurvey
      * @return bool
      * @throws \Exception
      */
-    private function checkSurvey($hasProfile, $isGroupTutor, Survey $wltCompanySurvey)
+    private function checkSurvey(Survey $wltCompanySurvey)
     {
         $now = new \DateTime();
 
-        if ((!$hasProfile && !$isGroupTutor) || !$wltCompanySurvey) {
+        if (!$wltCompanySurvey) {
             return false;
         }
         if ($wltCompanySurvey->getStartTimestamp() && $wltCompanySurvey->getStartTimestamp() > $now) {

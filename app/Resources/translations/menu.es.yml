@@ -76,8 +76,8 @@ menu.work_linked_training.project.detail: Gestionar los proyectos de FP dual
 menu.work_linked_training.tracking: Seguimiento de actividad
 menu.work_linked_training.tracking.detail: Realizar el seguimiento de actividades en alternancia
 
-menu.work_linked_training.evaluation: Evaluación de actividades
-menu.work_linked_training.evaluation.detail: Evaluar las distintas concreciones de actividades formativo/productivas de los convenios
+menu.work_linked_training.evaluation: Valoración del desempeño de actividades
+menu.work_linked_training.evaluation.detail: Valorar el desempeño en las distintas concreciones de actividades formativo/productivas de los convenios
 
 menu.work_linked_training.evaluation_summary: Resumen de evaluación
 menu.work_linked_training.evaluation_summary.detail: Mostrar un resumen de evaluación del alumnado durante el proceso en alternancia
