@@ -112,9 +112,11 @@ class OrganizationController extends Controller
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
-        $pager
-            ->setMaxPerPage($this->getParameter('page.size'))
-            ->setCurrentPage($page);
+        try {
+            $pager->setCurrentPage($page);
+        } catch (\PagerFanta\Exception\OutOfRangeCurrentPageException $e) {
+            $pager->setCurrentPage(1);
+        }
 
         $title = $this->get('translator')->trans('title.list', [], 'organization');
 

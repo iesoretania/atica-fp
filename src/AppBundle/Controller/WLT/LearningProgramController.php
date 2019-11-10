@@ -159,8 +159,13 @@ class LearningProgramController extends Controller
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         $pager
-            ->setMaxPerPage($this->getParameter('page.size'))
-            ->setCurrentPage($page);
+            ->setMaxPerPage($this->getParameter('page.size'));
+                try {
+            $pager->setCurrentPage($page);
+        } catch (\PagerFanta\Exception\OutOfRangeCurrentPageException $e) {
+            $pager->setCurrentPage(1);
+        }
+
 
         $title = $translator->trans('title.list', [], 'wlt_learning_program');
 
