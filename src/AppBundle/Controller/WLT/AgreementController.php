@@ -144,7 +144,7 @@ class AgreementController extends Controller
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_agreement'));
                 return $this->redirectToRoute('work_linked_training_agreement_list', [
-                    'academicYear' => $academicYear
+                    'id' => $agreement->getProject()->getId()
                 ]);
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_agreement'));

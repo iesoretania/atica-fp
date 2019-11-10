@@ -28,9 +28,9 @@ use AppBundle\Entity\WLT\Project;
 use AppBundle\Entity\Workcenter;
 use AppBundle\Repository\CompanyRepository;
 use AppBundle\Repository\Edu\StudentEnrollmentRepository;
-use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Repository\WLT\ProjectRepository;
+use AppBundle\Repository\WLT\WLTTeacherRepository;
 use AppBundle\Repository\WorkcenterRepository;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\EntityRepository;
@@ -50,7 +50,7 @@ class AgreementType extends AbstractType
     private $companyRepository;
     private $activityRealizationRepository;
     private $projectRepository;
-    private $teacherRepository;
+    private $wltTeacherRepository;
 
     public function __construct(
         UserExtensionService $userExtensionService,
@@ -59,7 +59,7 @@ class AgreementType extends AbstractType
         CompanyRepository $companyRepository,
         ActivityRealizationRepository $activityRealizationRepository,
         ProjectRepository $projectRepository,
-        TeacherRepository $teacherRepository
+        WLTTeacherRepository $wltTeacherRepository
     ) {
         $this->userExtensionService = $userExtensionService;
         $this->studentEnrollmentRepository = $studentEnrollmentRepository;
@@ -67,18 +67,16 @@ class AgreementType extends AbstractType
         $this->companyRepository = $companyRepository;
         $this->activityRealizationRepository = $activityRealizationRepository;
         $this->projectRepository = $projectRepository;
-        $this->teacherRepository = $teacherRepository;
+        $this->wltTeacherRepository = $wltTeacherRepository;
     }
 
     public function addElements(
         FormInterface $form,
-        Project $project = null,
+        Project $project,
         Company $company = null,
         StudentEnrollment $studentEnrollment = null,
         $currentActivityRealizations = []
     ) {
-        $organization = $this->userExtensionService->getCurrentOrganization();
-
         $studentEnrollments = $project ? $project->getStudentEnrollments() : [];
 
         $workcenters = ($studentEnrollment && $company) ?
@@ -86,14 +84,8 @@ class AgreementType extends AbstractType
                 $company
             ) : [];
 
-        $projects =
-            $this->projectRepository->findByOrganization($organization);
-
         $teachers = $studentEnrollment ?
-            $this
-                ->teacherRepository->findByAcademicYear(
-                    $studentEnrollment->getGroup()->getGrade()->getTraining()->getAcademicYear()
-                ) : [];
+            $this->wltTeacherRepository->findByProject($project) : [];
 
         if ($studentEnrollment) {
             if ($company) {
@@ -108,21 +100,19 @@ class AgreementType extends AbstractType
             $companies = [];
         }
         $form
-            ->add('project', EntityType::class, [
-                'label' => 'form.project',
-                'mapped' => false,
-                'class' => Project::class,
-                'choice_translation_domain' => false,
-                'choices' => $projects,
-                'disabled' => true,
-                'required' => true
-            ])
             ->add('studentEnrollment', EntityType::class, [
                 'label' => 'form.student_enrollment',
                 'class' => StudentEnrollment::class,
                 'choice_translation_domain' => false,
                 'choices' => $studentEnrollments,
                 'placeholder' => 'form.student_enrollment.none',
+                'required' => true
+            ])
+            ->add('educationalTutor', EntityType::class, [
+                'label' => 'form.educational_tutor',
+                'class' => Teacher::class,
+                'choices' => $teachers,
+                'placeholder' => 'form.educational_tutor.none',
                 'required' => true
             ])
             ->add('company', EntityType::class, [
@@ -162,13 +152,6 @@ class AgreementType extends AbstractType
                 },
                 'placeholder' => 'form.work_tutor.none',
                 'attr' => ['class' => 'person'],
-                'required' => true
-            ])
-            ->add('educationalTutor', EntityType::class, [
-                'label' => 'form.educational_tutor',
-                'class' => Teacher::class,
-                'choices' => $teachers,
-                'placeholder' => 'form.educational_tutor.none',
                 'required' => true
             ])
             ->add('startDate', null, [
@@ -221,8 +204,7 @@ class AgreementType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData();
 
-            $project = $data->getProject() ?:
-                null;
+            $project = $data->getProject();
 
             $company = $data->getWorkcenter() ? $data->getWorkcenter()->getCompany() : null;
 
@@ -241,9 +223,7 @@ class AgreementType extends AbstractType
             $company = isset($data['company']) ? $this->companyRepository->find($data['company']) : null;
 
             /** @var Project $project */
-            $project = isset($data['project']) ?
-                $this->projectRepository->find($data['project']) :
-                null;
+            $project = $form->getData()->getProject();
 
             /** @var StudentEnrollment $studentEnrollment */
             $studentEnrollment = isset($data['studentEnrollment']) ?
