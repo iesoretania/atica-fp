@@ -1,6 +1,7 @@
 title.import_result: Resultado de la importación
 
 form.file: "Fichero .CSV de Séneca"
+form.custom_file: "Fichero .CSV"
 
 form.submit: Importar
 form.again: Importar otro fichero
@@ -93,10 +94,10 @@ instructions.non_working_day.import: |
 
 link.non_working_day.import: "https://www.juntadeandalucia.es/educacion/secretariavirtual/consulta/calendario-escolar/"
 
-title.learning_program.import: Importación de programas formativos
+title.learning_program.import: Importación de empresas y sus programas formativos
 form.learning_program.project: Proyecto
 form.learning_program.project.none: Seleccione proyecto de FP dual
-form.learning_program.do_import: Importar programas formativos
+form.learning_program.do_import: Importar empresas y sus programas formativos
 
 report.learning_program.activity.list: Concreciones de actividad procesadas
 report.learning_program.activity.new: Concreciones nuevas incorporadas

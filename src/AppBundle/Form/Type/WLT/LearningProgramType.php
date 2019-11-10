@@ -61,7 +61,7 @@ class LearningProgramType extends AbstractType
             ->add('activityRealizations', EntityType::class, [
                 'label' => 'form.activity_realizations',
                 'class' => ActivityRealization::class,
-                'expanded' => false,
+                'expanded' => true,
                 'group_by' => function (ActivityRealization $ar) {
                     return (string) $ar->getActivity();
                 },

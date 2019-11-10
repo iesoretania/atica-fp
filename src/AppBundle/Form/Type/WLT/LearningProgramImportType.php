@@ -46,7 +46,7 @@ class LearningProgramImportType extends AbstractType
                     'required' => true
                 ])
                 ->add('file', FileType::class, [
-                    'label' => 'form.file',
+                    'label' => 'form.custom_file',
                     'required' => true
                 ]);
     }

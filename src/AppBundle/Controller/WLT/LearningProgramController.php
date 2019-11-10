@@ -174,7 +174,7 @@ class LearningProgramController extends Controller
         return $this->render('wlt/project/company/list.html.twig', [
             'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
-            'title' => $title . ' - ' . $project,
+            'title' => $title,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'wlt_learning_program',
@@ -260,12 +260,21 @@ class LearningProgramController extends Controller
         $formData = new LearningProgramImport();
         $formData->setProject($project);
 
-        $form = $this->createForm(LearningProgramImportType::class, $formData);
+        $form = $this->createForm(LearningProgramImportType::class, $formData, [
+            'projects' => [$project]
+        ]);
 
         $form->handleRequest($request);
 
         $title = $translator->trans('title.learning_program.import', [], 'import');
-        $breadcrumb = [['fixed' => $title]];
+        $breadcrumb = [
+            [
+                'fixed' => $project->getName(),
+                'routeName' => 'work_linked_training_learning_program_list',
+                'routeParams' => ['project' => $project->getId()]
+            ],
+            ['fixed' => $title]
+        ];
 
         $stats = null;
 
@@ -289,7 +298,7 @@ class LearningProgramController extends Controller
             }
         }
         return $this->render('wlt/project/company/import_form.html.twig', [
-            'menu_path' => 'work_linked_training_learning_program_list',
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'form' => $form->createView(),

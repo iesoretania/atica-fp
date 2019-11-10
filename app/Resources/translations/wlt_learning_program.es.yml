@@ -3,34 +3,35 @@ form.company: Empresa
 form.company.none: Seleccione empresa
 form.training: Enseñanza
 form.training.none: Seleccione una enseñanza
-form.activity_realizations: Programa formativo
+form.activity_realizations: Actividades a realizar en la empresa
+form.no_activity_realizations: No se han definido actividades en el proyecto
 
 form.save: Guardar cambios
-form.import: Importar programas
-form.delete: Eliminar los programas seleccionados
+form.import: Importar empresas y sus programas
+form.delete: Eliminar las empresas seleccionadas
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
-table.new: Nuevo programa formativo
+table.new: Incorporar una empresa
 
 prompt.delete_confirm: |
   ¿Está seguro de que desea eliminar los siguientes programas? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
 
   Esta operación no se puede deshacer.
 
-title.edit: Datos del programa
-title.new: Nuevo programa formativo
+title.edit: Programa formativo de la empresa
+title.new: Incorporar empresa al proyecto
 title.delete: Eliminar programa
-title.copy: Importar programas
+title.import: Importar empresas y programas
 
-title.list: Programas formativos
+title.list: Empresas incorporadas al proyecto
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay programas que mostrar
 table.filter: Filtrar...
 
 header.company: Empresa
 header.training: Enseñanza
-header.items: Elementos
+header.items: Actividades a realizar
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
