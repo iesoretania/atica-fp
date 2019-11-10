@@ -61,7 +61,9 @@ class TrackingCalendarController extends Controller
         $today->setTime(0, 0);
         $workDayToday = $workDayRepository->findOneByAgreementAndDate($agreement, $today);
 
-        $workDayStats = $workDayRepository->hoursStatsByAgreement($agreement);
+        $workDayStats = count($agreement->getWorkDays()) > 0
+            ? $workDayRepository->hoursStatsByAgreement($agreement)
+            : [];
 
         $activityRealizations = $agreementActivityRealizationRepository->findByAgreementSorted($agreement);
 
