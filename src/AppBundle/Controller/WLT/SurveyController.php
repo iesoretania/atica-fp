@@ -24,8 +24,9 @@ use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Form\Type\AnsweredSurveyType;
-use AppBundle\Repository\Edu\GroupRepository;
-use AppBundle\Repository\Edu\TeacherRepository;
+use AppBundle\Repository\Edu\AcademicYearRepository;
+use AppBundle\Repository\WLT\ProjectRepository;
+use AppBundle\Repository\WLT\WLTGroupRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\AgreementVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
@@ -36,7 +37,6 @@ use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -210,14 +210,15 @@ class SurveyController extends Controller
 
     /**
      * @Route("/estudiante/{academicYear}/{page}", name="work_linked_training_survey_student_list",
-     *     requirements={"page" = "\d+"}, defaults={"academicYear" = null, "page" = 1}, methods={"GET"})
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
      */
     public function studentListAction(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository,
+        ProjectRepository $projectRepository,
+        AcademicYearRepository $academicYearRepository,
+        WLTGroupRepository $wltGroupRepository,
         \Symfony\Component\Security\Core\Security $security,
         $page = 1,
         AcademicYear $academicYear = null
@@ -226,8 +227,9 @@ class SurveyController extends Controller
             $request,
             $userExtensionService,
             $translator,
-            $teacherRepository,
-            $groupRepository,
+            $projectRepository,
+            $academicYearRepository,
+            $wltGroupRepository,
             $security,
             $page,
             'work_linked_training_survey_student_form',
@@ -238,14 +240,15 @@ class SurveyController extends Controller
 
     /**
      * @Route("/empresa/{academicYear}/{page}", name="work_linked_training_survey_company_list",
-     *     requirements={"page" = "\d+"}, defaults={"academicYear" = null, "page" = 1}, methods={"GET"})
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
      */
     public function companyListAction(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository,
+        ProjectRepository $projectRepository,
+        AcademicYearRepository $academicYearRepository,
+        WLTGroupRepository $wltGroupRepository,
         \Symfony\Component\Security\Core\Security $security,
         $page = 1,
         AcademicYear $academicYear = null
@@ -254,8 +257,9 @@ class SurveyController extends Controller
             $request,
             $userExtensionService,
             $translator,
-            $teacherRepository,
-            $groupRepository,
+            $projectRepository,
+            $academicYearRepository,
+            $wltGroupRepository,
             $security,
             $page,
             'work_linked_training_survey_company_form',
@@ -264,25 +268,13 @@ class SurveyController extends Controller
         );
     }
 
-    /**
-     * @param Request $request
-     * @param UserExtensionService $userExtensionService
-     * @param TranslatorInterface $translator
-     * @param TeacherRepository $teacherRepository
-     * @param GroupRepository $groupRepository
-     * @param \Symfony\Component\Security\Core\Security $security
-     * @param $page
-     * @param $routeName
-     * @param $template
-     * @param AcademicYear $academicYear
-     * @return Response
-     */
     private function agreementList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository,
+        ProjectRepository $projectRepository,
+        AcademicYearRepository $academicYearRepository,
+        WLTGroupRepository $wltGroupRepository,
         \Symfony\Component\Security\Core\Security $security,
         $page,
         $routeName,
@@ -303,6 +295,7 @@ class SurveyController extends Controller
 
         $queryBuilder
             ->select('a')
+            ->addSelect('pro')
             ->addSelect('w')
             ->addSelect('c')
             ->addSelect('se')
@@ -310,6 +303,7 @@ class SurveyController extends Controller
             ->addSelect('g')
             ->from(Agreement::class, 'a')
             ->leftJoin('a.workDays', 'wd')
+            ->join('a.project', 'pro')
             ->join('a.workcenter', 'w')
             ->join('w.company', 'c')
             ->join('a.studentEnrollment', 'se')
@@ -318,12 +312,10 @@ class SurveyController extends Controller
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->join('a.workTutor', 'wt')
-            ->join('a.project', 'pr')
-            ->leftJoin('pr.studentSurvey', 'ss')
-            ->leftJoin('pr.companySurvey', 'cs')
             ->groupBy('a')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
+            ->addOrderBy('a.startDate')
             ->addOrderBy('c.name');
 
         $q = $request->get('q');
@@ -339,48 +331,44 @@ class SurveyController extends Controller
                 ->orWhere('wt.firstName LIKE :tq')
                 ->orWhere('wt.lastName LIKE :tq')
                 ->orWhere('wt.uniqueIdentifier LIKE :tq')
-                ->setParameter('tq', '%' . $q . '%');
+                ->orWhere('pro.name LIKE :tq')
+                ->setParameter('tq', '%'.$q.'%');
         }
 
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
-        $isWorkTutor = $security->isGranted(WLTOrganizationVoter::WLT_WORK_TUTOR, $organization);
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $this->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
 
-        if (false === $isManager && false === $isWltManager) {
-            $person = $this->getUser()->getPerson();
+        $groups = [];
+        $projects = [];
 
+        $person = $this->getUser()->getPerson();
+        if (false === $isWltManager && false === $isManager) {
             // no es administrador ni coordinador de FP:
-            // puede ser jefe de departamento, tutor de grupo o profesor
-            $teacher =
-                $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+            // puede ser jefe de departamento o tutor de grupo  -> ver los acuerdos de los
+            // estudiantes de sus grupos
+            $groups = $wltGroupRepository->findByAcademicYearAndGrupTutorOrDepartmentHeadPerson($academicYear, $person);
+        } elseif ($isWltManager) {
+            $projects = $projectRepository->findByManager($person);
+        }
 
-            if ($teacher) {
-                $groups = $groupRepository->findByAcademicYearAndTeacher($academicYear, $teacher);
+        // ver siempre las propias
+        if ($groups) {
+            $queryBuilder
+                ->andWhere('se.group IN (:groups) OR se.person = :person')
+                ->setParameter('groups', $groups)
+                ->setParameter('person', $person);
+        }
+        if ($projects) {
+            $queryBuilder
+                ->andWhere('pro IN (:projects) OR se.person = :person')
+                ->setParameter('projects', $projects)
+                ->setParameter('person', $person);
+        }
 
-                if ($groups->count() > 0) {
-                    $queryBuilder
-                        ->andWhere('g IN (:groups)')
-                        ->setParameter('groups', $groups);
-                }
-                // si también es tutor laboral, mostrar los suyos aunque sean de otros grupos
-                if ($isWorkTutor) {
-                    $queryBuilder
-                        ->orWhere('a.workTutor = :person')
-                        ->setParameter('person', $person);
-                }
-            } else {
-                // si solo es tutor laboral, necesita ser el tutor para verlo
-                if ($isWorkTutor) {
-                    $queryBuilder
-                        ->andWhere('a.workTutor = :person')
-                        ->setParameter('person', $person);
-                } else {
-                    // es estudiante, sólo él
-                    $queryBuilder
-                        ->andWhere('p = :person')
-                        ->setParameter('person', $person);
-                }
-            }
+        if (false === $isWltManager && false === $isManager && !$projects && !$groups) {
+            $queryBuilder
+                ->andWhere('se.person = :person')
+                ->setParameter('person', $person);
         }
 
         $queryBuilder
@@ -396,17 +384,18 @@ class SurveyController extends Controller
         }
 
         return $this->render($template, [
-            'title' => $title . ' - ' . $academicYear,
+            'title' => $title,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'wlt_survey',
             'route_name' => $routeName,
-            'academic_year' => $academicYear
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
     /**
-     * @Route("/seguimiento/cumplimentar/{id}",
-     *     name="work_linked_training_survey_organization_form", methods={"GET", "POST"})
+     * @Route("/seguimiento/cumplimentar/{id}", name="work_linked_training_survey_organization_form",
+     *     requirements={"id" : "\d+"}, methods={"GET", "POST"})
      */
     public function organizationFillAction(
         Request $request,

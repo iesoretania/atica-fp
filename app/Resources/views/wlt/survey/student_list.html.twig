@@ -6,6 +6,7 @@
 
 {% block table_header %}
     <th>{{ 'header.student'|trans }}</th>
+    <th>{{ 'header.project'|trans }}</th>
     <th>{{ 'header.workcenter'|trans }}</th>
     <th>{{ 'header.work_tutor'|trans }}</th>
     <th>{{ 'header.dates'|trans }}</th>
@@ -20,14 +21,17 @@
                         <a href="{{ url }}">{{ item.studentEnrollment }}</a>
                     </td>
                     <td>
+                        {{ item.project }}
+                    </td>
+                    <td>
                         {{ item.workcenter }}
                     </td>
                     <td>
                         {{ item.workTutor }}
                     </td>
                     <td>
-                        {{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }} -
-                        {{ item.endDate ? item.endDate|date('format.date'|trans({}, 'general')) }}
+                        {{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}
+                        {% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
                     </td>
                     <td>
                         {{ (item.studentSurvey ? 'table.answered.yes' : 'table.answered.no')|trans }}
@@ -35,9 +39,13 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="6">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
 {% endblock %}
 
 {% block after_table %}
