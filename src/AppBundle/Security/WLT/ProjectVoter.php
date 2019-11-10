@@ -102,7 +102,20 @@ class ProjectVoter extends CachedVoter
         switch ($attribute) {
             // El coordinador puede gestionar el proyecto
             case self::MANAGE:
-                return $subject->getManager() === $user->getPerson();
+                if ($subject->getManager() === $user->getPerson()) {
+                    return true;
+                }
+
+                foreach ($subject->getGroups() as $group) {
+                    if ($group->getGrade()->getTraining()->getDepartment() &&
+                        $group->getGrade()->getTraining()->getDepartment()->getHead() &&
+                        $group
+                            ->getGrade()->getTraining()->getDepartment()->getHead()->getPerson() === $user->getPerson()
+                    ) {
+                        return true;
+                    }
+                }
+                return false;
         }
 
         // denegamos en cualquier otro caso

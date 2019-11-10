@@ -59,8 +59,14 @@ class ProjectController extends Controller
 
         $queryBuilder
             ->select('p')
+            ->distinct(true)
             ->from(Project::class, 'p')
             ->leftJoin('p.manager', 'm')
+            ->join('p.groups', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 'tr')
+            ->leftJoin('tr.department', 'd')
+            ->leftJoin('d.head', 'h')
             ->orderBy('p.name');
 
         $q = $request->get('q', null);
@@ -80,7 +86,7 @@ class ProjectController extends Controller
 
         if (!$isManager) {
             $queryBuilder
-                ->andWhere('p.manager = :manager')
+                ->andWhere('p.manager = :manager OR (d.head IS NOT NULL AND h.person = :manager)')
                 ->setParameter('manager', $this->getUser()->getPerson());
         }
 
