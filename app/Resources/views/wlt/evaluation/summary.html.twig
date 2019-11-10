@@ -7,6 +7,7 @@
 
 {% block table_header %}
     <th>{{ 'header.student_enrollment'|trans }}</th>
+    <th>{{ 'header.training'|trans }}</th>
     <th>{{ 'header.agreement_count'|trans }}</th>
     <th>{{ 'header.completed_activity_realization_count'|trans }}</th>
 {% endblock %}
@@ -18,6 +19,7 @@
             <td>
                 <a href="{{ url }}">{{ item[0] }}</a>
             </td>
+            <td>{{ item[0].group.grade.training }}</td>
             <td>
                 {{ item[1] }}
             </td>
@@ -32,6 +34,10 @@
             <td colspan="3">{{ 'table.no_items'|trans }}</td>
         </tr>
     {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
 {% endblock %}
 
 {% block after_table %}

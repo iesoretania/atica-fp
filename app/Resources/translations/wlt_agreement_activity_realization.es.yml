@@ -16,6 +16,7 @@ table.no_items: No hay convenios que mostrar
 table.filter: Filtrar...
 
 header.student_enrollment: Estudiante
+header.training: Enseñanza
 header.workcenter: Centro de trabajo
 header.work_tutor: Responsable laboral
 header.dates: Fecha de inicio y fin
@@ -25,3 +26,5 @@ header.completed_activity_realization_count: Concreciones evaluadas
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
+
+title.summary: Resumen de evaluación

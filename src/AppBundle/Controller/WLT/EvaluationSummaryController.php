@@ -21,6 +21,7 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\WLT\Agreement;
+use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\SubjectRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
@@ -44,7 +45,7 @@ class EvaluationSummaryController extends Controller
 {
     /**
      * @Route("/listar/{academicYear}/{page}", name="work_linked_training_evaluation_summary_list",
-     *     requirements={"page" = "\d+"}, defaults={"academicYear" = null, "page" = 1}, methods={"GET"})
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
      */
     public function listAction(
         Request $request,
@@ -52,6 +53,7 @@ class EvaluationSummaryController extends Controller
         TranslatorInterface $translator,
         TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
+        AcademicYearRepository $academicYearRepository,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
@@ -142,14 +144,15 @@ class EvaluationSummaryController extends Controller
             $pager->setCurrentPage(1);
         }
 
-        $title = $translator->trans('title.list', [], 'wlt_agreement_activity_realization');
+        $title = $translator->trans('title.summary', [], 'wlt_agreement_activity_realization');
 
         return $this->render('wlt/evaluation/summary.html.twig', [
-            'title' => $title . ' - ' . $academicYear,
+            'title' => $title,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'wlt_agreement_activity_realization',
-            'academic_year' => $academicYear
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
     /**
