@@ -8,8 +8,8 @@
     <th><label><input type="checkbox" id="select"> {{ 'header.student_enrollment'|trans }}</label></th>
     <th>{{ 'header.workcenter'|trans }}</th>
     <th>{{ 'header.work_tutor'|trans }}</th>
-    <th>{{ 'header.start_date'|trans }}</th>
-    <th>{{ 'header.end_date'|trans }}</th>
+    <th>{{ 'header.educational_tutor'|trans }}</th>
+    <th>{{ 'header.dates'|trans }}</th>
     <th></th>
 {% endblock %}
 
@@ -26,8 +26,11 @@
                     <td>
                         {{ item.workTutor.fullDisplayName }}
                     </td>
-                    <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}</td>
-                    <td>{{ item.endDate ? item.endDate|date('format.date'|trans({}, 'general')) }}</td>
+                    <td>
+                        {{ item.educationalTutor.person.fullDisplayName }}
+                    </td>
+                    <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}
+                        {% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
                     <td>
                         {{ m.link_button(path('work_linked_training_agreement_calendar_list', {'id': item.id}), 'calendar-alt', 'btn-info btn-sm btn-block', 'table.calendar'|trans) }}
                     </td>

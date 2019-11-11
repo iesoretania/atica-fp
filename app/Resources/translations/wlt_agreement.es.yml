@@ -54,8 +54,8 @@ filter.all_projects: Todos los proyectos
 header.student_enrollment: Estudiante
 header.workcenter: Centro de trabajo
 header.work_tutor: Responsable laboral
-header.start_date: Fecha de inicio
-header.end_date: Fecha de finalización
+header.educational_tutor: Responsable seguimiento
+header.dates: Fecha de inicio y fin
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

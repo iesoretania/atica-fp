@@ -184,7 +184,7 @@ class AgreementController extends Controller
     }
 
     /**
-     * @Route("/listar/{id}/{page}", name="work_linked_training_agreement_list",
+     * @Route("/{id}/listar/{page}", name="work_linked_training_agreement_list",
      *     requirements={"page" = "\d+"}, methods={"GET"})
      */
     public function listAction(
@@ -192,7 +192,7 @@ class AgreementController extends Controller
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
-        Project $project = null,
+        Project $project,
         $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -220,8 +220,12 @@ class AgreementController extends Controller
             ->addSelect('gr')
             ->addSelect('t')
             ->addSelect('wt')
+            ->addSelect('et')
+            ->addSelect('etp')
             ->from(Agreement::class, 'a')
             ->join('a.workcenter', 'w')
+            ->join('a.educationalTutor', 'et')
+            ->join('et.person', 'etp')
             ->join('w.company', 'c')
             ->join('a.studentEnrollment', 'se')
             ->join('se.person', 'p')
