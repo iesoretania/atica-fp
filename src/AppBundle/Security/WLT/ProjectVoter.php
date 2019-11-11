@@ -32,6 +32,7 @@ class ProjectVoter extends CachedVoter
     const MANAGE = 'WLT_PROJECT_MANAGE';
     const ACCESS_MANAGER_SURVEY = 'WLT_MANAGER_SURVEY_ACCESS';
     const FILL_MANAGER_SURVEY = 'WLT_MANAGER_SURVEY_MANAGE';
+    const REPORT_STUDENT_SURVEY = 'WLT_STUDENT_SURVEY_REPORT';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -61,7 +62,8 @@ class ProjectVoter extends CachedVoter
         if (!in_array($attribute, [
             self::MANAGE,
             self::ACCESS_MANAGER_SURVEY,
-            self::FILL_MANAGER_SURVEY
+            self::FILL_MANAGER_SURVEY,
+            self::REPORT_STUDENT_SURVEY
         ], true)) {
             return false;
         }
@@ -107,6 +109,7 @@ class ProjectVoter extends CachedVoter
             // El coordinador puede gestionar el proyecto
             case self::MANAGE:
             case self::ACCESS_MANAGER_SURVEY:
+            case self::REPORT_STUDENT_SURVEY:
                 if ($subject->getManager() === $user->getPerson()) {
                     return true;
                 }

@@ -95,10 +95,17 @@ class Project
      */
     private $managerSurvey;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Agreement", mappedBy="project")
+     * @var Agreement[]
+     */
+    private $agreements;
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
         $this->studentEnrollments = new ArrayCollection();
+        $this->agreements = new ArrayCollection();
     }
 
     public function __toString()
@@ -255,6 +262,24 @@ class Project
     public function setManagerSurvey(Survey $managerSurvey = null)
     {
         $this->managerSurvey = $managerSurvey;
+        return $this;
+    }
+
+    /**
+     * @return Agreement[]
+     */
+    public function getAgreements()
+    {
+        return $this->agreements;
+    }
+
+    /**
+     * @param Agreement[] $agreements
+     * @return Project
+     */
+    public function setAgreements($agreements)
+    {
+        $this->agreements = $agreements;
         return $this;
     }
 }

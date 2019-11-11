@@ -1,0 +1,45 @@
+{% trans_default_domain 'wlt_project' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th>{{ 'header.manager'|trans }}</th>
+    <th>{{ 'header.groups'|trans }}</th>
+    <th>{{ 'header.student_count'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path(route_name, {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">{{ item.name }}</a>
+                    </td>
+                    <td>
+                        {{ item.manager }}
+                    </td>
+                    <td>
+                        {{ item.groups|join(', ') }}
+                    </td>
+                    <td>
+                        {{ item.studentEnrollments.count() }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}

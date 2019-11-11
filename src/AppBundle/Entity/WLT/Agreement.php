@@ -46,7 +46,7 @@ class Agreement
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\WLT\Project")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\WLT\Project", inversedBy="agreements")
      * @ORM\JoinColumn(nullable=false)
      * @var Project
      */

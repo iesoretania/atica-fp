@@ -1,7 +1,7 @@
 {% trans_default_domain 'wlt_report' %}
 <html>
 <head>
-    <title>{{ 'title.company_survey'|trans }} - {{ academic_year.organization }} - {{ academic_year }}</title>
+    <title>{{ 'title.company_survey'|trans }} - {{ project.organization }} - {{ project }}</title>
     <style>
         body {
             font-family: sans-serif;
@@ -70,22 +70,22 @@
     </style>
 </head>
 <body>
-{% if academic_year.organization.header %}
+{% if project.organization.header %}
     <htmlpageheader name="header">
-        {{ academic_year.organization.header|raw }}
+        {{ project.organization.header|raw }}
     </htmlpageheader>
     <sethtmlpageheader name="header" value="on" show-this-page="1" />
 {% endif %}
 
-{% if academic_year.organization.footer %}
+{% if project.organization.footer %}
     <htmlpagefooter name="footer">
-       {{ academic_year.organization.footer|raw }}
+        {{ project.organization.footer|raw }}
     </htmlpagefooter>
 
     <sethtmlpagefooter name="footer" value="on" show-this-page="1" />
 {% endif %}
 
-    <h1>{{ app_name }} - {{ academic_year.organization }} - {{ academic_year }}</h1>
+    <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
     <h2>{{ 'title.company_survey'|trans }}</h2>
     <h3>{{ 'title.company_survey.summary'|trans }}</h3>
     <table class="survey">
@@ -122,11 +122,10 @@
         {% endif %}
     </table>
 
-    <pagebreak></pagebreak>
+    {% if stats[0] %}
+        <pagebreak></pagebreak>
 
-    {% for stat in stats if stat[0].wltCompanySurvey %}
-    <h1>{{ app_name }} - {{ academic_year.organization }}</h1>
-        <h1>{{ stat[0].name }}</h1>
+        <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
         <h2>{{ 'title.company_survey'|trans }}</h2>
 
         <table class="survey">
@@ -140,7 +139,7 @@
             </tr>
             </thead>
             <tbody>
-            {% for answer in stat[1] if answer[0].type starts with "range" %}
+            {% for answer in stats[0] if answer[0].type starts with "range" %}
                 <tr>
                     <td class="right">{{ answer[0].description|markdown }}</td>
                     <td class="center">{{ answer[1]|default('report.no_data'|trans) }}</td>
@@ -151,7 +150,7 @@
             {% endfor %}
             </tbody>
         </table>
-        {% if stat[2] %}
+        {% if stats[1] %}
         <table class="survey">
             <thead>
             <tr>
@@ -160,7 +159,7 @@
             </tr>
             </thead>
             <tbody>
-            {% for answer in stat[2] %}
+            {% for answer in stats[1] %}
                 <tr>
                     <td class="right">{{ answer.surveyQuestion.description|markdown }}</td>
                     <td>{{ answer.textValue }}</td>
@@ -169,19 +168,14 @@
             </tbody>
         </table>
         {% endif %}
-
-        <pagebreak></pagebreak>
-    {% endfor %}
+    {% endif %}
 
     {% for agreement in agreements %}
         {% if agreement.companySurvey %}
-            <h1>{{ app_name }} - {{ academic_year.organization }}</h1>
+            <pagebreak></pagebreak>
+            <h1>{{ app_name }} - {{ project.organization }}</h1>
             <h2>{{ 'title.company_survey'|trans }}</h2>
             <table class="data">
-                <tr>
-                    <td class="info">{{ 'report.academic_year'|trans }}</td>
-                    <td>{{ agreement.workcenter.academicYear }}</td>
-                </tr>
                 <tr>
                     <td class="info">{{ 'report.student'|trans }}</td>
                     <td>{{ agreement.studentEnrollment }}</td>
@@ -224,7 +218,6 @@
             {% else %}
                 <h2>{{ 'report.no_survey'|trans }}</h2>
             {% endif %}
-            {% if not loop.last %}<pagebreak></pagebreak>{% endif %}
         {% endif %}
     {% endfor %}
 </body>

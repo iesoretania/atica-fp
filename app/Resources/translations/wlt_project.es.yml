@@ -39,6 +39,7 @@ table.filter: Filtrar...
 
 header.name: Proyecto
 header.manager: Coordinador/a
+header.groups: Grupos
 header.student_count: Estudiantes adheridos
 
 message.saved: Datos actualizados con éxito.

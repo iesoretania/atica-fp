@@ -20,21 +20,29 @@ namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
+use AppBundle\Entity\WLT\Project;
 use AppBundle\Repository\AnsweredSurveyQuestionRepository;
 use AppBundle\Repository\AnsweredSurveyRepository;
+use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\StudentEnrollmentRepository;
 use AppBundle\Repository\Edu\SubjectRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
-use AppBundle\Repository\Edu\TrainingRepository;
 use AppBundle\Repository\SurveyQuestionRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\MeetingRepository;
+use AppBundle\Repository\WLT\WLTAnsweredSurveyRepository;
 use AppBundle\Repository\WLT\WLTTeacherRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
+use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\ProjectVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
+use Doctrine\ORM\QueryBuilder;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
@@ -63,51 +71,160 @@ class ReportController extends Controller
     }
 
     /**
-     * @Route("/encuesta/estudiantes/{academicYear}", name="work_linked_training_report_student_survey_report",
-     *     defaults={"academicYear" = null}, methods={"GET"})
+     * @Route("/encuesta/estudiantes/listar/{academicYear}/{page}", name="work_linked_training_report_student_survey_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
+     */
+    public function listAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
+        AcademicYear $academicYear = null,
+        $page = 1
+    ) {
+        return $this->genericListAction(
+            $request,
+            $userExtensionService,
+            $academicYearRepository,
+            'title.student_survey',
+            'work_linked_training_report_student_survey_report',
+            $academicYear,
+            $page
+        );
+    }
+
+    /**
+     * @Route("/encuesta/empresas/listar/{academicYear}/{page}", name="work_linked_training_report_company_survey_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
+     */
+    public function companyListAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
+        AcademicYear $academicYear = null,
+        $page = 1
+    ) {
+        return $this->genericListAction(
+            $request,
+            $userExtensionService,
+            $academicYearRepository,
+            'title.company_survey',
+            'work_linked_training_report_company_survey_report',
+            $academicYear,
+            $page
+        );
+    }
+
+    private function genericListAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
+        $title,
+        $routeName,
+        AcademicYear $academicYear = null,
+        $page = 1
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        if (!$academicYear) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
+
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+
+        $queryBuilder
+            ->select('p')
+            ->distinct(true)
+            ->from(Project::class, 'p')
+            ->leftJoin('p.manager', 'm')
+            ->join('p.groups', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 'tr')
+            ->leftJoin('tr.department', 'd')
+            ->leftJoin('d.head', 'h')
+            ->orderBy('p.name');
+
+        $q = $request->get('q', null);
+        if ($q) {
+            $queryBuilder
+                ->where('p.name LIKE :tq')
+                ->orWhere('p.name LIKE :tq')
+                ->orWhere('m.first_name LIKE :tq')
+                ->orWhere('m.last_name LIKE :tq')
+                ->orWhere('m.unique_identifier LIKE :tq')
+                ->setParameter('tq', '%'.$q.'%');
+        }
+
+        $queryBuilder
+            ->andWhere('p.organization = :organization')
+            ->setParameter('organization', $organization);
+
+        if (!$isManager) {
+            $queryBuilder
+                ->andWhere('p.manager = :manager OR (d.head IS NOT NULL AND h.person = :manager)')
+                ->setParameter('manager', $this->getUser()->getPerson());
+        }
+
+        $queryBuilder
+            ->andWhere('tr.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear);
+
+        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $pager = new Pagerfanta($adapter);
+        try {
+            $pager->setCurrentPage($page);
+        } catch (\PagerFanta\Exception\OutOfRangeCurrentPageException $e) {
+            $pager->setCurrentPage(1);
+        }
+
+        $title = $this->get('translator')->trans($title, [], 'wlt_report');
+
+        return $this->render('wlt/report/list.html.twig', [
+            'title' => $title,
+            'pager' => $pager,
+            'q' => $q,
+            'domain' => 'wlt_project',
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization),
+            'route_name' => $routeName
+        ]);
+    }
+
+    /**
+     * @Route("/encuesta/estudiantes/{id}", name="work_linked_training_report_student_survey_report",
+     *     requirements={"id" = "\d+"}, methods={"GET"})
      */
     public function studentsReportAction(
         TranslatorInterface $translator,
         Environment $engine,
-        UserExtensionService $userExtensionService,
-        AgreementRepository $agreementRepository,
-        AnsweredSurveyRepository $answeredSurveyRepository,
+        WLTAnsweredSurveyRepository $wltAnsweredSurveyRepository,
         SurveyQuestionRepository $surveyQuestionRepository,
         AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
-        TrainingRepository $trainingRepository,
-        AcademicYear $academicYear = null
+        Project $project
     ) {
-        $this->denyAccessUnlessGranted(
-            WLTOrganizationVoter::WLT_MANAGER,
-            $userExtensionService->getCurrentOrganization()
-        );
-
-        if (!$academicYear) {
-            $academicYear = $userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
-        }
+        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_STUDENT_SURVEY, $project);
 
         $mpdfService = new MpdfService();
 
-        $agreements = $agreementRepository->findByAcademicYear($academicYear);
-
-        $trainings = $trainingRepository->findByAcademicYearAndWLT($academicYear);
+        $agreements = $project->getAgreements();
 
         $stats = [];
 
-        foreach ($trainings as $training) {
-            $survey = $training->getWltStudentSurvey();
+        $survey = $project->getStudentSurvey();
 
-            if ($survey) {
-                $list = $answeredSurveyRepository->findByWltStudentSurveyAndTraining($survey, $training);
+        if ($survey) {
+            $list = $wltAnsweredSurveyRepository->findByStudentSurveyAndProject($project);
 
-                $surveyStats = $surveyQuestionRepository
-                    ->answerStatsBySurveyAndAnsweredSurveyList($survey, $list);
+            $surveyStats = $surveyQuestionRepository
+                ->answerStatsBySurveyAndAnsweredSurveyList($list);
 
-                $answers = $answeredSurveyQuestionRepository
-                    ->notNumericAnswersBySurveyAndAnsweredSurveyList($survey, $list);
+            $answers = $answeredSurveyQuestionRepository
+                ->notNumericAnswersBySurveyAndAnsweredSurveyList($list);
 
-                $stats[] = [$training, $surveyStats, $answers];
-            }
+            $stats = [$surveyStats, $answers];
         }
 
         if (empty($stats)) {
@@ -116,13 +233,13 @@ class ReportController extends Controller
 
         $html = $engine->render('wlt/report/student_survey_report.html.twig', [
             'agreements' => $agreements,
-            'academic_year' => $academicYear,
+            'project' => $project,
             'stats' => $stats
         ]);
 
         $fileName = $translator->trans('title.student_survey', [], 'wlt_report')
-            . ' - ' . $academicYear->getOrganization() . ' - '
-            . $academicYear . '.pdf';
+            . ' - ' . $project->getOrganization() . ' - '
+            . $project->getName() . '.pdf';
 
         $response = $mpdfService->generatePdfResponse($html);
         $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
@@ -131,49 +248,37 @@ class ReportController extends Controller
     }
 
     /**
-     * @Route("/encuesta/empresas/{academicYear}", name="work_linked_training_report_company_survey_report",
-     *     defaults={"academicYear" = null}, methods={"GET"})
+     * @Route("/encuesta/empresas/{id}", name="work_linked_training_report_company_survey_report",
+     *     requirements={"id" = "\d+"}, methods={"GET"})
      */
     public function companyReportAction(
         TranslatorInterface $translator,
         Environment $engine,
-        UserExtensionService $userExtensionService,
-        AgreementRepository $agreementRepository,
-        AnsweredSurveyRepository $answeredSurveyRepository,
+        WLTAnsweredSurveyRepository $wltAnsweredSurveyRepository,
         SurveyQuestionRepository $surveyQuestionRepository,
         AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
-        TrainingRepository $trainingRepository,
-        AcademicYear $academicYear = null
+        Project $project
     ) {
-        $this->denyAccessUnlessGranted(
-            WLTOrganizationVoter::WLT_MANAGER,
-            $userExtensionService->getCurrentOrganization()
-        );
-
-        if (!$academicYear) {
-            $academicYear = $userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
-        }
+        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_STUDENT_SURVEY, $project);
 
         $mpdfService = new MpdfService();
 
-        $agreements = $agreementRepository->findByAcademicYear($academicYear);
-
-        $trainings = $trainingRepository->findByAcademicYearAndWLT($academicYear);
+        $agreements = $project->getAgreements();
 
         $stats = [];
-        foreach ($trainings as $training) {
-            $survey = $training->getWltCompanySurvey();
-            if ($survey) {
-                $list = $answeredSurveyRepository->findByWltCompanySurveyAndTraining($survey, $training);
 
-                $surveyStats = $surveyQuestionRepository
-                    ->answerStatsBySurveyAndAnsweredSurveyList($survey, $list);
+        $survey = $project->getStudentSurvey();
 
-                $answers = $answeredSurveyQuestionRepository
-                    ->notNumericAnswersBySurveyAndAnsweredSurveyList($survey, $list);
+        if ($survey) {
+            $list = $wltAnsweredSurveyRepository->findByCompanySurveyAndProject($project);
 
-                $stats[] = [$training, $surveyStats, $answers];
-            }
+            $surveyStats = $surveyQuestionRepository
+                ->answerStatsBySurveyAndAnsweredSurveyList($list);
+
+            $answers = $answeredSurveyQuestionRepository
+                ->notNumericAnswersBySurveyAndAnsweredSurveyList($list);
+
+            $stats = [$surveyStats, $answers];
         }
 
         if (empty($stats)) {
@@ -182,13 +287,13 @@ class ReportController extends Controller
 
         $html = $engine->render('wlt/report/company_survey_report.html.twig', [
             'agreements' => $agreements,
-            'academic_year' => $academicYear,
+            'project' => $project,
             'stats' => $stats
         ]);
 
         $fileName = $translator->trans('title.company_survey', [], 'wlt_report')
-            . ' - ' . $academicYear->getOrganization() . ' - '
-            . $academicYear . '.pdf';
+            . ' - ' . $project->getOrganization() . ' - '
+            . $project->getName() . '.pdf';
 
         $response = $mpdfService->generatePdfResponse($html);
         $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
