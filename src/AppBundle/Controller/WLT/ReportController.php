@@ -158,6 +158,28 @@ class ReportController extends Controller
         );
     }
 
+    /**
+     * @Route("/evaluacion/listar/{academicYear}/{page}", name="work_linked_training_report_grading_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
+     */
+    public function gradingListAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
+        AcademicYear $academicYear = null,
+        $page = 1
+    ) {
+        return $this->genericListAction(
+            $request,
+            $userExtensionService,
+            $academicYearRepository,
+            'title.grading',
+            'work_linked_training_report_grading_report',
+            $academicYear,
+            $page
+        );
+    }
+
     private function genericListAction(
         Request $request,
         UserExtensionService $userExtensionService,
@@ -463,8 +485,8 @@ class ReportController extends Controller
     }
 
     /**
-     * @Route("/evaluacion/{academicYear}", name="work_linked_training_report_grading_report",
-     *     defaults={"academicYear" = null}, methods={"GET"})
+     * @Route("/evaluacion/{id}", name="work_linked_training_report_grading_report",
+     *     requirements={"id" = "\d+"}, methods={"GET"})
      */
     public function gradingReportAction(
         TranslatorInterface $translator,
@@ -473,24 +495,11 @@ class ReportController extends Controller
         StudentEnrollmentRepository $studentEnrollmentRepository,
         SubjectRepository $subjectRepository,
         ActivityRealizationRepository $activityRealizationRepository,
-        AcademicYear $academicYear = null
+        Project $project
     ) {
-        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_GRADING, $project);
 
-        $this->denyAccessUnlessGranted(
-            WLTOrganizationVoter::WLT_MANAGER,
-            $organization
-        );
-
-        if (!$academicYear) {
-            $academicYear = $organization->getCurrentAcademicYear();
-        }
-
-        if ($academicYear->getOrganization() !== $organization) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $studentEnrollments = $studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
+        $studentEnrollments = $project->getStudentEnrollments();
 
         $studentData = [];
 
@@ -507,7 +516,7 @@ class ReportController extends Controller
                 $item = [];
                 $item[0] = $subject;
                 $item[1] = $activityRealizationRepository->
-                reportByStudentEnrollmentAndSubject($studentEnrollment, $subject);
+                    reportByStudentEnrollmentAndSubject($studentEnrollment, $subject);
 
                 $report[] = $item;
             }
@@ -516,13 +525,13 @@ class ReportController extends Controller
         }
 
         $html = $engine->render('wlt/report/grading_report.html.twig', [
-            'academic_year' => $academicYear,
+            'project' => $project,
             'student_data' => $studentData
         ]);
 
         $fileName = $translator->trans('title.grading', [], 'wlt_report')
-            . ' - ' . $academicYear->getOrganization() . ' - '
-            . $academicYear . '.pdf';
+            . ' - ' . $project->getOrganization() . ' - '
+            . $project->getName() . '.pdf';
 
         $mpdfService = new MpdfService();
         $response = $mpdfService->generatePdfResponse($html);
@@ -538,8 +547,6 @@ class ReportController extends Controller
     public function attendanceReportAction(
         TranslatorInterface $translator,
         Environment $engine,
-        UserExtensionService $userExtensionService,
-        StudentEnrollmentRepository $studentEnrollmentRepository,
         WorkDayRepository $workDayRepository,
         AgreementRepository $agreementRepository,
         Project $project
