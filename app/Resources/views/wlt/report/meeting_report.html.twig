@@ -1,7 +1,7 @@
 {% trans_default_domain 'wlt_report' %}
 <html>
 <head>
-    <title>{{ 'title.meeting'|trans }} - {{ academic_year.organization }} - {{ academic_year }}</title>
+    <title>{{ 'title.meeting'|trans }} - {{ project.organization }} - {{ project }}</title>
     <style>
         body {
             font-family: sans-serif;
@@ -70,16 +70,16 @@
     </style>
 </head>
 <body>
-{% if academic_year.organization.header %}
+{% if project.organization.header %}
     <htmlpageheader name="header">
-        {{ academic_year.organization.header|raw }}
+        {{ project.organization.header|raw }}
     </htmlpageheader>
     <sethtmlpageheader name="header" value="on" show-this-page="1" />
 {% endif %}
 
-{% if academic_year.organization.footer %}
+{% if project.organization.footer %}
     <htmlpagefooter name="footer">
-       {{ academic_year.organization.footer|raw }}
+       {{ project.organization.footer|raw }}
     </htmlpagefooter>
 
     <sethtmlpagefooter name="footer" value="on" show-this-page="1" />
@@ -91,7 +91,7 @@
             {% if not first %}<pagebreak></pagebreak>{% endif %}
             {% set first = false %}
 
-            <h1>{{ app_name }} - {{ academic_year.organization }}</h1>
+            <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
             <h2>{{ 'title.meeting'|trans }}</h2>
             <table class="data">
                 <tr>
@@ -143,13 +143,9 @@
         {% if stat[1]|length > 0 %}
             {% if not first %}<pagebreak></pagebreak>{% endif %}
             {% set first = false %}
-            <h1>{{ app_name }} - {{ academic_year.organization }}</h1>
+            <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
             <h2>{{ 'title.meeting_teacher'|trans }}</h2>
             <table class="data">
-                <tr>
-                    <td class="info">{{ 'report.academic_year'|trans }}</td>
-                    <td>{{ academic_year }}</td>
-                </tr>
                 <tr>
                     <td class="info">{{ 'report.educational_tutor'|trans }}</td>
                     <td>{{ stat[0].person }}</td>

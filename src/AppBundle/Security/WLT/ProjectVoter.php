@@ -33,6 +33,8 @@ class ProjectVoter extends CachedVoter
     const ACCESS_MANAGER_SURVEY = 'WLT_MANAGER_SURVEY_ACCESS';
     const FILL_MANAGER_SURVEY = 'WLT_MANAGER_SURVEY_MANAGE';
     const REPORT_STUDENT_SURVEY = 'WLT_STUDENT_SURVEY_REPORT';
+    const REPORT_COMPANY_SURVEY = 'WLT_COMPANY_SURVEY_REPORT';
+    const REPORT_MEETING = 'WLT_MEETING_REPORT';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -63,7 +65,9 @@ class ProjectVoter extends CachedVoter
             self::MANAGE,
             self::ACCESS_MANAGER_SURVEY,
             self::FILL_MANAGER_SURVEY,
-            self::REPORT_STUDENT_SURVEY
+            self::REPORT_STUDENT_SURVEY,
+            self::REPORT_COMPANY_SURVEY,
+            self::REPORT_MEETING
         ], true)) {
             return false;
         }
@@ -110,6 +114,8 @@ class ProjectVoter extends CachedVoter
             case self::MANAGE:
             case self::ACCESS_MANAGER_SURVEY:
             case self::REPORT_STUDENT_SURVEY:
+            case self::REPORT_COMPANY_SURVEY:
+            case self::REPORT_MEETING:
                 if ($subject->getManager() === $user->getPerson()) {
                     return true;
                 }

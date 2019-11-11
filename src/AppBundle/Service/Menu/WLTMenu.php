@@ -237,7 +237,7 @@ class WLTMenu implements MenuBuilderInterface
                 $menu3 = new MenuItem();
                 $menu3
                     ->setName('work_linked_training_report_meeting')
-                    ->setRouteName('work_linked_training_report_meeting_report')
+                    ->setRouteName('work_linked_training_report_meeting_list')
                     ->setCaption('menu.work_linked_training.report.meeting')
                     ->setDescription('menu.work_linked_training.report.meeting.detail')
                     ->setIcon('user-friends')

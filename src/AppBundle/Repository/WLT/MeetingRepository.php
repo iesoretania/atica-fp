@@ -22,6 +22,7 @@ use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WLT\Meeting;
+use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
@@ -142,7 +143,7 @@ class MeetingRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findByStudentEnrollment(StudentEnrollment $studentEnrollment)
+    public function findByStudentEnrollmentAndProject(StudentEnrollment $studentEnrollment, Project $project)
     {
         return $this->createQueryBuilder('m')
             ->addSelect('se')
@@ -150,7 +151,9 @@ class MeetingRepository extends ServiceEntityRepository
             ->join('m.studentEnrollments', 'se')
             ->join('se.person', 'p')
             ->andWhere('se = :student_enrollment')
+            ->andWhere('p = :project')
             ->setParameter('student_enrollment', $studentEnrollment)
+            ->setParameter('project', $project)
             ->orderBy('m.dateTime')
             ->getQuery()
             ->getResult();

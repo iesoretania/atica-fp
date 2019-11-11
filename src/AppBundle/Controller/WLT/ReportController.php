@@ -93,6 +93,28 @@ class ReportController extends Controller
     }
 
     /**
+     * @Route("/reuniones/listar/{academicYear}/{page}", name="work_linked_training_report_meeting_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
+     */
+    public function meetingListAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
+        AcademicYear $academicYear = null,
+        $page = 1
+    ) {
+        return $this->genericListAction(
+            $request,
+            $userExtensionService,
+            $academicYearRepository,
+            'title.meeting',
+            'work_linked_training_report_meeting_report',
+            $academicYear,
+            $page
+        );
+    }
+
+    /**
      * @Route("/encuesta/empresas/listar/{academicYear}/{page}", name="work_linked_training_report_company_survey_list",
      *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
      */
@@ -108,7 +130,7 @@ class ReportController extends Controller
             $userExtensionService,
             $academicYearRepository,
             'title.company_survey',
-            'work_linked_training_report_company_survey_report',
+            'work_linked_training_report_meeting_report',
             $academicYear,
             $page
         );
@@ -259,7 +281,7 @@ class ReportController extends Controller
         AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
         Project $project
     ) {
-        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_STUDENT_SURVEY, $project);
+        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_COMPANY_SURVEY, $project);
 
         $mpdfService = new MpdfService();
 
@@ -367,8 +389,8 @@ class ReportController extends Controller
     }
 
     /**
-     * @Route("/reuniones/{academicYear}", name="work_linked_training_report_meeting_report",
-     *     defaults={"academicYear" = null}, methods={"GET"})
+     * @Route("/reuniones/{id}", name="work_linked_training_report_meeting_report",
+     *     requirements={"id" = "\d+"}, methods={"GET"})
      */
     public function meetingReportAction(
         TranslatorInterface $translator,
@@ -378,24 +400,12 @@ class ReportController extends Controller
         AgreementRepository $agreementRepository,
         StudentEnrollmentRepository $studentEnrollmentRepository,
         MeetingRepository $meetingRepository,
-        AcademicYear $academicYear = null
+        Project $project
     ) {
-        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_MEETING, $project);
 
-        $this->denyAccessUnlessGranted(
-            WLTOrganizationVoter::WLT_MANAGER,
-            $organization
-        );
 
-        if (!$academicYear) {
-            $academicYear = $organization->getCurrentAcademicYear();
-        }
-
-        if ($academicYear->getOrganization() !== $organization) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $teachers = $wltTeacherRepository->findByAcademicYear($academicYear);
+        $teachers = $wltTeacherRepository->findByProject($project);
 
         $teacherStats = [];
 
@@ -403,23 +413,26 @@ class ReportController extends Controller
             $teacherStats[] = [$teacher, $agreementRepository->meetingStatsByTeacher($teacher)];
         }
 
-        $studentEnrollments = $studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
+        $studentEnrollments = $project->getStudentEnrollments();
 
         $studentData = [];
 
         foreach ($studentEnrollments as $studentEnrollment) {
-            $studentData[] = [$studentEnrollment, $meetingRepository->findByStudentEnrollment($studentEnrollment)];
+            $studentData[] = [
+                $studentEnrollment,
+                $meetingRepository->findByStudentEnrollmentAndProject($studentEnrollment, $project)
+            ];
         }
 
         $html = $engine->render('wlt/report/meeting_report.html.twig', [
-            'academic_year' => $academicYear,
+            'project' => $project,
             'teacher_stats' => $teacherStats,
             'student_data' => $studentData
         ]);
 
         $fileName = $translator->trans('title.meeting', [], 'wlt_report')
-            . ' - ' . $academicYear->getOrganization() . ' - '
-            . $academicYear . '.pdf';
+            . ' - ' . $project->getOrganization() . ' - '
+            . $project->getName() . '.pdf';
 
         $mpdfService = new MpdfService();
         $response = $mpdfService->generatePdfResponse($html);
