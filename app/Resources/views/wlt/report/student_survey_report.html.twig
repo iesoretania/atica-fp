@@ -110,7 +110,7 @@
             {% set total = total + 1 %}
             {% if agreement.studentSurvey %}{% set answered = answered + 1 %}{% endif %}
         {% else %}
-            <tr colspan="4">{{ 'report.no_surveys'|trans }}</tr>
+            <tr><td colspan="4">{{ 'report.no_surveys'|trans }}</td></tr>
         {% endfor %}
         </tbody>
         {% if total %}
@@ -141,7 +141,7 @@
             <tbody>
             {% for answer in stats[0] if answer[0].type starts with "range" %}
                 <tr>
-                    <td class="right">{{ answer[0].description|markdown }}</td>
+                    <td class="right">{{ answer[0].description|raw }}</td>
                     <td class="center">{{ answer[1]|default('report.no_data'|trans) }}</td>
                     <td class="center">{{ answer[3] ? answer[3]|number_format(2, 'format.decimal_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
                     <td class="center">{{ answer[4] ? answer[4]|number_format(2, 'format.decimal_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
@@ -161,7 +161,7 @@
                 <tbody>
                 {% for answer in stats[1] %}
                     <tr>
-                        <td class="right">{{ answer.surveyQuestion.description|markdown }}</td>
+                        <td class="right">{{ answer.surveyQuestion.description|raw }}</td>
                         <td>{{ answer.textValue }}</td>
                     </tr>
                 {% endfor %}
@@ -210,7 +210,7 @@
                 <tbody>
                 {% for answer in agreement.studentSurvey.answers if answer.surveyQuestion.type != "fixed"  %}
                     <tr>
-                        <td class="right">{{ answer.surveyQuestion.description|markdown }}</td>
+                        <td class="right">{{ answer.surveyQuestion.description|raw }}</td>
                         <td>{{ answer.numericValue|default(answer.textValue)|default('report.no_answer'|trans) }}</td>
                     </tr>
                 {% endfor %}

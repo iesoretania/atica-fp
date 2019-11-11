@@ -19,9 +19,9 @@
 namespace AppBundle\Form\Type;
 
 use AppBundle\Entity\SurveyQuestion;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -34,10 +34,10 @@ class SurveyQuestionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('description', TextareaType::class, [
+            ->add('description', CKEditorType::class, [
                 'label' => 'form.description',
                 'required' => true,
-                'attr' => ['rows' => 4]
+                'attr' => ['rows' => 8]
             ])
             ->add('type', ChoiceType::class, [
                 'label' => 'form.type',

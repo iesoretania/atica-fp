@@ -20,7 +20,7 @@
                 {% set url = path('organization_survey_question_edit', {'id': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.description|nl2br }}</a></label>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.description|striptags|raw }}</a></label>
                     </td>
                     <td>
                         {{ ('type.'~item.type)|trans }}
