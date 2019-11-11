@@ -35,6 +35,7 @@ class ProjectVoter extends CachedVoter
     const REPORT_STUDENT_SURVEY = 'WLT_STUDENT_SURVEY_REPORT';
     const REPORT_COMPANY_SURVEY = 'WLT_COMPANY_SURVEY_REPORT';
     const REPORT_MEETING = 'WLT_MEETING_REPORT';
+    const REPORT_ATTENDANCE = 'WLT_ATTENDANCE_REPORT';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -67,7 +68,8 @@ class ProjectVoter extends CachedVoter
             self::FILL_MANAGER_SURVEY,
             self::REPORT_STUDENT_SURVEY,
             self::REPORT_COMPANY_SURVEY,
-            self::REPORT_MEETING
+            self::REPORT_MEETING,
+            self::REPORT_ATTENDANCE
         ], true)) {
             return false;
         }
@@ -116,6 +118,7 @@ class ProjectVoter extends CachedVoter
             case self::REPORT_STUDENT_SURVEY:
             case self::REPORT_COMPANY_SURVEY:
             case self::REPORT_MEETING:
+            case self::REPORT_ATTENDANCE:
                 if ($subject->getManager() === $user->getPerson()) {
                     return true;
                 }

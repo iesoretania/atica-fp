@@ -74,7 +74,7 @@ class ReportController extends Controller
      * @Route("/encuesta/estudiantes/listar/{academicYear}/{page}", name="work_linked_training_report_student_survey_list",
      *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
      */
-    public function listAction(
+    public function studentListAction(
         Request $request,
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
@@ -87,6 +87,28 @@ class ReportController extends Controller
             $academicYearRepository,
             'title.student_survey',
             'work_linked_training_report_student_survey_report',
+            $academicYear,
+            $page
+        );
+    }
+
+    /**
+     * @Route("/encuesta/empresas/listar/{academicYear}/{page}", name="work_linked_training_report_company_survey_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
+     */
+    public function companyListAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
+        AcademicYear $academicYear = null,
+        $page = 1
+    ) {
+        return $this->genericListAction(
+            $request,
+            $userExtensionService,
+            $academicYearRepository,
+            'title.company_survey',
+            'work_linked_training_report_meeting_report',
             $academicYear,
             $page
         );
@@ -115,10 +137,10 @@ class ReportController extends Controller
     }
 
     /**
-     * @Route("/encuesta/empresas/listar/{academicYear}/{page}", name="work_linked_training_report_company_survey_list",
+     * @Route("/asistencia/listar/{academicYear}/{page}", name="work_linked_training_report_attendance_list",
      *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
      */
-    public function companyListAction(
+    public function attendanceListAction(
         Request $request,
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
@@ -129,8 +151,8 @@ class ReportController extends Controller
             $request,
             $userExtensionService,
             $academicYearRepository,
-            'title.company_survey',
-            'work_linked_training_report_meeting_report',
+            'title.attendance',
+            'work_linked_training_report_attendance_report',
             $academicYear,
             $page
         );
@@ -404,7 +426,6 @@ class ReportController extends Controller
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::REPORT_MEETING, $project);
 
-
         $teachers = $wltTeacherRepository->findByProject($project);
 
         $teacherStats = [];
@@ -511,8 +532,8 @@ class ReportController extends Controller
     }
 
     /**
-     * @Route("/asistencia/{academicYear}", name="work_linked_training_report_attendance_report",
-     *     defaults={"academicYear" = null}, methods={"GET"})
+     * @Route("/asistencia/{id}", name="work_linked_training_report_attendance_report",
+     *     requirements={"id" = "\d+"}, methods={"GET"})
      */
     public function attendanceReportAction(
         TranslatorInterface $translator,
@@ -521,26 +542,13 @@ class ReportController extends Controller
         StudentEnrollmentRepository $studentEnrollmentRepository,
         WorkDayRepository $workDayRepository,
         AgreementRepository $agreementRepository,
-        AcademicYear $academicYear = null
+        Project $project
     ) {
-        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_ATTENDANCE, $project);
 
-        $this->denyAccessUnlessGranted(
-            WLTOrganizationVoter::WLT_MANAGER,
-            $organization
-        );
+        $agreementData = $agreementRepository->attendanceStatsByProject($project);
 
-        if (!$academicYear) {
-            $academicYear = $organization->getCurrentAcademicYear();
-        }
-
-        if ($academicYear->getOrganization() !== $organization) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $agreementData = $agreementRepository->attendanceStatsByAcademicYear($academicYear);
-
-        $studentEnrollments = $studentEnrollmentRepository->findByAcademicYearAndWLT($academicYear);
+        $studentEnrollments = $project->getStudentEnrollments();
         $studentData = [];
 
         /** @var StudentEnrollment $studentEnrollment */
@@ -551,14 +559,14 @@ class ReportController extends Controller
         }
 
         $html = $engine->render('wlt/report/attendance_report.html.twig', [
-            'academic_year' => $academicYear,
+            'project' => $project,
             'agreement_data' => $agreementData,
             'student_data' => $studentData
         ]);
 
         $fileName = $translator->trans('title.attendance', [], 'wlt_report')
-            . ' - ' . $academicYear->getOrganization() . ' - '
-            . $academicYear . '.pdf';
+            . ' - ' . $project->getOrganization() . ' - '
+            . $project->getName() . '.pdf';
 
         $mpdfService = new MpdfService();
         $response = $mpdfService->generatePdfResponse($html);

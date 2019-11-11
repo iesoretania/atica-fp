@@ -307,7 +307,7 @@ class AgreementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function attendanceStatsByAcademicYear(AcademicYear $academicYear)
+    public function attendanceStatsByProject(Project $project)
     {
         return $this->createQueryBuilder('a')
             ->select('a')
@@ -335,8 +335,8 @@ class AgreementRepository extends ServiceEntityRepository
             ->addOrderBy('p.firstName')
             ->addOrderBy('a.startDate')
             ->addOrderBy('c.name')
-            ->where('w.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear)
+            ->where('a.project = :project')
+            ->setParameter('project', $project)
             ->getQuery()
             ->getResult();
     }

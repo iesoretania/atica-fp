@@ -1,17 +1,17 @@
 {% trans_default_domain 'wlt_report' %}
 <html>
 <head>
-    <title>{{ 'title.attendance'|trans }} - {{ academic_year.organization }} - {{ academic_year }}</title>
+    <title>{{ 'title.attendance'|trans }} - {{ project.organization }} - {{ project }}</title>
     <style>
         @page {
             margin-left: 1.5cm;
             margin-right: 1.5cm;
-        {% if academic_year.organization.header %}
+        {% if project.organization.header %}
             margin-top: 2cm;
             odd-header-name: header;
             even-header-name: header;
         {% endif %}
-        {% if academic_year.organization.footer %}
+        {% if project.organization.footer %}
             margin-bottom: 3cm;
             odd-footer-name: footer;
             even-footer-name: footer;
@@ -89,22 +89,22 @@
     </style>
 </head>
 <body>
-{% if academic_year.organization.header %}
+{% if project.organization.header %}
     <htmlpageheader name="header">
-        {{ academic_year.organization.header|raw }}
+        {{ project.organization.header|raw }}
     </htmlpageheader>
     <sethtmlpageheader name="header" value="on" show-this-page="1" />
 {% endif %}
 
-{% if academic_year.organization.footer %}
+{% if project.organization.footer %}
     <htmlpagefooter name="footer">
-       {{ academic_year.organization.footer|raw }}
+       {{ project.organization.footer|raw }}
     </htmlpagefooter>
 
     <sethtmlpagefooter name="footer" value="on" show-this-page="1" />
 {% endif %}
 
-    <h1>{{ app_name }} - {{ academic_year.organization }} - {{ academic_year }}</h1>
+    <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
     <h2>{{ 'title.attendance'|trans }}</h2>
     <h3>{{ 'title.attendance.hours_summary'|trans }}</h3>
     <table class="survey">
@@ -123,7 +123,7 @@
         {% set sum2 = 0 %}
         {% set sum3 = 0 %}
         {% set sum4 = 0 %}
-        {% for data in agreement_data %}
+        {% for data in agreement_data if data[1] %}
             <tr>
                 <td>{{ data[0].studentEnrollment }}</td>
                 <td>{{ data[0].workcenter }}</td>
@@ -140,7 +140,7 @@
             <tr colspan="6">{{ 'report.no_agreements'|trans }}</tr>
         {% endfor %}
         </tbody>
-        {% if agreement_data|length > 0 %}
+        {% if agreement_data|length > 0 and sum1 > 0 %}
             <tfoot>
             <tr>
                 <td class="right" colspan="2"></td>
@@ -155,7 +155,7 @@
 
     <pagebreak></pagebreak>
 
-    <h1>{{ app_name }} - {{ academic_year.organization }} - {{ academic_year }}</h1>
+    <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
     <h2>{{ 'title.attendance'|trans }}</h2>
     <h3>{{ 'title.attendance.workday_summary'|trans }}</h3>
     <table class="survey">
@@ -174,7 +174,7 @@
         {% set sum6 = 0 %}
         {% set sum7 = 0 %}
         {% set sum8 = 0 %}
-        {% for data in agreement_data %}
+        {% for data in agreement_data if data[5] %}
             <tr>
                 <td>{{ data[0].studentEnrollment }}</td>
                 <td>{{ data[0].workcenter }}</td>
@@ -191,7 +191,7 @@
             <tr colspan="6">{{ 'report.no_agreements'|trans }}</tr>
         {% endfor %}
         </tbody>
-        {% if agreement_data|length > 0 %}
+        {% if agreement_data|length > 0 and sum5 %}
             <tfoot>
             <tr>
                 <td class="right" colspan="2"></td>
@@ -208,13 +208,9 @@
         {% if data[1]|length > 0 %}
             <pagebreak></pagebreak>
 
-            <h1>{{ app_name }} - {{ academic_year.organization }}</h1>
+            <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
             <h2>{{ 'title.attendance'|trans }}</h2>
             <table class="data">
-                <tr>
-                    <td class="info">{{ 'report.academic_year'|trans }}</td>
-                    <td>{{ academic_year }}</td>
-                </tr>
                 <tr>
                     <td class="info">{{ 'report.student'|trans }}</td>
                     <td>{{ data[0] }}</td>
