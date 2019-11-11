@@ -208,7 +208,6 @@ class VisitType extends AbstractType
                 $selectedProjects = [];
             }
 
-            dump($data);
             $this->addElements(
                 $form,
                 $academicYear,
