@@ -18,9 +18,11 @@
 
 namespace AppBundle\Controller\WLT;
 
+use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\WLT\Project;
 use AppBundle\Form\Type\WLT\ProjectStudentEnrollmentType;
 use AppBundle\Form\Type\WLT\ProjectType;
+use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\WLT\ProjectRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\ProjectVoter;
@@ -40,15 +42,20 @@ use Symfony\Component\Translation\TranslatorInterface;
 class ProjectController extends Controller
 {
     /**
-     * @Route("/listar/{page}", name="work_linked_training_project_list", requirements={"page" = "\d+"},
-     *     defaults={"page" = 1}, methods={"GET"})
+     * @Route("/listar/{academicYear}/{page}", name="work_linked_training_project_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
      */
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
+        AcademicYear $academicYear = null,
         $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
+        if (!$academicYear) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
@@ -90,6 +97,10 @@ class ProjectController extends Controller
                 ->setParameter('manager', $this->getUser()->getPerson());
         }
 
+        $queryBuilder
+            ->andWhere('tr.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear);
+
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
@@ -104,7 +115,9 @@ class ProjectController extends Controller
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'domain' => 'wlt_project'
+            'domain' => 'wlt_project',
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
 

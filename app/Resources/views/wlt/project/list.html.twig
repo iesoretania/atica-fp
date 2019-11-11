@@ -46,6 +46,10 @@
             {% endfor %}
 {% endblock %}
 
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
 {% block before_table %}
     <form action="{{ path('work_linked_training_project_operation') }}" method="post">
 {% endblock %}
