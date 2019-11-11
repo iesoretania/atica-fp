@@ -30,6 +30,8 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 class ProjectVoter extends CachedVoter
 {
     const MANAGE = 'WLT_PROJECT_MANAGE';
+    const ACCESS_MANAGER_SURVEY = 'WLT_MANAGER_SURVEY_ACCESS';
+    const FILL_MANAGER_SURVEY = 'WLT_MANAGER_SURVEY_MANAGE';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -57,7 +59,9 @@ class ProjectVoter extends CachedVoter
             return false;
         }
         if (!in_array($attribute, [
-            self::MANAGE
+            self::MANAGE,
+            self::ACCESS_MANAGER_SURVEY,
+            self::FILL_MANAGER_SURVEY
         ], true)) {
             return false;
         }
@@ -102,10 +106,31 @@ class ProjectVoter extends CachedVoter
         switch ($attribute) {
             // El coordinador puede gestionar el proyecto
             case self::MANAGE:
+            case self::ACCESS_MANAGER_SURVEY:
                 if ($subject->getManager() === $user->getPerson()) {
                     return true;
                 }
 
+                foreach ($subject->getGroups() as $group) {
+                    if ($group->getGrade()->getTraining()->getDepartment() &&
+                        $group
+                            ->getGrade()->getTraining()
+                            ->getAcademicYear() === $this->userExtensionService->getCurrentOrganization() &&
+                        $group->getGrade()->getTraining()->getDepartment()->getHead() &&
+                        $group
+                            ->getGrade()->getTraining()
+                            ->getDepartment()->getHead()->getPerson() === $user->getPerson()
+
+                    ) {
+                        return true;
+                    }
+                }
+                return false;
+
+            case self::FILL_MANAGER_SURVEY:
+                if ($subject->getManager() === $user->getPerson()) {
+                    return true;
+                }
                 foreach ($subject->getGroups() as $group) {
                     if ($group->getGrade()->getTraining()->getDepartment() &&
                         $group->getGrade()->getTraining()->getDepartment()->getHead() &&

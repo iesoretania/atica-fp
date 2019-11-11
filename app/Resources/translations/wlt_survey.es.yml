@@ -7,14 +7,19 @@ header.dates: Fechas
 header.status: ¿Cumplimentada?
 
 header.teacher: Docente
+header.manager: Coordinador/a
 header.department: Departamento
 
 prompt.read_only_warning: >
   ¡ATENCIÓN! La encuesta está desactivada debido a que se encuentra fuera del plazo de cumplimentación.
   Póngase en contacto con el centro educativo para más información.
 
+prompt.no_survey: ¡ATENCIÓN! No hay ninguna encuesta definida, intente acceder a ella cuando el coordinador/a del proyecto la haya definido.
+
 title.survey.agreement.list: Encuestas de convenios
-title.survey.organization.list: Encuestas de seguimiento
+title.survey.educational_tutor.list: Encuestas de seguimiento por curso académico
+title.survey.organization.list: Encuestas de coordinación de curso académico
+title.survey.organization_final.list: Encuestas finales de proyecto
 
 title.available: Encuesta disponible para cumplimentar
 title.start_timestamp: desde el %date%

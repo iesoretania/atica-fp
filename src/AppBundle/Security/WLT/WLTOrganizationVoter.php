@@ -215,6 +215,9 @@ class WLTOrganizationVoter extends CachedVoter
                 return $this->projectRepository->countByOrganizationAndManagerPerson($subject, $user->getPerson()) > 0;
 
             case self::WLT_GROUP_TUTOR:
+                if ($this->decisionManager->decide($token, [self::WLT_MANAGER], $subject)) {
+                    return true;
+                }
                 return
                     $this->WLTGroupRepository->countAcademicYearAndWLTGroupTutorPerson(
                         $subject->getCurrentAcademicYear(),
@@ -222,6 +225,9 @@ class WLTOrganizationVoter extends CachedVoter
                     ) > 0;
 
             case self::WLT_STUDENT:
+                if ($this->decisionManager->decide($token, [self::WLT_MANAGER], $subject)) {
+                    return true;
+                }
                 return
                     $this->agreementRepository->countAcademicYearAndStudentPerson(
                         $subject->getCurrentAcademicYear(),
@@ -229,6 +235,9 @@ class WLTOrganizationVoter extends CachedVoter
                     ) > 0;
 
             case self::WLT_WORK_TUTOR:
+                if ($this->decisionManager->decide($token, [self::WLT_MANAGER], $subject)) {
+                    return true;
+                }
                 return
                     $this->agreementRepository->countAcademicYearAndWorkTutorPerson(
                         $subject->getCurrentAcademicYear(),
@@ -236,6 +245,9 @@ class WLTOrganizationVoter extends CachedVoter
                     ) > 0;
 
             case self::WLT_TEACHER:
+                if ($this->decisionManager->decide($token, [self::WLT_MANAGER], $subject)) {
+                    return true;
+                }
                 return
                     $this->WLTGroupRepository->countAcademicYearAndWLTTeacherPerson(
                         $subject->getCurrentAcademicYear(),
@@ -243,6 +255,9 @@ class WLTOrganizationVoter extends CachedVoter
                     ) > 0;
 
             case self::WLT_EDUCATIONAL_TUTOR:
+                if ($this->decisionManager->decide($token, [self::WLT_MANAGER], $subject)) {
+                    return true;
+                }
                 return
                     $this->agreementRepository->countAcademicYearAndEducationalTutorPerson(
                         $subject->getCurrentAcademicYear(),

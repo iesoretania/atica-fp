@@ -21,14 +21,18 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\AnsweredSurvey;
 use AppBundle\Entity\AnsweredSurveyQuestion;
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WLT\Agreement;
+use AppBundle\Entity\WLT\ManagerAnsweredSurvey;
+use AppBundle\Entity\WLT\Project;
 use AppBundle\Form\Type\AnsweredSurveyType;
 use AppBundle\Repository\Edu\AcademicYearRepository;
+use AppBundle\Repository\WLT\ManagerAnsweredSurveyRepository;
 use AppBundle\Repository\WLT\ProjectRepository;
+use AppBundle\Repository\WLT\WLTAcademicYearRepository;
 use AppBundle\Repository\WLT\WLTGroupRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\AgreementVoter;
+use AppBundle\Security\WLT\ProjectVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -55,49 +59,56 @@ class SurveyController extends Controller
 
         $academicYear = $agreement->getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getAcademicYear();
         $studentSurvey = $agreement->getStudentSurvey();
-        if ($studentSurvey === null) {
-            $studentSurvey = new AnsweredSurvey();
-            $survey = $agreement
-                ->getProject()
-                ->getStudentSurvey();
+        $survey = $agreement
+            ->getProject()
+            ->getStudentSurvey();
 
-            $studentSurvey->setSurvey($survey);
+        if ($survey) {
+            if ($studentSurvey === null) {
+                $studentSurvey = new AnsweredSurvey();
 
-            $this->getDoctrine()->getManager()->persist($studentSurvey);
+                $studentSurvey->setSurvey($survey);
 
-            foreach ($survey->getQuestions() as $question) {
-                $answeredQuestion = new AnsweredSurveyQuestion();
-                $answeredQuestion
-                    ->setAnsweredSurvey($studentSurvey)
-                    ->setSurveyQuestion($question);
+                $this->getDoctrine()->getManager()->persist($studentSurvey);
 
-                $studentSurvey->getAnswers()->add($answeredQuestion);
+                foreach ($survey->getQuestions() as $question) {
+                    $answeredQuestion = new AnsweredSurveyQuestion();
+                    $answeredQuestion
+                        ->setAnsweredSurvey($studentSurvey)
+                        ->setSurveyQuestion($question);
 
-                $this->getDoctrine()->getManager()->persist($answeredQuestion);
+                    $studentSurvey->getAnswers()->add($answeredQuestion);
+
+                    $this->getDoctrine()->getManager()->persist($answeredQuestion);
+                }
+
+                $agreement->setStudentSurvey($studentSurvey);
             }
 
-            $agreement->setStudentSurvey($studentSurvey);
-        }
+            $form = $this->createForm(AnsweredSurveyType::class, $studentSurvey, [
+                'disabled' => $readOnly
+            ]);
 
-        $form = $this->createForm(AnsweredSurveyType::class, $studentSurvey, [
-            'disabled' => $readOnly
-        ]);
+            $form->handleRequest($request);
 
-        $form->handleRequest($request);
+            $em = $this->getDoctrine()->getManager();
 
-        $em = $this->getDoctrine()->getManager();
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $studentSurvey->setTimestamp(new \DateTime());
-                $em->flush();
-                $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
-                return $this->redirectToRoute('work_linked_training_survey_student_list', [
-                    'academicYear' => $academicYear
-                ]);
-            } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
+            if ($form->isSubmitted() && $form->isValid()) {
+                try {
+                    $studentSurvey->setTimestamp(new \DateTime());
+                    $em->flush();
+                    $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
+                    return $this->redirectToRoute('work_linked_training_survey_student_list', [
+                        'academicYear' => $academicYear
+                    ]);
+                } catch (\Exception $e) {
+                    $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
+                }
             }
+        } else {
+            $form = $this->createForm(AnsweredSurveyType::class, null, [
+                'disabled' => $readOnly
+            ]);
         }
 
         $title = $translator->trans('title.fill', [], 'wlt_survey');
@@ -113,7 +124,7 @@ class SurveyController extends Controller
             'title' => $title,
             'agreement' => $agreement,
             'read_only' => $readOnly,
-            'survey' => $studentSurvey->getSurvey(),
+            'survey' => $survey,
             'form' => $form->createView()
         ]);
     }
@@ -128,49 +139,57 @@ class SurveyController extends Controller
 
         $academicYear = $agreement->getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getAcademicYear();
         $companySurvey = $agreement->getCompanySurvey();
-        if ($companySurvey === null) {
-            $companySurvey = new AnsweredSurvey();
-            $survey = $agreement
-                ->getProject()
-                ->getCompanySurvey();
 
-            $companySurvey->setSurvey($survey);
+        $survey = $agreement
+            ->getProject()
+            ->getCompanySurvey();
 
-            $this->getDoctrine()->getManager()->persist($companySurvey);
+        if ($survey) {
+            if ($companySurvey === null) {
+                $companySurvey = new AnsweredSurvey();
 
-            foreach ($survey->getQuestions() as $question) {
-                $answeredQuestion = new AnsweredSurveyQuestion();
-                $answeredQuestion
-                    ->setAnsweredSurvey($companySurvey)
-                    ->setSurveyQuestion($question);
+                $companySurvey->setSurvey($survey);
 
-                $companySurvey->getAnswers()->add($answeredQuestion);
+                $this->getDoctrine()->getManager()->persist($companySurvey);
 
-                $this->getDoctrine()->getManager()->persist($answeredQuestion);
+                foreach ($survey->getQuestions() as $question) {
+                    $answeredQuestion = new AnsweredSurveyQuestion();
+                    $answeredQuestion
+                        ->setAnsweredSurvey($companySurvey)
+                        ->setSurveyQuestion($question);
+
+                    $companySurvey->getAnswers()->add($answeredQuestion);
+
+                    $this->getDoctrine()->getManager()->persist($answeredQuestion);
+                }
+
+                $agreement->setCompanySurvey($companySurvey);
             }
 
-            $agreement->setCompanySurvey($companySurvey);
-        }
+            $form = $this->createForm(AnsweredSurveyType::class, $companySurvey, [
+                'disabled' => $readOnly
+            ]);
 
-        $form = $this->createForm(AnsweredSurveyType::class, $companySurvey, [
-            'disabled' => $readOnly
-        ]);
+            $form->handleRequest($request);
 
-        $form->handleRequest($request);
+            $em = $this->getDoctrine()->getManager();
 
-        $em = $this->getDoctrine()->getManager();
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $companySurvey->setTimestamp(new \DateTime());
-                $em->flush();
-                $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
-                return $this->redirectToRoute('work_linked_training_survey_company_list', [
-                    'academicYear' => $academicYear
-                ]);
-            } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
+            if ($form->isSubmitted() && $form->isValid()) {
+                try {
+                    $companySurvey->setTimestamp(new \DateTime());
+                    $em->flush();
+                    $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
+                    return $this->redirectToRoute('work_linked_training_survey_company_list', [
+                        'academicYear' => $academicYear
+                    ]);
+                } catch (\Exception $e) {
+                    $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
+                }
             }
+        } else {
+            $form = $this->createForm(AnsweredSurveyType::class, null, [
+                'disabled' => $readOnly
+            ]);
         }
 
         $title = $translator->trans('title.fill', [], 'wlt_survey');
@@ -186,7 +205,7 @@ class SurveyController extends Controller
             'title' => $title,
             'agreement' => $agreement,
             'read_only' => $readOnly,
-            'survey' => $companySurvey->getSurvey(),
+            'survey' => $survey,
             'form' => $form->createView()
         ]);
     }
@@ -393,76 +412,87 @@ class SurveyController extends Controller
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
+
     /**
-     * @Route("/seguimiento/cumplimentar/{id}", name="work_linked_training_survey_organization_form",
-     *     requirements={"id" : "\d+"}, methods={"GET", "POST"})
+     * @Route("/coordinacion/cumplimentar/{academicYear}/{id}", name="work_linked_training_survey_organization_form",
+     *     requirements={"academicYear" : "\d+", "id" : "\d+"}, methods={"GET", "POST"})
      */
     public function organizationFillAction(
         Request $request,
         TranslatorInterface $translator,
-        \Symfony\Component\Security\Core\Security $security,
-        Teacher $teacher
+        ManagerAnsweredSurveyRepository $managerAnsweredSurveyRepository,
+        AcademicYear $academicYear,
+        Project $project
     ) {
-        $organization = $teacher->getAcademicYear()->getOrganization();
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization);
-
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
-
-        if (!$isManager && !$isWltManager && $teacher->getPerson()->getUser() !== $this->getUser()) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $readOnly = false;
-        $teacherSurvey = $teacher->getWltTeacherSurvey();
-
-        if ($teacherSurvey === null) {
-            $teacherSurvey = new AnsweredSurvey();
-            $survey = $teacher->getAcademicYear()->getWltOrganizationSurvey();
-
-            $teacherSurvey->setSurvey($survey);
-
-            $this->getDoctrine()->getManager()->persist($teacherSurvey);
-
-            foreach ($survey->getQuestions() as $question) {
-                $answeredQuestion = new AnsweredSurveyQuestion();
-                $answeredQuestion
-                    ->setAnsweredSurvey($teacherSurvey)
-                    ->setSurveyQuestion($question);
-
-                $teacherSurvey->getAnswers()->add($answeredQuestion);
-
-                $this->getDoctrine()->getManager()->persist($answeredQuestion);
-            }
-
-            $teacher->setWltTeacherSurvey($teacherSurvey);
-        }
-
-        $form = $this->createForm(AnsweredSurveyType::class, $teacherSurvey, [
-            'disabled' => $readOnly
-        ]);
-
-        $form->handleRequest($request);
-
         $em = $this->getDoctrine()->getManager();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $teacherSurvey->setTimestamp(new \DateTime());
-                $em->flush();
-                $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
-                return $this->redirectToRoute('work_linked_training_survey_organization_list', [
-                    'academicYear' => $teacher->getAcademicYear()
-                ]);
-            } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
+        $this->denyAccessUnlessGranted(ProjectVoter::ACCESS_MANAGER_SURVEY, $project);
+        $readOnly = !$this->isGranted(ProjectVoter::FILL_MANAGER_SURVEY, $project);
+
+        if ($project->getManagerSurvey()) {
+            $answeredManagerSurvey =
+                $managerAnsweredSurveyRepository->findOneByProjectAndAcademicYear($project, $academicYear);
+
+            if ($answeredManagerSurvey === null) {
+                $teacherSurvey = new AnsweredSurvey();
+                $em->persist($teacherSurvey);
+
+                $survey = $project->getManagerSurvey();
+
+                $teacherSurvey->setSurvey($survey);
+
+                $this->getDoctrine()->getManager()->persist($teacherSurvey);
+
+                foreach ($survey->getQuestions() as $question) {
+                    $answeredQuestion = new AnsweredSurveyQuestion();
+                    $answeredQuestion
+                        ->setAnsweredSurvey($teacherSurvey)
+                        ->setSurveyQuestion($question);
+
+                    $teacherSurvey->getAnswers()->add($answeredQuestion);
+
+                    $this->getDoctrine()->getManager()->persist($answeredQuestion);
+                }
+
+                $managerAnsweredSurvey = new ManagerAnsweredSurvey();
+                $managerAnsweredSurvey
+                    ->setProject($project)
+                    ->setAcademicYear($academicYear)
+                    ->setAnsweredSurvey($teacherSurvey);
+
+                $em->persist($managerAnsweredSurvey);
+            } else {
+                $teacherSurvey = $answeredManagerSurvey->getAnsweredSurvey();
             }
+
+            $form = $this->createForm(AnsweredSurveyType::class, $teacherSurvey, [
+                'disabled' => $readOnly
+            ]);
+
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                try {
+                    $teacherSurvey->setTimestamp(new \DateTime());
+                    $em->flush();
+                    $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
+                    return $this->redirectToRoute('work_linked_training_survey_organization_list', [
+                        'academicYear' => $academicYear
+                    ]);
+                } catch (\Exception $e) {
+                    $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
+                }
+            }
+        } else {
+            $form = $this->createForm(AnsweredSurveyType::class, null, [
+                'disabled' => $readOnly
+            ]);
         }
 
         $title = $translator->trans('title.fill', [], 'wlt_survey');
 
         $breadcrumb = [
-            ['fixed' => $teacher . ' - ' . $teacher->getAcademicYear()->getOrganization()],
+            ['fixed' => $project . ' - ' . $academicYear],
             ['fixed' => $title]
         ];
 
@@ -471,21 +501,21 @@ class SurveyController extends Controller
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
-            'survey' => $teacherSurvey->getSurvey(),
-            'teacher' => $teacher,
+            'survey' => $project->getManagerSurvey(),
             'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("/seguimiento/{academicYear}/{page}", name="work_linked_training_survey_organization_list",
+     * @Route("/coordinacion/{academicYear}/{page}", name="work_linked_training_survey_organization_list",
      *     requirements={"page" = "\d+"}, defaults={"academicYear" = null, "page" = 1}, methods={"GET"})
      */
     public function organizationListAction(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        \Symfony\Component\Security\Core\Security $security,
+        AcademicYearRepository $academicYearRepository,
+        ProjectRepository $projectRepository,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
@@ -494,7 +524,7 @@ class SurveyController extends Controller
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization);
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
 
         $title = $translator->trans('title.survey.organization.list', [], 'wlt_survey');
 
@@ -502,38 +532,54 @@ class SurveyController extends Controller
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
 
         $queryBuilder
-            ->select('t')
-            ->addSelect('p')
-            ->from(Teacher::class, 't')
-            ->join('t.person', 'p')
-            ->join('p.user', 'u')
-            ->join('t.academicYear', 'ay')
-            ->orderBy('p.lastName')
-            ->addOrderBy('p.firstName');
+            ->select('pro')
+            ->addSelect('mas')
+            ->from(Project::class, 'pro')
+            ->join('pro.manager', 'p')
+            ->join('pro.groups', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->leftJoin(
+                ManagerAnsweredSurvey::class,
+                'mas',
+                'WITH',
+                'mas.project = pro AND mas.academicYear = t.academicYear'
+            )
+            ->addOrderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->addOrderBy('pro.name');
 
         $q = $request->get('q');
 
         if ($q) {
             $queryBuilder
+                ->orWhere('pro.name LIKE :tq')
                 ->orWhere('p.lastName LIKE :tq')
                 ->orWhere('p.firstName LIKE :tq')
-                ->setParameter('tq', '%' . $q . '%');
+                ->setParameter('tq', '%'.$q.'%');
         }
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
 
-        if (!$isManager && !$isWltManager) {
-            // puede ser profesor o jefe de departamento (de momento sólo soportamos el primer caso)
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $this->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+
+        $person = $this->getUser()->getPerson();
+        if (!$isManager && $isWltManager) {
+            $projects = $projectRepository->findByManager($person);
             $queryBuilder
-                ->andWhere('u = :user')
-                ->setParameter('user', $this->getUser());
+                ->andWhere('pro IN (:projects) OR p = :person')
+                ->setParameter('projects', $projects)
+                ->setParameter('person', $person);
         }
+
+        if (!$isWltManager && !$isManager) {
+            $queryBuilder
+                ->andWhere('p = :person')
+                ->setParameter('person', $person);
+        }
+
         $queryBuilder
             ->andWhere('t.academicYear = :academic_year')
-            ->andWhere('t.wltEducationalTutor = :is_teacher')
-            ->andWhere('ay.wltOrganizationSurvey IS NOT NULL')
-            ->setParameter('academic_year', $academicYear)
-            ->setParameter('is_teacher', true);
+            ->setParameter('academic_year', $academicYear);
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -543,12 +589,13 @@ class SurveyController extends Controller
             $pager->setCurrentPage(1);
         }
 
-        return $this->render('wlt/survey/teacher_list.html.twig', [
-            'title' => $title . ' - ' . $academicYear,
+        return $this->render('wlt/survey/manager_list.html.twig', [
+            'title' => $title,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'wlt_survey',
-            'academic_year' => $academicYear
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
 }

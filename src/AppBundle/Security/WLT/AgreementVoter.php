@@ -196,8 +196,7 @@ class AgreementVoter extends CachedVoter
                     || $isGroupTutor);
 
             case self::VIEW_STUDENT_SURVEY:
-                return ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isStudent || $isGroupTutor)
-                    && $subject->getProject()->getStudentSurvey();
+                return $isDepartmentHead || $isWltManager || $isEducationalTutor || $isStudent || $isGroupTutor;
 
             case self::FILL_STUDENT_SURVEY:
                 $wltStudentSurvey = $subject->getProject()->getStudentSurvey();

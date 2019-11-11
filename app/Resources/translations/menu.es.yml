@@ -97,8 +97,14 @@ menu.work_linked_training.survey.student.detail: Cumplimentar la encuesta de sat
 menu.work_linked_training.survey.company: Satisfacción de empresa
 menu.work_linked_training.survey.company.detail: Cumplimentar la encuesta de satisfacción de empresa colaboradora de FP dual
 
-menu.work_linked_training.survey.organization: Satisfacción de seguimiento
-menu.work_linked_training.survey.organization.detail: Cumplimentar la encuesta de satisfacción de seguimiento del centro educativo
+menu.work_linked_training.survey.educational_tutor: Satisfacción de seguimiento
+menu.work_linked_training.survey.educational_tutor.detail: Cumplimentar la encuesta de satisfacción de seguimiento de convenios
+
+menu.work_linked_training.survey.organization: Satisfacción de coordinación de proyecto
+menu.work_linked_training.survey.organization.detail: Cumplimentar la encuesta de satisfacción de proyecto por cada curso académico
+
+menu.work_linked_training.survey.organization_final: Satisfacción final de proyecto
+menu.work_linked_training.survey.organization_final.detail: Cumplimentar la encuesta de satisfacción final de proyecto
 
 menu.work_linked_training.report: Informes
 menu.work_linked_training.report.detail: Generar informes relacionados con la FP dual
