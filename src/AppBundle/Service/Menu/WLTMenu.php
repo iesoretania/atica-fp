@@ -173,8 +173,21 @@ class WLTMenu implements MenuBuilderInterface
                 $menu2->addChild($menu3);
             }
 
-            if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization) ||
-                $this->security->isGranted(WLTOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization)
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization)
+            ) {
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('work_linked_training_survey_educational_tutor')
+                    ->setRouteName('work_linked_training_survey_educational_tutor_list')
+                    ->setCaption('menu.work_linked_training.survey.educational_tutor')
+                    ->setDescription('menu.work_linked_training.survey.educational_tutor.detail')
+                    ->setIcon('user-clock')
+                    ->setPriority(5000);
+
+                $menu2->addChild($menu3);
+            }
+
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization)
             ) {
                 $menu3 = new MenuItem();
                 $menu3
@@ -183,7 +196,7 @@ class WLTMenu implements MenuBuilderInterface
                     ->setCaption('menu.work_linked_training.survey.organization')
                     ->setDescription('menu.work_linked_training.survey.organization.detail')
                     ->setIcon('school')
-                    ->setPriority(5000);
+                    ->setPriority(10000);
 
                 $menu2->addChild($menu3);
             }

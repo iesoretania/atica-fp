@@ -21,19 +21,22 @@ namespace AppBundle\Controller\WLT;
 use AppBundle\Entity\AnsweredSurvey;
 use AppBundle\Entity\AnsweredSurveyQuestion;
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WLT\Agreement;
+use AppBundle\Entity\WLT\EducationalTutorAnsweredSurvey;
 use AppBundle\Entity\WLT\ManagerAnsweredSurvey;
 use AppBundle\Entity\WLT\Project;
 use AppBundle\Form\Type\AnsweredSurveyType;
 use AppBundle\Repository\Edu\AcademicYearRepository;
+use AppBundle\Repository\WLT\EducationalTutorAnsweredSurveryRepository;
 use AppBundle\Repository\WLT\ManagerAnsweredSurveyRepository;
 use AppBundle\Repository\WLT\ProjectRepository;
-use AppBundle\Repository\WLT\WLTAcademicYearRepository;
 use AppBundle\Repository\WLT\WLTGroupRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\AgreementVoter;
 use AppBundle\Security\WLT\ProjectVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
+use AppBundle\Security\WLT\WLTTeacherVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -249,7 +252,6 @@ class SurveyController extends Controller
             $projectRepository,
             $academicYearRepository,
             $wltGroupRepository,
-            $security,
             $page,
             'work_linked_training_survey_student_form',
             'wlt/survey/student_list.html.twig',
@@ -279,7 +281,6 @@ class SurveyController extends Controller
             $projectRepository,
             $academicYearRepository,
             $wltGroupRepository,
-            $security,
             $page,
             'work_linked_training_survey_company_form',
             'wlt/survey/company_list.html.twig',
@@ -294,7 +295,6 @@ class SurveyController extends Controller
         ProjectRepository $projectRepository,
         AcademicYearRepository $academicYearRepository,
         WLTGroupRepository $wltGroupRepository,
-        \Symfony\Component\Security\Core\Security $security,
         $page,
         $routeName,
         $template,
@@ -590,6 +590,199 @@ class SurveyController extends Controller
         }
 
         return $this->render('wlt/survey/manager_list.html.twig', [
+            'title' => $title,
+            'pager' => $pager,
+            'q' => $q,
+            'domain' => 'wlt_survey',
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
+        ]);
+    }
+
+    /**
+     * @Route("/seguimiento/cumplimentar/{project}/{id}", name="work_linked_training_survey_educational_tutor_form",
+     *     requirements={"project" : "\d+", "id" : "\d+"}, methods={"GET", "POST"})
+     */
+    public function educationalTutorFillAction(
+        Request $request,
+        TranslatorInterface $translator,
+        EducationalTutorAnsweredSurveryRepository $educationalTutorAnsweredSurveryRepository,
+        Project $project,
+        Teacher $teacher
+    ) {
+        $em = $this->getDoctrine()->getManager();
+
+        $this->denyAccessUnlessGranted(WLTTeacherVoter::ACCESS_EDUCATIONAL_TUTOR_SURVEY, $teacher);
+        $readOnly = !$this->isGranted(WLTTeacherVoter::FILL_EDUCATIONAL_TUTOR_SURVEY, $teacher);
+
+        if ($project->getEducationalTutorSurvey()) {
+            $answeredSurvey =
+                $educationalTutorAnsweredSurveryRepository->findOneByProjectAndTeacher($project, $teacher);
+
+            if ($answeredSurvey === null) {
+                $teacherSurvey = new AnsweredSurvey();
+                $em->persist($teacherSurvey);
+
+                $survey = $project->getEducationalTutorSurvey();
+
+                $teacherSurvey->setSurvey($survey);
+
+                $this->getDoctrine()->getManager()->persist($teacherSurvey);
+
+                foreach ($survey->getQuestions() as $question) {
+                    $answeredQuestion = new AnsweredSurveyQuestion();
+                    $answeredQuestion
+                        ->setAnsweredSurvey($teacherSurvey)
+                        ->setSurveyQuestion($question);
+
+                    $teacherSurvey->getAnswers()->add($answeredQuestion);
+
+                    $this->getDoctrine()->getManager()->persist($answeredQuestion);
+                }
+
+                $managerAnsweredSurvey = new EducationalTutorAnsweredSurvey();
+                $managerAnsweredSurvey
+                    ->setProject($project)
+                    ->setTeacher($teacher)
+                    ->setAnsweredSurvey($teacherSurvey);
+
+                $em->persist($managerAnsweredSurvey);
+            } else {
+                $teacherSurvey = $answeredSurvey->getAnsweredSurvey();
+            }
+
+            $form = $this->createForm(AnsweredSurveyType::class, $teacherSurvey, [
+                'disabled' => $readOnly
+            ]);
+
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                try {
+                    $teacherSurvey->setTimestamp(new \DateTime());
+                    $em->flush();
+                    $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
+                    return $this->redirectToRoute('work_linked_training_survey_educational_tutor_list', [
+                        'academicYear' => $teacher->getAcademicYear()->getId()
+                    ]);
+                } catch (\Exception $e) {
+                    $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
+                }
+            }
+        } else {
+            $form = $this->createForm(AnsweredSurveyType::class, null, [
+                'disabled' => $readOnly
+            ]);
+        }
+
+        $title = $translator->trans('title.fill', [], 'wlt_survey');
+
+        $breadcrumb = [
+            ['fixed' => $teacher],
+            ['fixed' => $project],
+            ['fixed' => $teacher->getAcademicYear()],
+            ['fixed' => $title]
+        ];
+
+        return $this->render('wlt/survey/form.html.twig', [
+            'menu_path' => 'work_linked_training_survey_educational_tutor_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'read_only' => $readOnly,
+            'survey' => $project->getEducationalTutorSurvey(),
+            'form' => $form->createView(),
+            'last_url' => $this->generateUrl('work_linked_training_survey_educational_tutor_list', [
+                'academicYear' => $teacher->getAcademicYear()->getId()
+            ])
+        ]);
+    }
+
+    /**
+     * @Route("/seguimiento/{academicYear}/{page}", name="work_linked_training_survey_educational_tutor_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
+     */
+    public function educationalTutorListAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        AcademicYearRepository $academicYearRepository,
+        ProjectRepository $projectRepository,
+        $page = 1,
+        AcademicYear $academicYear = null
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        if (null === $academicYear) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
+
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization);
+
+        $title = $translator->trans('title.survey.organization.list', [], 'wlt_survey');
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+
+        $queryBuilder
+            ->select('t')
+            ->addSelect('pro.id')
+            ->addSelect('pro.name')
+            ->addSelect('COUNT(etas)')
+            ->from(Teacher::class, 't')
+            ->join(Agreement::class, 'a', 'WITH', 'a.educationalTutor = t')
+            ->join(Project::class, 'pro', 'WITH', 'a.project = pro')
+            ->join('t.person', 'p')
+            ->leftJoin(
+                EducationalTutorAnsweredSurvey::class,
+                'etas',
+                'WITH',
+                'etas.teacher = t'
+            )
+            ->addGroupBy('t, pro')
+            ->addOrderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->addOrderBy('pro.name');
+
+        $q = $request->get('q');
+
+        if ($q) {
+            $queryBuilder
+                ->orWhere('pro.name LIKE :tq')
+                ->orWhere('p.lastName LIKE :tq')
+                ->orWhere('p.firstName LIKE :tq')
+                ->setParameter('tq', '%'.$q.'%');
+        }
+
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $this->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+
+        $person = $this->getUser()->getPerson();
+        if (!$isManager && $isWltManager) {
+            $projects = $projectRepository->findByManager($person);
+            $queryBuilder
+                ->andWhere('pro IN (:projects) OR p = :person')
+                ->setParameter('projects', $projects)
+                ->setParameter('person', $person);
+        }
+
+        if (!$isWltManager && !$isManager) {
+            $queryBuilder
+                ->andWhere('p = :person')
+                ->setParameter('person', $person);
+        }
+
+        $queryBuilder
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear);
+
+        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $pager = new Pagerfanta($adapter);
+        try {
+            $pager->setCurrentPage($page);
+        } catch (\PagerFanta\Exception\OutOfRangeCurrentPageException $e) {
+            $pager->setCurrentPage(1);
+        }
+
+        return $this->render('wlt/survey/teacher_list.html.twig', [
             'title' => $title,
             'pager' => $pager,
             'q' => $q,

@@ -177,6 +177,18 @@ class ProjectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByEducationalTutor(Teacher $teacher)
+    {
+        return $this->createQueryBuilder('p')
+            ->addSelect('a')
+            ->distinct()
+            ->join('p.agreements', 'a')
+            ->andWhere('a.educationalTutor = :teacher')
+            ->setParameter('teacher', $teacher)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByGroups(
         $groups
     ) {

@@ -93,7 +93,21 @@ class Project
      * @ORM\JoinColumn(onDelete="SET NULL")
      * @var Survey
      */
+    private $managerFinalSurvey;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @var Survey
+     */
     private $managerSurvey;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @var Survey
+     */
+    private $educationalTutorSurvey;
 
     /**
      * @ORM\OneToMany(targetEntity="Agreement", mappedBy="project")
@@ -262,6 +276,42 @@ class Project
     public function setManagerSurvey(Survey $managerSurvey = null)
     {
         $this->managerSurvey = $managerSurvey;
+        return $this;
+    }
+
+    /**
+     * @return Survey
+     */
+    public function getManagerFinalSurvey()
+    {
+        return $this->managerFinalSurvey;
+    }
+
+    /**
+     * @param Survey $managerFinalSurvey
+     * @return Project
+     */
+    public function setManagerFinalSurvey($managerFinalSurvey)
+    {
+        $this->managerFinalSurvey = $managerFinalSurvey;
+        return $this;
+    }
+
+    /**
+     * @return Survey
+     */
+    public function getEducationalTutorSurvey()
+    {
+        return $this->educationalTutorSurvey;
+    }
+
+    /**
+     * @param Survey $educationalTutorSurvey
+     * @return Project
+     */
+    public function setEducationalTutorSurvey($educationalTutorSurvey)
+    {
+        $this->educationalTutorSurvey = $educationalTutorSurvey;
         return $this;
     }
 

@@ -6,8 +6,9 @@ header.work_tutor: Reponsable laboral
 header.dates: Fechas
 header.status: ¿Cumplimentada?
 
-header.teacher: Docente
+header.educational_tutor: Tutor/a de seguimiento
 header.manager: Coordinador/a
+header.academic_year: Curso académico
 header.department: Departamento
 
 prompt.read_only_warning: >
