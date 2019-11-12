@@ -161,7 +161,9 @@ class LearningProgramController extends Controller
         $pager
             ->setMaxPerPage($this->getParameter('page.size'));
                 try {
-            $pager->setCurrentPage($page);
+            $pager
+                ->setMaxPerPage($this->getParameter('page.size'))
+                ->setCurrentPage($page);
         } catch (\PagerFanta\Exception\OutOfRangeCurrentPageException $e) {
             $pager->setCurrentPage(1);
         }

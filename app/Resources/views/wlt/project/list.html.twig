@@ -50,6 +50,10 @@
     {% include 'organization/partial_academic_year.html.twig' %}
 {% endblock %}
 
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
 {% block before_table %}
     <form action="{{ path('work_linked_training_project_operation') }}" method="post">
 {% endblock %}

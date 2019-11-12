@@ -136,7 +136,9 @@ class DepartmentController extends Controller
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
-            $pager->setCurrentPage($page);
+            $pager
+                ->setMaxPerPage($this->getParameter('page.size'))
+                ->setCurrentPage($page);
         } catch (\PagerFanta\Exception\OutOfRangeCurrentPageException $e) {
             $pager->setCurrentPage(1);
         }

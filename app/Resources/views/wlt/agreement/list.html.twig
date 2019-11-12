@@ -47,7 +47,7 @@
 {% endblock %}
 
 {% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': project ? {'project': project.id} : {}}) }}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'id': project.id}}) }}
 {% endblock %}
 
 {% block after_table %}
