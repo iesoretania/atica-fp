@@ -119,7 +119,6 @@ class TrackingCalendarController extends Controller
         $oldActivityRealizations = clone $workDay->getActivityRealizations();
 
         $form = $this->createForm(WorkDayTrackingType::class, $workDay, [
-            'disabled' => $readOnly,
             'work_day' => $workDay,
             'locked_activity_realizations' => $lockedActivityRealizations
         ]);
