@@ -130,7 +130,7 @@ dow4: Viernes
 dow5: Sábado
 dow6: Domingo
 
-caption.hours: "{1}1 hora|]1,Inf[%count% horas"
+caption.hours: "{0}Sin horas|{1}1 hora|]1,Inf[%count% horas"
 
 prompt.empty: Aún no hay jornadas registradas en el calendario.
 
