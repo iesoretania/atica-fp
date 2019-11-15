@@ -28,11 +28,9 @@ use AppBundle\Entity\WLT\Project;
 use AppBundle\Entity\Workcenter;
 use AppBundle\Repository\CompanyRepository;
 use AppBundle\Repository\Edu\StudentEnrollmentRepository;
+use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
-use AppBundle\Repository\WLT\ProjectRepository;
-use AppBundle\Repository\WLT\WLTTeacherRepository;
 use AppBundle\Repository\WorkcenterRepository;
-use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -44,30 +42,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AgreementType extends AbstractType
 {
-    private $userExtensionService;
     private $studentEnrollmentRepository;
     private $workcenterRepository;
     private $companyRepository;
     private $activityRealizationRepository;
-    private $projectRepository;
-    private $wltTeacherRepository;
+    private $teacherRepository;
 
     public function __construct(
-        UserExtensionService $userExtensionService,
         StudentEnrollmentRepository $studentEnrollmentRepository,
         WorkcenterRepository $workcenterRepository,
         CompanyRepository $companyRepository,
         ActivityRealizationRepository $activityRealizationRepository,
-        ProjectRepository $projectRepository,
-        WLTTeacherRepository $wltTeacherRepository
+        TeacherRepository $teacherRepository
     ) {
-        $this->userExtensionService = $userExtensionService;
         $this->studentEnrollmentRepository = $studentEnrollmentRepository;
         $this->workcenterRepository = $workcenterRepository;
         $this->companyRepository = $companyRepository;
         $this->activityRealizationRepository = $activityRealizationRepository;
-        $this->projectRepository = $projectRepository;
-        $this->wltTeacherRepository = $wltTeacherRepository;
+        $this->teacherRepository = $teacherRepository;
     }
 
     public function addElements(
@@ -85,7 +77,8 @@ class AgreementType extends AbstractType
             ) : [];
 
         $teachers = $studentEnrollment ?
-            $this->wltTeacherRepository->findByProject($project) : [];
+            $this->teacherRepository->findByAcademicYear(
+                $studentEnrollment->getGroup()->getGrade()->getTraining()->getAcademicYear()) : [];
 
         if ($studentEnrollment) {
             if ($company) {
