@@ -113,19 +113,20 @@ class AcademicYearController extends Controller
             ->select('ay')
             ->from(AcademicYear::class, 'ay')
             ->leftJoin('ay.financialManager', 'fm')
+            ->leftJoin('fm.person', 'fmp')
             ->leftJoin('ay.principal', 'p')
+            ->leftJoin('p.person', 'pp')
             ->orderBy('ay.description', 'DESC');
 
         $q = $request->get('q', null);
         if ($q) {
             $queryBuilder
                 ->andWhere('ay.description LIKE :tq')
-                ->orWhere('p.firstName LIKE :tq')
-                ->orWhere('p.lastName LIKE :tq')
-                ->orWhere('fm.firstName LIKE :tq')
-                ->orWhere('fm.lastName LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%')
-                ->setParameter('q', $q);
+                ->orWhere('pp.firstName LIKE :tq')
+                ->orWhere('pp.lastName LIKE :tq')
+                ->orWhere('fmp.firstName LIKE :tq')
+                ->orWhere('fmp.lastName LIKE :tq')
+                ->setParameter('tq', '%'.$q.'%');
         }
 
         $queryBuilder
