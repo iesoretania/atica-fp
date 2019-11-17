@@ -28,8 +28,8 @@ use AppBundle\Repository\WLT\VisitRepository;
 use AppBundle\Repository\WLT\WLTGroupRepository;
 use AppBundle\Security\Edu\EduOrganizationVoter;
 use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\WLT\VisitVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
-use AppBundle\Security\WLT\WorkDayVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -97,7 +97,7 @@ class VisitController extends Controller
         WLTGroupRepository $wltGroupRepository,
         Visit $visit
     ) {
-        $this->denyAccessUnlessGranted(WorkDayVoter::ACCESS, $visit);
+        $this->denyAccessUnlessGranted(VisitVoter::ACCESS, $visit);
 
         $organization = $userExtensionService->getCurrentOrganization();
         if ($visit->getTeacher()) {
@@ -108,7 +108,7 @@ class VisitController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $readOnly = !$this->isGranted(WorkDayVoter::FILL, $visit);
+        $readOnly = !$this->isGranted(VisitVoter::MANAGE, $visit);
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
         $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
@@ -326,7 +326,7 @@ class VisitController extends Controller
 
         $visits = $visitRepository->findAllInListById($items);
         foreach ($visits as $visit) {
-            $this->denyAccessUnlessGranted(WorkDayVoter::FILL, $visit);
+            $this->denyAccessUnlessGranted(VisitVoter::MANAGE, $visit);
         }
 
         if ($request->get('confirm', '') === 'ok') {
