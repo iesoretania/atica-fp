@@ -1,4 +1,6 @@
 form.title: Título
+form.copy_from: Copiar preguntas desde
+form.copy_from.none: Crear encuesta vacía
 form.start_timestamp: Fecha y hora de comienzo
 form.end_timestamp: Fecha y hora de finalización
 

@@ -110,6 +110,16 @@ class SurveyQuestionRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function deleteFromSurvey(Survey $survey)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(SurveyQuestion::class, 'sq')
+            ->where('sq.survey = :survey')
+            ->setParameter('survey', $survey)
+            ->getQuery()
+            ->execute();
+    }
+
     public function answerStatsBySurveyAndAnsweredSurveyList($list)
     {
         return $this->createQueryBuilder('sq')

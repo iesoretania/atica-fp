@@ -20,7 +20,9 @@ namespace AppBundle\Controller\Organization;
 
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\Survey;
+use AppBundle\Entity\SurveyQuestion;
 use AppBundle\Form\Type\SurveyType;
+use AppBundle\Repository\SurveyQuestionRepository;
 use AppBundle\Repository\SurveyRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\SurveyVoter;
@@ -47,6 +49,7 @@ class SurveyController extends Controller
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        SurveyRepository $surveyRepository,
         Survey $survey = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -62,14 +65,35 @@ class SurveyController extends Controller
             $survey
                 ->setOrganization($organization);
             $em->persist($survey);
+            $surveys = $surveyRepository->findByOrganization($organization);
+        } else {
+            $surveys = [];
         }
 
-        $form = $this->createForm(SurveyType::class, $survey);
+        $form = $this->createForm(SurveyType::class, $survey, [
+            'surveys' => $surveys
+        ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                // Comprobar si es necesario copiar de otra encuesta
+                if ($form->get('copyFrom') && $form->get('copyFrom')->getData()) {
+                    /** @var Survey $original */
+                    $original = $form->get('copyFrom')->getData();
+                    foreach ($original->getQuestions() as $question) {
+                        $newQuestion = new SurveyQuestion();
+                        $newQuestion
+                            ->setSurvey($survey)
+                            ->setDescription($question->getDescription())
+                            ->setItems($question->getItems())
+                            ->setType($question->getType())
+                            ->setMandatory($question->isMandatory())
+                            ->setOrderNr($question->getOrderNr());
+                        $em->persist($newQuestion);
+                    }
+                }
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'survey'));
                 return $this->redirectToRoute('organization_survey_list');
@@ -156,6 +180,7 @@ class SurveyController extends Controller
         Request $request,
         SurveyRepository $surveyRepository,
         TranslatorInterface $translator,
+        SurveyQuestionRepository $surveyQuestionRepository,
         UserExtensionService $userExtensionService
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -171,7 +196,14 @@ class SurveyController extends Controller
         }
 
         // borrar encuestas
-        return $this->processDelete($request, $surveyRepository, $translator, $items, $organization);
+        return $this->processDelete(
+            $request,
+            $surveyRepository,
+            $surveyQuestionRepository,
+            $translator,
+            $items,
+            $organization
+        );
     }
 
     /**
@@ -218,6 +250,7 @@ class SurveyController extends Controller
     /**
      * @param Request $request
      * @param SurveyRepository $surveyRepository
+     * @param SurveyQuestionRepository $surveyQuestionRepository
      * @param TranslatorInterface $translator
      * @param $items
      * @param Organization $organization
@@ -226,6 +259,7 @@ class SurveyController extends Controller
     private function processDelete(
         Request $request,
         SurveyRepository $surveyRepository,
+        SurveyQuestionRepository $surveyQuestionRepository,
         TranslatorInterface $translator,
         $items,
         Organization $organization
@@ -239,6 +273,9 @@ class SurveyController extends Controller
 
         if ($request->get('confirm', '') === 'ok') {
             try {
+                foreach ($surveys as $survey) {
+                    $surveyQuestionRepository->deleteFromSurvey($survey);
+                }
                 $surveyRepository->deleteFromList($surveys);
 
                 $em->flush();

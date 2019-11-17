@@ -19,6 +19,7 @@
 namespace AppBundle\Form\Type;
 
 use AppBundle\Entity\Survey;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -36,7 +37,24 @@ class SurveyType extends AbstractType
             ->add('title', TextType::class, [
                 'label' => 'form.title',
                 'required' => true
-            ])
+            ]);
+
+        if ($options['surveys']) {
+            $builder
+                ->add('copyFrom', EntityType::class, [
+                    'label' => 'form.copy_from',
+                    'class' => Survey::class,
+                    'mapped' => false,
+                    'choices' => $options['surveys'],
+                    'choice_label' => function (Survey $s) {
+                        return $s->getTitle();
+                    },
+                    'placeholder' => 'form.copy_from.none',
+                    'required' => false
+                ]);
+        }
+
+        $builder
             ->add('startTimestamp', DateTimeType::class, [
                 'label' => 'form.start_timestamp',
                 'model_timezone' => 'UTC',
@@ -58,6 +76,7 @@ class SurveyType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Survey::class,
+            'surveys' => [],
             'translation_domain' => 'survey'
         ]);
     }
