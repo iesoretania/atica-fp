@@ -20,7 +20,6 @@ namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
-use AppBundle\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -32,7 +31,8 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
         parent::__construct($registry, StudentEnrollment::class);
     }
 
-    public function findByGroups($groups) {
+    public function findByGroups($groups)
+    {
         return $this->createQueryBuilder('se')
             ->join('se.person', 's')
             ->join('se.group', 'g')
@@ -45,50 +45,6 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
             ->addOrderBy('s.lastName')
             ->addOrderBy('s.firstName')
             ->setParameter('groups', $groups)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByAcademicYearAndWLTQueryBuilder(AcademicYear $academicYear)
-    {
-        return $this->createQueryBuilder('se')
-            ->join('se.group', 'g')
-            ->join('se.person', 's')
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 't')
-            ->where('t.academicYear = :academic_year')
-            ->andWhere('t.workLinked = :work_linked')
-            ->setParameter('academic_year', $academicYear)
-            ->setParameter('work_linked', true)
-            ->groupBy('se')
-            ->addOrderBy('s.lastName')
-            ->addOrderBy('s.firstName')
-            ->addOrderBy('g.name');
-    }
-
-    public function findByAcademicYearAndWLT(AcademicYear $academicYear)
-    {
-        return $this->findByAcademicYearAndWLTQueryBuilder($academicYear)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByAcademicYearAndGroupsAndWLT(AcademicYear $academicYear, $groups)
-    {
-        return $this->findByAcademicYearAndWLTQueryBuilder($academicYear)
-            ->andWhere('g IN (:groups)')
-            ->setParameter('groups', $groups)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByAcademicYearAndDepartmentHeadAndWLT(AcademicYear $academicYear, Person $person)
-    {
-        return $this->findByAcademicYearAndWLTQueryBuilder($academicYear)
-            ->join('t.department', 'd')
-            ->join('d.head', 'te')
-            ->andWhere('te.person = :person')
-            ->setParameter('person', $person)
             ->getQuery()
             ->getResult();
     }
