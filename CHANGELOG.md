@@ -4,6 +4,11 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+1.5.3 (2019-11-17)
+------------------
+* fix: Solucionado error al mostrar un calendario sin jornadas
+* fix: Ahora aparecen los estudiantes al generar convenios nuevos 
+
 1.5.2 (2019-10-29)
 ------------------
 * fix: Solucionados diversos problemas en la creación de los contenedores con Docker

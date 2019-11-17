@@ -65,23 +65,27 @@ class WorkDayRepository extends ServiceEntityRepository
 
     public function hoursStatsByAgreement(Agreement $agreement)
     {
-        return $this->createQueryBuilder('wd')
-            ->select('SUM(wd.hours)')
-            ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked * wd.hours ELSE 0 END)')
-            ->addSelect('SUM(CASE WHEN wd.absence = 1 THEN wd.hours ELSE 0 END)')
-            ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN wd.hours ELSE 0 END)')
-            ->addSelect('SUM(CASE WHEN wd.locked = 1 THEN wd.hours ELSE 0 END)')
-            ->addSelect('COUNT(wd)')
-            ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked ELSE 0 END)')
-            ->addSelect('SUM(CASE WHEN wd.absence = 1 THEN 1 ELSE 0 END)')
-            ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN 1 ELSE 0 END)')
-            ->addSelect('SUM(wd.locked)')
-            ->join('wd.agreement', 'a')
-            ->where('wd .agreement = :agreement')
-            ->setParameter('agreement', $agreement)
-            ->groupBy('a')
-            ->getQuery()
-            ->getSingleResult();
+        try {
+            return $this->createQueryBuilder('wd')
+                ->select('SUM(wd.hours)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked * wd.hours ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 1 THEN wd.hours ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN wd.hours ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.locked = 1 THEN wd.hours ELSE 0 END)')
+                ->addSelect('COUNT(wd)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 1 THEN 1 ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN 1 ELSE 0 END)')
+                ->addSelect('SUM(wd.locked)')
+                ->join('wd.agreement', 'a')
+                ->where('wd .agreement = :agreement')
+                ->setParameter('agreement', $agreement)
+                ->groupBy('a')
+                ->getQuery()
+                ->getSingleResult();
+        } catch (NoResultException $e) {
+            return [];
+        }
     }
 
     /**
