@@ -144,6 +144,7 @@ class WLTMenu implements MenuBuilderInterface
             $menu1->addChild($menu2);
 
             if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization) ||
+                $this->security->isGranted(WLTOrganizationVoter::WLT_DEPARTMENT_HEAD, $organization) ||
                 $this->security->isGranted(WLTOrganizationVoter::WLT_GROUP_TUTOR, $organization) ||
                 $this->security->isGranted(WLTOrganizationVoter::WLT_STUDENT, $organization)
             ) {
@@ -160,6 +161,7 @@ class WLTMenu implements MenuBuilderInterface
             }
 
             if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization) ||
+                $this->security->isGranted(WLTOrganizationVoter::WLT_DEPARTMENT_HEAD, $organization) ||
                 $this->security->isGranted(WLTOrganizationVoter::WLT_GROUP_TUTOR, $organization) ||
                 $this->security->isGranted(WLTOrganizationVoter::WLT_WORK_TUTOR, $organization)
             ) {
