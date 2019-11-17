@@ -21,9 +21,7 @@ namespace AppBundle\Repository\Edu;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Edu\Subject;
-use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\Person;
-use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
@@ -72,60 +70,17 @@ class SubjectRepository extends ServiceEntityRepository
      * @param string $gradeInternalCode
      * @return Subject|null
      */
-    public function findOneByAcademicYearAndInternalCodes(AcademicYear $academicYear, $subjectInternalCode, $gradeInternalCode)
-    {
+    public function findOneByAcademicYearAndInternalCodes(
+        AcademicYear $academicYear,
+        $subjectInternalCode,
+        $gradeInternalCode
+    ) {
         try {
             return $this->findByAcademicYearQueryBuilder($academicYear)
                 ->andWhere('s.internalCode = :subject_internal_code')
                 ->andWhere('g.internalCode = :grade_internal_code')
                 ->setParameter('subject_internal_code', $subjectInternalCode)
                 ->setParameter('grade_internal_code', $gradeInternalCode)
-                ->getQuery()
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
-        } catch (NonUniqueResultException $e) {
-            return null;
-        }
-    }
-
-    /**
-     * @param Training $training
-     * @param string $code
-     * @return Subject|null
-     */
-    public function findOneByTrainingAndCode(Training $training, $code)
-    {
-        try {
-            return $this->createQueryBuilder('s')
-                ->join('s.grade', 'g')
-                ->andWhere('s.code = :code')
-                ->andWhere('g.training = :training')
-                ->setParameter('code', $code)
-                ->setParameter('training', $training)
-                ->getQuery()
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
-        } catch (NonUniqueResultException $e) {
-            return null;
-        }
-    }
-
-    /**
-     * @param Training $training
-     * @param string $code
-     * @return Subject|null
-     */
-    public function findOneByProjectAndCode(Project $project, $code)
-    {
-        try {
-            return $this->createQueryBuilder('s')
-                ->distinct(true)
-                ->join('s.grade', 'g')
-                ->join('g.groups', 'gr')
-                ->andWhere('s.code = :code')
-                ->andWhere('gr IN (:groups)')
-                ->setParameter('code', $code)
-                ->setParameter('groups', $project->getGroups())
                 ->getQuery()
                 ->setMaxResults(1)
                 ->getOneOrNullResult();

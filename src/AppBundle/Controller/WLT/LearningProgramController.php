@@ -27,10 +27,10 @@ use AppBundle\Form\Model\LearningProgramImport;
 use AppBundle\Form\Type\WLT\LearningProgramImportType;
 use AppBundle\Form\Type\WLT\LearningProgramType;
 use AppBundle\Repository\CompanyRepository;
-use AppBundle\Repository\Edu\SubjectRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Repository\WLT\ActivityRepository;
 use AppBundle\Repository\WLT\LearningProgramRepository;
+use AppBundle\Repository\WLT\WLTSubjectRepository;
 use AppBundle\Security\WLT\ProjectVoter;
 use AppBundle\Utils\CsvImporter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -257,7 +257,7 @@ class LearningProgramController extends Controller
         ActivityRealizationRepository $activityRealizationRepository,
         LearningProgramRepository $learningProgramRepository,
         CompanyRepository $companyRepository,
-        SubjectRepository $subjectRepository,
+        WLTSubjectRepository $subjectRepository,
         EntityManagerInterface $entityManager,
         Project $project,
         Request $request
@@ -320,7 +320,7 @@ class LearningProgramController extends Controller
         ActivityRealizationRepository $activityRealizationRepository,
         LearningProgramRepository $learningProgramRepository,
         CompanyRepository $companyRepository,
-        SubjectRepository $subjectRepository,
+        WLTSubjectRepository $subjectRepository,
         EntityManagerInterface $entityManager
     ) {
         $newActivityCount = 0;
