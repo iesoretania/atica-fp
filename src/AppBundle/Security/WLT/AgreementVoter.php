@@ -201,16 +201,14 @@ class AgreementVoter extends CachedVoter
             case self::FILL_STUDENT_SURVEY:
                 $wltStudentSurvey = $subject->getProject()->getStudentSurvey();
                 return $academicYearIsCurrent
-                    && ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isStudent || $isGroupTutor
-                        || $this->checkSurvey($wltStudentSurvey)
-                    );
+                    && ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isStudent || $isGroupTutor)
+                    && $this->checkSurvey($wltStudentSurvey);
 
             case self::FILL_COMPANY_SURVEY:
                 $wltCompanySurvey = $subject->getProject()->getCompanySurvey();
                 return $academicYearIsCurrent
-                    && ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isWorkTutor || $isGroupTutor
-                        || $this->checkSurvey($wltCompanySurvey)
-                    );
+                    && ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isWorkTutor || $isGroupTutor)
+                    && $this->checkSurvey($wltCompanySurvey);
         }
 
         // denegamos en cualquier otro caso
