@@ -18,7 +18,6 @@
 
 namespace AppBundle\Repository\Edu;
 
-use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Edu\Teaching;
 use AppBundle\Entity\Person;
@@ -46,41 +45,6 @@ class TeachingRepository extends ServiceEntityRepository
             ->setParameter('list', $list)
             ->getQuery()
             ->execute();
-    }
-
-    public function findByAcademicYearAndPersonQueryBuilder(AcademicYear $academicYear, Person $person)
-    {
-        return $this->createQueryBuilder('t')
-            ->join('t.subject', 's')
-            ->join('s.grade', 'g')
-            ->join('g.training', 'tr')
-            ->join('t.teacher', 'te')
-            ->where('te.person = :person')
-            ->andWhere('tr.academicYear = :academic_year')
-            ->setParameter('person', $person)
-            ->setParameter('academic_year', $academicYear);
-    }
-
-    /**
-     * @param AcademicYear $academicYear
-     * @param Person $person
-     *
-     * @return int
-     */
-    public function countAcademicYearAndWltPerson(AcademicYear $academicYear, Person $person)
-    {
-        try {
-            return $this->findByAcademicYearAndPersonQueryBuilder($academicYear, $person)
-                ->select('COUNT(t)')
-                ->andWhere('t.workLinked = :work_linked')
-                ->setParameter('work_linked', true)
-                ->getQuery()
-                ->getSingleScalarResult();
-        } catch (NonUniqueResultException $e) {
-            return 0;
-        } catch (NoResultException $e) {
-            return 0;
-        }
     }
 
     /**

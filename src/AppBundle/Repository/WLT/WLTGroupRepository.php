@@ -149,11 +149,9 @@ class WLTGroupRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function findByOrganizationAndPerson(Organization $organization, Person $person)
+    public function findByAcademicYearAndPerson(AcademicYear $academicYear, Person $person)
     {
         $groups = new ArrayCollection();
-
-        $academicYear = $organization->getCurrentAcademicYear();
 
         // grupos donde imparte clase
         $newGroups = $this->findByAcademicYearAndWLTTeacherPerson($academicYear, $person);
@@ -168,6 +166,11 @@ class WLTGroupRepository extends ServiceEntityRepository
         $this->appendGroups($groups, $newGroups);
 
         return $groups;
+    }
+
+    public function findByOrganizationAndPerson(Organization $organization, Person $person)
+    {
+        return $this->findByAcademicYearAndPerson($organization->getCurrentAcademicYear(), $person);
     }
 
     public function findByAcademicYearAndGrupTutorOrDepartmentHeadPerson(AcademicYear $academicYear, Person $person)

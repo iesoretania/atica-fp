@@ -22,10 +22,10 @@ use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Repository\Edu\AcademicYearRepository;
-use AppBundle\Repository\Edu\GroupRepository;
 use AppBundle\Repository\Edu\SubjectRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
+use AppBundle\Repository\WLT\WLTGroupRepository;
 use AppBundle\Security\Edu\GroupVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
@@ -52,7 +52,7 @@ class EvaluationSummaryController extends Controller
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository,
+        WLTGroupRepository $wltGroupRepository,
         AcademicYearRepository $academicYearRepository,
         $page = 1,
         AcademicYear $academicYear = null
@@ -109,7 +109,7 @@ class EvaluationSummaryController extends Controller
                 $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
             if ($teacher) {
-                $groups = $groupRepository->findByAcademicYearAndTeacher($academicYear, $teacher);
+                $groups = $wltGroupRepository->findByAcademicYearAndPerson($academicYear, $teacher->getPerson());
 
                 if ($groups->count() > 0) {
                     $queryBuilder

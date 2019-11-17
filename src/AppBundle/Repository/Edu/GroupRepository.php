@@ -20,11 +20,8 @@ namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Group;
-use AppBundle\Entity\Edu\Teacher;
-use AppBundle\Entity\Edu\Teaching;
 use AppBundle\Entity\Organization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
@@ -112,82 +109,5 @@ class GroupRepository extends ServiceEntityRepository
             ->orderBy('g.name')
             ->getQuery()
             ->getResult();
-    }
-
-    public function findByAcademicYearAndWltQueryBuilder(AcademicYear $academicYear)
-    {
-        return $this->createQueryBuilder('g')
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 't')
-            ->andWhere('t.academicYear = :academic_year')
-            ->andWhere('t.workLinked = :work_linked')
-            ->setParameter('work_linked', true)
-            ->setParameter('academic_year', $academicYear);
-    }
-
-    public function findByAcademicYearAndWltTutorQueryBuilder(AcademicYear $academicYear, Teacher $teacher)
-    {
-        return $this->findByAcademicYearAndWltQueryBuilder($academicYear)
-            ->andWhere(':tutor MEMBER OF g.tutors')
-            ->setParameter('tutor', $teacher);
-    }
-
-    public function findByAcademicYearAndWltTutor(AcademicYear $academicYear, Teacher $teacher)
-    {
-        return $this->findByAcademicYearAndWltTutorQueryBuilder($academicYear, $teacher)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByAcademicYearAndWltTeacherQueryBuilder(AcademicYear $academicYear, Teacher $teacher)
-    {
-        $groups = array_map(function (Teaching $t) {
-            return $t->getGroup();
-        }, $teacher->getTeachings()->toArray());
-
-        return $this->findByAcademicYearAndWltQueryBuilder($academicYear)
-            ->andWhere('g IN (:groups)')
-            ->setParameter('groups', $groups);
-    }
-
-    public function findByAcademicYearAndWltTeacher(AcademicYear $academicYear, Teacher $teacher)
-    {
-        return $this->findByAcademicYearAndWltTeacherQueryBuilder($academicYear, $teacher)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByAcademicYearAndWltHead(AcademicYear $academicYear, Teacher $teacher)
-    {
-        return $this->findByAcademicYearAndWltQueryBuilder($academicYear)
-            ->join('t.department', 'd')
-            ->andWhere('d.head = :teacher')
-            ->setParameter('teacher', $teacher)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByAcademicYearAndTeacher(AcademicYear $academicYear, Teacher $teacher)
-    {
-        // vamos a buscar los grupos a los que tiene acceso
-        $groups = new ArrayCollection();
-
-        $newGroups = $this->findByAcademicYearAndWltHead($academicYear, $teacher);
-        $this->appendGroups($groups, $newGroups);
-        $newGroups = $this->findByAcademicYearAndWltTutor($academicYear, $teacher);
-        $this->appendGroups($groups, $newGroups);
-        $newGroups = $this->findByAcademicYearAndWltTeacher($academicYear, $teacher);
-        $this->appendGroups($groups, $newGroups);
-
-        return $groups;
-    }
-
-    private function appendGroups(ArrayCollection $groups, $newGroups)
-    {
-        foreach ($newGroups as $group) {
-            if (false === $groups->contains($group)) {
-                $groups->add($group);
-            }
-        }
     }
 }

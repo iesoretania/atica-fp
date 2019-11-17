@@ -57,19 +57,6 @@ class TrainingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
-     * @return Training[]
-     */
-    public function findByAcademicYearAndWLT(AcademicYear $academicYear)
-    {
-        return $this->findByAcademicYearQueryBuilder($academicYear)
-            ->andWhere('t.workLinked = :work_linked')
-            ->setParameter('work_linked', true)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * @param $items
      * @param AcademicYear $academicYear
      * @return Training[]
