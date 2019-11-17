@@ -47,6 +47,9 @@ Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos comp
 - Actualizar el repositorio a la última versión oficial.
 - Actualizar la base de datos:
   - `php bin/console doctrine:migrations:migrate -n`
+- Ejecutar `composer install` desde la carpeta del proyecto.
+- Ejecutar `npm install`
+- Ejecutar el comando `node_modules/.bin/encore prod` para generar los assets.
 
 ## Licencia
 Esta aplicación se ofrece bajo licencia [AGPL versión 3].
