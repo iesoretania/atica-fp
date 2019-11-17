@@ -22,12 +22,6 @@
             <li>{{ 'report.learning_program.company.old'|trans }}: {{ stats.company.old_items }}</li>
             <li>{{ 'report.learning_program.company.unknown'|trans }}: {{ stats.company.unknown_items|join(', ') }}</li>
         </ul>
-        {% if stats.subject.unknown_items %}
-            <h4>{{ 'report.learning_program.subject.list'|trans }}</h4>
-            <ul>
-                <li>{{ 'report.learning_program.subject.unknown'|trans }}: {{ stats.subject.unknown_items|join(', ') }}</li>
-            </ul>
-        {% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {% endif %}
 {% endblock %}

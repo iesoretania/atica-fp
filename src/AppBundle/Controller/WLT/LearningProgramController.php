@@ -329,7 +329,6 @@ class LearningProgramController extends Controller
         $newCompanyCount = 0;
         $oldCompanyCount = 0;
 
-        $unknownSubjects = [];
         $unknownCompanies = [];
         $unknownActivities = [];
 
@@ -392,17 +391,13 @@ class LearningProgramController extends Controller
                                     $project,
                                     $lastCode
                                 );
-                                // si no hay asignatura, ignorar las actividades
-                                if (null !== $subject) {
-                                    $activity = new Activity();
-                                    $activity
-                                        ->setProject($project)
-                                        ->setDescription($lineData[1])
-                                        ->setCode($lineData[0]);
-                                    $entityManager->persist($activity);
-                                } else {
-                                    $unknownSubjects[$lastCode] = $lastCode;
-                                }
+
+                                $activity = new Activity();
+                                $activity
+                                    ->setProject($project)
+                                    ->setDescription($lineData[1])
+                                    ->setCode($lineData[0]);
+                                $entityManager->persist($activity);
                             } else {
                                 $lastCode = $activity->getCode();
                             }
@@ -463,9 +458,6 @@ class LearningProgramController extends Controller
                 'new_items' => $newCompanyCount,
                 'old_items' => $oldCompanyCount,
                 'unknown_items' => $unknownCompanies
-            ],
-            'subject' => [
-                'unknown_items' => $unknownSubjects
             ]
         ];
     }
