@@ -8,6 +8,22 @@ en la distintas versiones de la misma.
 ------------------
 * feat: ¡IMPORTANTE! Soporte de FP dual basado en proyectos, no en cursos académicos
 * feat: Las visitas a los centros de trabajo pueden estar asociadas a proyectos y/o estudiantes en alternancia
+* feat: Existe el rol de responsable de seguimiento de un convenio
+* feat: Existe el coordinador/a de un proyecto de FP dual
+* feat: No es necesario seleccionar las enseñanzas/grupos/módulos de FP dual
+* feat: No es necesario que exista una materia para importar actividades
+* feat: Se pueden copiar encuestas a la hora de crearlas
+* feat: Encuesta de responsable de seguimiento por curso académico y proyecto 
+* feat: Las preguntas de las encuestas usan editor HTML
+* feat: Todos los informes se generan por proyecto
+* feat: La mayoría de los listados pueden filtrarse por curso académico
+* feat: Separación del alumnado de un proyecto por grupos
+* fix: Permitir paginación cuando se filtra un listado
+* chore: Renombrada sección de programas formativos de empresa
+* fix: Solucionado error producido por la ausencia de jornadas en el seguimiento
+* chore: Separados los menús de los bloques de educación y dual del core
+* chore: Mejorada la navegabilidad al modificar una visita
+* feat: Los centros de trabajo no dependen del curso académico
 
 1.5.3 (2019-11-17)
 ------------------
