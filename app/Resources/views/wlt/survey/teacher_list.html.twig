@@ -12,17 +12,17 @@
 {% endblock %}
 
 {% block table_body %}
-            {% for item in pager  %}
-                {% set url = path('work_linked_training_survey_educational_tutor_form', {'project': item.id, 'id': item[0].id}) %}
+            {% for item in pager %}
+                {% set url = path('work_linked_training_survey_educational_tutor_form', {'project': item.projectId, 'academicYear': item.academicYearId, 'id': item[0].id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <a href="{{ url }}">{{ item[0].person.lastName }}, {{ item[0].person.firstName }}</a>
                     </td>
                     <td>
-                        {{ item.name }}
+                        {{ item.projectName }}
                     </td>
                     <td>
-                        {{ item[0].academicYear }}
+                        {{ item.academicYearDescription }}
                     </td>
                     <td>
                         {{ (item[1] ? 'table.answered.yes' : 'table.answered.no')|trans }}

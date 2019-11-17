@@ -32,6 +32,8 @@ class ProjectVoter extends CachedVoter
     const MANAGE = 'WLT_PROJECT_MANAGE';
     const ACCESS_MANAGER_SURVEY = 'WLT_MANAGER_SURVEY_ACCESS';
     const FILL_MANAGER_SURVEY = 'WLT_MANAGER_SURVEY_MANAGE';
+    const ACCESS_EDUCATIONAL_TUTOR_SURVEY = 'WLT_EDUCATIONAL_TUTOR_SURVEY_ACCESS';
+    const FILL_EDUCATIONAL_TUTOR_SURVEY = 'WLT_EDUCATIONAL_TUTOR_SURVEY_MANAGE';
     const REPORT_STUDENT_SURVEY = 'WLT_STUDENT_SURVEY_REPORT';
     const REPORT_COMPANY_SURVEY = 'WLT_COMPANY_SURVEY_REPORT';
     const REPORT_MEETING = 'WLT_MEETING_REPORT';
@@ -67,6 +69,8 @@ class ProjectVoter extends CachedVoter
             self::MANAGE,
             self::ACCESS_MANAGER_SURVEY,
             self::FILL_MANAGER_SURVEY,
+            self::ACCESS_EDUCATIONAL_TUTOR_SURVEY,
+            self::FILL_EDUCATIONAL_TUTOR_SURVEY,
             self::REPORT_STUDENT_SURVEY,
             self::REPORT_COMPANY_SURVEY,
             self::REPORT_MEETING,
@@ -113,8 +117,39 @@ class ProjectVoter extends CachedVoter
             return true;
         }
 
+        $isProjectManager = $subject->getManager() === $user->getPerson();
+
+        $isCurrentAcademicYear = false;
+        foreach ($subject->getGroups() as $group) {
+            if ($group->getGrade()->getTraining()->getDepartment() &&
+            $group
+                ->getGrade()->getTraining()
+                ->getAcademicYear() === $this->userExtensionService->getCurrentOrganization()) {
+                $isCurrentAcademicYear = true;
+                break;
+            }
+        };
+
+        // El coordinador puede gestionar el proyecto
+        if ($isProjectManager) {
+            return true;
+        }
+
+        // El jefe de departamento de la familia profesional de proyecto también puede
+        $isDepartmentHead = false;
+        foreach ($subject->getGroups() as $group) {
+            if ($group->getGrade()->getTraining()->getDepartment()->getHead() &&
+                $group
+                    ->getGrade()->getTraining()
+                    ->getDepartment()->getHead()->getPerson() === $user->getPerson()
+
+            ) {
+                $isDepartmentHead = true;
+                break;
+            }
+        }
+
         switch ($attribute) {
-            // El coordinador puede gestionar el proyecto
             case self::MANAGE:
             case self::ACCESS_MANAGER_SURVEY:
             case self::REPORT_STUDENT_SURVEY:
@@ -122,35 +157,19 @@ class ProjectVoter extends CachedVoter
             case self::REPORT_MEETING:
             case self::REPORT_ATTENDANCE:
             case self::REPORT_GRADING:
-                if ($subject->getManager() === $user->getPerson()) {
-                    return true;
-                }
-
-                foreach ($subject->getGroups() as $group) {
-                    if ($group->getGrade()->getTraining()->getDepartment() &&
-                        $group
-                            ->getGrade()->getTraining()
-                            ->getAcademicYear() === $this->userExtensionService->getCurrentOrganization() &&
-                        $group->getGrade()->getTraining()->getDepartment()->getHead() &&
-                        $group
-                            ->getGrade()->getTraining()
-                            ->getDepartment()->getHead()->getPerson() === $user->getPerson()
-
-                    ) {
-                        return true;
-                    }
-                }
-                return false;
+                return $isProjectManager || $isDepartmentHead;
 
             case self::FILL_MANAGER_SURVEY:
-                if ($subject->getManager() === $user->getPerson()) {
+                return ($isCurrentAcademicYear && ($isProjectManager || $isDepartmentHead));
+
+            case self::ACCESS_EDUCATIONAL_TUTOR_SURVEY:
+            case self::FILL_EDUCATIONAL_TUTOR_SURVEY:
+                if ($isProjectManager || $isDepartmentHead) {
                     return true;
                 }
-                foreach ($subject->getGroups() as $group) {
-                    if ($group->getGrade()->getTraining()->getDepartment() &&
-                        $group->getGrade()->getTraining()->getDepartment()->getHead() &&
-                        $group
-                            ->getGrade()->getTraining()->getDepartment()->getHead()->getPerson() === $user->getPerson()
+                // si es el responsable de seguimiento
+                foreach ($subject->getAgreements() as $agreement) {
+                    if ($agreement->getEducationalTutor()->getPerson() === $user->getPerson()
                     ) {
                         return true;
                     }

@@ -69,6 +69,6 @@
     {% else %}
         <div class="alert alert-danger">{{ 'prompt.no_survey'|trans|nl2br }}</div>
     {% endif %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.link_button(back_url|default(last_url), 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ form_end(form) }}
 {% endblock %}

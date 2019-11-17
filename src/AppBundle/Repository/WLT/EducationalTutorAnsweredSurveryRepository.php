@@ -18,6 +18,7 @@
 
 namespace AppBundle\Repository\WLT;
 
+use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WLT\EducationalTutorAnsweredSurvey;
 use AppBundle\Entity\WLT\Project;
@@ -31,15 +32,20 @@ class EducationalTutorAnsweredSurveryRepository extends ServiceEntityRepository
         parent::__construct($registry, EducationalTutorAnsweredSurvey::class);
     }
 
-    public function findOneByProjectAndTeacher(Project $project, Teacher $teacher)
-    {
+    public function findOneByProjectAcademicYearAndTeacher(
+        Project $project,
+        AcademicYear $academicYear,
+        Teacher $teacher
+    ) {
         return $this->getEntityManager()->createQueryBuilder()
             ->select('etas')
             ->from(EducationalTutorAnsweredSurvey::class, 'etas')
             ->where('etas.project = :project')
             ->andWhere('etas.teacher = :teacher')
+            ->andWhere('etas.academicYear = :academicYear')
             ->setParameter('project', $project)
             ->setParameter('teacher', $teacher)
+            ->setParameter('academicYear', $academicYear)
             ->getQuery()
             ->getOneOrNullResult();
     }

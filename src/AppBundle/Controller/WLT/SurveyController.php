@@ -36,7 +36,6 @@ use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WLT\AgreementVoter;
 use AppBundle\Security\WLT\ProjectVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
-use AppBundle\Security\WLT\WLTTeacherVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -241,7 +240,6 @@ class SurveyController extends Controller
         ProjectRepository $projectRepository,
         AcademicYearRepository $academicYearRepository,
         WLTGroupRepository $wltGroupRepository,
-        \Symfony\Component\Security\Core\Security $security,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
@@ -270,7 +268,6 @@ class SurveyController extends Controller
         ProjectRepository $projectRepository,
         AcademicYearRepository $academicYearRepository,
         WLTGroupRepository $wltGroupRepository,
-        \Symfony\Component\Security\Core\Security $security,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
@@ -604,24 +601,38 @@ class SurveyController extends Controller
     }
 
     /**
-     * @Route("/seguimiento/cumplimentar/{project}/{id}", name="work_linked_training_survey_educational_tutor_form",
+     * @Route("/seguimiento/cumplimentar/{project}/{academicYear}/{id}",
+     *     name="work_linked_training_survey_educational_tutor_form",
      *     requirements={"project" : "\d+", "id" : "\d+"}, methods={"GET", "POST"})
      */
     public function educationalTutorFillAction(
         Request $request,
         TranslatorInterface $translator,
         EducationalTutorAnsweredSurveryRepository $educationalTutorAnsweredSurveryRepository,
+        ProjectRepository $projectRepository,
         Project $project,
+        AcademicYear $academicYear,
         Teacher $teacher
     ) {
         $em = $this->getDoctrine()->getManager();
 
-        $this->denyAccessUnlessGranted(WLTTeacherVoter::ACCESS_EDUCATIONAL_TUTOR_SURVEY, $teacher);
-        $readOnly = !$this->isGranted(WLTTeacherVoter::FILL_EDUCATIONAL_TUTOR_SURVEY, $teacher);
+        $this->denyAccessUnlessGranted(ProjectVoter::ACCESS_EDUCATIONAL_TUTOR_SURVEY, $project);
+        $readOnly = !$this->isGranted(ProjectVoter::FILL_EDUCATIONAL_TUTOR_SURVEY, $project);
+
+        $projects = $projectRepository->findByAcademicYear($academicYear);
+
+        // comprobar que el curso académico pertenece al proyecto
+        if (!in_array($project, $projects, true)) {
+            throw $this->createAccessDeniedException();
+        }
 
         if ($project->getEducationalTutorSurvey()) {
             $answeredSurvey =
-                $educationalTutorAnsweredSurveryRepository->findOneByProjectAndTeacher($project, $teacher);
+                $educationalTutorAnsweredSurveryRepository->findOneByProjectAcademicYearAndTeacher(
+                    $project,
+                    $academicYear,
+                    $teacher
+                );
 
             if ($answeredSurvey === null) {
                 $teacherSurvey = new AnsweredSurvey();
@@ -648,6 +659,7 @@ class SurveyController extends Controller
                 $managerAnsweredSurvey
                     ->setProject($project)
                     ->setTeacher($teacher)
+                    ->setAcademicYear($academicYear)
                     ->setAnsweredSurvey($teacherSurvey);
 
                 $em->persist($managerAnsweredSurvey);
@@ -667,7 +679,7 @@ class SurveyController extends Controller
                     $em->flush();
                     $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
                     return $this->redirectToRoute('work_linked_training_survey_educational_tutor_list', [
-                        'academicYear' => $teacher->getAcademicYear()->getId()
+                        'academicYear' => $academicYear->getId()
                     ]);
                 } catch (\Exception $e) {
                     $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
@@ -687,7 +699,9 @@ class SurveyController extends Controller
             ['fixed' => $teacher->getAcademicYear()],
             ['fixed' => $title]
         ];
-
+        $backUrl = $this->generateUrl('work_linked_training_survey_educational_tutor_list', [
+            'academicYear' => $academicYear->getId()
+        ]);
         return $this->render('wlt/survey/form.html.twig', [
             'menu_path' => 'work_linked_training_survey_educational_tutor_list',
             'breadcrumb' => $breadcrumb,
@@ -695,9 +709,7 @@ class SurveyController extends Controller
             'read_only' => $readOnly,
             'survey' => $project->getEducationalTutorSurvey(),
             'form' => $form->createView(),
-            'last_url' => $this->generateUrl('work_linked_training_survey_educational_tutor_list', [
-                'academicYear' => $teacher->getAcademicYear()->getId()
-            ])
+            'back_url' => $backUrl
         ]);
     }
 
@@ -728,18 +740,25 @@ class SurveyController extends Controller
 
         $queryBuilder
             ->select('t')
-            ->addSelect('pro.id')
-            ->addSelect('pro.name')
+            ->addSelect('pro.id AS projectId')
+            ->addSelect('pro.name AS projectName')
+            ->addSelect('ay.id AS academicYearId')
+            ->addSelect('ay.description AS academicYearDescription')
             ->addSelect('COUNT(etas)')
             ->from(Teacher::class, 't')
             ->join(Agreement::class, 'a', 'WITH', 'a.educationalTutor = t')
             ->join(Project::class, 'pro', 'WITH', 'a.project = pro')
             ->join('t.person', 'p')
+            ->join('a.studentEnrollment', 'se')
+            ->join('se.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 'tr')
+            ->join('tr.academicYear', 'ay')
             ->leftJoin(
                 EducationalTutorAnsweredSurvey::class,
                 'etas',
                 'WITH',
-                'etas.teacher = t'
+                'etas.teacher = t AND etas.academicYear = :academic_year AND etas.project = pro'
             )
             ->addGroupBy('t, pro')
             ->addOrderBy('p.lastName')
@@ -775,7 +794,7 @@ class SurveyController extends Controller
         }
 
         $queryBuilder
-            ->andWhere('t.academicYear = :academic_year')
+            ->andWhere('tr.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear);
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
