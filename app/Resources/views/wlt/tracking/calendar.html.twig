@@ -22,7 +22,7 @@
         {% endblock %}
     {% endembed %}
 
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.link_button(back_url|default(last_url), 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {% if not read_only|default(false) %}
         {% if selectable %}{{ m.link_button('', 'check-square', 'btn-primary', 'form.select_deselect'|trans, 'toggle') }}{% endif %}
         {% if is_granted('WLT_AGREEMENT_LOCK', agreement) %}

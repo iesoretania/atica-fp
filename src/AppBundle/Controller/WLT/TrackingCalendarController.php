@@ -20,13 +20,13 @@ namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\WorkDay;
-use AppBundle\Form\Model\Attendance;
 use AppBundle\Form\Type\WLT\WorkDayTrackingType;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementActivityRealizationRepository;
 use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
 use AppBundle\Security\WLT\AgreementVoter;
+use AppBundle\Security\WLT\WorkDayVoter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,6 +77,11 @@ class TrackingCalendarController extends Controller
         $selectable = $this->isGranted(AgreementVoter::LOCK, $agreement) ||
             $this->isGranted(AgreementVoter::ATTENDANCE, $agreement);
 
+        $backUrl = $this->generateUrl('work_linked_training_tracking_list', [
+            'academicYear' => $agreement
+                ->getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getAcademicYear()->getId()
+        ]);
+
         return $this->render('wlt/tracking/calendar.html.twig', [
             'menu_path' => 'work_linked_training_tracking_list',
             'breadcrumb' => $breadcrumb,
@@ -88,7 +93,8 @@ class TrackingCalendarController extends Controller
             'work_day_stats' => $workDayStats,
             'work_day_today' => $workDayToday,
             'calendar' => $workDaysData,
-            'read_only' => $readOnly
+            'read_only' => $readOnly,
+            'back_url' => $backUrl
         ]);
     }
 
@@ -104,8 +110,8 @@ class TrackingCalendarController extends Controller
         WorkDay $workDay
     ) {
         $agreement = $workDay->getAgreement();
-        $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
-        $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
+        $this->denyAccessUnlessGranted(WorkDayVoter::ACCESS, $workDay);
+        $readOnly = !$this->isGranted(WorkDayVoter::FILL, $workDay);
 
         $title = $translator->trans('dow' . ($workDay->getDate()->format('N') - 1), [], 'calendar');
         $title .= ' - ' . $workDay->getDate()->format($translator->trans('format.date', [], 'general'));

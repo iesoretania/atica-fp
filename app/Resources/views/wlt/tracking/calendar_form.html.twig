@@ -3,8 +3,12 @@
 {% import 'macros.html.twig' as m %}
 {% form_theme form _self %}
 {% block content %}
-    {% if work_day.locked %}
-        <div class="alert alert-warning">{{ 'prompt.locked_warning'|trans|nl2br }}</div>
+    {% if read_only %}
+        <div class="alert alert-warning">{{ 'prompt.read_only_warning'|trans|nl2br }}</div>
+    {% else %}
+        {% if work_day.locked %}
+            <div class="alert alert-warning">{{ 'prompt.locked_warning'|trans|nl2br }}</div>
+        {% endif %}
     {% endif %}
     {{ form_start(form) }}
     {{ form_widget(form) }}
