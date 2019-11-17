@@ -21,7 +21,6 @@ namespace AppBundle\Repository\Edu;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Person;
-use AppBundle\Entity\WLT\Agreement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -40,7 +39,6 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
             ->join('se.person', 's')
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
-            ->join(Agreement::class, 'a', 'WITH', 'a.studentEnrollment = se')
             ->where('t.academicYear = :academic_year')
             ->andWhere('t.workLinked = :work_linked')
             ->setParameter('academic_year', $academicYear)
