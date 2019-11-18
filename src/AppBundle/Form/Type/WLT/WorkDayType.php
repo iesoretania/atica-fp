@@ -21,8 +21,10 @@ namespace AppBundle\Form\Type\WLT;
 use AppBundle\Entity\WLT\WorkDay;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Range;
 
 class WorkDayType extends AbstractType
 {
@@ -37,8 +39,14 @@ class WorkDayType extends AbstractType
                 'widget' => 'single_text',
                 'required' => true
             ])
-            ->add('hours', null, [
+            ->add('hours', IntegerType::class, [
                 'label' => 'form.total_hours',
+                'constraints' => [
+                    new Range(['min' => 0])
+                ],
+                'attr' => [
+                    'min' => 0
+                ],
                 'required' => true
             ])
             ->add('startTime1', null, [

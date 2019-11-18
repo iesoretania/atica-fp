@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+2.0.x (xxxx-xx-xx)
+------------------
+* fix: Restringir el número de horas de una jornada a un mínimo de cero
+
 2.0.1 (2019-11-18)
 ------------------
 * fix: Importar la encuesta de satisfacción del centro desde la versión 1
