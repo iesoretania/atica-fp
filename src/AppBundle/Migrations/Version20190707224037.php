@@ -62,6 +62,7 @@ class Version20190707224037 extends AbstractMigration
 
             $managerId = null;
             $teacherId = null;
+            $teacherAnsweredSurveyId = null;
             foreach ($roles as $role) {
                 $managerId = $role['person_id'];
                 $this->connection->insert('wlt_project', [
@@ -74,6 +75,7 @@ class Version20190707224037 extends AbstractMigration
                 ]);
                 $teacher = $this->connection->createQueryBuilder()
                     ->select('t.id')
+                    ->addSelect('t.wlt_teacher_survey_id')
                     ->from('edu_teacher', 't')
                     ->where('t.academic_year_id = :academic_year_id')
                     ->andWhere('t.person_id = :person_id')
@@ -83,6 +85,7 @@ class Version20190707224037 extends AbstractMigration
                     ->execute()
                     ->fetchAll();
                 $teacherId = $teacher[0]['id'];
+                $teacherAnsweredSurveyId = $teacher[0]['wlt_teacher_survey_id'];
             }
 
             $project = $this->connection->createQueryBuilder()
@@ -95,6 +98,14 @@ class Version20190707224037 extends AbstractMigration
                 ->setMaxResults(1)
                 ->execute()
                 ->fetchAll();
+
+            if ($teacherAnsweredSurveyId) {
+                $this->connection->insert('wlt_manager_answered_survey', [
+                    'academic_year_id' => $workLinkedTraining['academic_year_id'],
+                    'project_id' => $project[0]['id'],
+                    'answered_survey_id' => $teacherAnsweredSurveyId
+                ]);
+            }
 
             $subjects = $this->connection->createQueryBuilder()
                 ->select('s.id')
