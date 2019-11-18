@@ -4,9 +4,12 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-2.0.x (xxxx-xx-xx)
+2.0.2 (2019-11-18)
 ------------------
 * fix: Restringir el número de horas de una jornada a un mínimo de cero
+* fix: Solucionado problema al guardar una valoración del desempeño
+* fix: Solucionado problema al guardar una encuesta
+* fix: Mostrar convenios del responsable laboral
 
 2.0.1 (2019-11-18)
 ------------------
