@@ -370,20 +370,20 @@ class SurveyController extends Controller
         // ver siempre las propias
         if ($groups) {
             $queryBuilder
-                ->andWhere('se.group IN (:groups) OR se.person = :person')
+                ->andWhere('se.group IN (:groups) OR se.person = :person OR wt = :person')
                 ->setParameter('groups', $groups)
                 ->setParameter('person', $person);
         }
         if ($projects) {
             $queryBuilder
-                ->andWhere('pro IN (:projects) OR se.person = :person')
+                ->andWhere('pro IN (:projects) OR se.person = :person OR wt = :person')
                 ->setParameter('projects', $projects)
                 ->setParameter('person', $person);
         }
 
         if (false === $isWltManager && false === $isManager && !$projects && !$groups) {
             $queryBuilder
-                ->andWhere('se.person = :person')
+                ->andWhere('se.person = :person OR wt = :person')
                 ->setParameter('person', $person);
         }
 
