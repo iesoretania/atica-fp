@@ -104,12 +104,12 @@ class TeacherType extends AbstractType
     {
         $this->buildBaseForm($builder, $options);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $builder = $event->getForm();
             /** @var User $data */
             $data = $event->getData();
 
-            if ($data->getPerson()->getUser()->getAllowExternalCheck() || $options['admin']) {
+            if ($data->getPerson()->getUser()->getAllowExternalCheck()) {
                 $builder
                     ->add('externalCheck', ChoiceType::class, [
                         'label' => 'form.external_check',

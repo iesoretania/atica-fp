@@ -7,6 +7,8 @@ en la distintas versiones de la misma.
 2.0.1 (2019-11-18)
 ------------------
 * fix: Importar la encuesta de satisfacción del centro desde la versión 1
+* fix: Eliminado rol global de coordinador/a de FP
+* fix: Arreglado un problema en el formulario al mostrar los datos de un docente
 
 2.0.0 (2019-11-18)
 ------------------
