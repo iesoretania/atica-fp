@@ -79,7 +79,7 @@ class SurveyController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 // Comprobar si es necesario copiar de otra encuesta
-                if ($form->get('copyFrom') && $form->get('copyFrom')->getData()) {
+                if ($form->has('copyFrom') && $form->get('copyFrom')->getData()) {
                     /** @var Survey $original */
                     $original = $form->get('copyFrom')->getData();
                     foreach ($original->getQuestions() as $question) {
