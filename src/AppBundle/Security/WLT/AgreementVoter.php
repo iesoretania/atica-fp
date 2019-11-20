@@ -119,49 +119,58 @@ class AgreementVoter extends CachedVoter
             return true;
         }
 
-        $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
         $person = $user->getPerson();
 
-        // Si es jefe de su departamento o coordinador de FP dual, permitir acceder siempre
         $isDepartmentHead = false;
-        // Jefe del departamento del estudiante, autorizado salvo modificar si el acuerdo es de otro curso académico
-        if ($subject->getStudentEnrollment() && $training->getDepartment() && $training->getDepartment()->getHead() &&
-            $training->getDepartment()->getHead()->getPerson() === $person) {
-            $isDepartmentHead = true;
-        }
+        $isGroupTutor = false;
+        $isStudent = false;
+        $isTeacher = false;
+        $isWltManager = false;
+        $academicYearIsCurrent = true;
 
         // Coordinador de FP dual, autorizado salvo modificar si el acuerdo es de otro curso académico
-        $isWltManager = false;
         if ($subject->getProject()->getManager() === $person) {
             $isWltManager = true;
         }
 
-        // Otros casos: ver qué permisos tiene el usuario
-
         // Tutor laboral y de seguimiento
-        $isWorkTutor = $user === $subject->getWorkTutor()->getUser();
-        $isEducationalTutor = $subject->getEducationalTutor()->getPerson() === $person;
+        $isWorkTutor = $subject->getWorkTutor() && $user === $subject->getWorkTutor()->getUser();
+        $isEducationalTutor =
+            $subject->getEducationalTutor() && $subject->getEducationalTutor()->getPerson() === $person;
 
-        // Tutor del grupo del acuerdo
-        $isGroupTutor = false;
-        $tutors = $subject->getStudentEnrollment()->getGroup()->getTutors();
-        foreach ($tutors as $tutor) {
-            if ($tutor->getPerson()->getUser() === $user) {
-                $isGroupTutor = true;
-                break;
+        // hay estudiante asociado (puede que no lo haya si es un convenio nuevo)
+        if ($subject->getStudentEnrollment()) {
+            // Si es jefe de su departamento o coordinador de FP dual, permitir acceder siempre
+            // Jefe del departamento del estudiante, autorizado salvo modificar si el acuerdo es de otro curso académico
+            $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
+            if ($training && $training->getDepartment() && $training->getDepartment()->getHead() &&
+                $training->getDepartment()->getHead()->getPerson() === $person) {
+                $isDepartmentHead = true;
             }
+
+            // Otros casos: ver qué permisos tiene el usuario
+
+            // Tutor del grupo del acuerdo
+            $tutors = $subject->getStudentEnrollment()->getGroup()->getTutors();
+            foreach ($tutors as $tutor) {
+                if ($tutor->getPerson()->getUser() === $user) {
+                    $isGroupTutor = true;
+                    break;
+                }
+            }
+
+            // Estudiante del acuerdo
+            $isStudent = $user === $subject->getStudentEnrollment()->getPerson()->getUser();
+
+            // Docente del grupo del acuerdo
+            $isTeacher = $this->decisionManager->decide(
+                $token,
+                [GroupVoter::TEACH],
+                $subject->getStudentEnrollment()->getGroup()
+            );
+
+            $academicYearIsCurrent = $organization->getCurrentAcademicYear() === $training->getAcademicYear();
         }
-
-        // Estudiante del acuerdo
-        $isStudent = $user === $subject->getStudentEnrollment()->getPerson()->getUser();
-
-        // Docente del grupo del acuerdo
-        $isTeacher = $this->decisionManager->decide(
-            $token,
-            [GroupVoter::TEACH],
-            $subject->getStudentEnrollment()->getGroup()
-        );
-        $academicYearIsCurrent = $organization->getCurrentAcademicYear() === $training->getAcademicYear();
 
         switch ($attribute) {
             case self::MANAGE:

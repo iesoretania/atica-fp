@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+2.0.3 (2019-11-20)
+------------------
+* fix: Solucionado un problema cuando el coordinador de proyecto crea un convenio
+
 2.0.2 (2019-11-18)
 ------------------
 * fix: Restringir el número de horas de una jornada a un mínimo de cero
