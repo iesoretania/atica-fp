@@ -253,12 +253,13 @@ class AgreementRepository extends ServiceEntityRepository
 
         /** @var WorkDay $workDay */
         foreach ($workDays as $workDay) {
-            $newWorkDay = $this->workDayRepository->findOneByAgreementAndDate($destination, $workDay->getDate());
+            $newDate = clone $workDay->getDate();
+            $newWorkDay = $this->workDayRepository->findOneByAgreementAndDate($destination, $newDate);
             if (null === $newWorkDay) {
                 $newWorkDay = new WorkDay();
                 $newWorkDay
                     ->setAgreement($destination)
-                    ->setDate($workDay->getDate())
+                    ->setDate($newDate)
                     ->setHours($workDay->getHours());
                 $this->getEntityManager()->persist($newWorkDay);
             } elseif ($overwrite) {

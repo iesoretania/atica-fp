@@ -395,7 +395,7 @@ class AgreementController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            try {
+            //try {
                 foreach ($selectedAgreements as $agreement) {
                     $agreementRepository->cloneCalendarFromAgreement(
                         $agreement,
@@ -411,9 +411,9 @@ class AgreementController extends Controller
                 return $this->redirectToRoute('work_linked_training_agreement_list', [
                     'id' => $project->getId()
                 ]);
-            } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.copy_error', [], 'wlt_agreement'));
-            }
+            //} catch (\Exception $e) {
+            //    $this->addFlash('error', $translator->trans('message.copy_error', [], 'wlt_agreement'));
+            //}
         }
 
         $title = $translator->trans('title.copy', [], 'wlt_agreement');
