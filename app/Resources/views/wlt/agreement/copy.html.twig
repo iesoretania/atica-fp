@@ -13,8 +13,9 @@
                     <tr>
                         <th>{{ 'header.student_enrollment'|trans }}</label></th>
                         <th>{{ 'header.workcenter'|trans }}</label></th>
-                        <th>{{ 'header.start_date'|trans }}</label></th>
-                        <th>{{ 'header.end_date'|trans }}</label></th>
+                        <th>{{ 'header.work_tutor'|trans }}</label></th>
+                        <th>{{ 'header.educational_tutor'|trans }}</label></th>
+                        <th>{{ 'header.dates'|trans }}</label></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -22,8 +23,10 @@
                         <tr>
                             <td>{{ item.studentEnrollment }}</td>
                             <td>{{ item.workcenter }}</td>
-                            <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}</td>
-                            <td>{{ item.endDate ? item.endDate|date('format.date'|trans({}, 'general')) }}</td>
+                            <td>{{ item.workTutor }}</td>
+                            <td>{{ item.educationalTutor }}</td>
+                            <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}
+                                {% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
