@@ -30,7 +30,7 @@ table.no_items: No hay programas que mostrar
 table.filter: Filtrar...
 
 header.company: Empresa
-header.training: Enseñanza
+header.project: Proyecto
 header.items: Actividades a realizar
 
 message.saved: Datos actualizados con éxito.
