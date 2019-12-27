@@ -98,7 +98,7 @@ class ProjectType extends AbstractType
                             ->getDescription() . ' - ' . $group->getName();
                 },
                 'multiple' => true,
-                'required' => false
+                'required' => true
             ])
             ->add('studentSurvey', EntityType::class, [
                 'label' => 'form.student_survey',
