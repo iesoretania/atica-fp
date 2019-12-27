@@ -4,10 +4,12 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-2.0.x (xxxx-xx-xx)
+2.0.4 (2019-12-27)
 ------------------
 * feat: Mostrar todos los datos del convenio al copiar un calendario
 * fix: Corregido cambio de fecha al copiar un calendario
+* fix: Un proyecto debe tener al menos un grupo de alumnado asociado
+* fix: Listado corregido a la hora de eliminar una empresa
 
 2.0.3 (2019-11-20)
 ------------------
@@ -35,7 +37,7 @@ en la distintas versiones de la misma.
 * feat: No es necesario seleccionar las enseñanzas/grupos/módulos de FP dual
 * feat: No es necesario que exista una materia para importar actividades
 * feat: Se pueden copiar encuestas a la hora de crearlas
-* feat: Encuesta de responsable de seguimiento por curso académico y proyecto 
+* feat: Encuesta de responsable de seguimiento por curso académico y proyecto
 * feat: Las preguntas de las encuestas usan editor HTML
 * feat: Todos los informes se generan por proyecto
 * feat: La mayoría de los listados pueden filtrarse por curso académico
@@ -50,7 +52,7 @@ en la distintas versiones de la misma.
 1.5.3 (2019-11-17)
 ------------------
 * fix: Solucionado error al mostrar un calendario sin jornadas
-* fix: Ahora aparecen los estudiantes al generar convenios nuevos 
+* fix: Ahora aparecen los estudiantes al generar convenios nuevos
 
 1.5.2 (2019-10-29)
 ------------------
@@ -86,7 +88,7 @@ en la distintas versiones de la misma.
 * fix: Restringir las encuestas de seguimiento al usuario propio
 * feat: Aviso de encuestas no cumplimentadas en plazo
 * feat: La encuesta de satisfacción de seguimiento se aplica al curso académico
- 
+
 1.3.0 (2019-04-07)
 ------------------
 * UX: Eliminada duplicidad de enlaces para salir de la aplicación
