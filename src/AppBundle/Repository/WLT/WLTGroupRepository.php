@@ -173,12 +173,31 @@ class WLTGroupRepository extends ServiceEntityRepository
         return $this->findByAcademicYearAndPerson($organization->getCurrentAcademicYear(), $person);
     }
 
-    public function findByAcademicYearAndGrupTutorOrDepartmentHeadPerson(AcademicYear $academicYear, Person $person)
+    public function findByAcademicYearAndGroupTutorOrDepartmentHeadPerson(AcademicYear $academicYear, Person $person)
     {
         $groups = new ArrayCollection();
 
         // grupos de las familias profesionales donde es jefe/a de departamento
         $newGroups = $this->findByAcademicYearAndWLTDepartmentHeadPerson($academicYear, $person);
+        $this->appendGroups($groups, $newGroups);
+
+        // grupos donde es tutor
+        $newGroups = $this->findByAcademicYearAndWLTGroupTutorPerson($academicYear, $person);
+        $this->appendGroups($groups, $newGroups);
+
+        return $groups;
+    }
+
+    public function findByAcademicYearAndGroupTutorOrTeacherOrDepartmentHeadPerson(AcademicYear $academicYear, Person $person)
+    {
+        $groups = new ArrayCollection();
+
+        // grupos de las familias profesionales donde es jefe/a de departamento
+        $newGroups = $this->findByAcademicYearAndWLTDepartmentHeadPerson($academicYear, $person);
+        $this->appendGroups($groups, $newGroups);
+
+        // grupos donde es profesor
+        $newGroups = $this->findByAcademicYearAndWLTTeacherPerson($academicYear, $person);
         $this->appendGroups($groups, $newGroups);
 
         // grupos donde es tutor

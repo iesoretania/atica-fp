@@ -172,7 +172,7 @@ class EvaluationController extends Controller
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento o tutor de grupo  -> ver los acuerdos de los
             // estudiantes de sus grupos
-            $groups = $wltGroupRepository->findByAcademicYearAndGrupTutorOrDepartmentHeadPerson($academicYear, $person);
+            $groups = $wltGroupRepository->findByAcademicYearAndGroupTutorOrDepartmentHeadPerson($academicYear, $person);
         } elseif ($isWltManager) {
             $projects = $projectRepository->findByManager($person);
         }

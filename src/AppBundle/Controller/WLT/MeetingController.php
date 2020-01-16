@@ -244,7 +244,7 @@ class MeetingController extends Controller
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento o tutor de grupo  -> ver sólo visitas de los
             // estudiantes de sus grupos
-            $groups = $groupRepository->findByAcademicYearAndGrupTutorOrDepartmentHeadPerson($academicYear, $person);
+            $groups = $groupRepository->findByAcademicYearAndGroupTutorOrDepartmentHeadPerson($academicYear, $person);
         } elseif ($isWltManager) {
             $projects = $projectRepository->findByManager($person);
         }
