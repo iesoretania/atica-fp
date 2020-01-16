@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-2.x.x (xxxx-xx-xx)
+2.0.5 (2020-01-16)
 ------------------
 * feat: Los docentes de un grupo de FP dual pueden ver las actividades de seguimiento
 
