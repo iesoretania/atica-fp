@@ -101,6 +101,7 @@ simple_things_entity_audit:
         - AppBundle\Entity\User
         - AppBundle\Entity\Workcenter
         - AppBundle\Entity\Edu\AcademicYear
+        - AppBundle\Entity\WLT\ActivityRealizationGrade
         - AppBundle\Entity\WLT\AgreementActivityRealization
         - AppBundle\Entity\WLT\LearningProgram
         - AppBundle\Entity\WLT\Meeting

@@ -65,8 +65,10 @@ class AgreementActivityRealizationType extends AbstractType
                         [],
                         'wlt_agreement_activity_realization'
                     ),
-                    'query_builder' => function (ActivityRealizationGradeRepository $entityRepository) {
+                    'query_builder' => function (ActivityRealizationGradeRepository $entityRepository) use ($data) {
                         return $entityRepository->createQueryBuilder('arg')
+                            ->where('arg.project = :project')
+                            ->setParameter('project', $data->getAgreement()->getProject())
                             ->orderBy('arg.numericGrade', 'ASC');
                     },
                     'required' => false

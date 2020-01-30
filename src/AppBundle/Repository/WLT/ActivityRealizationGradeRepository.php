@@ -18,8 +18,8 @@
 
 namespace AppBundle\Repository\WLT;
 
-use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\WLT\ActivityRealizationGrade;
+use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -30,15 +30,15 @@ class ActivityRealizationGradeRepository extends ServiceEntityRepository
         parent::__construct($registry, ActivityRealizationGrade::class);
     }
 
-    public function findAllInListByIdAndAcademicYear(
+    public function findAllInListByIdAndProject(
         $items,
-        AcademicYear $academicYear
+        Project $project
     ) {
         return $this->createQueryBuilder('arg')
             ->where('arg IN (:items)')
             ->andWhere('arg.academicYear = :academic_year')
             ->setParameter('items', $items)
-            ->setParameter('academic_year', $academicYear)
+            ->setParameter('project', $project)
             ->orderBy('arg.numericGrade', 'DESC')
             ->getQuery()
             ->getResult();

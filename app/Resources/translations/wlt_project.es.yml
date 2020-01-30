@@ -35,6 +35,7 @@ table.learning_program: Programa formativo
 table.learning_program_companies: Empresas
 table.student_enrollment: Alumnado
 table.agreements: Convenios
+table.grades: Eval. desempeño
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay proyectos
 table.filter: Filtrar...

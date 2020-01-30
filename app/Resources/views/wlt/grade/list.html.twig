@@ -2,7 +2,7 @@
 {% extends 'generic/list.html.twig' %}
 {% import 'macros.html.twig' as m %}
 
-{% block path_new %}{{ path('work_linked_training_activity_realization_grade_new') }}{% endblock %}
+{% block path_new %}{{ path('work_linked_training_activity_realization_grade_new', {'id': project.id}) }}{% endblock %}
 
 {% block table_header %}
     <th><label><input type="checkbox" id="select"> {{ 'header.description'|trans }}</label></th>
@@ -32,7 +32,7 @@
 {% endblock %}
 
 {% block before_table %}
-    <form action="{{ path('work_linked_training_activity_realization_grade_operation') }}" method="post">
+    <form action="{{ path('work_linked_training_activity_realization_grade_operation', {'id': project.id}) }}" method="post">
 {% endblock %}
 
 {% block after_table %}

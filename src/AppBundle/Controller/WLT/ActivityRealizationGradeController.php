@@ -19,12 +19,13 @@
 namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\WLT\ActivityRealizationGrade;
+use AppBundle\Entity\WLT\Project;
 use AppBundle\Form\Type\WLT\ActivityRealizationGradeType;
 use AppBundle\Repository\WLT\ActivityRealizationGradeRepository;
-use AppBundle\Security\WLT\WLTOrganizationVoter;
-use AppBundle\Service\UserExtensionService;
+use AppBundle\Security\WLT\ProjectVoter;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
+use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,29 +33,28 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * @Route("/dual/evaluar/calificacion")
+ * @Route("/dual/acuerdo/calificacion")
  */
 class ActivityRealizationGradeController extends Controller
 {
     /**
-     * @Route("/nueva",
+     * @Route("/nueva/{id}",
      *     name="work_linked_training_activity_realization_grade_new", methods={"GET", "POST"})
      **/
     public function newAction(
         Request $request,
         TranslatorInterface $translator,
-        UserExtensionService $userExtensionService
+        Project $project
     ) {
-        $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $activityRealizationGrade = new ActivityRealizationGrade();
         $activityRealizationGrade
-            ->setAcademicYear($organization->getCurrentAcademicYear());
+            ->setProject($project);
 
         $this->getDoctrine()->getManager()->persist($activityRealizationGrade);
 
-        return $this->formAction($request, $translator, $userExtensionService, $activityRealizationGrade);
+        return $this->formAction($request, $translator, $activityRealizationGrade);
     }
 
     /**
@@ -64,15 +64,9 @@ class ActivityRealizationGradeController extends Controller
     public function formAction(
         Request $request,
         TranslatorInterface $translator,
-        UserExtensionService $userExtensionService,
         ActivityRealizationGrade $activityRealizationGrade
     ) {
-        $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
-
-        if ($activityRealizationGrade->getAcademicYear() !== $organization->getCurrentAcademicYear()) {
-            throw $this->createAccessDeniedException();
-        }
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $activityRealizationGrade->getProject());
 
         $form = $this->createForm(ActivityRealizationGradeType::class, $activityRealizationGrade);
 
@@ -82,7 +76,9 @@ class ActivityRealizationGradeController extends Controller
             try {
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_activity_realization_grade'));
-                return $this->redirectToRoute('work_linked_training_activity_realization_grade_list');
+                return $this->redirectToRoute('work_linked_training_activity_realization_grade_list', [
+                    'id' => $activityRealizationGrade->getProject()->getId()
+                ]);
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_activity_realization_grade'));
             }
@@ -96,9 +92,14 @@ class ActivityRealizationGradeController extends Controller
 
         $breadcrumb = [
             [
+                'fixed' => $activityRealizationGrade->getProject()->getName(),
+                'routeName' => 'work_linked_training_project_list',
+                'routeParams' => []
+            ],
+            [
                 'fixed' => $translator->trans('title.list', [], 'wlt_activity_realization_grade'),
                 'routeName' => 'work_linked_training_activity_realization_grade_list',
-                'routeParams' => []
+                'routeParams' => ['id' => $activityRealizationGrade->getProject()->getId()]
             ],
             $activityRealizationGrade->getId() ?
                 ['fixed' => $activityRealizationGrade->getDescription()] :
@@ -106,7 +107,7 @@ class ActivityRealizationGradeController extends Controller
         ];
 
         return $this->render('wlt/grade/form.html.twig', [
-            'menu_path' => 'work_linked_training_evaluation_list',
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'form' => $form->createView()
@@ -114,17 +115,16 @@ class ActivityRealizationGradeController extends Controller
     }
 
     /**
-     * @Route("/listar/{page}/", name="work_linked_training_activity_realization_grade_list",
+     * @Route("/{id}/listar/{page}/", name="work_linked_training_activity_realization_grade_list",
      *     requirements={"page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
      */
     public function listAction(
         Request $request,
         TranslatorInterface $translator,
-        UserExtensionService $userExtensionService,
+        Project $project,
         $page = 1
     ) {
-        $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -145,8 +145,8 @@ class ActivityRealizationGradeController extends Controller
         }
 
         $queryBuilder
-            ->andWhere('arg.academicYear = :academic_year')
-            ->setParameter('academic_year', $userExtensionService->getCurrentOrganization()->getCurrentAcademicYear());
+            ->andWhere('arg.project = :project')
+            ->setParameter('project', $project);
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -154,48 +154,53 @@ class ActivityRealizationGradeController extends Controller
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (\PagerFanta\Exception\OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException $e) {
             $pager->setCurrentPage(1);
         }
 
         $title = $translator->trans('title.list', [], 'wlt_activity_realization_grade');
-
         $breadcrumb = [
+            [
+                'fixed' => $project->getName(),
+                'routeName' => 'work_linked_training_project_list',
+                'routeParams' => []
+            ],
             ['fixed' => $title]
         ];
 
         return $this->render('wlt/grade/list.html.twig', [
-            'menu_path' => 'work_linked_training_evaluation_list',
+            'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'domain' => 'wlt_activity_realization_grade'
+            'domain' => 'wlt_activity_realization_grade',
+            'project' => $project
         ]);
     }
 
     /**
-     * @Route("/eliminar", name="work_linked_training_activity_realization_grade_operation",
+     * @Route("/{id}/eliminar", name="work_linked_training_activity_realization_grade_operation",
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
     public function deleteAction(
         Request $request,
         ActivityRealizationGradeRepository $activityRealizationGradeRepository,
-        UserExtensionService $userExtensionService,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        Project $project
     ) {
-        $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
         if (count($items) === 0) {
-            return $this->redirectToRoute('work_linked_training_activity_realization_grade_list');
+            return $this->redirectToRoute('work_linked_training_activity_realization_grade_list', [
+                'id' => $project->getId()
+            ]);
         }
 
-        $grades = $activityRealizationGradeRepository->
-            findAllInListByIdAndAcademicYear($items, $organization->getCurrentAcademicYear());
+        $grades = $activityRealizationGradeRepository->findAllInListByIdAndProject($items, $project);
 
         if ($request->get('confirm', '') === 'ok') {
             try {
@@ -209,7 +214,9 @@ class ActivityRealizationGradeController extends Controller
                     $translator->trans('message.delete_error', [], 'wlt_activity_realization_grade')
                 );
             }
-            return $this->redirectToRoute('work_linked_training_activity_realization_grade_list');
+            return $this->redirectToRoute('work_linked_training_activity_realization_grade_list', [
+                'id' => $project->getId()
+            ]);
         }
 
         $breadcrumb = [
