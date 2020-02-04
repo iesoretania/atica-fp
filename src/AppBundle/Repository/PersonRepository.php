@@ -43,4 +43,34 @@ class PersonRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByPartialNameOrUniqueIdentifier($id, $pageLimit = 0)
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->where('p.firstName LIKE :tq')
+            ->orWhere('p.lastName LIKE :tq')
+            ->orWhere('p.uniqueIdentifier LIKE :tq')
+            ->setParameter('tq', '%' . $id . '%')
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName');
+
+        if ($pageLimit) {
+            $qb
+                ->setMaxResults($pageLimit);
+        }
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByUniqueIdentifier($id)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.uniqueIdentifier = :q')
+            ->setParameter('q', $id)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->getQuery()
+            ->getResult();
+    }
 }

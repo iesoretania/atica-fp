@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+2.2.0 (xxxx-xx-xx)
+------------------
+* chore: Los gerentes se seleccionan mediante DNI
+
 2.1.0 (2020-01-30)
 ------------------
 * feat: La configuración de evaluación de concreciones se realiza ahora por proyecto, no por curso académico

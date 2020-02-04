@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "637525c1b973297253e871e7dbd53462",
+    "content-hash": "c753a08278ad1fc52fabf7239871f915",
     "packages": [
         {
             "name": "composer/ca-bundle",
-            "version": "1.2.5",
+            "version": "1.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "62e8fc2dc550e5d6d8c9360c7721662670f58149"
+                "reference": "47fe531de31fca4a1b997f87308e7d7804348f7e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/62e8fc2dc550e5d6d8c9360c7721662670f58149",
-                "reference": "62e8fc2dc550e5d6d8c9360c7721662670f58149",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/47fe531de31fca4a1b997f87308e7d7804348f7e",
+                "reference": "47fe531de31fca4a1b997f87308e7d7804348f7e",
                 "shasum": ""
             },
             "require": {
@@ -60,7 +60,7 @@
                 "ssl",
                 "tls"
             ],
-            "time": "2019-12-11T14:44:42+00:00"
+            "time": "2020-01-13T10:02:55+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -1340,16 +1340,16 @@
         },
         {
             "name": "johngrogg/ics-parser",
-            "version": "v2.1.16",
+            "version": "v2.1.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/u01jmg3/ics-parser.git",
-                "reference": "b40bf3c05903372d6c42837df29a02d6205f8156"
+                "reference": "2307a0fddd0b11975ce01b5d80c355a28d8654f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/u01jmg3/ics-parser/zipball/b40bf3c05903372d6c42837df29a02d6205f8156",
-                "reference": "b40bf3c05903372d6c42837df29a02d6205f8156",
+                "url": "https://api.github.com/repos/u01jmg3/ics-parser/zipball/2307a0fddd0b11975ce01b5d80c355a28d8654f1",
+                "reference": "2307a0fddd0b11975ce01b5d80c355a28d8654f1",
                 "shasum": ""
             },
             "require": {
@@ -1392,7 +1392,7 @@
                 "ics-parser",
                 "ifb"
             ],
-            "time": "2019-12-03T19:10:54+00:00"
+            "time": "2020-01-27T16:10:28+00:00"
         },
         {
             "name": "kylekatarnls/update-helper",
@@ -3012,16 +3012,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v3.4.36",
+            "version": "v3.4.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "0a6fccb5772ad2467253e6849d589bd09d9eb195"
+                "reference": "1bd873459b36cf505c7b515ba6e0e2ee40890b8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/0a6fccb5772ad2467253e6849d589bd09d9eb195",
-                "reference": "0a6fccb5772ad2467253e6849d589bd09d9eb195",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/1bd873459b36cf505c7b515ba6e0e2ee40890b8a",
+                "reference": "1bd873459b36cf505c7b515ba6e0e2ee40890b8a",
                 "shasum": ""
             },
             "require": {
@@ -3164,7 +3164,54 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2019-12-01T13:50:53+00:00"
+            "time": "2020-01-21T12:30:09+00:00"
+        },
+        {
+            "name": "tetranz/select2entity-bundle",
+            "version": "v2.9.6",
+            "target-dir": "Tetranz/Select2EntityBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tetranz/select2entity-bundle.git",
+                "reference": "fe03aa203757c59b6b264d78afa2181627ca0ba5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tetranz/select2entity-bundle/zipball/fe03aa203757c59b6b264d78afa2181627ca0ba5",
+                "reference": "fe03aa203757c59b6b264d78afa2181627ca0ba5",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/orm": ">=2.4",
+                "php": ">=5.4.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": []
+            },
+            "autoload": {
+                "psr-0": {
+                    "Tetranz\\Select2EntityBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ross Keatinge",
+                    "email": "tetranz@gmail.com"
+                }
+            ],
+            "description": "A Symfony2 bundle that integrates Select2 as a drop-in replacement for a standard entity field on a Symfony form.",
+            "keywords": [
+                "autocomplete",
+                "select2",
+                "symfony",
+                "typeahead"
+            ],
+            "time": "2019-06-17T12:05:26+00:00"
         },
         {
             "name": "tfox/mpdf-port-bundle",
@@ -3511,20 +3558,21 @@
                 }
             ],
             "description": "This bundle generates code for you",
+            "abandoned": true,
             "time": "2017-12-07T15:36:41+00:00"
         },
         {
             "name": "symfony/phpunit-bridge",
-            "version": "v3.4.36",
+            "version": "v3.4.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",
-                "reference": "cbea8818e9f34e4e9d780bd22bdda21b57d4d5c7"
+                "reference": "ebfd1b428ffc14306e843092763f228bfba168d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/cbea8818e9f34e4e9d780bd22bdda21b57d4d5c7",
-                "reference": "cbea8818e9f34e4e9d780bd22bdda21b57d4d5c7",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/ebfd1b428ffc14306e843092763f228bfba168d0",
+                "reference": "ebfd1b428ffc14306e843092763f228bfba168d0",
                 "shasum": ""
             },
             "require": {
@@ -3576,7 +3624,7 @@
             ],
             "description": "Symfony PHPUnit Bridge",
             "homepage": "https://symfony.com",
-            "time": "2019-09-30T20:33:19+00:00"
+            "time": "2020-01-14T14:27:59+00:00"
         }
     ],
     "aliases": [],

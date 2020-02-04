@@ -6,7 +6,7 @@ form.zip_code: Código postal
 form.phone_number: Número de teléfono
 form.fax_number: Número de fax
 form.manager: Gerente
-form.manager.no_manager: No especificado
+form.manager.no_manager: Especificar DNI/NIE
 
 form.save: Guardar cambios
 form.delete: Eliminar las sedes seleccionadas

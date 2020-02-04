@@ -27,19 +27,12 @@ function clearForm(form, callback)
     });
 }
 
-my_item = $("select").first();
+my_item = $("select#company_manager");
 
 $(function () {
-    var new_text = $("#new-person-label") ? $('#new-person-label').val() : 'New';
-    $("select.person").select2('destroy');
-    $("select.person")
-        .prepend($('<option>', {value: 'new', text: new_text}))
-        .select2({
-            theme: "bootstrap"
-        })
-        .on('change', function (e) {
+        my_item.on('change', function (e) {
             my_item = e.currentTarget;
-            if (e.currentTarget.value === 'new') {
+            if (e.currentTarget.value === '0') {
                 $('#new_person form').trigger('reset');
                 $('#new_person').modal('show');
             }

@@ -39,6 +39,7 @@ twig:
     form_themes:
         - 'bootstrap_4_horizontal_layout.html.twig'
         - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+        - '@TetranzSelect2Entity/Form/fields.html.twig'
     globals:
         app_name:     '%app_name%'
         app_repository: 'https://github.com/iesoretania/atica-fp'

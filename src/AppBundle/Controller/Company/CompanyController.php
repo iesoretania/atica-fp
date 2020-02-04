@@ -22,12 +22,14 @@ use AppBundle\Entity\Company;
 use AppBundle\Entity\Workcenter;
 use AppBundle\Form\Type\CompanyType;
 use AppBundle\Repository\CompanyRepository;
+use AppBundle\Repository\PersonRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -205,5 +207,41 @@ class CompanyController extends Controller
             'title' => $translator->trans('title.delete', [], 'company'),
             'items' => $companies
         ]);
+    }
+
+    /**
+     * @Route("/api/person/query", name="api_person_query", methods={"GET"})
+     */
+    public function apiPersonQuery(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        PersonRepository $personRepository,
+        TranslatorInterface $translator
+    ) {
+        $pageLimit = $request->get('page_limit', 10);
+        $term = $request->get('q');
+
+        $organization = $userExtensionService->getCurrentOrganization();
+
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
+
+        if ($term === null) {
+            $persons = [];
+        } else {
+            $persons = $personRepository->findByUniqueIdentifier($term);
+        }
+
+        if (count($persons) === 0) {
+            $data = [
+                ['id' => 0, 'text' => $translator->trans('title.new', [], 'person')]
+            ];
+        } else {
+            $data = [];
+            foreach ($persons as $person) {
+                $data[] = ['id' => $person->getId(), 'text' => $person->getFullDisplayname()];
+            }
+        }
+
+        return new JsonResponse($data);
     }
 }

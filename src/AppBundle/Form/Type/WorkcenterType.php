@@ -20,11 +20,10 @@ namespace AppBundle\Form\Type;
 
 use AppBundle\Entity\Person;
 use AppBundle\Entity\Workcenter;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class WorkcenterType extends AbstractType
 {
@@ -55,17 +54,13 @@ class WorkcenterType extends AbstractType
             ->add('faxNumber', null, [
                 'label' => 'form.fax_number'
             ])
-            ->add('manager', EntityType::class, [
+            ->add('manager', Select2EntityType::class, [
                 'label' => 'form.manager',
+                'multiple' => false,
+                'text_property' => 'fullDisplayName',
                 'class' => Person::class,
-                'choice_label' => 'fullDisplayName',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('p')
-                        ->addSelect('u')
-                        ->leftJoin('p.user', 'u')
-                        ->orderBy('p.lastName')
-                        ->addOrderBy('p.firstName');
-                },
+                'minimum_input_length' => 9,
+                'remote_route' => 'api_person_query',
                 'placeholder' => 'form.manager.no_manager',
                 'attr' => ['class' => 'person'],
                 'required' => false

@@ -26,7 +26,7 @@ message.error: No se han podido actualizar los datos.
 message.deleted: Las personas seleccionadas han sido eliminadas con éxito.
 message.delete_error: No se han podido eliminar las personas seleccionadas.
 
-title.new: Registrar nueva persona
+title.new: No encontrado. Registrar nueva persona
 title.edit: Datos de la persona
 title.delete: Eliminar personas
 
