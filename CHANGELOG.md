@@ -6,7 +6,7 @@ en la distintas versiones de la misma.
 
 2.2.0 (xxxx-xx-xx)
 ------------------
-* chore: Los gerentes se seleccionan mediante DNI
+* chore: Los gerentes de empresas y sedes se seleccionan mediante DNI
 
 2.1.0 (2020-01-30)
 ------------------

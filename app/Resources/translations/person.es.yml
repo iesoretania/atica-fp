@@ -39,3 +39,6 @@ table.filter: Filtrar...
 header.name: Nombre completo
 header.username: Usuario
 header.unique_indentifier: DNI/NIE
+
+input.unique_identifier: 'Introduzca el DNI/NIE completo (con letra) para buscar'
+input.searching: 'Buscando...'
