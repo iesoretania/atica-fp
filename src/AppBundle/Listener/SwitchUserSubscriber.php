@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2019: Luis Ramón López López
+  Copyright (C) 2018-2020: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -19,9 +19,9 @@
 namespace AppBundle\Listener;
 
 use AppBundle\Service\UserExtensionService;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Http\Event\SwitchUserEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\SecurityEvents;
 
 class SwitchUserSubscriber implements EventSubscriberInterface

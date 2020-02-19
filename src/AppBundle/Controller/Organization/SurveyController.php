@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2019: Luis Ramón López López
+  Copyright (C) 2018-2020: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -29,6 +29,7 @@ use AppBundle\Security\SurveyVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
+use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -159,7 +160,7 @@ class SurveyController extends Controller
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (\PagerFanta\Exception\OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException $e) {
             $pager->setCurrentPage(1);
         }
 

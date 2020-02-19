@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2019: Luis Ramón López López
+  Copyright (C) 2018-2020: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -34,6 +34,7 @@ use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
+use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,7 +59,6 @@ class MeetingController extends Controller
         TeacherRepository $teacherRepository,
         WLTTeacherRepository $wltTeacherRepository,
         WLTGroupRepository $groupRepository,
-        ProjectRepository $projectRepository,
         AcademicYear $academicYear = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -87,7 +87,6 @@ class MeetingController extends Controller
             $teacherRepository,
             $wltTeacherRepository,
             $groupRepository,
-            $projectRepository,
             $meeting,
             $academicYear
         );
@@ -105,7 +104,6 @@ class MeetingController extends Controller
         TeacherRepository $teacherRepository,
         WLTTeacherRepository $wltTeacherRepository,
         WLTGroupRepository $wltGroupRepository,
-        ProjectRepository $projectRepository,
         Meeting $meeting,
         AcademicYear $academicYear = null
     ) {
@@ -296,7 +294,7 @@ class MeetingController extends Controller
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (\PagerFanta\Exception\OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException $e) {
             $pager->setCurrentPage(1);
         }
 
@@ -322,7 +320,6 @@ class MeetingController extends Controller
         Request $request,
         MeetingRepository $meetingRepository,
         UserExtensionService $userExtensionService,
-        TeacherRepository $teacherRepository,
         TranslatorInterface $translator
     ) {
         $organization = $userExtensionService->getCurrentOrganization();

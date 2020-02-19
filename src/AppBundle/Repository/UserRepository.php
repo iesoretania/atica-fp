@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2019: Luis Ramón López López
+  Copyright (C) 2018-2020: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -37,7 +37,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
     public function __construct(ManagerRegistry $registry, UserPasswordEncoderInterface $encoder)
     {
         parent::__construct($registry, User::class);
-        
+
         $this->encoder = $encoder;
     }
 
@@ -152,7 +152,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
     public function findByPersonOrCreate(Person $person)
     {
         $user = $person->getUser();
-        
+
         if (null === $user) {
             $user = new User();
             $user

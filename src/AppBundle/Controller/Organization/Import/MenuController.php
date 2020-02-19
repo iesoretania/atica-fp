@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2019: Luis Ramón López López
+  Copyright (C) 2018-2020: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -20,8 +20,8 @@ namespace AppBundle\Controller\Organization\Import;
 
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
 
 class MenuController extends Controller
 {

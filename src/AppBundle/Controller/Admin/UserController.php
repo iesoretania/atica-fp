@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2019: Luis Ramón López López
+  Copyright (C) 2018-2020: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -23,6 +23,7 @@ use AppBundle\Entity\User;
 use AppBundle\Form\Type\UserType;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
+use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -94,7 +95,7 @@ class UserController extends Controller
      * @Route("/listar/{page}", name="admin_user_list", requirements={"page" = "\d+"},
      *     methods={"GET"})
      */
-    public function listAction($page = 1, Request $request)
+    public function listAction(Request $request, $page = 1)
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -124,7 +125,7 @@ class UserController extends Controller
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (\PagerFanta\Exception\OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException $e) {
             $pager->setCurrentPage(1);
         }
 

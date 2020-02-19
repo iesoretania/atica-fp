@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2019: Luis Ramón López López
+  Copyright (C) 2018-2020: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -19,6 +19,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -128,7 +129,7 @@ class Organization
      */
     public function __construct()
     {
-        $this->memberships = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->memberships = new ArrayCollection();
     }
 
     /**

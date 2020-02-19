@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2019: Luis Ramón López López
+  Copyright (C) 2018-2020: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -36,6 +36,7 @@ use AppBundle\Utils\CsvImporter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
+use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -160,11 +161,11 @@ class LearningProgramController extends Controller
         $pager = new Pagerfanta($adapter);
         $pager
             ->setMaxPerPage($this->getParameter('page.size'));
-                try {
+        try {
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (\PagerFanta\Exception\OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException $e) {
             $pager->setCurrentPage(1);
         }
 
@@ -387,11 +388,6 @@ class LearningProgramController extends Controller
                                 // obtener código de la asignatura y buscarla
                                 preg_match('/^([A-Za-z]*)/', $lineData[0], $output);
                                 $lastCode = $output[0];
-                                $subject = $subjectRepository->findOneByProjectAndCode(
-                                    $project,
-                                    $lastCode
-                                );
-
                                 $activity = new Activity();
                                 $activity
                                     ->setProject($project)
