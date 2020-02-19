@@ -161,7 +161,7 @@
             <tbody>
             {% for answer in stats[1] %}
                 <tr>
-                    <td class="right">{{ answer.surveyQuestion.description|markdown }}</td>
+                    <td class="right">{{ answer.surveyQuestion.description|raw }}</td>
                     <td>{{ answer.textValue }}</td>
                 </tr>
             {% endfor %}
@@ -209,7 +209,7 @@
                 <tbody>
                 {% for answer in agreement.companySurvey.answers if answer.surveyQuestion.type != "fixed"  %}
                     <tr>
-                        <td class="right">{{ answer.surveyQuestion.description|markdown }}</td>
+                        <td class="right">{{ answer.surveyQuestion.description|raw }}</td>
                         <td>{{ answer.numericValue|default(answer.textValue)|default('report.no_answer'|trans) }}</td>
                     </tr>
                 {% endfor %}
