@@ -1,0 +1,32 @@
+form.description: Descripción
+form.data: Plantilla PDF asociada
+form.download: Descargar
+
+form.save: Guardar cambios
+form.delete: Eliminar las plantillas seleccionadas
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nueva plantilla
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes plantillas? En el caso de que alguna de ellas esté siendo utilizada, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos de la plantilla
+title.new: Nueva plantilla
+title.delete: Eliminar plantillas
+
+title.list: Listado de plantillas
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay plantillas
+table.filter: Filtrar...
+
+header.description: Descripción
+header.data: Plantilla PDF asociada
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Plantillas eliminadas con éxito.
+message.delete_error: Ha ocurrido un error al eliminar las plantillas del centro. Compruebe que no están siendo utilizadas.

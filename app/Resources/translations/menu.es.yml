@@ -46,6 +46,9 @@ menu.organization.role.detail: Gestionar los roles del centro
 menu.organization.survey: Encuestas
 menu.organization.survey.detail: Gestionar las encuestas del centro
 
+menu.organization.report_template: Plantillas de informes
+menu.organization.report_template.detail: Gestionar las plantillas de los informes
+
 menu.organization.import: Importar
 menu.organization.import.detail: Importar datos desde Séneca
 

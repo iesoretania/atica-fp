@@ -1,0 +1,39 @@
+{% trans_default_domain 'edu_report_template' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('organization_report_template_new') }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-80"><label><input type="checkbox" id="select"> {{ 'header.description'|trans }}</label></th>
+    <th class="w-20">{{ 'header.data'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for template in pager %}
+                {% set url = path('organization_report_template_edit', {'id': template.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ template.id }}" class="selectable"> <a href="{{ url }}">{{ template.description }}</a></label>
+                    </td>
+                    <td>
+                        <a href="{{ path('organization_report_template_download', {'id': template.id}) }}" class="btn btn-sm btn-block btn-info"><i class="fa fa-download"></i> {{ 'form.download'|trans }}</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="2">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('organization_report_template_delete') }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}
