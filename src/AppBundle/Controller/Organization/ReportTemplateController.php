@@ -98,7 +98,7 @@ class ReportTemplateController extends Controller
                 ['fixed' => $translator->trans('title.new', [], 'edu_report_template')]
         ];
 
-        return $this->render('organization/department/form.html.twig', [
+        return $this->render('organization/report_template/form.html.twig', [
             'menu_path' => 'organization_report_template_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
@@ -167,7 +167,7 @@ class ReportTemplateController extends Controller
             $pager->setCurrentPage(1);
         }
 
-        $title = $translator->trans('title.list', [], 'edu_department');
+        $title = $translator->trans('title.list', [], 'edu_report_template');
 
         return $this->render('organization/report_template/list.html.twig', [
             'title' => $title,
@@ -211,7 +211,7 @@ class ReportTemplateController extends Controller
         }
 
         return $this->render('organization/report_template/delete.html.twig', [
-            'menu_path' => 'organization_department_list',
+            'menu_path' => 'organization_report_template_list',
             'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'edu_report_template')]],
             'title' => $translator->trans('title.delete', [], 'edu_report_template'),
             'items' => $templates
