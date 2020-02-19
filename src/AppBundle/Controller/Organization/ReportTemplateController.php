@@ -99,7 +99,7 @@ class ReportTemplateController extends Controller
         ];
 
         return $this->render('organization/department/form.html.twig', [
-            'menu_path' => 'organization_department_list',
+            'menu_path' => 'organization_report_template_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'form' => $form->createView()
