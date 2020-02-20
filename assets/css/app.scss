@@ -393,6 +393,7 @@ table.survey {
   }
 }
 
-table.calendar td.operations {
+table.calendar .operations {
   text-align: center;
+    background-color: $breadcrumb-bg;
 }
