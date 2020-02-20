@@ -81,6 +81,20 @@ class CalendarAddType extends AbstractType
                 ],
                 'required' => true
             ])
+            ->add('hoursSat', null, [
+                'label' => 'form.hours_sat',
+                'constraints' => [
+                    new Range(['min' => 0, 'max' => 24])
+                ],
+                'required' => true
+            ])
+            ->add('hoursSun', null, [
+                'label' => 'form.hours_sun',
+                'constraints' => [
+                    new Range(['min' => 0, 'max' => 24])
+                ],
+                'required' => true
+            ])
             ->add('overwriteAction', ChoiceType::class, [
                 'label' => 'form.overwrite_action',
                 'required' => true,

@@ -10,6 +10,7 @@ en la distintas versiones de la misma.
 * fix: Solucionado un problema con las encuestas de empresa y coordinación
 * feat: Gestión de plantillas de informes en PDF
 * feat: Hay una sección en las jornadas para indicar actividades adicionales realizadas
+* feat: Bloqueo/desbloqueo de semanas completas y considerar semanas de 7 días
 
 2.1.0 (2020-01-30)
 ------------------

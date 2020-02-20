@@ -343,21 +343,42 @@ class WorkDayRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    /**
-     * @param WorkDay[]
-     * @param bool
-     * @return mixed
-     */
-    public function updateLock($list, $value)
+    public function updateLock($list, Agreement $agreement, $value)
     {
         return $this->getEntityManager()->createQueryBuilder()
             ->update(WorkDay::class, 'w')
             ->set('w.locked', ':value')
             ->where('w IN (:list)')
+            ->andWhere('w.agreement = :agreement')
             ->setParameter('list', $list)
             ->setParameter('value', $value)
+            ->setParameter('agreement', $agreement)
             ->getQuery()
             ->execute();
+    }
+
+    public function findByYearWeekAndAgreement($year, $week, Agreement $agreement)
+    {
+        $startDate = new \DateTime();
+        $startDate->setTimestamp(strtotime($year . 'W'. $week));
+        $endDate = new \DateTime();
+        $endDate->setTimestamp(strtotime($year . 'W'. ($week + 1)));
+        return $this->createQueryBuilder('wd')
+            ->where('wd.agreement = :agreement')
+            ->andWhere('wd.date < :end_date')
+            ->andWhere('wd.date >= :start_date')
+            ->setParameter('agreement', $agreement)
+            ->setParameter('start_date', $startDate)
+            ->setParameter('end_date', $endDate)
+            ->addOrderBy('wd.date', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function updateWeekLock($year, $week, $agreement, $value)
+    {
+        $items = $this->findByYearWeekAndAgreement($year, $week, $agreement);
+        return $this->updateLock($items, $agreement, $value);
     }
 
     public function findByStudentEnrollment(StudentEnrollment $studentEnrollment)

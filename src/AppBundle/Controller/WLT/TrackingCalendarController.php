@@ -202,6 +202,21 @@ class TrackingCalendarController extends Controller
         Agreement $agreement
     ) {
 
+        if ($request->get('lock_week')) {
+            $year = floor($request->get('lock_week') / 100);
+            $week = $request->get('lock_week') % 100;
+            $workDayRepository->updateWeekLock($year, $week, $agreement, true);
+        } else if ($request->get('unlock_week')) {
+            $year = floor($request->get('unlock_week') / 100);
+            $week = $request->get('unlock_week') % 100;
+            $workDayRepository->updateWeekLock($year, $week, $agreement, false);
+        } else if ($request->get('week_report')) {
+            return $this->redirectToRoute(
+                'work_linked_training_tracking_calendar_list',
+                ['id' => $agreement->getId()]
+            );
+        }
+
         $items = $request->request->get('items', []);
         if (count($items) === 0) {
             return $this->redirectToRoute(
@@ -217,7 +232,7 @@ class TrackingCalendarController extends Controller
         if ($locked || $request->get('unlock') === '') {
             $this->denyAccessUnlessGranted(AgreementVoter::LOCK, $agreement);
             try {
-                $workDayRepository->updateLock($workDays, $locked);
+                $workDayRepository->updateLock($workDays, $agreement, $locked);
                 $this->getDoctrine()->getManager()->flush();
                 $agreementRepository->updateDates($agreement);
                 $this->addFlash('success', $translator->trans('message.locked', [], 'calendar'));

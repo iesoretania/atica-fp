@@ -2,7 +2,7 @@
 
 {% if calendar is not empty %}
     {% set week_management = is_granted('WLT_AGREEMENT_LOCK', agreement) %}
-    {% set day_width = week_management ? 16 : 20 %}
+    {% set day_width = week_management ? 13 : 'd' %}
     <div class="row">
     {% for num, month in calendar %}
         <div class="col-sm">
@@ -11,32 +11,33 @@
                     <thead>
                     <tr>
                         {% set year = num//12 %}
-                        <th colspan="{{ week_management ? 6 : 5 }}" class="calendar-month">{{ ('month'~(num % 12))|trans({}, 'calendar') }} {{ year }}</th>
+                        <th colspan="{{ week_management ? 8 : 7 }}" class="calendar-month">{{ ('month'~(num % 12))|trans({}, 'calendar') }} {{ year }}</th>
                     </tr>
                     <tr>
-                        {% if week_management %}
-                            <th class="w-20"></th>
-                        {% endif %}
                         <th class="w-{{ day_width }}">{{ 'dow0'|trans({}, 'calendar') }}</th>
                         <th class="w-{{ day_width }}">{{ 'dow1'|trans({}, 'calendar') }}</th>
                         <th class="w-{{ day_width }}">{{ 'dow2'|trans({}, 'calendar') }}</th>
                         <th class="w-{{ day_width }}">{{ 'dow3'|trans({}, 'calendar') }}</th>
                         <th class="w-{{ day_width }}">{{ 'dow4'|trans({}, 'calendar') }}</th>
+                        <th class="w-{{ day_width }}">{{ 'dow5'|trans({}, 'calendar') }}</th>
+                        <th class="w-{{ day_width }}">{{ 'dow6'|trans({}, 'calendar') }}</th>
+                        {% if week_management %}
+                            <th class="w-9"></th>
+                        {% endif %}
                     </tr>
                     </thead>
                     <tbody>
-                    {% for week in month %}
+                    {% for week_number, week in month %}
                         <tr>
-                            {% if week_management %}
-                                <td class="w-20 operations align-middle">
-                                    <a href="" class="" title="{{ 'form.lock_week_action'|trans }}"><i class="fas fa-lock fa-fw"></i></a>
-                                    <a href="" class="" title="{{ 'form.unlock_week_action'|trans }}"><i class="fas fa-unlock fa-fw"></i></a>
-                                    <a href="" class="" title="{{ 'form.activity_report'|trans }}"><i class="fas fa-print fa-fw"></i></a>
-                                </td>
-                            {% endif %}
+                            {% set workday_exists = false %}
+                            {% set all_locked = true %}
+                            {% set all_unlocked = true %}
                             {% for n, dayData in week.days %}
                                 {% set day = dayData ? dayData[0] : null %}
-                                {% if loop.index < 6 %}
+                                {% if day %}
+                                    {% set workday_exists = true %}
+                                    {% if day.locked %}{% set all_unlocked = false %}{% else %}{% set all_locked = false %}{% endif %}
+                                {% endif %}
                                 {% block day %}
                                 <td class="w-{{ day_width }}{% if day %} workday{% endif %}">
                                     {% if day %}
@@ -47,8 +48,22 @@
                                     {% endif %}
                                 </td>
                                 {% endblock %}
-                                {% endif %}
                             {% endfor %}
+                            {% if week.days|length < 7 %}
+                                {% for n in 6..week.days|length %}
+                                    <td class="w-{{ day_width }}"></td>
+                                {% endfor %}
+                            {% endif %}
+                            {% if week_management %}
+                                <td class="w-9 operations align-middle">
+                                    {% if workday_exists %}
+                                        {% set week_code = year * 100 + week_number %}
+                                        {% if not all_locked %}<button type="submit" name="lock_week" value="{{ week_code }}" class="btn btn-link" title="{{ 'form.lock_week_action'|trans }}"><i class="fas fa-lock fa-fw"></i></button>{% endif %}
+                                        {% if not all_unlocked %}<button type="submit" name="unlock_week" value="{{ week_code }}" class="btn btn-link" title="{{ 'form.unlock_week_action'|trans }}"><i class="fas fa-unlock fa-fw"></i></button>{% endif %}
+                                        <button type="submit" name="week_report" value="{{ week_code }}" class="btn btn-link" title="{{ 'form.activity_report'|trans }}"><i class="fas fa-print fa-fw"></i></button>
+                                    {% endif %}
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>
