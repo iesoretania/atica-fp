@@ -58,6 +58,8 @@ title.attendance: Resumen de asistencia
 title.attendance.hours_summary: Estadísticas por convenio (horas)
 title.attendance.workday_summary: Estadísticas por convenio (jornadas)
 
+title.weekly_activities: Ficha semanal de actividades
+
 header.date: Fecha
 header.absence: Asistencia
 header.total_workdays: Jornadas totales

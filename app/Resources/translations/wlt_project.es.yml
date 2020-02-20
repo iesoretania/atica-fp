@@ -2,6 +2,7 @@ form.name: Nombre
 form.manager: Coordinador/a
 form.groups: Grupos asociados
 form.attendance_report_template: Plantilla de informe de asistencia
+form.weekly_activity_report_template: Plantilla de informe semanal de actividades
 form.no_template: Sin plantilla
 form.student_survey: Modelo de encuesta de satisfacción de alumnado
 form.company_survey: Modelo de encuesta de satisfacción de empresa colaboradora

@@ -117,6 +117,12 @@ class Project
     private $attendanceReportTemplate;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\ReportTemplate")
+     * @var ReportTemplate
+     */
+    private $weeklyActivityReportTemplate;
+
+    /**
      * @ORM\OneToMany(targetEntity="Agreement", mappedBy="project")
      * @var Agreement[]
      */
@@ -337,6 +343,24 @@ class Project
     public function setAttendanceReportTemplate($attendanceReportTemplate)
     {
         $this->attendanceReportTemplate = $attendanceReportTemplate;
+        return $this;
+    }
+
+    /**
+     * @return ReportTemplate
+     */
+    public function getWeeklyActivityReportTemplate()
+    {
+        return $this->weeklyActivityReportTemplate;
+    }
+
+    /**
+     * @param ReportTemplate $weeklyActivityReportTemplate
+     * @return Project
+     */
+    public function setWeeklyActivityReportTemplate($weeklyActivityReportTemplate)
+    {
+        $this->weeklyActivityReportTemplate = $weeklyActivityReportTemplate;
         return $this;
     }
 

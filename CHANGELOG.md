@@ -11,6 +11,7 @@ en la distintas versiones de la misma.
 * feat: Gestión de plantillas de informes en PDF
 * feat: Hay una sección en las jornadas para indicar actividades adicionales realizadas
 * feat: Bloqueo/desbloqueo de semanas completas y considerar semanas de 7 días
+* feat: Generación de un informe semanal de actividades realizadas
 
 2.1.0 (2020-01-30)
 ------------------

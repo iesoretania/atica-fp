@@ -360,9 +360,9 @@ class WorkDayRepository extends ServiceEntityRepository
     public function findByYearWeekAndAgreement($year, $week, Agreement $agreement)
     {
         $startDate = new \DateTime();
-        $startDate->setTimestamp(strtotime($year . 'W'. $week));
-        $endDate = new \DateTime();
-        $endDate->setTimestamp(strtotime($year . 'W'. ($week + 1)));
+        $startDate->setTimestamp(strtotime($year . 'W'. ($week < 10 ? '0' . $week : $week)));
+        $endDate = clone $startDate;
+        $endDate->add(new \DateInterval('P7D'));
         return $this->createQueryBuilder('wd')
             ->where('wd.agreement = :agreement')
             ->andWhere('wd.date < :end_date')
@@ -390,5 +390,31 @@ class WorkDayRepository extends ServiceEntityRepository
             ->addOrderBy('wr.date')
             ->getQuery()
             ->getResult();
+    }
+
+    public function getWeekInformation(Workday $firstWorkday)
+    {
+        $total = 0;
+        $current = 0;
+
+        $oldNumWeek = NAN;
+
+        $workDays = $firstWorkday->getAgreement()->getWorkdays();
+
+        /** @var Workday $day */
+        foreach ($workDays as $day) {
+            $numWeek = $day->getDate()->format('W');
+
+            if ($numWeek != $oldNumWeek) {
+                $total++;
+                $oldNumWeek = $numWeek;
+            }
+
+            if ($firstWorkday->getDate() == $day->getDate()) {
+                $current = $total;
+            }
+        }
+
+        return ['total' => $total, 'current' => $current];
     }
 }

@@ -28,9 +28,11 @@ use AppBundle\Repository\WLT\WorkDayRepository;
 use AppBundle\Security\WLT\AgreementVoter;
 use AppBundle\Security\WLT\WorkDayVoter;
 use Mpdf\Mpdf;
+use Mpdf\Output\Destination;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -207,14 +209,16 @@ class TrackingCalendarController extends Controller
             $year = floor($request->get('lock_week') / 100);
             $week = $request->get('lock_week') % 100;
             $workDayRepository->updateWeekLock($year, $week, $agreement, true);
-        } else if ($request->get('unlock_week')) {
+        } elseif ($request->get('unlock_week')) {
             $year = floor($request->get('unlock_week') / 100);
             $week = $request->get('unlock_week') % 100;
             $workDayRepository->updateWeekLock($year, $week, $agreement, false);
-        } else if ($request->get('week_report')) {
+        } elseif ($request->get('week_report')) {
+            $year = floor($request->get('week_report') / 100);
+            $week = $request->get('week_report') % 100;
             return $this->redirectToRoute(
-                'work_linked_training_tracking_calendar_list',
-                ['id' => $agreement->getId()]
+                'work_linked_training_tracking_calendar_activity_report',
+                ['id' => $agreement->getId(), 'year' => $year, 'week' => $week]
             );
         }
 
@@ -331,5 +335,176 @@ class TrackingCalendarController extends Controller
                 unlink($tmp);
             }
         }
+    }
+
+    /**
+     * @Route("/{id}/informe/{year}/{week}", name="work_linked_training_tracking_calendar_activity_report",
+     *     methods={"GET"})
+     * @Security("is_granted('WLT_AGREEMENT_ACCESS', agreement)")
+     */
+    public function activityReportAction(
+        TranslatorInterface $translator,
+        Agreement $agreement,
+        WorkDayRepository $workDayRepository,
+        $year,
+        $week
+    ) {
+        $weekDays = $workDayRepository->findByYearWeekAndAgreement($year, $week, $agreement);
+
+        if (count($weekDays) === 0) {
+            // no hay jornadas, volver al listado
+            return $this->redirectToRoute('work_linked_training_tracking_calendar_list', ['id' => $agreement->getId()]);
+        }
+
+        $mpdfService = new MpdfService();
+        $mpdfService->setAddDefaultConstructorArgs(false);
+
+        /** @var Mpdf $mpdf */
+        $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4-L']]);
+        $tmp = '';
+
+        try {
+            if ($agreement->getProject()->getWeeklyActivityReportTemplate()) {
+                $tmp = tempnam('.', 'tpl');
+                file_put_contents($tmp, $agreement->getProject()->getWeeklyActivityReportTemplate()->getData());
+                $mpdf->SetImportUse();
+                $mpdf->SetDocTemplate($tmp);
+            }
+
+            $activities = [];
+            $hours = [];
+            $notes = [];
+            $noActivity = htmlentities($translator->trans('form.no_activities', [], 'calendar'));
+            $noWorkday = htmlentities($translator->trans('form.no_workday', [], 'calendar'));
+
+            $isLocked = true;
+
+            /** @var WorkDay $workDay */
+            foreach ($weekDays as $workDay) {
+                if (false === $workDay->isLocked()) {
+                    $isLocked = false;
+                }
+                $day = $workDay->getDate()->format('N');
+                $activities[$day] = '';
+                $hours[$day] = $translator->transChoice(
+                    'form.r_hours',
+                    $workDay->getHours(),
+                    ['%hours%' => $workDay->getHours()],
+                    'calendar'
+                );
+
+                foreach ($workDay->getActivityRealizations() as $activityRealization) {
+                    if ($activityRealization->getCode()) {
+                        $activities[$day] .= '<b>' . htmlentities($activityRealization->getCode()) . ': </b>';
+                    }
+                    $activities[$day] .= htmlentities($activityRealization->getDescription()) . '<br/>';
+                }
+
+                if ($workDay->getOtherActivities()) {
+                    $activities[$day] .= htmlentities($workDay->getOtherActivities()) . '<br/>';
+                }
+
+                if ('' === $activities[$day]) {
+                    $activities[$day] = '<i>' . $noActivity . '</i>';
+                }
+                $notes[$day] = $workDay->getNotes();
+            }
+
+            $mpdf->AddPage('L');
+
+            // añadir fecha a la ficha
+            $first = end($weekDays);
+            $last = reset($weekDays);
+
+            $this->pdfWriteFixedPosHTML($mpdf, $first->getDate()->format('j'), 54.5, 33.5, 8, 5, 'auto', 'center');
+            $this->pdfWriteFixedPosHTML($mpdf, $last->getDate()->format('j'), 67.5, 33.5, 10, 5, 'auto', 'center');
+            $this->pdfWriteFixedPosHTML($mpdf, $translator->trans('r_month' . ($last->getDate()->format('n') - 1), [], 'calendar'), 85, 33.5, 23.6, 5, 'auto', 'center');
+            $this->pdfWriteFixedPosHTML($mpdf, $last->getDate()->format('y'), 118.5, 33.5, 6, 5, 'auto', 'center');
+
+            // añadir números de página
+            $weekCounter = $workDayRepository->getWeekInformation($first);
+            $this->pdfWriteFixedPosHTML($mpdf, $weekCounter['current'], 245.5, 21.9, 6, 5, 'auto', 'center');
+            $this->pdfWriteFixedPosHTML($mpdf, $weekCounter['total'], 254.8, 21.9, 6, 5, 'auto', 'center');
+
+            // añadir campos de la cabecera
+            $this->pdfWriteFixedPosHTML($mpdf, (string) $agreement->getWorkcenter(), 192, 40.8, 72, 5, 'auto', 'left');
+            $this->pdfWriteFixedPosHTML($mpdf, $agreement->getProject()->getOrganization(), 62.7, 40.9, 80, 5, 'auto', 'left');
+            $this->pdfWriteFixedPosHTML($mpdf, (string) $agreement->getEducationalTutor(), 97.5, 46.5, 46, 5, 'auto', 'left');
+            $this->pdfWriteFixedPosHTML($mpdf, (string) $agreement->getWorkTutor(), 198, 46.5, 66, 5, 'auto', 'left');
+            $this->pdfWriteFixedPosHTML($mpdf, (string) $agreement->getStudentEnrollment()->getGroup()->getGrade()->getTraining(), 172, 54, 61, 5, 'auto', 'left');
+            $this->pdfWriteFixedPosHTML($mpdf, (string) $agreement->getStudentEnrollment()->getPerson(), 63, 54, 80, 5, 'auto', 'left');
+
+            // añadir actividades semanales
+            for ($n = 1; $n < 6; $n++) {
+                if (isset($activities[$n])) {
+                    $activity = $activities[$n];
+                    $hour = $hours[$n];
+                    $note = $notes[$n];
+                } else {
+                    $activity = '<i>' . $noWorkday . '</i>';
+                    $hour = '';
+                    $note = '';
+                }
+                $this->pdfWriteFixedPosHTML($mpdf, $activity, 58, 73.0 + ($n - 1) * 17.8, 128, 15.8, 'auto', 'left', false);
+                $this->pdfWriteFixedPosHTML($mpdf, $hour, 189, 73.0 + ($n - 1) * 17.8, 25, 15.8, 'auto', 'left', false);
+                $this->pdfWriteFixedPosHTML($mpdf, $note, 217.5, 73.0 + ($n - 1) * 17.8, 46, 15.8, 'auto', 'justify', true);
+            }
+
+            // añadir pie de firmas
+            $this->pdfWriteFixedPosHTML($mpdf, (string) $agreement->getStudentEnrollment()->getPerson(), 68, 185.4, 53, 5, 'auto', 'left');
+            $this->pdfWriteFixedPosHTML($mpdf, (string) $agreement->getEducationalTutor(), 136, 186.9, 53, 5, 'auto', 'left');
+            $this->pdfWriteFixedPosHTML($mpdf, (string) $agreement->getWorkTutor(), 204, 184.9, 53, 5, 'auto', 'left');
+
+            // si no está bloqueada la semana, agregar la marca de agua de borrador
+            if (!$isLocked) {
+                $mpdf->SetWatermarkText($translator->trans('form.draft', [], 'calendar'), 0.1);
+                $mpdf->showWatermarkText = true;
+                $mpdf->watermark_font = 'DejaVuSansCondensed';
+            }
+
+            $title = $translator->trans('title.weekly_activities', [], 'wlt_report')
+                . ' - ' . $weekCounter['current'] . ' - ' . $agreement->getStudentEnrollment() . ' - '
+                . $agreement->getWorkcenter();
+
+            $fileName = $title . '.pdf';
+
+            $mpdf->SetTitle($title);
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->setContent($mpdf->Output($fileName, Destination::STRING_RETURN));
+
+            $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+            return $response;
+        } finally {
+            if ($tmp) {
+                unlink($tmp);
+            }
+        }
+    }
+
+    private function pdfWriteFixedPosHTML(
+        Mpdf $mpdf,
+        $text,
+        $x,
+        $y,
+        $w,
+        $h,
+        $overflow = 'auto',
+        $align = 'left',
+        $escape = true
+    ) {
+        if ($escape) {
+            $text = nl2br(htmlentities($text));
+        }
+        $mpdf->WriteFixedPosHTML(
+            '<div style="font-family: sans-serif; font-size: 12px; text-align: ' . $align . ';">' . $text . '</div>',
+            $x,
+            $y,
+            $w,
+            $h,
+            $overflow
+        );
     }
 }
