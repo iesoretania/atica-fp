@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-2.2.0 (xxxx-xx-xx)
+2.2.0 (2020-02-21)
 ------------------
 * chore: Los gerentes de empresas y sedes se seleccionan mediante DNI
 * fix: Solucionado un problema con las encuestas de empresa y coordinación
