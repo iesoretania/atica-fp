@@ -19,6 +19,7 @@
 namespace AppBundle\Entity\WLT;
 
 use AppBundle\Entity\Edu\Group;
+use AppBundle\Entity\Edu\ReportTemplate;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\Person;
@@ -108,6 +109,12 @@ class Project
      * @var Survey
      */
     private $educationalTutorSurvey;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\ReportTemplate")
+     * @var ReportTemplate
+     */
+    private $attendanceReportTemplate;
 
     /**
      * @ORM\OneToMany(targetEntity="Agreement", mappedBy="project")
@@ -312,6 +319,24 @@ class Project
     public function setEducationalTutorSurvey($educationalTutorSurvey)
     {
         $this->educationalTutorSurvey = $educationalTutorSurvey;
+        return $this;
+    }
+
+    /**
+     * @return ReportTemplate
+     */
+    public function getAttendanceReportTemplate()
+    {
+        return $this->attendanceReportTemplate;
+    }
+
+    /**
+     * @param ReportTemplate $attendanceReportTemplate
+     * @return Project
+     */
+    public function setAttendanceReportTemplate($attendanceReportTemplate)
+    {
+        $this->attendanceReportTemplate = $attendanceReportTemplate;
         return $this;
     }
 

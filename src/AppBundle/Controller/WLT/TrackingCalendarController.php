@@ -27,6 +27,7 @@ use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Repository\WLT\WorkDayRepository;
 use AppBundle\Security\WLT\AgreementVoter;
 use AppBundle\Security\WLT\WorkDayVoter;
+use Mpdf\Mpdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -295,23 +296,40 @@ class TrackingCalendarController extends Controller
         $mpdfService = new MpdfService();
         $mpdfService->setAddDefaultConstructorArgs(false);
 
-        $title = $translator->trans('title.attendance', [], 'wlt_report')
-            . ' - ' . $agreement->getStudentEnrollment() . ' - '
-            . $agreement->getWorkcenter();
+        /** @var Mpdf $mpdf */
+        $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4-L']]);
+        $tmp = '';
 
-        $fileName = $title . '.pdf';
+        try {
+            if ($agreement->getProject()->getAttendanceReportTemplate()) {
+                $tmp = tempnam('.', 'tpl');
+                file_put_contents($tmp, $agreement->getProject()->getAttendanceReportTemplate()->getData());
+                $mpdf->SetImportUse();
+                $mpdf->SetDocTemplate($tmp);
+            }
 
-        $html = $engine->render('wlt/tracking/attendance_report.html.twig', [
-            'agreement' => $agreement,
-            'title' => $title
-        ]);
+            $title = $translator->trans('title.attendance', [], 'wlt_report')
+                . ' - ' . $agreement->getStudentEnrollment() . ' - '
+                . $agreement->getWorkcenter();
 
-        $response = $mpdfService->generatePdfResponse(
-            $html,
-            ['constructorArgs' => [['mode' => 'utf-8', 'format' => 'A4-L']]]
-        );
-        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+            $fileName = $title . '.pdf';
 
-        return $response;
+            $html = $engine->render('wlt/tracking/attendance_report.html.twig', [
+                'agreement' => $agreement,
+                'title' => $title
+            ]);
+
+            $response = $mpdfService->generatePdfResponse(
+                $html,
+                ['mpdf' => $mpdf]
+            );
+            $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+            return $response;
+        } finally {
+            if ($tmp) {
+                unlink($tmp);
+            }
+        }
     }
 }

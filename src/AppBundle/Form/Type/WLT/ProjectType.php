@@ -19,11 +19,13 @@
 namespace AppBundle\Form\Type\WLT;
 
 use AppBundle\Entity\Edu\Group;
+use AppBundle\Entity\Edu\ReportTemplate;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\Survey;
 use AppBundle\Entity\WLT\Project;
 use AppBundle\Repository\Edu\GroupRepository;
+use AppBundle\Repository\Edu\ReportTemplateRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\SurveyRepository;
 use AppBundle\Service\UserExtensionService;
@@ -37,21 +39,21 @@ class ProjectType extends AbstractType
     private $teacherRepository;
     private $groupRepository;
     private $userExtensionService;
-    /**
-     * @var SurveyRepository
-     */
     private $surveyRepository;
+    private $reportTemplateRepository;
 
     public function __construct(
         TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
         SurveyRepository $surveyRepository,
+        ReportTemplateRepository $reportTemplateRepository,
         UserExtensionService $userExtensionService
     ) {
         $this->teacherRepository = $teacherRepository;
         $this->groupRepository = $groupRepository;
         $this->userExtensionService = $userExtensionService;
         $this->surveyRepository = $surveyRepository;
+        $this->reportTemplateRepository = $reportTemplateRepository;
     }
 
     /**
@@ -69,6 +71,8 @@ class ProjectType extends AbstractType
         $groups = $this->groupRepository->findByOrganization($organization);
 
         $surveys = $this->surveyRepository->findByOrganization($organization);
+
+        $templates = $this->reportTemplateRepository->findByOrganization($organization);
 
         $builder
             ->add('name', null, [
@@ -99,6 +103,15 @@ class ProjectType extends AbstractType
                 },
                 'multiple' => true,
                 'required' => true
+            ])
+            ->add('attendanceReportTemplate', EntityType::class, [
+                'label' => 'form.attendance_report_template',
+                'class' => ReportTemplate::class,
+                'choice_label' => 'description',
+                'choice_translation_domain' => false,
+                'choices' => $templates,
+                'placeholder' => 'form.no_template',
+                'required' => false
             ])
             ->add('studentSurvey', EntityType::class, [
                 'label' => 'form.student_survey',
