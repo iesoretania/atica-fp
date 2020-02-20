@@ -68,6 +68,12 @@ class WorkDay
     private $notes;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     * @var string
+     */
+    private $otherActivities;
+
+    /**
      * @ORM\Column(type="boolean")
      * @var bool
      */
@@ -198,6 +204,24 @@ class WorkDay
     public function setNotes($notes)
     {
         $this->notes = $notes;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOtherActivities()
+    {
+        return $this->otherActivities;
+    }
+
+    /**
+     * @param string $otherActivities
+     * @return WorkDay
+     */
+    public function setOtherActivities($otherActivities)
+    {
+        $this->otherActivities = $otherActivities;
         return $this;
     }
 

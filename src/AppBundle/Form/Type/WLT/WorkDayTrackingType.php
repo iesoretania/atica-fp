@@ -89,6 +89,11 @@ class WorkDayTrackingType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'disabled' => $absence || $locked
+            ])
+            ->add('otherActivities', null, [
+                'label' => 'form.other_activities',
+                'required' => false,
+                'disabled' => $locked
             ]);
 
         if ($lockManager) {

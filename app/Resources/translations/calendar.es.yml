@@ -40,6 +40,7 @@ form.date: Fecha
 form.hours: Horas
 form.r_hours: "%hours% hora|%hours% horas"
 form.no_sessions: No hay sesiones
+form.other_activities: Otras actividades realizadas
 form.notes: Anotaciones sobre la jornada
 form.no_activities: Sin actividad registrada
 form.no_workday: No incluido en el plan de formación

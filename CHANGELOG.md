@@ -9,6 +9,7 @@ en la distintas versiones de la misma.
 * chore: Los gerentes de empresas y sedes se seleccionan mediante DNI
 * fix: Solucionado un problema con las encuestas de empresa y coordinación
 * feat: Gestión de plantillas de informes en PDF
+* feat: Hay una sección en las jornadas para indicar actividades adicionales realizadas
 
 2.1.0 (2020-01-30)
 ------------------
