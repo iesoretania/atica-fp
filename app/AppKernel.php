@@ -21,6 +21,7 @@ class AppKernel extends Kernel
             new SimpleThings\EntityAudit\SimpleThingsEntityAuditBundle(),
             new FOS\CKEditorBundle\FOSCKEditorBundle(),
             new Tetranz\Select2EntityBundle\TetranzSelect2EntityBundle(),
+            new TFox\MpdfPortBundle\TFoxMpdfPortBundle(),
             new AppBundle\AppBundle(),
         ];
 
