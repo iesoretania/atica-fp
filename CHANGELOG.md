@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+2.2.x (xxxx-xx-xx)
+------------------
+* chore: Ajustado texto de faltas de asistencia para clarificar significado
+
 2.2.0 (2020-02-21)
 ------------------
 * chore: Los gerentes de empresas y sedes se seleccionan mediante DNI
