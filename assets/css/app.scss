@@ -3,6 +3,7 @@ $breadcrumb-divider: quote(">");
 
 $sizes: (
         10: 10%,
+        15: 15%,
         16: 16%,
         18: 18%,
         20: 20%,
@@ -385,4 +386,8 @@ table.survey {
   label.required:after {
     content: "";
   }
+}
+
+table.calendar td.operations {
+  text-align: center;
 }
