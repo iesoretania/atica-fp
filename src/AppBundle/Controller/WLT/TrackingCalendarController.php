@@ -205,23 +205,25 @@ class TrackingCalendarController extends Controller
         Agreement $agreement
     ) {
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
-        $lockManager = $this->isGranted(AgreementVoter::LOCK, $agreement);
-
-        if ($lockManager && $request->get('lock_week')) {
-            $year = floor($request->get('lock_week') / 100);
-            $week = $request->get('lock_week') % 100;
-            $workDayRepository->updateWeekLock($year, $week, $agreement, true);
-        } elseif ($lockManager && $request->get('unlock_week')) {
-            $year = floor($request->get('unlock_week') / 100);
-            $week = $request->get('unlock_week') % 100;
-            $workDayRepository->updateWeekLock($year, $week, $agreement, false);
-        } elseif ($request->get('week_report')) {
+        if ($request->get('week_report')) {
             $year = floor($request->get('week_report') / 100);
             $week = $request->get('week_report') % 100;
             return $this->redirectToRoute(
                 'work_linked_training_tracking_calendar_activity_report',
                 ['id' => $agreement->getId(), 'year' => $year, 'week' => $week]
             );
+        }
+
+        $this->denyAccessUnlessGranted(AgreementVoter::LOCK, $agreement);
+
+        if ($request->get('lock_week')) {
+            $year = floor($request->get('lock_week') / 100);
+            $week = $request->get('lock_week') % 100;
+            $workDayRepository->updateWeekLock($year, $week, $agreement, true);
+        } elseif ($request->get('unlock_week')) {
+            $year = floor($request->get('unlock_week') / 100);
+            $week = $request->get('unlock_week') % 100;
+            $workDayRepository->updateWeekLock($year, $week, $agreement, false);
         }
 
         $items = $request->request->get('items', []);
