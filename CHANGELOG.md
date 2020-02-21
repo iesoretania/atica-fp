@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-2.2.x (xxxx-xx-xx)
+2.2.2 (2020-02-21)
 ------------------
 * fix: Confirmar que se tiene permiso para bloquear jornadas
 * fix: Arreglado el registro de nuevas personas por DNI/NIE
