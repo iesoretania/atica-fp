@@ -56,7 +56,7 @@ class TrackingCalendarController extends Controller
     ) {
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
 
-        $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
+        $readOnly = !$this->isGranted(AgreementVoter::LOCK, $agreement);
 
         $workDaysData = $workDayRepository->findByAgreementGroupByMonthAndWeekNumber($agreement);
 
@@ -204,12 +204,14 @@ class TrackingCalendarController extends Controller
         TranslatorInterface $translator,
         Agreement $agreement
     ) {
+        $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
+        $lockManager = $this->isGranted(AgreementVoter::LOCK, $agreement);
 
-        if ($request->get('lock_week')) {
+        if ($lockManager && $request->get('lock_week')) {
             $year = floor($request->get('lock_week') / 100);
             $week = $request->get('lock_week') % 100;
             $workDayRepository->updateWeekLock($year, $week, $agreement, true);
-        } elseif ($request->get('unlock_week')) {
+        } elseif ($lockManager && $request->get('unlock_week')) {
             $year = floor($request->get('unlock_week') / 100);
             $week = $request->get('unlock_week') % 100;
             $workDayRepository->updateWeekLock($year, $week, $agreement, false);

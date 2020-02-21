@@ -11,7 +11,7 @@
     {% embed 'wlt/tracking/calendar_partial.html.twig' %}
         {% block day %}
             {% set url = day ? path('work_linked_training_tracking_calendar_form', {'id': day.id}) : '' %}
-            <td class="w-{{ day_width | default(20) }}{% if day %} clickable-row {{ day.absence ? (day.absence == 1 ? 'absence' : 'justified-absence') : ((dayData[1] == 0 and day.otherActivities is empty) ? 'workday' : 'submitted') }}" data-href="{{ url }}{% endif %}">
+            <td class="w-13{% if day %} clickable-row {{ day.absence ? (day.absence == 1 ? 'absence' : 'justified-absence') : ((dayData[1] == 0 and day.otherActivities is empty) ? 'workday' : 'submitted') }}" data-href="{{ url }}{% endif %}">
                 {% if day %}
                     {% if not read_only|default(false) and selectable %}<label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> {% endif %}<a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a>{% if selectable %}</label>{% endif %}{% if day and day.locked %} <i class="fas fa-lock"></i>{% endif %}<br/>
                     {{ 'caption.hours'|transchoice(day.hours, {}, 'calendar') }}
