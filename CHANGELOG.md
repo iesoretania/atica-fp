@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-2.2.1 (xxxx-xx-xx)
+2.2.1 (2020-02-21)
 ------------------
 * chore: Ajustado texto de faltas de asistencia para clarificar significado
 * fix: Afinados permisos del tutor de grupo a la hora de bloquear/desbloquear
