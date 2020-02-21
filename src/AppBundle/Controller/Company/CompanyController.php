@@ -233,12 +233,12 @@ class CompanyController extends Controller
 
         if (count($persons) === 0) {
             $data = [
-                ['id' => 0, 'text' => $translator->trans('title.new', [], 'person')]
+                ['id' => 0, 'term' => $term, 'text' => $translator->trans('title.new', [], 'person')]
             ];
         } else {
             $data = [];
             foreach ($persons as $person) {
-                $data[] = ['id' => $person->getId(), 'text' => $person->getFullDisplayname()];
+                $data[] = ['id' => $person->getId(), 'term' => $term, 'text' => $person->getFullDisplayname()];
             }
         }
 

@@ -23,7 +23,14 @@
             $('.select2entity[data-autostart="true"]').select2('destroy');
             $('.select2entity[data-autostart="true"]').select2entity({
                 theme: "bootstrap",
-                language: "es"
+                language: {
+                    inputTooShort: function () {
+                        return "{{ 'input.unique_identifier'|trans({}, 'person') }}";
+                    },
+                    searching: function () {
+                        return "{{ 'input.searching'|trans({}, 'person') }}";
+                    }
+                }
             });
         });
     </script>

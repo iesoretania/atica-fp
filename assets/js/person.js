@@ -27,14 +27,16 @@ function clearForm(form, callback)
     });
 }
 
-my_item = $("select#company_manager");
+my_item = $("select.person");
 
 $(function () {
-        my_item.on('change', function (e) {
-            my_item = e.currentTarget;
-            if (e.currentTarget.value === '0') {
+        my_item.on('select2:select', function (e) {
+            var data = e.params.data;
+            if (data.id === 0) {
                 $('#new_person form').trigger('reset');
+                $('#new_person_uniqueIdentifier').val(data.term);
                 $('#new_person').modal('show');
+                $('input#new_person_firstName').focus();
             }
         });
 });
@@ -43,29 +45,14 @@ $('#create_person').on('click', function (e) {
     e.preventDefault();
     sendForm($('.modal-body').find('form'), function (response) {
         if (typeof response == "object") {
-            $("select.person").select2('destroy');
-            $("select.person")
-                .append($('<option>', {value: response.id, text: response.name}));
-            $("select.person").select2({
-                theme: "bootstrap",
-                language: "es"
-            });
+            var newOption = new Option(response.name, response.id, true, true);
+            $('select.person').append(newOption).trigger('change');
 
             $('#new_person').modal('hide');
 
             clearForm($('.modal-body').find('form'), function (response) {
                 $('#new_person').find('.modal-body').html(response);
             });
-
-            $(my_item).select2({
-                theme: "bootstrap",
-                language: "es"
-            }).val(response.id);
-
-            $(my_item).select2({
-                theme: "bootstrap",
-                language: "es"
-            }).val(response.id);
         } else {
             $('#new_person').find('.modal-body').html(response);
         }

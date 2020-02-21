@@ -7,6 +7,7 @@ en la distintas versiones de la misma.
 2.2.x (xxxx-xx-xx)
 ------------------
 * fix: Confirmar que se tiene permiso para bloquear jornadas
+* fix: Arreglado el registro de nuevas personas por DNI/NIE
 
 2.2.1 (2020-02-21)
 ------------------

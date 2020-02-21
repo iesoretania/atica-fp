@@ -39,6 +39,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class AgreementType extends AbstractType
 {
@@ -132,20 +133,16 @@ class AgreementType extends AbstractType
                 'placeholder' => 'form.workcenter.none',
                 'required' => true
             ])
-            ->add('workTutor', EntityType::class, [
+            ->add('workTutor', Select2EntityType::class, [
                 'label' => 'form.work_tutor',
+                'multiple' => false,
+                'text_property' => 'fullDisplayName',
                 'class' => Person::class,
-                'choice_label' => 'fullDisplayName',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('p')
-                        ->addSelect('u')
-                        ->leftJoin('p.user', 'u')
-                        ->orderBy('p.lastName')
-                        ->addOrderBy('p.firstName');
-                },
+                'minimum_input_length' => 9,
+                'remote_route' => 'api_person_query',
                 'placeholder' => 'form.work_tutor.none',
                 'attr' => ['class' => 'person'],
-                'required' => true
+                'required' => false
             ])
             ->add('startDate', null, [
                 'label' => 'form.start_date',
