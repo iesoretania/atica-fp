@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+2.2.3 (xxxx-xx-xx)
+------------------
+* fix: Solucionado un problema al modificar o dar de alta un nuevo convenio
+
 2.2.2 (2020-02-21)
 ------------------
 * fix: Confirmar que se tiene permiso para bloquear jornadas
