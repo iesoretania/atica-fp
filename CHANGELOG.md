@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-2.2.3 (xxxx-xx-xx)
+2.2.3 (2020-02-24)
 ------------------
 * fix: Solucionado un problema al modificar o dar de alta un nuevo convenio
 
