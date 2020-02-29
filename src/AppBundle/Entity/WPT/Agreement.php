@@ -16,7 +16,7 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Entity\WLT;
+namespace AppBundle\Entity\WPT;
 
 use AppBundle\Entity\AnsweredSurvey;
 use AppBundle\Entity\Edu\StudentEnrollment;
@@ -30,10 +30,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="AppBundle\Repository\WLT\AgreementRepository")
- * @ORM\Table(name="wlt_agreement",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"project_id", "student_enrollment_id", "workcenter_id"})}))))
- * @UniqueEntity(fields={"project", "studentEnrollment", "workcenter"}, message="agreement.student_workcenter.unique")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\WPT\AgreementRepository")
+ * @ORM\Table(name="wpt_agreement",
+ *     uniqueConstraints={@ORM\UniqueConstraint(columns={"shift_id", "student_enrollment_id", "workcenter_id"})}))))
+ * @UniqueEntity(fields={"shift", "studentEnrollment", "workcenter"}, message="agreement.student_workcenter.unique")
  */
 class Agreement
 {
@@ -46,11 +46,11 @@ class Agreement
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\WLT\Project", inversedBy="agreements")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\WPT\Shift", inversedBy="agreements")
      * @ORM\JoinColumn(nullable=false)
-     * @var Project
+     * @var Shift
      */
-    private $project;
+    private $shift;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Workcenter")
@@ -135,21 +135,23 @@ class Agreement
     private $defaultEndTime2;
 
     /**
-     * @ORM\OneToMany(targetEntity="AgreementActivityRealization", mappedBy="agreement")
-     * @var AgreementActivityRealization[]
-     */
-    private $evaluatedActivityRealizations;
-
-    /**
      * @ORM\OneToMany(targetEntity="WorkDay", mappedBy="agreement")
-     * @var WorkDay[]
+     * @var WorkDay[]|Collection
      */
     private $workDays;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Activity")
+     * @ORM\JoinTable(name="wpt_agreement_activity")
+     * @ORM\OrderBy({"code"="ASC", "description"="ASC"})
+     * @var Activity[]|Collection
+     */
+    protected $activities;
+
     public function __construct()
     {
-        $this->evaluatedActivityRealizations = new ArrayCollection();
         $this->workDays = new ArrayCollection();
+        $this->activities = new ArrayCollection();
     }
 
     public function __toString()
@@ -166,20 +168,20 @@ class Agreement
     }
 
     /**
-     * @return Project
+     * @return Shift
      */
-    public function getProject()
+    public function getShift()
     {
-        return $this->project;
+        return $this->shift;
     }
 
     /**
-     * @param Project $project
+     * @param Shift $shift
      * @return Agreement
      */
-    public function setProject($project)
+    public function setShift($shift)
     {
-        $this->project = $project;
+        $this->shift = $shift;
         return $this;
     }
 
@@ -195,7 +197,7 @@ class Agreement
      * @param Workcenter $workcenter
      * @return Agreement
      */
-    public function setWorkcenter(Workcenter $workcenter)
+    public function setWorkcenter($workcenter)
     {
         $this->workcenter = $workcenter;
         return $this;
@@ -213,7 +215,7 @@ class Agreement
      * @param StudentEnrollment $studentEnrollment
      * @return Agreement
      */
-    public function setStudentEnrollment(StudentEnrollment $studentEnrollment)
+    public function setStudentEnrollment($studentEnrollment)
     {
         $this->studentEnrollment = $studentEnrollment;
         return $this;
@@ -231,7 +233,7 @@ class Agreement
      * @param Person $workTutor
      * @return Agreement
      */
-    public function setWorkTutor(Person $workTutor)
+    public function setWorkTutor($workTutor)
     {
         $this->workTutor = $workTutor;
         return $this;
@@ -303,7 +305,7 @@ class Agreement
      * @param AnsweredSurvey $studentSurvey
      * @return Agreement
      */
-    public function setStudentSurvey(AnsweredSurvey $studentSurvey = null)
+    public function setStudentSurvey($studentSurvey)
     {
         $this->studentSurvey = $studentSurvey;
         return $this;
@@ -321,7 +323,7 @@ class Agreement
      * @param AnsweredSurvey $companySurvey
      * @return Agreement
      */
-    public function setCompanySurvey(AnsweredSurvey $companySurvey = null)
+    public function setCompanySurvey($companySurvey)
     {
         $this->companySurvey = $companySurvey;
         return $this;
@@ -400,43 +402,38 @@ class Agreement
     }
 
     /**
-     * @return AgreementActivityRealization[]
-     */
-    public function getEvaluatedActivityRealizations()
-    {
-        return $this->evaluatedActivityRealizations;
-    }
-
-    /**
-     * @param AgreementActivityRealization[] $evaluatedActivityRealizations
-     * @return Agreement
-     */
-    public function setEvaluatedActivityRealizations($evaluatedActivityRealizations)
-    {
-        $this->evaluatedActivityRealizations = $evaluatedActivityRealizations;
-        return $this;
-    }
-
-    /**
-     * @return ActivityRealization[]|Collection
-     */
-    public function getActivityRealizations()
-    {
-        $result = new ArrayCollection();
-
-        if ($this->getEvaluatedActivityRealizations()) {
-            foreach ($this->getEvaluatedActivityRealizations() as $evaluatedActivityRealization) {
-                $result->add($evaluatedActivityRealization->getActivityRealization());
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * @return WorkDay[]
+     * @return WorkDay[]|Collection
      */
     public function getWorkDays()
     {
         return $this->workDays;
+    }
+
+    /**
+     * @param WorkDay[]|Collection $workDays
+     * @return Agreement
+     */
+    public function setWorkDays($workDays)
+    {
+        $this->workDays = $workDays;
+        return $this;
+    }
+
+    /**
+     * @return Activity[]|Collection
+     */
+    public function getActivities()
+    {
+        return $this->activities;
+    }
+
+    /**
+     * @param Activity[]|Collection $activities
+     * @return Agreement
+     */
+    public function setActivities($activities)
+    {
+        $this->activities = $activities;
+        return $this;
     }
 }

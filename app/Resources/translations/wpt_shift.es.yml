@@ -1,0 +1,56 @@
+form.name: Nombre
+form.grade: Nivel
+form.hours: Horas
+form.type: Grado
+form.quarter: Trimestre
+form.quarter.1Q: Primer trimestre
+form.quarter.2Q: Segundo trimestre
+form.quarter.3Q: Tercer trimestre
+form.attendance_report_template: Plantilla de informe de asistencia
+form.weekly_activity_report_template: Plantilla de informe semanal de actividades
+form.no_template: Sin plantilla
+form.student_survey: Modelo de encuesta de satisfacción de alumnado
+form.company_survey: Modelo de encuesta de satisfacción de empresa colaboradora
+form.educational_tutor_survey: Modelo de encuesta de satisfacción de tutoría docente
+form.student_enrollments: Estudiantes
+form.no_student_enrollments: No hay ninguno para el nivel/enseñanza seleccionado
+form.no_survey: Ninguna
+
+form.save: Guardar cambios
+form.delete: Eliminar las convocatorias seleccionadas
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nueva convocatoria
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes convocatorias? En el caso de que alguna tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Modificar convocatoria
+title.new: Nueva convocatoria
+title.delete: Eliminar convocatoria
+
+title.list: Convocatorias de FCT
+title.student_enrollment: Alumnado
+title.agreements: Acuerdos de colaboración
+
+table.learning_program: Programa formativo
+table.learning_program_companies: Empresas
+table.student_enrollment: Alumnado
+table.agreements: Acuerdos de colaboración
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay convocatorias
+table.filter: Filtrar...
+
+header.name: Convocatoria
+header.type: Grado
+header.hours: Horas
+header.groups: Grupos
+header.student_count: Estudiantes
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Convocatorias eliminadas con éxito.
+message.delete_error: Ha ocurrido un error al eliminar las convocatorias.

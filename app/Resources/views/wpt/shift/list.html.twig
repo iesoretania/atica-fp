@@ -1,0 +1,67 @@
+{% trans_default_domain 'wpt_shift' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('workplace_training_shift_new', {'academicYear': academic_year.id}) }}{% endblock %}
+
+{% block table_header %}
+    <th><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th>{{ 'header.groups'|trans }}</th>
+    <th>{{ 'header.type'|trans }}</th>
+    <th>{{ 'header.hours'|trans }}</th>
+    <th>{{ 'header.student_count'|trans }}</th>
+    <th colspan="5"></th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('workplace_training_shift_edit', {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
+                            <a href="{{ url }}">{{ item.name }}</a>
+                        </label>
+                    </td>
+                    <td>
+                        {{ item.grade.groups|join(', ') }}
+                    </td>
+                    <td>
+                        {{ item.type }}
+                    </td>
+                    <td>
+                        {{ item.hours }}
+                    </td>
+                    <td>
+                        {{ item.studentEnrollments.count() }}
+                    </td>
+                    <td>
+                        {{ m.link_button(path('workplace_training_shift_student_enrollment', {'id': item.id}), 'users', 'btn-info btn-sm btn-block', 'table.student_enrollment'|trans) }}
+                    </td>
+                    <td>
+                        {{ m.link_button(path('work_linked_training_agreement_list', {'id': item.id}), 'handshake', 'btn-info btn-sm btn-block', 'table.agreements'|trans) }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('workplace_training_shift_operation', {'academicYear': academic_year.id}) }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+{% endblock %}

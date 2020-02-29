@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+3.0.0 (xxxx-xx-xx)
+------------------
+* feat: Soporte inicial del seguimiento de Formación en Centros de Trabajo (FCT)
+
 2.2.3 (2020-02-24)
 ------------------
 * fix: Solucionado un problema al modificar o dar de alta un nuevo convenio
