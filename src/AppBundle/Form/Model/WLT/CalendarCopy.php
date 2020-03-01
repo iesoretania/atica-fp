@@ -16,7 +16,7 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Form\Model;
+namespace AppBundle\Form\Model\WLT;
 
 use AppBundle\Entity\WLT\Agreement;
 

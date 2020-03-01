@@ -16,39 +16,30 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Repository;
+namespace AppBundle\Repository\WLT;
 
 use AppBundle\Entity\Company;
+use AppBundle\Entity\WLT\LearningProgram;
+use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-class CompanyRepository extends ServiceEntityRepository
+class WLTCompanyRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Company::class);
     }
 
-    public function findAllInListById(
-        $items
-    ) {
+    public function findByLearningProgramFromProject(Project $project)
+    {
         return $this->createQueryBuilder('c')
-            ->where('c IN (:items)')
-            ->setParameter('items', $items)
-            ->orderBy('c.code')
-            ->addOrderBy('c.name')
-            ->addOrderBy('c.city')
+            ->distinct(true)
+            ->join(LearningProgram::class, 'lp', 'WITH', 'c = lp.company')
+            ->where('lp.project = :project')
+            ->setParameter('project', $project)
+            ->orderBy('c.name')
             ->getQuery()
             ->getResult();
-    }
-
-    public function deleteFromList($items)
-    {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->delete(Company::class, 'c')
-            ->where('c IN (:items)')
-            ->setParameter('items', $items)
-            ->getQuery()
-            ->execute();
     }
 }

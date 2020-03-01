@@ -121,10 +121,18 @@ class Shift
      */
     private $agreements;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Activity", mappedBy="shift")
+     * @ORM\OrderBy({"code": "ASC", "description": "ASC"})
+     * @var Activity[]|Collection
+     */
+    private $activities;
+
     public function __construct()
     {
         $this->studentEnrollments = new ArrayCollection();
         $this->agreements = new ArrayCollection();
+        $this->activities = new ArrayCollection();
     }
 
     public function __toString()
@@ -353,6 +361,24 @@ class Shift
     public function setAgreements($agreements)
     {
         $this->agreements = $agreements;
+        return $this;
+    }
+
+    /**
+     * @return Activity[]|Collection
+     */
+    public function getActivities()
+    {
+        return $this->activities;
+    }
+
+    /**
+     * @param Activity[]|Collection $activities
+     * @return Shift
+     */
+    public function setActivities($activities)
+    {
+        $this->activities = $activities;
         return $this;
     }
 }

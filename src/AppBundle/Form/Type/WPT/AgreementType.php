@@ -16,21 +16,21 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Form\Type\WLT;
+namespace AppBundle\Form\Type\WPT;
 
 use AppBundle\Entity\Company;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Person;
-use AppBundle\Entity\WLT\ActivityRealization;
-use AppBundle\Entity\WLT\Agreement;
-use AppBundle\Entity\WLT\Project;
 use AppBundle\Entity\Workcenter;
+use AppBundle\Entity\WPT\Activity;
+use AppBundle\Entity\WPT\Agreement;
+use AppBundle\Entity\WPT\Shift;
+use AppBundle\Repository\CompanyRepository;
 use AppBundle\Repository\Edu\StudentEnrollmentRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
-use AppBundle\Repository\WLT\ActivityRealizationRepository;
-use AppBundle\Repository\WLT\WLTCompanyRepository;
 use AppBundle\Repository\WorkcenterRepository;
+use AppBundle\Repository\WPT\ActivityRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -45,32 +45,31 @@ class AgreementType extends AbstractType
 {
     private $studentEnrollmentRepository;
     private $workcenterRepository;
-    private $wltCompanyRepository;
-    private $activityRealizationRepository;
+    private $companyRepository;
+    private $activityRepository;
     private $teacherRepository;
 
     public function __construct(
         StudentEnrollmentRepository $studentEnrollmentRepository,
         WorkcenterRepository $workcenterRepository,
-        WLTCompanyRepository $wltCompanyRepository,
-        ActivityRealizationRepository $activityRealizationRepository,
+        CompanyRepository $companyRepository,
+        ActivityRepository $activityRepository,
         TeacherRepository $teacherRepository
     ) {
         $this->studentEnrollmentRepository = $studentEnrollmentRepository;
         $this->workcenterRepository = $workcenterRepository;
-        $this->wltCompanyRepository = $wltCompanyRepository;
-        $this->activityRealizationRepository = $activityRealizationRepository;
+        $this->companyRepository = $companyRepository;
+        $this->activityRepository = $activityRepository;
         $this->teacherRepository = $teacherRepository;
     }
 
     public function addElements(
         FormInterface $form,
-        Project $project,
+        Shift $shift,
         Company $company = null,
-        StudentEnrollment $studentEnrollment = null,
-        $currentActivityRealizations = []
+        StudentEnrollment $studentEnrollment = null
     ) {
-        $studentEnrollments = $project ? $project->getStudentEnrollments() : [];
+        $studentEnrollments = $shift ? $shift->getStudentEnrollments() : [];
 
         $workcenters = ($studentEnrollment && $company) ?
             $this->workcenterRepository->findByCompany(
@@ -82,17 +81,10 @@ class AgreementType extends AbstractType
                 $studentEnrollment->getGroup()->getGrade()->getTraining()->getAcademicYear()
             ) : [];
 
-        if ($studentEnrollment) {
-            if ($company) {
-                $activityRealizations = $this->activityRealizationRepository->
-                    findByProjectAndCompany($project, $company);
-            } else {
-                $activityRealizations = [];
-            }
-            $companies = $this->wltCompanyRepository->findByLearningProgramFromProject($project);
+        if ($studentEnrollment && $company) {
+            $activities = $shift->getActivities();
         } else {
-            $activityRealizations = [];
-            $companies = [];
+            $activities = [];
         }
         $form
             ->add('studentEnrollment', EntityType::class, [
@@ -116,9 +108,8 @@ class AgreementType extends AbstractType
                 'class' => Company::class,
                 'choice_label' => 'fullName',
                 'choice_translation_domain' => false,
-                'choices' => $companies,
                 'data' => $company,
-                'query_builder' => function (EntityRepository $er) {
+                'query_builder' => static function (EntityRepository $er) {
                     return $er->createQueryBuilder('c')
                         ->orderBy('c.name');
                 },
@@ -171,18 +162,14 @@ class AgreementType extends AbstractType
                 'label' => 'form.default_end_time_2',
                 'required' => false
             ])
-            ->add('activityRealizations', EntityType::class, [
-                'label' => 'form.activity_realizations',
+            ->add('activities', EntityType::class, [
+                'label' => 'form.activities',
                 'mapped' => false,
-                'class' => ActivityRealization::class,
-                'data' => $currentActivityRealizations,
+                'class' => Activity::class,
                 'expanded' => true,
-                'group_by' => function (ActivityRealization $ar) {
-                    return (string) $ar->getActivity();
-                },
                 'multiple' => true,
                 'required' => false,
-                'choices' => $activityRealizations
+                'choices' => $activities
             ]);
     }
 
@@ -195,15 +182,13 @@ class AgreementType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData();
 
-            $project = $data->getProject();
+            $shift = $data->getShift();
 
             $company = $data->getWorkcenter() ? $data->getWorkcenter()->getCompany() : null;
 
             $studentEnrollment = $data->getStudentEnrollment();
 
-            $currentActivityRealizations = $data->getActivityRealizations();
-
-            $this->addElements($form, $project, $company, $studentEnrollment, $currentActivityRealizations);
+            $this->addElements($form, $shift, $company, $studentEnrollment);
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
@@ -211,17 +196,17 @@ class AgreementType extends AbstractType
             $data = $event->getData();
 
             /** @var Company|null $company */
-            $company = isset($data['company']) ? $this->wltCompanyRepository->find($data['company']) : null;
+            $company = isset($data['company']) ? $this->companyRepository->find($data['company']) : null;
 
-            /** @var Project $project */
-            $project = $form->getData()->getProject();
+            /** @var Shift $shift */
+            $shift = $form->getData()->getShift();
 
             /** @var StudentEnrollment $studentEnrollment */
             $studentEnrollment = isset($data['studentEnrollment']) ?
                 $this->studentEnrollmentRepository->find($data['studentEnrollment']) :
                 null;
 
-            $this->addElements($form, $project, $company, $studentEnrollment, null);
+            $this->addElements($form, $shift, $company, $studentEnrollment);
         });
     }
 
@@ -232,7 +217,7 @@ class AgreementType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Agreement::class,
-            'translation_domain' => 'wlt_agreement'
+            'translation_domain' => 'wpt_agreement'
         ]);
     }
 }

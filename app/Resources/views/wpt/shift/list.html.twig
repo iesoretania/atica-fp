@@ -38,7 +38,7 @@
                         {{ m.link_button(path('workplace_training_shift_student_enrollment', {'id': item.id}), 'users', 'btn-info btn-sm btn-block', 'table.student_enrollment'|trans) }}
                     </td>
                     <td>
-                        {{ m.link_button(path('work_linked_training_agreement_list', {'id': item.id}), 'handshake', 'btn-info btn-sm btn-block', 'table.agreements'|trans) }}
+                        {{ m.link_button(path('workplace_training_agreement_list', {'id': item.id}), 'handshake', 'btn-info btn-sm btn-block', 'table.agreements'|trans) }}
                     </td>
                 </tr>
             {% else %}

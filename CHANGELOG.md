@@ -7,6 +7,7 @@ en la distintas versiones de la misma.
 3.0.0 (xxxx-xx-xx)
 ------------------
 * feat: Soporte inicial del seguimiento de Formación en Centros de Trabajo (FCT)
+* feat: Gestión de los acuerdos de colaboración de FCT
 
 2.2.3 (2020-02-24)
 ------------------

@@ -16,20 +16,18 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Controller\WLT;
+namespace AppBundle\Controller\WPT;
 
-use AppBundle\Entity\WLT\Agreement;
-use AppBundle\Entity\WLT\AgreementActivityRealization;
-use AppBundle\Entity\WLT\Project;
-use AppBundle\Form\Model\WLT\CalendarCopy;
-use AppBundle\Form\Type\WLT\AgreementType;
-use AppBundle\Form\Type\WLT\CalendarCopyType;
+use AppBundle\Entity\WPT\Agreement;
+use AppBundle\Entity\WPT\Shift;
+use AppBundle\Form\Model\WPT\CalendarCopy;
+use AppBundle\Form\Type\WPT\AgreementType;
+use AppBundle\Form\Type\WPT\CalendarCopyType;
 use AppBundle\Repository\MembershipRepository;
-use AppBundle\Repository\WLT\AgreementActivityRealizationRepository;
-use AppBundle\Repository\WLT\AgreementRepository;
-use AppBundle\Security\WLT\AgreementVoter;
-use AppBundle\Security\WLT\ProjectVoter;
-use AppBundle\Security\WLT\WLTOrganizationVoter;
+use AppBundle\Repository\WPT\AgreementRepository;
+use AppBundle\Security\WPT\AgreementVoter;
+use AppBundle\Security\WPT\ShiftVoter;
+use AppBundle\Security\WPT\WPTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -41,28 +39,27 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * @Route("/dual/acuerdo")
+ * @Route("/fct/convenio")
  */
 class AgreementController extends Controller
 {
     /**
-     * @Route("/nuevo/{project}", name="work_linked_training_agreement_new",
-     *     requirements={"project": "\d+"}, methods={"GET", "POST"})
+     * @Route("/nuevo/{shift}", name="workplace_training_agreement_new",
+     *     requirements={"shift": "\d+"}, methods={"GET", "POST"})
      */
     public function newAction(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         MembershipRepository $membershipRepository,
-        AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
-        Project $project
+        Shift $shift
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
 
         $agreement = new Agreement();
         $agreement
-            ->setProject($project);
+            ->setShift($shift);
 
         $this->getDoctrine()->getManager()->persist($agreement);
 
@@ -71,24 +68,22 @@ class AgreementController extends Controller
             $userExtensionService,
             $translator,
             $membershipRepository,
-            $agreementActivityRealizationRepository,
             $agreement
         );
     }
 
     /**
-     * @Route("/{id}", name="work_linked_training_agreement_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
+     * @Route("/{id}", name="workplace_training_agreement_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
     public function indexAction(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         MembershipRepository $membershipRepository,
-        AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
         Agreement $agreement
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
         $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
 
@@ -107,8 +102,6 @@ class AgreementController extends Controller
             'disabled' => $readOnly
         ]);
 
-        $oldActivityRealizations = $agreement->getActivityRealizations();
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -122,60 +115,41 @@ class AgreementController extends Controller
                         $academicYear->getEndDate()
                     );
                 }
-                // actualizar concreciones del convenio
-                $currentActivityRealizations = $form->get('activityRealizations')->getData();
-
-                $toInsert = array_diff($currentActivityRealizations->toArray(), $oldActivityRealizations->toArray());
-                foreach ($toInsert as $activityRealization) {
-                    $agreementActivityRealization = new AgreementActivityRealization();
-                    $agreementActivityRealization
-                        ->setAgreement($agreement)
-                        ->setActivityRealization($activityRealization);
-                    $this->getDoctrine()->getManager()->persist($agreementActivityRealization);
-                }
-
-                if ($agreement->getId()) {
-                    $toRemove = array_diff(
-                        $oldActivityRealizations->toArray(),
-                        $currentActivityRealizations->toArray()
-                    );
-                    $agreementActivityRealizationRepository->deleteFromList($agreement, $toRemove);
-                }
 
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_agreement'));
-                return $this->redirectToRoute('work_linked_training_agreement_list', [
-                    'id' => $agreement->getProject()->getId()
+                $this->addFlash('success', $translator->trans('message.saved', [], 'wpt_agreement'));
+                return $this->redirectToRoute('workplace_training_agreement_list', [
+                    'id' => $agreement->getShift()->getId()
                 ]);
             } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_agreement'));
+                $this->addFlash('error', $translator->trans('message.error', [], 'wpt_agreement'));
             }
         }
 
         $title = $translator->trans(
             $agreement->getId() ? 'title.edit' : 'title.new',
             [],
-            'wlt_agreement'
+            'wpt_agreement'
         );
 
         $breadcrumb = [
             [
-                'fixed' => $agreement->getProject()->getName(),
-                'routeName' => 'work_linked_training_agreement_list',
-                'routeParams' => ['id' => $agreement->getProject()->getId()]
+                'fixed' => $agreement->getShift()->getName(),
+                'routeName' => 'workplace_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getShift()->getId()]
             ],
             [
-                'fixed' => $translator->trans('title.agreements', [], 'wlt_project'),
-                'routeName' => 'work_linked_training_agreement_list',
-                'routeParams' => ['id' => $agreement->getProject()->getId()]
+                'fixed' => $translator->trans('title.agreements', [], 'wpt_shift'),
+                'routeName' => 'workplace_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getShift()->getId()]
             ],
             $agreement->getId() ?
                 ['fixed' => (string) $agreement] :
-                ['fixed' => $translator->trans('title.new', [], 'wlt_agreement')]
+                ['fixed' => $translator->trans('title.new', [], 'wpt_agreement')]
         ];
 
-        return $this->render('wlt/agreement/form.html.twig', [
-            'menu_path' => 'work_linked_training_project_list',
+        return $this->render('wpt/agreement/form.html.twig', [
+            'menu_path' => 'workplace_training_shift_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'form' => $form->createView(),
@@ -185,26 +159,25 @@ class AgreementController extends Controller
     }
 
     /**
-     * @Route("/{id}/listar/{page}", name="work_linked_training_agreement_list",
+     * @Route("/{id}/listar/{page}", name="workplace_training_agreement_list",
      *     requirements={"page" = "\d+"}, methods={"GET"})
      */
     public function listAction(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        AgreementRepository $agreementRepository,
-        Project $project,
+        Shift $shift,
         $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        if ($project) {
-            $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
+        if ($shift) {
+            $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
         } else {
-            $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+            $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
         }
 
-        if ($project && $project->getOrganization() !== $organization) {
+        if ($shift && $shift->getGrade()->getTraining()->getAcademicYear()->getOrganization() !== $organization) {
             throw $this->createAccessDeniedException();
         }
 
@@ -234,7 +207,7 @@ class AgreementController extends Controller
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->join('a.workTutor', 'wt')
-            ->join('a.project', 'pro')
+            ->join('a.shift', 'shi')
             ->orderBy('g.name')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
@@ -253,17 +226,9 @@ class AgreementController extends Controller
                 ->orWhere('wt.firstName LIKE :tq')
                 ->orWhere('wt.lastName LIKE :tq')
                 ->orWhere('wt.uniqueIdentifier LIKE :tq')
+                ->orWhere('shi.name LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
-
-        $person = $this->getUser()->getPerson();
-
-        $projects = $agreementRepository->setQueryBuilderFilterByOrganizationManagerPersonProjectAndReturnProjects(
-            $queryBuilder,
-            $organization,
-            $person,
-            $project
-        );
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -275,54 +240,53 @@ class AgreementController extends Controller
             $pager->setCurrentPage(1);
         }
 
-        $title = $translator->trans('title.list', [], 'wlt_agreement');
+        $title = $translator->trans('title.list', [], 'wpt_agreement');
 
         $breadcrumb = [
-            ['fixed' => $project->getName()],
-            ['fixed' => $translator->trans('title.agreements', [], 'wlt_project')]
+            ['fixed' => $shift->getName()],
+            ['fixed' => $translator->trans('title.agreements', [], 'wpt_shift')]
         ];
 
-        return $this->render('wlt/agreement/list.html.twig', [
-            'menu_path' => 'work_linked_training_project_list',
+        return $this->render('wpt/agreement/list.html.twig', [
+            'menu_path' => 'workplace_training_shift_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'domain' => 'wlt_agreement',
-            'project' => $project,
-            'projects' => $projects
+            'domain' => 'wpt_agreement',
+            'shift' => $shift
         ]);
     }
 
     /**
-     * @Route("/operacion/{project}", name="work_linked_training_agreement_operation",
-     *     requirements={"project": "\d+"}, methods={"POST"})
+     * @Route("/operacion/{shift}", name="workplace_training_agreement_operation",
+     *     requirements={"shift": "\d+"}, methods={"POST"})
      */
     public function operationAction(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
-        Project $project
+        Shift $shift
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
 
         $items = $request->request->get('items', []);
 
         if (count($items) !== 0) {
             if ('' === $request->get('delete')) {
-                return $this->deleteAction($items, $request, $translator, $agreementRepository, $project);
+                return $this->deleteAction($items, $request, $translator, $agreementRepository, $shift);
             }
             if ('' === $request->get('copy')) {
-                return $this->copyAction($items, $request, $translator, $agreementRepository, $project);
+                return $this->copyAction($items, $request, $translator, $agreementRepository, $shift);
             }
         }
 
         return $this->redirectToRoute(
-            'work_linked_training_agreement_list',
-            ['id' => $project->getId()]
+            'workplace_training_agreement_list',
+            ['id' => $shift->getId()]
         );
     }
 
@@ -331,11 +295,11 @@ class AgreementController extends Controller
         Request $request,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
-        Project $project
+        Shift $shift
     ) {
         $em = $this->getDoctrine()->getManager();
 
-        $agreements = $agreementRepository->findAllInListByIdAndProject($items, $project);
+        $agreements = $agreementRepository->findAllInListByIdAndShift($items, $shift);
 
         // comprobar individualmente que tenemos acceso
         foreach ($agreements as $agreement) {
@@ -347,27 +311,29 @@ class AgreementController extends Controller
                 $agreementRepository->deleteFromList($agreements);
 
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_agreement'));
+                $this->addFlash('success', $translator->trans('message.deleted', [], 'wpt_agreement'));
             } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_agreement'));
+                $this->addFlash('error', $translator->trans('message.delete_error', [], 'wpt_agreement'));
             }
             return $this->redirectToRoute(
-                'work_linked_training_agreement_list',
-                ['id' => $project->getId()]
+                'workplace_training_agreement_list',
+                ['id' => $shift->getId()]
             );
         }
+
         $breadcrumb = [
             [
-                'fixed' => $project->getName(),
-                'routeName' => 'work_linked_training_agreement_list',
-                'routeParams' => ['id' => $project->getId()]
+                'fixed' => $shift->getName(),
+                'routeName' => 'workplace_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getShift()->getId()]
             ],
-            ['fixed' => $translator->trans('title.delete', [], 'wlt_agreement')]
+            ['fixed' => $translator->trans('title.delete', [], 'wpt_agreement')]
         ];
-        return $this->render('wlt/agreement/delete.html.twig', [
-            'menu_path' => 'work_linked_training_project_list',
+
+        return $this->render('wpt/agreement/delete.html.twig', [
+            'menu_path' => 'workplace_training_shift_list',
             'breadcrumb' => $breadcrumb,
-            'title' => $translator->trans('title.delete', [], 'wlt_agreement'),
+            'title' => $translator->trans('title.delete', [], 'wpt_agreement'),
             'items' => $agreements
         ]);
     }
@@ -377,16 +343,16 @@ class AgreementController extends Controller
         Request $request,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
-        Project $project
+        Shift $shift
     ) {
         $em = $this->getDoctrine()->getManager();
 
-        $selectedAgreements = $agreementRepository->findAllInListByIdAndProject($items, $project);
+        $selectedAgreements = $agreementRepository->findAllInListByIdAndShift($items, $shift);
         // comprobar individualmente que tenemos acceso
         foreach ($selectedAgreements as $agreement) {
             $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
         }
-        $agreementChoices = $agreementRepository->findAllInListByNotIdAndProject($items, $project);
+        $agreementChoices = $agreementRepository->findAllInListByNotIdAndShift($items, $shift);
         $calendarCopy = new CalendarCopy();
 
         $form = $this->createForm(CalendarCopyType::class, $calendarCopy, [
@@ -408,26 +374,26 @@ class AgreementController extends Controller
                 foreach ($selectedAgreements as $agreement) {
                     $agreementRepository->updateDates($agreement);
                 }
-                $this->addFlash('success', $translator->trans('message.copied', [], 'wlt_agreement'));
-                return $this->redirectToRoute('work_linked_training_agreement_list', [
-                    'id' => $project->getId()
+                $this->addFlash('success', $translator->trans('message.copied', [], 'wpt_agreement'));
+                return $this->redirectToRoute('workplace_training_agreement_list', [
+                    'id' => $shift->getId()
                 ]);
             } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.copy_error', [], 'wlt_agreement'));
+                $this->addFlash('error', $translator->trans('message.copy_error', [], 'wpt_agreement'));
             }
         }
 
-        $title = $translator->trans('title.copy', [], 'wlt_agreement');
+        $title = $translator->trans('title.copy', [], 'wpt_agreement');
         $breadcrumb = [
             [
-                'fixed' => $agreement->getProject()->getName(),
-                'routeName' => 'work_linked_training_agreement_list',
-                'routeParams' => ['id' => $agreement->getProject()->getId()]
+                'fixed' => $shift->getName(),
+                'routeName' => 'workplace_training_agreement_list',
+                'routeParams' => ['id' => $shift->getId()]
             ],
             ['fixed' => $title]
         ];
-        return $this->render('wlt/agreement/copy.html.twig', [
-            'menu_path' => 'work_linked_training_project_list',
+        return $this->render('wpt/agreement/copy.html.twig', [
+            'menu_path' => 'workplace_training_shift_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'form' => $form->createView(),

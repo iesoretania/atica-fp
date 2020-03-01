@@ -16,39 +16,39 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Repository;
+namespace AppBundle\Repository\WPT;
 
-use AppBundle\Entity\Company;
+use AppBundle\Entity\WPT\Agreement;
+use AppBundle\Entity\WPT\WorkDay;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-class CompanyRepository extends ServiceEntityRepository
+class WorkDayRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Company::class);
+        parent::__construct($registry, WorkDay::class);
     }
 
-    public function findAllInListById(
-        $items
-    ) {
-        return $this->createQueryBuilder('c')
-            ->where('c IN (:items)')
-            ->setParameter('items', $items)
-            ->orderBy('c.code')
-            ->addOrderBy('c.name')
-            ->addOrderBy('c.city')
+    public function findByAgreement(Agreement $agreement)
+    {
+        return $this->createQueryBuilder('wr')
+            ->where('wr.agreement = :agreement')
+            ->setParameter('agreement', $agreement)
+            ->addOrderBy('wr.date')
             ->getQuery()
             ->getResult();
     }
 
-    public function deleteFromList($items)
+    public function findOneByAgreementAndDate(Agreement $agreement, \DateTime $date)
     {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->delete(Company::class, 'c')
-            ->where('c IN (:items)')
-            ->setParameter('items', $items)
+        return $this->createQueryBuilder('wr')
+            ->where('wr.agreement = :agreement')
+            ->andWhere('wr.date = :date')
+            ->setParameter('agreement', $agreement)
+            ->setParameter('date', $date)
+            ->addOrderBy('wr.date')
             ->getQuery()
-            ->execute();
+            ->getOneOrNullResult();
     }
 }

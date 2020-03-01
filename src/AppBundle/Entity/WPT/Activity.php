@@ -39,7 +39,7 @@ class Activity
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Shift")
+     * @ORM\ManyToOne(targetEntity="Shift", inversedBy="activities")
      * @ORM\JoinColumn(nullable=false)
      * @var Shift
      */

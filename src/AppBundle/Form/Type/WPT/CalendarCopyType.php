@@ -16,10 +16,10 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Form\Type\WLT;
+namespace AppBundle\Form\Type\WPT;
 
-use AppBundle\Entity\WLT\Agreement;
-use AppBundle\Form\Model\WLT\CalendarCopy;
+use AppBundle\Entity\WPT\Agreement;
+use AppBundle\Form\Model\WPT\CalendarCopy;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

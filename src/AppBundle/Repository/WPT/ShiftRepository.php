@@ -30,6 +30,19 @@ class ShiftRepository extends ServiceEntityRepository
         parent::__construct($registry, Shift::class);
     }
 
+    public function findByAcademicYear(
+        AcademicYear $academicYear
+    ) {
+        return $this->createQueryBuilder('s')
+            ->join('s.grade', 'gr')
+            ->join('gr.training', 'tr')
+            ->where('tr.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear)
+            ->orderBy('s.name')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllInListByIdAndAcademicYear(
         $items,
         AcademicYear $academicYear
