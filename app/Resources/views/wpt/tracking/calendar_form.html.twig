@@ -1,0 +1,32 @@
+{% trans_default_domain 'calendar' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% form_theme form _self %}
+
+{% block content %}
+    {% if read_only %}
+        <div class="alert alert-warning">{{ 'prompt.read_only_warning'|trans|nl2br }}</div>
+    {% else %}
+        {% if work_day.locked %}
+            <div class="alert alert-warning">{{ 'prompt.locked_warning'|trans|nl2br }}</div>
+        {% endif %}
+    {% endif %}
+    {{ form_start(form) }}
+    {{ form_widget(form.trackedActivities, {'form_theme': 'bootstrap_4_layout.html.twig'}) }}
+    {{ form_widget(form) }}
+    {{ m.start_button() }}
+        {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.end_button() }}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block _work_day_tracking_trackedActivities_widget %}
+<div class="text_widget card card-body bg-light mb-4">
+    <div {{ block('widget_container_attributes') }}>
+        {% for element in form.children %}
+            {{ form_widget(element, {translation_domain: false}) }}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

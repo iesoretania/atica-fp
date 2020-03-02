@@ -19,6 +19,7 @@
 namespace AppBundle\Repository\WPT;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\WPT\Agreement;
 use AppBundle\Entity\WPT\Shift;
@@ -164,12 +165,12 @@ class AgreementRepository extends ServiceEntityRepository
         try {
             return $this->createQueryBuilder('a')
                 ->select('COUNT(a)')
-                ->join('a.workcenter', 'w')
-                ->join('a.studentEnrollment', 'sr')
-                ->join('sr.group', 'g')
-                ->join('g.grade', 'gr')
+                ->join('a.shift', 'sh')
+                ->join('sh.subject', 's')
+                ->join('s.grade', 'gr')
                 ->join('gr.training', 't')
-                ->where('a.educationalTutor = :educational_tutor')
+                ->join(Teacher::class, 'te', 'WITH', 'te.person = :educational_tutor')
+                ->where('a.educationalTutor = te')
                 ->andWhere('t.academicYear = :academic_year')
                 ->setParameter('educational_tutor', $educationalTutor)
                 ->setParameter('academic_year', $academicYear)

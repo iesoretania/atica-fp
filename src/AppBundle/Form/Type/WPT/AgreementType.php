@@ -163,7 +163,6 @@ class AgreementType extends AbstractType
             ])
             ->add('activities', EntityType::class, [
                 'label' => 'form.activities',
-                'mapped' => false,
                 'class' => Activity::class,
                 'expanded' => true,
                 'multiple' => true,

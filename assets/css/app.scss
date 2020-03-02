@@ -302,6 +302,20 @@ table.calendar {
     }
   }
 
+  td.submitted-ok {
+    background: $success;
+    a {
+      color: $light;
+    }
+  }
+
+  td.submitted-warning {
+    background: $warning;
+    a {
+      color: $light;
+    }
+  }
+
   td.absence {
     background: repeating-linear-gradient(
                     -45deg,

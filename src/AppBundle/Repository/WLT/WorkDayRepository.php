@@ -78,7 +78,7 @@ class WorkDayRepository extends ServiceEntityRepository
                 ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN 1 ELSE 0 END)')
                 ->addSelect('SUM(wd.locked)')
                 ->join('wd.agreement', 'a')
-                ->where('wd .agreement = :agreement')
+                ->where('wd.agreement = :agreement')
                 ->setParameter('agreement', $agreement)
                 ->groupBy('a')
                 ->getQuery()

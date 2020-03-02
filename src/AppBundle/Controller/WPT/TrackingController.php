@@ -21,6 +21,7 @@ namespace AppBundle\Controller\WPT;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\WPT\Agreement;
 use AppBundle\Repository\Edu\AcademicYearRepository;
+use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WPT\WPTGroupRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WPT\WPTOrganizationVoter;
@@ -49,6 +50,7 @@ class TrackingController extends Controller
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         WPTGroupRepository $groupRepository,
+        TeacherRepository $teacherRepository,
         AcademicYear $academicYear = null,
         $page = 1
     ) {
@@ -113,6 +115,8 @@ class TrackingController extends Controller
         $groups = [];
 
         $person = $this->getUser()->getPerson();
+        $teacher = $teacherRepository->findOneByPersonAndAcademicYear($person, $academicYear);
+
         if (false === $isManager) {
             // no es administrador ni directivo:
             // puede ser jefe de departamento, tutor docente o tutor de grupo  -> ver los acuerdos de los
@@ -128,16 +132,18 @@ class TrackingController extends Controller
             $queryBuilder
                 ->andWhere(
                     'se.group IN (:groups) OR se.person = :person OR ' .
-                    'a.workTutor = :person OR a.educationalTutor = :person'
+                    'a.workTutor = :person OR a.educationalTutor = :teacher'
                 )
                 ->setParameter('groups', $groups)
-                ->setParameter('person', $person);
+                ->setParameter('person', $person)
+                ->setParameter('teacher', $teacher);
         }
 
         if (false === $isManager && !$groups) {
             $queryBuilder
-                ->andWhere('se.person = :person OR a.workTutor = :person OR a.educationalTutor = :person')
-                ->setParameter('person', $person);
+                ->andWhere('se.person = :person OR a.workTutor = :person OR a.educationalTutor = :teacher')
+                ->setParameter('person', $person)
+                ->setParameter('teacher', $teacher);
         }
 
         $queryBuilder

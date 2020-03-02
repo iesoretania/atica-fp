@@ -1,0 +1,83 @@
+{% trans_default_domain 'calendar' %}
+
+{% if calendar is not empty %}
+    {% set lock_manager = is_granted('WPT_AGREEMENT_LOCK', agreement) %}
+    <div class="row">
+    {% for num, month in calendar %}
+        <div class="col-sm">
+            <div class="table-responsive">
+                <table class="calendar table table-bordered table-condensed table-hover">
+                    <thead>
+                    <tr>
+                        {% set year = num//12 %}
+                        <th colspan="8" class="calendar-month">{{ ('month'~(num % 12))|trans({}, 'calendar') }} {{ year }}</th>
+                    </tr>
+                    <tr>
+                        <th class="w-13">{{ 'dow0'|trans({}, 'calendar') }}</th>
+                        <th class="w-13">{{ 'dow1'|trans({}, 'calendar') }}</th>
+                        <th class="w-13">{{ 'dow2'|trans({}, 'calendar') }}</th>
+                        <th class="w-13">{{ 'dow3'|trans({}, 'calendar') }}</th>
+                        <th class="w-13">{{ 'dow4'|trans({}, 'calendar') }}</th>
+                        <th class="w-13">{{ 'dow5'|trans({}, 'calendar') }}</th>
+                        <th class="w-13">{{ 'dow6'|trans({}, 'calendar') }}</th>
+                        <th class="w-9 operations"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for week_number, week in month %}
+                        <tr>
+                            {% set workday_exists = false %}
+                            {% set all_locked = true %}
+                            {% set all_unlocked = true %}
+                            {% for n, dayData in week.days %}
+                                {% set day = dayData ? dayData[0] : null %}
+                                {% if day %}
+                                    {% set workday_exists = true %}
+                                    {% if day.locked %}{% set all_unlocked = false %}{% else %}{% set all_locked = false %}{% endif %}
+                                {% endif %}
+                                {% block day %}
+                                <td class="w-13{% if day %} workday{% endif %}">
+                                    {% if day %}
+                                        <b>{{ n }}</b><br/>
+                                        {{ 'caption.hours'|transchoice(day.hours) }}
+                                    {% elseif n > 0 %}
+                                        {{ n }}
+                                    {% endif %}
+                                </td>
+                                {% endblock %}
+                            {% endfor %}
+                            {% if week.days|length < 7 %}
+                                {% for n in 6..week.days|length %}
+                                    <td class="w-13"></td>
+                                {% endfor %}
+                            {% endif %}
+                            <td class="w-9 operations align-middle">
+                                {% if workday_exists %}
+                                    {% set week_code = year * 100 + week_number %}
+                                    {% if lock_manager %}
+                                    {% if not all_locked %}<button type="submit" name="lock_week" value="{{ week_code }}" class="btn btn-link" title="{{ 'form.lock_week_action'|trans }}"><i class="fas fa-lock fa-fw"></i></button>{% endif %}
+                                    {% if not all_unlocked %}<button type="submit" name="unlock_week" value="{{ week_code }}" class="btn btn-link" title="{{ 'form.unlock_week_action'|trans }}"><i class="fas fa-unlock fa-fw"></i></button>{% endif %}
+                                    {% endif %}
+                                    <button type="submit" name="week_report" value="{{ week_code }}" class="btn btn-link" title="{{ 'form.activity_report'|trans }}"><i class="fas fa-print fa-fw"></i></button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% if not loop.first and loop.index is divisible by(2) and not loop.last %}
+    </div>
+    <div class="row">
+    {% endif %}
+    {% endfor %}
+    {% if (calendar|length % 2) > 0 %}
+        {% for i in range((calendar|length % 2), 1) %}
+            <div class="col-sm"></div>
+        {% endfor %}
+    {% endif %}
+    </div>
+{% else %}
+    <div class="alert alert-warning">{{ 'prompt.empty'|trans({}, 'calendar')|nl2br }}</div>
+{% endif %}

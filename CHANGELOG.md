@@ -12,6 +12,7 @@ en la distintas versiones de la misma.
 * feat: Ahora se pueden especificar los criterios de evaluación de los RA
 * feat: Gestión de las actividades del programa formativo
 * feat: Listado de los acuerdos para realizar el seguimiento
+* feat: Seguimiento de actividades en el calendario
 
 2.2.3 (2020-02-24)
 ------------------

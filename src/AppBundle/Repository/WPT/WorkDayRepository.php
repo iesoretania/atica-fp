@@ -81,10 +81,12 @@ class WorkDayRepository extends ServiceEntityRepository
     public function findAndCountByAgreement(Agreement $agreement)
     {
         return $this->createQueryBuilder('wr')
-            ->addSelect('SIZE(wr.trackedActivities)')
+            ->leftJoin('wr.trackedActivities', 'act')
+            ->addSelect('SUM(act.hours)')
             ->where('wr.agreement = :agreement')
             ->setParameter('agreement', $agreement)
             ->addOrderBy('wr.date')
+            ->groupBy('wr')
             ->getQuery()
             ->getResult();
     }
@@ -210,6 +212,119 @@ class WorkDayRepository extends ServiceEntityRepository
             ->setParameter('list', $list)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param WorkDay[]
+     * @param bool
+     * @return mixed
+     */
+    public function updateAttendance($list, $value)
+    {
+        /** @var WorkDay $workDay */
+        foreach ($list as $workDay) {
+            $workDay->getTrackedActivities()->clear();
+        }
+
+        return $this->getEntityManager()->createQueryBuilder()
+            ->update(WorkDay::class, 'w')
+            ->set('w.absence', ':value')
+            ->where('w IN (:list)')
+            ->andWhere('w.locked = :locked')
+            ->setParameter('list', $list)
+            ->setParameter('value', $value)
+            ->setParameter('locked', false)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function updateLock($list, Agreement $agreement, $value)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->update(WorkDay::class, 'w')
+            ->set('w.locked', ':value')
+            ->where('w IN (:list)')
+            ->andWhere('w.agreement = :agreement')
+            ->setParameter('list', $list)
+            ->setParameter('value', $value)
+            ->setParameter('agreement', $agreement)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function updateWeekLock($year, $week, $agreement, $value)
+    {
+        $items = $this->findByYearWeekAndAgreement($year, $week, $agreement);
+        return $this->updateLock($items, $agreement, $value);
+    }
+
+    public function findByYearWeekAndAgreement($year, $week, Agreement $agreement)
+    {
+        $startDate = new \DateTime();
+        $startDate->setTimestamp(strtotime($year . 'W'. ($week < 10 ? '0' . $week : $week)));
+        $endDate = clone $startDate;
+        $endDate->add(new \DateInterval('P7D'));
+        return $this->createQueryBuilder('wd')
+            ->where('wd.agreement = :agreement')
+            ->andWhere('wd.date < :end_date')
+            ->andWhere('wd.date >= :start_date')
+            ->setParameter('agreement', $agreement)
+            ->setParameter('start_date', $startDate)
+            ->setParameter('end_date', $endDate)
+            ->addOrderBy('wd.date', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getWeekInformation(Workday $firstWorkday)
+    {
+        $total = 0;
+        $current = 0;
+
+        $oldNumWeek = NAN;
+
+        $workDays = $firstWorkday->getAgreement()->getWorkdays();
+
+        /** @var Workday $day */
+        foreach ($workDays as $day) {
+            $numWeek = $day->getDate()->format('W');
+
+            if ($numWeek != $oldNumWeek) {
+                $total++;
+                $oldNumWeek = $numWeek;
+            }
+
+            if ($firstWorkday->getDate() == $day->getDate()) {
+                $current = $total;
+            }
+        }
+
+        return ['total' => $total, 'current' => $current];
+    }
+
+    public function hoursStatsByAgreement(Agreement $agreement)
+    {
+        try {
+            return $this->createQueryBuilder('wd')
+                ->select('SUM(wd.hours)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked * wd.hours ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 1 THEN wd.hours ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN wd.hours ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.locked = 1 THEN wd.hours ELSE 0 END)')
+                ->addSelect('COUNT(wd)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 1 THEN 1 ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN 1 ELSE 0 END)')
+                ->addSelect('SUM(wd.locked)')
+                ->join('wd.agreement', 'a')
+                ->where('wd.agreement = :agreement')
+                ->setParameter('agreement', $agreement)
+                ->groupBy('a')
+                ->getQuery()
+                ->getSingleResult();
+        } catch (NoResultException $e) {
+            return [];
+        }
     }
 
     public static function groupByMonthAndWeekNumber($workDays)
