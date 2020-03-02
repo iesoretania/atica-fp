@@ -19,6 +19,7 @@
 namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\Criterion;
+use AppBundle\Entity\Edu\LearningOutcome;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -27,5 +28,40 @@ class CriterionRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Criterion::class);
+    }
+
+    public function findAllInListByIdAndLearningOutcome(
+        $items,
+        LearningOutcome $learningOutcome
+    ) {
+        return $this->createQueryBuilder('c')
+            ->where('c IN (:items)')
+            ->andWhere('c.learningOutcome = :learning_outcome')
+            ->setParameter('items', $items)
+            ->setParameter('learning_outcome', $learningOutcome)
+            ->orderBy('c.code')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findOneByCodeAndLearningOutcome($code, LearningOutcome $learningOutcome)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.code = :code')
+            ->andWhere('c.learningOutcome = :learning_outcome')
+            ->setParameter('code', $code)
+            ->setParameter('learning_outcome', $learningOutcome)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function deleteFromList($items)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(Criterion::class, 'c')
+            ->where('c IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
     }
 }

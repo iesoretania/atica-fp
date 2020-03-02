@@ -1,0 +1,41 @@
+form.subject: Materia
+form.learning_outcome: Resultado de aprendizaje
+form.code: Código
+form.name: Contenido
+form.description: Detalle adicional
+
+form.save: Guardar cambios
+form.delete: Eliminar los criterios seleccionados
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+form.import: Importar desde el texto indicado
+form.import.placeholder: |
+  Por ejemplo: (el paréntesis cerrado separa el código del criterio)
+  a) Se ha identificado...
+  b) Se han relacionado...
+
+table.new: Nuevo criterio de evaluación
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes criterios de evaluación? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos del criterio de evaluación
+title.new: Nuevo criterio de evaluación
+title.delete: Eliminar criterios de evaluación
+title.import: Importación masiva
+
+title.list: Criterios de evaluación
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay criterios que mostrar
+table.filter: Filtrar...
+
+header.code: Código
+header.name: Contenido
+header.description: Detalle adicional
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Criterios de evaluación eliminados con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los criterios de evaluación.

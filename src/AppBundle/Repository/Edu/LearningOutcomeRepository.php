@@ -44,7 +44,8 @@ class LearningOutcomeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findOneByCodeAndSubject($code, Subject $subject) {
+    public function findOneByCodeAndSubject($code, Subject $subject)
+    {
         return $this->createQueryBuilder('l')
             ->where('l.code = :code')
             ->andWhere('l.subject = :subject')

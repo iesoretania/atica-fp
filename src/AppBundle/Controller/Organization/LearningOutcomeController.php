@@ -38,7 +38,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 class LearningOutcomeController extends Controller
 {
     /**
-     * @Route("/materia/{id}/resultado/nuevo", name="organization_training_learning_outcome_new", methods={"GET", "POST"})
+     * @Route("/materia/{id}/resultado/nuevo", name="organization_training_learning_outcome_new",
+     *     methods={"GET", "POST"})
      **/
     public function newAction(Request $request, TranslatorInterface $translator, Subject $subject)
     {
@@ -187,8 +188,8 @@ class LearningOutcomeController extends Controller
         Request $request,
         LearningOutcomeRepository $learningOutcomeRepository,
         TranslatorInterface $translator,
-        Subject $subject)
-    {
+        Subject $subject
+    ) {
         $training = $subject->getGrade()->getTraining();
 
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
@@ -270,9 +271,9 @@ class LearningOutcomeController extends Controller
         }
         try {
             $em->flush();
-            $this->addFlash('success', $translator->trans('message.saved', [], 'edu_competency'));
+            $this->addFlash('success', $translator->trans('message.saved', [], 'edu_learning_outcome'));
         } catch (\Exception $e) {
-            $this->addFlash('error', $translator->trans('message.error', [], 'edu_competency'));
+            $this->addFlash('error', $translator->trans('message.error', [], 'edu_learning_outcome'));
         }
         return $this->redirectToRoute('organization_training_learning_outcome_list', ['id' => $subject->getId()]);
     }

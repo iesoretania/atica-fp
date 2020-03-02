@@ -8,7 +8,7 @@ form.back: Volver
 form.delete_confirm: Confirmar borrado
 form.import: Importar desde el texto indicado
 form.import.placeholder: |
-  Por ejemplo:
+  Por ejemplo: (el paréntesis cerrado separa el código de la competencia)
   a) Configurar y explotar sistemas...
   b) Gestionar...
 

@@ -60,12 +60,6 @@ class Criterion
     protected $learningOutcome;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @var int
-     */
-    protected $orderNr;
-
-    /**
      * @return integer
      */
     public function getId()
@@ -150,24 +144,6 @@ class Criterion
     public function setLearningOutcome($learningOutcome)
     {
         $this->learningOutcome = $learningOutcome;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOrderNr()
-    {
-        return $this->orderNr;
-    }
-
-    /**
-     * @param int $orderNr
-     * @return Criterion
-     */
-    public function setOrderNr($orderNr)
-    {
-        $this->orderNr = $orderNr;
         return $this;
     }
 }
