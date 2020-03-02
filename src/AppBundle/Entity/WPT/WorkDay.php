@@ -114,7 +114,7 @@ class WorkDay
     private $endTime2;
 
     /**
-     * @ORM\OneToMany(targetEntity="ActivityTracking", mappedBy="workday", fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="ActivityTracking", mappedBy="workday")
      * @var ActivityTracking[]|Collection
      */
     protected $trackedActivities;

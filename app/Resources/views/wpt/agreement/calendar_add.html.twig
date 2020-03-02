@@ -1,0 +1,18 @@
+{% trans_default_domain 'calendar' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ m.start_button() }}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('calc', 'calculator', 'btn-primary', 'form.calculate'|trans) }}
+        {{ m.submit_button('submit', 'check', 'btn-success', 'form.add'|trans) }}
+    {{ m.end_button() }}
+    {{ form_end(form) }}
+
+    {% if calendar %}
+        <h1>{{ 'title.preview'|trans }}</h1>
+        {% include 'wpt/agreement/calendar_partial.html.twig' %}
+    {% endif %}
+{% endblock %}

@@ -32,7 +32,7 @@
                     <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}
                         {% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
                     <td>
-                        {{ m.link_button('', 'calendar-alt', 'btn-info btn-sm btn-block', 'table.calendar'|trans) }}
+                        {{ m.link_button(path('workplace_training_agreement_calendar_list', {'id': item.id}), 'calendar-alt', 'btn-info btn-sm btn-block', 'table.calendar'|trans) }}
                     </td>
                 </tr>
             {% else %}

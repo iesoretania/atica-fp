@@ -46,7 +46,7 @@ class AgreementRepository extends ServiceEntityRepository
             ->join('g.grade', 'gr')
             ->join('gr.training', 'tr')
             ->join('tr.academicYear', 'ay')
-            ->where('a.shift = :project')
+            ->where('a.shift = :shift')
             ->setParameter('shift', $shift)
             ->orderBy('g.name')
             ->addOrderBy('p.lastName')
@@ -62,7 +62,6 @@ class AgreementRepository extends ServiceEntityRepository
     ) {
         return $this->findByShiftQueryBuilder($shift)
             ->andWhere('a.id IN (:items)')
-            ->andWhere('a.shift = :project')
             ->setParameter('items', $items)
             ->getQuery()
             ->getResult();
@@ -77,7 +76,6 @@ class AgreementRepository extends ServiceEntityRepository
     ) {
         return $this->findByShiftQueryBuilder($shift)
             ->andWhere('a.id NOT IN (:items)')
-            ->andWhere('a.shift = :project')
             ->setParameter('items', $items)
             ->getQuery()
             ->getResult();
