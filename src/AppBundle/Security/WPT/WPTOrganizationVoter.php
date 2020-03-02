@@ -20,7 +20,10 @@ namespace AppBundle\Security\WPT;
 
 use AppBundle\Entity\Organization;
 use AppBundle\Entity\User;
+use AppBundle\Repository\WPT\AgreementRepository;
+use AppBundle\Repository\WPT\WPTGroupRepository;
 use AppBundle\Security\CachedVoter;
+use AppBundle\Security\Edu\EduOrganizationVoter;
 use AppBundle\Security\OrganizationVoter;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -38,13 +41,19 @@ class WPTOrganizationVoter extends CachedVoter
     const WPT_DEPARTMENT_HEAD = 'ORGANIZATION_WPT_DEPARTMENT_HEAD';
 
     private $decisionManager;
+    private $wptGroupRepository;
+    private $agreementRepository;
 
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
+        WPTGroupRepository $wptGroupRepository,
+        AgreementRepository $agreementRepository,
         AccessDecisionManagerInterface $decisionManager
     ) {
         parent::__construct($cacheItemPoolItemPool);
         $this->decisionManager = $decisionManager;
+        $this->wptGroupRepository = $wptGroupRepository;
+        $this->agreementRepository = $agreementRepository;
     }
 
     /**
@@ -98,6 +107,86 @@ class WPTOrganizationVoter extends CachedVoter
         if ($this->decisionManager->decide($token, [OrganizationVoter::LOCAL_MANAGE], $subject)
         ) {
             return true;
+        }
+        switch ($attribute) {
+            case self::WPT_MANAGE:
+                // Si es jefe de algún departamento, permitir acceder
+                // Jefe de departamento
+                return $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_DEPARTMENT_HEAD], $subject);
+
+            case self::WPT_ACCESS:
+                // pueden acceder:
+                // 1) los tutores de grupo donde haya FCT
+                // 2) los jefes de departamento
+                // 3) los tutores laborales y docentes de los acuerdos de colaboración y
+                // 4) los estudiantes que tengan acuerdos
+
+                // 1) Tutores de grupo de FP dual
+                if ($this->decisionManager->decide($token, [self::WPT_GROUP_TUTOR], $subject)) {
+                    return true;
+                }
+
+                // 2) Jefe de departamento
+                if ($this->decisionManager->decide($token, [self::WPT_DEPARTMENT_HEAD], $subject)) {
+                    return true;
+                }
+
+                // 3) Tutores laborales y docentes
+                if ($this->decisionManager->decide($token, [self::WPT_WORK_TUTOR], $subject) ||
+                    $this->decisionManager->decide($token, [self::WPT_EDUCATIONAL_TUTOR], $subject)) {
+                    return true;
+                }
+
+                // 4) Alumnado con acuerdos, sólo si es acceso
+                return $attribute === self::WPT_ACCESS &&
+                    $this->decisionManager->decide($token, [self::WPT_STUDENT], $subject);
+
+            case self::WPT_GROUP_TUTOR:
+                if ($this->decisionManager->decide($token, [OrganizationVoter::LOCAL_MANAGE], $subject)) {
+                    return true;
+                }
+                return
+                    $this->wptGroupRepository->countAcademicYearAndWPTGroupTutorPerson(
+                        $subject->getCurrentAcademicYear(),
+                        $user->getPerson()
+                    ) > 0;
+
+            case self::WPT_STUDENT:
+                if ($this->decisionManager->decide($token, [OrganizationVoter::LOCAL_MANAGE], $subject)) {
+                    return true;
+                }
+                return
+                    $this->agreementRepository->countAcademicYearAndStudentPerson(
+                        $subject->getCurrentAcademicYear(),
+                        $user->getPerson()
+                    ) > 0;
+
+            case self::WPT_WORK_TUTOR:
+                if ($this->decisionManager->decide($token, [OrganizationVoter::LOCAL_MANAGE], $subject)) {
+                    return true;
+                }
+                return
+                    $this->agreementRepository->countAcademicYearAndWorkTutorPerson(
+                        $subject->getCurrentAcademicYear(),
+                        $user->getPerson()
+                    ) > 0;
+
+            case self::WPT_EDUCATIONAL_TUTOR:
+                if ($this->decisionManager->decide($token, [OrganizationVoter::LOCAL_MANAGE], $subject)) {
+                    return true;
+                }
+                return
+                    $this->agreementRepository->countAcademicYearAndEducationalTutorPerson(
+                        $subject->getCurrentAcademicYear(),
+                        $user->getPerson()
+                    ) > 0;
+
+            case self::WPT_DEPARTMENT_HEAD:
+                return
+                    $this->wptGroupRepository->countAcademicYearAndWPTDepartmentHeadPerson(
+                        $subject->getCurrentAcademicYear(),
+                        $user->getPerson()
+                    ) > 0;
         }
 
         // denegamos en cualquier otro caso

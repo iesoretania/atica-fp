@@ -69,6 +69,16 @@ class WPTMenu implements MenuBuilderInterface
 
                 $menu1->addChild($menu2);
             }
+
+            $menu2 = new MenuItem();
+            $menu2
+                ->setName('workplace_training_tracking')
+                ->setRouteName('workplace_training_tracking_list')
+                ->setCaption('menu.workplace_training.tracking')
+                ->setDescription('menu.workplace_training.tracking.detail')
+                ->setIcon('user-clock');
+
+            $menu1->addChild($menu2);
         }
 
         return $root;

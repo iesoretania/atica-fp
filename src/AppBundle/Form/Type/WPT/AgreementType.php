@@ -81,11 +81,10 @@ class AgreementType extends AbstractType
                 $studentEnrollment->getGroup()->getGrade()->getTraining()->getAcademicYear()
             ) : [];
 
-        if ($studentEnrollment && $company) {
+        if ($shift) {
             $activities = $shift->getActivities();
-        } else {
-            $activities = [];
         }
+
         $form
             ->add('studentEnrollment', EntityType::class, [
                 'label' => 'form.student_enrollment',

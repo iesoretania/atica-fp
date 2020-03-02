@@ -18,11 +18,16 @@
 
 namespace AppBundle\Repository\WPT;
 
+use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Person;
 use AppBundle\Entity\WPT\Agreement;
 use AppBundle\Entity\WPT\Shift;
 use AppBundle\Entity\WPT\WorkDay;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\QueryBuilder;
 
 class AgreementRepository extends ServiceEntityRepository
 {
@@ -79,6 +84,102 @@ class AgreementRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->getQuery()
             ->getResult();
+    }
+    /**
+     * @param AcademicYear $academicYear
+     * @param Person $student
+     *
+     * @return QueryBuilder
+     */
+    public function findByAcademicYearAndStudentQueryBuilder(AcademicYear $academicYear, Person $student)
+    {
+        return $this->createQueryBuilder('a')
+            ->join('a.studentEnrollment', 'sr')
+            ->join('sr.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->where('sr.person = :student')
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('student', $student)
+            ->setParameter('academic_year', $academicYear);
+    }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @param Person $student
+     *
+     * @return int
+     */
+    public function countAcademicYearAndStudentPerson(AcademicYear $academicYear, Person $student)
+    {
+        try {
+            return $this->findByAcademicYearAndStudentQueryBuilder($academicYear, $student)
+                ->select('COUNT(a)')
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NoResultException $e) {
+        } catch (NonUniqueResultException $e) {
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @param Person $workTutor
+     *
+     * @return int
+     */
+    public function countAcademicYearAndWorkTutorPerson(AcademicYear $academicYear, Person $workTutor)
+    {
+        try {
+            return $this->createQueryBuilder('a')
+                ->select('COUNT(a)')
+                ->join('a.workcenter', 'w')
+                ->join('a.studentEnrollment', 'sr')
+                ->join('sr.group', 'g')
+                ->join('g.grade', 'gr')
+                ->join('gr.training', 't')
+                ->where('a.workTutor = :work_tutor')
+                ->andWhere('t.academicYear = :academic_year')
+                ->setParameter('work_tutor', $workTutor)
+                ->setParameter('academic_year', $academicYear)
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NoResultException $e) {
+        } catch (NonUniqueResultException $e) {
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @param Person $educationalTutor
+     *
+     * @return int
+     */
+    public function countAcademicYearAndEducationalTutorPerson(AcademicYear $academicYear, Person $educationalTutor)
+    {
+        try {
+            return $this->createQueryBuilder('a')
+                ->select('COUNT(a)')
+                ->join('a.workcenter', 'w')
+                ->join('a.studentEnrollment', 'sr')
+                ->join('sr.group', 'g')
+                ->join('g.grade', 'gr')
+                ->join('gr.training', 't')
+                ->where('a.educationalTutor = :educational_tutor')
+                ->andWhere('t.academicYear = :academic_year')
+                ->setParameter('educational_tutor', $educationalTutor)
+                ->setParameter('academic_year', $academicYear)
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NoResultException $e) {
+        } catch (NonUniqueResultException $e) {
+        }
+
+        return 0;
     }
 
     public function deleteFromList($list)
