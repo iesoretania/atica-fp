@@ -10,6 +10,7 @@ en la distintas versiones de la misma.
 * feat: Gestión de los acuerdos de colaboración de FCT
 * feat: Gestión de los calendarios de los acuerdos de colaboración
 * feat: Ahora se pueden especificar los criterios de evaluación de los RA
+* feat: Gestión de las actividades del programa formativo
 
 2.2.3 (2020-02-24)
 ------------------

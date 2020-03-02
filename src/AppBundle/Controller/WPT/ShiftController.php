@@ -267,7 +267,7 @@ class ShiftController extends Controller
 
         $items = $request->request->get('items', []);
         if (count($items) === 0) {
-            return $this->redirectToRoute('work_linked_training_project_list');
+            return $this->redirectToRoute('workplace_training_shift_list');
         }
         $selectedItems = $shiftRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 

@@ -72,7 +72,7 @@ class Criterion
      */
     public function __toString()
     {
-        return $this->getCode() ? $this->getCode() . ': ' . $this->getName() : $this->getName();
+        return $this->getCode() ? $this->getCode() . ') ' . $this->getName() : $this->getName();
     }
 
     /**

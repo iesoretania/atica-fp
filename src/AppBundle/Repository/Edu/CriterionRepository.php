@@ -20,6 +20,7 @@ namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\Criterion;
 use AppBundle\Entity\Edu\LearningOutcome;
+use AppBundle\Entity\Edu\Subject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -28,6 +29,18 @@ class CriterionRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Criterion::class);
+    }
+
+    public function findBySubject(Subject $subject)
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.learningOutcome', 'lo')
+            ->where('lo.subject = :subject')
+            ->setParameter('subject', $subject)
+            ->orderBy('lo.code')
+            ->addOrderBy('c.code')
+            ->getQuery()
+            ->getResult();
     }
 
     public function findAllInListByIdAndLearningOutcome(

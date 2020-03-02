@@ -1,0 +1,57 @@
+{% trans_default_domain 'wpt_activity' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('workplace_training_activity_new', {'shift': shift.id}) }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-15"><label><input type="checkbox" id="select"> {{ 'header.code'|trans }}</label></th>
+    <th class="w-25">{{ 'header.description'|trans }}</th>
+    <th class="w-60">{{ 'header.criteria'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('workplace_training_activity_edit', {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
+                            <a href="{{ url }}">{{ item.code }}</a>
+                        </label>
+                    </td>
+                    <td>
+                        {{ item.description|nl2br }}
+                    </td>
+                    <td>
+                        {{ item.criteria|join('\n')|nl2br }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'id': shift.id }}) }}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('workplace_training_activity_operation', {'shift': shift.id}) }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+</form>
+
+<p class="clearfix"></p>
+<h4>{{ 'title.import'|trans }}</h4>
+<form action="{{ path('workplace_training_activity_import', {'id': shift.id}) }}" method="post">
+    <textarea class="form form-control" name="data" rows="10" placeholder="{{ 'form.import.placeholder'|trans }}"></textarea>
+    <p class="clearfix"></p>
+    {{ m.submit_button('import', 'download', 'btn-warning', 'form.import'|trans) }}
+</form>
+{% endblock %}

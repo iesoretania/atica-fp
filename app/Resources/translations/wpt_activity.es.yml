@@ -1,0 +1,39 @@
+form.code: Código
+form.description: Descripción
+form.criteria: Criterios de evaluación asociados
+
+form.save: Guardar cambios
+form.delete: Eliminar las actividades seleccionadas
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+form.import: Importar desde el texto indicado
+form.import.placeholder: |
+    Por ejemplo: (los dos puntos separan el código de la descripción de la actividad)
+    M_01: Identifica...
+    M_02: Organiza...
+
+table.new: Nueva actividad formativo-productiva
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes actividades formativo-productivas? En el caso de que alguna de ellas tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Ficha de actividad
+title.new: Nueva actividad formativo-productiva
+title.delete: Eliminar actividades
+title.import: Importación masiva
+
+title.list: Actividades formativo-productivas
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay actividades
+table.filter: Filtrar...
+
+header.code: Código
+header.description: Descripción de la actividad
+header.criteria: Criterios de evaluación asociados
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Actividades eliminadas del centro.
+message.delete_error: Ha ocurrido un error al eliminar las actividades.

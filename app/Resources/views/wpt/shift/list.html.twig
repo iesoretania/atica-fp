@@ -10,7 +10,7 @@
     <th>{{ 'header.type'|trans }}</th>
     <th>{{ 'header.hours'|trans }}</th>
     <th>{{ 'header.student_count'|trans }}</th>
-    <th colspan="5"></th>
+    <th colspan="3"></th>
 {% endblock %}
 
 {% block table_body %}
@@ -33,6 +33,9 @@
                     </td>
                     <td>
                         {{ item.studentEnrollments.count() }}
+                    </td>
+                    <td>
+                        {{ m.link_button(path('workplace_training_activity_list', {'id': item.id}), 'book', 'btn-info btn-sm btn-block', 'table.learning_program'|trans) }}
                     </td>
                     <td>
                         {{ m.link_button(path('workplace_training_shift_student_enrollment', {'id': item.id}), 'users', 'btn-info btn-sm btn-block', 'table.student_enrollment'|trans) }}

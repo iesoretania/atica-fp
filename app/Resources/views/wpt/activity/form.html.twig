@@ -1,0 +1,28 @@
+{% trans_default_domain 'wpt_activity' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% form_theme form _self %}
+
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ m.start_button() }}
+        {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.end_button() }}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block _activity_criteria_widget %}
+    <div {{ block('widget_container_attributes') }}>
+        {% for name, choices in form.vars.choices %}
+            <h5 class="checkbox-category">
+                {{ name }}
+            </h5>
+            {% for key, choice in choices %}
+                {{ form_widget(form[key], {translation_domain: false}) }}
+                {{ form_label(form[key]) }}
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endblock %}

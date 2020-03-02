@@ -19,6 +19,7 @@
 namespace AppBundle\Repository\WPT;
 
 use AppBundle\Entity\WPT\Activity;
+use AppBundle\Entity\WPT\Shift;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -27,5 +28,38 @@ class ActivityRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Activity::class);
+    }
+
+    public function findOneByCodeAndShift($code, Shift $shift)
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.code = :code')
+            ->andWhere('a.shift = :shift')
+            ->setParameter('code', $code)
+            ->setParameter('shift', $shift)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findAllInListByIdAndShift($items, Shift $shift)
+    {
+        return $this->createQueryBuilder('a')
+        ->where('a IN (:items)')
+        ->andWhere('a.shift = :shift')
+        ->setParameter('items', $items)
+        ->setParameter('shift', $shift)
+        ->orderBy('a.code')
+        ->getQuery()
+        ->getResult();
+    }
+
+    public function deleteFromList($list)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(Activity::class, 'a')
+            ->where('a IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
     }
 }
