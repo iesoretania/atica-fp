@@ -19,12 +19,12 @@
 namespace AppBundle\Form\Type\WPT;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\Edu\Grade;
 use AppBundle\Entity\Edu\ReportTemplate;
+use AppBundle\Entity\Edu\Subject;
 use AppBundle\Entity\Survey;
 use AppBundle\Entity\WPT\Shift;
-use AppBundle\Repository\Edu\GradeRepository;
 use AppBundle\Repository\Edu\ReportTemplateRepository;
+use AppBundle\Repository\Edu\SubjectRepository;
 use AppBundle\Repository\SurveyRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -36,16 +36,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ShiftType extends AbstractType
 {
-    private $gradeRepository;
+    private $subjectRepository;
     private $surveyRepository;
     private $reportTemplateRepository;
 
     public function __construct(
-        GradeRepository $gradeRepository,
+        SubjectRepository $subjectRepository,
         SurveyRepository $surveyRepository,
         ReportTemplateRepository $reportTemplateRepository
     ) {
-        $this->gradeRepository = $gradeRepository;
+        $this->subjectRepository = $subjectRepository;
         $this->surveyRepository = $surveyRepository;
         $this->reportTemplateRepository = $reportTemplateRepository;
     }
@@ -59,7 +59,7 @@ class ShiftType extends AbstractType
         $academicYear = $options['academic_year'];
         $organization = $academicYear->getOrganization();
 
-        $grades = $this->gradeRepository->findByAcademicYear($academicYear);
+        $subjects = $this->subjectRepository->findByAcademicYear($academicYear);
 
         $surveys = $this->surveyRepository->findByOrganization($organization);
 
@@ -70,14 +70,16 @@ class ShiftType extends AbstractType
                 'label' => 'form.name',
                 'required' => true
             ])
-            ->add('grade', EntityType::class, [
-                'label' => 'form.grade',
-                'class' => Grade::class,
+            ->add('subject', EntityType::class, [
+                'label' => 'form.subject',
+                'class' => Subject::class,
                 'choice_translation_domain' => false,
-                'choice_label' => function (Grade $grade) {
-                    return $grade->getName() . ' - ' . $grade->getTraining()->getAcademicYear();
+                'choice_label' => function (Subject $subject) {
+                    return $subject->getName() . ' - ' . $subject->getGrade() . ' - ' .
+                        $subject->getGrade()->getTraining()->getAcademicYear();
                 },
-                'choices' => $grades,
+                'choices' => $subjects,
+                'placeholder' => 'form.no_subject',
                 'required' => true
             ])
             ->add('type', TextType::class, [

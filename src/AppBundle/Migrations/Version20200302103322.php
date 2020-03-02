@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20200229003228 extends AbstractMigration
+class Version20200302103322 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -20,7 +20,7 @@ class Version20200229003228 extends AbstractMigration
 
         $this->addSql('CREATE TABLE edu_criterion (id INT AUTO_INCREMENT NOT NULL, learning_outcome_id INT NOT NULL, code VARCHAR(255) DEFAULT NULL, name LONGTEXT NOT NULL, description LONGTEXT DEFAULT NULL, order_nr INT DEFAULT NULL, INDEX IDX_6A1D6D1335C2B2D5 (learning_outcome_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE wpt_activity_tracking (workday_id INT NOT NULL, activity_id INT NOT NULL, notes LONGTEXT DEFAULT NULL, hours INT NOT NULL, INDEX IDX_FD826545AB01D695 (workday_id), INDEX IDX_FD82654581C06096 (activity_id), PRIMARY KEY(workday_id, activity_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE wpt_shift (id INT AUTO_INCREMENT NOT NULL, grade_id INT NOT NULL, student_survey_id INT DEFAULT NULL, company_survey_id INT DEFAULT NULL, educational_tutor_survey_id INT DEFAULT NULL, attendance_report_template_id INT DEFAULT NULL, weekly_activity_report_template_id INT DEFAULT NULL, name VARCHAR(255) NOT NULL, hours INT NOT NULL, type VARCHAR(255) NOT NULL, quarter INT NOT NULL, INDEX IDX_584DA960FE19A1A8 (grade_id), INDEX IDX_584DA960D490911D (student_survey_id), INDEX IDX_584DA96080E5DA6D (company_survey_id), INDEX IDX_584DA96068F6798B (educational_tutor_survey_id), INDEX IDX_584DA96013E6472B (attendance_report_template_id), INDEX IDX_584DA9603BBF8EEC (weekly_activity_report_template_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE wpt_shift (id INT AUTO_INCREMENT NOT NULL, subject_id INT NOT NULL, student_survey_id INT DEFAULT NULL, company_survey_id INT DEFAULT NULL, educational_tutor_survey_id INT DEFAULT NULL, attendance_report_template_id INT DEFAULT NULL, weekly_activity_report_template_id INT DEFAULT NULL, name VARCHAR(255) NOT NULL, hours INT NOT NULL, type VARCHAR(255) NOT NULL, quarter INT NOT NULL, INDEX IDX_584DA96023EDC87 (subject_id), INDEX IDX_584DA960D490911D (student_survey_id), INDEX IDX_584DA96080E5DA6D (company_survey_id), INDEX IDX_584DA96068F6798B (educational_tutor_survey_id), INDEX IDX_584DA96013E6472B (attendance_report_template_id), INDEX IDX_584DA9603BBF8EEC (weekly_activity_report_template_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE wpt_shift_student_enrollment (shift_id INT NOT NULL, student_enrollment_id INT NOT NULL, INDEX IDX_2D53063BB70BC0E (shift_id), INDEX IDX_2D53063DAE14AC5 (student_enrollment_id), PRIMARY KEY(shift_id, student_enrollment_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE wpt_activity (id INT AUTO_INCREMENT NOT NULL, shift_id INT NOT NULL, code VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, INDEX IDX_4E3A8191BB70BC0E (shift_id), UNIQUE INDEX UNIQ_4E3A8191BB70BC0E77153098 (shift_id, code), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE wpt_activity_criterion (activity_id INT NOT NULL, criterion_id INT NOT NULL, INDEX IDX_6E60352681C06096 (activity_id), INDEX IDX_6E60352697766307 (criterion_id), PRIMARY KEY(activity_id, criterion_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
@@ -30,7 +30,7 @@ class Version20200229003228 extends AbstractMigration
         $this->addSql('ALTER TABLE edu_criterion ADD CONSTRAINT FK_6A1D6D1335C2B2D5 FOREIGN KEY (learning_outcome_id) REFERENCES edu_learning_outcome (id)');
         $this->addSql('ALTER TABLE wpt_activity_tracking ADD CONSTRAINT FK_FD826545AB01D695 FOREIGN KEY (workday_id) REFERENCES wpt_work_day (id)');
         $this->addSql('ALTER TABLE wpt_activity_tracking ADD CONSTRAINT FK_FD82654581C06096 FOREIGN KEY (activity_id) REFERENCES wpt_activity (id)');
-        $this->addSql('ALTER TABLE wpt_shift ADD CONSTRAINT FK_584DA960FE19A1A8 FOREIGN KEY (grade_id) REFERENCES edu_grade (id)');
+        $this->addSql('ALTER TABLE wpt_shift ADD CONSTRAINT FK_584DA96023EDC87 FOREIGN KEY (subject_id) REFERENCES edu_subject (id)');
         $this->addSql('ALTER TABLE wpt_shift ADD CONSTRAINT FK_584DA960D490911D FOREIGN KEY (student_survey_id) REFERENCES survey (id) ON DELETE SET NULL');
         $this->addSql('ALTER TABLE wpt_shift ADD CONSTRAINT FK_584DA96080E5DA6D FOREIGN KEY (company_survey_id) REFERENCES survey (id) ON DELETE SET NULL');
         $this->addSql('ALTER TABLE wpt_shift ADD CONSTRAINT FK_584DA96068F6798B FOREIGN KEY (educational_tutor_survey_id) REFERENCES survey (id) ON DELETE SET NULL');

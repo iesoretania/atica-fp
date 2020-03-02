@@ -18,6 +18,8 @@
 
 namespace AppBundle\Entity\Edu;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -53,6 +55,17 @@ class LearningOutcome
      * @var string
      */
     private $description;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Criterion", mappedBy="learningOutcome")
+     * @var Criterion[]|Collection
+     */
+    private $criteria;
+
+    public function __construct()
+    {
+        $this->criteria = new ArrayCollection();
+    }
 
     public function __toString()
     {

@@ -21,6 +21,7 @@ namespace AppBundle\Entity\WPT;
 use AppBundle\Entity\Edu\Grade;
 use AppBundle\Entity\Edu\ReportTemplate;
 use AppBundle\Entity\Edu\StudentEnrollment;
+use AppBundle\Entity\Edu\Subject;
 use AppBundle\Entity\Survey;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -69,11 +70,11 @@ class Shift
     private $quarter;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\Grade")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\Subject")
      * @ORM\JoinColumn(nullable=false)
-     * @var Grade
+     * @var Subject
      */
-    private $grade;
+    private $subject;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Edu\StudentEnrollment")
@@ -221,21 +222,29 @@ class Shift
     }
 
     /**
+     * @return Subject
+     */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+
+    /**
+     * @param Subject $subject
+     * @return Shift
+     */
+    public function setSubject($subject)
+    {
+        $this->subject = $subject;
+        return $this;
+    }
+
+    /**
      * @return Grade
      */
     public function getGrade()
     {
-        return $this->grade;
-    }
-
-    /**
-     * @param Grade $grade
-     * @return Shift
-     */
-    public function setGrade($grade)
-    {
-        $this->grade = $grade;
-        return $this;
+        return $this->subject ? $this->subject->getGrade() : null;
     }
 
     /**
