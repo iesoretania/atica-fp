@@ -118,6 +118,15 @@ class ShiftType extends AbstractType
                 'placeholder' => 'form.no_template',
                 'required' => false
             ])
+            ->add('finalReportTemplate', EntityType::class, [
+                'label' => 'form.final_report_template',
+                'class' => ReportTemplate::class,
+                'choice_label' => 'description',
+                'choice_translation_domain' => false,
+                'choices' => $templates,
+                'placeholder' => 'form.no_template',
+                'required' => false
+            ])
             ->add('studentSurvey', EntityType::class, [
                 'label' => 'form.student_survey',
                 'class' => Survey::class,

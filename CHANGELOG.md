@@ -14,6 +14,7 @@ en la distintas versiones de la misma.
 * feat: Listado de los acuerdos para realizar el seguimiento
 * feat: Seguimiento de actividades en el calendario
 * feat: Los formularios que permiten importar masivamente pueden ahora exportar
+* feat: Cumplimentación del informe del tutor/a laboral
 
 2.2.3 (2020-02-24)
 ------------------

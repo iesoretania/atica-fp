@@ -41,29 +41,19 @@ use Symfony\Component\Translation\TranslatorInterface;
 class TrackingController extends Controller
 {
     /**
-     * @Route("/convenio/listar/{academicYear}/{page}", name="workplace_training_tracking_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
+     * @param WPTGroupRepository $groupRepository
+     * @param TeacherRepository $teacherRepository
+     * @param AcademicYear $academicYear
+     * @param QueryBuilder $queryBuilder
+     * @param $person
+     * @param $isManager
+     * @param $q
+     * @param $page
+     * @param $maxPerPage
+     * @return Pagerfanta
      */
-    public function listAction(
-        Request $request,
-        UserExtensionService $userExtensionService,
-        TranslatorInterface $translator,
-        AcademicYearRepository $academicYearRepository,
-        WPTGroupRepository $groupRepository,
-        TeacherRepository $teacherRepository,
-        AcademicYear $academicYear = null,
-        $page = 1
-    ) {
-        $organization = $userExtensionService->getCurrentOrganization();
-        if ($academicYear === null) {
-            $academicYear = $organization->getCurrentAcademicYear();
-        }
-
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS, $organization);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
-
+    public static function generateAgreementPaginator(WPTGroupRepository $groupRepository, TeacherRepository $teacherRepository, AcademicYear $academicYear, QueryBuilder $queryBuilder, $person, $isManager, $q, $page, $maxPerPage)
+    {
         $queryBuilder
             ->select('a')
             ->addSelect('shi')
@@ -93,8 +83,6 @@ class TrackingController extends Controller
             ->addOrderBy('a.startDate')
             ->addOrderBy('c.name');
 
-        $q = $request->get('q');
-
         if ($q) {
             $queryBuilder
                 ->orWhere('g.name LIKE :tq')
@@ -107,14 +95,11 @@ class TrackingController extends Controller
                 ->orWhere('wt.lastName LIKE :tq')
                 ->orWhere('wt.uniqueIdentifier LIKE :tq')
                 ->orWhere('shi.name LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
+                ->setParameter('tq', '%' . $q . '%');
         }
-
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         $groups = [];
 
-        $person = $this->getUser()->getPerson();
         $teacher = $teacherRepository->findOneByPersonAndAcademicYear($person, $academicYear);
 
         if (false === $isManager) {
@@ -154,11 +139,54 @@ class TrackingController extends Controller
         $pager = new Pagerfanta($adapter);
         try {
             $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
+                ->setMaxPerPage($maxPerPage)
                 ->setCurrentPage($page);
         } catch (OutOfRangeCurrentPageException $e) {
             $pager->setCurrentPage(1);
         }
+        return $pager;
+    }
+
+    /**
+     * @Route("/convenio/listar/{academicYear}/{page}", name="workplace_training_tracking_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
+     */
+    public function listAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        AcademicYearRepository $academicYearRepository,
+        WPTGroupRepository $groupRepository,
+        TeacherRepository $teacherRepository,
+        AcademicYear $academicYear = null,
+        $page = 1
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        if ($academicYear === null) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
+
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS, $organization);
+
+        $q = $request->get('q');
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $person = $this->getUser()->getPerson();
+        $maxPerPage = $this->getParameter('page.size');
+
+        $pager = self::generateAgreementPaginator(
+            $groupRepository,
+            $teacherRepository,
+            $academicYear,
+            $queryBuilder,
+            $person,
+            $isManager,
+            $q,
+            $page,
+            $maxPerPage
+        );
 
         $title = $translator->trans('title.agreement.list', [], 'wpt_tracking');
 

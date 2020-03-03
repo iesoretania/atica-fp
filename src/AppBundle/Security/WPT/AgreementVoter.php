@@ -34,8 +34,8 @@ class AgreementVoter extends CachedVoter
     const ACCESS = 'WPT_AGREEMENT_ACCESS';
     const ATTENDANCE = 'WPT_AGREEMENT_ATTENDANCE';
     const LOCK = 'WPT_AGREEMENT_LOCK';
-    const GRADE = 'WPT_AGREEMENT_GRADE';
-    const VIEW_GRADE = 'WPT_AGREEMENT_VIEW_GRADE';
+    const FILL_REPORT = 'WPT_AGREEMENT_FILL_REPORT';
+    const VIEW_REPORT = 'WPT_AGREEMENT_VIEW_REPORT';
     const VIEW_STUDENT_SURVEY = 'WPT_AGREEMENT_VIEW_STUDENT_SURVEY';
     const FILL_STUDENT_SURVEY = 'WPT_AGREEMENT_FILL_STUDENT_SURVEY';
     const VIEW_COMPANY_SURVEY = 'WPT_AGREEMENT_VIEW_COMPANY_SURVEY';
@@ -71,8 +71,8 @@ class AgreementVoter extends CachedVoter
             self::ACCESS,
             self::ATTENDANCE,
             self::LOCK,
-            self::GRADE,
-            self::VIEW_GRADE,
+            self::FILL_REPORT,
+            self::VIEW_REPORT,
             self::VIEW_STUDENT_SURVEY,
             self::FILL_STUDENT_SURVEY,
             self::VIEW_COMPANY_SURVEY,
@@ -123,7 +123,6 @@ class AgreementVoter extends CachedVoter
         $isDepartmentHead = false;
         $isGroupTutor = false;
         $isStudent = false;
-        $isWltManager = false;
         $academicYearIsCurrent = true;
 
         // Tutor laboral y de seguimiento
@@ -160,7 +159,7 @@ class AgreementVoter extends CachedVoter
 
         switch ($attribute) {
             case self::MANAGE:
-                if ($isDepartmentHead || $isWltManager || $isEducationalTutor) {
+                if ($isDepartmentHead || $isEducationalTutor) {
                     return $academicYearIsCurrent;
                 }
                 return false;
@@ -168,41 +167,39 @@ class AgreementVoter extends CachedVoter
             // Si es permiso de acceso, comprobar si es el estudiante, docente, el tutor de grupo o
             // el responsable laboral
             case self::ACCESS:
-                return $isDepartmentHead || $isWltManager || $isEducationalTutor
+                return $isDepartmentHead || $isEducationalTutor
                     || $isStudent || $isWorkTutor || $isGroupTutor;
 
-            // Si es permiso para ver la evaluación, el profesorado del grupo, el tutor o el responsable laboral
-            case self::VIEW_GRADE:
-                return $isDepartmentHead || $isWltManager || $isEducationalTutor
+            // Si es permiso para ver la evaluación/encuesta de la empresa:
+            // El profesorado del grupo, el tutor o el responsable laboral
+            case self::VIEW_COMPANY_SURVEY:
+            case self::VIEW_REPORT:
+                return $isDepartmentHead || $isEducationalTutor
                     || $isWorkTutor || $isGroupTutor;
 
-            // Si es permiso para pasar lista, evaluar o revisar la encuesta de empresa
-            // puede hacerlo el tutor de grupo o el responsable laboral
-            case self::VIEW_COMPANY_SURVEY:
-                return $isDepartmentHead || $isWltManager || $isEducationalTutor || $isWorkTutor || $isGroupTutor;
             case self::ATTENDANCE:
-            case self::GRADE:
-                return $academicYearIsCurrent && ($isDepartmentHead || $isWltManager || $isEducationalTutor
+            case self::FILL_REPORT:
+                return $academicYearIsCurrent && ($isDepartmentHead || $isEducationalTutor
                     || $isWorkTutor || $isGroupTutor);
 
             // Si es permiso para bloquear/desbloquear jornadas, el tutor de grupo
             case self::LOCK:
-                return $academicYearIsCurrent && ($isDepartmentHead || $isWltManager || $isEducationalTutor
+                return $academicYearIsCurrent && ($isDepartmentHead || $isEducationalTutor
                     || $isGroupTutor);
 
             case self::VIEW_STUDENT_SURVEY:
-                return $isDepartmentHead || $isWltManager || $isEducationalTutor || $isStudent || $isGroupTutor;
+                return $isDepartmentHead || $isEducationalTutor || $isStudent || $isGroupTutor;
 
             case self::FILL_STUDENT_SURVEY:
                 $studentSurvey = $subject->getProject()->getStudentSurvey();
                 return $academicYearIsCurrent
-                    && ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isStudent || $isGroupTutor)
+                    && ($isDepartmentHead || $isEducationalTutor || $isStudent || $isGroupTutor)
                     && $this->checkSurvey($studentSurvey);
 
             case self::FILL_COMPANY_SURVEY:
                 $companySurvey = $subject->getProject()->getCompanySurvey();
                 return $academicYearIsCurrent
-                    && ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isWorkTutor || $isGroupTutor)
+                    && ($isDepartmentHead || $isEducationalTutor || $isWorkTutor || $isGroupTutor)
                     && $this->checkSurvey($companySurvey);
         }
 

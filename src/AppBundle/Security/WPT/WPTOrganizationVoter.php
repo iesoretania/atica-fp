@@ -33,6 +33,7 @@ class WPTOrganizationVoter extends CachedVoter
 {
     const WPT_ACCESS = 'ORGANIZATION_ACCESS_WORKPLACE_TRAINING';
     const WPT_MANAGE = 'ORGANIZATION_MANAGE_WORKPLACE_TRAINING';
+    const WPT_FILL_REPORT = 'ORGANIZATION_FILL_REPORT_WORKPLACE_TRAINING';
 
     const WPT_GROUP_TUTOR = 'ORGANIZATION_WPT_GROUP_TUTOR';
     const WPT_WORK_TUTOR = 'ORGANIZATION_WPT_WORK_TUTOR';
@@ -69,6 +70,7 @@ class WPTOrganizationVoter extends CachedVoter
         if (!in_array($attribute, [
             self::WPT_ACCESS,
             self::WPT_MANAGE,
+            self::WPT_FILL_REPORT,
             self::WPT_WORK_TUTOR,
             self::WPT_GROUP_TUTOR,
             self::WPT_STUDENT,
@@ -140,6 +142,29 @@ class WPTOrganizationVoter extends CachedVoter
                 // 4) Alumnado con acuerdos, sólo si es acceso
                 return $attribute === self::WPT_ACCESS &&
                     $this->decisionManager->decide($token, [self::WPT_STUDENT], $subject);
+
+            case self::WPT_FILL_REPORT:
+                // pueden acceder al informe:
+                // 1) los tutores de grupo donde haya FCT
+                // 2) los jefes de departamento
+                // 3) los tutores laborales y docentes de los acuerdos de colaboración
+
+                // 1) Tutores de grupo de FP dual
+                if ($this->decisionManager->decide($token, [self::WPT_GROUP_TUTOR], $subject)) {
+                    return true;
+                }
+
+                // 2) Jefe de departamento
+                if ($this->decisionManager->decide($token, [self::WPT_DEPARTMENT_HEAD], $subject)) {
+                    return true;
+                }
+
+                // 3) Tutores laborales y docentes
+                if ($this->decisionManager->decide($token, [self::WPT_WORK_TUTOR], $subject) ||
+                    $this->decisionManager->decide($token, [self::WPT_EDUCATIONAL_TUTOR], $subject)) {
+                    return true;
+                }
+                return false;
 
             case self::WPT_GROUP_TUTOR:
                 if ($this->decisionManager->decide($token, [OrganizationVoter::LOCAL_MANAGE], $subject)) {

@@ -1,0 +1,51 @@
+{% trans_default_domain 'wpt_final_report' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th>{{ 'header.student'|trans }}</th>
+    <th>{{ 'header.shift'|trans }}</th>
+    <th>{{ 'header.workcenter'|trans }}</th>
+    <th>{{ 'header.work_tutor'|trans }}</th>
+    <th>{{ 'header.educational_tutor'|trans }}</th>
+    <th>{{ 'header.dates'|trans }}</th>
+    <th>{{ 'header.status'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('workplace_training_final_report_edit', {'id': item[0].id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">{{ item[0].studentEnrollment }}</a>
+                    </td>
+                    <td>{{ item[0].shift }}</td>
+                    <td>{{ item[0].workcenter }}</td>
+                    <td>{{ item[0].workTutor }}</td>
+                    <td>{{ item[0].educationalTutor }}</td>
+                    <td>{{ item[0].startDate ? item[0].startDate|date('format.date'|trans({}, 'general')) }}{{ item[0].endDate ? ' - ' ~ (item[0].endDate|date('format.date'|trans({}, 'general'))) }}</td>
+                    <td>
+                        {{ (item[0].report ? 'table.status_ok' : 'table.status_no')|trans }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}

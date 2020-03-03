@@ -65,7 +65,8 @@ class WPTMenu implements MenuBuilderInterface
                     ->setRouteName('workplace_training_shift_list')
                     ->setCaption('menu.workplace_training.shift')
                     ->setDescription('menu.workplace_training.shift.detail')
-                    ->setIcon('folder-open');
+                    ->setIcon('folder-open')
+                    ->setPriority(1000);
 
                 $menu1->addChild($menu2);
             }
@@ -76,9 +77,23 @@ class WPTMenu implements MenuBuilderInterface
                 ->setRouteName('workplace_training_tracking_list')
                 ->setCaption('menu.workplace_training.tracking')
                 ->setDescription('menu.workplace_training.tracking.detail')
-                ->setIcon('user-clock');
+                ->setIcon('user-clock')
+                ->setPriority(2000);
 
             $menu1->addChild($menu2);
+
+            if ($this->security->isGranted(WPTOrganizationVoter::WPT_FILL_REPORT, $organization)) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('workplace_training_final_report')
+                    ->setRouteName('workplace_training_final_report_list')
+                    ->setCaption('menu.workplace_training.final_report')
+                    ->setDescription('menu.workplace_training.final_report.detail')
+                    ->setIcon('file-signature')
+                    ->setPriority(3000);
+
+                $menu1->addChild($menu2);
+            }
         }
 
         return $root;

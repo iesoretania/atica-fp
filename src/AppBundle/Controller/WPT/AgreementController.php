@@ -39,7 +39,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * @Route("/fct/convenio")
+ * @Route("/fct/acuerdo")
  */
 class AgreementController extends Controller
 {

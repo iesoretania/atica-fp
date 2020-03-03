@@ -146,7 +146,13 @@ class Agreement
      * @ORM\OrderBy({"code"="ASC", "description"="ASC"})
      * @var Activity[]|Collection
      */
-    protected $activities;
+    private $activities;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Report", mappedBy="agreement")
+     * @var Report
+     */
+    private $report;
 
     public function __construct()
     {
@@ -434,6 +440,24 @@ class Agreement
     public function setActivities($activities)
     {
         $this->activities = $activities;
+        return $this;
+    }
+
+    /**
+     * @return Report
+     */
+    public function getReport()
+    {
+        return $this->report;
+    }
+
+    /**
+     * @param Report $report
+     * @return Agreement
+     */
+    public function setReport($report)
+    {
+        $this->report = $report;
         return $this;
     }
 }

@@ -114,6 +114,12 @@ class Shift
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\ReportTemplate")
      * @var ReportTemplate
      */
+    private $finalReportTemplate;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\ReportTemplate")
+     * @var ReportTemplate
+     */
     private $weeklyActivityReportTemplate;
 
     /**
@@ -352,6 +358,24 @@ class Shift
     public function setWeeklyActivityReportTemplate($weeklyActivityReportTemplate)
     {
         $this->weeklyActivityReportTemplate = $weeklyActivityReportTemplate;
+        return $this;
+    }
+
+    /**
+     * @return ReportTemplate
+     */
+    public function getFinalReportTemplate()
+    {
+        return $this->finalReportTemplate;
+    }
+
+    /**
+     * @param ReportTemplate $finalReportTemplate
+     * @return Shift
+     */
+    public function setFinalReportTemplate($finalReportTemplate)
+    {
+        $this->finalReportTemplate = $finalReportTemplate;
         return $this;
     }
 
