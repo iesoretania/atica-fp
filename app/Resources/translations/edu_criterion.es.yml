@@ -13,6 +13,7 @@ form.import.placeholder: |
   Por ejemplo: (el paréntesis cerrado separa el código del criterio)
   a) Se ha identificado...
   b) Se han relacionado...
+form.export: Exportar como texto
 
 table.new: Nuevo criterio de evaluación
 

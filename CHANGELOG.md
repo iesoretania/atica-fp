@@ -13,6 +13,7 @@ en la distintas versiones de la misma.
 * feat: Gestión de las actividades del programa formativo
 * feat: Listado de los acuerdos para realizar el seguimiento
 * feat: Seguimiento de actividades en el calendario
+* feat: Los formularios que permiten importar masivamente pueden ahora exportar
 
 2.2.3 (2020-02-24)
 ------------------

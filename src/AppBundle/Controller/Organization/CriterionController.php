@@ -14,6 +14,7 @@ use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -289,6 +290,36 @@ class CriterionController extends Controller
             $this->addFlash('error', $translator->trans('message.error', [], 'edu_criterion'));
         }
         return $this->redirectToRoute('organization_training_criterion_list', ['id' => $learningOutcome->getId()]);
+    }
+
+
+    /**
+     * @Route("/criterio/exportar/{id}", name="organization_training_criterion_export",
+     *     requirements={"id" = "\d+"}, methods={"GET"})
+     */
+    public function exportAction(
+        LearningOutcome $learningOutcome
+    ) {
+        $subject = $learningOutcome->getSubject();
+        $training = $subject->getGrade()->getTraining();
+
+        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+
+        $data = '';
+
+        foreach ($learningOutcome->getCriteria() as $criterion) {
+            $lines = explode("\n", $criterion->getName());
+            foreach ($lines as &$line) {
+                $line = trim($line);
+            }
+            $data .= $criterion->getCode() . ') ' .  implode(' ', $lines) . "\n";
+        }
+
+        return new Response(
+            $data,
+            Response::HTTP_OK,
+            array('content-type' => 'text/plain')
+        );
     }
 
     /**

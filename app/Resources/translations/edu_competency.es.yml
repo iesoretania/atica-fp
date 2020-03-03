@@ -11,6 +11,7 @@ form.import.placeholder: |
   Por ejemplo: (el paréntesis cerrado separa el código de la competencia)
   a) Configurar y explotar sistemas...
   b) Gestionar...
+form.export: Exportar como texto
 
 table.new: Nueva competencia
 

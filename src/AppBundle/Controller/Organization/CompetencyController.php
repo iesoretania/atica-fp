@@ -30,6 +30,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -265,6 +266,33 @@ class CompetencyController extends Controller
             $this->addFlash('error', $translator->trans('message.error', [], 'edu_competency'));
         }
         return $this->redirectToRoute('organization_training_competency_list', ['id' => $training->getId()]);
+    }
+
+
+    /**
+     * @Route("/competencia/exportar/{id}", name="organization_training_competency_export",
+     *     requirements={"id" = "\d+"}, methods={"GET"})
+     */
+    public function exportAction(
+        Training $training
+    ) {
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
+
+        $data = '';
+
+        foreach ($training->getCompetencies() as $competency) {
+            $lines = explode("\n", $competency->getDescription());
+            foreach ($lines as &$line) {
+                $line = trim($line);
+            }
+            $data .= $competency->getCode() . ') ' . implode(' ', $lines) . "\n";
+        }
+
+        return new Response(
+            $data,
+            Response::HTTP_OK,
+            array('content-type' => 'text/plain')
+        );
     }
 
     /**

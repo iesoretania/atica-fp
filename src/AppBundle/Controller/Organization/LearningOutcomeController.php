@@ -29,6 +29,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -276,6 +277,33 @@ class LearningOutcomeController extends Controller
             $this->addFlash('error', $translator->trans('message.error', [], 'edu_learning_outcome'));
         }
         return $this->redirectToRoute('organization_training_learning_outcome_list', ['id' => $subject->getId()]);
+    }
+
+    /**
+     * @Route("/materia/resultado/exportar/{id}", name="organization_training_learning_outcome_export",
+     *     requirements={"id" = "\d+"}, methods={"GET"})
+     */
+    public function exportAction(
+        Subject $subject
+    ) {
+        $training = $subject->getGrade()->getTraining();
+        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+
+        $data = '';
+
+        foreach ($subject->getLearningOutcomes() as $learningOutcome) {
+            $lines = explode("\n", $learningOutcome->getDescription());
+            foreach ($lines as &$line) {
+                $line = trim($line);
+            }
+            $data .= $learningOutcome->getCode() . ': ' . implode(' ', $lines) . "\n";
+        }
+
+        return new Response(
+            $data,
+            Response::HTTP_OK,
+            array('content-type' => 'text/plain')
+        );
     }
 
     /**

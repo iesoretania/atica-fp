@@ -11,6 +11,7 @@ form.import.placeholder: |
   Por ejemplo: (los dos puntos separan el código del resultado)
   RA1: Realiza...
   RA2: Configura...
+form.export: Exportar como texto
 
 table.new: Nuevo resultado de aprendizaje
 table.criteria: Criterios de evaluación

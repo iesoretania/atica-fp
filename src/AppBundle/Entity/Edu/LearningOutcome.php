@@ -133,4 +133,22 @@ class LearningOutcome
         $this->description = $description;
         return $this;
     }
+
+    /**
+     * @return Criterion[]|Collection
+     */
+    public function getCriteria()
+    {
+        return $this->criteria;
+    }
+
+    /**
+     * @param Criterion[]|Collection $criteria
+     * @return LearningOutcome
+     */
+    public function setCriteria($criteria)
+    {
+        $this->criteria = $criteria;
+        return $this;
+    }
 }
