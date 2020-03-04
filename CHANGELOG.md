@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-3.0.0 (xxxx-xx-xx)
+3.0.0 (2020-03-04)
 ------------------
 * feat: Soporte inicial del seguimiento de Formación en Centros de Trabajo (FCT)
 * feat: Gestión de los acuerdos de colaboración de FCT
@@ -19,7 +19,7 @@ en la distintas versiones de la misma.
 * feat: Generación del programa formativo individualizado de la FCT
 * feat: Eliminada opción de cabecera y pie de página del centro educativo
 * feat: Implementadas plantillas predeterminadas (vertical y apaisada) por curso académico
-feat: Permitir dar de alta múltiples acuerdos de colaboración
+* feat: Permitir dar de alta múltiples acuerdos de colaboración
 
 2.2.3 (2020-02-24)
 ------------------
