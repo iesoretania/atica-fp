@@ -220,10 +220,18 @@ class TrackingCalendarController extends Controller
             $year = floor($request->get('lock_week') / 100);
             $week = $request->get('lock_week') % 100;
             $workDayRepository->updateWeekLock($year, $week, $agreement, true);
+            return $this->redirectToRoute(
+                'work_linked_training_tracking_calendar_list',
+                ['id' => $agreement->getId()]
+            );
         } elseif ($request->get('unlock_week')) {
             $year = floor($request->get('unlock_week') / 100);
             $week = $request->get('unlock_week') % 100;
             $workDayRepository->updateWeekLock($year, $week, $agreement, false);
+            return $this->redirectToRoute(
+                'work_linked_training_tracking_calendar_list',
+                ['id' => $agreement->getId()]
+            );
         }
 
         $items = $request->request->get('items', []);

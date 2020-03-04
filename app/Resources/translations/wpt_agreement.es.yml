@@ -21,7 +21,7 @@ form.activities: Programa formativo
 
 form.save: Guardar cambios
 form.delete: Eliminar los acuerdos seleccionados
-form.calendar_copy: Copiar un calendario a los acuerdos
+form.calendar_copy: Copiar un calendario a los acuerdos seleccionados
 form.copy_confirm: Realizar copia
 form.back: Volver
 form.delete_confirm: Confirmar borrado
