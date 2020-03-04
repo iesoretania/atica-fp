@@ -45,7 +45,7 @@ $(function ()
                 $('select#agreement_workcenter').select2({
                     theme: "bootstrap",
                     language: 'es'
-                });
+                }).val($("#agreement_workcenter option:nth-child(2)").val()).trigger('change.select2');
                 $('#agreement_activityRealizations').replaceWith(
                     $(html).find('#agreement_activityRealizations')
                 );
@@ -102,7 +102,7 @@ $(function ()
                 $('select#agreement_workcenter').select2({
                     theme: "bootstrap",
                     language: 'es'
-                });
+                }).val($("#agreement_workcenter option:nth-child(2)").val()).trigger('change.select2');
                 $('#agreement_activityRealizations').replaceWith(
                     $(html).find('#agreement_activityRealizations')
                 );

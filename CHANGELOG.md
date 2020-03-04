@@ -19,6 +19,7 @@ en la distintas versiones de la misma.
 * feat: Generación del programa formativo individualizado de la FCT
 * feat: Eliminada opción de cabecera y pie de página del centro educativo
 * feat: Implementadas plantillas predeterminadas (vertical y apaisada) por curso académico
+feat: Permitir dar de alta múltiples acuerdos de colaboración
 
 2.2.3 (2020-02-24)
 ------------------

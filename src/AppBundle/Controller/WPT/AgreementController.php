@@ -105,7 +105,9 @@ class AgreementController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $form = $this->createForm(AgreementType::class, $agreement, [
-            'disabled' => $readOnly
+            'disabled' => $readOnly,
+            'academic_year' => $academicYear,
+            'new' => !$agreement->getId()
         ]);
 
         $form->handleRequest($request);
@@ -120,6 +122,16 @@ class AgreementController extends Controller
                         $academicYear->getStartDate(),
                         $academicYear->getEndDate()
                     );
+                }
+
+                if (!$agreement->getId()) {
+                    $enrollments = $form->get('studentEnrollments')->getData();
+                    foreach ($enrollments as $enrollment) {
+                        $newAgreement = clone $agreement;
+                        $newAgreement->setStudentEnrollment($enrollment);
+                        $em->persist($newAgreement);
+                    }
+                    $em->remove($agreement);
                 }
 
                 $em->flush();

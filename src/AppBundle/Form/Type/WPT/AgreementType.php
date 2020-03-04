@@ -19,6 +19,7 @@
 namespace AppBundle\Form\Type\WPT;
 
 use AppBundle\Entity\Company;
+use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Person;
@@ -27,10 +28,8 @@ use AppBundle\Entity\WPT\Activity;
 use AppBundle\Entity\WPT\Agreement;
 use AppBundle\Entity\WPT\Shift;
 use AppBundle\Repository\CompanyRepository;
-use AppBundle\Repository\Edu\StudentEnrollmentRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WorkcenterRepository;
-use AppBundle\Repository\WPT\ActivityRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -39,61 +38,74 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Count;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class AgreementType extends AbstractType
 {
-    private $studentEnrollmentRepository;
     private $workcenterRepository;
     private $companyRepository;
-    private $activityRepository;
     private $teacherRepository;
 
     public function __construct(
-        StudentEnrollmentRepository $studentEnrollmentRepository,
         WorkcenterRepository $workcenterRepository,
         CompanyRepository $companyRepository,
-        ActivityRepository $activityRepository,
         TeacherRepository $teacherRepository
     ) {
-        $this->studentEnrollmentRepository = $studentEnrollmentRepository;
         $this->workcenterRepository = $workcenterRepository;
         $this->companyRepository = $companyRepository;
-        $this->activityRepository = $activityRepository;
         $this->teacherRepository = $teacherRepository;
     }
 
     public function addElements(
         FormInterface $form,
         Shift $shift,
-        Company $company = null,
-        StudentEnrollment $studentEnrollment = null
+        $new,
+        AcademicYear $academicYear,
+        Company $company = null
     ) {
         $studentEnrollments = $shift ? $shift->getStudentEnrollments() : [];
 
-        $workcenters = ($studentEnrollment && $company) ?
+        $workcenters = $company ?
             $this->workcenterRepository->findByCompany(
                 $company
             ) : [];
 
-        $teachers = $studentEnrollment ?
-            $this->teacherRepository->findByAcademicYear(
-                $studentEnrollment->getGroup()->getGrade()->getTraining()->getAcademicYear()
-            ) : [];
+        $teachers = $this->teacherRepository->findByAcademicYear($academicYear);
 
         if ($shift) {
             $activities = $shift->getActivities();
         }
 
+        if (!$new) {
+            $form
+                ->add('studentEnrollment', EntityType::class, [
+                    'label' => 'form.student_enrollment',
+                    'class' => StudentEnrollment::class,
+                    'choice_translation_domain' => false,
+                    'choices' => $studentEnrollments,
+                    'placeholder' => 'form.student_enrollment.none',
+                    'required' => true
+                ]);
+        } else {
+            $form
+                ->add('studentEnrollments', EntityType::class, [
+                    'label' => 'form.student_enrollments',
+                    'class' => StudentEnrollment::class,
+                    'mapped' => false,
+                    'choice_translation_domain' => false,
+                    'choices' => $studentEnrollments,
+                    'placeholder' => 'form.student_enrollment.none',
+                    'constraints' => [
+                        new Count(['min' => 1])
+                    ],
+                    'multiple' => true,
+                    'expanded' => true,
+                    'required' => true
+                ]);
+        }
+
         $form
-            ->add('studentEnrollment', EntityType::class, [
-                'label' => 'form.student_enrollment',
-                'class' => StudentEnrollment::class,
-                'choice_translation_domain' => false,
-                'choices' => $studentEnrollments,
-                'placeholder' => 'form.student_enrollment.none',
-                'required' => true
-            ])
             ->add('educationalTutor', EntityType::class, [
                 'label' => 'form.educational_tutor',
                 'class' => Teacher::class,
@@ -181,7 +193,7 @@ class AgreementType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -189,12 +201,10 @@ class AgreementType extends AbstractType
 
             $company = $data->getWorkcenter() ? $data->getWorkcenter()->getCompany() : null;
 
-            $studentEnrollment = $data->getStudentEnrollment();
-
-            $this->addElements($form, $shift, $company, $studentEnrollment);
+            $this->addElements($form, $shift, $options['new'], $options['academic_year'], $company);
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -204,12 +214,7 @@ class AgreementType extends AbstractType
             /** @var Shift $shift */
             $shift = $form->getData()->getShift();
 
-            /** @var StudentEnrollment $studentEnrollment */
-            $studentEnrollment = isset($data['studentEnrollment']) ?
-                $this->studentEnrollmentRepository->find($data['studentEnrollment']) :
-                null;
-
-            $this->addElements($form, $shift, $company, $studentEnrollment);
+            $this->addElements($form, $shift, $options['new'], $options['academic_year'], $company);
         });
     }
 
@@ -220,6 +225,8 @@ class AgreementType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Agreement::class,
+            'new' => false,
+            'academic_year' => null,
             'translation_domain' => 'wpt_agreement'
         ]);
     }
