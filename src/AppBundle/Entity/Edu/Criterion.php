@@ -35,7 +35,7 @@ class Criterion
     protected $id;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string")
      * @var string
      */
     protected $code;
@@ -72,7 +72,7 @@ class Criterion
      */
     public function __toString()
     {
-        return $this->getCode() ? $this->getCode() . ') ' . $this->getName() : $this->getName();
+        return $this->getCode() . ') ' . $this->getName();
     }
 
     /**

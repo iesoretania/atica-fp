@@ -24,6 +24,8 @@ use AppBundle\Entity\WPT\Shift;
 use AppBundle\Repository\Edu\CriterionRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -51,7 +53,11 @@ class ActivityType extends AbstractType
                 'label' => 'form.code',
                 'required' => true
             ])
-            ->add('description', null, [
+            ->add('code', TextType::class, [
+                'label' => 'form.code',
+                'required' => true
+            ])
+            ->add('description', TextareaType::class, [
                 'label' => 'form.description',
                 'required' => true
             ])

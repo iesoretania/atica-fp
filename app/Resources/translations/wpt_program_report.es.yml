@@ -1,0 +1,34 @@
+form.training_program: Programa formativo
+
+report.council: CONSEJERÍA DE EDUCACIÓN
+report.page: (Hoja %page% de %total%)
+report.title: FORMACIÓN EN CENTROS DE TRABAJO. PROGRAMA FORMATIVO
+
+report.organization: CENTRO DOCENTE
+report.educational_tutor: PROFESOR/A RESPONSABLE DEL SEGUIMIENTO
+report.student: ALUMNO/ALUMNA
+report.work_tutor: TUTOR/TUTORA DEL CENTRO DE TRABAJO
+report.workcenter: CENTRO DE TRABAJO COLABORADOR
+
+report.quarter: PERÍODO DE REALIZACIÓN DE LA FCT
+report.quarter1: Primer trimestre
+report.quarter2: Segundo trimestre
+report.quarter3: Tercer trimestre
+
+report.academic_year: CURSO ESCOLAR
+report.department: FAMILIA PROFESIONAL
+report.training: CICLO FORMATIVO
+report.stage: GRADO
+
+report.learning_outcomes: RESULTADOS DE APRENDIZAJE
+report.activities: ACTIVIDADES FORMATIVO-PRODUCTIVAS
+report.criterium: CRITERIOS DE EVALUACIÓN
+
+report.signature: En %city%, a %day% de %month_string% de %year%
+report.educational_tutor.signature: EL/LA PROFESOR/A RESPONSABLE DEL SEGUIMIENTO
+report.department_head.signature: EL/LA JEFE/A DEL DEPARTAMENTO DE FAMILIA PROFESIONAL
+report.work_tutor.signature: EL/LA RESPONSABLE DEL CENTRO DE TRABAJO
+
+report.signed: Fdo.
+
+

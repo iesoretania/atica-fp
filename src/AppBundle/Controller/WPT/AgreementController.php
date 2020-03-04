@@ -24,19 +24,25 @@ use AppBundle\Form\Model\WPT\CalendarCopy;
 use AppBundle\Form\Type\WPT\AgreementType;
 use AppBundle\Form\Type\WPT\CalendarCopyType;
 use AppBundle\Repository\MembershipRepository;
+use AppBundle\Repository\WPT\ActivityRepository;
 use AppBundle\Repository\WPT\AgreementRepository;
 use AppBundle\Security\WPT\AgreementVoter;
 use AppBundle\Security\WPT\ShiftVoter;
 use AppBundle\Security\WPT\WPTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Mpdf\Mpdf;
+use Mpdf\Output\Destination;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
+use TFox\MpdfPortBundle\Service\MpdfService;
+use Twig\Environment;
 
 /**
  * @Route("/fct/acuerdo")
@@ -399,5 +405,64 @@ class AgreementController extends Controller
             'form' => $form->createView(),
             'items' => $selectedAgreements
         ]);
+    }
+
+    /**
+     * @Route("/programa/descargar/{id}", name="workplace_training_agreement_program_report", methods={"GET"})
+     */
+    public function downloadTeachingProgramReportAction(
+        TranslatorInterface $translator,
+        ActivityRepository $activityRepository,
+        Environment $twig,
+        Agreement $agreement
+    ) {
+        $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
+
+        $title = $translator->trans('form.training_program', [], 'wpt_program_report')
+            . ' - ' . $agreement->getStudentEnrollment() . ' - ' . $agreement->getWorkcenter();
+
+        $mpdfService = new MpdfService();
+        $mpdfService->setAddDefaultConstructorArgs(false);
+
+        /** @var Mpdf $mpdf */
+        $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4-L']]);
+        $tmp = '';
+
+        try {
+            $template = $agreement
+                ->getShift()->getGrade()->getTraining()->getAcademicYear()->getDefaultLandscapeTemplate();
+
+            if ($template) {
+                $tmp = tempnam('.', 'tpl');
+                file_put_contents($tmp, $template->getData());
+                $mpdf->SetImportUse();
+                $mpdf->SetDocTemplate($tmp);
+            }
+
+            $mpdf->SetFont('DejaVuSansCondensed');
+            $mpdf->SetFontSize(9);
+
+            $mpdf->WriteHTML($twig->render('wpt/agreement/training_program_report.html.twig', [
+                'agreement' => $agreement,
+                'title' => $title,
+                'learning_program' => $activityRepository->getProgramActivitiesFromAgreement($agreement)
+            ]));
+
+            $fileName = $title . '.pdf';
+
+            $mpdf->SetTitle($title);
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->setContent($mpdf->Output($fileName, Destination::STRING_RETURN));
+
+            $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+            return $response;
+        } finally {
+            if ($tmp) {
+                unlink($tmp);
+            }
+        }
     }
 }

@@ -19,6 +19,7 @@
 namespace AppBundle\Repository\WPT;
 
 use AppBundle\Entity\WPT\Activity;
+use AppBundle\Entity\WPT\Agreement;
 use AppBundle\Entity\WPT\Shift;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -61,5 +62,38 @@ class ActivityRepository extends ServiceEntityRepository
             ->setParameter('list', $list)
             ->getQuery()
             ->execute();
+    }
+
+    public function getProgramActivitiesFromAgreement(Agreement $agreement)
+    {
+        $activities = $this->createQueryBuilder('a')
+            ->where('a IN (:items)')
+            ->setParameter('items', $agreement->getActivities())
+            ->addOrderBy('a.code')
+            ->getQuery()
+            ->getResult();
+
+        $result = [];
+
+        /** @var Activity $activity */
+        foreach ($activities as $activity) {
+            foreach ($activity->getCriteria() as $criterion) {
+                $code = $criterion->getLearningOutcome()->getCode();
+                if (!isset($result[$code])) {
+                    $result[$code] =
+                        ['learning_outcome' => $criterion->getLearningOutcome(), 'data' => [], 'length' => 0];
+                }
+                if (!isset($result[$code]['data'][$activity->getCode()])) {
+                    $result[$code]['data'][$activity->getCode()] = [
+                        'activity' => $activity,
+                        'criteria' => [],
+                        'length' => 0];
+                }
+                $result[$code]['data'][$activity->getCode()]['criteria'][] = $criterion;
+                $result[$code]['length']++;
+                $result[$code]['data'][$activity->getCode()]['length']++;
+            }
+        }
+        return $result;
     }
 }

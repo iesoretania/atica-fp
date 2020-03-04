@@ -16,6 +16,9 @@ en la distintas versiones de la misma.
 * feat: Los formularios que permiten importar masivamente pueden ahora exportar
 * feat: Cumplimentación del informe del tutor/a laboral
 * feat: Generación del informe del tutor/a laboral
+* feat: Generación del programa formativo individualizado de la FCT
+* feat: Eliminada opción de cabecera y pie de página del centro educativo
+* feat: Implementadas plantillas predeterminadas (vertical y apaisada) por curso académico
 
 2.2.3 (2020-02-24)
 ------------------

@@ -10,7 +10,7 @@
     <th>{{ 'header.work_tutor'|trans }}</th>
     <th>{{ 'header.educational_tutor'|trans }}</th>
     <th>{{ 'header.dates'|trans }}</th>
-    <th></th>
+    <th colspan="2"></th>
 {% endblock %}
 
 {% block table_body %}
@@ -34,10 +34,13 @@
                     <td>
                         {{ m.link_button(path('workplace_training_agreement_calendar_list', {'id': item.id}), 'calendar-alt', 'btn-info btn-sm btn-block', 'table.calendar'|trans) }}
                     </td>
+                    <td>
+                        {{ m.link_button(path('workplace_training_agreement_program_report', {'id': item.id}), 'file-alt', 'btn-info btn-sm btn-block', 'table.program_report'|trans) }}
+                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="6">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="7">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

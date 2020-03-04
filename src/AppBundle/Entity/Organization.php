@@ -113,18 +113,6 @@ class Organization
     private $currentAcademicYear;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    private $header;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $footer;
-
-    /**
      * Constructor
      */
     public function __construct()
@@ -417,42 +405,6 @@ class Organization
     public function setCurrentAcademicYear($currentAcademicYear)
     {
         $this->currentAcademicYear = $currentAcademicYear;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHeader()
-    {
-        return $this->header;
-    }
-
-    /**
-     * @param string $header
-     * @return Organization
-     */
-    public function setHeader($header)
-    {
-        $this->header = $header;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFooter()
-    {
-        return $this->footer;
-    }
-
-    /**
-     * @param string $footer
-     * @return Organization
-     */
-    public function setFooter($footer)
-    {
-        $this->footer = $footer;
         return $this;
     }
 }

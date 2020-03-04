@@ -4,6 +4,9 @@ form.principal: Director/a
 form.financial_manager: Secretario/a
 form.start_date: Fecha de inicio
 form.end_date: Fecha final
+form.default_portrait_template: Plantilla predeterminada vertical
+form.default_landscape_template: Plantilla predeterminada apaisado
+form.no_template: Sin plantilla
 
 form.save: Guardar cambios
 form.delete: Eliminar cursos seleccionados

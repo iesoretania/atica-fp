@@ -74,6 +74,18 @@ class AcademicYear
      */
     private $endDate;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\ReportTemplate")
+     * @var ReportTemplate
+     */
+    private $defaultPortraitTemplate;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\ReportTemplate")
+     * @var ReportTemplate
+     */
+    private $defaultLandscapeTemplate;
+
     public function __toString()
     {
         return $this->getDescription();
@@ -192,6 +204,42 @@ class AcademicYear
     public function setEndDate($endDate)
     {
         $this->endDate = $endDate;
+        return $this;
+    }
+
+    /**
+     * @return ReportTemplate
+     */
+    public function getDefaultPortraitTemplate()
+    {
+        return $this->defaultPortraitTemplate;
+    }
+
+    /**
+     * @param ReportTemplate $defaultPortraitTemplate
+     * @return AcademicYear
+     */
+    public function setDefaultPortraitTemplate($defaultPortraitTemplate)
+    {
+        $this->defaultPortraitTemplate = $defaultPortraitTemplate;
+        return $this;
+    }
+
+    /**
+     * @return ReportTemplate
+     */
+    public function getDefaultLandscapeTemplate()
+    {
+        return $this->defaultLandscapeTemplate;
+    }
+
+    /**
+     * @param ReportTemplate $defaultLandscapeTemplate
+     * @return AcademicYear
+     */
+    public function setDefaultLandscapeTemplate($defaultLandscapeTemplate)
+    {
+        $this->defaultLandscapeTemplate = $defaultLandscapeTemplate;
         return $this;
     }
 }

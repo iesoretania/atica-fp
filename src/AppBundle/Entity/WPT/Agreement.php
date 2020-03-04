@@ -93,6 +93,12 @@ class Agreement
     private $endDate;
 
     /**
+     * @ORM\Column(type="date", nullable=true)
+     * @var \DateTime
+     */
+    private $signDate;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AnsweredSurvey")
      * @ORM\JoinColumn(onDelete="SET NULL")
      * @var AnsweredSurvey
@@ -296,6 +302,24 @@ class Agreement
     public function setEndDate($endDate)
     {
         $this->endDate = $endDate;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getSignDate()
+    {
+        return $this->signDate;
+    }
+
+    /**
+     * @param \DateTime $signDate
+     * @return Agreement
+     */
+    public function setSignDate($signDate)
+    {
+        $this->signDate = $signDate;
         return $this;
     }
 

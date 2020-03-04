@@ -135,6 +135,11 @@ class AgreementType extends AbstractType
                 'attr' => ['class' => 'person'],
                 'required' => false
             ])
+            ->add('signDate', null, [
+                'label' => 'form.sign_date',
+                'widget' => 'single_text',
+                'required' => false
+            ])
             ->add('startDate', null, [
                 'label' => 'form.start_date',
                 'widget' => 'single_text',

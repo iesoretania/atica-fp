@@ -9,6 +9,7 @@ form.work_tutor: Tutor/a laboral
 form.work_tutor.none: Seleccione el/la tutor/a laboral
 form.educational_tutor: Tutor/a docente
 form.educational_tutor.none: Seleccione el/la docente
+form.sign_date: Fecha de firma del acuerdo
 form.start_date: Fecha de comienzo
 form.end_date: Fecha de finalización
 form.default_start_time_1: Hora de inicio, primer tramo
@@ -26,6 +27,7 @@ form.delete_confirm: Confirmar borrado
 
 table.new: Nuevo acuerdo de colaboración
 table.calendar: Calendario
+table.program_report: Generar programa
 
 prompt.delete_confirm: |
   ¿Está seguro de que desea eliminar los siguientes acuerdos? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.

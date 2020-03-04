@@ -19,7 +19,9 @@
 namespace AppBundle\Form\Type\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\ReportTemplate;
 use AppBundle\Entity\Edu\Teacher;
+use AppBundle\Repository\Edu\ReportTemplateRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\SurveyRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -30,13 +32,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class AcademicYearType extends AbstractType
 {
     private $teacherRepository;
+    private $reportTemplateRepository;
 
-    private $surveyRepository;
-
-    public function __construct(TeacherRepository $teacherRepository, SurveyRepository $surveyRepository)
-    {
+    public function __construct(
+        TeacherRepository $teacherRepository,
+        SurveyRepository $surveyRepository,
+        ReportTemplateRepository $reportTemplateRepository
+    ) {
         $this->teacherRepository = $teacherRepository;
-        $this->surveyRepository = $surveyRepository;
+        $this->reportTemplateRepository = $reportTemplateRepository;
     }
 
     /**
@@ -44,6 +48,9 @@ class AcademicYearType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $templates = $options['academic_year'] ?
+            $this->reportTemplateRepository->findByOrganization($options['academic_year']->getOrganization()) : [];
+
         $teachers = $options['academic_year'] ? $this->teacherRepository->
             findByAcademicYear($options['academic_year']) : [];
 
@@ -75,6 +82,24 @@ class AcademicYearType extends AbstractType
                 'choice_translation_domain' => false,
                 'choices' => $teachers,
                 'placeholder' => 'form.none',
+                'required' => false
+            ])
+            ->add('defaultPortraitTemplate', EntityType::class, [
+                'label' => 'form.default_portrait_template',
+                'class' => ReportTemplate::class,
+                'choice_label' => 'description',
+                'choice_translation_domain' => false,
+                'choices' => $templates,
+                'placeholder' => 'form.no_template',
+                'required' => false
+            ])
+            ->add('defaultLandscapeTemplate', EntityType::class, [
+                'label' => 'form.default_landscape_template',
+                'class' => ReportTemplate::class,
+                'choice_label' => 'description',
+                'choice_translation_domain' => false,
+                'choices' => $templates,
+                'placeholder' => 'form.no_template',
                 'required' => false
             ]);
     }

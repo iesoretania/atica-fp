@@ -19,7 +19,6 @@
 namespace AppBundle\Form\Type;
 
 use AppBundle\Entity\Organization;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -60,14 +59,6 @@ class OrganizationType extends AbstractType
             ->add('webSite', null, [
                 'label' => 'form.web_site'
             ])
-            ->add('header', CKEditorType::class, [
-                'label' => 'form.report_header',
-                'required' => false
-            ])
-            ->add('footer', CKEditorType::class, [
-                'label' => 'form.report_footer',
-                'required' => false
-            ])
             ->add('description', TextareaType::class, [
                 'label' => 'form.description',
                 'required' => false
@@ -82,6 +73,7 @@ class OrganizationType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Organization::class,
             'translation_domain' => 'organization',
+            'organization' => null,
             'new' => false
         ]);
     }

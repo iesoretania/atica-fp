@@ -1,0 +1,127 @@
+{% trans_default_domain 'wpt_program_report' %}
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        @page {
+            margin-top: 2.65cm;
+            margin-left: 4.1cm;
+            margin-right: 3.55cm;
+            margin-bottom: 1.5cm;
+            odd-header-name: html_header;
+            even-header-name: html_header;
+        }
+    </style>
+</head>
+
+<body style="font-family: sans-serif; font-size: 12px">
+
+    <htmlpageheader name="header">
+        <div style="padding-top: 0.2cm; margin-left: 0.1cm; font-size: 13px">
+            <div style="float: right; text-align: right; width: 5cm;">{{ 'report.council'|trans }}</div>
+            <br />
+            <div style="float: right; text-align: right; width: 5cm;">
+                {{ 'report.page'|trans({'%page%': '{PAGENO}', '%total%': '{nbpg}'}) }}
+            </div>
+            {{ 'report.title'|trans }}
+        </div>
+    </htmlpageheader>
+
+    <table style="border: 1px solid; border-spacing: 0; width: 100%; vertical-align: top; margin-bottom: 0.1cm">
+        <tr>
+            <td style="width: 44.5%; border: 1px solid; padding: 0.1cm">
+                {{ 'report.organization'|trans }}: {{ agreement.shift.grade.training.academicYear.organization }}<br /><br />
+                {{ 'report.educational_tutor'|trans }}:<br />
+                {{ agreement.educationalTutor }}<br /><br />
+                {{ 'report.student'|trans }}: {{ agreement.studentEnrollment.person }}
+            </td>
+            <td style="width: 55.5%; border: 1px solid; padding: 0.1cm">
+                {{ 'report.workcenter'|trans }}: {{ agreement.workcenter }}<br /><br />
+                {{ 'report.work_tutor'|trans }}:<br />
+                {{ agreement.workTutor }}<br /><br />
+                {{ 'report.quarter'|trans }}: {{ ('report.quarter' ~ agreement.shift.quarter)|trans }}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="border: 1px solid; padding: 0.1cm">
+                {{ 'report.academic_year'|trans }}: {{ agreement.shift.grade.training.academicYear }}<br /><br />
+                {{ 'report.department'|trans }}: {{ agreement.studentEnrollment.group.grade.training.department }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                {{ 'report.training'|trans }}: {{ agreement.studentEnrollment.group.grade.training }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                {{ 'report.stage'|trans }}: {{ agreement.shift.type }}
+            </td>
+        </tr>
+    </table>
+    <table style="border: 1px solid; border-spacing: 0; width: 99.92%; vertical-align: top">
+        <thead>
+            <tr style="background-color: lightgray">
+                <th style="width: 33.3%; border: 1px solid; padding: 0.1cm">
+                    {{ 'report.learning_outcomes'|trans }}
+                </th>
+                <th style="width: 33.3%; border: 1px solid; padding: 0.1cm">
+                    {{ 'report.activities'|trans }}
+                </th>
+                <th style="width: 33.3%; border: 1px solid; padding: 0.1cm">
+                    {{ 'report.criterium'|trans }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in learning_program %}
+            <tr>
+                <td style="border: 1px solid; padding: 0.1cm" rowspan="{{ item.length }}">
+                    <b>{{ item.learning_outcome.code }}: </b>{{ item.learning_outcome.description|nl2br }}
+                </td>
+                {% for datum in item.data %}
+                    {% if not loop.first %}
+                        <tr>
+                    {% endif %}
+                    <td style="border: 1px solid; padding: 0.1cm" rowspan="{{ datum.length }}">
+                        <b>{{ datum.activity.code }}: </b>{{ datum.activity.description|nl2br }}
+                    </td>
+                    {% for criterion in datum.criteria %}
+                    {% if not loop.first %}
+                        <tr>
+                    {% endif %}
+                    <td style="border: 1px solid; padding: 0.1cm">
+                        <b>{{ criterion.code }}: </b>{{ criterion.name|nl2br }}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="page-break-inside: avoid; text-align: center; margin-top: 1cm">
+        <div>{{ 'report.signature'|trans({
+                '%city%': agreement.workcenter.company.city,
+                '%day%': agreement.signDate|date('d'),
+                '%month_string%': ('r_month' ~ (agreement.signDate|date('m') - 1))|trans({}, 'calendar'),
+                '%year%': agreement.signDate|date('Y')
+            }) }}</div>
+        <table style="margin-top: 0.5cm; vertical-align: top">
+            <tr style="width: 100%">
+                <td>
+                {{ 'report.educational_tutor.signature'|trans }}<br /><br /><br /><br /><br />
+                </td>
+                <td>
+                {{ 'report.department_head.signature'|trans }}<br /><br /><br /><br /><br />
+                </td>
+                <td>
+                {{ 'report.work_tutor.signature'|trans }}<br /><br /><br /><br /><br />
+                </td>
+            </tr>
+            <tr>
+                <td>{{ 'report.signed'|trans }} {{ agreement.educationalTutor }}</td>
+                <td>{{ 'report.signed'|trans }} {{ agreement.studentEnrollment.group.grade.training.department ? agreement.studentEnrollment.group.grade.training.department.head }}</td>
+                <td>{{ 'report.signed'|trans }} {{ agreement.workcenter.manager }}</td>
+            </tr>
+        </table>
+
+    </div>
+</body>
+</html>
