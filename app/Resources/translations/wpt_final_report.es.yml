@@ -5,10 +5,9 @@ header.workcenter: Empresa
 header.work_tutor: Tutor/a laboral
 header.educational_tutor: Tutor/a docente
 header.dates: Fecha de inicio/fin
-header.status: ¿Cumplimentado?
 
-table.status_ok: Sí
-table.status_no: No
+table.no_report: No cumplimentado
+table.generate_report: Generar informe
 
 form.save: Guardar cambios
 form.back: Volver
@@ -29,6 +28,7 @@ form.grade_excellent: Excelente
 
 title.agreement.list: Acuerdos de colaboración
 title.report.fill: Cumplimentación del informe del tutor/a laboral
+title.report: Informe del tutor laboral
 
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay resultados que mostrar

@@ -108,7 +108,7 @@ class ActivityController extends Controller
         $breadcrumb = [
             [
                 'fixed' => $activity->getShift()->getName(),
-                'routeName' => 'workplace_training_agreement_list',
+                'routeName' => 'workplace_training_shift_list',
                 'routeParams' => ['id' => $activity->getShift()->getId()]
             ],
             [
@@ -180,7 +180,7 @@ class ActivityController extends Controller
         $breadcrumb = [
             [
                 'fixed' => $shift->getName(),
-                'routeName' => 'workplace_training_agreement_list',
+                'routeName' => 'workplace_training_shift_list',
                 'routeParams' => ['id' => $shift->getId()]
             ],
             ['fixed' => $title]
@@ -236,7 +236,7 @@ class ActivityController extends Controller
         $breadcrumb = [
             [
                 'fixed' => $shift->getName(),
-                'routeName' => 'workplace_training_agreement_list',
+                'routeName' => 'workplace_training_shift_list',
                 'routeParams' => ['id' => $shift->getId()]
             ],
             ['fixed' => $title]

@@ -285,7 +285,7 @@ class TrackingCalendarController extends Controller
     }
 
     /**
-     * @Route("/{id}/asistencia", name="workplace_training_tracking_calendar_attendance_report", methods={"GET"})
+     * @Route("/{id}/asistencia/descargar", name="workplace_training_tracking_calendar_attendance_report", methods={"GET"})
      * @Security("is_granted('WPT_AGREEMENT_ACCESS', agreement)")
      */
     public function attendanceReportAction(
@@ -366,6 +366,8 @@ class TrackingCalendarController extends Controller
                 $mpdf->SetImportUse();
                 $mpdf->SetDocTemplate($tmp);
             }
+            $mpdf->SetFont('DejaVuSansCondensed');
+            $mpdf->SetFontSize(9);
 
             $activities = [];
             $hours = [];
@@ -489,7 +491,7 @@ class TrackingCalendarController extends Controller
         }
     }
 
-    private function pdfWriteFixedPosHTML(
+    static public function pdfWriteFixedPosHTML(
         Mpdf $mpdf,
         $text,
         $x,

@@ -342,7 +342,7 @@ class TrackingCalendarController extends Controller
     }
 
     /**
-     * @Route("/{id}/informe/{year}/{week}", name="work_linked_training_tracking_calendar_activity_report",
+     * @Route("/{id}/informe/descargar/{year}/{week}", name="work_linked_training_tracking_calendar_activity_report",
      *     methods={"GET"})
      * @Security("is_granted('WLT_AGREEMENT_ACCESS', agreement)")
      */
@@ -374,6 +374,8 @@ class TrackingCalendarController extends Controller
                 $mpdf->SetImportUse();
                 $mpdf->SetDocTemplate($tmp);
             }
+            $mpdf->SetFont('DejaVuSansCondensed');
+            $mpdf->SetFontSize(9);
 
             $activities = [];
             $hours = [];

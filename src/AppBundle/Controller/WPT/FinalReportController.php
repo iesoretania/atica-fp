@@ -24,16 +24,21 @@ use AppBundle\Entity\WPT\Report;
 use AppBundle\Form\Type\WPT\FinalReportType;
 use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
+use AppBundle\Repository\WPT\WorkDayRepository;
 use AppBundle\Repository\WPT\WPTGroupRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WPT\AgreementVoter;
 use AppBundle\Security\WPT\WPTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Mpdf\Mpdf;
+use Mpdf\Output\Destination;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
+use TFox\MpdfPortBundle\Service\MpdfService;
 
 /**
  * @Route("/fct/informe")
@@ -151,6 +156,118 @@ class FinalReportController extends Controller
             'title' => $title,
             'form' => $form->createView()
         ]);
+    }
+    /**
+     * @Route("/descargar/{id}", name="workplace_training_final_report_report",
+     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
+     */
+    public function generateAction(
+        TranslatorInterface $translator,
+        WorkDayRepository $workDayRepository,
+        Agreement $agreement
+    ) {
+        $this->denyAccessUnlessGranted(AgreementVoter::VIEW_REPORT, $agreement);
+        if (null === $agreement->getReport()) {
+            throw $this->createNotFoundException();
+        }
+
+        $mpdfService = new MpdfService();
+        $mpdfService->setAddDefaultConstructorArgs(false);
+
+        /** @var Mpdf $mpdf */
+        $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4']]);
+        $tmp = '';
+
+        try {
+            if ($agreement->getShift()->getFinalReportTemplate()) {
+                $tmp = tempnam('.', 'tpl');
+                file_put_contents($tmp, $agreement->getShift()->getFinalReportTemplate()->getData());
+                $mpdf->SetImportUse();
+                $mpdf->SetDocTemplate($tmp);
+            }
+            $mpdf->SetFont('DejaVuSansCondensed');
+            $mpdf->SetFontSize(9);
+            $mpdf->AddPage();
+            $mpdf->WriteText(40, 40.8, (string) $agreement->getStudentEnrollment()->getPerson());
+            $mpdf->WriteText(40, 46.6, (string) $agreement->getShift()->getGrade()->getTraining()
+                ->getAcademicYear()->getOrganization());
+            $mpdf->WriteText(40, 53, (string) $agreement->getStudentEnrollment()->getGroup()
+                ->getGrade()->getTraining());
+            $mpdf->WriteText(179, 53, (string) $agreement->getShift()->getType());
+            $mpdf->WriteText(40, 59.1, (string) $agreement->getWorkcenter());
+            $mpdf->WriteText(165, 59.1, (string) $workDayRepository->getAgreementTrackedHours($agreement));
+            $mpdf->WriteText(82, 65.1, (string) $agreement->getWorkTutor());
+            $mpdf->WriteText(68, 71.5, (string) $agreement->getEducationalTutor());
+
+            $mpdf->WriteText(108 + $agreement->getReport()->getProfessionalCompetence() * 35.0, 137, 'X');
+            $mpdf->WriteText(108 + $agreement->getReport()->getOrganizationalCompetence() * 35.0, 143.5, 'X');
+            $mpdf->WriteText(108 + $agreement->getReport()->getRelationalCompetence() * 35.0, 149.5, 'X');
+            $mpdf->WriteText(108 + $agreement->getReport()->getContingencyResponse() * 35.0, 155.5, 'X');
+
+            $mpdf->WriteText(104.6, 247.6, $agreement->getReport()->getSignDate()->format('d'));
+            $mpdf->WriteText(154.4, 247.6, $agreement->getReport()->getSignDate()->format('y'));
+            $mpdf->WriteText(89, 275.6, (string) $agreement->getWorkTutor());
+
+            TrackingCalendarController::pdfWriteFixedPosHTML(
+                $mpdf,
+                $agreement->getWorkcenter()->getCity(),
+                61,
+                244.4,
+                38,
+                5,
+                'auto',
+                'center'
+            );
+            TrackingCalendarController::pdfWriteFixedPosHTML(
+                $mpdf,
+                $translator->trans('r_month'
+                    . ($agreement->getReport()->getSignDate()->format('n') - 1), [], 'calendar'),
+                116,
+                244.4,
+                26, 5,
+                'auto',
+                'center'
+            );
+            TrackingCalendarController::pdfWriteFixedPosHTML(
+                $mpdf,
+                $agreement->getReport()->getWorkActivities(),
+                18,
+                80,
+                179,
+                40.5,
+                'auto',
+                'justify'
+            );
+            TrackingCalendarController::pdfWriteFixedPosHTML(
+                $mpdf,
+                $agreement->getReport()->getProposedChanges(),
+                18,
+                195,
+                179,
+                43,
+                'auto',
+                'justify'
+            );
+
+            $title = $translator->trans('title.report', [], 'wpt_final_report') . ' - ' .
+                $agreement->getStudentEnrollment() . ' - ' . $agreement->getWorkcenter();
+
+            $fileName = $title . '.pdf';
+
+            $mpdf->SetTitle($title);
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->setContent($mpdf->Output($fileName, Destination::STRING_RETURN));
+
+            $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+            return $response;
+        } finally {
+            if ($tmp) {
+                unlink($tmp);
+            }
+        }
     }
 
 }

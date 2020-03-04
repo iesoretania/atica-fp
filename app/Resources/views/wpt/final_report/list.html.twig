@@ -11,7 +11,7 @@
     <th>{{ 'header.work_tutor'|trans }}</th>
     <th>{{ 'header.educational_tutor'|trans }}</th>
     <th>{{ 'header.dates'|trans }}</th>
-    <th>{{ 'header.status'|trans }}</th>
+    <th></th>
 {% endblock %}
 
 {% block table_body %}
@@ -27,7 +27,11 @@
                     <td>{{ item[0].educationalTutor }}</td>
                     <td>{{ item[0].startDate ? item[0].startDate|date('format.date'|trans({}, 'general')) }}{{ item[0].endDate ? ' - ' ~ (item[0].endDate|date('format.date'|trans({}, 'general'))) }}</td>
                     <td>
-                        {{ (item[0].report ? 'table.status_ok' : 'table.status_no')|trans }}
+                        {% if item[0].report %}
+                            {{ m.link_button(path('workplace_training_final_report_report', {'id': item[0].id}), 'file-alt', 'btn-info btn-sm btn-block', 'table.generate_report'|trans) }}
+                        {% else %}
+                            {{ 'table.no_report'|trans }}
+                        {% endif %}
                     </td>
                 </tr>
             {% else %}

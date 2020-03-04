@@ -106,6 +106,21 @@ class WorkDayRepository extends ServiceEntityRepository
         return 0;
     }
 
+    public function getAgreementTrackedHours(Agreement $agreement)
+    {
+        try {
+            return $this->createQueryBuilder('wr')
+                ->select('SUM(wr.hours)')
+                ->where('wr.agreement = :agreement')
+                ->setParameter('agreement', $agreement)
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NoResultException $e) {
+        } catch (NonUniqueResultException $e) {
+        }
+        return 0;
+    }
+
     public function findByAgreementGroupByMonthAndWeekNumber(Agreement $agreement)
     {
         return self::groupByMonthAndWeekNumber($this->findAndCountByAgreement($agreement));
