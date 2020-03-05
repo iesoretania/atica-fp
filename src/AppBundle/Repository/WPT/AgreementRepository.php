@@ -21,6 +21,7 @@ namespace AppBundle\Repository\WPT;
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Person;
+use AppBundle\Entity\Workcenter;
 use AppBundle\Entity\WPT\Agreement;
 use AppBundle\Entity\WPT\Shift;
 use AppBundle\Entity\WPT\WorkDay;
@@ -234,5 +235,42 @@ class AgreementRepository extends ServiceEntityRepository
                 $newWorkDay->setHours($newWorkDay->getHours() + $workDay->getHours());
             }
         }
+    }
+    public function findByWorkcenterAndTeacher(
+        Workcenter $workcenter,
+        Teacher $teacher
+    ) {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.workcenter = :workcenter')
+            ->andWhere('a.educationalTutor = :teacher')
+            ->setParameter('workcenter', $workcenter)
+            ->setParameter('teacher', $teacher)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByIds($items) {
+        return $this->createQueryBuilder('a')
+            ->where('a IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByDepartmentHeadPerson(Person $person)
+    {
+        return $this->createQueryBuilder('a')
+            ->distinct(true)
+            ->join('a.studentEnrollment', 'se')
+            ->join('se.group', 'g')
+            ->join('g.teachings', 'te')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->join('t.department', 'd')
+            ->join('d.head', 'h')
+            ->where('h.person = :person')
+            ->setParameter('person', $person)
+            ->getQuery()
+            ->getResult();
     }
 }

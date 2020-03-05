@@ -22,17 +22,11 @@ use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\WPT\Shift;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use AppBundle\Repository\Edu\GroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Persistence\ManagerRegistry;
 
-class WPTGroupRepository extends ServiceEntityRepository
+class WPTGroupRepository extends GroupRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Group::class);
-    }
-
     public function findByAcademicYearAndWPTGroupTutorOrDepartmentHeadPerson(AcademicYear $academicYear, Person $person)
     {
         $groups = new ArrayCollection();

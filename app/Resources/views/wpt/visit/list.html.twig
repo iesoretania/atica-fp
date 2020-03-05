@@ -1,0 +1,62 @@
+{% trans_default_domain 'wpt_visit' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('workplace_training_visit_new') }}{% endblock %}
+
+{% block new_action %}{% if allow_new %}{{ parent() }}{% endif %}{% endblock %}
+
+{% block table_header %}
+    <th><label><input type="checkbox" id="select"> {{ 'header.datetime'|trans }}</label></th>
+    <th>{{ 'header.teacher'|trans }}</th>
+    <th>{{ 'header.workcenter'|trans }}</th>
+    <th>{{ 'header.agreements'|trans }}</th>
+    <th>{{ 'header.student_enrollments'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('workplace_training_visit_edit', {'id': item.id}) %}
+                {% set read_only = not is_granted('WPT_VISIT_MANAGE', item) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}"{% if not read_only %} class="selectable"{% else %} disabled="disabled"{% endif %}> <a href="{{ url }}">{{ item.datetime|date('format.datetime'|trans({}, 'general')) }}</a></label>
+                    </td>
+                    <td>
+                        {{ item.teacher }}
+                    </td>
+                    <td>
+                        {{ item.workcenter }}
+                    </td>
+                    <td>
+                        {{ item.agreements|join("\n")|nl2br }}
+                    </td>
+                    <td>
+                        {{ item.studentEnrollments|join(', ') }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('workplace_training_visit_operation', {'academicYear': academic_year.id}) }}" method="post">
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}

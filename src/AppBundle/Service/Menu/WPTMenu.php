@@ -93,6 +93,19 @@ class WPTMenu implements MenuBuilderInterface
                     ->setPriority(3000);
 
                 $menu1->addChild($menu2);
+
+                if ($this->security->isGranted(WPTOrganizationVoter::WPT_ACCESS_VISIT, $organization)) {
+                    $menu2 = new MenuItem();
+                    $menu2
+                        ->setName('workplace_training_visit')
+                        ->setRouteName('workplace_training_visit_list')
+                        ->setCaption('menu.workplace_training.visit')
+                        ->setDescription('menu.workplace_training.visit.detail')
+                        ->setIcon('car-side')
+                        ->setPriority(8000);
+
+                    $menu1->addChild($menu2);
+                }
             }
         }
 

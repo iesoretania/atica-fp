@@ -165,6 +165,10 @@ class ActivityController extends Controller
                 ->setParameter('tq', '%'.$q.'%');
         }
 
+        $queryBuilder
+            ->andWhere('a.shift = :shift')
+            ->setParameter('shift', $shift);
+
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {

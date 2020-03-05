@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+3.1.0 (xxxx-xx-xx)
+------------------
+* feat: Gestión de las visitas a centros de trabajo de la FCT
+
 3.0.0 (2020-03-04)
 ------------------
 * feat: Soporte inicial del seguimiento de Formación en Centros de Trabajo (FCT)

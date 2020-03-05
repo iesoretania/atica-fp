@@ -41,6 +41,9 @@ class WPTOrganizationVoter extends CachedVoter
     const WPT_EDUCATIONAL_TUTOR = 'ORGANIZATION_WPT_EDUCATIONAL_TUTOR';
     const WPT_DEPARTMENT_HEAD = 'ORGANIZATION_WPT_DEPARTMENT_HEAD';
 
+    const WPT_ACCESS_VISIT = 'ORGANIZATION_WPT_ACCESS_VISIT';
+    const WPT_CREATE_VISIT = 'ORGANIZATION_WPT_CREATE_VISIT';
+
     private $decisionManager;
     private $wptGroupRepository;
     private $agreementRepository;
@@ -75,7 +78,9 @@ class WPTOrganizationVoter extends CachedVoter
             self::WPT_GROUP_TUTOR,
             self::WPT_STUDENT,
             self::WPT_EDUCATIONAL_TUTOR,
-            self::WPT_DEPARTMENT_HEAD
+            self::WPT_DEPARTMENT_HEAD,
+            self::WPT_CREATE_VISIT,
+            self::WPT_ACCESS_VISIT
         ], true)) {
             return false;
         }
@@ -165,6 +170,14 @@ class WPTOrganizationVoter extends CachedVoter
                     return true;
                 }
                 return false;
+
+            case self::WPT_CREATE_VISIT:
+            case self::WPT_ACCESS_VISIT:
+                // pueden crear visitas:
+                // 1) los jefes de departamento
+                // 2) los tutores docentes de los acuerdos de colaboración
+                return ($this->decisionManager->decide($token, [self::WPT_DEPARTMENT_HEAD], $subject) ||
+                    $this->decisionManager->decide($token, [self::WPT_EDUCATIONAL_TUTOR], $subject));
 
             case self::WPT_GROUP_TUTOR:
                 if ($this->decisionManager->decide($token, [OrganizationVoter::LOCAL_MANAGE], $subject)) {
