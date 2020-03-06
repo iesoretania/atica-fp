@@ -142,6 +142,7 @@ $(function ()
     var time = $("#visit_dateTime_time");
 
     teacher.change(teacherChange);
+    date.change(agreementsChange);
     $('#visit_workcenter input').change(workcenterChange);
     $('#visit_agreements input').change(agreementsChange);
 });
