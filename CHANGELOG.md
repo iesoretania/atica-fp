@@ -7,6 +7,8 @@ en la distintas versiones de la misma.
 3.1.0 (xxxx-xx-xx)
 ------------------
 * feat: Gestión de las visitas a centros de trabajo de la FCT
+* fix: Cambiar la fecha de una visita actualiza el listado de alumnado
+* fix: Mostrar tutor laboral en la firma del programa formativo de la FCT
 
 3.0.0 (2020-03-04)
 ------------------

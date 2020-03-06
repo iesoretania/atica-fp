@@ -98,7 +98,7 @@
 
     <div style="page-break-inside: avoid; text-align: center; margin-top: 1cm">
         <div>{{ 'report.signature'|trans({
-                '%city%': agreement.workcenter.company.city,
+                '%city%': agreement.workcenter.city,
                 '%day%': agreement.signDate|date('d'),
                 '%month_string%': ('r_month' ~ (agreement.signDate|date('m') - 1))|trans({}, 'calendar'),
                 '%year%': agreement.signDate|date('Y')
@@ -118,7 +118,7 @@
             <tr>
                 <td>{{ 'report.signed'|trans }} {{ agreement.educationalTutor }}</td>
                 <td>{{ 'report.signed'|trans }} {{ agreement.studentEnrollment.group.grade.training.department ? agreement.studentEnrollment.group.grade.training.department.head }}</td>
-                <td>{{ 'report.signed'|trans }} {{ agreement.workcenter.manager }}</td>
+                <td>{{ 'report.signed'|trans }} {{ agreement.workTutor }}</td>
             </tr>
         </table>
 
