@@ -2,6 +2,7 @@ form.name: Nombre
 form.grade: Nivel
 form.subject: Módulo de FCT
 form.no_subject: Escoja el módulo de FCT de la enseñanza
+form.groups: Grupos asociados
 form.hours: Horas
 form.type: Grado
 form.quarter: Trimestre
