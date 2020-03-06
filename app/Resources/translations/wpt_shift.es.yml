@@ -42,7 +42,6 @@ title.agreements: Acuerdos de colaboración
 
 table.learning_program: Programa formativo
 table.learning_program_companies: Empresas
-table.student_enrollment: Alumnado
 table.agreements: Acuerdos de colaboración
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay convocatorias
@@ -52,7 +51,7 @@ header.name: Convocatoria
 header.type: Grado
 header.hours: Horas
 header.groups: Grupos
-header.student_count: Estudiantes
+header.agreements: Acuerdos registrados
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

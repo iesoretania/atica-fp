@@ -18,22 +18,26 @@
 
 namespace AppBundle\Repository\WPT;
 
-use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\WPT\AgreementEnrollment;
-use AppBundle\Repository\Edu\TeacherRepository;
+use AppBundle\Entity\WPT\Shift;
+use AppBundle\Repository\Edu\StudentEnrollmentRepository;
 
-class WPTTeacherRepository extends TeacherRepository
+class WPTStudentEnrollmentRepository extends StudentEnrollmentRepository
 {
-    public function findByAcademicYear(AcademicYear $academicYear)
-    {
-        return $this->createQueryBuilder('t')
-            ->join('t.person', 'p')
-            ->join('p.user', 'u')
-            ->join(AgreementEnrollment::class, 'ae', 'WITH', 'ae.educationalTutor = t')
-            ->andWhere('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear)
-            ->orderBy('p.lastName')
-            ->addOrderBy('p.firstName')
+    public function findByShift(
+        Shift $shift
+    ) {
+        return $this->createQueryBuilder('se')
+            ->join('se.person', 's')
+            ->join('se.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->join('t.academicYear', 'a')
+            ->where('gr = :grade')
+            ->setParameter('grade', $shift->getGrade())
+            ->addOrderBy('a.description')
+            ->addOrderBy('g.name')
+            ->addOrderBy('s.lastName')
+            ->addOrderBy('s.firstName')
             ->getQuery()
             ->getResult();
     }

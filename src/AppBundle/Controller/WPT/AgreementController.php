@@ -19,8 +19,10 @@
 namespace AppBundle\Controller\WPT;
 
 use AppBundle\Entity\WPT\Agreement;
+use AppBundle\Entity\WPT\AgreementEnrollment;
 use AppBundle\Entity\WPT\Shift;
 use AppBundle\Form\Model\WPT\CalendarCopy;
+use AppBundle\Form\Type\WPT\AgreementEnrollmentType;
 use AppBundle\Form\Type\WPT\AgreementType;
 use AppBundle\Form\Type\WPT\CalendarCopyType;
 use AppBundle\Repository\MembershipRepository;
@@ -30,6 +32,7 @@ use AppBundle\Security\WPT\AgreementVoter;
 use AppBundle\Security\WPT\ShiftVoter;
 use AppBundle\Security\WPT\WPTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
@@ -93,45 +96,58 @@ class AgreementController extends Controller
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
         $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
 
-        $oldWorkTutor = $agreement->getWorkTutor();
-
-        if (null === $agreement->getStudentEnrollment()) {
-            $academicYear = $organization->getCurrentAcademicYear();
-        } else {
-            $academicYear = $agreement->
-                getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getAcademicYear();
-        }
+        $academicYear = $organization->getCurrentAcademicYear();
 
         $em = $this->getDoctrine()->getManager();
 
+        $currentStudentEnrollments = new ArrayCollection();
+        foreach ($agreement->getAgreementEnrollments() as $agreementEnrollment) {
+            $currentStudentEnrollments->add($agreementEnrollment->getStudentEnrollment());
+        }
         $form = $this->createForm(AgreementType::class, $agreement, [
             'disabled' => $readOnly,
-            'academic_year' => $academicYear,
-            'new' => !$agreement->getId()
+            'new' => null === $agreement->getId(),
+            'academic_year' => $academicYear
         ]);
+
+        $form->get('studentEnrollments')->setData($currentStudentEnrollments);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                // dar acceso al tutor laboral a la organización si ha cambiado
-                if ($agreement->getWorkTutor() !== $oldWorkTutor && $agreement->getWorkTutor()->getUser()) {
+                // dar acceso al tutor laboral a la organización
+                if (null === $agreement->getId() && $form->get('workTutor')->getData()) {
                     $membershipRepository->addNewOrganizationMembership(
                         $academicYear->getOrganization(),
-                        $agreement->getWorkTutor()->getUser(),
+                        $form->get('workTutor')->getData()->getUser(),
                         $academicYear->getStartDate(),
                         $academicYear->getEndDate()
                     );
                 }
 
-                if (!$agreement->getId()) {
-                    $enrollments = $form->get('studentEnrollments')->getData();
-                    foreach ($enrollments as $enrollment) {
-                        $newAgreement = clone $agreement;
-                        $newAgreement->setStudentEnrollment($enrollment);
-                        $em->persist($newAgreement);
+                $enrollments = $form->get('studentEnrollments')->getData();
+                foreach ($enrollments as $studentEnrollment) {
+                    if (!$currentStudentEnrollments->contains($studentEnrollment)) {
+                        $agreementEnrollment = new AgreementEnrollment();
+                        $agreementEnrollment
+                            ->setAgreement($agreement)
+                            ->setStudentEnrollment($studentEnrollment);
+
+                        if (null === $agreement->getId()) {
+                            $agreementEnrollment
+                                ->setEducationalTutor($form->get('educationalTutor')->getData())
+                                ->setWorkTutor($form->get('workTutor')->getData())
+                                ->setActivities($form->get('activities')->getData());
+                        }
+                        $em->persist($agreementEnrollment);
                     }
-                    $em->remove($agreement);
+                }
+                foreach ($agreement->getAgreementEnrollments() as $agreementEnrollment) {
+                    if (!$enrollments->contains($agreementEnrollment->getStudentEnrollment())) {
+                        $agreement->getAgreementEnrollments()->removeElement($agreementEnrollment);
+                        $em->remove($agreementEnrollment);
+                    }
                 }
 
                 $em->flush();
@@ -177,6 +193,87 @@ class AgreementController extends Controller
     }
 
     /**
+     * @Route("/estudiante/{id}", name="workplace_training_agreement_enrollment_edit",
+     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
+     */
+    public function enrollmentEditAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        MembershipRepository $membershipRepository,
+        AgreementEnrollment $agreementEnrollment
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $agreement = $agreementEnrollment->getAgreement();
+        $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
+        $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
+
+        $academicYear = $organization->getCurrentAcademicYear();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $this->createForm(AgreementEnrollmentType::class, $agreementEnrollment, [
+            'disabled' => $readOnly,
+            'academic_year' => $academicYear
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                // dar acceso al tutor laboral a la organización
+                if ($agreementEnrollment->getWorkTutor()) {
+                    $membershipRepository->addNewOrganizationMembership(
+                        $academicYear->getOrganization(),
+                        $agreementEnrollment->getWorkTutor()->getUser(),
+                        $academicYear->getStartDate(),
+                        $academicYear->getEndDate()
+                    );
+                }
+                $em->flush();
+                $this->addFlash('success', $translator->trans('message.saved', [], 'wpt_agreement'));
+                return $this->redirectToRoute('workplace_training_agreement_list', [
+                    'id' => $agreement->getShift()->getId()
+                ]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.error', [], 'wpt_agreement'));
+            }
+        }
+
+        $title = $translator->trans(
+            $agreement->getId() ? 'title.edit' : 'title.new',
+            [],
+            'wpt_agreement'
+        );
+
+        $breadcrumb = [
+            [
+                'fixed' => $agreement->getShift()->getName(),
+                'routeName' => 'workplace_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getShift()->getId()]
+            ],
+            [
+                'fixed' => $translator->trans('title.agreements', [], 'wpt_shift'),
+                'routeName' => 'workplace_training_agreement_list',
+                'routeParams' => ['id' => $agreement->getShift()->getId()]
+            ],
+            $agreement->getId() ?
+                ['fixed' => $agreement->getWorkcenter()] :
+                ['fixed' => $translator->trans('title.new', [], 'wpt_agreement')]
+        ];
+
+        return $this->render('wpt/agreement/enrollment_form.html.twig', [
+            'menu_path' => 'workplace_training_shift_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'form' => $form->createView(),
+            'agreement' => $agreement,
+            'read_only' => $readOnly
+        ]);
+    }
+
+    /**
      * @Route("/{id}/listar/{page}", name="workplace_training_agreement_list",
      *     requirements={"page" = "\d+"}, methods={"GET"})
      */
@@ -206,47 +303,49 @@ class AgreementController extends Controller
             ->select('a')
             ->addSelect('w')
             ->addSelect('c')
+            ->addSelect('shi')
+            ->addSelect('ar')
             ->addSelect('se')
-            ->addSelect('p')
-            ->addSelect('g')
-            ->addSelect('gr')
-            ->addSelect('t')
-            ->addSelect('wt')
             ->addSelect('et')
+            ->addSelect('g')
+            ->addSelect('wtp')
             ->addSelect('etp')
+            ->addSelect('sep')
             ->from(Agreement::class, 'a')
             ->join('a.workcenter', 'w')
-            ->join('a.educationalTutor', 'et')
-            ->join('et.person', 'etp')
             ->join('w.company', 'c')
-            ->join('a.studentEnrollment', 'se')
-            ->join('se.person', 'p')
-            ->join('se.group', 'g')
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 't')
-            ->join('a.workTutor', 'wt')
             ->join('a.shift', 'shi')
-            ->orderBy('g.name')
-            ->addOrderBy('p.lastName')
-            ->addOrderBy('p.firstName')
-            ->addOrderBy('a.startDate')
-            ->addOrderBy('c.name');
+            ->join('a.agreementEnrollments', 'ar')
+            ->join('ar.studentEnrollment', 'se')
+            ->leftJoin('se.person', 'sep')
+            ->join('se.group', 'g')
+            ->leftJoin('ar.workTutor', 'wtp')
+            ->leftJoin('ar.educationalTutor', 'et')
+            ->leftJoin('et.person', 'etp')
+            ->orderBy('shi.name')
+            ->addOrderBy('c.name')
+            ->addOrderBy('w.name')
+            ->addOrderBy('a.name');
 
         $q = $request->get('q', null);
         if ($q) {
             $queryBuilder
-                ->where('g.name LIKE :tq')
-                ->orWhere('p.lastName LIKE :tq')
-                ->orWhere('p.firstName LIKE :tq')
-                ->orWhere('w.name LIKE :tq')
+                ->where('w.name LIKE :tq')
                 ->orWhere('c.name LIKE :tq')
-                ->orWhere('g.name LIKE :tq')
-                ->orWhere('wt.firstName LIKE :tq')
-                ->orWhere('wt.lastName LIKE :tq')
-                ->orWhere('wt.uniqueIdentifier LIKE :tq')
+                ->orWhere('a.name LIKE :tq')
                 ->orWhere('shi.name LIKE :tq')
+                ->orWhere('sep.firstName LIKE :tq')
+                ->orWhere('sep.lastName LIKE :tq')
+                ->orWhere('etp.firstName LIKE :tq')
+                ->orWhere('etp.lastName LIKE :tq')
+                ->orWhere('wtp.firstName LIKE :tq')
+                ->orWhere('wtp.lastName LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
+
+        $queryBuilder
+            ->andWhere('a.shift = :shift')
+            ->setParameter('shift', $shift);
 
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -426,12 +525,13 @@ class AgreementController extends Controller
         TranslatorInterface $translator,
         ActivityRepository $activityRepository,
         Environment $twig,
-        Agreement $agreement
+        AgreementEnrollment $agreementEnrollment
     ) {
-        $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
+        $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreementEnrollment->getAgreement());
 
         $title = $translator->trans('form.training_program', [], 'wpt_program_report')
-            . ' - ' . $agreement->getStudentEnrollment() . ' - ' . $agreement->getWorkcenter();
+            . ' - ' . $agreementEnrollment->getStudentEnrollment() . ' - '
+            . $agreementEnrollment->getAgreement()->getWorkcenter();
 
         $mpdfService = new MpdfService();
         $mpdfService->setAddDefaultConstructorArgs(false);
@@ -441,8 +541,9 @@ class AgreementController extends Controller
         $tmp = '';
 
         try {
-            $template = $agreement
-                ->getShift()->getGrade()->getTraining()->getAcademicYear()->getDefaultLandscapeTemplate();
+            $template = $agreementEnrollment
+                ->getAgreement()->getShift()->getGrade()
+                ->getTraining()->getAcademicYear()->getDefaultLandscapeTemplate();
 
             if ($template) {
                 $tmp = tempnam('.', 'tpl');
@@ -455,9 +556,11 @@ class AgreementController extends Controller
             $mpdf->SetFontSize(9);
 
             $mpdf->WriteHTML($twig->render('wpt/agreement/training_program_report.html.twig', [
-                'agreement' => $agreement,
+                'agreement' => $agreementEnrollment->getAgreement(),
+                'agreement_enrollment' => $agreementEnrollment,
                 'title' => $title,
-                'learning_program' => $activityRepository->getProgramActivitiesFromAgreement($agreement)
+                'learning_program' => $activityRepository
+                    ->getProgramActivitiesFromAgreementEnrollment($agreementEnrollment)
             ]));
 
             $fileName = $title . '.pdf';

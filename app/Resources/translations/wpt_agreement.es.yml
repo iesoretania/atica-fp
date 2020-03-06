@@ -7,8 +7,10 @@ form.student_enrollment: Estudiante
 form.student_enrollments: Estudiantes
 form.student_enrollment.none: Seleccione un estudiante
 form.work_tutor: Tutor/a laboral
+form.default_work_tutor: Tutor/a laboral por defecto
 form.work_tutor.none: Seleccione el/la tutor/a laboral
 form.educational_tutor: Tutor/a docente
+form.default_educational_tutor: Tutor/a docente por defecto
 form.educational_tutor.none: Seleccione el/la docente
 form.sign_date: Fecha de firma del acuerdo
 form.start_date: Fecha de comienzo
@@ -18,6 +20,7 @@ form.default_end_time_1: Hora de fin, primer tramo
 form.default_start_time_2: Hora de inicio, segundo tramo
 form.default_end_time_2: Hora de fin, segundo tramo
 form.activities: Programa formativo
+form.default_activities: Programa formativo inicial
 
 form.save: Guardar cambios
 form.delete: Eliminar los acuerdos seleccionados
@@ -54,11 +57,13 @@ table.filter: Filtrar...
 
 filter.all_projects: Todos las convocatorias
 
-header.student_enrollment: Estudiante
+header.name: Nombre del convenio
 header.workcenter: Centro de trabajo
 header.work_tutor: Tutor/a laboral
 header.educational_tutor: Tutor/a docente
 header.dates: Fecha de inicio y fin
+header.work_days: Jornadas
+header.student_enrollments: Estudiantes
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

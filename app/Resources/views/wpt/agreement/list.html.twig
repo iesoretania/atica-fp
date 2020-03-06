@@ -5,42 +5,54 @@
 {% block path_new %}{{ path('workplace_training_agreement_new', {'shift': shift.id}) }}{% endblock %}
 
 {% block table_header %}
-    <th><label><input type="checkbox" id="select"> {{ 'header.student_enrollment'|trans }}</label></th>
-    <th>{{ 'header.workcenter'|trans }}</th>
-    <th>{{ 'header.work_tutor'|trans }}</th>
-    <th>{{ 'header.educational_tutor'|trans }}</th>
+    <th><label><input type="checkbox" id="select"> {{ 'header.workcenter'|trans }}</label></th>
     <th>{{ 'header.dates'|trans }}</th>
-    <th colspan="2"></th>
+    <th>{{ 'header.student_enrollments'|trans }}</th>
+    <th>{{ 'header.educational_tutor'|trans }}</th>
+    <th>{{ 'header.work_tutor'|trans }}</th>
+    <th></th>
+    <th></th>
 {% endblock %}
 
 {% block table_body %}
             {% for item in pager %}
                 {% set url = path('workplace_training_agreement_edit', {'id': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
-                    <td>
-                        <label><input type="checkbox" name="items[]" value="{{ item.id }}"{% if is_granted('WPT_AGREEMENT_MANAGE', item) %} class="selectable"{% else %} disabled="disabled"{% endif %}> <a href="{{ url }}">{{ item.studentEnrollment }}</a></label>
+                    <td rowspan="{{ item.agreementEnrollments|length }}">
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}"{% if is_granted('WPT_AGREEMENT_MANAGE', item) %} class="selectable"{% else %} disabled="disabled"{% endif %}> <a href="{{ url }}">{{ item.workCenter }}</a></label>
                     </td>
-                    <td>
-                        {{ item.workcenter }}
-                    </td>
-                    <td>
-                        {{ item.workTutor }}
-                    </td>
-                    <td>
-                        {{ item.educationalTutor.person }}
-                    </td>
-                    <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}
+                    <td rowspan="{{ item.agreementEnrollments|length }}">
+                        {{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}
                         {% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
-                    <td>
-                        {{ m.link_button(path('workplace_training_agreement_calendar_list', {'id': item.id}), 'calendar-alt', 'btn-info btn-sm btn-block', 'table.calendar'|trans) }}
                     </td>
-                    <td>
-                        {{ m.link_button(path('workplace_training_agreement_program_report', {'id': item.id}), 'file-alt', 'btn-info btn-sm btn-block', 'table.program_report'|trans) }}
-                    </td>
+                    {% for agreementEnrollment in item.agreementEnrollments %}
+                        {% set alt_url = path('workplace_training_agreement_enrollment_edit', {'id': agreementEnrollment.id}) %}
+                        {% if not loop.first %}
+                            </tr>
+                            <tr class="clickable-row" data-href="{{ alt_url }}">
+                        {% endif %}
+                        <td>
+                            <a href="{{ alt_url }}">{{ agreementEnrollment.studentEnrollment }}</a>
+                        </td>
+                        <td>
+                            <a href="{{ alt_url }}">{{ agreementEnrollment.educationalTutor }}</a>
+                        </td>
+                        <td>
+                            <a href="{{ alt_url }}">{{ agreementEnrollment.workTutor }}</a>
+                        </td>
+                        <td>
+                            {{ m.link_button(path('workplace_training_agreement_program_report', {'id': agreementEnrollment.id}), 'file-alt', 'btn-primary btn-sm btn-block', 'table.program_report'|trans) }}
+                        </td>
+                        {% if loop.first %}
+                            <td rowspan="{{ item.agreementEnrollments|length }}">
+                                {{ m.link_button(path('workplace_training_agreement_calendar_list', {'id': item.id}), 'calendar-alt', 'btn-info btn-sm btn-block h-100', 'table.calendar'|trans) }}
+                            </td>
+                        {% endif %}
+                    {% endfor %}
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="7">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

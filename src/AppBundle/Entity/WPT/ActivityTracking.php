@@ -28,10 +28,11 @@ class ActivityTracking
 {
     /**
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Workday", inversedBy="trackedActivities")
-     * @var Workday
+     * @ORM\ManyToOne(targetEntity="TrackedWorkDay", inversedBy="trackedActivities")
+     * @ORM\JoinColumn(nullable=false)
+     * @var WorkDay
      */
-    protected $workday;
+    private $trackedWorkDay;
 
     /**
      * @ORM\Id
@@ -53,20 +54,20 @@ class ActivityTracking
     protected $hours;
 
     /**
-     * @return Workday
+     * @return WorkDay
      */
-    public function getWorkday()
+    public function getTrackedWorkDay()
     {
-        return $this->workday;
+        return $this->trackedWorkDay;
     }
 
     /**
-     * @param Workday $workday
+     * @param WorkDay $trackedWorkDay
      * @return ActivityTracking
      */
-    public function setWorkday($workday)
+    public function setTrackedWorkDay($trackedWorkDay)
     {
-        $this->workday = $workday;
+        $this->trackedWorkDay = $trackedWorkDay;
         return $this;
     }
 

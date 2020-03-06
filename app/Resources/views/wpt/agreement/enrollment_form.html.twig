@@ -1,0 +1,38 @@
+{% trans_default_domain 'wpt_agreement' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ m.start_button() }}
+        {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.end_button() }}
+    {{ form_end(form) }}
+
+    <input type="hidden" id="new-person-label" value="{{ 'title.new'|trans({}, 'person') }}" />
+    {% include 'user/new_person_modal.partial.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
+    <script src="{{ asset('build/person.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.select2entity[data-autostart="true"]').select2('destroy');
+            $('.select2entity[data-autostart="true"]').select2entity({
+                theme: "bootstrap",
+                language: {
+                    inputTooShort: function () {
+                        return "{{ 'input.unique_identifier'|trans({}, 'person') }}";
+                    },
+                    searching: function () {
+                        return "{{ 'input.searching'|trans({}, 'person') }}";
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

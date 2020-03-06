@@ -29,8 +29,9 @@ class WPTWorkcenterRepository extends WorkcenterRepository
     ) {
         return $this->createQueryBuilder('w')
             ->join(Agreement::class, 'a', 'WITH', 'a.workcenter = w')
+            ->join('a.agreementEnrollments', 'ae')
             ->join('w.company', 'c')
-            ->andWhere('a.educationalTutor = :teacher')
+            ->andWhere('ae.educationalTutor = :teacher')
             ->setParameter('teacher', $teacher)
             ->orderBy('c.name')
             ->addOrderBy('w.name')

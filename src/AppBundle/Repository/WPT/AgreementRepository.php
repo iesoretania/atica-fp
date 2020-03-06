@@ -23,6 +23,7 @@ use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Person;
 use AppBundle\Entity\Workcenter;
 use AppBundle\Entity\WPT\Agreement;
+use AppBundle\Entity\WPT\AgreementEnrollment;
 use AppBundle\Entity\WPT\Shift;
 use AppBundle\Entity\WPT\WorkDay;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -47,17 +48,13 @@ class AgreementRepository extends ServiceEntityRepository
         Shift $shift
     ) {
         return $this->createQueryBuilder('a')
-            ->join('a.studentEnrollment', 'se')
-            ->join('se.group', 'g')
-            ->join('se.person', 'p')
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 'tr')
-            ->join('tr.academicYear', 'ay')
+            ->join('a.workcenter', 'w')
+            ->join('w.company', 'c')
             ->where('a.shift = :shift')
             ->setParameter('shift', $shift)
-            ->orderBy('g.name')
-            ->addOrderBy('p.lastName')
-            ->addOrderBy('p.firstName');
+            ->orderBy('c.name')
+            ->addOrderBy('w.name')
+            ->addOrderBy('a.name');
     }
 
     /**
@@ -96,12 +93,12 @@ class AgreementRepository extends ServiceEntityRepository
     public function findByAcademicYearAndStudentQueryBuilder(AcademicYear $academicYear, Person $student)
     {
         return $this->createQueryBuilder('a')
-            ->join('a.studentEnrollment', 'sr')
-            ->join('sr.group', 'g')
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 't')
+            ->distinct()
+            ->join('a.agreementEnrollments', 'ae')
+            ->join('ae.studentEnrollment', 'sr')
+            ->join('ae.educationalTutor', 'et')
             ->where('sr.person = :student')
-            ->andWhere('t.academicYear = :academic_year')
+            ->andWhere('et.academicYear = :academic_year')
             ->setParameter('student', $student)
             ->setParameter('academic_year', $academicYear);
     }
@@ -186,6 +183,13 @@ class AgreementRepository extends ServiceEntityRepository
 
     public function deleteFromList($list)
     {
+        $this->getEntityManager()->createQueryBuilder()
+            ->delete(AgreementEnrollment::class, 'ae')
+            ->where('ae.agreement IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
+
         return $this->getEntityManager()->createQueryBuilder()
             ->delete(Agreement::class, 'a')
             ->where('a IN (:list)')
@@ -241,15 +245,18 @@ class AgreementRepository extends ServiceEntityRepository
         Teacher $teacher
     ) {
         return $this->createQueryBuilder('a')
+            ->distinct()
+            ->join('a.agreementEnrollments', 'ae')
             ->andWhere('a.workcenter = :workcenter')
-            ->andWhere('a.educationalTutor = :teacher')
+            ->andWhere('ae.educationalTutor = :teacher')
             ->setParameter('workcenter', $workcenter)
             ->setParameter('teacher', $teacher)
             ->getQuery()
             ->getResult();
     }
 
-    public function findByIds($items) {
+    public function findByIds($items)
+    {
         return $this->createQueryBuilder('a')
             ->where('a IN (:items)')
             ->setParameter('items', $items)
@@ -261,10 +268,9 @@ class AgreementRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->distinct(true)
-            ->join('a.studentEnrollment', 'se')
-            ->join('se.group', 'g')
-            ->join('g.teachings', 'te')
-            ->join('g.grade', 'gr')
+            ->join('a.shift', 'sh')
+            ->join('sh.subject', 'su')
+            ->join('su.grade', 'gr')
             ->join('gr.training', 't')
             ->join('t.department', 'd')
             ->join('d.head', 'h')

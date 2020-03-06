@@ -52,7 +52,7 @@ class VisitType extends AbstractType
         UserExtensionService $userExtensionService,
         WPTTeacherRepository $WPTTeacherRepository,
         AgreementRepository $agreementRepository,
-    WPTWorkcenterRepository $WPTWorkcenterRepository
+        WPTWorkcenterRepository $WPTWorkcenterRepository
     ) {
         $this->workcenterRepository = $workcenterRepository;
         $this->userExtensionService = $userExtensionService;
@@ -92,9 +92,12 @@ class VisitType extends AbstractType
 
             /** @var Agreement $agreement */
             foreach ($selectedAgreements as $agreement) {
-                if ((!$agreement->getStartDate() || $dateTime >= $agreement->getStartDate())
-                    && (!$agreement->getEndDate() || $dateTime <= $agreement->getEndDate())) {
-                    $studentEnrollments[] = $agreement->getStudentEnrollment();
+                foreach ($agreement->getAgreementEnrollments() as $agreementEnrollment) {
+                    if ($agreementEnrollment->getEducationalTutor() === $teacher
+                        && (!$agreement->getStartDate() || $dateTime >= $agreement->getStartDate())
+                        && (!$agreement->getEndDate() || $dateTime <= $agreement->getEndDate())) {
+                        $studentEnrollments[] = $agreementEnrollment->getStudentEnrollment();
+                    }
                 }
             }
         } else {

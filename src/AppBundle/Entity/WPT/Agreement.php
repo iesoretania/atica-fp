@@ -18,22 +18,15 @@
 
 namespace AppBundle\Entity\WPT;
 
-use AppBundle\Entity\AnsweredSurvey;
-use AppBundle\Entity\Edu\StudentEnrollment;
-use AppBundle\Entity\Edu\Teacher;
-use AppBundle\Entity\Person;
 use AppBundle\Entity\Workcenter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\WPT\AgreementRepository")
- * @ORM\Table(name="wpt_agreement",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"shift_id", "student_enrollment_id", "workcenter_id"})}))))
- * @UniqueEntity(fields={"shift", "studentEnrollment", "workcenter"}, message="agreement.student_workcenter.unique")
+ * @ORM\Table(name="wpt_agreement")
  */
 class Agreement
 {
@@ -44,6 +37,12 @@ class Agreement
      * @var int
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var string
+     */
+    private $name;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\WPT\Shift", inversedBy="agreements")
@@ -60,25 +59,10 @@ class Agreement
     private $workcenter;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\StudentEnrollment")
-     * @ORM\JoinColumn(nullable=false)
-     * @var StudentEnrollment
+     * @ORM\OneToMany(targetEntity="AgreementEnrollment", mappedBy="agreement")
+     * @var AgreementEnrollment[]|Collection
      */
-    private $studentEnrollment;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Person")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Person
-     */
-    private $workTutor;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\Teacher")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Teacher
-     */
-    private $educationalTutor;
+    private $agreementEnrollments;
 
     /**
      * @ORM\Column(type="date", nullable=true)
@@ -97,20 +81,6 @@ class Agreement
      * @var \DateTime
      */
     private $signDate;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AnsweredSurvey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var AnsweredSurvey
-     */
-    private $studentSurvey;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AnsweredSurvey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var AnsweredSurvey
-     */
-    private $companySurvey;
 
     /**
      * @ORM\Column(type="string", length=5, nullable=true)
@@ -146,29 +116,16 @@ class Agreement
      */
     private $workDays;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Activity")
-     * @ORM\JoinTable(name="wpt_agreement_activity")
-     * @ORM\OrderBy({"code"="ASC", "description"="ASC"})
-     * @var Activity[]|Collection
-     */
-    private $activities;
-
-    /**
-     * @ORM\OneToOne(targetEntity="Report", mappedBy="agreement")
-     * @var Report
-     */
-    private $report;
-
     public function __construct()
     {
+        $this->agreementEnrollments = new ArrayCollection();
         $this->workDays = new ArrayCollection();
         $this->activities = new ArrayCollection();
     }
 
     public function __toString()
     {
-        return $this->getStudentEnrollment() . ' - ' . $this->getWorkcenter();
+        return $this->getShift() . ' - ' . $this->getWorkcenter() . ($this->getName() ? ' - ' . $this->getName() : '');
     }
 
     /**
@@ -177,6 +134,24 @@ class Agreement
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return Agreement
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
     }
 
     /**
@@ -212,60 +187,6 @@ class Agreement
     public function setWorkcenter($workcenter)
     {
         $this->workcenter = $workcenter;
-        return $this;
-    }
-
-    /**
-     * @return StudentEnrollment
-     */
-    public function getStudentEnrollment()
-    {
-        return $this->studentEnrollment;
-    }
-
-    /**
-     * @param StudentEnrollment $studentEnrollment
-     * @return Agreement
-     */
-    public function setStudentEnrollment($studentEnrollment)
-    {
-        $this->studentEnrollment = $studentEnrollment;
-        return $this;
-    }
-
-    /**
-     * @return Person
-     */
-    public function getWorkTutor()
-    {
-        return $this->workTutor;
-    }
-
-    /**
-     * @param Person $workTutor
-     * @return Agreement
-     */
-    public function setWorkTutor($workTutor)
-    {
-        $this->workTutor = $workTutor;
-        return $this;
-    }
-
-    /**
-     * @return Teacher
-     */
-    public function getEducationalTutor()
-    {
-        return $this->educationalTutor;
-    }
-
-    /**
-     * @param Teacher $educationalTutor
-     * @return Agreement
-     */
-    public function setEducationalTutor($educationalTutor)
-    {
-        $this->educationalTutor = $educationalTutor;
         return $this;
     }
 
@@ -320,42 +241,6 @@ class Agreement
     public function setSignDate($signDate)
     {
         $this->signDate = $signDate;
-        return $this;
-    }
-
-    /**
-     * @return AnsweredSurvey
-     */
-    public function getStudentSurvey()
-    {
-        return $this->studentSurvey;
-    }
-
-    /**
-     * @param AnsweredSurvey $studentSurvey
-     * @return Agreement
-     */
-    public function setStudentSurvey($studentSurvey)
-    {
-        $this->studentSurvey = $studentSurvey;
-        return $this;
-    }
-
-    /**
-     * @return AnsweredSurvey
-     */
-    public function getCompanySurvey()
-    {
-        return $this->companySurvey;
-    }
-
-    /**
-     * @param AnsweredSurvey $companySurvey
-     * @return Agreement
-     */
-    public function setCompanySurvey($companySurvey)
-    {
-        $this->companySurvey = $companySurvey;
         return $this;
     }
 
@@ -468,20 +353,20 @@ class Agreement
     }
 
     /**
-     * @return Report
+     * @return AgreementEnrollment[]|Collection
      */
-    public function getReport()
+    public function getAgreementEnrollments()
     {
-        return $this->report;
+        return $this->agreementEnrollments;
     }
 
     /**
-     * @param Report $report
+     * @param AgreementEnrollment[]|Collection $agreementEnrollments
      * @return Agreement
      */
-    public function setReport($report)
+    public function setAgreementEnrollments($agreementEnrollments)
     {
-        $this->report = $report;
+        $this->agreementEnrollments = $agreementEnrollments;
         return $this;
     }
 }

@@ -32,14 +32,6 @@ class AgreementVoter extends CachedVoter
 {
     const MANAGE = 'WPT_AGREEMENT_MANAGE';
     const ACCESS = 'WPT_AGREEMENT_ACCESS';
-    const ATTENDANCE = 'WPT_AGREEMENT_ATTENDANCE';
-    const LOCK = 'WPT_AGREEMENT_LOCK';
-    const FILL_REPORT = 'WPT_AGREEMENT_FILL_REPORT';
-    const VIEW_REPORT = 'WPT_AGREEMENT_VIEW_REPORT';
-    const VIEW_STUDENT_SURVEY = 'WPT_AGREEMENT_VIEW_STUDENT_SURVEY';
-    const FILL_STUDENT_SURVEY = 'WPT_AGREEMENT_FILL_STUDENT_SURVEY';
-    const VIEW_COMPANY_SURVEY = 'WPT_AGREEMENT_VIEW_COMPANY_SURVEY';
-    const FILL_COMPANY_SURVEY = 'WPT_AGREEMENT_FILL_COMPANY_SURVEY';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -68,15 +60,7 @@ class AgreementVoter extends CachedVoter
         }
         if (!in_array($attribute, [
             self::MANAGE,
-            self::ACCESS,
-            self::ATTENDANCE,
-            self::LOCK,
-            self::FILL_REPORT,
-            self::VIEW_REPORT,
-            self::VIEW_STUDENT_SURVEY,
-            self::FILL_STUDENT_SURVEY,
-            self::VIEW_COMPANY_SURVEY,
-            self::FILL_COMPANY_SURVEY
+            self::ACCESS
         ], true)) {
             return false;
         }
@@ -120,46 +104,19 @@ class AgreementVoter extends CachedVoter
 
         $person = $user->getPerson();
 
-        $isDepartmentHead = false;
-        $isGroupTutor = false;
-        $isStudent = false;
-        $academicYearIsCurrent = true;
+        $academicYearIsCurrent = $subject->getShift()->getGrade()
+            && $subject->getShift()->getGrade()->getTraining()->getAcademicYear()
+            === $organization->getCurrentAcademicYear();
 
-        // Tutor laboral y de seguimiento
-        $isWorkTutor = $subject->getWorkTutor() && $user === $subject->getWorkTutor()->getUser();
-        $isEducationalTutor =
-            $subject->getEducationalTutor() && $subject->getEducationalTutor()->getPerson() === $person;
-
-        // hay estudiante asociado (puede que no lo haya si es un convenio nuevo)
-        if ($subject->getStudentEnrollment()) {
-            // Si es jefe de su departamento o coordinador de FP dual, permitir acceder siempre
-            // Jefe del departamento del estudiante, autorizado salvo modificar si el acuerdo es de otro curso académico
-            $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
-            if ($training && $training->getDepartment() && $training->getDepartment()->getHead() &&
-                $training->getDepartment()->getHead()->getPerson() === $person) {
-                $isDepartmentHead = true;
-            }
-
-            // Otros casos: ver qué permisos tiene el usuario
-
-            // Tutor del grupo del acuerdo
-            $tutors = $subject->getStudentEnrollment()->getGroup()->getTutors();
-            foreach ($tutors as $tutor) {
-                if ($tutor->getPerson()->getUser() === $user) {
-                    $isGroupTutor = true;
-                    break;
-                }
-            }
-
-            // Estudiante del acuerdo
-            $isStudent = $user === $subject->getStudentEnrollment()->getPerson()->getUser();
-
-            $academicYearIsCurrent = $organization->getCurrentAcademicYear() === $training->getAcademicYear();
-        }
+        // es jefe de departamento de la enseñanza de la convocatoria
+        $isDepartmentHead = $subject->getShift()->getGrade()
+            && $subject->getShift()->getGrade()->getTraining()->getDepartment()
+            && $subject->getShift()->getGrade()->getTraining()->getDepartment()->getHead()
+            && $subject->getShift()->getGrade()->getTraining()->getDepartment()->getHead()->getPerson() === $person;
 
         switch ($attribute) {
             case self::MANAGE:
-                if ($isDepartmentHead || $isEducationalTutor) {
+                if ($isDepartmentHead) {
                     return $academicYearIsCurrent;
                 }
                 return false;
@@ -167,40 +124,7 @@ class AgreementVoter extends CachedVoter
             // Si es permiso de acceso, comprobar si es el estudiante, docente, el tutor de grupo o
             // el responsable laboral
             case self::ACCESS:
-                return $isDepartmentHead || $isEducationalTutor
-                    || $isStudent || $isWorkTutor || $isGroupTutor;
-
-            // Si es permiso para ver la evaluación/encuesta de la empresa:
-            // El profesorado del grupo, el tutor o el responsable laboral
-            case self::VIEW_COMPANY_SURVEY:
-            case self::VIEW_REPORT:
-                return $isDepartmentHead || $isEducationalTutor
-                    || $isWorkTutor || $isGroupTutor;
-
-            case self::ATTENDANCE:
-            case self::FILL_REPORT:
-                return $academicYearIsCurrent && ($isDepartmentHead || $isEducationalTutor
-                    || $isWorkTutor || $isGroupTutor);
-
-            // Si es permiso para bloquear/desbloquear jornadas, el tutor de grupo
-            case self::LOCK:
-                return $academicYearIsCurrent && ($isDepartmentHead || $isEducationalTutor
-                    || $isGroupTutor);
-
-            case self::VIEW_STUDENT_SURVEY:
-                return $isDepartmentHead || $isEducationalTutor || $isStudent || $isGroupTutor;
-
-            case self::FILL_STUDENT_SURVEY:
-                $studentSurvey = $subject->getProject()->getStudentSurvey();
-                return $academicYearIsCurrent
-                    && ($isDepartmentHead || $isEducationalTutor || $isStudent || $isGroupTutor)
-                    && $this->checkSurvey($studentSurvey);
-
-            case self::FILL_COMPANY_SURVEY:
-                $companySurvey = $subject->getProject()->getCompanySurvey();
-                return $academicYearIsCurrent
-                    && ($isDepartmentHead || $isEducationalTutor || $isWorkTutor || $isGroupTutor)
-                    && $this->checkSurvey($companySurvey);
+                return $isDepartmentHead;
         }
 
         // denegamos en cualquier otro caso

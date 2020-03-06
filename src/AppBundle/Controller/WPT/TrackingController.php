@@ -19,7 +19,7 @@
 namespace AppBundle\Controller\WPT;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\WPT\Agreement;
+use AppBundle\Entity\WPT\AgreementEnrollment;
 use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WPT\WPTGroupRepository;
@@ -52,10 +52,20 @@ class TrackingController extends Controller
      * @param $maxPerPage
      * @return Pagerfanta
      */
-    public static function generateAgreementPaginator(WPTGroupRepository $groupRepository, TeacherRepository $teacherRepository, AcademicYear $academicYear, QueryBuilder $queryBuilder, $person, $isManager, $q, $page, $maxPerPage)
-    {
+    public static function generateAgreementPaginator(
+        WPTGroupRepository $groupRepository,
+        TeacherRepository $teacherRepository,
+        AcademicYear $academicYear,
+        QueryBuilder $queryBuilder,
+        $person,
+        $isManager,
+        $q,
+        $page,
+        $maxPerPage
+    ) {
         $queryBuilder
-            ->select('a')
+            ->select('ae')
+            ->addSelect('a')
             ->addSelect('shi')
             ->addSelect('w')
             ->addSelect('c')
@@ -63,25 +73,28 @@ class TrackingController extends Controller
             ->addSelect('p')
             ->addSelect('g')
             ->addSelect('SUM(wd.hours)')
-            ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked * wd.hours ELSE 0 END)')
-            ->addSelect('SUM(CASE WHEN wd.absence != 0 THEN 1 ELSE 0 END)')
-            ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN 1 ELSE 0 END)')
-            ->from(Agreement::class, 'a')
-            ->leftJoin('a.workDays', 'wd')
+            ->addSelect('SUM(CASE WHEN twd.absence = 0 THEN twd.locked * wd.hours ELSE 0 END)')
+            ->addSelect('SUM(CASE WHEN twd.absence != 0 THEN 1 ELSE 0 END)')
+            ->addSelect('SUM(CASE WHEN twd.absence = 2 THEN 1 ELSE 0 END)')
+            ->from(AgreementEnrollment::class, 'ae')
+            ->join('ae.agreement', 'a')
+            ->join('a.workDays', 'wd')
+            ->leftJoin('ae.trackedWorkDays', 'twd', 'WITH', 'twd.workDay = wd')
             ->join('a.shift', 'shi')
             ->join('a.workcenter', 'w')
             ->join('w.company', 'c')
-            ->join('a.studentEnrollment', 'se')
+            ->join('ae.studentEnrollment', 'se')
             ->join('se.person', 'p')
             ->join('se.group', 'g')
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
-            ->join('a.workTutor', 'wt')
-            ->groupBy('a')
+            ->join('ae.workTutor', 'wt')
+            ->groupBy('ae')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
             ->addOrderBy('a.startDate')
-            ->addOrderBy('c.name');
+            ->addOrderBy('c.name')
+            ->addOrderBy('w.name');
 
         if ($q) {
             $queryBuilder
@@ -148,7 +161,7 @@ class TrackingController extends Controller
     }
 
     /**
-     * @Route("/convenio/listar/{academicYear}/{page}", name="workplace_training_tracking_list",
+     * @Route("/acuerdo/listar/{academicYear}/{page}", name="workplace_training_tracking_list",
      *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
      */
     public function listAction(

@@ -12,22 +12,29 @@
             <table id="list" class="table table-bordered table-hover table-striped">
                 <thead>
                     <tr>
-                        <th>{{ 'header.student_enrollment'|trans }}</label></th>
-                        <th>{{ 'header.workcenter'|trans }}</label></th>
-                        <th>{{ 'header.work_tutor'|trans }}</label></th>
-                        <th>{{ 'header.educational_tutor'|trans }}</label></th>
-                        <th>{{ 'header.dates'|trans }}</label></th>
+                        <th>{{ 'header.name'|trans }}</th>
+                        <th>{{ 'header.work_tutor'|trans }}</th>
+                        <th>{{ 'header.educational_tutor'|trans }}</th>
+                        <th>{{ 'header.dates'|trans }}</th>
+                        <th>{{ 'header.student_enrollments'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in items %}
                         <tr>
-                            <td>{{ item.studentEnrollment }}</td>
-                            <td>{{ item.workcenter }}</td>
-                            <td>{{ item.workTutor }}</td>
-                            <td>{{ item.educationalTutor }}</td>
+                            <td>{{ item }}</td>
+                            <td>
+                                {{ item.workTutor }}
+                            </td>
+                            <td>
+                                {{ item.educationalTutor.person }}
+                            </td>
                             <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}
-                                {% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}</td>
+                                {% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
+                            </td>
+                            <td>
+                                {{ item.agreementEnrollments.count() }}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

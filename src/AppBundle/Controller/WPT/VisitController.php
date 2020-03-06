@@ -127,7 +127,8 @@ class VisitController extends Controller
                 $WPTTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
             if ($teacher) {
-                $groups = $WPTGroupRepository->findByAcademicYearAndWPTGroupTutorOrDepartmentHeadPerson($academicYear, $person);
+                $groups = $WPTGroupRepository
+                    ->findByAcademicYearAndWPTGroupTutorOrDepartmentHeadPerson($academicYear, $person);
             }
         }
 
@@ -232,7 +233,8 @@ class VisitController extends Controller
             // no es administrador ni jefe de familia profesional:
             // puede ser tutor de grupo -> ver sólo visitas de los
             // estudiantes de sus grupos
-            $groups = $groupRepository->findByAcademicYearAndWPTGroupTutorOrDepartmentHeadPerson($academicYear, $person);
+            $groups = $groupRepository
+                ->findByAcademicYearAndWPTGroupTutorOrDepartmentHeadPerson($academicYear, $person);
         } elseif ($isDepartmentHead) {
             $agreements = $agreementRepository->findByDepartmentHeadPerson($person);
         }

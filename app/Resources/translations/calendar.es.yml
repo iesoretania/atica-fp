@@ -13,7 +13,7 @@ form.work_day.attendance.no_absence: El estudiante ha acudido al centro de traba
 form.work_day.attendance.unjustified_absence: El estudiante no ha acudido al centro de trabajo (falta injustificada)
 form.work_day.attendance.justified_absence: El estudiante no ha acudido al centro de trabajo (falta justificada)
 form.start_date: Fecha de inicio
-form.total_hours: Horas enseñanza
+form.total_hours: Horas a añadir
 form.agreement_hours: Horas del acuerdo
 form.student_hours: Totales ya asignadas
 form.pending_hours: Horas a asignar

@@ -20,7 +20,6 @@ namespace AppBundle\Entity\WPT;
 
 use AppBundle\Entity\Edu\Grade;
 use AppBundle\Entity\Edu\ReportTemplate;
-use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\Edu\Subject;
 use AppBundle\Entity\Survey;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -75,13 +74,6 @@ class Shift
      * @var Subject
      */
     private $subject;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Edu\StudentEnrollment")
-     * @ORM\JoinTable(name="wpt_shift_student_enrollment")
-     * @var StudentEnrollment[]|Collection
-     */
-    private $studentEnrollments;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
@@ -251,24 +243,6 @@ class Shift
     public function getGrade()
     {
         return $this->subject ? $this->subject->getGrade() : null;
-    }
-
-    /**
-     * @return StudentEnrollment[]|Collection
-     */
-    public function getStudentEnrollments()
-    {
-        return $this->studentEnrollments;
-    }
-
-    /**
-     * @param StudentEnrollment[]|Collection $studentEnrollments
-     * @return Shift
-     */
-    public function setStudentEnrollments($studentEnrollments)
-    {
-        $this->studentEnrollments = $studentEnrollments;
-        return $this;
     }
 
     /**

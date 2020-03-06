@@ -36,7 +36,7 @@ class FinalReportType extends AbstractType
         $aspects = [
             'form.grade_negative' => Report::GRADE_NEGATIVE,
             'form.grade_positive' => Report::GRADE_POSITIVE,
-            'form.grade_excellent' => Report::GRADE_EXCELENT
+            'form.grade_excellent' => Report::GRADE_EXCELLENT
         ];
 
         $builder

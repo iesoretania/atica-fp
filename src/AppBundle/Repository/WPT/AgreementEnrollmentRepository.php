@@ -18,23 +18,16 @@
 
 namespace AppBundle\Repository\WPT;
 
-use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\WPT\AgreementEnrollment;
-use AppBundle\Repository\Edu\TeacherRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
-class WPTTeacherRepository extends TeacherRepository
+class AgreementEnrollmentRepository extends ServiceEntityRepository
 {
-    public function findByAcademicYear(AcademicYear $academicYear)
-    {
-        return $this->createQueryBuilder('t')
-            ->join('t.person', 'p')
-            ->join('p.user', 'u')
-            ->join(AgreementEnrollment::class, 'ae', 'WITH', 'ae.educationalTutor = t')
-            ->andWhere('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear)
-            ->orderBy('p.lastName')
-            ->addOrderBy('p.firstName')
-            ->getQuery()
-            ->getResult();
+    public function __construct(
+        ManagerRegistry $registry
+    ) {
+        parent::__construct($registry, AgreementEnrollment::class);
     }
+    
 }

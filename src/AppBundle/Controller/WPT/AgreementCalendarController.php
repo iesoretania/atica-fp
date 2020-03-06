@@ -69,7 +69,7 @@ class AgreementCalendarController extends Controller
                 'routeParams' => ['id' => $agreement->getShift()->getId()]
             ],
             [
-                'fixed' => (string) $agreement,
+                'fixed' => $agreement->getWorkcenter(),
             ],
             ['fixed' => $title]
         ];
@@ -99,7 +99,15 @@ class AgreementCalendarController extends Controller
 
         $title = $translator->trans('title.calendar.add', [], 'wpt_agreement');
 
+        $totalHours = $workDayRepository->getTotalHoursByAgreement($agreement);
+
         $calendarAdd = new CalendarAdd();
+        $calendarAdd
+            ->setTotalHours(
+                $agreement->getShift()->getHours()
+                ? max(0, $agreement->getShift()->getHours() - $totalHours)
+                : 0
+            );
         $form = $this->createForm(CalendarAddType::class, $calendarAdd);
 
         $form->handleRequest($request);
@@ -148,7 +156,7 @@ class AgreementCalendarController extends Controller
                 'routeParams' => ['id' => $agreement->getShift()->getId()]
             ],
             [
-                'fixed' => (string) $agreement,
+                'fixed' => $agreement->getWorkcenter(),
                 'routeName' => 'workplace_training_agreement_calendar_list',
                 'routeParams' => ['id' => $agreement->getId()]
             ],
@@ -215,7 +223,7 @@ class AgreementCalendarController extends Controller
                 'routeParams' => ['id' => $agreement->getShift()->getId()]
             ],
             [
-                'fixed' => (string) $agreement,
+                'fixed' => $agreement->getWorkcenter(),
                 'routeName' => 'workplace_training_agreement_calendar_list',
                 'routeParams' => ['id' => $agreement->getId()]
             ],
@@ -284,7 +292,7 @@ class AgreementCalendarController extends Controller
                 'routeParams' => ['id' => $agreement->getShift()->getId()]
             ],
             [
-                'fixed' => (string) $agreement,
+                'fixed' => $agreement->getWorkcenter(),
                 'routeName' => 'workplace_training_agreement_calendar_list',
                 'routeParams' => ['id' => $agreement->getId()]
             ],

@@ -19,7 +19,7 @@
 namespace AppBundle\Repository\WPT;
 
 use AppBundle\Entity\WPT\Activity;
-use AppBundle\Entity\WPT\Agreement;
+use AppBundle\Entity\WPT\AgreementEnrollment;
 use AppBundle\Entity\WPT\Shift;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -64,11 +64,11 @@ class ActivityRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function getProgramActivitiesFromAgreement(Agreement $agreement)
+    public function getProgramActivitiesFromAgreementEnrollment(AgreementEnrollment $agreementEnrollment)
     {
         $activities = $this->createQueryBuilder('a')
             ->where('a IN (:items)')
-            ->setParameter('items', $agreement->getActivities())
+            ->setParameter('items', $agreementEnrollment->getActivities())
             ->addOrderBy('a.code')
             ->getQuery()
             ->getResult();

@@ -30,6 +30,7 @@ use AppBundle\Entity\WPT\Shift;
 use AppBundle\Repository\CompanyRepository;
 use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WorkcenterRepository;
+use AppBundle\Repository\WPT\WPTStudentEnrollmentRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -46,25 +47,28 @@ class AgreementType extends AbstractType
     private $workcenterRepository;
     private $companyRepository;
     private $teacherRepository;
+    private $WPTStudentEnrollmentRepository;
 
     public function __construct(
         WorkcenterRepository $workcenterRepository,
         CompanyRepository $companyRepository,
-        TeacherRepository $teacherRepository
+        TeacherRepository $teacherRepository,
+        WPTStudentEnrollmentRepository $WPTStudentEnrollmentRepository
     ) {
         $this->workcenterRepository = $workcenterRepository;
         $this->companyRepository = $companyRepository;
         $this->teacherRepository = $teacherRepository;
+        $this->WPTStudentEnrollmentRepository = $WPTStudentEnrollmentRepository;
     }
 
     public function addElements(
         FormInterface $form,
         Shift $shift,
-        $new,
         AcademicYear $academicYear,
+        $new,
         Company $company = null
     ) {
-        $studentEnrollments = $shift ? $shift->getStudentEnrollments() : [];
+        $studentEnrollments = $shift ? $this->WPTStudentEnrollmentRepository->findByShift($shift) : [];
 
         $workcenters = $company ?
             $this->workcenterRepository->findByCompany(
@@ -75,42 +79,23 @@ class AgreementType extends AbstractType
 
         if ($shift) {
             $activities = $shift->getActivities();
-        }
-
-        if (!$new) {
-            $form
-                ->add('studentEnrollment', EntityType::class, [
-                    'label' => 'form.student_enrollment',
-                    'class' => StudentEnrollment::class,
-                    'choice_translation_domain' => false,
-                    'choices' => $studentEnrollments,
-                    'placeholder' => 'form.student_enrollment.none',
-                    'required' => true
-                ]);
         } else {
-            $form
-                ->add('studentEnrollments', EntityType::class, [
-                    'label' => 'form.student_enrollments',
-                    'class' => StudentEnrollment::class,
-                    'mapped' => false,
-                    'choice_translation_domain' => false,
-                    'choices' => $studentEnrollments,
-                    'placeholder' => 'form.student_enrollment.none',
-                    'constraints' => [
-                        new Count(['min' => 1])
-                    ],
-                    'multiple' => true,
-                    'expanded' => true,
-                    'required' => true
-                ]);
+            $activities = [];
         }
 
         $form
-            ->add('educationalTutor', EntityType::class, [
-                'label' => 'form.educational_tutor',
-                'class' => Teacher::class,
-                'choices' => $teachers,
-                'placeholder' => 'form.educational_tutor.none',
+            ->add('studentEnrollments', EntityType::class, [
+                'mapped' => false,
+                'label' => 'form.student_enrollments',
+                'class' => StudentEnrollment::class,
+                'choice_translation_domain' => false,
+                'choices' => $studentEnrollments,
+                'placeholder' => 'form.student_enrollment.none',
+                'constraints' => [
+                    new Count(['min' => 1])
+                ],
+                'multiple' => true,
+                'expanded' => true,
                 'required' => true
             ])
             ->add('company', EntityType::class, [
@@ -135,18 +120,31 @@ class AgreementType extends AbstractType
                 'choices' => $workcenters,
                 'placeholder' => 'form.workcenter.none',
                 'required' => true
-            ])
-            ->add('workTutor', Select2EntityType::class, [
-                'label' => 'form.work_tutor',
-                'multiple' => false,
-                'text_property' => 'fullDisplayName',
-                'class' => Person::class,
-                'minimum_input_length' => 9,
-                'remote_route' => 'api_person_query',
-                'placeholder' => 'form.work_tutor.none',
-                'attr' => ['class' => 'person'],
-                'required' => false
-            ])
+            ]);
+        if ($new) {
+            $form
+                ->add('educationalTutor', EntityType::class, [
+                    'mapped' => false,
+                    'label' => 'form.default_educational_tutor',
+                    'class' => Teacher::class,
+                    'choices' => $teachers,
+                    'placeholder' => 'form.educational_tutor.none',
+                    'required' => true
+                ])
+                ->add('workTutor', Select2EntityType::class, [
+                    'mapped' => false,
+                    'label' => 'form.default_work_tutor',
+                    'multiple' => false,
+                    'text_property' => 'fullDisplayName',
+                    'class' => Person::class,
+                    'minimum_input_length' => 9,
+                    'remote_route' => 'api_person_query',
+                    'placeholder' => 'form.work_tutor.none',
+                    'attr' => ['class' => 'person'],
+                    'required' => true
+                ]);
+        }
+        $form
             ->add('signDate', null, [
                 'label' => 'form.sign_date',
                 'widget' => 'single_text',
@@ -177,15 +175,20 @@ class AgreementType extends AbstractType
             ->add('defaultEndTime2', null, [
                 'label' => 'form.default_end_time_2',
                 'required' => false
-            ])
-            ->add('activities', EntityType::class, [
-                'label' => 'form.activities',
-                'class' => Activity::class,
-                'expanded' => true,
-                'multiple' => true,
-                'required' => false,
-                'choices' => $activities
             ]);
+
+        if ($new) {
+            $form->
+                add('activities', EntityType::class, [
+                    'mapped' => false,
+                    'label' => 'form.default_activities',
+                    'class' => Activity::class,
+                    'expanded' => true,
+                    'multiple' => true,
+                    'required' => false,
+                    'choices' => $activities
+                ]);
+        }
     }
 
     /**
@@ -201,7 +204,7 @@ class AgreementType extends AbstractType
 
             $company = $data->getWorkcenter() ? $data->getWorkcenter()->getCompany() : null;
 
-            $this->addElements($form, $shift, $options['new'], $options['academic_year'], $company);
+            $this->addElements($form, $shift, $options['academic_year'], $options['new'], $company);
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
@@ -214,7 +217,7 @@ class AgreementType extends AbstractType
             /** @var Shift $shift */
             $shift = $form->getData()->getShift();
 
-            $this->addElements($form, $shift, $options['new'], $options['academic_year'], $company);
+            $this->addElements($form, $shift, $options['academic_year'], $options['new'], $company);
         });
     }
 
@@ -225,8 +228,8 @@ class AgreementType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Agreement::class,
-            'new' => false,
             'academic_year' => null,
+            'new' => false,
             'translation_domain' => 'wpt_agreement'
         ]);
     }

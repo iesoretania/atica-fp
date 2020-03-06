@@ -128,7 +128,7 @@ class VisitVoter extends CachedVoter
                     }
                 }
                 // Puede acceder el tutor de los estudiantes visitados
-                foreach ($subject->getStudentEnrollments() as $studentEnrollment) {
+                foreach ($subject->getAgreementEnrollments() as $studentEnrollment) {
                     foreach ($studentEnrollment->getGroup()->getTutors() as $tutor) {
                         if ($tutor->getPerson() === $user->getPerson()) {
                             return true;

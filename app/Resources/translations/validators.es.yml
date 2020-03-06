@@ -5,5 +5,6 @@ user.id.not_found: Debe especificarse el nombre de usuario o bien el correo elec
 login_username.invalid_chars: El nombre de usuario no puede contener espacios ni arrobas (@).
 
 calendar.week_hours.invalid: Debe especificarse al menos una hora a la semana
-agreement.student_workcenter.unique: Este estudiante ya tiene un acuerdo en esta sede
+agreement.student_workcenter.unique: Este estudiante ya tiene un convenio en esta sede
+agreement.student_agreement.unique: Este estudiante ya pertenece al acuerdo de colaboración
 company_program.company_training.unique: Esta empresa ya tiene un programa asociado al proyecto

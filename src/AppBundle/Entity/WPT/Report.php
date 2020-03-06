@@ -28,14 +28,14 @@ class Report
 {
     const GRADE_NEGATIVE = 0;
     const GRADE_POSITIVE = 1;
-    const GRADE_EXCELENT = 2;
+    const GRADE_EXCELLENT = 2;
 
     /**
      * @ORM\Id
-     * @ORM\OneToOne(targetEntity="Agreement", inversedBy="report")
-     * @var Agreement
+     * @ORM\OneToOne(targetEntity="AgreementEnrollment", inversedBy="report")
+     * @var AgreementEnrollment
      */
-    protected $agreement;
+    protected $agreementEnrollment;
 
     /**
      * @ORM\Column(type="text")
@@ -104,20 +104,20 @@ class Report
     protected $signDate;
 
     /**
-     * @return Agreement
+     * @return AgreementEnrollment
      */
-    public function getAgreement()
+    public function getAgreementEnrollment()
     {
-        return $this->agreement;
+        return $this->agreementEnrollment;
     }
 
     /**
-     * @param Agreement $agreement
+     * @param AgreementEnrollment $agreementEnrollment
      * @return Report
      */
-    public function setAgreement($agreement)
+    public function setAgreementEnrollment($agreementEnrollment)
     {
-        $this->agreement = $agreement;
+        $this->agreementEnrollment = $agreementEnrollment;
         return $this;
     }
 

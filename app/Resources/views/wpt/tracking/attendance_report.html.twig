@@ -39,7 +39,7 @@
                 </td>
             </tr>
             <tr>
-                <td>{{ 'report.signed'|trans }} {{ agreement.workTutor }}</td>
+                <td>{{ 'report.signed'|trans }} {{ agreement_enrollment.workTutor }}</td>
                 <td style="text-align:right">{{ 'report.page'|trans({'%page%': '{PAGENO}', '%total%': '{nbpg}'}) }}</td>
             </tr>
         </table>
@@ -54,17 +54,17 @@
 {% set column = 0 %}
 <table style="width: 100%; vertical-align: top; font-weight: bold">
     <tr>
-        <td width="50%">{{ 'report.organization.title'|trans }} {{ agreement.studentEnrollment.group.grade.training.academicYear.organization }}</td>
-        <td width="50%">{{ 'report.academic_year.title'|trans }} {{ agreement.studentEnrollment.group.grade.training.academicYear }}</td>
+        <td width="50%">{{ 'report.organization.title'|trans }} {{ agreement_enrollment.studentEnrollment.group.grade.training.academicYear.organization }}</td>
+        <td width="50%">{{ 'report.academic_year.title'|trans }} {{ agreement_enrollment.studentEnrollment.group.grade.training.academicYear }}</td>
     </tr>
     <tr>
-        <td colspan="2">{{ 'report.student.title'|trans }} {{ agreement.studentEnrollment }}</td>
+        <td colspan="2">{{ 'report.student.title'|trans }} {{ agreement_enrollment.studentEnrollment }}</td>
     </tr>
     <tr>
         <td colspan="2">{{ 'report.workcenter.title'|trans }} {{ agreement.workcenter }}</td>
     </tr>
     <tr>
-        <td colspan="2">{{ 'report.work_tutor.title'|trans }} {{ agreement.workTutor }}</td>
+        <td colspan="2">{{ 'report.work_tutor.title'|trans }} {{ agreement_enrollment.workTutor }}</td>
     </tr>
 </table>
 <p></p>
@@ -80,20 +80,22 @@
     <tbody>
         <tr>
             {% set total = 0 %}
-            {% for workday in agreement.workdays if workday.absence == 0 %}
+            {% for data in workdays if data and (data[2] > 0 or (data[1] and data[1].otherActivities is not empty)) %}
                 {% set total = total + 1 %}
+                {% set workday = data[0] %}
+                {% set trackedWorkday = data[1] %}
                 <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.date|date('report.date_format'|trans) }}</td>
-                <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.startTime1|slice(0, 5)|default('report.no_data'|trans) }}</td>
-                <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.endTime1|slice(0, 5)|default('report.no_data'|trans) }}</td>
+                <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ trackedWorkday.startTime1|slice(0, 5)|default('report.no_data'|trans) }}</td>
+                <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ trackedWorkday.endTime1|slice(0, 5)|default('report.no_data'|trans) }}</td>
                 {% set column = column + 1 %}
                 {% if column == 4 %}
                     {% set column = 0 %}
                     </tr><tr>
                 {% endif %}
-                {% if workday.startTime2 %}
+                {% if trackedWorkday.startTime2 %}
                     <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.date|date('report.date_format'|trans) }}</td>
-                    <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.startTime2|slice(0, 5)|default('report.no_data'|trans) }}</td>
-                    <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.endTime2|slice(0, 5)|default('report.no_data'|trans) }}</td>
+                    <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ trackedWorkday.startTime2|slice(0, 5)|default('report.no_data'|trans) }}</td>
+                    <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ trackedWorkday.endTime2|slice(0, 5)|default('report.no_data'|trans) }}</td>
                     {% set column = column + 1 %}
                     {% if column == 4 %}
                         {% set column = 0 %}

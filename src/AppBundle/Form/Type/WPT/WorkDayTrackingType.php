@@ -18,9 +18,9 @@
 
 namespace AppBundle\Form\Type\WPT;
 
-use AppBundle\Entity\WPT\Agreement;
-use AppBundle\Entity\WPT\WorkDay;
-use AppBundle\Security\WPT\AgreementVoter;
+use AppBundle\Entity\WPT\AgreementEnrollment;
+use AppBundle\Entity\WPT\TrackedWorkDay;
+use AppBundle\Security\WPT\AgreementEnrollmentVoter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -30,30 +30,27 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Translation\TranslatorInterface;
 
 class WorkDayTrackingType extends AbstractType
 {
     private $security;
-    private $translator;
 
     public function __construct(
-        Security $security,
-        TranslatorInterface $translator
+        Security $security
     ) {
         $this->security = $security;
     }
 
     public function addElements(
         FormInterface $form,
-        Agreement $agreement,
-        WorkDay $workDay
+        AgreementEnrollment $agreementEnrollment,
+        TrackedWorkDay $workDay
     ) {
         $locked = $workDay->isLocked();
-        $absence = $workDay->getAbsence() !== WorkDay::NO_ABSENCE;
+        $absence = $workDay->getAbsence() !== TrackedWorkDay::NO_ABSENCE;
 
-        $lockManager = $this->security->isGranted(AgreementVoter::LOCK, $agreement);
-        $attendanceManager = $this->security->isGranted(AgreementVoter::ATTENDANCE, $agreement);
+        $lockManager = $this->security->isGranted(AgreementEnrollmentVoter::LOCK, $agreementEnrollment);
+        $attendanceManager = $this->security->isGranted(AgreementEnrollmentVoter::ATTENDANCE, $agreementEnrollment);
 
         $form
             ->add('trackedActivities', CollectionType::class, [
@@ -143,14 +140,14 @@ class WorkDayTrackingType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData();
 
-            $this->addElements($form, $data->getAgreement(), $data);
+            $this->addElements($form, $data->getAgreementEnrollment(), $data);
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
             $this->addElements(
                 $form,
-                $options['work_day']->getAgreement(),
+                $options['work_day']->getAgreementEnrollment(),
                 $options['work_day']
             );
         });
@@ -161,7 +158,7 @@ class WorkDayTrackingType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WorkDay::class,
+            'data_class' => TrackedWorkDay::class,
             'work_day' => null,
             'translation_domain' => 'calendar'
         ]);

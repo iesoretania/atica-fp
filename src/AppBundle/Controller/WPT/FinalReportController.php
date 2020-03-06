@@ -19,7 +19,7 @@
 namespace AppBundle\Controller\WPT;
 
 use AppBundle\Entity\Edu\AcademicYear;
-use AppBundle\Entity\WPT\Agreement;
+use AppBundle\Entity\WPT\AgreementEnrollment;
 use AppBundle\Entity\WPT\Report;
 use AppBundle\Form\Type\WPT\FinalReportType;
 use AppBundle\Repository\Edu\AcademicYearRepository;
@@ -27,7 +27,7 @@ use AppBundle\Repository\Edu\TeacherRepository;
 use AppBundle\Repository\WPT\WorkDayRepository;
 use AppBundle\Repository\WPT\WPTGroupRepository;
 use AppBundle\Security\OrganizationVoter;
-use AppBundle\Security\WPT\AgreementVoter;
+use AppBundle\Security\WPT\AgreementEnrollmentVoter;
 use AppBundle\Security\WPT\WPTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -105,20 +105,20 @@ class FinalReportController extends Controller
     public function editAction(
         Request $request,
         TranslatorInterface $translator,
-        Agreement $agreement
+        AgreementEnrollment $agreementEnrollment
     ) {
-        $this->denyAccessUnlessGranted(AgreementVoter::VIEW_REPORT, $agreement);
+        $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::VIEW_REPORT, $agreementEnrollment);
 
-        $readOnly = false === $this->isGranted(AgreementVoter::FILL_REPORT, $agreement);
+        $readOnly = false === $this->isGranted(AgreementEnrollmentVoter::FILL_REPORT, $agreementEnrollment);
 
         $em = $this->getDoctrine()->getManager();
 
-        $report = $agreement->getReport();
+        $report = $agreementEnrollment->getReport();
 
         if (null === $report) {
             $report = new Report();
             $report
-                ->setAgreement($agreement)
+                ->setAgreementEnrollment($agreementEnrollment)
                 ->setSignDate(new \DateTime());
             $em->persist($report);
         }
@@ -146,7 +146,7 @@ class FinalReportController extends Controller
         );
 
         $breadcrumb = [
-            ['fixed' => (string) $agreement],
+            ['fixed' => (string) $agreementEnrollment],
             ['fixed' => $title]
         ];
 
@@ -164,10 +164,10 @@ class FinalReportController extends Controller
     public function generateAction(
         TranslatorInterface $translator,
         WorkDayRepository $workDayRepository,
-        Agreement $agreement
+        AgreementEnrollment $agreementEnrollment
     ) {
-        $this->denyAccessUnlessGranted(AgreementVoter::VIEW_REPORT, $agreement);
-        if (null === $agreement->getReport()) {
+        $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::VIEW_REPORT, $agreementEnrollment);
+        if (null === $agreementEnrollment->getReport()) {
             throw $this->createNotFoundException();
         }
 
@@ -179,38 +179,39 @@ class FinalReportController extends Controller
         $tmp = '';
 
         try {
-            if ($agreement->getShift()->getFinalReportTemplate()) {
+            $template = $agreementEnrollment->getAgreement()->getShift()->getFinalReportTemplate();
+            if ($template) {
                 $tmp = tempnam('.', 'tpl');
-                file_put_contents($tmp, $agreement->getShift()->getFinalReportTemplate()->getData());
+                file_put_contents($tmp, $template->getData());
                 $mpdf->SetImportUse();
                 $mpdf->SetDocTemplate($tmp);
             }
             $mpdf->SetFont('DejaVuSansCondensed');
             $mpdf->SetFontSize(9);
             $mpdf->AddPage();
-            $mpdf->WriteText(40, 40.8, (string) $agreement->getStudentEnrollment()->getPerson());
-            $mpdf->WriteText(40, 46.6, (string) $agreement->getShift()->getGrade()->getTraining()
-                ->getAcademicYear()->getOrganization());
-            $mpdf->WriteText(40, 53, (string) $agreement->getStudentEnrollment()->getGroup()
+            $mpdf->WriteText(40, 40.8, (string) $agreementEnrollment->getStudentEnrollment()->getPerson());
+            $mpdf->WriteText(40, 46.6, (string) $agreementEnrollment->getAgreement()->getShift()
+                ->getGrade()->getTraining()->getAcademicYear()->getOrganization());
+            $mpdf->WriteText(40, 53, (string) $agreementEnrollment->getStudentEnrollment()->getGroup()
                 ->getGrade()->getTraining());
-            $mpdf->WriteText(179, 53, (string) $agreement->getShift()->getType());
-            $mpdf->WriteText(40, 59.1, (string) $agreement->getWorkcenter());
-            $mpdf->WriteText(165, 59.1, (string) $workDayRepository->getAgreementTrackedHours($agreement));
-            $mpdf->WriteText(82, 65.1, (string) $agreement->getWorkTutor());
-            $mpdf->WriteText(68, 71.5, (string) $agreement->getEducationalTutor());
+            $mpdf->WriteText(179, 53, (string) $agreementEnrollment->getAgreement()->getShift()->getType());
+            $mpdf->WriteText(40, 59.1, (string) $agreementEnrollment->getAgreement()->getWorkcenter());
+            $mpdf->WriteText(165, 59.1, (string) $workDayRepository->getAgreementTrackedHours($agreementEnrollment->getAgreement()));
+            $mpdf->WriteText(82, 65.1, (string) $agreementEnrollment->getWorkTutor());
+            $mpdf->WriteText(68, 71.5, (string) $agreementEnrollment->getEducationalTutor());
 
-            $mpdf->WriteText(108 + $agreement->getReport()->getProfessionalCompetence() * 35.0, 137, 'X');
-            $mpdf->WriteText(108 + $agreement->getReport()->getOrganizationalCompetence() * 35.0, 143.5, 'X');
-            $mpdf->WriteText(108 + $agreement->getReport()->getRelationalCompetence() * 35.0, 149.5, 'X');
-            $mpdf->WriteText(108 + $agreement->getReport()->getContingencyResponse() * 35.0, 155.5, 'X');
+            $mpdf->WriteText(108 + $agreementEnrollment->getReport()->getProfessionalCompetence() * 35.0, 137, 'X');
+            $mpdf->WriteText(108 + $agreementEnrollment->getReport()->getOrganizationalCompetence() * 35.0, 143.5, 'X');
+            $mpdf->WriteText(108 + $agreementEnrollment->getReport()->getRelationalCompetence() * 35.0, 149.5, 'X');
+            $mpdf->WriteText(108 + $agreementEnrollment->getReport()->getContingencyResponse() * 35.0, 155.5, 'X');
 
-            $mpdf->WriteText(104.6, 247.6, $agreement->getReport()->getSignDate()->format('d'));
-            $mpdf->WriteText(154.4, 247.6, $agreement->getReport()->getSignDate()->format('y'));
-            $mpdf->WriteText(89, 275.6, (string) $agreement->getWorkTutor());
+            $mpdf->WriteText(104.6, 247.6, $agreementEnrollment->getReport()->getSignDate()->format('d'));
+            $mpdf->WriteText(154.4, 247.6, $agreementEnrollment->getReport()->getSignDate()->format('y'));
+            $mpdf->WriteText(89, 275.6, (string) $agreementEnrollment->getWorkTutor());
 
             TrackingCalendarController::pdfWriteFixedPosHTML(
                 $mpdf,
-                $agreement->getWorkcenter()->getCity(),
+                $agreementEnrollment->getAgreement()->getWorkcenter()->getCity(),
                 61,
                 244.4,
                 38,
@@ -221,16 +222,17 @@ class FinalReportController extends Controller
             TrackingCalendarController::pdfWriteFixedPosHTML(
                 $mpdf,
                 $translator->trans('r_month'
-                    . ($agreement->getReport()->getSignDate()->format('n') - 1), [], 'calendar'),
+                    . ($agreementEnrollment->getReport()->getSignDate()->format('n') - 1), [], 'calendar'),
                 116,
                 244.4,
-                26, 5,
+                26,
+                5,
                 'auto',
                 'center'
             );
             TrackingCalendarController::pdfWriteFixedPosHTML(
                 $mpdf,
-                $agreement->getReport()->getWorkActivities(),
+                $agreementEnrollment->getReport()->getWorkActivities(),
                 18,
                 80,
                 179,
@@ -240,7 +242,7 @@ class FinalReportController extends Controller
             );
             TrackingCalendarController::pdfWriteFixedPosHTML(
                 $mpdf,
-                $agreement->getReport()->getProposedChanges(),
+                $agreementEnrollment->getReport()->getProposedChanges(),
                 18,
                 195,
                 179,
@@ -249,8 +251,9 @@ class FinalReportController extends Controller
                 'justify'
             );
 
-            $title = $translator->trans('title.report', [], 'wpt_final_report') . ' - ' .
-                $agreement->getStudentEnrollment() . ' - ' . $agreement->getWorkcenter();
+            $title = $translator->trans('title.report', [], 'wpt_final_report') . ' - '
+                . $agreementEnrollment->getStudentEnrollment() . ' - '
+                . $agreementEnrollment->getAgreement()->getWorkcenter();
 
             $fileName = $title . '.pdf';
 

@@ -49,6 +49,21 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getTotalHoursByAgreement(Agreement $agreement)
+    {
+        try {
+            return $this->createQueryBuilder('wr')
+                ->select('SUM(wr.hours)')
+                ->where('wr.agreement = :agreement')
+                ->setParameter('agreement', $agreement)
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NoResultException $e) {
+        } catch (NonUniqueResultException $e) {
+        }
+        return 0;
+    }
+
     /**
      * @param $list
      * @param Agreement $agreement
@@ -76,19 +91,6 @@ class WorkDayRepository extends ServiceEntityRepository
             ->addOrderBy('wr.date')
             ->getQuery()
             ->getOneOrNullResult();
-    }
-
-    public function findAndCountByAgreement(Agreement $agreement)
-    {
-        return $this->createQueryBuilder('wr')
-            ->leftJoin('wr.trackedActivities', 'act')
-            ->addSelect('SUM(act.hours)')
-            ->where('wr.agreement = :agreement')
-            ->setParameter('agreement', $agreement)
-            ->addOrderBy('wr.date')
-            ->groupBy('wr')
-            ->getQuery()
-            ->getResult();
     }
 
     public function countByAgreement(Agreement $agreement)
@@ -123,7 +125,7 @@ class WorkDayRepository extends ServiceEntityRepository
 
     public function findByAgreementGroupByMonthAndWeekNumber(Agreement $agreement)
     {
-        return self::groupByMonthAndWeekNumber($this->findAndCountByAgreement($agreement));
+        return self::groupByMonthAndWeekNumber($this->findByAgreement($agreement));
     }
 
     public function createWorkDayCollectionByAcademicYear(
@@ -133,7 +135,7 @@ class WorkDayRepository extends ServiceEntityRepository
         $weekHours,
         $overwrite = false
     ) {
-        $academicYear = $agreement->getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getAcademicYear();
+        $academicYear = $agreement->getShift()->getGrade()->getTraining()->getAcademicYear();
 
         $countCurrentWorkDays = $this->countByAgreement($agreement);
 
@@ -175,11 +177,7 @@ class WorkDayRepository extends ServiceEntityRepository
                     $workDay
                         ->setAgreement($agreement)
                         ->setDate(clone $date)
-                        ->setHours($min)
-                        ->setStartTime1($agreement->getDefaultStartTime1())
-                        ->setEndTime1($agreement->getDefaultEndTime1())
-                        ->setStartTime2($agreement->getDefaultStartTime2())
-                        ->setEndTime2($agreement->getDefaultEndTime2());
+                        ->setHours($min);
                 } elseif ($overwrite) {
                     $workDay->setHours($min);
                 } else {
@@ -188,7 +186,7 @@ class WorkDayRepository extends ServiceEntityRepository
 
                 $this->getEntityManager()->persist($workDay);
 
-                $collection[] = [$workDay, 0];
+                $collection[] = $workDay;
                 $hours -= $min;
             }
             $date->add($oneMoreDay);
@@ -229,50 +227,6 @@ class WorkDayRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    /**
-     * @param WorkDay[]
-     * @param bool
-     * @return mixed
-     */
-    public function updateAttendance($list, $value)
-    {
-        /** @var WorkDay $workDay */
-        foreach ($list as $workDay) {
-            $workDay->getTrackedActivities()->clear();
-        }
-
-        return $this->getEntityManager()->createQueryBuilder()
-            ->update(WorkDay::class, 'w')
-            ->set('w.absence', ':value')
-            ->where('w IN (:list)')
-            ->andWhere('w.locked = :locked')
-            ->setParameter('list', $list)
-            ->setParameter('value', $value)
-            ->setParameter('locked', false)
-            ->getQuery()
-            ->execute();
-    }
-
-    public function updateLock($list, Agreement $agreement, $value)
-    {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->update(WorkDay::class, 'w')
-            ->set('w.locked', ':value')
-            ->where('w IN (:list)')
-            ->andWhere('w.agreement = :agreement')
-            ->setParameter('list', $list)
-            ->setParameter('value', $value)
-            ->setParameter('agreement', $agreement)
-            ->getQuery()
-            ->execute();
-    }
-
-    public function updateWeekLock($year, $week, $agreement, $value)
-    {
-        $items = $this->findByYearWeekAndAgreement($year, $week, $agreement);
-        return $this->updateLock($items, $agreement, $value);
-    }
-
     public function findByYearWeekAndAgreement($year, $week, Agreement $agreement)
     {
         $startDate = new \DateTime();
@@ -291,66 +245,14 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getWeekInformation(Workday $firstWorkday)
-    {
-        $total = 0;
-        $current = 0;
-
-        $oldNumWeek = NAN;
-
-        $workDays = $firstWorkday->getAgreement()->getWorkdays();
-
-        /** @var Workday $day */
-        foreach ($workDays as $day) {
-            $numWeek = $day->getDate()->format('W');
-
-            if ($numWeek != $oldNumWeek) {
-                $total++;
-                $oldNumWeek = $numWeek;
-            }
-
-            if ($firstWorkday->getDate() == $day->getDate()) {
-                $current = $total;
-            }
-        }
-
-        return ['total' => $total, 'current' => $current];
-    }
-
-    public function hoursStatsByAgreement(Agreement $agreement)
-    {
-        try {
-            return $this->createQueryBuilder('wd')
-                ->select('SUM(wd.hours)')
-                ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked * wd.hours ELSE 0 END)')
-                ->addSelect('SUM(CASE WHEN wd.absence = 1 THEN wd.hours ELSE 0 END)')
-                ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN wd.hours ELSE 0 END)')
-                ->addSelect('SUM(CASE WHEN wd.locked = 1 THEN wd.hours ELSE 0 END)')
-                ->addSelect('COUNT(wd)')
-                ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked ELSE 0 END)')
-                ->addSelect('SUM(CASE WHEN wd.absence = 1 THEN 1 ELSE 0 END)')
-                ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN 1 ELSE 0 END)')
-                ->addSelect('SUM(wd.locked)')
-                ->join('wd.agreement', 'a')
-                ->where('wd.agreement = :agreement')
-                ->setParameter('agreement', $agreement)
-                ->groupBy('a')
-                ->getQuery()
-                ->getSingleResult();
-        } catch (NoResultException $e) {
-            return [];
-        }
-    }
-
     public static function groupByMonthAndWeekNumber($workDays)
     {
         $collection = [];
 
         $oneDayMore = new \DateInterval('P1D');
 
-        foreach ($workDays as $workDayData) {
-            /** @var WorkDay $workDay */
-            $workDay = $workDayData[0];
+        /** @var WorkDay $workDay */
+        foreach ($workDays as $workDay) {
             $date = $workDay->getDate();
             $month = (int) $date->format('n');
             $monthCode = (int) $date->format('Y') * 12 + $month - 1;
@@ -373,7 +275,7 @@ class WorkDayRepository extends ServiceEntityRepository
 
             $currentWeek = (int) $date->format('W');
             $currentDay = (int) $date->format('d');
-            $collection[$monthCode][$currentWeek]['days'][$currentDay] = $workDayData;
+            $collection[$monthCode][$currentWeek]['days'][$currentDay] = [$workDay, 0];
         }
 
         return $collection;

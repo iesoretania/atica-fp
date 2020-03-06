@@ -35,12 +35,12 @@ class WorkDayType extends AbstractType
     {
         $builder
             ->add('date', DateType::class, [
-                'label' => 'form.start_date',
+                'label' => 'form.date',
                 'widget' => 'single_text',
                 'required' => true
             ])
             ->add('hours', IntegerType::class, [
-                'label' => 'form.total_hours',
+                'label' => 'form.hours',
                 'constraints' => [
                     new Range(['min' => 0])
                 ],
@@ -48,30 +48,6 @@ class WorkDayType extends AbstractType
                     'min' => 0
                 ],
                 'required' => true
-            ])
-            ->add('startTime1', null, [
-                'label' => 'form.start_time_1',
-                'required' => false,
-                'attr' => ['placeholder' => 'form.time.placeholder']
-            ])
-            ->add('endTime1', null, [
-                'label' => 'form.end_time_1',
-                'required' => false,
-                'attr' => ['placeholder' => 'form.time.placeholder']
-            ])
-            ->add('startTime2', null, [
-                'label' => 'form.start_time_2',
-                'required' => false,
-                'attr' => ['placeholder' => 'form.time.placeholder']
-            ])
-            ->add('endTime2', null, [
-                'label' => 'form.end_time_2',
-                'required' => false,
-                'attr' => ['placeholder' => 'form.time.placeholder']
-            ])
-            ->add('notes', null, [
-                'label' => 'form.notes',
-                'required' => false
             ]);
     }
 
