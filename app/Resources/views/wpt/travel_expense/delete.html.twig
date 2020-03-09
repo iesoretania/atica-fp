@@ -12,22 +12,30 @@
             <table id="list" class="table table-bordered table-hover table-striped">
                 <thead>
                     <tr>
-                        <th>{{ 'header.datetime'|trans }}</label></th>
-                        <th>{{ 'header.teacher'|trans }}</label></th>
-                        <th>{{ 'header.workcenter'|trans }}</label></th>
+                        <th>{{ 'header.travel_route'|trans }}</label></th>
+                        <th>{{ 'header.agreements'|trans }}</th>
+                        <th>{{ 'header.distance'|trans }}</th>
+                        <th>{{ 'header.other_expenses'|trans }}</th>
+                        <th>{{ 'header.verified'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in items %}
                         <tr>
                             <td>
-                                {{ item.dateTime|date('format.datetime'|trans({}, 'general')) }}
+                                {{ item.travelRoute }}
                             </td>
                             <td>
-                                {{ item.teacher }}
+                                {{ item.agreements.count() }}
                             </td>
                             <td>
-                                {{ item.workcenter }}
+                                {{ item.travelRoute.distance ? item.travelRoute.distance|number_format ~ ' ' ~ 'suffix.distance'|trans({}, 'general') : '---' }}
+                            </td>
+                            <td>
+                                {{ item.otherExpenses|trans() }}
+                            </td>
+                            <td>
+                                {{ (item.travelRoute.verified ? 'table.verified_yes' : 'table.verified_no')|trans }}
                             </td>
                         </tr>
                     {% endfor %}

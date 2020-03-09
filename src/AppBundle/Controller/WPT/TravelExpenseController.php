@@ -18,13 +18,17 @@
 
 namespace AppBundle\Controller\WPT;
 
+use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
+use AppBundle\Entity\User;
 use AppBundle\Entity\WPT\TravelExpense;
 use AppBundle\Form\Type\WPT\TravelExpenseType;
+use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\WPT\AgreementRepository;
-use AppBundle\Repository\WPT\VisitRepository;
+use AppBundle\Repository\WPT\TravelExpenseRepository;
+use AppBundle\Repository\WPT\WPTTeacherRepository;
+use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WPT\TravelExpenseVoter;
-use AppBundle\Security\WPT\VisitVoter;
 use AppBundle\Security\WPT\WPTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -34,7 +38,6 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -50,7 +53,6 @@ class TravelExpenseController extends Controller
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
-        Security $security,
         AgreementRepository $agreementRepository,
         Teacher $teacher
     ) {
@@ -68,15 +70,13 @@ class TravelExpenseController extends Controller
         return $this->indexAction(
             $request,
             $translator,
-            $userExtensionService,
-            $security,
             $agreementRepository,
             $travelExpense
         );
     }
 
     /**
-     * @Route("/{id}", name="workplace_training_travel_expense_edit",
+     * @Route("/detalle/{id}", name="workplace_training_travel_expense_edit",
      *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
     public function indexAction(
@@ -129,11 +129,16 @@ class TravelExpenseController extends Controller
         );
 
         $breadcrumb = [
-                ['fixed' => $title]
+            [
+                'fixed' => (string) $teacher,
+                'routeName' => 'workplace_training_travel_expense_detail_list',
+                'routeParams' => ['id' => $teacher->getId()]
+            ],
+            ['fixed' => $title]
         ];
 
         return $this->render('wpt/travel_expense/form.html.twig', [
-            'menu_path' => 'workplace_training_visit_list',
+            'menu_path' => 'workplace_training_travel_expense_teacher_list',
             'academic_year' => $academicYear,
             'breadcrumb' => $breadcrumb,
             'title' => $title,
@@ -143,7 +148,7 @@ class TravelExpenseController extends Controller
     }
 
     /**
-     * @Route("/listar/{id}/{page}", name="workplace_training_travel_expense_detail_list",
+     * @Route("/{id}/listar/{page}", name="workplace_training_travel_expense_detail_list",
      *     requirements={"page" = "\d+"}, methods={"GET"})
      */
     public function listAction(
@@ -194,10 +199,18 @@ class TravelExpenseController extends Controller
             $pager->setCurrentPage(1);
         }
 
-        $title = $translator->trans('title.list', [], 'wpt_travel_expense');
+        $title = $teacher . ' - ' . $translator->trans('title.list', [], 'wpt_travel_expense');
+
+        $breadcrumb = [
+            [
+                'fixed' => (string) $teacher,
+            ]
+        ];
 
         return $this->render('wpt/travel_expense/list.html.twig', [
+            'menu_path' => 'workplace_training_travel_expense_teacher_list',
             'title' => $title,
+            'breadcrumb' => $breadcrumb,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'wpt_travel_expense',
@@ -207,14 +220,98 @@ class TravelExpenseController extends Controller
     }
 
     /**
-     * @Route("/eliminar", name="workplace_training_travel_expense_operation",
+     * @Route("/resumen/{academicYear}/{page}", name="workplace_training_travel_expense_teacher_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
+     */
+    public function teacherListAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        WPTTeacherRepository $WPTTeacherRepository,
+        AcademicYearRepository $academicYearRepository,
+        AcademicYear $academicYear = null,
+        $page = 1
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        if (null === $academicYear) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
+
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR, $organization);
+
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder
+            ->select('t')
+            ->addSelect('p')
+            ->addSelect('COUNT(te)')
+            ->addSelect('SUM(tr.distance)')
+            ->addSelect('SUM(tr.verified)')
+            ->addSelect('SUM(te.otherExpenses)')
+            ->from(Teacher::class, 't')
+            ->join('t.person', 'p')
+            ->leftJoin(TravelExpense::class, 'te', 'WITH', 'te.teacher = t')
+            ->leftJoin('te.travelRoute', 'tr')
+            ->leftJoin('te.agreements', 'a')
+            ->groupBy('t')
+            ->addOrderBy('p.lastName')
+            ->addOrderBy('p.firstName');
+
+        $q = $request->get('q');
+
+        if ($q) {
+            $queryBuilder
+                ->orWhere('p.firstName LIKE :tq')
+                ->orWhere('p.lastName LIKE :tq')
+                ->setParameter('tq', '%'.$q.'%');
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+        if (false === $isManager) {
+            $teachers = [$WPTTeacherRepository->findOneByPersonAndAcademicYear($user->getPerson(), $academicYear)];
+        } else {
+            $teachers = $WPTTeacherRepository->findByAcademicYear($academicYear);
+        }
+
+        $queryBuilder
+                ->andWhere('t IN (:teachers)')
+                ->setParameter('teachers', $teachers);
+
+        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $pager = new Pagerfanta($adapter);
+        try {
+            $pager
+                ->setMaxPerPage($this->getParameter('page.size'))
+                ->setCurrentPage($page);
+        } catch (OutOfRangeCurrentPageException $e) {
+            $pager->setCurrentPage(1);
+        }
+
+        $title = $translator->trans('title.teacher_list', [], 'wpt_travel_expense');
+
+        return $this->render('wpt/travel_expense/teacher_list.html.twig', [
+            'title' => $title,
+            'pager' => $pager,
+            'q' => $q,
+            'domain' => 'wpt_travel_expense',
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
+        ]);
+    }
+
+    /**
+     * @Route("/eliminar/{id}", name="workplace_training_travel_expense_operation",
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
     public function operationAction(
         Request $request,
-        VisitRepository $visitRepository,
+        TravelExpenseRepository $travelExpenseRepository,
         UserExtensionService $userExtensionService,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        Teacher $teacher
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
@@ -227,34 +324,35 @@ class TravelExpenseController extends Controller
             return $this->redirectToRoute('workplace_training_visit_list');
         }
 
-        $visits = $visitRepository->findAllInListById($items);
-        foreach ($visits as $visit) {
-            $this->denyAccessUnlessGranted(VisitVoter::MANAGE, $visit);
+        $travelExpenses = $travelExpenseRepository->findAllInListById($items);
+        /** @var TravelExpense $travelExpense */
+        foreach ($travelExpenses as $travelExpense) {
+            $this->denyAccessUnlessGranted(TravelExpenseVoter::MANAGE, $travelExpense);
         }
 
         if ($request->get('confirm', '') === 'ok') {
             try {
-                foreach ($visits as $visit) {
-                    $em->remove($visit);
+                foreach ($travelExpenses as $travelExpense) {
+                    $em->remove($travelExpense);
                 }
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.deleted', [], 'wpt_visit'));
+                $this->addFlash('success', $translator->trans('message.deleted', [], 'wpt_travel_expense'));
             } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.delete_error', [], 'wpt_visit'));
+                $this->addFlash('error', $translator->trans('message.delete_error', [], 'wpt_travel_expense'));
             }
-            return $this->redirectToRoute('workplace_training_visit_list');
+            return $this->redirectToRoute('workplace_training_travel_expense_detail_list', ['id' => $teacher->getId()]);
         }
 
-        $title = $this->get('translator')->trans('title.delete', [], 'wpt_visit');
+        $title = $this->get('translator')->trans('title.delete', [], 'wpt_travel_expense');
         $breadcrumb = [
             ['fixed' => $title]
         ];
 
-        return $this->render('wpt/visit/delete.html.twig', [
-            'menu_path' => 'workplace_training_visit_list',
+        return $this->render('wpt/travel_expense/delete.html.twig', [
+            'menu_path' => 'workplace_training_travel_expense_teacher_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'items' => $visits
+            'items' => $travelExpenses
         ]);
     }
 }

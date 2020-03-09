@@ -27,15 +27,15 @@ function clearForm(form, callback)
     });
 }
 
-my_item = $("select#travel_expense_travelRoute");
+my_item = $("select.travel-route");
 
 $(function () {
     my_item.on('select2:select', function (e) {
         var data = e.params.data;
         if (data.id === 0) {
-            $('#new_travelRoute form').trigger('reset');
-            $('#new_travelRoute').modal('show');
-            $('#new_travelRoute').focus(true);
+            $('#new_travel_route form').trigger('reset');
+            $('#new_travel_route').modal('show');
+            $('#new_travel_route_description').focus();
         }
     });
 });
@@ -50,10 +50,10 @@ $('#create_travelRoute').on('click', function (e) {
             $('#new_travelRoute').modal('hide');
 
             clearForm($('.modal-body').find('form'), function (response) {
-                $('#new_travelRoute').find('.modal-body').html(response);
+                $('#new_travel_route').find('.modal-body').html(response);
             });
         } else {
-            $('#new_travelRoute').find('.modal-body').html(response);
+            $('#new_travel_route').find('.modal-body').html(response);
         }
     });
 });

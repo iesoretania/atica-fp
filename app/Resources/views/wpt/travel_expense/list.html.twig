@@ -33,7 +33,7 @@
                         {{ item.travelRoute.distance ? item.travelRoute.distance|number_format ~ ' ' ~ 'suffix.distance'|trans({}, 'general') : '---' }}
                     </td>
                     <td>
-                        {{ item.otherExpenses|trans() }}
+                        {{ (item.otherExpenses/100) | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} {{ 'format.currency'|trans({}, 'general') }}
                     </td>
                     <td>
                         {{ (item.travelRoute.verified ? 'table.verified_yes' : 'table.verified_no')|trans }}

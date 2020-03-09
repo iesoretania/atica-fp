@@ -102,7 +102,18 @@ class WPTMenu implements MenuBuilderInterface
                         ->setCaption('menu.workplace_training.visit')
                         ->setDescription('menu.workplace_training.visit.detail')
                         ->setIcon('car-side')
-                        ->setPriority(8000);
+                        ->setPriority(4000);
+
+                    $menu1->addChild($menu2);
+
+                    $menu2 = new MenuItem();
+                    $menu2
+                        ->setName('workplace_training_travel_expense')
+                        ->setRouteName('workplace_training_travel_expense_teacher_list')
+                        ->setCaption('menu.workplace_training.travel_expense')
+                        ->setDescription('menu.workplace_training.travel_expense.detail')
+                        ->setIcon('road')
+                        ->setPriority(5000);
 
                     $menu1->addChild($menu2);
                 }

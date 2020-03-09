@@ -23,6 +23,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class NewTravelRouteType extends AbstractType
 {
@@ -36,6 +37,9 @@ class NewTravelRouteType extends AbstractType
                 'label' => 'form.description',
                 'attr' => [
                     'placeholder' => 'form.description.placeholder'
+                ],
+                'constraints' => [
+                    new NotBlank()
                 ],
                 'required' => true
             ]);

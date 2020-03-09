@@ -145,6 +145,9 @@ menu.workplace_training.final_report.detail: Gestionar los informes del tutor/a 
 menu.workplace_training.visit: Visitas a empresas
 menu.workplace_training.visit.detail: Registrar las visitas a empresas por parte de los tutores docentes de la FCT
 
+menu.workplace_training.travel_expense: Dietas de desplazamiento
+menu.workplace_training.travel_expense.detail: Registrar los desplazamientos y dietas de los tutores docentes de la FCT
+
 menu.company: Empresas colaboradoras
 menu.company.detail: Gestionar las empresas colaboradoras y sus centros de trabajo
 
