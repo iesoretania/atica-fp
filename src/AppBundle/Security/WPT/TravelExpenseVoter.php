@@ -16,37 +16,37 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Security\Edu;
+namespace AppBundle\Security\WPT;
 
-use AppBundle\Entity\Organization;
+use AppBundle\Entity\Edu\Teaching;
 use AppBundle\Entity\User;
-use AppBundle\Repository\Edu\TeacherRepository;
-use AppBundle\Repository\Edu\TrainingRepository;
+use AppBundle\Entity\WPT\TravelExpense;
 use AppBundle\Security\CachedVoter;
 use AppBundle\Security\OrganizationVoter;
+use AppBundle\Service\UserExtensionService;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
-class EduOrganizationVoter extends CachedVoter
+class TravelExpenseVoter extends CachedVoter
 {
-    const EDU_DEPARTMENT_HEAD = 'ORGANIZATION_DEPARTMENT_HEAD';
-    const EDU_TEACHER = 'ORGANIZATION_TEACHER';
+    const MANAGE = 'WPT_TRAVEL_EXPENSE_MANAGE';
+    const ACCESS = 'WPT_TRAVEL_EXPENSE_ACCESS';
 
+    /** @var AccessDecisionManagerInterface */
     private $decisionManager;
-    private $trainingRepository;
-    private $teacherRepository;
+
+    /** @var UserExtensionService */
+    private $userExtensionService;
 
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
         AccessDecisionManagerInterface $decisionManager,
-        TrainingRepository $trainingRepository,
-        TeacherRepository $teacherRepository
+        UserExtensionService $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
         $this->decisionManager = $decisionManager;
-        $this->trainingRepository = $trainingRepository;
-        $this->teacherRepository = $teacherRepository;
+        $this->userExtensionService = $userExtensionService;
     }
 
     /**
@@ -55,13 +55,12 @@ class EduOrganizationVoter extends CachedVoter
     protected function supports($attribute, $subject)
     {
 
-        if (!$subject instanceof Organization) {
+        if (!$subject instanceof TravelExpense) {
             return false;
         }
-
         if (!in_array($attribute, [
-            self::EDU_DEPARTMENT_HEAD,
-            self::EDU_TEACHER,
+            self::MANAGE,
+            self::ACCESS
         ], true)) {
             return false;
         }
@@ -74,7 +73,7 @@ class EduOrganizationVoter extends CachedVoter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        if (!$subject instanceof Organization) {
+        if (!$subject instanceof TravelExpense) {
             return false;
         }
 
@@ -91,25 +90,41 @@ class EduOrganizationVoter extends CachedVoter
             return false;
         }
 
+        $organization = $this->userExtensionService->getCurrentOrganization();
+
+        // Si no es de la organización actual, denegar
+        if ($subject->getTeacher()->getAcademicYear()->getOrganization() !== $organization) {
+            return false;
+        }
+
         // Si es administrador de la organización, permitir siempre
-        if ($this->decisionManager->decide($token, [OrganizationVoter::LOCAL_MANAGE], $subject)
-        ) {
+        if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
             return true;
         }
 
         switch ($attribute) {
-            case self::EDU_DEPARTMENT_HEAD:
-                return
-                    $this->trainingRepository->countAcademicYearAndDepartmentHead(
-                        $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
-                    ) > 0;
-            case self::EDU_TEACHER:
-                return
-                    $this->teacherRepository->findOneByAcademicYearAndPerson(
-                        $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
-                    ) !== null;
+            case self::MANAGE:
+                // El propio docente puede gestionar su visita si es del curso académico actual
+                return $subject->getTeacher()->getPerson() === $user->getPerson()
+                    && $subject->getTeacher()->getAcademicYear() === $organization->getCurrentAcademicYear();
+            case self::ACCESS:
+                // Puede acceder a los datos de la visita el propio docente
+                if ($subject->getTeacher()->getPerson() === $user->getPerson()) {
+                    return true;
+                }
+                // Puede acceder el jefe/a de departamento
+                // de los grupos de los proyectos
+                /** @var Teaching $teaching */
+                foreach ($subject->getTeacher()->getTeachings() as $teaching) {
+                    $group = $teaching->getGroup();
+                    if ($group->getGrade()->getTraining()->getDepartment() &&
+                        $group->getGrade()->getTraining()->getDepartment()->getHead() &&
+                        $group->getGrade()->getTraining()->getDepartment()->getHead()->getPerson()
+                            === $user->getPerson()) {
+                        return true;
+                    }
+                }
+                return false;
         }
 
         // denegamos en cualquier otro caso

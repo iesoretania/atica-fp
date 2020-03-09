@@ -17,6 +17,7 @@ Encore
     // other js modules
     .addEntry('list', './assets/js/list.js')
     .addEntry('person', './assets/js/person.js')
+    .addEntry('edu_travel_route', './assets/js/edu/travel_route.js')
     .addEntry('wlt_agreement', './assets/js/wlt/agreement.js')
     .addEntry('wlt_visit', './assets/js/wlt/visit.js')
     .addEntry('wlt_meeting', './assets/js/wlt/meeting.js')

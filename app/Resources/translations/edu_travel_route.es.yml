@@ -1,0 +1,9 @@
+form.description: Descripción del itinerario
+form.description.placeholder: "Ej: Linares > Jaén > Linares"
+
+title.new: "Registrar nuevo itinerario..."
+form.new_travel_route.save: Registrar itinerario
+form.new_travel_route.close: Cerrar
+
+input.too_short: 'Introduzca más caracteres...'
+input.searching: 'Buscando...'

@@ -279,4 +279,25 @@ class AgreementRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByAcademicYearAndEducationalTutorOrDepartmentHead(AcademicYear $academicYear, Teacher $teacher)
+    {
+
+        return $this->createQueryBuilder('a')
+            ->distinct(true)
+            ->join('a.agreementEnrollments', 'ae')
+            ->join('a.shift', 'sh')
+            ->join('sh.subject', 'su')
+            ->join('su.grade', 'gr')
+            ->join('gr.training', 't')
+            ->join('t.department', 'd')
+            ->leftJoin('d.head', 'h')
+            ->where('t.academicYear = :academic_year')
+            ->andWhere('h.person = :person OR ae.educationalTutor = :teacher')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('person', $teacher->getPerson())
+            ->setParameter('teacher', $teacher)
+            ->getQuery()
+            ->getResult();
+    }
 }

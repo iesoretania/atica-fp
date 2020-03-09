@@ -1,0 +1,61 @@
+{% trans_default_domain 'wpt_travel_expense' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th><label><input type="checkbox" id="select"> {{ 'header.teacher'|trans }}</label></th>
+    <th>{{ 'header.travel_count'|trans }}</th>
+    <th>{{ 'header.distance'|trans }}</th>
+    <th>{{ 'header.other_expenses'|trans }}</th>
+    <th>{{ 'header.verified'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('workplace_training_travel_expense_detail_list', {'id': item[0].id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">
+                            {{ item[0].person }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ item[1] }}
+                    </td>
+                    <td>
+                        {{ item[2] }}
+                    </td>
+                    <td>
+                        {{ item[3] }}
+                    </td>
+                    <td>
+                        {{ (item[4] > 0 and item[4] == item[1] ? 'table.verified_yes' : 'table.verified_no')|trans }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('workplace_training_visit_operation', {'academicYear': academic_year.id}) }}" method="post">
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}
