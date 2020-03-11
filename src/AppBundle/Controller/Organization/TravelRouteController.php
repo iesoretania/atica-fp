@@ -19,7 +19,7 @@
 namespace AppBundle\Controller\Organization;
 
 use AppBundle\Entity\Edu\TravelRoute;
-use AppBundle\Form\Type\WPT\TravelRouteType;
+use AppBundle\Form\Type\Edu\TravelRouteType;
 use AppBundle\Repository\Edu\TravelRouteRepository;
 use AppBundle\Security\Edu\EduOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
