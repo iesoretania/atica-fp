@@ -7,6 +7,7 @@ en la distintas versiones de la misma.
 3.2.0 (xxxx-xx-xx)
 ------------------
 * feat: Registro de desplazamientos para la FCT
+* feat: Nuevo rol de responsable económico (secretario/a del centro educativo)
 
 3.1.0 (2020-03-09)
 ------------------

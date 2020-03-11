@@ -173,7 +173,12 @@ class AgreementRepository extends ServiceEntityRepository
                 ->join('s.grade', 'gr')
                 ->join('gr.training', 't')
                 ->join(Teacher::class, 'te', 'WITH', 'te.person = :educational_tutor')
-                ->join(AgreementEnrollment::class, 'ae', 'WITH ae.educationalTutor = te')
+                ->join(
+                    AgreementEnrollment::class,
+                    'ae',
+                    'WITH',
+                    'ae.agreement = a AND ae.educationalTutor = te'
+                )
                 ->andWhere('t.academicYear = :academic_year')
                 ->setParameter('educational_tutor', $educationalTutor)
                 ->setParameter('academic_year', $academicYear)

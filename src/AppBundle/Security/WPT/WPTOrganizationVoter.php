@@ -31,8 +31,9 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class WPTOrganizationVoter extends CachedVoter
 {
-    const WPT_ACCESS = 'ORGANIZATION_ACCESS_WORKPLACE_TRAINING';
-    const WPT_MANAGE = 'ORGANIZATION_MANAGE_WORKPLACE_TRAINING';
+    const WPT_ACCESS_SECTION = 'ORGANIZATION_ACCESS_WORKPLACE_TRAINING';
+    const WPT_ACCESS = 'ORGANIZATION_ACCESS_WORKPLACE_TRAINING_TRACKING';
+    const WPT_MANAGE = 'ORGANIZATION_MANAGE_WORKPLACE_TRAINING_TRACKING';
     const WPT_FILL_REPORT = 'ORGANIZATION_FILL_REPORT_WORKPLACE_TRAINING';
 
     const WPT_GROUP_TUTOR = 'ORGANIZATION_WPT_GROUP_TUTOR';
@@ -43,6 +44,8 @@ class WPTOrganizationVoter extends CachedVoter
 
     const WPT_ACCESS_VISIT = 'ORGANIZATION_WPT_ACCESS_VISIT';
     const WPT_CREATE_VISIT = 'ORGANIZATION_WPT_CREATE_VISIT';
+
+    const WPT_ACCESS_EXPENSE = 'ORGANIZATION_WPT_ACCESS_EXPENSE';
 
     private $decisionManager;
     private $wptGroupRepository;
@@ -71,6 +74,7 @@ class WPTOrganizationVoter extends CachedVoter
         }
 
         if (!in_array($attribute, [
+            self::WPT_ACCESS_SECTION,
             self::WPT_ACCESS,
             self::WPT_MANAGE,
             self::WPT_FILL_REPORT,
@@ -80,7 +84,8 @@ class WPTOrganizationVoter extends CachedVoter
             self::WPT_EDUCATIONAL_TUTOR,
             self::WPT_DEPARTMENT_HEAD,
             self::WPT_CREATE_VISIT,
-            self::WPT_ACCESS_VISIT
+            self::WPT_ACCESS_VISIT,
+            self::WPT_ACCESS_EXPENSE
         ], true)) {
             return false;
         }
@@ -126,7 +131,8 @@ class WPTOrganizationVoter extends CachedVoter
                 // 1) los tutores de grupo donde haya FCT
                 // 2) los jefes de departamento
                 // 3) los tutores laborales y docentes de los acuerdos de colaboración y
-                // 4) los estudiantes que tengan acuerdos
+                // 4) El gestor económico (secretario) del centro
+                // 5) los estudiantes que tengan acuerdos
 
                 // 1) Tutores de grupo de FP dual
                 if ($this->decisionManager->decide($token, [self::WPT_GROUP_TUTOR], $subject)) {
@@ -147,6 +153,20 @@ class WPTOrganizationVoter extends CachedVoter
                 // 4) Alumnado con acuerdos, sólo si es acceso
                 return $attribute === self::WPT_ACCESS &&
                     $this->decisionManager->decide($token, [self::WPT_STUDENT], $subject);
+
+            case self::WPT_ACCESS_SECTION:
+                // 1) Todos los que puedan ver el seguimiento
+                // 2) Todos los que pueden ver las visitas
+                // 3) Todos los que pueden ver los desplazamientos
+                return $this->decisionManager->decide($token, [self::WPT_ACCESS], $subject) ||
+                    $this->decisionManager->decide($token, [self::WPT_ACCESS_VISIT], $subject) ||
+                    $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $subject);
+
+            case self::WPT_ACCESS_EXPENSE:
+                // 1) Todos los que pueden acceder a las visitas
+                // 2) Gestor económico del centro
+                return $this->decisionManager->decide($token, [self::WPT_ACCESS_VISIT], $subject) ||
+                    $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $subject);
 
             case self::WPT_FILL_REPORT:
                 // pueden acceder al informe:

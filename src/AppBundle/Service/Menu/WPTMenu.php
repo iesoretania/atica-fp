@@ -46,7 +46,7 @@ class WPTMenu implements MenuBuilderInterface
 
         $root = [];
 
-        if ($this->security->isGranted(WPTOrganizationVoter::WPT_ACCESS, $organization)) {
+        if ($this->security->isGranted(WPTOrganizationVoter::WPT_ACCESS_SECTION, $organization)) {
             $menu1 = new MenuItem();
             $menu1
                 ->setName('workplace_training')
@@ -71,16 +71,18 @@ class WPTMenu implements MenuBuilderInterface
                 $menu1->addChild($menu2);
             }
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('workplace_training_tracking')
-                ->setRouteName('workplace_training_tracking_list')
-                ->setCaption('menu.workplace_training.tracking')
-                ->setDescription('menu.workplace_training.tracking.detail')
-                ->setIcon('user-clock')
-                ->setPriority(2000);
+            if ($this->security->isGranted(WPTOrganizationVoter::WPT_ACCESS, $organization)) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('workplace_training_tracking')
+                    ->setRouteName('workplace_training_tracking_list')
+                    ->setCaption('menu.workplace_training.tracking')
+                    ->setDescription('menu.workplace_training.tracking.detail')
+                    ->setIcon('user-clock')
+                    ->setPriority(2000);
 
-            $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
+            }
 
             if ($this->security->isGranted(WPTOrganizationVoter::WPT_FILL_REPORT, $organization)) {
                 $menu2 = new MenuItem();
@@ -93,19 +95,22 @@ class WPTMenu implements MenuBuilderInterface
                     ->setPriority(3000);
 
                 $menu1->addChild($menu2);
+            }
 
-                if ($this->security->isGranted(WPTOrganizationVoter::WPT_ACCESS_VISIT, $organization)) {
-                    $menu2 = new MenuItem();
-                    $menu2
-                        ->setName('workplace_training_visit')
-                        ->setRouteName('workplace_training_visit_list')
-                        ->setCaption('menu.workplace_training.visit')
-                        ->setDescription('menu.workplace_training.visit.detail')
-                        ->setIcon('car-side')
-                        ->setPriority(4000);
+            if ($this->security->isGranted(WPTOrganizationVoter::WPT_ACCESS_VISIT, $organization)) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('workplace_training_visit')
+                    ->setRouteName('workplace_training_visit_list')
+                    ->setCaption('menu.workplace_training.visit')
+                    ->setDescription('menu.workplace_training.visit.detail')
+                    ->setIcon('car-side')
+                    ->setPriority(4000);
 
-                    $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
+            }
 
+            if ($this->security->isGranted(WPTOrganizationVoter::WPT_ACCESS_EXPENSE, $organization)) {
                     $menu2 = new MenuItem();
                     $menu2
                         ->setName('workplace_training_travel_expense')
@@ -116,7 +121,6 @@ class WPTMenu implements MenuBuilderInterface
                         ->setPriority(5000);
 
                     $menu1->addChild($menu2);
-                }
             }
         }
 

@@ -22,6 +22,7 @@ use AppBundle\Entity\Edu\Teaching;
 use AppBundle\Entity\User;
 use AppBundle\Entity\WPT\TravelExpense;
 use AppBundle\Security\CachedVoter;
+use AppBundle\Security\Edu\EduOrganizationVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Psr\Cache\CacheItemPoolInterface;
@@ -97,8 +98,9 @@ class TravelExpenseVoter extends CachedVoter
             return false;
         }
 
-        // Si es administrador de la organización, permitir siempre
-        if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
+        // Si es administrador de la organización o responsable económico, permitir siempre
+        if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization) ||
+            $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $organization)) {
             return true;
         }
 

@@ -32,6 +32,7 @@ class EduOrganizationVoter extends CachedVoter
 {
     const EDU_DEPARTMENT_HEAD = 'ORGANIZATION_DEPARTMENT_HEAD';
     const EDU_TEACHER = 'ORGANIZATION_TEACHER';
+    const EDU_FINANCIAL_MANAGER = 'ORGANIZATION_FINANCIAL_MANAGER';
 
     private $decisionManager;
     private $trainingRepository;
@@ -62,6 +63,7 @@ class EduOrganizationVoter extends CachedVoter
         if (!in_array($attribute, [
             self::EDU_DEPARTMENT_HEAD,
             self::EDU_TEACHER,
+            self::EDU_FINANCIAL_MANAGER
         ], true)) {
             return false;
         }
@@ -104,12 +106,22 @@ class EduOrganizationVoter extends CachedVoter
                         $subject->getCurrentAcademicYear(),
                         $user->getPerson()
                     ) > 0;
+
             case self::EDU_TEACHER:
                 return
                     $this->teacherRepository->findOneByAcademicYearAndPerson(
                         $subject->getCurrentAcademicYear(),
                         $user->getPerson()
                     ) !== null;
+
+            case self::EDU_FINANCIAL_MANAGER:
+                $teacher = $this->teacherRepository->findOneByAcademicYearAndPerson(
+                    $subject->getCurrentAcademicYear(),
+                    $user->getPerson());
+
+                return
+                    $teacher && $subject->getCurrentAcademicYear()->getFinancialManager()
+                        === $teacher;
         }
 
         // denegamos en cualquier otro caso

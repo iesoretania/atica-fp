@@ -21,7 +21,7 @@ namespace AppBundle\Controller\Organization;
 use AppBundle\Entity\Edu\TravelRoute;
 use AppBundle\Form\Type\WPT\TravelRouteType;
 use AppBundle\Repository\Edu\TravelRouteRepository;
-use AppBundle\Security\OrganizationVoter;
+use AppBundle\Security\Edu\EduOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -46,7 +46,7 @@ class TravelRouteController extends Controller
         UserExtensionService $userExtensionService
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
+        $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
         $travelRoute = new TravelRoute();
         $travelRoute
@@ -73,7 +73,7 @@ class TravelRouteController extends Controller
         TravelRoute $travelRoute
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
+        $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
         $em = $this->getDoctrine()->getManager();
 
@@ -121,7 +121,7 @@ class TravelRouteController extends Controller
     ) {
 
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
+        $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -181,7 +181,7 @@ class TravelRouteController extends Controller
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
+        $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
         $em = $this->getDoctrine()->getManager();
 

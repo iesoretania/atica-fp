@@ -19,6 +19,7 @@
 namespace AppBundle\Service\Menu;
 
 use AppBundle\Menu\MenuItem;
+use AppBundle\Security\Edu\EduOrganizationVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\MenuBuilderInterface;
 use AppBundle\Service\UserExtensionService;
@@ -44,6 +45,7 @@ class EduMenu implements MenuBuilderInterface
     {
         $organization = $this->userExtension->getCurrentOrganization();
         $isLocalAdministrator = $this->security->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isFinancialManager = $this->security->isGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
         $root = [];
 
@@ -60,7 +62,7 @@ class EduMenu implements MenuBuilderInterface
             $root[] = $menu1;
         }
 
-        if ($isLocalAdministrator) {
+        if ($isLocalAdministrator || $isFinancialManager) {
             $menu1 = new MenuItem();
             $menu1
                 ->setName('organization')
@@ -72,137 +74,141 @@ class EduMenu implements MenuBuilderInterface
 
             $root[] = $menu1;
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_teacher')
-                ->setRouteName('organization_teacher_list')
-                ->setCaption('menu.organization.teacher')
-                ->setDescription('menu.organization.teacher.detail')
-                ->setIcon('chalkboard-teacher')
-                ->setPriority(0);
+            if ($isLocalAdministrator) {
 
-            $menu1->addChild($menu2);
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_student_enrollment')
-                ->setRouteName('organization_student_enrollment_list')
-                ->setCaption('menu.organization.student_enrollment')
-                ->setDescription('menu.organization.student_enrollment.detail')
-                ->setIcon('child')
-                ->setPriority(5);
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('organization_teacher')
+                    ->setRouteName('organization_teacher_list')
+                    ->setCaption('menu.organization.teacher')
+                    ->setDescription('menu.organization.teacher.detail')
+                    ->setIcon('chalkboard-teacher')
+                    ->setPriority(0);
 
-            $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_group')
-                ->setRouteName('organization_group_list')
-                ->setCaption('menu.organization.group')
-                ->setDescription('menu.organization.group.detail')
-                ->setIcon('chalkboard')
-                ->setPriority(10);
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('organization_student_enrollment')
+                    ->setRouteName('organization_student_enrollment_list')
+                    ->setCaption('menu.organization.student_enrollment')
+                    ->setDescription('menu.organization.student_enrollment.detail')
+                    ->setIcon('child')
+                    ->setPriority(5);
 
-            $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_grade')
-                ->setRouteName('organization_grade_list')
-                ->setCaption('menu.organization.grade')
-                ->setDescription('menu.organization.grade.detail')
-                ->setIcon('sitemap')
-                ->setPriority(20);
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('organization_group')
+                    ->setRouteName('organization_group_list')
+                    ->setCaption('menu.organization.group')
+                    ->setDescription('menu.organization.group.detail')
+                    ->setIcon('chalkboard')
+                    ->setPriority(10);
 
-            $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_training')
-                ->setRouteName('organization_training_list')
-                ->setCaption('menu.organization.training')
-                ->setDescription('menu.organization.training.detail')
-                ->setIcon('graduation-cap')
-                ->setPriority(30);
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('organization_grade')
+                    ->setRouteName('organization_grade_list')
+                    ->setCaption('menu.organization.grade')
+                    ->setDescription('menu.organization.grade.detail')
+                    ->setIcon('sitemap')
+                    ->setPriority(20);
 
-            $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_subject')
-                ->setRouteName('organization_subject_list')
-                ->setCaption('menu.organization.subject')
-                ->setDescription('menu.organization.subject.detail')
-                ->setIcon('book-open')
-                ->setPriority(40);
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('organization_training')
+                    ->setRouteName('organization_training_list')
+                    ->setCaption('menu.organization.training')
+                    ->setDescription('menu.organization.training.detail')
+                    ->setIcon('graduation-cap')
+                    ->setPriority(30);
 
-            $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_department')
-                ->setRouteName('organization_department_list')
-                ->setCaption('menu.organization.department')
-                ->setDescription('menu.organization.department.detail')
-                ->setIcon('users')
-                ->setPriority(50);
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('organization_subject')
+                    ->setRouteName('organization_subject_list')
+                    ->setCaption('menu.organization.subject')
+                    ->setDescription('menu.organization.subject.detail')
+                    ->setIcon('book-open')
+                    ->setPriority(40);
 
-            $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_academic_year')
-                ->setRouteName('organization_academic_year_list')
-                ->setCaption('menu.organization.academic_year')
-                ->setDescription('menu.organization.academic_year.detail')
-                ->setIcon('calendar-alt')
-                ->setPriority(9000);
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('organization_department')
+                    ->setRouteName('organization_department_list')
+                    ->setCaption('menu.organization.department')
+                    ->setDescription('menu.organization.department.detail')
+                    ->setIcon('users')
+                    ->setPriority(50);
 
-            $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_non_working_day')
-                ->setRouteName('organization_non_working_day_list')
-                ->setCaption('menu.organization.non_working_day')
-                ->setDescription('menu.organization.non_working_day.detail')
-                ->setIcon('calendar-times')
-                ->setPriority(10000);
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('organization_academic_year')
+                    ->setRouteName('organization_academic_year_list')
+                    ->setCaption('menu.organization.academic_year')
+                    ->setDescription('menu.organization.academic_year.detail')
+                    ->setIcon('calendar-alt')
+                    ->setPriority(9000);
 
-            $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_role')
-                ->setRouteName('organization_role')
-                ->setCaption('menu.organization.role')
-                ->setDescription('menu.organization.role.detail')
-                ->setIcon('user-tie')
-                ->setPriority(11000);
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('organization_non_working_day')
+                    ->setRouteName('organization_non_working_day_list')
+                    ->setCaption('menu.organization.non_working_day')
+                    ->setDescription('menu.organization.non_working_day.detail')
+                    ->setIcon('calendar-times')
+                    ->setPriority(10000);
 
-            $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_survey')
-                ->setRouteName('organization_survey_list')
-                ->setCaption('menu.organization.survey')
-                ->setDescription('menu.organization.survey.detail')
-                ->setIcon('chart-pie')
-                ->setPriority(12000);
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('organization_role')
+                    ->setRouteName('organization_role')
+                    ->setCaption('menu.organization.role')
+                    ->setDescription('menu.organization.role.detail')
+                    ->setIcon('user-tie')
+                    ->setPriority(11000);
 
-            $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_report_template')
-                ->setRouteName('organization_report_template_list')
-                ->setCaption('menu.organization.report_template')
-                ->setDescription('menu.organization.report_template.detail')
-                ->setIcon('file')
-                ->setPriority(12500);
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('organization_survey')
+                    ->setRouteName('organization_survey_list')
+                    ->setCaption('menu.organization.survey')
+                    ->setDescription('menu.organization.survey.detail')
+                    ->setIcon('chart-pie')
+                    ->setPriority(12000);
 
-            $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
+
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('organization_report_template')
+                    ->setRouteName('organization_report_template_list')
+                    ->setCaption('menu.organization.report_template')
+                    ->setDescription('menu.organization.report_template.detail')
+                    ->setIcon('file')
+                    ->setPriority(12500);
+
+                $menu1->addChild($menu2);
+            }
 
             $menu2 = new MenuItem();
             $menu2
@@ -215,85 +221,84 @@ class EduMenu implements MenuBuilderInterface
 
             $menu1->addChild($menu2);
 
-            $menu2 = new MenuItem();
-            $menu2
-                ->setName('organization_import')
-                ->setRouteName('organization_import')
-                ->setCaption('menu.organization.import')
-                ->setDescription('menu.organization.import.detail')
-                ->setIcon('download')
-                ->setPriority(13000);
+            if ($isLocalAdministrator) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('organization_import')
+                    ->setRouteName('organization_import')
+                    ->setCaption('menu.organization.import')
+                    ->setDescription('menu.organization.import.detail')
+                    ->setIcon('download')
+                    ->setPriority(13000);
 
-            $menu1->addChild($menu2);
+                $menu1->addChild($menu2);
 
-            $menu3 = new MenuItem();
-            $menu3
-                ->setName('organization_import_teacher')
-                ->setRouteName('organization_import_teacher_form')
-                ->setCaption('menu.organization.import.teacher')
-                ->setDescription('menu.organization.import.teacher.detail')
-                ->setIcon('chalkboard-teacher')
-                ->setPriority(0);
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('organization_import_teacher')
+                    ->setRouteName('organization_import_teacher_form')
+                    ->setCaption('menu.organization.import.teacher')
+                    ->setDescription('menu.organization.import.teacher.detail')
+                    ->setIcon('chalkboard-teacher')
+                    ->setPriority(0);
 
-            $menu2->addChild($menu3);
+                $menu2->addChild($menu3);
 
-            $menu3 = new MenuItem();
-            $menu3
-                ->setName('organization_import_group')
-                ->setRouteName('organization_import_group_form')
-                ->setCaption('menu.organization.import.group')
-                ->setDescription('menu.organization.import.group.detail')
-                ->setIcon('chalkboard')
-                ->setPriority(10);
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('organization_import_group')
+                    ->setRouteName('organization_import_group_form')
+                    ->setCaption('menu.organization.import.group')
+                    ->setDescription('menu.organization.import.group.detail')
+                    ->setIcon('chalkboard')
+                    ->setPriority(10);
 
-            $menu2->addChild($menu3);
+                $menu2->addChild($menu3);
 
-            $menu3 = new MenuItem();
-            $menu3
-                ->setName('organization_import_subject')
-                ->setRouteName('organization_import_subject_form')
-                ->setCaption('menu.organization.import.subject')
-                ->setDescription('menu.organization.import.subject.detail')
-                ->setIcon('book-open')
-                ->setPriority(20);
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('organization_import_subject')
+                    ->setRouteName('organization_import_subject_form')
+                    ->setCaption('menu.organization.import.subject')
+                    ->setDescription('menu.organization.import.subject.detail')
+                    ->setIcon('book-open')
+                    ->setPriority(20);
 
-            $menu2->addChild($menu3);
+                $menu2->addChild($menu3);
 
-            $menu3 = new MenuItem();
-            $menu3
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('organization_import_student')
+                    ->setRouteName('organization_import_student_form')
+                    ->setCaption('menu.organization.import.student')
+                    ->setDescription('menu.organization.import.student.detail')
+                    ->setIcon('child')
+                    ->setPriority(30);
 
-                ->setName('organization_import_student')
-                ->setRouteName('organization_import_student_form')
-                ->setCaption('menu.organization.import.student')
-                ->setDescription('menu.organization.import.student.detail')
-                ->setIcon('child')
-                ->setPriority(30);
+                $menu2->addChild($menu3);
 
-            $menu2->addChild($menu3);
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('organization_import_department')
+                    ->setRouteName('organization_import_department_form')
+                    ->setCaption('menu.organization.import.department')
+                    ->setDescription('menu.organization.import.department.detail')
+                    ->setIcon('users')
+                    ->setPriority(40);
 
-            $menu3 = new MenuItem();
-            $menu3
+                $menu2->addChild($menu3);
 
-                ->setName('organization_import_department')
-                ->setRouteName('organization_import_department_form')
-                ->setCaption('menu.organization.import.department')
-                ->setDescription('menu.organization.import.department.detail')
-                ->setIcon('users')
-                ->setPriority(40);
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('organization_import_non_working_day')
+                    ->setRouteName('organization_import_non_working_day_form')
+                    ->setCaption('menu.organization.import.non_working_day')
+                    ->setDescription('menu.organization.import.non_working_day.detail')
+                    ->setIcon('calendar-times')
+                    ->setPriority(50);
 
-            $menu2->addChild($menu3);
-
-            $menu3 = new MenuItem();
-            $menu3
-
-                ->setName('organization_import_non_working_day')
-                ->setRouteName('organization_import_non_working_day_form')
-                ->setCaption('menu.organization.import.non_working_day')
-                ->setDescription('menu.organization.import.non_working_day.detail')
-                ->setIcon('calendar-times')
-                ->setPriority(50);
-
-            $menu2->addChild($menu3);
+                $menu2->addChild($menu3);
+            }
         }
 
         return $root;

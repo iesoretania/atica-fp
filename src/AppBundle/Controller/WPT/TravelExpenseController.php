@@ -27,6 +27,7 @@ use AppBundle\Repository\Edu\AcademicYearRepository;
 use AppBundle\Repository\WPT\AgreementRepository;
 use AppBundle\Repository\WPT\TravelExpenseRepository;
 use AppBundle\Repository\WPT\WPTTeacherRepository;
+use AppBundle\Security\Edu\EduOrganizationVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WPT\TravelExpenseVoter;
 use AppBundle\Security\WPT\WPTOrganizationVoter;
@@ -160,7 +161,7 @@ class TravelExpenseController extends Controller
     ) {
 
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_EXPENSE, $organization);
 
         $allowNew = $this->isGranted(WPTOrganizationVoter::WPT_CREATE_VISIT, $organization);
 
@@ -237,9 +238,10 @@ class TravelExpenseController extends Controller
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_EXPENSE, $organization);
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization) ||
+            $this->isGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -315,7 +317,7 @@ class TravelExpenseController extends Controller
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_VISIT, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_EXPENSE, $organization);
 
         $em = $this->getDoctrine()->getManager();
 

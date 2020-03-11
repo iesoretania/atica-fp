@@ -31,7 +31,7 @@ class MenuController extends Controller
     public function indexAction(UserExtensionService $userExtensionService)
     {
         $this->denyAccessUnlessGranted(
-            WPTOrganizationVoter::WPT_ACCESS,
+            WPTOrganizationVoter::WPT_ACCESS_SECTION,
             $userExtensionService->getCurrentOrganization()
         );
         return $this->render(
