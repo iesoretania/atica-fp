@@ -70,7 +70,7 @@ class TravelExpenseType extends AbstractType
                 'label' => 'form.travel_route',
                 'class' => TravelRoute::class,
                 'minimum_input_length' => 2,
-                'remote_route' => 'api_person_query',
+                'remote_route' => 'api_travel_route_query',
                 'placeholder' => 'form.travel_route.placeholder',
                 'attr' => ['class' => 'travel-route'],
                 'required' => true

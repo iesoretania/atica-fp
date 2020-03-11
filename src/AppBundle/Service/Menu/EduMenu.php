@@ -206,6 +206,17 @@ class EduMenu implements MenuBuilderInterface
 
             $menu2 = new MenuItem();
             $menu2
+                ->setName('organization_travel_route')
+                ->setRouteName('organization_travel_route_list')
+                ->setCaption('menu.organization.travel_route')
+                ->setDescription('menu.organization.travel_route.detail')
+                ->setIcon('map')
+                ->setPriority(12700);
+
+            $menu1->addChild($menu2);
+
+            $menu2 = new MenuItem();
+            $menu2
                 ->setName('organization_import')
                 ->setRouteName('organization_import')
                 ->setCaption('menu.organization.import')

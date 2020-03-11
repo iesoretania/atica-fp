@@ -29,6 +29,7 @@ title.teacher_list: Resumen de desplazamientos
 title.list: Listado de desplazamientos
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay desplazamientos que mostrar
+table.no_teachers: No hay tutores/as que mostrar
 table.filter: Filtrar...
 
 header.from_datetime: Fecha/hora entrada

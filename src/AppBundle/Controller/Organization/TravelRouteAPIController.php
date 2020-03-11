@@ -71,7 +71,7 @@ class TravelRouteAPIController extends Controller
     }
 
     /**
-     * @Route("/api/travel_route/query", name="api_person_query", methods={"GET"})
+     * @Route("/api/travel_route/query", name="api_travel_route_query", methods={"GET"})
      */
     public function apiTravelRouteQuery(
         Request $request,

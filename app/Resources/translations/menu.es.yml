@@ -49,6 +49,9 @@ menu.organization.survey.detail: Gestionar las encuestas del centro
 menu.organization.report_template: Plantillas de informes
 menu.organization.report_template.detail: Gestionar las plantillas de los informes
 
+menu.organization.travel_route: Itinerarios de desplazamiento
+menu.organization.travel_route.detail: Gestionar los itinerarios de desplazamiento
+
 menu.organization.import: Importar
 menu.organization.import.detail: Importar datos desde Séneca
 
