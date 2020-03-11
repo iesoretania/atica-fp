@@ -19,7 +19,7 @@
 namespace AppBundle\Controller\Organization;
 
 use AppBundle\Entity\Edu\TravelRoute;
-use AppBundle\Form\Type\WPT\NewTravelRouteType;
+use AppBundle\Form\Type\Edu\NewTravelRouteType;
 use AppBundle\Repository\Edu\TravelRouteRepository;
 use AppBundle\Security\Edu\EduOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
@@ -93,11 +93,11 @@ class TravelRouteAPIController extends Controller
             $description = $travelRoute->getDescription() .
                 ($travelRoute->isVerified()
                     ? (' (' . number_format(
-                            $travelRoute->getDistance(),
-                            2,
-                            $translator->trans('format.decimal_separator', [], 'general'),
-                            $translator->trans('format.thousand_separator', [], 'general')
-                        ) . ' ' . $translator->trans('suffix.distance', [], 'general') . ')'
+                        $travelRoute->getDistance(),
+                        2,
+                        $translator->trans('format.decimal_separator', [], 'general'),
+                        $translator->trans('format.thousand_separator', [], 'general')
+                    ) . ' ' . $translator->trans('suffix.distance', [], 'general') . ')'
                     )
                     : (' ' . $translator->trans('form.unverified', [], 'wpt_travel_expense'))
                 );

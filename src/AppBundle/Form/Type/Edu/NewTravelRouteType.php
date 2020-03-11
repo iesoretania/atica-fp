@@ -16,7 +16,7 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace AppBundle\Form\Type\WPT;
+namespace AppBundle\Form\Type\Edu;
 
 use AppBundle\Entity\Edu\TravelRoute;
 use Symfony\Component\Form\AbstractType;
