@@ -135,11 +135,16 @@ class AgreementRepository extends ServiceEntityRepository
             return $this->createQueryBuilder('a')
                 ->select('COUNT(a)')
                 ->join('a.workcenter', 'w')
-                ->join('a.studentEnrollment', 'sr')
-                ->join('sr.group', 'g')
-                ->join('g.grade', 'gr')
+                ->join(
+                    AgreementEnrollment::class,
+                    'ae',
+                    'WITH',
+                    'ae.agreement = a AND ae.workTutor = :work_tutor'
+                )
+                ->join('a.shift', 'sh')
+                ->join('sh.subject', 'su')
+                ->join('su.grade', 'gr')
                 ->join('gr.training', 't')
-                ->where('a.workTutor = :work_tutor')
                 ->andWhere('t.academicYear = :academic_year')
                 ->setParameter('work_tutor', $workTutor)
                 ->setParameter('academic_year', $academicYear)
@@ -168,7 +173,7 @@ class AgreementRepository extends ServiceEntityRepository
                 ->join('s.grade', 'gr')
                 ->join('gr.training', 't')
                 ->join(Teacher::class, 'te', 'WITH', 'te.person = :educational_tutor')
-                ->where('a.educationalTutor = te')
+                ->join(AgreementEnrollment::class, 'ae', 'WITH ae.educationalTutor = te')
                 ->andWhere('t.academicYear = :academic_year')
                 ->setParameter('educational_tutor', $educationalTutor)
                 ->setParameter('academic_year', $academicYear)
