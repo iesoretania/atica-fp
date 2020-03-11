@@ -58,7 +58,7 @@ class TravelExpenseController extends Controller
         Teacher $teacher
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_CREATE_VISIT, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_CREATE_EXPENSE, $organization);
 
         $travelExpense = new TravelExpense();
         $travelExpense
@@ -163,7 +163,7 @@ class TravelExpenseController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_EXPENSE, $organization);
 
-        $allowNew = $this->isGranted(WPTOrganizationVoter::WPT_CREATE_VISIT, $organization);
+        $allowNew = $this->isGranted(WPTOrganizationVoter::WPT_CREATE_EXPENSE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();

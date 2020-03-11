@@ -33,6 +33,7 @@ class OrganizationVoter extends CachedVoter
 {
     const MANAGE = 'ORGANIZATION_MANAGE';
     const ACCESS = 'ORGANIZATION_ACCESS';
+    const ACCESS_SECTION = 'ORGANIZATION_ACCESS_SECTION';
     const LOCAL_MANAGE = 'ORGANIZATION_LOCAL_MANAGE';
     const MANAGE_COMPANIES = 'ORGANIZATION_MANAGE_COMPANIES';
 
@@ -62,6 +63,7 @@ class OrganizationVoter extends CachedVoter
         if (!in_array($attribute, [
             self::MANAGE,
             self::ACCESS,
+            self::ACCESS_SECTION,
             self::LOCAL_MANAGE,
             self::MANAGE_COMPANIES
         ], true)) {
@@ -103,6 +105,11 @@ class OrganizationVoter extends CachedVoter
             case self::LOCAL_MANAGE:
                 return $this->roleRepository->
                     personHasRole($subject, $user->getPerson(), Role::ROLE_LOCAL_ADMIN);
+
+            case self::ACCESS_SECTION:
+                return $this->decisionManager->decide($token, [self::LOCAL_MANAGE], $subject) ||
+                    ($this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $subject)
+                );
 
             // acceder a las enseñanzas del centro y a la gestión de empresas
             case self::MANAGE_COMPANIES:

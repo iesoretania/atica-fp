@@ -46,6 +46,7 @@ class WPTOrganizationVoter extends CachedVoter
     const WPT_CREATE_VISIT = 'ORGANIZATION_WPT_CREATE_VISIT';
 
     const WPT_ACCESS_EXPENSE = 'ORGANIZATION_WPT_ACCESS_EXPENSE';
+    const WPT_CREATE_EXPENSE = 'ORGANIZATION_WPT_CREATE_EXPENSE';
 
     private $decisionManager;
     private $wptGroupRepository;
@@ -85,7 +86,8 @@ class WPTOrganizationVoter extends CachedVoter
             self::WPT_DEPARTMENT_HEAD,
             self::WPT_CREATE_VISIT,
             self::WPT_ACCESS_VISIT,
-            self::WPT_ACCESS_EXPENSE
+            self::WPT_ACCESS_EXPENSE,
+            self::WPT_CREATE_EXPENSE
         ], true)) {
             return false;
         }
@@ -166,6 +168,12 @@ class WPTOrganizationVoter extends CachedVoter
                 // 1) Todos los que pueden acceder a las visitas
                 // 2) Gestor económico del centro
                 return $this->decisionManager->decide($token, [self::WPT_ACCESS_VISIT], $subject) ||
+                    $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $subject);
+
+            case self::WPT_CREATE_EXPENSE:
+                // 1) Todos los que pueden crear visitas
+                // 2) Gestor económico del centro
+                return $this->decisionManager->decide($token, [self::WPT_CREATE_VISIT], $subject) ||
                     $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $subject);
 
             case self::WPT_FILL_REPORT:

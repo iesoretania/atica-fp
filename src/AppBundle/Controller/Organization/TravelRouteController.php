@@ -154,16 +154,8 @@ class TravelRouteController extends Controller
 
         $title = $translator->trans('title.list', [], 'edu_travel_route');
 
-        $breadcrumb = [
-            [
-                'fixed' => $title
-            ]
-        ];
-
         return $this->render('organization/travel_route/list.html.twig', [
-            'menu_path' => 'workplace_training_travel_expense_teacher_list',
             'title' => $title,
-            'breadcrumb' => $breadcrumb,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'edu_travel_route'
