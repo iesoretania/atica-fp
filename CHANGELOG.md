@@ -9,6 +9,7 @@ en la distintas versiones de la misma.
 * feat: Registro de desplazamientos para la FCT
 * feat: Nuevo rol de responsable económico (secretario/a del centro educativo)
 * fix: Solucionar orden de fechas en el informe semanal
+* chore: Mostrar los criterios de evaluación del programa formativo de forma detallada
 
 3.1.0 (2020-03-09)
 ------------------

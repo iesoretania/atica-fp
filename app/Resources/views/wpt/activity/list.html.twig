@@ -23,7 +23,17 @@
                         {{ item.description|nl2br }}
                     </td>
                     <td>
-                        {{ item.criteria|join('\n')|nl2br }}
+                        {% if item.criteria|length %}
+                        <p>
+                            <ul>
+                            {% for criterium in item.criteria %}
+                                <li>{{ criterium.learningOutcome.code }}: {{ criterium }}</li>
+                            {% endfor %}
+                            </ul>
+                        </p>
+                        {% else %}
+                            {{ 'table.no_criteria'|trans }}
+                        {% endif %}
                     </td>
                 </tr>
             {% else %}
