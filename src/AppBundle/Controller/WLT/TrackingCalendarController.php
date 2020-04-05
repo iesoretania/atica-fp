@@ -427,8 +427,8 @@ class TrackingCalendarController extends Controller
             $mpdf->AddPage('L');
 
             // añadir fecha a la ficha
-            $first = end($weekDays);
-            $last = reset($weekDays);
+            $first = reset($weekDays);
+            $last = end($weekDays);
 
             $this->pdfWriteFixedPosHTML($mpdf, $first->getDate()->format('j'), 54.5, 33.5, 8, 5, 'auto', 'center');
             $this->pdfWriteFixedPosHTML($mpdf, $last->getDate()->format('j'), 67.5, 33.5, 10, 5, 'auto', 'center');
