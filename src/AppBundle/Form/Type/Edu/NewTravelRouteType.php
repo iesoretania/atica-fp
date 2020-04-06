@@ -42,6 +42,12 @@ class NewTravelRouteType extends AbstractType
                     new NotBlank()
                 ],
                 'required' => true
+            ])
+            ->add('ignore', TextType::class, [
+                'mapped' => false,
+                'label' => false,
+                'required' => false,
+                'attr' => ['class' => 'invisible']
             ]);
     }
 

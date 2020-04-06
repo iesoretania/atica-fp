@@ -29,6 +29,11 @@ function clearForm(form, callback)
 
 my_item = $("select.travel-route");
 
+$('#new_travel_route').modal({
+    focus: true,
+    show: false
+});
+
 $(function () {
     my_item.on('select2:select', function (e) {
         var data = e.params.data;
@@ -47,7 +52,7 @@ $('#create_travelRoute').on('click', function (e) {
             var newOption = new Option(response.name, response.id, true, true);
             $('select.travel-route').append(newOption).trigger('change');
 
-            $('#new_travelRoute').modal('hide');
+            $('#new_travel_route').modal('hide');
 
             clearForm($('.modal-body').find('form'), function (response) {
                 $('#new_travel_route').find('.modal-body').html(response);

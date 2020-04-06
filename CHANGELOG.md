@@ -10,6 +10,7 @@ en la distintas versiones de la misma.
 * feat: Nuevo rol de responsable económico (secretario/a del centro educativo)
 * fix: Solucionar orden de fechas en el informe semanal
 * chore: Mostrar los criterios de evaluación del programa formativo de forma detallada
+* fix: Evitar que se envíe el formulario al registrar un itinerario
 
 3.1.0 (2020-03-09)
 ------------------
