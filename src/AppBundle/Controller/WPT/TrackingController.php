@@ -130,7 +130,7 @@ class TrackingController extends Controller
             $queryBuilder
                 ->andWhere(
                     'se.group IN (:groups) OR se.person = :person OR ' .
-                    'a.workTutor = :person OR a.educationalTutor = :teacher'
+                    'ae.workTutor = :person OR ae.educationalTutor = :teacher'
                 )
                 ->setParameter('groups', $groups)
                 ->setParameter('person', $person)
@@ -139,7 +139,7 @@ class TrackingController extends Controller
 
         if (false === $isManager && !$groups) {
             $queryBuilder
-                ->andWhere('se.person = :person OR a.workTutor = :person OR a.educationalTutor = :teacher')
+                ->andWhere('se.person = :person OR ae.workTutor = :person OR ae.educationalTutor = :teacher')
                 ->setParameter('person', $person)
                 ->setParameter('teacher', $teacher);
         }
