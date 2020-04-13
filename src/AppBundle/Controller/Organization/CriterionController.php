@@ -250,7 +250,7 @@ class CriterionController extends Controller
     }
 
     /**
-     * @Route("/importar/{id}", name="organization_training_criterion_import",
+     * @Route("/criterio/importar/{id}", name="organization_training_criterion_import",
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
     public function importAction(
