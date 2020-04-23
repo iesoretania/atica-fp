@@ -12,6 +12,7 @@ en la distintas versiones de la misma.
 * chore: Mostrar los criterios de evaluación del programa formativo de forma detallada
 * fix: Evitar que se envíe el formulario al registrar un itinerario
 * fix: Solucionado problema al eliminar resultados de aprendizaje
+* fix: Corregido error al crear una nueva convocatoria de FCT si no se es administrador
 
 3.1.0 (2020-03-09)
 ------------------

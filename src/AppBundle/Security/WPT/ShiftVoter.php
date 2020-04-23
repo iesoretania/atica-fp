@@ -108,7 +108,7 @@ class ShiftVoter extends CachedVoter
         $organization = $this->userExtensionService->getCurrentOrganization();
 
         // Si no es de la organización actual, denegar
-        if ($subject->getGrade()
+        if ($subject->getGrade() && $subject->getGrade()
                 ->getTraining()->getAcademicYear()->getOrganization() !== $organization) {
             return false;
         }
