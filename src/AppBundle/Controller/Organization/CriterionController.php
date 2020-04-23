@@ -187,7 +187,7 @@ class CriterionController extends Controller
     }
 
     /**
-     * @Route("/eliminar/{id}", name="organization_training_criterion_delete",
+     * @Route("/criterio/eliminar/{id}", name="organization_training_criterion_delete",
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
     public function deleteAction(
