@@ -60,6 +60,7 @@ class Activity
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Edu\Criterion")
      * @ORM\JoinTable(name="wpt_activity_criterion")
+     * @ORM\OrderBy({"code"="ASC"})
      * @var Criterion[]|Collection
      */
     protected $criteria;
