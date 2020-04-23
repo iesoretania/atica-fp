@@ -15,6 +15,7 @@ en la distintas versiones de la misma.
 * fix: Corregido error al crear una nueva convocatoria de FCT si no se es administrador
 * fix: Solucionado problema al generarse el botón "Ir a hoy" en el seguimiento de la FCT
 * chore: Ordenar los resultados de aprendizaje por código en los programas formativos
+* chore: Ordenar los criterios de evaluación por código en los programas formativos
 
 3.1.0 (2020-03-09)
 ------------------

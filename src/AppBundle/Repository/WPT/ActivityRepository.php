@@ -94,6 +94,7 @@ class ActivityRepository extends ServiceEntityRepository
                 $result[$code]['data'][$activity->getCode()]['length']++;
             }
         }
+        ksort($result);
         return $result;
     }
 }
