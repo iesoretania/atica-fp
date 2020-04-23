@@ -3,7 +3,7 @@
 {% import 'macros.html.twig' as m %}
 {% block content %}
 <h1>
-    {{ title }}{% if work_day_today %} {{ m.link_button(path('workplace_training_tracking_calendar_form', {'id': work_day_today.id}), 'calendar-day', 'btn-primary', 'form.today'|trans) }}{% endif %}
+    {{ title }}{% if work_day_today %} {{ m.link_button(path('workplace_training_tracking_calendar_form', {'agreementEnrollment': agreement_enrollment.id, 'workDay': work_day_today.id}), 'calendar-day', 'btn-primary', 'form.today'|trans) }}{% endif %}
 </h1>
 {% include 'wpt/tracking/calendar_stats_partial.html.twig' %}
 <section id="exchange">
