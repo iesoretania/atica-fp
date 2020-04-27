@@ -510,7 +510,7 @@ class TrackingCalendarController extends Controller
                 $mpdf->watermark_font = 'DejaVuSansCondensed';
             }
 
-            $title = $translator->trans('title.weekly_activities', [], 'wlt_report')
+            $title = $translator->trans('title.weekly_activities', [], 'wpt_report')
                 . ' - ' . $weekCounter['current'] . ' - ' . $agreementEnrollment->getStudentEnrollment() . ' - '
                 . $agreementEnrollment->getAgreement()->getWorkcenter();
 

@@ -32,7 +32,7 @@ form.stats.hours.absence.caption: "Ausencias"
 form.stats.hours.justified_absence.caption: "Ausencias justificadas"
 
 title.agreement.list: Acuerdos de colaboración
-title.calendar: Calendario en alternancia
+title.calendar: Calendario formativo
 
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay resultados que mostrar
