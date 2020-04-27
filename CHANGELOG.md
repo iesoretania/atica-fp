@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-3.2.0 (xxxx-xx-xx)
+3.2.0 (2020-04-27)
 ------------------
 * feat: Registro de desplazamientos para la FCT
 * feat: Nuevo rol de responsable económico (secretario/a del centro educativo)
