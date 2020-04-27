@@ -27,8 +27,7 @@ use AppBundle\Repository\WPT\AgreementRepository;
 use AppBundle\Repository\WPT\TrackedWorkDayRepository;
 use AppBundle\Repository\WPT\WorkDayRepository;
 use AppBundle\Security\WPT\AgreementEnrollmentVoter;
-use AppBundle\Security\WPT\AgreementVoter;
-use AppBundle\Security\WPT\WorkDayVoter;
+use AppBundle\Security\WPT\TrackedWorkDayVoter;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -125,8 +124,8 @@ class TrackingCalendarController extends Controller
         }
 
         $agreement = $workDay->getAgreement();
-        $this->denyAccessUnlessGranted(WorkDayVoter::ACCESS, $workDay);
-        $readOnly = !$this->isGranted(WorkDayVoter::FILL, $workDay);
+        $this->denyAccessUnlessGranted(TrackedWorkDayVoter::ACCESS, $trackedWorkDay);
+        $readOnly = !$this->isGranted(TrackedWorkDayVoter::FILL, $trackedWorkDay);
 
         $title = $translator->trans('dow' . ($workDay->getDate()->format('N') - 1), [], 'calendar');
         $title .= ' - ' . $workDay->getDate()->format($translator->trans('format.date', [], 'general'));
@@ -215,7 +214,7 @@ class TrackingCalendarController extends Controller
         TranslatorInterface $translator,
         AgreementEnrollment $agreementEnrollment
     ) {
-        $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreementEnrollment->getAgreement());
+        $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::ACCESS, $agreementEnrollment);
         if ($request->get('week_report')) {
             $year = floor($request->get('week_report') / 100);
             $week = $request->get('week_report') % 100;
@@ -255,7 +254,8 @@ class TrackingCalendarController extends Controller
             );
         }
 
-        $trackedWorkDays = $trackedWorkDayRepository->findInListByWorkDayIdAndAgreementEnrollment($items, $agreementEnrollment);
+        $trackedWorkDays = $trackedWorkDayRepository->
+            findInListByWorkDayIdAndAgreementEnrollment($items, $agreementEnrollment);
 
         // comprobar si es bloqueo de jornadas
         $locked = $request->get('lock') === '';

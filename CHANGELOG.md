@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+3.2.1 (xxxx-xx-xx)
+------------------
+* fix: Solucionado un problema de permisos al acceder al seguimiento de la FCT
+
 3.2.0 (2020-04-27)
 ------------------
 * feat: Registro de desplazamientos para la FCT

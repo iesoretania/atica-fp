@@ -19,7 +19,7 @@
 namespace AppBundle\Security\WPT;
 
 use AppBundle\Entity\User;
-use AppBundle\Entity\WPT\WorkDay;
+use AppBundle\Entity\WPT\TrackedWorkDay;
 use AppBundle\Security\CachedVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
@@ -27,10 +27,10 @@ use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
-class WorkDayVoter extends CachedVoter
+class TrackedWorkDayVoter extends CachedVoter
 {
-    const FILL = 'WPT_WORK_DAY_MANAGE';
-    const ACCESS = 'WPT_WORK_DAY_ACCESS';
+    const FILL = 'WPT_TRACKED_WORK_DAY_MANAGE';
+    const ACCESS = 'WPT_TRACKED_WORK_DAY_ACCESS';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -54,7 +54,7 @@ class WorkDayVoter extends CachedVoter
     protected function supports($attribute, $subject)
     {
 
-        if (!$subject instanceof WorkDay) {
+        if (!$subject instanceof TrackedWorkDay) {
             return false;
         }
         if (!in_array($attribute, [
@@ -72,7 +72,7 @@ class WorkDayVoter extends CachedVoter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        if (!$subject instanceof WorkDay) {
+        if (!$subject instanceof TrackedWorkDay) {
             return false;
         }
 
@@ -92,7 +92,7 @@ class WorkDayVoter extends CachedVoter
         $organization = $this->userExtensionService->getCurrentOrganization();
 
         // Si no es de la organización actual, denegar
-        if ($subject->getAgreement()->getShift()->getGrade()->getTraining()
+        if ($subject->getAgreementEnrollment()->getAgreement()->getShift()->getGrade()->getTraining()
                 ->getAcademicYear()->getOrganization() !== $organization) {
             return false;
         }
@@ -112,9 +112,7 @@ class WorkDayVoter extends CachedVoter
                 // Sólo si pertenece al curso académico activo
                 return $accessGranted &&
                     $subject
-                        ->getAgreement()
-                        ->getShift()
-                        ->getGrade()
+                        ->getStudentEnrollment()
                         ->getGroup()
                         ->getGrade()
                         ->getTraining()
