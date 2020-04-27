@@ -17,6 +17,7 @@ en la distintas versiones de la misma.
 * chore: Ordenar los resultados de aprendizaje por código en los programas formativos
 * chore: Ordenar los criterios de evaluación por código en los programas formativos
 * fix: Eliminar un acuerdo de colaboración afecta ahora también a su calendario
+* fix: Mostrar correctamente el alumnado al especificar la sede visitada
 
 3.1.0 (2020-03-09)
 ------------------

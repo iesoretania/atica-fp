@@ -36,6 +36,7 @@ $(function ()
                     theme: "bootstrap",
                     language: 'es'
                 }).val($("#visit_workcenter option:nth-child(2)").val()).trigger('change.select2');
+                $('#visit_workcenter').change(workcenterChange);
                 workcenterChange();
             },
             error: function () {
@@ -66,7 +67,6 @@ $(function ()
         next = studentEnrollments.next();
         $('#visit_studentEnrollments').replaceWith('<div id="visit_studentEnrollments"><span class="text-info"><i class="fas fa-circle-notch fa-spin fa-3x fa-fw"></i></span></div>');
         next.remove();
-        console.log(form);
         $.ajax({
             url: form.attr('data-ajax'),
             type: 'post',
@@ -143,6 +143,6 @@ $(function ()
 
     teacher.change(teacherChange);
     date.change(agreementsChange);
-    $('#visit_workcenter input').change(workcenterChange);
-    $('#visit_agreements input').change(agreementsChange);
+    workcenter.change(workcenterChange);
+    agreements.change(agreementsChange);
 });
