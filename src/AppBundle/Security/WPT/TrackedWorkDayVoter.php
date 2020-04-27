@@ -102,7 +102,11 @@ class TrackedWorkDayVoter extends CachedVoter
             return true;
         }
 
-        $accessGranted = $this->decisionManager->decide($token, [AgreementVoter::ACCESS], $subject->getAgreement());
+        $accessGranted = $this->decisionManager->decide(
+            $token,
+            [AgreementEnrollmentVoter::ACCESS],
+            $subject->getAgreementEnrollment()
+        );
 
         switch ($attribute) {
             case self::ACCESS:
@@ -112,6 +116,7 @@ class TrackedWorkDayVoter extends CachedVoter
                 // Sólo si pertenece al curso académico activo
                 return $accessGranted &&
                     $subject
+                        ->getAgreementEnrollment()
                         ->getStudentEnrollment()
                         ->getGroup()
                         ->getGrade()
