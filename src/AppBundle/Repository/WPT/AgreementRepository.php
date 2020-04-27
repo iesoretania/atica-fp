@@ -200,6 +200,13 @@ class AgreementRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
 
+        $this->getEntityManager()->createQueryBuilder()
+            ->delete(WorkDay::class, 'wd')
+            ->where('wd.agreement IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
+
         return $this->getEntityManager()->createQueryBuilder()
             ->delete(Agreement::class, 'a')
             ->where('a IN (:list)')
