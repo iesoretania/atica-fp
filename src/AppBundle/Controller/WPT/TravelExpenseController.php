@@ -256,7 +256,6 @@ class TravelExpenseController extends Controller
             ->join('t.person', 'p')
             ->leftJoin(TravelExpense::class, 'te', 'WITH', 'te.teacher = t')
             ->leftJoin('te.travelRoute', 'tr')
-            ->leftJoin('te.agreements', 'a')
             ->groupBy('t')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName');

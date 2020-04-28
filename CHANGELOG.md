@@ -7,6 +7,7 @@ en la distintas versiones de la misma.
 3.2.1 (xxxx-xx-xx)
 ------------------
 * fix: Solucionado un problema de permisos al acceder al seguimiento de la FCT
+* fix: No contar de forma múltiple las dietas que visiten más de un acuerdo
 
 3.2.0 (2020-04-27)
 ------------------
