@@ -90,12 +90,17 @@ class VisitType extends AbstractType
             $agreements = $this->agreementRepository
                 ->findByWorkcenterAndTeacher($workcenter, $teacher);
 
+            $startDate = clone $dateTime;
+            $startDate->setTime(0, 0, 0);
+            $endDate = clone $dateTime;
+            $startDate->add(new \DateInterval('P1D'));
+
             /** @var Agreement $agreement */
             foreach ($selectedAgreements as $agreement) {
                 foreach ($agreement->getAgreementEnrollments() as $agreementEnrollment) {
                     if ($agreementEnrollment->getEducationalTutor() === $teacher
-                        && (!$agreement->getStartDate() || $dateTime >= $agreement->getStartDate())
-                        && (!$agreement->getEndDate() || $dateTime <= $agreement->getEndDate())) {
+                        && (!$agreement->getStartDate() || $endDate >= $agreement->getStartDate())
+                        && (!$agreement->getEndDate() || $startDate < $agreement->getEndDate())) {
                         $studentEnrollments[] = $agreementEnrollment->getStudentEnrollment();
                     }
                 }

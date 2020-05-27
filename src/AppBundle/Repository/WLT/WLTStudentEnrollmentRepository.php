@@ -57,11 +57,17 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
     ) {
         $qb = $this->findByProjectsQueryBuilder($projects);
         if ($dateTime) {
+            $startDate = clone $dateTime;
+            $startDate->setTime(0, 0, 0);
+            $endDate = clone $dateTime;
+            $startDate->add(new \DateInterval('P1D'));
+
             $qb
                 ->join(Agreement::class, 'ag', 'WITH', 'ag.studentEnrollment = se')
-                ->andWhere('ag.startDate <= :datetime')
-                ->andWhere('ag.endDate >= :datetime')
-                ->setParameter('datetime', $dateTime);
+                ->andWhere('ag.startDate <= :start_date')
+                ->andWhere('ag.endDate >= :end_date')
+                ->setParameter('start_date_time', $startDate)
+                ->setParameter('end_date_time', $endDate);
         }
 
         return $qb;
@@ -81,13 +87,18 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
 
     public function findByProjectAndAcademicYearDate(Project $project, \DateTime $dateTime = null)
     {
+        $startDate = clone $dateTime;
+        $startDate->setTime(0, 0, 0);
+        $endDate = clone $dateTime;
+        $startDate->add(new \DateInterval('P1D'));
         $qb = $this->findByProjectsQueryBuilder([$project]);
 
         if ($dateTime) {
             $qb
-                ->andWhere('a.startDate <= :datetime')
-                ->andWhere('a.endDate >= :datetime')
-                ->setParameter('datetime', $dateTime);
+                ->andWhere('a.startDate < :end_date_time')
+                ->andWhere('a.endDate >= :start_date_time')
+                ->setParameter('start_date_time', $startDate)
+                ->setParameter('end_date_time', $endDate);
         }
         return $qb
             ->getQuery()
