@@ -9,6 +9,7 @@ en la distintas versiones de la misma.
 * fix: Solucionado un problema de permisos al acceder al seguimiento de la FCT
 * fix: No contar de forma múltiple las dietas que visiten más de un acuerdo
 * chore: Mostrar solo los días con actividades en el informe de acreditación de asistencia
+* fix: Solucionado un problema de redirección en algunas rutas
 
 3.2.0 (2020-04-27)
 ------------------

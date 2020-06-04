@@ -73,7 +73,7 @@ class SubjectController extends Controller
                 $em->flush();
                 $this->addFlash('success', $this->get('translator')->trans('message.saved', [], 'edu_subject'));
                 return $this->redirectToRoute('organization_subject_list', [
-                    'academicYear' => $academicYear
+                    'academicYear' => $academicYear->getId()
                 ]);
             } catch (\Exception $e) {
                 $this->addFlash('error', $this->get('translator')->trans('message.error', [], 'edu_subject'));
@@ -254,7 +254,7 @@ class SubjectController extends Controller
                 $em->flush();
                 $this->addFlash('success', $this->get('translator')->trans('message.saved', [], 'edu_teaching'));
                 return $this->redirectToRoute('organization_subject_list', [
-                    'academicYear' => $academicYear
+                    'academicYear' => $academicYear->getId()
                 ]);
             } catch (\Exception $e) {
                 $this->addFlash('error', $this->get('translator')->trans('message.error', [], 'edu_teaching'));

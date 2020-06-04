@@ -102,7 +102,7 @@ class SurveyController extends Controller
                     $em->flush();
                     $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
                     return $this->redirectToRoute('work_linked_training_survey_student_list', [
-                        'academicYear' => $academicYear
+                        'academicYear' => $academicYear->getId()
                     ]);
                 } catch (\Exception $e) {
                     $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
@@ -183,7 +183,7 @@ class SurveyController extends Controller
                     $em->flush();
                     $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
                     return $this->redirectToRoute('work_linked_training_survey_company_list', [
-                        'academicYear' => $academicYear
+                        'academicYear' => $academicYear->getId()
                     ]);
                 } catch (\Exception $e) {
                     $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
@@ -477,7 +477,7 @@ class SurveyController extends Controller
                     $em->flush();
                     $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
                     return $this->redirectToRoute('work_linked_training_survey_organization_list', [
-                        'academicYear' => $academicYear
+                        'academicYear' => $academicYear->getId()
                     ]);
                 } catch (\Exception $e) {
                     $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
