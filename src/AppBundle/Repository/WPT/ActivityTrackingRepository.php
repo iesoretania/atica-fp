@@ -19,6 +19,7 @@
 namespace AppBundle\Repository\WPT;
 
 use AppBundle\Entity\WPT\ActivityTracking;
+use AppBundle\Entity\WPT\AgreementEnrollment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -28,4 +29,32 @@ class ActivityTrackingRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ActivityTracking::class);
     }
+
+    public function getTotalHoursFromAgreementEnrollment(AgreementEnrollment $agreementEnrollment)
+    {
+        return $this->createQueryBuilder('at')
+            ->select('SUM(at.hours)')
+            ->join('at.trackedWorkDay', 'twd')
+            ->where('twd.agreementEnrollment = :agreement_enrollment')
+            ->setParameter('agreement_enrollment', $agreementEnrollment)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getCountFromAgreementEnrollment(AgreementEnrollment $agreementEnrollment)
+    {
+        return $agreementEnrollment->getActivities()->count();
+    }
+
+    public function getTrackedCountFromAgreementEnrollment(AgreementEnrollment $agreementEnrollment)
+    {
+        return $this->createQueryBuilder('at')
+            ->select('COUNT(DISTINCT at.activity)')
+            ->join('at.trackedWorkDay', 'twd')
+            ->where('twd.agreementEnrollment = :agreement_enrollment')
+            ->setParameter('agreement_enrollment', $agreementEnrollment)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
 }

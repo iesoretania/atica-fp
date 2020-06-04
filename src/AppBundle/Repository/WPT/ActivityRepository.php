@@ -19,8 +19,10 @@
 namespace AppBundle\Repository\WPT;
 
 use AppBundle\Entity\WPT\Activity;
+use AppBundle\Entity\WPT\ActivityTracking;
 use AppBundle\Entity\WPT\AgreementEnrollment;
 use AppBundle\Entity\WPT\Shift;
+use AppBundle\Entity\WPT\TrackedWorkDay;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -96,5 +98,23 @@ class ActivityRepository extends ServiceEntityRepository
         }
         ksort($result);
         return $result;
+    }
+
+    public function getProgramActivitiesStatsFromAgreementEnrollment(AgreementEnrollment $agreementEnrollment)
+    {
+        return $this->createQueryBuilder('a')
+            ->addSelect('a')
+            ->addSelect('COUNT(ta.hours)')
+            ->addSelect('SUM(ta.hours)')
+            ->join(AgreementEnrollment::class, 'ae', 'WITH', 'a MEMBER OF ae.activities')
+            ->join('ae.trackedWorkDays', 'twd')
+            ->leftJoin('twd.trackedActivities', 'ta', 'WITH', 'ta.activity = a')
+            ->where('ae = :agreement_enrollment')
+            ->setParameter('agreement_enrollment', $agreementEnrollment)
+            ->groupBy('a')
+            ->orderBy('a.code')
+            ->addOrderBy('a.description')
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -23,6 +23,8 @@ use AppBundle\Entity\WPT\AgreementEnrollment;
 use AppBundle\Entity\WPT\TrackedWorkDay;
 use AppBundle\Entity\WPT\WorkDay;
 use AppBundle\Form\Type\WPT\WorkDayTrackingType;
+use AppBundle\Repository\WPT\ActivityRepository;
+use AppBundle\Repository\WPT\ActivityTrackingRepository;
 use AppBundle\Repository\WPT\AgreementRepository;
 use AppBundle\Repository\WPT\TrackedWorkDayRepository;
 use AppBundle\Repository\WPT\WorkDayRepository;
@@ -53,6 +55,8 @@ class TrackingCalendarController extends Controller
         TrackedWorkDayRepository $trackedWorkDayRepository,
         WorkDayRepository $workDayRepository,
         TranslatorInterface $translator,
+        ActivityRepository $activityRepository,
+        ActivityTrackingRepository $activityTrackingRepository,
         AgreementEnrollment $agreementEnrollment
     ) {
         $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::ACCESS, $agreementEnrollment);
@@ -63,6 +67,10 @@ class TrackingCalendarController extends Controller
             ->findByAgreementEnrollmentGroupByMonthAndWeekNumber($agreementEnrollment);
 
         $agreement = $agreementEnrollment->getAgreement();
+        $activityStats = $activityRepository->getProgramActivitiesStatsFromAgreementEnrollment($agreementEnrollment);
+        $activityTotalCount = $activityTrackingRepository->getCountFromAgreementEnrollment($agreementEnrollment);
+        $activityTrackedCount = $activityTrackingRepository->getTrackedCountFromAgreementEnrollment($agreementEnrollment);
+        $activityTotalHours = $activityTrackingRepository->getTotalHoursFromAgreementEnrollment($agreementEnrollment);
 
         $today = new \DateTime('', new \DateTimeZone('UTC'));
         $today->setTime(0, 0);
@@ -96,6 +104,10 @@ class TrackingCalendarController extends Controller
             'selectable' => $selectable,
             'work_day_stats' => $workDayStats,
             'work_day_today' => $workDayToday,
+            'activity_stats' => $activityStats,
+            'activity_tracked_count' => $activityTrackedCount,
+            'activity_total_count' => $activityTotalCount,
+            'activity_total_hours' => $activityTotalHours,
             'calendar' => $workDaysData,
             'read_only' => $readOnly,
             'back_url' => $backUrl

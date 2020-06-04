@@ -57,3 +57,37 @@
         </table>
     </div>
 {% endif %}
+{% if activity_total_count %}
+    {% set percentage = 100 * activity_tracked_count / activity_total_count %}
+
+    <div class="progress progress-stat collapse-zone" data-toggle="collapse" data-target="#activities_stats" aria-expanded="false">
+        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{ percentage }}"
+             aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage }}%"
+             title="{{ 'form.stats.activities_hint' | trans({'%count%' : activity_tracked_count, '%total%' : activity_total_count }) }}">
+            {{ 'form.stats.activities_bar' | trans({'%count%' : activity_tracked_count, '%total%' : activity_total_count }) }}
+        </div>
+    </div>
+    <div class="collapse" id="activities_stats">
+        <h3>{{ 'form.stats.activities'|trans }}: {{ 'form.stats.activities_hint' | trans({'%count%' : activity_tracked_count, '%total%' : activity_total_count}) }}</h3>
+        <table class="table table-striped table-sm">
+            <tbody>
+            {% for item in activity_stats %}
+                <tr>
+                    <td>
+                        {% if item[2] %}
+                            <i class="fas fa-check text-success fa-fw"></i>
+                        {% else %}
+                            <i class="fas fa-times text-danger fa-fw"></i>
+                        {% endif %}
+                        {{ item[0].code }}
+                    </td>
+                    <td>{{ item[0].description }}</td>
+                    <td>
+                        {{ 'form.stats.activities.info' | transchoice(activity_tracked_count, {'%total%': activity_total_hours/100, '%hours%': item[2]/100, '%workdays%': item[1] }) }} ({{ (100*item[2]/activity_total_hours)|number_format }} %)
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}
