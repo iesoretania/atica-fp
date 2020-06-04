@@ -18,6 +18,7 @@
 
 namespace AppBundle\Repository\WPT;
 
+use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\WPT\ActivityTracking;
 use AppBundle\Entity\WPT\AgreementEnrollment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -53,6 +54,18 @@ class ActivityTrackingRepository extends ServiceEntityRepository
             ->join('at.trackedWorkDay', 'twd')
             ->where('twd.agreementEnrollment = :agreement_enrollment')
             ->setParameter('agreement_enrollment', $agreementEnrollment)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getTrackedHoursFromStudentEnrollment(StudentEnrollment $studentEnrollment)
+    {
+        return $this->createQueryBuilder('at')
+            ->select('SUM(at.hours)')
+            ->join('at.trackedWorkDay', 'twd')
+            ->join('twd.agreementEnrollment', 'ae')
+            ->andWhere('ae.studentEnrollment = :student_enrollment')
+            ->setParameter('student_enrollment', $studentEnrollment)
             ->getQuery()
             ->getSingleScalarResult();
     }

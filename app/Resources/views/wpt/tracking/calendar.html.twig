@@ -32,6 +32,9 @@
         {% if is_granted('WPT_AGREEMENT_ENROLLMENT_ATTENDANCE', agreement_enrollment) %}{{ m.submit_button('attendance', 'user-slash', 'btn-danger enable-on-items', 'form.attendance'|trans) }}{% endif %}
     {% endif %}
     {{ m.link_button(path('workplace_training_tracking_calendar_attendance_report', {'id': agreement_enrollment.id}), 'file-alt', 'btn-primary', 'form.attendance_report'|trans) }}
+    {% if is_granted('WPT_AGREEMENT_ENROLLMENT_VIEW_ACTIVITY_REPORT', agreement_enrollment) %}
+        {{ m.link_button(path('workplace_training_tracking_calendar_activity_summary_report', {'id': agreement_enrollment.id}), 'file-alt', 'btn-primary', 'form.activity_summary_report'|trans) }}
+    {% endif %}
     </form>
 </section>
 {% endblock %}

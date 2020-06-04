@@ -18,6 +18,7 @@
 
 namespace AppBundle\Repository\WPT;
 
+use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\WPT\AgreementEnrollment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -29,5 +30,18 @@ class AgreementEnrollmentRepository extends ServiceEntityRepository
     ) {
         parent::__construct($registry, AgreementEnrollment::class);
     }
-    
+
+    public function findByStudentEnrollment(StudentEnrollment $studentEnrollment)
+    {
+        return $this->createQueryBuilder('ae')
+            ->join('ae.agreement', 'a')
+            ->where('ae.studentEnrollment = :student_enrollment')
+            ->setParameter('student_enrollment', $studentEnrollment)
+            ->orderBy('a.startDate')
+            ->addOrderBy('a.endDate')
+            ->addOrderBy('a.signDate')
+            ->getQuery()
+            ->getResult();
+    }
+
 }

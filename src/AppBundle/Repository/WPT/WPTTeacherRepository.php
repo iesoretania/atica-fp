@@ -19,6 +19,7 @@
 namespace AppBundle\Repository\WPT;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\StudentEnrollment;
 use AppBundle\Entity\WPT\AgreementEnrollment;
 use AppBundle\Repository\Edu\TeacherRepository;
 
@@ -32,6 +33,21 @@ class WPTTeacherRepository extends TeacherRepository
             ->join(AgreementEnrollment::class, 'ae', 'WITH', 'ae.educationalTutor = t')
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findEducationalTutorsByStudentEnrollment(StudentEnrollment $studentEnrollment)
+    {
+        return $this->createQueryBuilder('t')
+            ->distinct(true)
+            ->join(AgreementEnrollment::class, 'ae', 'WITH', 'ae.educationalTutor = t')
+            ->join('ae.agreement', 'a')
+            ->join('t.person', 'p')
+            ->where('ae.studentEnrollment = :student_enrollment')
+            ->setParameter('student_enrollment', $studentEnrollment)
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName')
             ->getQuery()

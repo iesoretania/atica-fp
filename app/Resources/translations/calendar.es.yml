@@ -67,6 +67,8 @@ form.attendance_justify: Falta justificada
 form.attendance_confirm: Confirmar faltas de asistencia
 form.attendance_report: Informe de acreditación de asistencia
 
+form.activity_summary_report: Registro de actividades
+
 form.save: Guardar cambios
 form.calculate: Vista previa
 form.add: Añadir jornadas

@@ -1,0 +1,126 @@
+{% trans_default_domain 'wpt_activity_report' %}
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        @page {
+            margin-top: 2cm;
+            margin-bottom: 1.5cm;
+            margin-left: 1.5cm;
+            margin-right: 1.5cm;
+            odd-footer-name: html_footer;
+            even-footer-name: html_footer;
+        }
+    </style>
+</head>
+
+<body style="font-family: sans-serif; font-size: 12px">
+
+<htmlpagefooter name="footer">
+    <table style="border-spacing: 0; width: 100%; vertical-align: middle; margin-bottom: 0.3cm; padding-top: 6cm">
+        <tr>
+            <td style="text-align: right;">{{ 'report.page'|trans({'%page%': '{PAGENO}', '%total%': '{nbpg}'}) }}</td>
+        </tr>
+    </table>
+</htmlpagefooter>
+
+<p style="text-align: right; font-weight: bold; font-size: 120%">
+    {{ 'report.academic_year'|trans }} {{ shift.grade.training.academicYear }}
+</p>
+<table style="border: 1px solid; border-spacing: 0; width: 100%; vertical-align: top; margin-bottom: 0.3cm">
+    <tr>
+        <td colspan="2" style="border: 1px solid; background-color: #DDDDDD; text-align: center; font-size: 110%; font-weight: bold">{{ 'report.summary.title'|trans }}</td>
+    </tr>
+    <tr>
+        <td style="width: 60%; border: 1px solid; padding: 0.1cm">
+            {{ 'report.training'|trans }}<br />{{  shift.grade.training }}
+        </td>
+        <td style="width: 40%; border: 1px solid; padding: 0.1cm">
+            {{ 'report.quarter'|trans }} {{ ('report.quarter' ~ shift.quarter)|trans }}<br />
+            {{ 'report.program_hours'|trans }} {{ total_hours }}
+        </td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid; padding: 0.1cm">
+            {{ 'report.student'|trans }}<br />{{ student_enrollment.person }}
+        </td>
+        <td style="border: 1px solid; padding: 0.1cm">
+            {{ 'report.group'|trans }}<br />{{ student_enrollment.group }}
+        </td>
+    </tr>
+</table>
+
+{% set total = 0 %}
+{% for item in data %}
+    <table style="border: 1px solid; border-spacing: 0; width: 100%; vertical-align: middle; margin-bottom: 0.3cm">
+        <tr>
+            <td colspan="3" style="border: 1px solid; background-color: #DDDDDD; text-align: center; font-size: 110%; font-weight: bold">{{ 'report.activities.title'|trans }}</td>
+        </tr>
+        <tr>
+            <td style="width: 70%; border: 1px solid; padding: 0.1cm">
+                {{ 'report.workcenter'|trans }}<br />{{ item[0].agreement.workcenter }}
+            </td>
+            <td colspan="2" style="width: 30%; border: 1px solid; padding: 0.1cm">
+                {{ 'report.period'|trans }}<br />{{ 'report.date_range'|trans({'%from%': item[0].agreement.startDate|date('report.date_format'|trans, false), '%to%': item[0].agreement.endDate|date('report.date_format'|trans, false)}) }}<br />
+            </td>
+        </tr>
+        <tr style="background-color: #EEEEEE; font-weight: bold">
+            <td style="border:1px solid; padding: 0.1cm; text-align: center">{{ 'report.activity.description'|trans }}</td>
+            <td style="border:1px solid; padding: 0.1cm; text-align: center">{{ 'report.activity.hours'|trans }}</td>
+            <td style="border:1px solid; padding: 0.1cm; text-align: center">{{ 'report.activity.percentage'|trans }}</td>
+        </tr>
+        {% set sum = 0 %}
+        {% for activity_data in item[1] %}
+            {% set sum = sum + activity_data[2]/100 %}
+            <tr>
+                <td style="border:1px solid; padding: 0.1cm; font-size: 90%">{{ activity_data[0] }}</td>
+                <td style="border:1px solid; padding: 0.1cm; text-align: center">{{ (activity_data[2]/100) | number_format(1, ',', '.') | default('0,0') }}</td>
+                <td style="border:1px solid; padding: 0.1cm; text-align: center">
+                    {% if total_hours %}
+                    {{ (activity_data[2]/total_hours) | number_format | default('0,00') }}%
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        {% set total = total + sum %}
+        <tr>
+            <td style="border:1px solid; padding: 0.1cm; text-align: right; font-weight: bold;">{{ 'report.activity.total'|trans }}</td>
+            <td style="border:1px solid; padding: 0.1cm; background-color: #DDDDDD; font-weight: bold; text-align: center">{{ sum | number_format(1, ',', '.') | default('0,0') }}</td>
+            <td style="border:1px solid; padding: 0.1cm; background-color: #DDDDDD; font-weight: bold; text-align: center">
+                {% if total_hours %}
+                    {{ (100*sum/total_hours) | number_format | default('0,00') }}%
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+{% endfor %}
+
+<table style="border-spacing: 0; width: 100%; vertical-align: middle; margin-bottom: 0.3cm; padding-top: 3cm">
+    <tr>
+        <td style="width: 30%; padding: 0.1cm; border: 1px solid; background-color: #DDDDDD; text-align: center">{{ 'report.summary.hours'|trans }}</td>
+        <td style="width: 20%; padding: 0.1cm; border: 1px solid; background-color: #DDDDDD; text-align: center; font-size: 120%">{{ total | number_format(1, ',', '.') | default('0,0') }}</td>
+        <td style="width: 10%"></td>
+        <td rowspan="2" style="width: 40%; padding: 0.1cm; border: 1px solid; text-align: left; font-weight: bold">
+            {{ 'report.date'|trans }} {{ document_date|default('now')|date('report.date_format'|trans, false) }}<br />
+            <br />
+            <br />
+            <br />
+            {{ 'report.educational_tutor.signature'|trans }} {{ educational_tutors | join(', ') }}
+        </td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ 'report.summary.percentage'|trans }}</td>
+        <td style="border: 1px solid; padding: 0.1cm; text-align: center; font-size: 120%">
+            {% if total_hours %}
+                {{ (100*total/total_hours) | number_format | default('0,00') }}%
+            {% endif %}
+        </td>
+        <td></td>
+    </tr>
+</table>
+</body>
+</html>

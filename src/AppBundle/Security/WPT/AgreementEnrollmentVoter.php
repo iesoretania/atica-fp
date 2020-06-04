@@ -40,6 +40,7 @@ class AgreementEnrollmentVoter extends CachedVoter
     const FILL_STUDENT_SURVEY = 'WPT_AGREEMENT_ENROLLMENT_FILL_STUDENT_SURVEY';
     const VIEW_COMPANY_SURVEY = 'WPT_AGREEMENT_ENROLLMENT_VIEW_COMPANY_SURVEY';
     const FILL_COMPANY_SURVEY = 'WPT_AGREEMENT_ENROLLMENT_FILL_COMPANY_SURVEY';
+    const VIEW_ACTIVITY_REPORT = 'WPT_AGREEMENT_ENROLLMENT_VIEW_ACTIVITY_REPORT';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -76,7 +77,8 @@ class AgreementEnrollmentVoter extends CachedVoter
             self::VIEW_STUDENT_SURVEY,
             self::FILL_STUDENT_SURVEY,
             self::VIEW_COMPANY_SURVEY,
-            self::FILL_COMPANY_SURVEY
+            self::FILL_COMPANY_SURVEY,
+            self::VIEW_ACTIVITY_REPORT
         ], true)) {
             return false;
         }
@@ -201,6 +203,9 @@ class AgreementEnrollmentVoter extends CachedVoter
                 return $academicYearIsCurrent
                     && ($isDepartmentHead || $isEducationalTutor || $isWorkTutor || $isGroupTutor)
                     && $this->checkSurvey($companySurvey);
+
+            case self::VIEW_ACTIVITY_REPORT:
+                return $isDepartmentHead || $isEducationalTutor;
         }
 
         // denegamos en cualquier otro caso

@@ -25,9 +25,11 @@ use AppBundle\Entity\WPT\WorkDay;
 use AppBundle\Form\Type\WPT\WorkDayTrackingType;
 use AppBundle\Repository\WPT\ActivityRepository;
 use AppBundle\Repository\WPT\ActivityTrackingRepository;
+use AppBundle\Repository\WPT\AgreementEnrollmentRepository;
 use AppBundle\Repository\WPT\AgreementRepository;
 use AppBundle\Repository\WPT\TrackedWorkDayRepository;
 use AppBundle\Repository\WPT\WorkDayRepository;
+use AppBundle\Repository\WPT\WPTTeacherRepository;
 use AppBundle\Security\WPT\AgreementEnrollmentVoter;
 use AppBundle\Security\WPT\TrackedWorkDayVoter;
 use Mpdf\Mpdf;
@@ -362,6 +364,84 @@ class TrackingCalendarController extends Controller
                 'agreement' => $agreementEnrollment->getAgreement(),
                 'agreement_enrollment' => $agreementEnrollment,
                 'workdays' => $workDays,
+                'title' => $title
+            ]);
+
+            $response = $mpdfService->generatePdfResponse(
+                $html,
+                ['mpdf' => $mpdf]
+            );
+            $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+            return $response;
+        } finally {
+            if ($tmp) {
+                unlink($tmp);
+            }
+        }
+    }
+
+    /**
+     * @Route("/{id}/actividades/descargar",
+     *     name="workplace_training_tracking_calendar_activity_summary_report", methods={"GET"})
+     * @Security("is_granted('WPT_AGREEMENT_ENROLLMENT_VIEW_ACTIVITY_REPORT', agreementEnrollment)")
+     */
+    public function activitySummaryReportAction(
+        Environment $engine,
+        TranslatorInterface $translator,
+        AgreementEnrollmentRepository $agreementEnrollmentRepository,
+        ActivityTrackingRepository $activityTrackingRepository,
+        ActivityRepository $activityRepository,
+        WPTTeacherRepository $wptTeacherRepository,
+        AgreementEnrollment $agreementEnrollment
+    ) {
+        $mpdfService = new MpdfService();
+        $mpdfService->setAddDefaultConstructorArgs(false);
+
+        /** @var Mpdf $mpdf */
+        $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4-L']]);
+        $tmp = '';
+
+        try {
+            $template = $agreementEnrollment->getAgreement()->getShift()->getActivitySummaryReportTemplate();
+            if ($template) {
+                $tmp = tempnam('.', 'tpl');
+                file_put_contents($tmp, $template->getData());
+                $mpdf->SetImportUse();
+                $mpdf->SetDocTemplate($tmp);
+            }
+
+            $title = $translator->trans('title.report', [], 'wpt_activity_report')
+                . ' - ' . $agreementEnrollment->getStudentEnrollment();
+
+            $fileName = $title . '.pdf';
+
+            $agreementEnrollments = $agreementEnrollmentRepository
+                ->findByStudentEnrollment($agreementEnrollment->getStudentEnrollment());
+
+            $data = [];
+            foreach ($agreementEnrollments as $agreementEnrollment) {
+                $item = [];
+                $item[0] = $agreementEnrollment;
+                $item[1] = $activityRepository->getProgramActivitiesStatsFromAgreementEnrollment($agreementEnrollment);
+                $data[] = $item;
+            }
+            $shift = $agreementEnrollment->getAgreement()->getShift();
+            $total = $activityTrackingRepository->getTrackedHoursFromStudentEnrollment(
+                $agreementEnrollment->getStudentEnrollment()
+            );
+            $educationalTutors = $wptTeacherRepository->findEducationalTutorsByStudentEnrollment(
+                $agreementEnrollment->getStudentEnrollment()
+            );
+
+            $html = $engine->render('wpt/tracking/activity_report.html.twig', [
+                'agreement' => $agreementEnrollment->getAgreement(),
+                'student_enrollment' => $agreementEnrollment->getStudentEnrollment(),
+                'data' => $data,
+                'shift' => $shift,
+                'total_hours' => $shift->getHours(),
+                'total' => $total,
+                'educational_tutors' => $educationalTutors,
                 'title' => $title
             ]);
 

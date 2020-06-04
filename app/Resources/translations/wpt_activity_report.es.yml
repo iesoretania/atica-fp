@@ -1,0 +1,32 @@
+title.report: Registro de actividades
+
+report.page: Página %page% de %total%
+
+report.academic_year: "Curso Escolar:"
+
+report.summary.title: CONTROL DE LAS ACTIVIDADES REALIZADAS POR EL ESTUDIANTE EN LA F.C.T.
+report.training: "CICLO FORMATIVO:"
+report.student: "ALUMNO/ALUMNA:"
+report.quarter: "CONVOCATORIA:"
+report.quarter1: Primer trimestre
+report.quarter2: Segundo trimestre
+report.quarter3: Tercer trimestre
+report.program_hours: "TOTAL DE HORAS PROGRAMADAS:"
+report.group: "CURSO Y GRUPO:"
+
+report.activities.title: ACTIVIDADES FORMATIVAS EN EL ENTORNO PRODUCTIVO
+report.workcenter: CENTRO DE TRABAJO
+report.period: "PERÍODO:"
+report.date_range: Del %from% al %to%
+report.date_format: d/m/Y
+
+report.activity.description: Descripción de la actividad
+report.activity.hours: Nº de horas
+report.activity.percentage: Porcentaje
+report.activity.total: TOTAL DEL CENTRO DE TRABAJO
+
+report.summary.hours: "NÚMERO TOTAL DE HORAS DE FCT REALIZADAS"
+report.summary.percentage: "PORCENTAJE SOBRE LAS PROGRAMADAS"
+
+report.date: "FECHA:"
+report.educational_tutor.signature: Fdo.

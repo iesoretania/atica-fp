@@ -9,9 +9,10 @@ form.quarter: Trimestre
 form.quarter.1Q: Primer trimestre
 form.quarter.2Q: Segundo trimestre
 form.quarter.3Q: Tercer trimestre
-form.attendance_report_template: Plantilla de informe de asistencia
-form.weekly_activity_report_template: Plantilla de informe semanal de actividades
-form.final_report_template: Plantilla de informe del tutor/a laboral
+form.attendance_report_template: Plantilla del informe de asistencia
+form.weekly_activity_report_template: Plantilla del informe semanal de actividades
+form.activity_summary_report_template: Plantilla del registro resumen de actividades
+form.final_report_template: Plantilla del informe del tutor/a laboral
 form.no_template: Sin plantilla
 form.student_survey: Modelo de encuesta de satisfacción de alumnado
 form.company_survey: Modelo de encuesta de satisfacción de empresa colaboradora
