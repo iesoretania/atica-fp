@@ -62,7 +62,7 @@ class ActivityTracking
     }
 
     /**
-     * @param WorkDay $trackedWorkDay
+     * @param TrackedWorkDay $trackedWorkDay
      * @return ActivityTracking
      */
     public function setTrackedWorkDay($trackedWorkDay)

@@ -80,7 +80,7 @@
     <tbody>
         <tr>
             {% set total = 0 %}
-            {% for workday in agreement.workdays if workday.absence == 0 %}
+            {% for workday in agreement.workdays if workday.absence == 0 and (workday.activityRealizations.count() or workday.otherActivities is not empty) %}
                 {% set total = total + 1 %}
                 <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.date|date('report.date_format'|trans) }}</td>
                 <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.startTime1|slice(0, 5)|default('report.no_data'|trans) }}</td>
