@@ -12,6 +12,7 @@ en la distintas versiones de la misma.
 * fix: Solucionado un problema de redirección en algunas rutas
 * feat: Mostrar estadísticas de actividades en el calendario de seguimiento de FCT
 * feat: Generar registro de actividades de seguimiento de la FCT
+* fix: Solucionado problema con un enlace que dirige al calendario de seguimiento de FCT
 
 3.2.0 (2020-04-27)
 ------------------

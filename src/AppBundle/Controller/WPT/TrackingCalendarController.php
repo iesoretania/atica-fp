@@ -203,7 +203,7 @@ class TrackingCalendarController extends Controller
             [
                 'fixed' => (string) $agreement,
                 'routeName' => 'workplace_training_tracking_calendar_list',
-                'routeParams' => ['id' => $agreement->getId()]
+                'routeParams' => ['id' => $agreementEnrollment->getId()]
             ],
             ['fixed' => $title]
         ];
