@@ -48,8 +48,6 @@ class WPTTeacherRepository extends TeacherRepository
             ->join('t.person', 'p')
             ->where('ae.studentEnrollment = :student_enrollment')
             ->setParameter('student_enrollment', $studentEnrollment)
-            ->orderBy('p.lastName')
-            ->addOrderBy('p.firstName')
             ->getQuery()
             ->getResult();
     }
