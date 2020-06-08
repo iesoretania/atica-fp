@@ -15,6 +15,7 @@ en la distintas versiones de la misma.
 * fix: Solucionado problema con un enlace que dirige al calendario de seguimiento de FCT
 * fix: Modificado el listado de tutores en el registro de actividades
 * feat: API provisional para el seguimiento de actividades de la FCT
+* chore: Mejorado aspecto del registro de actividades de FCT
 
 3.2.0 (2020-04-27)
 ------------------
