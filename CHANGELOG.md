@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-3.3.0 (xxxx-xx-xx)
+3.3.0 (2020-06-08)
 ------------------
 * fix: Solucionado un problema de permisos al acceder al seguimiento de la FCT
 * fix: No contar de forma múltiple las dietas que visiten más de un acuerdo
@@ -14,6 +14,7 @@ en la distintas versiones de la misma.
 * feat: Generar registro de actividades de seguimiento de la FCT
 * fix: Solucionado problema con un enlace que dirige al calendario de seguimiento de FCT
 * fix: Modificado el listado de tutores en el registro de actividades
+* feat: API provisional para el seguimiento de actividades de la FCT
 
 3.2.0 (2020-04-27)
 ------------------

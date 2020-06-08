@@ -18,6 +18,7 @@
 
 namespace AppBundle\Controller\WPT;
 
+use AppBundle\Entity\WPT\Activity;
 use AppBundle\Entity\WPT\ActivityTracking;
 use AppBundle\Entity\WPT\AgreementEnrollment;
 use AppBundle\Entity\WPT\TrackedWorkDay;
@@ -36,6 +37,7 @@ use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -71,7 +73,8 @@ class TrackingCalendarController extends Controller
         $agreement = $agreementEnrollment->getAgreement();
         $activityStats = $activityRepository->getProgramActivitiesStatsFromAgreementEnrollment($agreementEnrollment);
         $activityTotalCount = $activityTrackingRepository->getCountFromAgreementEnrollment($agreementEnrollment);
-        $activityTrackedCount = $activityTrackingRepository->getTrackedCountFromAgreementEnrollment($agreementEnrollment);
+        $activityTrackedCount = $activityTrackingRepository
+            ->getTrackedCountFromAgreementEnrollment($agreementEnrollment);
         $activityTotalHours = $activityTrackingRepository->getTotalHoursFromAgreementEnrollment($agreementEnrollment);
 
         $today = new \DateTime('', new \DateTimeZone('UTC'));
@@ -420,10 +423,10 @@ class TrackingCalendarController extends Controller
                 ->findByStudentEnrollment($agreementEnrollment->getStudentEnrollment());
 
             $data = [];
-            foreach ($agreementEnrollments as $agreementEnrollment) {
+            foreach ($agreementEnrollments as $agreementEnrollment2) {
                 $item = [];
-                $item[0] = $agreementEnrollment;
-                $item[1] = $activityRepository->getProgramActivitiesStatsFromAgreementEnrollment($agreementEnrollment);
+                $item[0] = $agreementEnrollment2;
+                $item[1] = $activityRepository->getProgramActivitiesStatsFromAgreementEnrollment($agreementEnrollment2);
                 $data[] = $item;
             }
             $shift = $agreementEnrollment->getAgreement()->getShift();
@@ -646,5 +649,247 @@ class TrackingCalendarController extends Controller
             $h,
             $overflow
         );
+    }
+
+    /**
+     * @Route("/api/v1/{id}", name="api_workplace_training_tracking_calendar_list",
+     *     requirements={"id" = "\d+"}, methods={"GET"})
+     */
+    public function apiIndexAction(
+        TrackedWorkDayRepository $trackedWorkDayRepository,
+        ActivityRepository $activityRepository,
+        ActivityTrackingRepository $activityTrackingRepository,
+        AgreementEnrollment $agreementEnrollment
+    ) {
+        $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::ACCESS, $agreementEnrollment);
+
+        $readOnly = !$this->isGranted(AgreementEnrollmentVoter::LOCK, $agreementEnrollment);
+
+        $workDays = $trackedWorkDayRepository
+            ->findByAgreementEnrollmentGroupByMonthAndWeekNumber($agreementEnrollment);
+
+        $newData = [];
+
+        foreach ($workDays as $id => $month) {
+            $newData[$id] = [];
+            foreach ($month as $weekId => $week) {
+                $newData[$id][$weekId] = [];
+                foreach ($week['days'] as $dayId => $day) {
+                    if (!isset($day[1])) {
+                        $newData[$id][$weekId][$dayId] = [];
+                    } else {
+                        $newData[$id][$weekId][$dayId] = [
+                            'id' => $day[0]->getId(),
+                            'total_hours' => $day[0]->getHours() * 100,
+                            'registered_hours' => $day[2] ?: 0,
+                            'locked' => $day[1]->isLocked(),
+                            'absence' => $day[1]->getAbsence(),
+                            'start_time1' => $day[1]->getStartTime1(),
+                            'end_time1' => $day[1]->getEndTime1(),
+                            'start_time2' => $day[1]->getStartTime2(),
+                            'end_time2' => $day[1]->getEndTime2(),
+                            'other_activities' => $day[1]->getOtherActivities(),
+                            'notes' => $day[1]->getNotes()
+                        ];
+                    }
+                }
+            }
+        }
+
+        $activityStats = $activityRepository
+            ->getProgramActivitiesStatsFromAgreementEnrollmentQueryBuilder($agreementEnrollment)
+            ->getQuery()->getArrayResult();
+
+        $activityTotalCount = $activityTrackingRepository->getCountFromAgreementEnrollment($agreementEnrollment);
+        $activityTrackedCount = $activityTrackingRepository
+            ->getTrackedCountFromAgreementEnrollment($agreementEnrollment);
+        $activityTotalHours = $activityTrackingRepository->getTotalHoursFromAgreementEnrollment($agreementEnrollment);
+
+        $selectable = $this->isGranted(AgreementEnrollmentVoter::LOCK, $agreementEnrollment) ||
+            $this->isGranted(AgreementEnrollmentVoter::ATTENDANCE, $agreementEnrollment);
+
+        return new JsonResponse([
+            'selectable' => $selectable,
+            'activity_stats' => $activityStats,
+            'activity_tracked_count' => $activityTrackedCount,
+            'activity_total_count' => $activityTotalCount,
+            'activity_total_hours' => $activityTotalHours,
+            'calendar' => $newData,
+            'read_only' => $readOnly
+        ]);
+    }
+
+    /**
+     * @Route("/api/v1/jornada/{workDay}/{agreementEnrollment}", name="api_workplace_training_tracking_calendar_form",
+     *     requirements={"id" = "\d+", "agreementEnrollment" = "\d+"}, methods={"GET"})
+     */
+    public function apiEditAction(
+        TrackedWorkDayRepository $trackedWorkDayRepository,
+        WorkDay $workDay,
+        AgreementEnrollment $agreementEnrollment
+    ) {
+        $trackedWorkDay = $trackedWorkDayRepository->findOneOrNewByWorkDayAndAgreementEnrollment(
+            $workDay,
+            $agreementEnrollment
+        );
+
+        if (null === $trackedWorkDay) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $this->denyAccessUnlessGranted(TrackedWorkDayVoter::ACCESS, $trackedWorkDay);
+        $readOnly = !$this->isGranted(TrackedWorkDayVoter::FILL, $trackedWorkDay);
+
+        $trackedActivities = $trackedWorkDay->getTrackedActivities();
+        $activities = clone $agreementEnrollment->getActivities();
+
+        foreach ($trackedActivities as $trackedActivity) {
+            $activities->removeElement($trackedActivity->getActivity());
+        }
+        foreach ($activities as $newActivity) {
+            $newTrackedActivity = new ActivityTracking();
+            $newTrackedActivity
+                ->setActivity($newActivity)
+                ->setTrackedWorkDay($trackedWorkDay)
+                ->setHours(0);
+            $trackedActivities->add($newTrackedActivity);
+        }
+
+        $trackedActivitiesData = [];
+
+        foreach ($trackedActivities as $trackedActivity) {
+            $trackedActivitiesData[] = [
+                'id' => $trackedActivity->getActivity()->getId(),
+                'hours' => $trackedActivity->getHours(),
+                'description' => $trackedActivity->getActivity()->getDescription(),
+                'code' => $trackedActivity->getActivity()->getCode(),
+                'notes' => $trackedActivity->getNotes()
+            ];
+        }
+        return new JsonResponse([
+            'read_only' => $readOnly,
+            'tracked_work_day' => [
+                'id' => $trackedWorkDay->getId(),
+                'date' => $trackedWorkDay->getWorkDay()->getDate(),
+                'hours' => $trackedWorkDay->getWorkDay()->getHours() * 100,
+                'absence' => $trackedWorkDay->getAbsence(),
+                'notes' => $trackedWorkDay->getNotes(),
+                'start_time1' => $trackedWorkDay->getStartTime1(),
+                'start_time2' => $trackedWorkDay->getStartTime2(),
+                'end_time1' => $trackedWorkDay->getEndTime1(),
+                'end_time2' => $trackedWorkDay->getEndTime2(),
+                'other_activities' => $trackedWorkDay->getOtherActivities()
+            ],
+            'tracked_activities' => $trackedActivitiesData
+        ]);
+    }
+
+    /**
+     * @Route("/api/v1/jornada/modificar/{trackedWorkDay}",
+     *     name="api_workplace_training_tracking_calendar_edit",
+     *     requirements={"trackedWorkDay" = "\d+"}, methods={"POST"})
+     */
+    public function apiEditPostAction(
+        Request $request,
+        TrackedWorkDay $trackedWorkDay
+    ) {
+        $this->denyAccessUnlessGranted(TrackedWorkDayVoter::FILL, $trackedWorkDay);
+
+        if ($request->get('absence', null) !== null) {
+            $this->denyAccessUnlessGranted(
+                AgreementEnrollmentVoter::ATTENDANCE,
+                $trackedWorkDay->getAgreementEnrollment()
+            );
+            $absence = $request->get('absence');
+            if ($absence != TrackedWorkDay::NO_ABSENCE
+                && $absence != TrackedWorkDay::JUSTIFIED_ABSENCE
+                && $absence != TrackedWorkDay::UNJUSTIFIED_ABSENCE) {
+                return $this->createAccessDeniedException();
+            }
+            $trackedWorkDay->setAbsence($absence);
+        }
+        $trackedWorkDay->setNotes($request->get('notes'));
+        $trackedWorkDay->setOtherActivities($request->get('other_activities'));
+
+        $em = $this->getDoctrine()->getManager();
+
+        try {
+            $em->flush();
+            return new JsonResponse([
+                'result' => 'ok'
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'result' => 'error'
+            ], 500);
+        }
+    }
+
+    /**
+     * @Route("/api/v1/jornada/actividad/{trackedWorkDay}/{activity}",
+     *     name="api_workplace_training_tracking_calendar_edit_activity",
+     *     requirements={"trackedWorkDay" = "\d+", "activity" = "\d+"}, methods={"POST"})
+     */
+    public function apiEditActivityPostAction(
+        Request $request,
+        TrackedWorkDay $trackedWorkDay,
+        Activity $activity
+    ) {
+        $this->denyAccessUnlessGranted(TrackedWorkDayVoter::FILL, $trackedWorkDay);
+
+        if ($request->get('hours', null) === null) {
+            return $this->createAccessDeniedException();
+        }
+
+        $trackedActivities = $trackedWorkDay->getTrackedActivities();
+        $activities = clone $trackedWorkDay->getAgreementEnrollment()->getActivities();
+
+        foreach ($trackedActivities as $trackedActivity) {
+            $activities->removeElement($trackedActivity->getActivity());
+        }
+        foreach ($activities as $newActivity) {
+            $newTrackedActivity = new ActivityTracking();
+            $newTrackedActivity
+                ->setActivity($newActivity)
+                ->setTrackedWorkDay($trackedWorkDay)
+                ->setHours(0);
+            $trackedActivities->add($newTrackedActivity);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $found = false;
+        foreach ($trackedActivities as $trackedActivity) {
+            if ($trackedActivity->getActivity() === $activity) {
+                $trackedActivity->setHours((int) $request->get('hours'));
+                $found = true;
+            }
+            if ($trackedActivity->getHours() == 0) {
+                $trackedActivities->removeElement($trackedActivity);
+                if ($trackedWorkDay->getId()) {
+                    $this->getDoctrine()->getManager()->remove($trackedActivity);
+                }
+            } else {
+                $this->getDoctrine()->getManager()->persist($trackedActivity);
+            }
+        }
+
+        if (false === $found) {
+            return new JsonResponse([
+                'result' => 'not found'
+            ], 404);
+        }
+
+        try {
+            $trackedWorkDay->setTrackedActivities($trackedActivities);
+            $em->flush();
+            return new JsonResponse([
+                'result' => 'ok'
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'result' => 'error'
+            ], 500);
+        }
     }
 }

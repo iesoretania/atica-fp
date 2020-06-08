@@ -31,6 +31,7 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -48,20 +49,16 @@ class TrackingController extends Controller
      * @param $person
      * @param $isManager
      * @param $q
-     * @param $page
-     * @param $maxPerPage
-     * @return Pagerfanta
+     * @return QueryBuilder
      */
-    public static function generateAgreementPaginator(
+    private static function generateAgreementQueryBuilder(
         WPTGroupRepository $groupRepository,
         TeacherRepository $teacherRepository,
         AcademicYear $academicYear,
         QueryBuilder $queryBuilder,
         $person,
         $isManager,
-        $q,
-        $page,
-        $maxPerPage
+        $q
     ) {
         $queryBuilder
             ->select('ae')
@@ -148,6 +145,42 @@ class TrackingController extends Controller
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear);
 
+        return $queryBuilder;
+    }
+
+    /**
+     * @param WPTGroupRepository $groupRepository
+     * @param TeacherRepository $teacherRepository
+     * @param AcademicYear $academicYear
+     * @param QueryBuilder $queryBuilder
+     * @param $person
+     * @param $isManager
+     * @param $q
+     * @param $page
+     * @param $maxPerPage
+     * @return Pagerfanta
+     */
+    public static function generateAgreementPaginator(
+        WPTGroupRepository $groupRepository,
+        TeacherRepository $teacherRepository,
+        AcademicYear $academicYear,
+        QueryBuilder $queryBuilder,
+        $person,
+        $isManager,
+        $q,
+        $page,
+        $maxPerPage
+    ) {
+        $queryBuilder = self::generateAgreementQueryBuilder(
+            $groupRepository,
+            $teacherRepository,
+            $academicYear,
+            $queryBuilder,
+            $person,
+            $isManager,
+            $q
+        );
+
         $adapter = new DoctrineORMAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
@@ -211,5 +244,39 @@ class TrackingController extends Controller
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
+    }
+
+    /**
+     * @Route("/api/v1/acuerdo/listar", name="api_workplace_training_agreement_list",
+     *     methods={"GET"})
+     */
+    public function apiListAction(
+        UserExtensionService $userExtensionService,
+        WPTGroupRepository $groupRepository,
+        TeacherRepository $teacherRepository
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        $academicYear = $organization->getCurrentAcademicYear();
+
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS, $organization);
+
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $person = $this->getUser()->getPerson();
+
+        $queryBuilder = self::generateAgreementQueryBuilder(
+            $groupRepository,
+            $teacherRepository,
+            $academicYear,
+            $queryBuilder,
+            $person,
+            $isManager,
+            ''
+        );
+
+        $agreements = $queryBuilder->getQuery()->getArrayResult();
+        return new JsonResponse($agreements);
     }
 }

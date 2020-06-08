@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="AppBundle\Repository\WPT\WorkDayRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\WPT\TrackedWorkDayRepository")
  * @ORM\Table(name="wpt_tracked_work_day",
  *     uniqueConstraints={@ORM\UniqueConstraint(columns={"agreement_enrollment_id", "work_day_id"})}))))
  */
