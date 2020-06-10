@@ -86,6 +86,8 @@ class TrackingController extends Controller
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->join('ae.workTutor', 'wt')
+            ->join('ae.educationalTutor', 'et')
+            ->join('et.person', 'etp')
             ->groupBy('ae')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
@@ -103,6 +105,8 @@ class TrackingController extends Controller
                 ->orWhere('g.name LIKE :tq')
                 ->orWhere('wt.firstName LIKE :tq')
                 ->orWhere('wt.lastName LIKE :tq')
+                ->orWhere('etp.firstName LIKE :tq')
+                ->orWhere('etp.lastName LIKE :tq')
                 ->orWhere('wt.uniqueIdentifier LIKE :tq')
                 ->orWhere('shi.name LIKE :tq')
                 ->setParameter('tq', '%' . $q . '%');

@@ -8,6 +8,7 @@ en la distintas versiones de la misma.
 ------------------
 * chore: Las visitas se listan ahora agrupadas por docente
 * fix: Eliminar los datos asociados al borrar convenios de FP dual
+* fix: Solucionado el problema de filtrar por tutor docente en el seguimiento
 
 3.3.0 (2020-06-08)
 ------------------
