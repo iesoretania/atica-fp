@@ -2,13 +2,12 @@
 {% extends 'generic/list.html.twig' %}
 {% import 'macros.html.twig' as m %}
 
-{% block path_new %}{{ path('workplace_training_visit_new') }}{% endblock %}
+{% block path_new %}{{ path('workplace_training_visit_new', {'id': teacher.id}) }}{% endblock %}
 
 {% block new_action %}{% if allow_new %}{{ parent() }}{% endif %}{% endblock %}
 
 {% block table_header %}
     <th><label><input type="checkbox" id="select"> {{ 'header.datetime'|trans }}</label></th>
-    <th>{{ 'header.teacher'|trans }}</th>
     <th>{{ 'header.workcenter'|trans }}</th>
     <th>{{ 'header.agreements'|trans }}</th>
     <th>{{ 'header.student_enrollments'|trans }}</th>
@@ -23,9 +22,6 @@
                         <label><input type="checkbox" name="items[]" value="{{ item.id }}"{% if not read_only %} class="selectable"{% else %} disabled="disabled"{% endif %}> <a href="{{ url }}">{{ item.datetime|date('format.datetime'|trans({}, 'general')) }}</a></label>
                     </td>
                     <td>
-                        {{ item.teacher }}
-                    </td>
-                    <td>
                         {{ item.workcenter }}
                     </td>
                     <td>
@@ -37,21 +33,17 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}
 
-{% block before_filter %}
-    {% include 'organization/partial_academic_year.html.twig' %}
-{% endblock %}
-
 {% block before_table %}
-    <form action="{{ path('workplace_training_visit_operation', {'academicYear': academic_year.id}) }}" method="post">
+    <form action="{{ path('workplace_training_visit_operation', {'id': teacher.id}) }}" method="post">
 {% endblock %}
 
 {% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'id': teacher.id }}) }}
 {% endblock %}
 
 {% block after_table %}

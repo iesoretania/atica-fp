@@ -51,4 +51,16 @@ class WPTTeacherRepository extends TeacherRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByGroups($groups)
+    {
+        return $this->createQueryBuilder('t')
+            ->distinct(true)
+            ->join(AgreementEnrollment::class, 'ae', 'WITH', 'ae.educationalTutor = t')
+            ->join('ae.studentEnrollment', 'se')
+            ->andWhere('se.group IN (:groups)')
+            ->setParameter('groups', $groups)
+            ->getQuery()
+            ->getResult();
+    }
 }

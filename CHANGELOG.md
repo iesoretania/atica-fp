@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+3.3.x (2020-06-10)
+------------------
+* chore: Las visitas se listan ahora agrupadas por docente
+
 3.3.0 (2020-06-08)
 ------------------
 * fix: Solucionado un problema de permisos al acceder al seguimiento de la FCT

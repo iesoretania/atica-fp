@@ -26,14 +26,19 @@ title.new: Nueva visita
 title.delete: Eliminar visitas
 
 title.list: Listado de visitas
+title.teacher_list: Resumen de visitas
+
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay visitas que mostrar
 table.filter: Filtrar...
+
+table.no_teachers: No hay profesorado que mostrar
 
 header.datetime: Fecha y hora
 header.teacher: Tutor/a docente
 header.workcenter: Centro de trabajo
 header.agreements: Acuerdos
+header.visit_count: "Nº. visitas"
 header.student_enrollments: Estudiantes visitados
 
 message.saved: Datos actualizados con éxito.

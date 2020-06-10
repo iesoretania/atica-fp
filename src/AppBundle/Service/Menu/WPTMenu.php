@@ -101,7 +101,7 @@ class WPTMenu implements MenuBuilderInterface
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('workplace_training_visit')
-                    ->setRouteName('workplace_training_visit_list')
+                    ->setRouteName('workplace_training_visit_teacher_list')
                     ->setCaption('menu.workplace_training.visit')
                     ->setDescription('menu.workplace_training.visit.detail')
                     ->setIcon('car-side')
