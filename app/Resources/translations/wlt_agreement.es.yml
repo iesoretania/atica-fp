@@ -28,7 +28,7 @@ table.new: Nuevo convenio de colaboración
 table.calendar: Calendario
 
 prompt.delete_confirm: |
-  ¿Está seguro de que desea eliminar los siguientes convenios? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
+  ¿Está seguro de que desea eliminar los siguientes convenios? En el caso de que alguno de ellos tenga elementos asociados, también se eliminarán.
 
   Esta operación no se puede deshacer.
 

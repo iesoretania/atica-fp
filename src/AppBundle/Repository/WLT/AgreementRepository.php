@@ -272,16 +272,43 @@ class AgreementRepository extends ServiceEntityRepository
 
     /**
      * @param Agreement[]
-     * @return mixed
+     * @return bool
      */
     public function deleteFromList($list)
     {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->delete(Agreement::class, 'a')
-            ->where('a IN (:list)')
-            ->setParameter('list', $list)
-            ->getQuery()
-            ->execute();
+        $em = $this->getEntityManager();
+        /** @var Agreement $agreement */
+        foreach ($list as $agreement) {
+            if ($agreement->getCompanySurvey()) {
+                $answers = $agreement->getCompanySurvey()->getAnswers();
+                foreach ($answers as $answer) {
+                    $em->remove($answer);
+                }
+                $em->remove($agreement->getCompanySurvey());
+            }
+
+            if ($agreement->getStudentSurvey()) {
+                $answers = $agreement->getStudentSurvey()->getAnswers();
+                foreach ($answers as $answer) {
+                    $em->remove($answer);
+                }
+                $em->remove($agreement->getStudentSurvey());
+            }
+
+            $evaluatedActivityRealizations = $agreement->getEvaluatedActivityRealizations();
+            foreach ($evaluatedActivityRealizations as $evaluatedActivityRealization) {
+                $em->remove($evaluatedActivityRealization);
+            }
+
+            $workDays = $agreement->getWorkDays();
+            foreach ($workDays as $workDay) {
+                $em->remove($workDay);
+            }
+
+            $em->remove($agreement);
+        }
+
+        return true;
     }
 
     public function meetingStatsByTeacher(Teacher $teacher)

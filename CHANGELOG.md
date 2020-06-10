@@ -7,6 +7,7 @@ en la distintas versiones de la misma.
 3.3.x (2020-06-10)
 ------------------
 * chore: Las visitas se listan ahora agrupadas por docente
+* fix: Eliminar los datos asociados al borrar convenios de FP dual
 
 3.3.0 (2020-06-08)
 ------------------
