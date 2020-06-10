@@ -113,7 +113,7 @@ class OrganizationRepository extends ServiceEntityRepository
     {
         $query = $this->getMembershipByUserQueryBuilder($user, $date);
         return $query
-            ->select('COUNT(o)')
+            ->select('COUNT(DISTINCT o)')
             ->getQuery()
             ->getSingleScalarResult();
     }
