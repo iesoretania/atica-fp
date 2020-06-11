@@ -6,7 +6,7 @@
     <section class="login-form">
         <h1 class="text-center">
             <span class="app-name">{{ app_name|upper }} </span>
-            <span class="app-version">{{ app_version }}</span>
+            {% if app_version %}<span class="app-version">{{ app_version }}</span>{% endif %}
         </h1>
         <div class="panel panel-default">
             <div class="panel-heading">{% block login_title %}{% endblock %}</div>

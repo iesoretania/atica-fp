@@ -16,6 +16,7 @@ en la distintas versiones de la misma.
 * fix: Aplicar las plantillas PDF correctamente a partir de la segunda página
 * fix: Permitir que el jefe de departamento pueda consultar las visitas
 * fix: Solucionado problema con la actualización del informe del tutor/a de FCT
+* chore: Quitar etiquetas de versión si están vacías
 
 3.3.0 (2020-06-08)
 ------------------
