@@ -11,6 +11,7 @@ en la distintas versiones de la misma.
 * fix: Solucionado el problema de filtrar por tutor docente en el seguimiento
 * fix: Evitar preguntar cuando un usuario tiene varias pertenencias a la misma organización
 * fix: Impedir acceder a las visitas de otros tutores docentes
+* feat: Generar informe de visitas del tutor docente de FCT
 
 3.3.0 (2020-06-08)
 ------------------

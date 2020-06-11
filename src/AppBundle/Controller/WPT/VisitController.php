@@ -32,6 +32,7 @@ use AppBundle\Security\WPT\VisitVoter;
 use AppBundle\Security\WPT\WPTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Mpdf\Mpdf;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -40,6 +41,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatorInterface;
+use TFox\MpdfPortBundle\Service\MpdfService;
+use Twig\Environment;
 
 /**
  * @Route("/fct/visita")
@@ -391,6 +394,65 @@ class VisitController extends Controller
     }
 
     /**
+     * @Route("/{id}/descargar",
+     *     requirements={"id" = "\d+"}, name="workplace_training_visit_report", methods={"GET"})
+     */
+    public function visitSummaryReportAction(
+        Environment $engine,
+        TranslatorInterface $translator,
+        WPTTeacherRepository $wptTeacherRepository,
+        VisitRepository $visitRepository,
+        Teacher $teacher
+    ) {
+        $visit = new Visit();
+        $visit
+            ->setTeacher($teacher);
+
+        $this->denyAccessUnlessGranted(VisitVoter::ACCESS, $visit);
+
+        $mpdfService = new MpdfService();
+        $mpdfService->setAddDefaultConstructorArgs(false);
+
+        /** @var Mpdf $mpdf */
+        $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4-L']]);
+        $tmp = '';
+
+        try {
+            $template = $teacher->getAcademicYear()->getDefaultLandscapeTemplate();
+            if ($template) {
+                $tmp = tempnam('.', 'tpl');
+                file_put_contents($tmp, $template->getData());
+                $mpdf->SetImportUse();
+                $mpdf->SetDocTemplate($tmp, true);
+            }
+
+            $title = $translator->trans('title.report', [], 'wpt_visit_report')
+                . ' - ' . $teacher->getPerson();
+
+            $fileName = $title . '.pdf';
+
+            $visits = $visitRepository->findByTeacherOrderByDateTime($teacher);
+
+            $html = $engine->render('wpt/visit/teacher_report.html.twig', [
+                'teacher' => $teacher,
+                'visits' => $visits,
+                'title' => $title
+            ]);
+
+            $response = $mpdfService->generatePdfResponse(
+                $html,
+                ['mpdf' => $mpdf]
+            );
+            $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+            return $response;
+        } finally {
+            if ($tmp) {
+                unlink($tmp);
+            }
+        }
+    }
+    /**
      * @param WPTTeacherRepository $WPTTeacherRepository
      * @param WPTGroupRepository $WPTGroupRepository
      * @param AcademicYear $academicYear
@@ -433,4 +495,5 @@ class VisitController extends Controller
         }
         return $teachers;
     }
+
 }

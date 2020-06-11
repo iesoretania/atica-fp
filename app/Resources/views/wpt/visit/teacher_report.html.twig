@@ -1,0 +1,111 @@
+{% trans_default_domain 'wpt_visit_report' %}
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        @page {
+            margin-top: 5.5cm;
+            margin-bottom: 4.5cm;
+            margin-left: 1.5cm;
+            margin-right: 1.5cm;
+            odd-header-name: html_header;
+            even-header-name: html_header;
+            odd-footer-name: html_footer;
+            even-footer-name: html_footer;
+        }
+
+        td, th {
+            border: 1px solid;
+            padding: 0.1cm;
+        }
+
+        th {
+            background-color: #DDDDDD;
+        }
+
+        .centered {
+            text-align: center;
+        }
+
+        .no-border {
+            border: none;
+        }
+
+        table#visits td {
+            padding-top: 0.25cm;
+            padding-bottom: 0.25cm;
+        }
+    </style>
+</head>
+
+<body style="font-family: sans-serif; font-size: 12px">
+
+<htmlpageheader name="header">
+    <p style="padding-top: 2cm;"></p>
+    <table style="border: 1px solid; border-spacing: 0; width: 100%; vertical-align: top; margin-bottom: 0.3cm;">
+        <tr>
+            <td colspan="2" style="border: 1px solid; background-color: #DDDDDD; text-align: center; font-size: 110%; font-weight: bold">{{ 'report.summary.title'|trans }}</td>
+        </tr>
+        <tr>
+            <td>
+                {{ 'report.academic_year'|trans }} {{ teacher.academicYear }}
+            </td>
+            <td class="centered" style="width: 20%;">{{ 'report.page'|trans({'%page%': '{PAGENO}', '%total%': '{nbpg}'}) }}</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                {{ 'report.educational_tutor'|trans }} {{ teacher }}
+            </td>
+        </tr>
+    </table>
+</htmlpageheader>
+<htmlpagefooter name="footer">
+    <table style="border-spacing: 0; width: 100%; vertical-align: middle; margin-bottom: 0.3cm">
+            <tr>
+                <td class="no-border" style="width: 20%;"></td>
+                <td class="centered">
+                    {{ 'report.educational_tutor.title'|trans }}<br /><br /><br /><br /><br />
+                    {{ 'report.educational_tutor.signature'|trans({'%name%': teacher}) }}
+                </td>
+                <td class="no-border" style="width: 20%;"></td>
+            </tr>
+    </table>
+    <table style="border-spacing: 0; width: 100%; vertical-align: middle; margin-bottom: 0.3cm">
+        <tr>
+
+        </tr>
+    </table>
+</htmlpagefooter>
+
+<table id="visits" style="border: 1px solid; border-spacing: 0; width: 100%; vertical-align: middle; margin-bottom: 0.3cm">
+    <thead>
+        <tr>
+            <th style="width: 30%;">{{ 'report.workcenter'|trans }}</th>
+            <th style="width: 15%;">{{ 'report.city'|trans }}</th>
+            <th style="width: 10%;">{{ 'report.date'|trans }}</th>
+            <th style="width: 35%;">{{ 'report.student_enrollments'|trans }}</th>
+            <th style="width: 15%;">{{ 'report.signature'|trans }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for visit in visits %}
+            <tr>
+                <td>{{ visit.workcenter }}</td>
+                <td class="centered">{{ visit.workcenter.city }}</td>
+                <td class="centered">{{ visit.dateTime|date('format.date'|trans({}, 'general')) }}</td>
+                <td>{{ visit.studentEnrollments|join(', ') }}</td>
+                <td></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">{{ 'report.no_visits'|trans }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

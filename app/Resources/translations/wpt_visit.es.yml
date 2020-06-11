@@ -33,6 +33,7 @@ table.no_items: No hay visitas que mostrar
 table.filter: Filtrar...
 
 table.no_teachers: No hay profesorado que mostrar
+table.visit_report: Registro de visitas
 
 header.datetime: Fecha y hora
 header.teacher: Tutor/a docente

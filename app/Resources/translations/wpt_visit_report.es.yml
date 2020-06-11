@@ -1,0 +1,18 @@
+title.report: Registro de visitas
+
+report.page: Página %page% de %total%
+
+report.summary.title: "REGISTRO DE VISITAS A EMPRESAS - FORMACIÓN EN CENTROS DE TRABAJO"
+report.academic_year: "CURSO ESCOLAR:"
+report.educational_tutor: "PROFESOR TUTOR/A DOCENTE:"
+
+report.workcenter: "EMPRESA (Centro de trabajo)"
+report.city: LOCALIDAD
+report.date: "FECHA VISITA"
+report.student_enrollments: "ESTUDIANTES"
+report.signature: "FIRMA"
+
+report.no_visits: No hay visitas registradas.
+
+report.educational_tutor.title: "El tutor/a docente"
+report.educational_tutor.signature: Fdo. %name%
