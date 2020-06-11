@@ -10,6 +10,7 @@ en la distintas versiones de la misma.
 * fix: Eliminar los datos asociados al borrar convenios de FP dual
 * fix: Solucionado el problema de filtrar por tutor docente en el seguimiento
 * fix: Evitar preguntar cuando un usuario tiene varias pertenencias a la misma organización
+* fix: Impedir acceder a las visitas de otros tutores docentes
 
 3.3.0 (2020-06-08)
 ------------------

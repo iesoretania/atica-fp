@@ -62,13 +62,12 @@ class VisitController extends Controller
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_CREATE_VISIT, $organization);
 
-        $academicYear = $organization->getCurrentAcademicYear();
-        $person = $this->getUser()->getPerson();
-
         $visit = new Visit();
         $visit
             ->setTeacher($teacher)
             ->setDateTime(new \DateTime());
+
+        $this->denyAccessUnlessGranted(VisitVoter::ACCESS, $visit);
 
         $this->getDoctrine()->getManager()->persist($visit);
 
@@ -114,7 +113,14 @@ class VisitController extends Controller
 
         $teacher = null;
 
-        $teachers = $this->getTeachersByAcademicYearAndUser($WPTTeacherRepository, $WPTGroupRepository, $academicYear, $isManager, $isDepartmentHead, $readOnly);
+        $teachers = $this->getTeachersByAcademicYearAndUser(
+            $WPTTeacherRepository,
+            $WPTGroupRepository,
+            $academicYear,
+            $isManager,
+            $isDepartmentHead,
+            $readOnly
+        );
 
         $form = $this->createForm(VisitType::class, $visit, [
             'disabled' => $readOnly,
@@ -172,9 +178,16 @@ class VisitController extends Controller
         Teacher $teacher,
         $page = 1
     ) {
-
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_VISIT, $organization);
+
+        // probar si tiene acceso a las visitas de este usuario
+        $visit = new Visit();
+        $visit
+            ->setTeacher($teacher)
+            ->setDateTime(new \DateTime());
+
+        $this->denyAccessUnlessGranted(VisitVoter::ACCESS, $visit);
 
         $allowNew = $this->isGranted(WPTOrganizationVoter::WPT_CREATE_VISIT, $organization);
 
