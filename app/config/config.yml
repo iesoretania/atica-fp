@@ -111,7 +111,7 @@ simple_things_entity_audit:
         - AppBundle\Entity\WLT\WorkDay
         - AppBundle\Entity\WPT\Activity
         - AppBundle\Entity\WPT\Agreement
-        - AppBundle\Entity\WPT\Report
+        #- AppBundle\Entity\WPT\Report
         - AppBundle\Entity\WPT\Shift
         - AppBundle\Entity\WPT\WorkDay
         - AppBundle\Entity\Survey
