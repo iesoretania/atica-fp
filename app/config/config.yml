@@ -43,7 +43,7 @@ twig:
     globals:
         app_name:     '%app_name%'
         app_repository: 'https://github.com/iesoretania/atica-fp'
-        app_version:  'dual'
+        app_version:  ''
         user_extension: '@AppBundle\Service\UserExtensionService'
         menu_extension: "@app.menu_builders_chain"
 
