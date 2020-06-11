@@ -14,6 +14,7 @@ en la distintas versiones de la misma.
 * feat: Generar informe de visitas del tutor docente de FCT
 * chore: Mostrar el botón del informe de visitas solamente si hay alguna
 * fix: Aplicar las plantillas PDF correctamente a partir de la segunda página
+* fix: Permitir que el jefe de departamento pueda consultar las visitas
 
 3.3.0 (2020-06-08)
 ------------------

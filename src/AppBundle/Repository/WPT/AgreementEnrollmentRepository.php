@@ -19,6 +19,7 @@
 namespace AppBundle\Repository\WPT;
 
 use AppBundle\Entity\Edu\StudentEnrollment;
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WPT\AgreementEnrollment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -40,6 +41,15 @@ class AgreementEnrollmentRepository extends ServiceEntityRepository
             ->orderBy('a.startDate')
             ->addOrderBy('a.endDate')
             ->addOrderBy('a.signDate')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByEducationalTutor(Teacher $teacher)
+    {
+        return $this->createQueryBuilder('ae')
+            ->where('ae.educationalTutor = :teacher')
+            ->setParameter('teacher', $teacher)
             ->getQuery()
             ->getResult();
     }

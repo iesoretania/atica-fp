@@ -22,6 +22,7 @@ use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\User;
 use AppBundle\Entity\WPT\Agreement;
 use AppBundle\Entity\WPT\Visit;
+use AppBundle\Repository\WPT\AgreementEnrollmentRepository;
 use AppBundle\Security\CachedVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
@@ -40,14 +41,18 @@ class VisitVoter extends CachedVoter
     /** @var UserExtensionService */
     private $userExtensionService;
 
+    private $agreementEnrollmentRepository;
+
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
         AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService
+        UserExtensionService $userExtensionService,
+        AgreementEnrollmentRepository $agreementEnrollmentRepository
     ) {
         parent::__construct($cacheItemPoolItemPool);
         $this->decisionManager = $decisionManager;
         $this->userExtensionService = $userExtensionService;
+        $this->agreementEnrollmentRepository = $agreementEnrollmentRepository;
     }
 
     /**
@@ -133,6 +138,18 @@ class VisitVoter extends CachedVoter
                         if ($tutor->getPerson() === $user->getPerson()) {
                             return true;
                         }
+                    }
+                }
+                // Comprobar si el profesor es tutor docente de los acuerdos
+                // de colaboración del departamento dirigido por el usuario
+                $agreementEnrollments = $this->agreementEnrollmentRepository
+                    ->findByEducationalTutor($subject->getTeacher());
+                foreach ($agreementEnrollments as $agreementEnrollment) {
+                    $training = $agreementEnrollment->getAgreement()->getShift()->getGrade()->getTraining();
+                    if ($training->getDepartment()
+                        && $training->getDepartment()->getHead()
+                        && $training->getDepartment()->getHead()->getPerson() === $user->getPerson()) {
+                        return true;
                     }
                 }
                 return false;
