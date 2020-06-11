@@ -549,7 +549,7 @@ class AgreementController extends Controller
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $template->getData());
                 $mpdf->SetImportUse();
-                $mpdf->SetDocTemplate($tmp);
+                $mpdf->SetDocTemplate($tmp, true);
             }
 
             $mpdf->SetFont('DejaVuSansCondensed');

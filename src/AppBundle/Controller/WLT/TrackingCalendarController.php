@@ -321,7 +321,7 @@ class TrackingCalendarController extends Controller
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $agreement->getProject()->getAttendanceReportTemplate()->getData());
                 $mpdf->SetImportUse();
-                $mpdf->SetDocTemplate($tmp);
+                $mpdf->SetDocTemplate($tmp, true);
             }
 
             $title = $translator->trans('title.attendance', [], 'wlt_report')
@@ -380,7 +380,7 @@ class TrackingCalendarController extends Controller
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $agreement->getProject()->getWeeklyActivityReportTemplate()->getData());
                 $mpdf->SetImportUse();
-                $mpdf->SetDocTemplate($tmp);
+                $mpdf->SetDocTemplate($tmp, true);
             }
             $mpdf->SetFont('DejaVuSansCondensed');
             $mpdf->SetFontSize(9);
