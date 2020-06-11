@@ -18,6 +18,7 @@
 
 namespace AppBundle\Repository\WPT;
 
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WPT\Visit;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -52,5 +53,15 @@ class VisitRepository extends ServiceEntityRepository
             ->setParameter('list', $list)
             ->getQuery()
             ->execute();
+    }
+
+    public function findByTeacherOrderByDateTime(Teacher $teacher)
+    {
+        return $this->createQueryBuilder('v')
+            ->where('v.teacher = :teacher')
+            ->setParameter('teacher', $teacher)
+            ->orderBy('v.dateTime', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 }
