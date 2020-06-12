@@ -17,6 +17,7 @@ en la distintas versiones de la misma.
 * fix: Permitir que el jefe de departamento pueda consultar las visitas
 * fix: Solucionado problema con la actualización del informe del tutor/a de FCT
 * chore: Quitar etiquetas de versión si están vacías
+* chore: Mostrar actividades no completadas en calendario de FCT
 
 3.3.0 (2020-06-08)
 ------------------

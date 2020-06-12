@@ -14,7 +14,9 @@ form.back: Volver
 
 form.stats.activities: Estado de las actividades
 form.stats.activities_bar: "%count%/%total% act."
+form.stats.activities_not_done_bar: "%count% pend."
 form.stats.activities_hint: "%count% actividades realizadas de un total de %total%"
+form.stats.activities_not_done_hint: "%count% actividades no realizadas de un total de %total%"
 form.stats.activities.info: "%workdays% jornada, %hours%/%total%|%workdays% jornadas, %hours%/%total% h."
 
 form.stats.hours: Estado de las jornadas

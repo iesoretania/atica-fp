@@ -59,13 +59,19 @@
 {% endif %}
 {% if activity_total_count %}
     {% set percentage = 100 * activity_tracked_count / activity_total_count %}
-
     <div class="progress progress-stat collapse-zone" data-toggle="collapse" data-target="#activities_stats" aria-expanded="false">
         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{ percentage }}"
              aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage }}%"
              title="{{ 'form.stats.activities_hint' | trans({'%count%' : activity_tracked_count, '%total%' : activity_total_count }) }}">
             {{ 'form.stats.activities_bar' | trans({'%count%' : activity_tracked_count, '%total%' : activity_total_count }) }}
         </div>
+        {% if percentage < 100 %}
+        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="{{ 100 - percentage }}"
+             aria-valuemin="0" aria-valuemax="100" style="width:{{ 100 - percentage }}%"
+             title="{{ 'form.stats.activities_not_done_hint' | trans({'%count%' : activity_total_count - activity_tracked_count, '%total%' : activity_total_count }) }}">
+            {{ 'form.stats.activities_not_done_bar' | trans({'%count%' : activity_total_count - activity_tracked_count }) }}
+        </div>
+        {% endif %}
     </div>
     <div class="collapse" id="activities_stats">
         <h3>{{ 'form.stats.activities'|trans }}: {{ 'form.stats.activities_hint' | trans({'%count%' : activity_tracked_count, '%total%' : activity_total_count}) }}</h3>
