@@ -94,20 +94,6 @@ class Project
      * @ORM\JoinColumn(onDelete="SET NULL")
      * @var Survey
      */
-    private $managerFinalSurvey;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var Survey
-     */
-    private $managerSurvey;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Survey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var Survey
-     */
     private $educationalTutorSurvey;
 
     /**
@@ -271,42 +257,6 @@ class Project
     public function setCompanySurvey(Survey $companySurvey = null)
     {
         $this->companySurvey = $companySurvey;
-        return $this;
-    }
-
-    /**
-     * @return Survey
-     */
-    public function getManagerSurvey()
-    {
-        return $this->managerSurvey;
-    }
-
-    /**
-     * @param Survey $managerSurvey
-     * @return Project
-     */
-    public function setManagerSurvey(Survey $managerSurvey = null)
-    {
-        $this->managerSurvey = $managerSurvey;
-        return $this;
-    }
-
-    /**
-     * @return Survey
-     */
-    public function getManagerFinalSurvey()
-    {
-        return $this->managerFinalSurvey;
-    }
-
-    /**
-     * @param Survey $managerFinalSurvey
-     * @return Project
-     */
-    public function setManagerFinalSurvey($managerFinalSurvey)
-    {
-        $this->managerFinalSurvey = $managerFinalSurvey;
         return $this;
     }
 

@@ -20,6 +20,7 @@ namespace AppBundle\Security\WLT;
 
 use AppBundle\Entity\User;
 use AppBundle\Entity\WLT\Project;
+use AppBundle\Repository\WLT\AgreementRepository;
 use AppBundle\Security\CachedVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
@@ -30,12 +31,11 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 class ProjectVoter extends CachedVoter
 {
     const MANAGE = 'WLT_PROJECT_MANAGE';
-    const ACCESS_MANAGER_SURVEY = 'WLT_MANAGER_SURVEY_ACCESS';
-    const FILL_MANAGER_SURVEY = 'WLT_MANAGER_SURVEY_MANAGE';
     const ACCESS_EDUCATIONAL_TUTOR_SURVEY = 'WLT_EDUCATIONAL_TUTOR_SURVEY_ACCESS';
     const FILL_EDUCATIONAL_TUTOR_SURVEY = 'WLT_EDUCATIONAL_TUTOR_SURVEY_MANAGE';
     const REPORT_STUDENT_SURVEY = 'WLT_STUDENT_SURVEY_REPORT';
     const REPORT_COMPANY_SURVEY = 'WLT_COMPANY_SURVEY_REPORT';
+    const REPORT_ORGANIZATION_SURVEY = 'WLT_ORGANIZATION_SURVEY_REPORT';
     const REPORT_MEETING = 'WLT_MEETING_REPORT';
     const REPORT_ATTENDANCE = 'WLT_ATTENDANCE_REPORT';
     const REPORT_GRADING = 'WLT_GRADING_REPORT';
@@ -46,14 +46,19 @@ class ProjectVoter extends CachedVoter
     /** @var UserExtensionService */
     private $userExtensionService;
 
+    /** @var AgreementRepository */
+    private $agreementRepository;
+
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
         AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService
+        UserExtensionService $userExtensionService,
+        AgreementRepository $agreementRepository
     ) {
         parent::__construct($cacheItemPoolItemPool);
         $this->decisionManager = $decisionManager;
         $this->userExtensionService = $userExtensionService;
+        $this->agreementRepository = $agreementRepository;
     }
 
     /**
@@ -67,12 +72,11 @@ class ProjectVoter extends CachedVoter
         }
         if (!in_array($attribute, [
             self::MANAGE,
-            self::ACCESS_MANAGER_SURVEY,
-            self::FILL_MANAGER_SURVEY,
             self::ACCESS_EDUCATIONAL_TUTOR_SURVEY,
             self::FILL_EDUCATIONAL_TUTOR_SURVEY,
             self::REPORT_STUDENT_SURVEY,
             self::REPORT_COMPANY_SURVEY,
+            self::REPORT_ORGANIZATION_SURVEY,
             self::REPORT_MEETING,
             self::REPORT_ATTENDANCE,
             self::REPORT_GRADING
@@ -128,7 +132,7 @@ class ProjectVoter extends CachedVoter
                 $isCurrentAcademicYear = true;
                 break;
             }
-        };
+        }
 
         // El coordinador puede gestionar el proyecto
         if ($isProjectManager) {
@@ -142,7 +146,6 @@ class ProjectVoter extends CachedVoter
                 $group
                     ->getGrade()->getTraining()
                     ->getDepartment()->getHead()->getPerson() === $user->getPerson()
-
             ) {
                 $isDepartmentHead = true;
                 break;
@@ -151,7 +154,6 @@ class ProjectVoter extends CachedVoter
 
         switch ($attribute) {
             case self::MANAGE:
-            case self::ACCESS_MANAGER_SURVEY:
             case self::REPORT_STUDENT_SURVEY:
             case self::REPORT_COMPANY_SURVEY:
             case self::REPORT_MEETING:
@@ -159,18 +161,18 @@ class ProjectVoter extends CachedVoter
             case self::REPORT_GRADING:
                 return $isProjectManager || $isDepartmentHead;
 
-            case self::FILL_MANAGER_SURVEY:
-                return ($isCurrentAcademicYear && ($isProjectManager || $isDepartmentHead));
+            case self::REPORT_ORGANIZATION_SURVEY:
+                return $isProjectManager;
 
             case self::ACCESS_EDUCATIONAL_TUTOR_SURVEY:
             case self::FILL_EDUCATIONAL_TUTOR_SURVEY:
                 if ($isProjectManager || $isDepartmentHead) {
                     return true;
                 }
-                // si es el responsable de seguimiento
+
+                // El responsable de seguimiento de un acuerdo también puede
                 foreach ($subject->getAgreements() as $agreement) {
-                    if ($agreement->getEducationalTutor()->getPerson() === $user->getPerson()
-                    ) {
+                    if ($agreement->getEducationalTutor()->getPerson() === $user->getPerson()) {
                         return true;
                     }
                 }

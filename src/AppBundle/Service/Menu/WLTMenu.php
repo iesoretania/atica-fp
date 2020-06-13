@@ -177,7 +177,9 @@ class WLTMenu implements MenuBuilderInterface
                 $menu2->addChild($menu3);
             }
 
-            if ($this->security->isGranted(WLTOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization)
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization) ||
+                $this->security->isGranted(WLTOrganizationVoter::WLT_DEPARTMENT_HEAD, $organization) ||
+                $this->security->isGranted(WLTOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization)
             ) {
                 $menu3 = new MenuItem();
                 $menu3
@@ -187,20 +189,6 @@ class WLTMenu implements MenuBuilderInterface
                     ->setDescription('menu.work_linked_training.survey.educational_tutor.detail')
                     ->setIcon('user-clock')
                     ->setPriority(5000);
-
-                $menu2->addChild($menu3);
-            }
-
-            if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization)
-            ) {
-                $menu3 = new MenuItem();
-                $menu3
-                    ->setName('work_linked_training_survey_organization')
-                    ->setRouteName('work_linked_training_survey_organization_list')
-                    ->setCaption('menu.work_linked_training.survey.organization')
-                    ->setDescription('menu.work_linked_training.survey.organization.detail')
-                    ->setIcon('school')
-                    ->setPriority(10000);
 
                 $menu2->addChild($menu3);
             }
@@ -242,10 +230,10 @@ class WLTMenu implements MenuBuilderInterface
 
                 $menu3 = new MenuItem();
                 $menu3
-                    ->setName('work_linked_training_report_organization_survey')
-                    ->setRouteName('work_linked_training_report_organization_survey_report')
-                    ->setCaption('menu.work_linked_training.report.organization_survey')
-                    ->setDescription('menu.work_linked_training.report.organization_survey.detail')
+                    ->setName('work_linked_training_report_educational_tutor_survey')
+                    ->setRouteName('work_linked_training_report_educational_tutor_survey_list')
+                    ->setCaption('menu.work_linked_training.report.educational_tutor_survey')
+                    ->setDescription('menu.work_linked_training.report.educational_tutor_survey.detail')
                     ->setIcon('chart-pie')
                     ->setPriority(3000);
 

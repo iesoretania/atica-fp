@@ -89,21 +89,6 @@
     </style>
 </head>
 <body>
-{% if project.organization.header %}
-    <htmlpageheader name="header">
-        {{ project.organization.header|raw }}
-    </htmlpageheader>
-    <sethtmlpageheader name="header" value="on" show-this-page="1" />
-{% endif %}
-
-{% if project.organization.footer %}
-    <htmlpagefooter name="footer">
-       {{ project.organization.footer|raw }}
-    </htmlpagefooter>
-
-    <sethtmlpagefooter name="footer" value="on" show-this-page="1" />
-{% endif %}
-
     <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
     <h2>{{ 'title.attendance'|trans }}</h2>
     <h3>{{ 'title.attendance.hours_summary'|trans }}</h3>

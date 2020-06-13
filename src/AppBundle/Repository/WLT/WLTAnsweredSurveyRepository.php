@@ -20,6 +20,8 @@ namespace AppBundle\Repository\WLT;
 
 use AppBundle\Entity\AnsweredSurvey;
 use AppBundle\Entity\WLT\Agreement;
+use AppBundle\Entity\WLT\EducationalTutorAnsweredSurvey;
+use AppBundle\Entity\WLT\ManagerAnsweredSurvey;
 use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -48,6 +50,20 @@ class WLTAnsweredSurveyRepository extends ServiceEntityRepository
             ->join('asu.survey', 's')
             ->join(Agreement::class, 'a', 'WITH', 'a.companySurvey = asu')
             ->andWhere('a.project = :project')
+            ->setParameter('project', $project)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByEducationalTutorSurveyAndProject(Project $project)
+    {
+        return $this->createQueryBuilder('asu')
+            ->join(
+                EducationalTutorAnsweredSurvey::class,
+                'etas',
+                'WITH',
+                'etas.project = :project AND asu = etas.answeredSurvey'
+            )
             ->setParameter('project', $project)
             ->getQuery()
             ->getResult();

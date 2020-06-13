@@ -146,23 +146,19 @@ class AgreementRepository extends ServiceEntityRepository
 
     /**
      * @param AcademicYear $academicYear
-     * @param Person $educationalTutor
+     * @param Person $person
      *
      * @return int
      */
-    public function countAcademicYearAndEducationalTutorPerson(AcademicYear $academicYear, Person $educationalTutor)
+    public function countAcademicYearAndEducationalTutorPerson(AcademicYear $academicYear, Person $person)
     {
         try {
             return $this->createQueryBuilder('a')
                 ->select('COUNT(a)')
-                ->join('a.workcenter', 'w')
-                ->join('a.studentEnrollment', 'sr')
-                ->join('sr.group', 'g')
-                ->join('g.grade', 'gr')
-                ->join('gr.training', 't')
-                ->where('a.educationalTutor = :educational_tutor')
+                ->join('a.educationalTutor', 't')
                 ->andWhere('t.academicYear = :academic_year')
-                ->setParameter('educational_tutor', $educationalTutor)
+                ->andWhere('t.person = :educational_tutor')
+                ->setParameter('educational_tutor', $person)
                 ->setParameter('academic_year', $academicYear)
                 ->getQuery()
                 ->getSingleScalarResult();

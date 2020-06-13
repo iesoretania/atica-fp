@@ -71,7 +71,7 @@ class Version20190707224037 extends AbstractMigration
                     'manager_id' => $managerId,
                     'student_survey_id' => $workLinkedTraining['wlt_student_survey_id'],
                     'company_survey_id' => $workLinkedTraining['wlt_company_survey_id'],
-                    'manager_survey_id' => $workLinkedTraining['wlt_organization_survey_id']
+                    'educational_tutor_survey_id' => $workLinkedTraining['wlt_organization_survey_id']
                 ]);
                 $teacher = $this->connection->createQueryBuilder()
                     ->select('t.id')
@@ -100,8 +100,8 @@ class Version20190707224037 extends AbstractMigration
                 ->fetchAll();
 
             if ($teacherAnsweredSurveyId) {
-                $this->connection->insert('wlt_manager_answered_survey', [
-                    'academic_year_id' => $workLinkedTraining['academic_year_id'],
+                $this->connection->insert('wlt_educational_tutor_answered_survey', [
+                    'teacher_id' => $teacherId,
                     'project_id' => $project[0]['id'],
                     'answered_survey_id' => $teacherAnsweredSurveyId
                 ]);

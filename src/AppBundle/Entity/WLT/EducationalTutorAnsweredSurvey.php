@@ -19,7 +19,6 @@
 namespace AppBundle\Entity\WLT;
 
 use AppBundle\Entity\AnsweredSurvey;
-use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -43,13 +42,6 @@ class EducationalTutorAnsweredSurvey
      * @var Project
      */
     private $project;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\AcademicYear")
-     * @ORM\JoinColumn(nullable=false)
-     * @var AcademicYear
-     */
-    private $academicYear;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Edu\Teacher")
@@ -88,24 +80,6 @@ class EducationalTutorAnsweredSurvey
     public function setProject($project)
     {
         $this->project = $project;
-        return $this;
-    }
-
-    /**
-     * @return AcademicYear
-     */
-    public function getAcademicYear()
-    {
-        return $this->academicYear;
-    }
-
-    /**
-     * @param AcademicYear $academicYear
-     * @return EducationalTutorAnsweredSurvey
-     */
-    public function setAcademicYear($academicYear)
-    {
-        $this->academicYear = $academicYear;
         return $this;
     }
 

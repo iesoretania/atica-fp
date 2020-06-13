@@ -22,6 +22,8 @@ use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\Edu\Teaching;
 use AppBundle\Entity\Organization;
+use AppBundle\Entity\WLT\Agreement;
+use AppBundle\Entity\WLT\EducationalTutorAnsweredSurvey;
 use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -81,5 +83,29 @@ class WLTTeacherRepository extends ServiceEntityRepository
             ->addOrderBy('p.firstName')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findByEducationalTutorProjectWithAnsweredSurvey(Project $project)
+    {
+        $data = $this->createQueryBuilder('t')
+            ->select('t')
+            ->addSelect('etas')
+            ->join('t.person', 'p')
+            ->join(Agreement::class, 'a', 'WITH', 'a.educationalTutor = t')
+            ->join(Project::class, 'pr', 'WITH', 'a.project = pr')
+            ->leftJoin(
+                EducationalTutorAnsweredSurvey::class,
+                'etas',
+                'WITH',
+                'etas.teacher = t AND etas.project = pr'
+            )
+            ->where('pr = :project')
+            ->setParameter('project', $project)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->groupBy('t, pr, etas')
+            ->getQuery()
+            ->getResult();
+        return array_chunk($data, 2);
     }
 }

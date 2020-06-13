@@ -148,24 +148,6 @@ class ProjectType extends AbstractType
                 'choices' => $surveys,
                 'placeholder' => 'form.no_survey',
                 'required' => false
-            ])
-            ->add('managerSurvey', EntityType::class, [
-                'label' => 'form.manager_survey',
-                'class' => Survey::class,
-                'choice_label' => 'title',
-                'choice_translation_domain' => false,
-                'choices' => $surveys,
-                'placeholder' => 'form.no_survey',
-                'required' => false
-            ])
-            ->add('managerFinalSurvey', EntityType::class, [
-                'label' => 'form.manager_final_survey',
-                'class' => Survey::class,
-                'choice_label' => 'title',
-                'choice_translation_domain' => false,
-                'choices' => $surveys,
-                'placeholder' => 'form.no_survey',
-                'required' => false
             ]);
     }
 

@@ -6,9 +6,7 @@ form.weekly_activity_report_template: Plantilla de informe semanal de actividade
 form.no_template: Sin plantilla
 form.student_survey: Modelo de encuesta de satisfacción de alumnado
 form.company_survey: Modelo de encuesta de satisfacción de empresa colaboradora
-form.educational_tutor_survey: Modelo de encuesta de satisfacción de seguimiento
-form.manager_survey: Modelo de encuesta de satisfacción de coordinación de curso académico
-form.manager_final_survey: Modelo de encuesta de satisfacción de coordinación de proyecto
+form.educational_tutor_survey: Modelo de encuesta de satisfacción de centro educativo
 form.student_enrollments: Estudiantes adheridos
 form.no_student_enrollments: No hay ninguno, asegúrese de especificar los grupos que pertenecen al proyecto
 form.no_survey: Ninguna

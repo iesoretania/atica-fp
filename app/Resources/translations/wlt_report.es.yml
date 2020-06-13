@@ -4,8 +4,8 @@ title.student_survey.summary: Resumen de convenios
 title.company_survey: Encuestas de satisfacción de las empresas con la FP dual
 title.company_survey.summary: Resumen de convenios
 
-title.organization_survey: Encuestas de satisfacción del seguimiento de la FP dual
-title.organization_survey.summary: Resumen de profesorado que realiza seguimiento
+title.educational_tutor_survey: Encuestas de satisfacción del centro educativo
+title.educational_tutor_survey.summary: Resumen de profesorado responsable del seguimiento
 
 title.meeting: Reuniones de tutorización
 title.meeting_teacher: Resumen de tutorización por docente
@@ -41,6 +41,7 @@ header.workcenter: Centro de trabajo
 header.dates: Fechas convenio
 header.status: ¿Cumplimentada?
 header.educational_tutor: Tutor/a docente
+header.academic_year: Curso académico
 
 header.datetime: Fecha y hora
 header.teachers: Profesorado

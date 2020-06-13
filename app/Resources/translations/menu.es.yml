@@ -103,14 +103,8 @@ menu.work_linked_training.survey.student.detail: Cumplimentar la encuesta de sat
 menu.work_linked_training.survey.company: Satisfacción de empresa
 menu.work_linked_training.survey.company.detail: Cumplimentar la encuesta de satisfacción de empresa colaboradora de FP dual
 
-menu.work_linked_training.survey.educational_tutor: Satisfacción de seguimiento
-menu.work_linked_training.survey.educational_tutor.detail: Cumplimentar la encuesta de satisfacción de seguimiento de convenios
-
-menu.work_linked_training.survey.organization: Satisfacción de coordinación de proyecto
-menu.work_linked_training.survey.organization.detail: Cumplimentar la encuesta de satisfacción de proyecto por cada curso académico
-
-menu.work_linked_training.survey.organization_final: Satisfacción final de proyecto
-menu.work_linked_training.survey.organization_final.detail: Cumplimentar la encuesta de satisfacción final de proyecto
+menu.work_linked_training.survey.educational_tutor: Satisfacción del centro educativo
+menu.work_linked_training.survey.educational_tutor.detail: Cumplimentar la encuesta de satisfacción del centro educativo
 
 menu.work_linked_training.report: Informes
 menu.work_linked_training.report.detail: Generar informes relacionados con la FP dual
@@ -121,8 +115,8 @@ menu.work_linked_training.report.student_survey.detail: Generar el informe de la
 menu.work_linked_training.report.company_survey: Encuesta de satisfacción de empresas
 menu.work_linked_training.report.company_survey.detail: Generar el informe de la encuesta de satisfacción de empresas con la FP dual
 
-menu.work_linked_training.report.organization_survey: Encuesta de satisfacción de seguimiento
-menu.work_linked_training.report.organization_survey.detail: Generar el informe de la encuesta de satisfacción del profesorado que realiza seguimiento de la FP dual
+menu.work_linked_training.report.educational_tutor_survey: Encuesta de satisfacción del centro educativo
+menu.work_linked_training.report.educational_tutor_survey.detail: Generar el informe de la encuesta de satisfacción del centro educativo
 
 menu.work_linked_training.report.meeting: Reuniones de tutorización
 menu.work_linked_training.report.meeting.detail: Generar el informe de reuniones de tutorización de la FP dual
