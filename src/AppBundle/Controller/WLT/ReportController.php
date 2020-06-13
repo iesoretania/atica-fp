@@ -318,7 +318,9 @@ class ReportController extends Controller
         }
 
         if (empty($stats)) {
-            return $this->render('wlt/report/no_survey.html.twig');
+            return $this->render('wlt/report/no_survey.html.twig', [
+                'menu_path' => 'work_linked_training_report_student_survey_list'
+            ]);
         }
 
         $html = $engine->render('wlt/report/student_survey_report.html.twig', [
@@ -372,7 +374,9 @@ class ReportController extends Controller
         }
 
         if (empty($stats)) {
-            return $this->render('wlt/report/no_survey.html.twig');
+            return $this->render('wlt/report/no_survey.html.twig', [
+                'menu_path' => 'work_linked_training_report_company_survey_list'
+            ]);
         }
 
         $html = $engine->render('wlt/report/company_survey_report.html.twig', [
@@ -428,7 +432,9 @@ class ReportController extends Controller
 
 
         if (empty($stats)) {
-            return $this->render('wlt/report/no_survey.html.twig');
+            return $this->render('wlt/report/no_survey.html.twig', [
+                'menu_path' => 'work_linked_training_report_educational_tutor_survey_list'
+            ]);
         }
 
         $html = $engine->render('wlt/report/educational_tutor_survey_report.twig', [

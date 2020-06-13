@@ -20,6 +20,7 @@ en la distintas versiones de la misma.
 * chore: Mostrar actividades no completadas en calendario de FCT
 * chore: Dejar la antigua encuesta de seguimiento de FP dual como satisfacción de centro
 * fix: Solucionados problemas con los informes de encuestas de FP dual
+* fix: Mostrar correctamente el mensaje cuando se pide informe y no hay encuesta asignada
 
 3.3.0 (2020-06-08)
 ------------------
