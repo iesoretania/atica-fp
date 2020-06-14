@@ -93,14 +93,14 @@ class VisitType extends AbstractType
             $startDate = clone $dateTime;
             $startDate->setTime(0, 0, 0);
             $endDate = clone $dateTime;
-            $startDate->add(new \DateInterval('P1D'));
+            $endDate->add(new \DateInterval('P1D'));
 
             /** @var Agreement $agreement */
             foreach ($selectedAgreements as $agreement) {
                 foreach ($agreement->getAgreementEnrollments() as $agreementEnrollment) {
                     if ($agreementEnrollment->getEducationalTutor() === $teacher
                         && (!$agreement->getStartDate() || $endDate >= $agreement->getStartDate())
-                        && (!$agreement->getEndDate() || $startDate < $agreement->getEndDate())) {
+                        && (!$agreement->getEndDate() || $startDate <= $agreement->getEndDate())) {
                         $studentEnrollments[] = $agreementEnrollment->getStudentEnrollment();
                     }
                 }

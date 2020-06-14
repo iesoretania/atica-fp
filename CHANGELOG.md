@@ -21,6 +21,7 @@ en la distintas versiones de la misma.
 * chore: Dejar la antigua encuesta de seguimiento de FP dual como satisfacción de centro
 * fix: Solucionados problemas con los informes de encuestas de FP dual
 * fix: Mostrar correctamente el mensaje cuando se pide informe y no hay encuesta asignada
+* fix: El último día se puede marcar que se ha visitado al estudiante en la FCT
 
 3.3.0 (2020-06-08)
 ------------------
