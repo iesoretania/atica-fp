@@ -23,6 +23,7 @@ en la distintas versiones de la misma.
 * fix: Mostrar correctamente el mensaje cuando se pide informe y no hay encuesta asignada
 * fix: El último día se puede marcar que se ha visitado al estudiante en la FCT
 * chore: Permitir generar el informe de visitas de FCT aunque no haya
+* feat: Generar informe de dietas de desplazamiento en la FCT
 
 3.3.0 (2020-06-08)
 ------------------

@@ -33,6 +33,7 @@ use AppBundle\Security\WPT\TravelExpenseVoter;
 use AppBundle\Security\WPT\WPTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Mpdf\Mpdf;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -40,6 +41,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
+use TFox\MpdfPortBundle\Service\MpdfService;
+use Twig\Environment;
 
 /**
  * @Route("/fct/desplazamiento")
@@ -355,5 +358,64 @@ class TravelExpenseController extends Controller
             'title' => $title,
             'items' => $travelExpenses
         ]);
+    }
+
+    /**
+     * @Route("/{id}/descargar",
+     *     requirements={"id" = "\d+"}, name="workplace_training_travel_expense_report", methods={"GET"})
+     */
+    public function travelExpensesSummaryReportAction(
+        Environment $engine,
+        TranslatorInterface $translator,
+        TravelExpenseRepository $travelExpenseRepository,
+        Teacher $teacher
+    ) {
+        $travelExpense = new TravelExpense();
+        $travelExpense
+            ->setTeacher($teacher);
+
+        $this->denyAccessUnlessGranted(TravelExpenseVoter::ACCESS, $travelExpense);
+
+        $mpdfService = new MpdfService();
+        $mpdfService->setAddDefaultConstructorArgs(false);
+
+        /** @var Mpdf $mpdf */
+        $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4-L']]);
+        $tmp = '';
+
+        try {
+            $template = $teacher->getAcademicYear()->getDefaultLandscapeTemplate();
+            if ($template) {
+                $tmp = tempnam('.', 'tpl');
+                file_put_contents($tmp, $template->getData());
+                $mpdf->SetImportUse();
+                $mpdf->SetDocTemplate($tmp, true);
+            }
+
+            $title = $translator->trans('title.report', [], 'wpt_travel_expense_report')
+                . ' - ' . $teacher->getPerson();
+
+            $fileName = $title . '.pdf';
+
+            $travelExpenses = $travelExpenseRepository->findByTeacherOrderByDateTime($teacher);
+
+            $html = $engine->render('wpt/travel_expense/travel_expense_report.html.twig', [
+                'teacher' => $teacher,
+                'travel_expenses' => $travelExpenses,
+                'title' => $title
+            ]);
+
+            $response = $mpdfService->generatePdfResponse(
+                $html,
+                ['mpdf' => $mpdf]
+            );
+            $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+            return $response;
+        } finally {
+            if ($tmp) {
+                unlink($tmp);
+            }
+        }
     }
 }

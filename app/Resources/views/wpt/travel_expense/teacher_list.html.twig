@@ -10,6 +10,7 @@
     <th>{{ 'header.distance'|trans }}</th>
     <th>{{ 'header.other_expenses'|trans }}</th>
     <th>{{ 'header.verified'|trans }}</th>
+    <th></th>
 {% endblock %}
 
 {% block table_body %}
@@ -33,10 +34,13 @@
                     <td>
                         {{ (item[3] > 0 and item[3] == item[1] ? 'table.verified_yes' : 'table.verified_no')|trans }}
                     </td>
+                    <td>
+                        {{ m.link_button(path('workplace_training_travel_expense_report', {'id': item[0].id}), 'file-alt', 'btn-primary btn-sm btn-block', 'table.travel_expense_report'|trans) }}
+                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="5">{{ 'table.no_teachers'|trans }}</td>
+                    <td colspan="6">{{ 'table.no_teachers'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

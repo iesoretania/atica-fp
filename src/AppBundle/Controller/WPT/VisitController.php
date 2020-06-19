@@ -452,6 +452,7 @@ class VisitController extends Controller
             }
         }
     }
+
     /**
      * @param WPTTeacherRepository $WPTTeacherRepository
      * @param WPTGroupRepository $WPTGroupRepository

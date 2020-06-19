@@ -18,6 +18,7 @@
 
 namespace AppBundle\Repository\WPT;
 
+use AppBundle\Entity\Edu\Teacher;
 use AppBundle\Entity\WPT\TravelExpense;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -51,5 +52,16 @@ class TravelExpenseRepository extends ServiceEntityRepository
             ->setParameter('list', $list)
             ->getQuery()
             ->execute();
+    }
+
+    public function findByTeacherOrderByDateTime(Teacher $teacher)
+    {
+        return $this->createQueryBuilder('te')
+            ->where('te.teacher = :teacher')
+            ->setParameter('teacher', $teacher)
+            ->orderBy('te.fromDateTime', 'ASC')
+            ->addOrderBy('te.toDateTime', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 }

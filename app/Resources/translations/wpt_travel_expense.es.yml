@@ -16,6 +16,8 @@ form.unverified: "(sin verificar)"
 
 table.new: Registrar desplazamiento
 
+table.travel_expense_report: Registro de dietas
+
 prompt.delete_confirm: |
   ¿Está seguro de que desea eliminar los siguientes desplazamientos?
 
