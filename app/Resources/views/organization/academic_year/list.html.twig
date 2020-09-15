@@ -5,9 +5,10 @@
 {% block path_new %}{{ path('organization_academic_year_new') }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-30"><label><input type="checkbox" id="select"> {{ 'header.description'|trans }}</label></th>
-    <th class="w-30">{{ 'header.principal'|trans }}</th>
-    <th class="w-30">{{ 'header.financial_manager'|trans }}</th>
+    <th class="w-20"><label><input type="checkbox" id="select"> {{ 'header.description'|trans }}</label></th>
+    <th class="w-25">{{ 'header.principal'|trans }}</th>
+    <th class="w-25">{{ 'header.financial_manager'|trans }}</th>
+    <th class="w-20"></th>
     <th class="w-10">{{ 'header.active'|trans }}</th>
 {% endblock %}
 
@@ -25,7 +26,10 @@
                         {{ academic_year.financialManager|default('') }}
                     </td>
                     <td>
-                        {% if academic_year != current  %}
+                        {{ m.link_button(path('organization_academic_year_copy', {'id': academic_year.id}), 'copy', 'btn-secondary btn-sm btn-block', 'form.copy'|trans) }}
+                    </td>
+                    <td>
+                        {% if academic_year != current %}
                             {{ m.submit_button('switch', 'lightbulb', 'btn-primary btn-sm btn-block', 'form.switch'|trans, false, academic_year.id) }}
                         {% else %}
                             <i class="fas fa-check"></i> {{ 'table.active'|trans }}
@@ -34,7 +38,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

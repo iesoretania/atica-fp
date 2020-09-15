@@ -19,24 +19,30 @@
 namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Edu\Grade;
 use AppBundle\Entity\Edu\Group;
 use AppBundle\Entity\Edu\Subject;
 use AppBundle\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 
 class SubjectRepository extends ServiceEntityRepository
 {
-    /** @var TeachingRepository */
     private $teachingRepository;
+    private $learningOutcomeRepository;
 
-    public function __construct(ManagerRegistry $registry, TeachingRepository $teachingRepository)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        TeachingRepository $teachingRepository,
+        LearningOutcomeRepository $learningOutcomeRepository
+    ) {
         parent::__construct($registry, Subject::class);
 
         $this->teachingRepository = $teachingRepository;
+        $this->learningOutcomeRepository = $learningOutcomeRepository;
     }
 
     /**
@@ -168,5 +174,35 @@ class SubjectRepository extends ServiceEntityRepository
             ->setParameter('list', $list)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param Grade $grade
+     * @return Subject[]|Collection
+     */
+    public function findByGrade(Grade $grade)
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.grade = :grade')
+            ->setParameter('grade', $grade)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function copyFromGrade(Grade $destination, Grade $source)
+    {
+        $subjects = $this->findByGrade($source);
+        foreach ($subjects as $subject) {
+            $newSubject = new Subject();
+            $newSubject
+                ->setGrade($destination)
+                ->setName($subject->getName())
+                ->setInternalCode($subject->getInternalCode())
+                ->setCode($subject->getCode());
+
+            $this->getEntityManager()->persist($newSubject);
+
+            $this->learningOutcomeRepository->copyFromSubject($newSubject, $subject);
+        }
     }
 }

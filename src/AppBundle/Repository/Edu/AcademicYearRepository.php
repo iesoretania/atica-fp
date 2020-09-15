@@ -74,14 +74,31 @@ class AcademicYearRepository extends ServiceEntityRepository
         $startDate->setTime(0, 0);
 
         $endDate = clone $date;
-        $endDate->setTime(23, 59, 59);
+        $endDate->add(new \DateInterval('P1D'));
 
         return $this->createQueryBuilder('ay')
             ->where('ay.startDate <= :start_date')
-            ->andWhere('ay.endDate >= :end_date')
+            ->andWhere('ay.endDate > :end_date')
             ->setParameter('start_date', $startDate)
             ->setParameter('end_date', $endDate)
             ->orderBy('ay.organization')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Organization $organization
+     * @param AcademicYear $academicYear
+     * @return AcademicYear[]
+     */
+    public function findAllByOrganizationButOne(Organization $organization, AcademicYear $academicYear)
+    {
+        return $this->createQueryBuilder('ay')
+            ->andWhere('ay.organization = :organization')
+            ->andWhere('ay != :academic_year')
+            ->setParameter('organization', $organization)
+            ->setParameter('academic_year', $academicYear)
+            ->orderBy('ay.description', 'DESC')
             ->getQuery()
             ->getResult();
     }

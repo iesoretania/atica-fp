@@ -22,15 +22,18 @@ use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
 
 class TrainingRepository extends ServiceEntityRepository
 {
+    private $gradeRepository;
 
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, GradeRepository $gradeRepository)
     {
         parent::__construct($registry, Training::class);
+        $this->gradeRepository = $gradeRepository;
     }
 
     /**
@@ -47,7 +50,7 @@ class TrainingRepository extends ServiceEntityRepository
 
     /**
      * @param AcademicYear $academicYear
-     * @return Training[]
+     * @return Training[]|Collection
      */
     public function findByAcademicYear(AcademicYear $academicYear)
     {
@@ -120,6 +123,20 @@ class TrainingRepository extends ServiceEntityRepository
             ->select('COUNT(t)')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function copyFromAcademicYear(AcademicYear $destination, AcademicYear $source)
+    {
+        $trainings = $this->findByAcademicYear($source);
+        foreach ($trainings as $training) {
+            $newTraining = new Training();
+            $newTraining->setAcademicYear($destination);
+            $newTraining
+                ->setName($training->getName())
+                ->setInternalCode($training->getInternalCode());
+            $this->getEntityManager()->persist($newTraining);
+            $this->gradeRepository->copyFromTraining($newTraining, $training);
+        }
     }
 
 }

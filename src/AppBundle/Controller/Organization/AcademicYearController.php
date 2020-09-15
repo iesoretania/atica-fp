@@ -20,9 +20,15 @@ namespace AppBundle\Controller\Organization;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Organization;
+use AppBundle\Form\Model\Edu\AcademicYearCopy;
+use AppBundle\Form\Type\Edu\AcademicYearCopyType;
 use AppBundle\Form\Type\Edu\AcademicYearType;
+use AppBundle\Repository\Edu\AcademicYearRepository;
+use AppBundle\Repository\Edu\TrainingRepository;
+use AppBundle\Security\Edu\AcademicYearVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
@@ -30,6 +36,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @Route("/centro/cursoacademico")
@@ -217,7 +224,7 @@ class AcademicYearController extends Controller
     /**
      * @param Request $request
      * @param array $academicYears
-     * @param \Doctrine\Common\Persistence\ObjectManager $em
+     * @param ObjectManager $em
      * @return bool
      */
     private function processRemoveAcademicYear(Request $request, $academicYears, $em)
@@ -242,7 +249,7 @@ class AcademicYearController extends Controller
     /**
      * @param Request $request
      * @param Organization $organization
-     * @param \Doctrine\Common\Persistence\ObjectManager $em
+     * @param ObjectManager $em
      * @return bool
      */
     private function processSwitchAcademicYear(Request $request, Organization $organization, $em)
@@ -280,5 +287,61 @@ class AcademicYearController extends Controller
             ->setParameter('items', $academicYears)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @Route("/copiar/{id}", name="organization_academic_year_copy", methods={"GET", "POST"})
+     */
+    public function copyAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
+        TrainingRepository $trainingRepository,
+        TranslatorInterface $translator,
+        AcademicYear $academicYear
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
+        $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
+
+        $academicYears = $academicYearRepository->findAllByOrganizationButOne($organization, $academicYear);
+
+        $academicYearCopy = new AcademicYearCopy();
+        $form = $this->createForm(AcademicYearCopyType::class, $academicYearCopy, [
+            'academic_years' => $academicYears
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // copiar datos del curso académico
+            try {
+                $trainingRepository->copyFromAcademicYear(
+                    $academicYear,
+                    $academicYearCopy->getAcademicYear()
+                );
+
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash('success', $translator->trans('message.copied', [], 'edu_academic_year'));
+
+                return $this->redirectToRoute('organization_academic_year_list');
+            } catch (\Exception $e) {
+                $this->addFlash(
+                    'error',
+                    $translator->trans('message.copy_error', [], 'edu_academic_year')
+                );
+            }
+        }
+
+        $title = $translator->trans('title.copy', [], 'edu_academic_year');
+
+        return $this->render('organization/academic_year/copy.html.twig', [
+            'menu_path' => 'organization_academic_year_list',
+            'breadcrumb' => [['fixed' => $title]],
+            'title' => $title,
+            'form' => $form->createView(),
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYears
+        ]);
     }
 }

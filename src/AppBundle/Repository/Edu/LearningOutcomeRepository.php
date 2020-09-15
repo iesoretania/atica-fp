@@ -21,13 +21,17 @@ namespace AppBundle\Repository\Edu;
 use AppBundle\Entity\Edu\LearningOutcome;
 use AppBundle\Entity\Edu\Subject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 class LearningOutcomeRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $criterionRepository;
+
+    public function __construct(ManagerRegistry $registry, CriterionRepository $criterionRepository)
     {
         parent::__construct($registry, LearningOutcome::class);
+        $this->criterionRepository = $criterionRepository;
     }
 
     public function findAllInListByIdAndSubject(
@@ -78,5 +82,34 @@ class LearningOutcomeRepository extends ServiceEntityRepository
             ->addOrderBy('lo.code')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Subject $subject
+     * @return LearningOutcome[]|Collection
+     */
+    public function findBySubject(Subject $subject)
+    {
+        return $this->createQueryBuilder('lo')
+            ->where('lo.subject = :subject')
+            ->setParameter('subject', $subject)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function copyFromSubject(Subject $newSubject, Subject $source)
+    {
+        $learningOutcomes = $this->findBySubject($source);
+        foreach ($learningOutcomes as $learningOutcome) {
+            $newLearningOutcome = new LearningOutcome();
+            $newLearningOutcome
+                ->setSubject($newSubject)
+                ->setCode($learningOutcome->getCode())
+                ->setDescription($learningOutcome->getDescription());
+
+            $this->getEntityManager()->persist($newLearningOutcome);
+
+            $this->criterionRepository->copyFromLearningOutcome($newLearningOutcome, $learningOutcome);
+        }
     }
 }

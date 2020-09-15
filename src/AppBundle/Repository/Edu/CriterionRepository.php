@@ -22,6 +22,7 @@ use AppBundle\Entity\Edu\Criterion;
 use AppBundle\Entity\Edu\LearningOutcome;
 use AppBundle\Entity\Edu\Subject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 class CriterionRepository extends ServiceEntityRepository
@@ -77,4 +78,35 @@ class CriterionRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * @param LearningOutcome $learningOutcome
+     * @return Criterion[]|Collection
+     */
+    private function findByLearningOutcome(LearningOutcome $learningOutcome)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.learningOutcome = :learning_outcome')
+            ->setParameter('learning_outcome', $learningOutcome)
+            ->orderBy('c.code')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function copyFromLearningOutcome(LearningOutcome $destination, LearningOutcome $source)
+    {
+        $criteria = $this->findByLearningOutcome($source);
+
+        foreach ($criteria as $criterion) {
+            $newCriterion = new Criterion();
+            $newCriterion
+                ->setLearningOutcome($destination)
+                ->setDescription($criterion->getDescription())
+                ->setCode($criterion->getCode())
+                ->setName($criterion->getName());
+
+            $this->getEntityManager()->persist($newCriterion);
+        }
+    }
+
 }

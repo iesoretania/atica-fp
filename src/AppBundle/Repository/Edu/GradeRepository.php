@@ -20,17 +20,21 @@ namespace AppBundle\Repository\Edu;
 
 use AppBundle\Entity\Edu\AcademicYear;
 use AppBundle\Entity\Edu\Grade;
+use AppBundle\Entity\Edu\Training;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 
 class GradeRepository extends ServiceEntityRepository
 {
+    private $subjectRepository;
 
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, SubjectRepository $subjectRepository)
     {
         parent::__construct($registry, Grade::class);
+        $this->subjectRepository = $subjectRepository;
     }
 
     /**
@@ -97,5 +101,36 @@ class GradeRepository extends ServiceEntityRepository
             ->addOrderBy('g.name')
             ->getQuery()
             ->getResult();
+    }
+
+
+    /**
+     * @param Training $training
+     * @return Grade[]|Collection
+     */
+    public function findByTraining(Training $training)
+    {
+        return $this->createQueryBuilder('g')
+            ->where('g.training = :training')
+            ->setParameter('training', $training)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function copyFromTraining(
+        Training $destination,
+        Training $source
+    ) {
+        $grades = $this->findByTraining($source);
+        foreach ($grades as $grade) {
+            $newGrade = new Grade();
+            $newGrade
+                ->setTraining($destination)
+                ->setName($grade->getName())
+                ->setInternalCode($grade->getInternalCode());
+            $this->getEntityManager()->persist($newGrade);
+
+            $this->subjectRepository->copyFromGrade($newGrade, $grade);
+        }
     }
 }
