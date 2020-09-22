@@ -2,6 +2,10 @@ form.code: Código
 form.description: Descripción
 form.criteria: Criterios de evaluación asociados
 
+form.source_shift: Convocatoria desde la que copiar
+form.source_shift.none: Seleccione una convocatoria compatible...
+form.copy_to: Los datos se copiarán a la convocatoria %shift%
+
 form.save: Guardar cambios
 form.delete: Eliminar las actividades seleccionadas
 form.back: Volver
@@ -12,6 +16,9 @@ form.import.placeholder: |
     M_01: Identifica...
     M_02: Organiza...
 
+form.copy: Copiar desde otra convocatoria
+form.copy_from: Copiar desde la convocatoria seleccionada
+
 table.new: Nueva actividad formativo-productiva
 
 prompt.delete_confirm: |
@@ -19,10 +26,16 @@ prompt.delete_confirm: |
 
   Esta operación no se puede deshacer.
 
+prompt.copy_information: |
+  Esta operación copia las actividades formativo/productivas de otra convocatoria de la misma enseñanza y su asignación de criterios.
+
+  Para que se copie la asignación de criterios es necesario que la materia asociada a la convocatoria actual tenga ya  definidos los resultados de aprendizaje y sus criterios.
+
 title.edit: Ficha de actividad
 title.new: Nueva actividad formativo-productiva
 title.delete: Eliminar actividades
 title.import: Importación masiva
+title.copy: Copiar actividades de otra convocatoria
 
 title.list: Actividades formativo-productivas
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
@@ -38,3 +51,5 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Actividades eliminadas del centro.
 message.delete_error: Ha ocurrido un error al eliminar las actividades.
+message.copied: Actividades copiadas correctamente.
+message.copy_error: Ha ocurrido un error al copiar las actividades.

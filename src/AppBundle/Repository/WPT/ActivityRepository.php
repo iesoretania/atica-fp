@@ -21,14 +21,24 @@ namespace AppBundle\Repository\WPT;
 use AppBundle\Entity\WPT\Activity;
 use AppBundle\Entity\WPT\AgreementEnrollment;
 use AppBundle\Entity\WPT\Shift;
+use AppBundle\Repository\Edu\CriterionRepository;
+use AppBundle\Repository\Edu\LearningOutcomeRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 class ActivityRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    private $criterionRepository;
+    private $learningOutcomeRepository;
+
+    public function __construct(
+        ManagerRegistry $registry,
+        CriterionRepository $criterionRepository,
+        LearningOutcomeRepository $learningOutcomeRepository
+    ) {
         parent::__construct($registry, Activity::class);
+        $this->criterionRepository = $criterionRepository;
+        $this->learningOutcomeRepository = $learningOutcomeRepository;
     }
 
     public function findOneByCodeAndShift($code, Shift $shift)
@@ -120,5 +130,39 @@ class ActivityRepository extends ServiceEntityRepository
         return $this->getProgramActivitiesStatsFromAgreementEnrollmentQueryBuilder($agreementEnrollment)
             ->getQuery()
             ->getResult();
+    }
+
+    public function copyFromShift(Shift $destination, Shift $source)
+    {
+        $activities = $source->getActivities();
+
+        foreach ($activities as $activity) {
+
+            dump($activity);
+            $newActivity = new Activity();
+            $newActivity
+                ->setShift($destination)
+                ->setCode($activity->getCode())
+                ->setDescription($activity->getDescription());
+
+            $this->getEntityManager()->persist($newActivity);
+
+            $criteria = $activity->getCriteria();
+
+            foreach ($criteria as $criterion) {
+                $learningOutcome = $this->learningOutcomeRepository
+                    ->findOneByCodeAndSubject($criterion->getLearningOutcome()->getCode(), $destination->getSubject());
+
+                if ($learningOutcome) {
+                    $criterion = $this->criterionRepository
+                        ->findOneByCodeAndLearningOutcome($criterion->getCode(), $learningOutcome);
+
+                    if ($criterion && false === $newActivity->getCriteria()->contains($learningOutcome)) {
+                        $newActivity->getCriteria()->add($criterion);
+                        dump(['add', $criterion]);
+                    }
+                }
+            }
+        }
     }
 }

@@ -20,8 +20,11 @@ namespace AppBundle\Controller\WPT;
 
 use AppBundle\Entity\WPT\Activity;
 use AppBundle\Entity\WPT\Shift;
+use AppBundle\Form\Model\WPT\ActivityCopy;
+use AppBundle\Form\Type\WPT\ActivityCopyType;
 use AppBundle\Form\Type\WPT\ActivityType;
 use AppBundle\Repository\WPT\ActivityRepository;
+use AppBundle\Repository\WPT\ShiftRepository;
 use AppBundle\Security\WPT\ShiftVoter;
 use AppBundle\Security\WPT\WPTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
@@ -184,8 +187,6 @@ class ActivityController extends Controller
         $breadcrumb = [
             [
                 'fixed' => $shift->getName(),
-                'routeName' => 'workplace_training_shift_list',
-                'routeParams' => ['id' => $shift->getId()]
             ],
             ['fixed' => $title]
         ];
@@ -240,7 +241,7 @@ class ActivityController extends Controller
         $breadcrumb = [
             [
                 'fixed' => $shift->getName(),
-                'routeName' => 'workplace_training_shift_list',
+                'routeName' => 'workplace_training_activity_list',
                 'routeParams' => ['id' => $shift->getId()]
             ],
             ['fixed' => $title]
@@ -317,5 +318,70 @@ class ActivityController extends Controller
         }
 
         return $output;
+    }
+
+
+    /**
+     * @Route("/copiar/{id}", name="workplace_training_activity_copy", methods={"GET", "POST"})
+     */
+    public function copyAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        ShiftRepository $shiftRepository,
+        ActivityRepository $activityRepository,
+        TranslatorInterface $translator,
+        Shift $shift
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
+
+        $shifts = $shiftRepository->findRelatedByOrganizationButOne($organization, $shift);
+
+        $activityCopy = new ActivityCopy();
+        $form = $this->createForm(ActivityCopyType::class, $activityCopy, [
+            'shifts' => $shifts
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // copiar datos de la convocatoria seleccionada
+            try {
+                $activityRepository->copyFromShift(
+                    $shift,
+                    $activityCopy->getShift()
+                );
+
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash('success', $translator->trans('message.copied', [], 'wpt_activity'));
+
+                return $this->redirectToRoute('workplace_training_activity_list', ['id' => $shift->getId()]);
+            } catch (\Exception $e) {
+                $this->addFlash(
+                    'error',
+                    $translator->trans('message.copy_error', [], 'wpt_activity')
+                );
+            }
+        }
+
+        $title = $translator->trans('title.copy', [], 'wpt_activity');
+
+        $breadcrumb = [
+            [
+                'fixed' => $shift->getName(),
+                'routeName' => 'workplace_training_activity_list',
+                'routeParams' => ['id' => $shift->getId()]
+            ],
+            ['fixed' => $title]
+        ];
+
+        return $this->render('wpt/activity/copy.html.twig', [
+            'menu_path' => 'workplace_training_shift_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'form' => $form->createView(),
+            'shift' => $shift
+        ]);
     }
 }

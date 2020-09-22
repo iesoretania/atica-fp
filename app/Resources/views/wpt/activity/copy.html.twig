@@ -1,0 +1,14 @@
+{% trans_default_domain 'wpt_activity' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    <h2>{{ 'form.copy_to'|trans({'%shift%': shift}) }}</h2>
+    <div class="alert alert-info">{{ 'prompt.copy_information'|trans|nl2br }}</div>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ m.start_button() }}
+        {{ m.submit_button('submit', 'copy', 'btn-success', 'form.copy_from'|trans) }}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.end_button() }}
+    {{ form_end(form) }}
+{% endblock %}

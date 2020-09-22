@@ -19,6 +19,7 @@
 namespace AppBundle\Repository\WPT;
 
 use AppBundle\Entity\Edu\AcademicYear;
+use AppBundle\Entity\Organization;
 use AppBundle\Entity\WPT\Shift;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -77,5 +78,30 @@ class ShiftRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();
+    }
+
+    public function findRelatedByOrganizationButOne(Organization $organization, Shift $shift)
+    {
+        return $this->createQueryBuilder('s')
+            ->join('s.subject', 'sub')
+            ->join('sub.grade', 'gr')
+            ->join('gr.training', 't')
+            ->join('t.academicYear', 'ay')
+            ->where('s != :shift')
+            ->andWhere('sub.internalCode = :subject_internal_code')
+            ->andWhere('gr.internalCode = :grade_internal_code')
+            ->andWhere('ay.organization = :organization')
+            ->orderBy('ay.description', 'DESC')
+            ->addOrderBy('s.name')
+            ->setParameter('organization', $organization)
+            ->setParameter('subject_internal_code', $shift->getSubject()->getInternalCode())
+            ->setParameter(
+                'grade_internal_code',
+                $shift->getSubject()->getGrade()->getInternalCode()
+            )
+            ->setParameter('organization', $organization)
+            ->setParameter('shift', $shift)
+            ->getQuery()
+            ->getResult();
     }
 }

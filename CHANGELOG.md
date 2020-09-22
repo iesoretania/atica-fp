@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-3.3.x (2020-06-10)
+3.4.0 (2020-09-22)
 ------------------
 * chore: Las visitas se listan ahora agrupadas por docente
 * fix: Eliminar los datos asociados al borrar convenios de FP dual
@@ -24,6 +24,8 @@ en la distintas versiones de la misma.
 * fix: El último día se puede marcar que se ha visitado al estudiante en la FCT
 * chore: Permitir generar el informe de visitas de FCT aunque no haya
 * feat: Generar informe de dietas de desplazamiento en la FCT
+* feat: Permitir copiar la información de las materias de un curso académico a otro
+* feat: El programa formativo de FCT se puede copiar desde otra convocatoria de la misma enseñanza
 
 3.3.0 (2020-06-08)
 ------------------
