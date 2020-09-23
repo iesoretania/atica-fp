@@ -138,7 +138,6 @@ class ActivityRepository extends ServiceEntityRepository
 
         foreach ($activities as $activity) {
 
-            dump($activity);
             $newActivity = new Activity();
             $newActivity
                 ->setShift($destination)
@@ -159,7 +158,6 @@ class ActivityRepository extends ServiceEntityRepository
 
                     if ($criterion && false === $newActivity->getCriteria()->contains($learningOutcome)) {
                         $newActivity->getCriteria()->add($criterion);
-                        dump(['add', $criterion]);
                     }
                 }
             }
