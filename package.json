@@ -12,10 +12,10 @@
     "url": "https://github.com/iesoretania/atica-tic.git"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.14.0",
+    "@fortawesome/fontawesome-free": "^5.15.1",
     "@symfony/webpack-encore": "^0.31.0",
     "autoprefixer": "^9.8.6",
-    "bootstrap": "^4.5.2",
+    "bootstrap": "^4.5.3",
     "bootswatch": "^4.5.2",
     "ckeditor4": "^4.15.0",
     "jquery": "^3.5.1",
