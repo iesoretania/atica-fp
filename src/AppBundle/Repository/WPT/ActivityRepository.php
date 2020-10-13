@@ -137,7 +137,6 @@ class ActivityRepository extends ServiceEntityRepository
         $activities = $source->getActivities();
 
         foreach ($activities as $activity) {
-
             $newActivity = new Activity();
             $newActivity
                 ->setShift($destination)

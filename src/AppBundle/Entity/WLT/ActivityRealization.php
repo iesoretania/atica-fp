@@ -38,7 +38,7 @@ class ActivityRealization
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Activity")
+     * @ORM\ManyToOne(targetEntity="Activity", inversedBy="activityRealizations")
      * @ORM\JoinColumn(nullable=false)
      * @var Activity
      */

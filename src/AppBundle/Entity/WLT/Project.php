@@ -114,11 +114,18 @@ class Project
      */
     private $agreements;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Activity", mappedBy="project")
+     * @var Activity[]
+     */
+    private $activities;
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
         $this->studentEnrollments = new ArrayCollection();
         $this->agreements = new ArrayCollection();
+        $this->activities = new ArrayCollection();
     }
 
     public function __toString()
@@ -329,6 +336,24 @@ class Project
     public function setAgreements($agreements)
     {
         $this->agreements = $agreements;
+        return $this;
+    }
+
+    /**
+     * @return Activity[]
+     */
+    public function getActivities()
+    {
+        return $this->activities;
+    }
+
+    /**
+     * @param Activity[] $activities
+     * @return Project
+     */
+    public function setActivities($activities)
+    {
+        $this->activities = $activities;
         return $this;
     }
 }

@@ -108,5 +108,4 @@ class CriterionRepository extends ServiceEntityRepository
             $this->getEntityManager()->persist($newCriterion);
         }
     }
-
 }

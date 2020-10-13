@@ -42,6 +42,7 @@
 {% block after_table %}
     <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.link_button(path('work_linked_training_training_activity_copy', {'id': project.id}), 'copy', 'btn-primary', 'form.copy'|trans) }}
     {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
 </form>
 {% endblock %}

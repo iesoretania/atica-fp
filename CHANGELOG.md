@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+3.5.0 (xxxx-xx-xx)
+------------------
+* feat: Copiar programa formativo desde otro proyecto de FP dual
+
 3.4.0 (2020-09-22)
 ------------------
 * chore: Las visitas se listan ahora agrupadas por docente

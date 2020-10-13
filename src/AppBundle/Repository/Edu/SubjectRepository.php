@@ -76,7 +76,7 @@ class SubjectRepository extends ServiceEntityRepository
      * @param string $gradeInternalCode
      * @return Subject|null
      */
-    public function findOneByAcademicYearAndInternalCodes(
+    public function findOneByAcademicYearAndInternalCode(
         AcademicYear $academicYear,
         $subjectInternalCode,
         $gradeInternalCode

@@ -320,7 +320,6 @@ class ActivityController extends Controller
         return $output;
     }
 
-
     /**
      * @Route("/copiar/{id}", name="workplace_training_activity_copy", methods={"GET", "POST"})
      */

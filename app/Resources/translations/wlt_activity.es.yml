@@ -5,6 +5,13 @@ form.prior_learning: Formación inicial
 form.competencies: Competencias asociadas
 
 form.save: Guardar cambios
+
+form.copy: Copiar desde otro proyecto
+form.copy_from: Copiar desde el proyecto seleccionado
+form.source_project: Proyecto desde el que copiar
+form.source_project.none: Seleccione un proyecto compatible...
+form.copy_to: Los datos se copiarán al proyecto %project%
+
 form.delete: Eliminar las actividades seleccionadas
 form.back: Volver
 form.delete_confirm: Confirmar borrado
@@ -16,9 +23,15 @@ prompt.delete_confirm: |
 
   Esta operación no se puede deshacer.
 
+prompt.copy_information: |
+    Esta operación copia el programa formativo de otro proyecto de la misma enseñanza y las empresas colaboradoras del mismo.
+
+    Para que se copie la asignación de resultados de aprendizaje y criterios es necesario que la materia asociada los tenga definidos previamente.
+
 title.edit: Ficha de actividad
 title.new: Nueva actividad formativo-productiva
 title.delete: Eliminar actividades
+title.copy: Copiar programa formativo de otro proyecto
 
 title.list: Actividades formativo-productivas
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
@@ -36,3 +49,5 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Actividades eliminadas del centro.
 message.delete_error: Ha ocurrido un error al eliminar las actividades.
+message.copied: Programa formativo copiado correctamente.
+message.copy_error: Ha ocurrido un error al copiar el programa formativo.

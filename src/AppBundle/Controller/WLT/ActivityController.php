@@ -20,8 +20,11 @@ namespace AppBundle\Controller\WLT;
 
 use AppBundle\Entity\WLT\Activity;
 use AppBundle\Entity\WLT\Project;
+use AppBundle\Form\Model\WLT\ActivityCopy;
+use AppBundle\Form\Type\WLT\ActivityCopyType;
 use AppBundle\Form\Type\WLT\ActivityType;
 use AppBundle\Repository\WLT\ActivityRepository;
+use AppBundle\Repository\WLT\ProjectRepository;
 use AppBundle\Security\WLT\ProjectVoter;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -38,7 +41,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 class ActivityController extends Controller
 {
     /**
-     * @Route("/programa/{id}/actividad/nueva", name="work_linked_training_training_activity_new", methods={"GET", "POST"})
+     * @Route("/programa/{id}/actividad/nueva",
+     *     name="work_linked_training_training_activity_new", methods={"GET", "POST"})
      **/
     public function newAction(Request $request, TranslatorInterface $translator, Project $project)
     {
@@ -97,8 +101,10 @@ class ActivityController extends Controller
                 'routeParams' => ['id' => $project->getId()]
             ],
             ['fixed' => $translator->trans(
-                $activity->getId() ? 'title.edit' : 'title.new', [], 'wlt_activity')
-            ]
+                $activity->getId() ? 'title.edit' : 'title.new',
+                [],
+                'wlt_activity'
+            )]
         ];
 
         return $this->render('wlt/training/activity_form.html.twig', [
@@ -178,8 +184,8 @@ class ActivityController extends Controller
         Request $request,
         ActivityRepository $activityRepository,
         TranslatorInterface $translator,
-        Project $project)
-    {
+        Project $project
+    ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $em = $this->getDoctrine()->getManager();
@@ -210,7 +216,7 @@ class ActivityController extends Controller
                 'routeParams' => ['id' => $project->getId()]
             ],
             [
-                'fixed' => $translator->trans('title.delete' , [], 'wlt_activity')
+                'fixed' => $translator->trans('title.delete', [], 'wlt_activity')
             ]
         ];
 
@@ -219,6 +225,70 @@ class ActivityController extends Controller
             'breadcrumb' => $breadcrumb,
             'title' => $translator->trans('title.delete', [], 'wlt_activity'),
             'items' => $activities
+        ]);
+    }
+
+    /**
+     * @Route("/copiar/{id}", name="work_linked_training_training_activity_copy", methods={"GET", "POST"})
+     */
+    public function copyAction(
+        Request $request,
+        ProjectRepository $projectRepository,
+        ActivityRepository $activityRepository,
+        TranslatorInterface $translator,
+        Project $project
+    ) {
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
+
+        $projects = $projectRepository->findRelatedByOrganizationButOne($project->getOrganization(), $project);
+
+        $activityCopy = new ActivityCopy();
+        $form = $this->createForm(ActivityCopyType::class, $activityCopy, [
+            'projects' => $projects
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // copiar datos del proyecto seleccionada
+            try {
+                $activityRepository->copyFromProject(
+                    $project,
+                    $activityCopy->getProject()
+                );
+
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash('success', $translator->trans('message.copied', [], 'wlt_activity'));
+
+                return $this->redirectToRoute(
+                    'work_linked_training_project_activity_list',
+                    ['id' => $project->getId()]
+                );
+            } catch (\Exception $e) {
+                $this->addFlash(
+                    'error',
+                    $translator->trans('message.copy_error', [], 'wlt_activity')
+                );
+            }
+        }
+
+        $title = $translator->trans('title.copy', [], 'wlt_activity');
+
+        $breadcrumb = [
+            [
+                'fixed' => $project->getName(),
+                'routeName' => 'work_linked_training_project_activity_list',
+                'routeParams' => ['id' => $project->getId()]
+            ],
+            ['fixed' => $title]
+        ];
+
+        return $this->render('wlt/training/copy.html.twig', [
+            'menu_path' => 'work_linked_training_project_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'form' => $form->createView(),
+            'project' => $project
         ]);
     }
 }

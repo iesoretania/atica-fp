@@ -201,4 +201,30 @@ class ProjectRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findRelatedByOrganizationButOne(Organization $organization, Project $project)
+    {
+        $gradeInternalCodes = [];
+        foreach ($project->getGroups() as $group) {
+            if (!in_array($group->getGrade()->getInternalCode(), $gradeInternalCodes, true)) {
+                $gradeInternalCodes[] = $group->getGrade()->getInternalCode();
+            }
+        }
+
+        return $this->createQueryBuilder('p')
+            ->distinct(true)
+            ->join('p.groups', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->join('t.academicYear', 'ay')
+            ->where('p != :project')
+            ->andWhere('gr.internalCode IN (:grade_internal_codes)')
+            ->andWhere('ay.organization = :organization')
+            ->addOrderBy('p.name', 'DESC')
+            ->setParameter('organization', $organization)
+            ->setParameter('grade_internal_codes', $gradeInternalCodes)
+            ->setParameter('project', $project)
+            ->getQuery()
+            ->getResult();
+    }
 }

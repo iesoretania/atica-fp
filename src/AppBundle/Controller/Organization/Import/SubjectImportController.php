@@ -157,7 +157,7 @@ class SubjectImportController extends Controller
                         $subject = null;
                         $indexSubject = $subjectName . '.' . $gradeName;
                         if (false === isset($subjectCollection[$indexSubject])) {
-                            $subject = $subjectRepository->findOneByAcademicYearAndInternalCodes(
+                            $subject = $subjectRepository->findOneByAcademicYearAndInternalCode(
                                 $academicYear,
                                 $subjectName,
                                 $gradeName

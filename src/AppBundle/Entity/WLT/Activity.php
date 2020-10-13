@@ -39,7 +39,7 @@ class Activity
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Project")
+     * @ORM\ManyToOne(targetEntity="Project", inversedBy="activities")
      * @ORM\JoinColumn(nullable=false)
      * @var Project
      */
@@ -71,9 +71,16 @@ class Activity
      */
     private $competencies;
 
+    /**
+     * @ORM\OneToMany(targetEntity="ActivityRealization", mappedBy="activity")
+     * @var ActivityRealization[]
+     */
+    private $activityRealizations;
+
     public function __construct()
     {
         $this->competencies = new ArrayCollection();
+        $this->activityRealizations = new ArrayCollection();
     }
 
     public function __toString()
@@ -176,6 +183,24 @@ class Activity
     public function setCompetencies($competencies)
     {
         $this->competencies = $competencies;
+        return $this;
+    }
+
+    /**
+     * @return ActivityRealization[]
+     */
+    public function getActivityRealizations()
+    {
+        return $this->activityRealizations;
+    }
+
+    /**
+     * @param ActivityRealization[] $activityRealizations
+     * @return Activity
+     */
+    public function setActivityRealizations($activityRealizations)
+    {
+        $this->activityRealizations = $activityRealizations;
         return $this;
     }
 }
