@@ -25,6 +25,9 @@ class ActivityCopy
     /** @var Project */
     private $project;
 
+    /** @var bool */
+    private $copyLearningProgram = true;
+
     public function __construct()
     {
     }
@@ -44,6 +47,24 @@ class ActivityCopy
     public function setProject($project)
     {
         $this->project = $project;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getCopyLearningProgram()
+    {
+        return $this->copyLearningProgram;
+    }
+
+    /**
+     * @param bool $copyLearningProgram
+     * @return ActivityCopy
+     */
+    public function setCopyLearningProgram($copyLearningProgram)
+    {
+        $this->copyLearningProgram = $copyLearningProgram;
         return $this;
     }
 }

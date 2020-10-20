@@ -7,6 +7,7 @@ en la distintas versiones de la misma.
 3.5.0 (xxxx-xx-xx)
 ------------------
 * feat: Copiar programa formativo desde otro proyecto de FP dual
+* feat: Permitir incluir las empresas colaboradoras al copiar desde otro proyecto
 
 3.4.0 (2020-09-22)
 ------------------

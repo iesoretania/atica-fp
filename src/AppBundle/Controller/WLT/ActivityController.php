@@ -24,6 +24,7 @@ use AppBundle\Form\Model\WLT\ActivityCopy;
 use AppBundle\Form\Type\WLT\ActivityCopyType;
 use AppBundle\Form\Type\WLT\ActivityType;
 use AppBundle\Repository\WLT\ActivityRepository;
+use AppBundle\Repository\WLT\LearningProgramRepository;
 use AppBundle\Repository\WLT\ProjectRepository;
 use AppBundle\Security\WLT\ProjectVoter;
 use Doctrine\ORM\QueryBuilder;
@@ -235,6 +236,7 @@ class ActivityController extends Controller
         Request $request,
         ProjectRepository $projectRepository,
         ActivityRepository $activityRepository,
+        LearningProgramRepository $learningProgramRepository,
         TranslatorInterface $translator,
         Project $project
     ) {
@@ -256,6 +258,13 @@ class ActivityController extends Controller
                     $project,
                     $activityCopy->getProject()
                 );
+
+                if (true === $activityCopy->getCopyLearningProgram()) {
+                    $learningProgramRepository->copyFromProject(
+                        $project,
+                        $activityCopy->getProject()
+                    );
+                }
 
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.copied', [], 'wlt_activity'));

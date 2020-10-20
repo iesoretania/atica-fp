@@ -10,6 +10,9 @@ form.copy: Copiar desde otro proyecto
 form.copy_from: Copiar desde el proyecto seleccionado
 form.source_project: Proyecto desde el que copiar
 form.source_project.none: Seleccione un proyecto compatible...
+form.copy_learning_program: Copiar programa formativo de las empresas
+form.copy_learning_program.yes: Incorporar las empresas del proyecto origen y sus programas
+form.copy_learning_program.no: No incorporar las empresas del proyecto origen
 form.copy_to: Los datos se copiarán al proyecto %project%
 
 form.delete: Eliminar las actividades seleccionadas

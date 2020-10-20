@@ -18,6 +18,7 @@
 
 namespace AppBundle\Repository\WLT;
 
+use AppBundle\Entity\WLT\ActivityRealization;
 use AppBundle\Entity\WLT\LearningProgram;
 use AppBundle\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -25,10 +26,12 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 
 class LearningProgramRepository extends ServiceEntityRepository
 {
+    private $activityRealizationRepository;
 
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, ActivityRealizationRepository $activityRealizationRepository)
     {
         parent::__construct($registry, LearningProgram::class);
+        $this->activityRealizationRepository = $activityRealizationRepository;
     }
 
     private function findByProjectQueryBuilder(Project $project)
@@ -70,5 +73,36 @@ class LearningProgramRepository extends ServiceEntityRepository
             ->setParameter('list', $list)
             ->getQuery()
             ->execute();
+    }
+
+    public function copyFromProject(Project $destination, Project $source)
+    {
+        $learningPrograms = $this->findByProject($source);
+
+        /** @var LearningProgram $learningProgram */
+        foreach ($learningPrograms as $learningProgram) {
+            $newLearningProgram = new LearningProgram();
+            $newLearningProgram
+                ->setCompany($learningProgram->getCompany())
+                ->setProject($destination);
+
+            $this->getEntityManager()->persist($newLearningProgram);
+
+            $activityRealizations = $learningProgram->getActivityRealizations();
+
+            /** @var ActivityRealization $activityRealization */
+            foreach ($activityRealizations as $activityRealization) {
+                $newActivityRealization = $this->activityRealizationRepository->findOneByProjectAndCode(
+                    $source,
+                    $activityRealization->getCode()
+                );
+
+                if ($newActivityRealization &&
+                    false === $newLearningProgram->getActivityRealizations()->contains($newActivityRealization)) {
+                    $newLearningProgram->getActivityRealizations()->add($newActivityRealization);
+                }
+            }
+        }
+
     }
 }

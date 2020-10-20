@@ -22,6 +22,7 @@ use AppBundle\Entity\WLT\Project;
 use AppBundle\Form\Model\WLT\ActivityCopy;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -41,6 +42,15 @@ class ActivityCopyType extends AbstractType
                 'choice_translation_domain' => false,
                 'placeholder' => 'form.source_project.none',
                 'required' => true
+            ])
+            ->add('copyLearningProgram', ChoiceType::class, [
+                'label' => 'form.copy_learning_program',
+                'required' => true,
+                'expanded' => true,
+                'choices' => [
+                    'form.copy_learning_program.yes' => true,
+                    'form.copy_learning_program.no' => false
+                ]
             ]);
     }
 
