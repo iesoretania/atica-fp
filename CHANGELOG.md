@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-3.5.0 (xxxx-xx-xx)
+3.5.0 (2020-10-20)
 ------------------
 * feat: Copiar programa formativo desde otro proyecto de FP dual
 * feat: Permitir incluir las empresas colaboradoras al copiar desde otro proyecto
