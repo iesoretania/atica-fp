@@ -20,6 +20,7 @@ namespace AppBundle\Repository\WLT;
 
 use AppBundle\Entity\WLT\Agreement;
 use AppBundle\Entity\WLT\AgreementActivityRealization;
+use AppBundle\Entity\WLT\WorkDay;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -37,6 +38,28 @@ class AgreementActivityRealizationRepository extends ServiceEntityRepository
             ->addSelect('gr')
             ->join('aar.activityRealization', 'ar')
             ->leftJoin('aar.grade', 'gr')
+            ->where('aar.agreement = :agreement')
+            ->setParameter('agreement', $agreement)
+            ->orderBy('ar.code')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findSubmittedByAgreement(Agreement $agreement)
+    {
+        return $this->createQueryBuilder('aar')
+            ->addSelect('ar')
+            ->addSelect('gr')
+            ->join('aar.activityRealization', 'ar')
+            ->leftJoin('aar.grade', 'gr')
+            ->join(
+                WorkDay::class,
+                'w',
+                'WITH',
+                'ar MEMBER OF w.activityRealizations AND w.agreement = aar.agreement'
+            )
+            ->having('COUNT(w) > 0')
+            ->groupBy('aar')
             ->where('aar.agreement = :agreement')
             ->setParameter('agreement', $agreement)
             ->orderBy('ar.code')

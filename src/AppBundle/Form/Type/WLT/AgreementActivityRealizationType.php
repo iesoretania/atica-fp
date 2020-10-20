@@ -21,6 +21,7 @@ namespace AppBundle\Form\Type\WLT;
 use AppBundle\Entity\WLT\ActivityRealizationGrade;
 use AppBundle\Entity\WLT\AgreementActivityRealization;
 use AppBundle\Repository\WLT\ActivityRealizationGradeRepository;
+use AppBundle\Repository\WLT\AgreementActivityRealizationRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,14 +32,22 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class AgreementActivityRealizationType extends AbstractType
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
 
-    public function __construct(TranslatorInterface $translator)
-    {
+    private $grades;
+    private $submittedAgreementActivityRealizations;
+
+    private $translator;
+    private $activityRealizationGradeRepository;
+    private $agreementActivityRealizationRepository;
+
+    public function __construct(
+        TranslatorInterface $translator,
+        ActivityRealizationGradeRepository $activityRealizationGradeRepository,
+        AgreementActivityRealizationRepository $agreementActivityRealizationRepository
+    ) {
         $this->translator = $translator;
+        $this->activityRealizationGradeRepository = $activityRealizationGradeRepository;
+        $this->agreementActivityRealizationRepository = $agreementActivityRealizationRepository;
     }
 
     /**
@@ -47,17 +56,25 @@ class AgreementActivityRealizationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             /** @var AgreementActivityRealization $data */
             $data = $event->getData();
 
+            if (null === $this->grades) {
+                $this->grades = $this->activityRealizationGradeRepository->findByProject(
+                    $data->getAgreement()->getProject()
+                );
+                $this->submittedAgreementActivityRealizations = $this->agreementActivityRealizationRepository
+                    ->findSubmittedByAgreement($data->getAgreement());
+            }
             $form
                 ->add('grade', EntityType::class, [
                     'label' => false,
                     'choice_translation_domain' => false,
+                    'choices' => $this->grades,
                     'class' => ActivityRealizationGrade::class,
+                    'disabled' => !in_array($data, $this->submittedAgreementActivityRealizations, true),
                     'expanded' => true,
                     'label_attr' => ['class' => 'radio-inline'],
                     'placeholder' => $this->translator->trans(
@@ -65,12 +82,6 @@ class AgreementActivityRealizationType extends AbstractType
                         [],
                         'wlt_agreement_activity_realization'
                     ),
-                    'query_builder' => function (ActivityRealizationGradeRepository $entityRepository) use ($data) {
-                        return $entityRepository->createQueryBuilder('arg')
-                            ->where('arg.project = :project')
-                            ->setParameter('project', $data->getAgreement()->getProject())
-                            ->orderBy('arg.numericGrade', 'ASC');
-                    },
                     'required' => false
                 ]);
         });

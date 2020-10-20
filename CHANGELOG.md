@@ -8,6 +8,7 @@ en la distintas versiones de la misma.
 ------------------
 * feat: Copiar programa formativo desde otro proyecto de FP dual
 * feat: Permitir incluir las empresas colaboradoras al copiar desde otro proyecto
+* feat: Solo permitir evaluar el desempeño en las concreciones que han sido marcadas como hechas
 
 3.4.0 (2020-09-22)
 ------------------

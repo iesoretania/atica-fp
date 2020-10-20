@@ -53,4 +53,14 @@ class ActivityRealizationGradeRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function findByProject(Project $project)
+    {
+        return $this->createQueryBuilder('arg')
+            ->where('arg.project = :project')
+            ->setParameter('project', $project)
+            ->orderBy('arg.numericGrade', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
