@@ -64,8 +64,8 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
 
             $qb
                 ->join(Agreement::class, 'ag', 'WITH', 'ag.studentEnrollment = se')
-                ->andWhere('ag.startDate <= :start_date')
-                ->andWhere('ag.endDate >= :end_date')
+                ->andWhere('ag.startDate <= :start_date_time')
+                ->andWhere('ag.endDate >= :end_date_time')
                 ->setParameter('start_date_time', $startDate)
                 ->setParameter('end_date_time', $endDate);
         }
