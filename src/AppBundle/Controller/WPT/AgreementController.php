@@ -227,10 +227,7 @@ class AgreementController extends Controller
                 // dar acceso al tutor laboral a la organización
                 if ($agreementEnrollment->getWorkTutor()) {
                     if (null === $agreementEnrollment->getWorkTutor()->getUser()) {
-                        $user = $userRepository->findByPersonOrCreate($agreementEnrollment->getWorkTutor());
-                        $agreementEnrollment->getWorkTutor()->setUser(
-                            $user
-                        );
+                        $userRepository->createUserForPersonAndEmail($agreementEnrollment->getWorkTutor());
                     }
                     $membershipRepository->addNewOrganizationMembership(
                         $academicYear->getOrganization(),

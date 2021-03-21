@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+3.5.2 (xxxx-xx-xx)
+------------------
+* fix: Arreglado un problema al guardar el acuerdo
+
 3.5.1 (2021-03-21)
 ------------------
 * fix: Solucionado un problema al registrar una visita en dual
