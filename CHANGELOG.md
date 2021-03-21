@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
-3.5.x (2021-03-21)
+3.5.1 (2021-03-21)
 ------------------
 * fix: Solucionado un problema al registrar una visita en dual
 * fix: Ahora se pueden asignar antiguos estudiantes como tutores laborales en la FCT
