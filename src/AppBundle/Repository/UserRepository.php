@@ -162,10 +162,40 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
                 ->setForcePasswordChange(true);
             $person
                 ->setUser($user);
-
-            $this->getEntityManager()->persist($user);
         }
 
         return $user;
+    }
+
+    /**
+     * @param Person $person
+     * @param $emailAddress
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @return User
+     */
+    public function createUserForPersonAndEmail(
+        Person $person,
+        $emailAddress = null
+    ) {
+        $newUser = new User();
+        $newUser
+            ->setLoginUsername($person->getUniqueIdentifier());
+        $person
+            ->setUser($newUser);
+
+        if ($emailAddress) {
+            $newUser
+                ->setEmailAddress($emailAddress);
+        }
+        $newUser
+            ->setEnabled(true)
+            ->setPassword($this->encoder->encodePassword($newUser, $person->getUniqueIdentifier()))
+            ->setForcePasswordChange(true);
+
+        $this->getEntityManager()->persist($newUser);
+
+        $person->setUser($newUser);
+
+        return $newUser;
     }
 }

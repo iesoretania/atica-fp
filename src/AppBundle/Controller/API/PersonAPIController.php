@@ -19,8 +19,8 @@
 namespace AppBundle\Controller\API;
 
 use AppBundle\Entity\Person;
-use AppBundle\Entity\User;
 use AppBundle\Form\Type\NewPersonType;
+use AppBundle\Repository\UserRepository;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -37,7 +37,8 @@ class PersonAPIController extends Controller
     public function apiNewPersonAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        UserPasswordEncoderInterface $passwordEncoder
+        UserPasswordEncoderInterface $passwordEncoder,
+        UserRepository $userRepository
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
@@ -54,23 +55,9 @@ class PersonAPIController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $newUser = new User();
-            $newUser
-                ->setLoginUsername($newPerson->getUniqueIdentifier());
             $emailAddress = $form->get('userEmailAddress')->getData();
-            $newPerson
-                ->setUser($newUser);
+            $userRepository->createUserForPersonAndEmail($newPerson, $emailAddress);
 
-            if ($emailAddress) {
-                $newUser
-                    ->setEmailAddress($emailAddress);
-            }
-            $newUser
-                ->setEnabled(true)
-                ->setPassword($passwordEncoder->encodePassword($newUser, $newPerson->getUniqueIdentifier()))
-                ->setForcePasswordChange(true);
-
-            $em->persist($newUser);
             $em->persist($newPerson);
             $em->flush();
 

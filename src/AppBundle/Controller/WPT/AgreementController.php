@@ -26,6 +26,7 @@ use AppBundle\Form\Type\WPT\AgreementEnrollmentType;
 use AppBundle\Form\Type\WPT\AgreementType;
 use AppBundle\Form\Type\WPT\CalendarCopyType;
 use AppBundle\Repository\MembershipRepository;
+use AppBundle\Repository\UserRepository;
 use AppBundle\Repository\WPT\ActivityRepository;
 use AppBundle\Repository\WPT\AgreementRepository;
 use AppBundle\Security\WPT\AgreementVoter;
@@ -201,7 +202,8 @@ class AgreementController extends Controller
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         MembershipRepository $membershipRepository,
-        AgreementEnrollment $agreementEnrollment
+        AgreementEnrollment $agreementEnrollment,
+        UserRepository $userRepository
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
@@ -224,6 +226,12 @@ class AgreementController extends Controller
             try {
                 // dar acceso al tutor laboral a la organización
                 if ($agreementEnrollment->getWorkTutor()) {
+                    if (null === $agreementEnrollment->getWorkTutor()->getUser()) {
+                        $user = $userRepository->findByPersonOrCreate($agreementEnrollment->getWorkTutor());
+                        $agreementEnrollment->getWorkTutor()->setUser(
+                            $user
+                        );
+                    }
                     $membershipRepository->addNewOrganizationMembership(
                         $academicYear->getOrganization(),
                         $agreementEnrollment->getWorkTutor()->getUser(),
