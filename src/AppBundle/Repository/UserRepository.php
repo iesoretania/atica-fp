@@ -162,6 +162,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
                 ->setForcePasswordChange(true);
             $person
                 ->setUser($user);
+            $this->getEntityManager()->persist($user);
         }
 
         return $user;
