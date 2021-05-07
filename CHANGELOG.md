@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en la distintas versiones de la misma.
 
+3.x.x (xxxx-xx-xx)
+------------------
+* fix: Intento de arreglar la autenticación con Séneca si la contraseña tiene caracteres extraños
+
 3.5.3 (2021-04-07)
 ------------------
 * fix: Arreglada activación de estudiantes matriculados

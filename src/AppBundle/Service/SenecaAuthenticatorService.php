@@ -70,9 +70,9 @@ class SenecaAuthenticatorService
         $hiddenValue = $hidden->getAttribute('value');
 
         $fields = array(
-            'USUARIO' => urlencode($user),
-            'CLAVE' => urlencode($password),
-            'N_V_' => urlencode($hiddenValue)
+            'USUARIO' => $user,
+            'CLAVE' => $password,
+            'N_V_' => $hiddenValue
         );
 
         $str = $this->postToUrl($fields, $postUrl, $this->url, $this->forceSecurity);
@@ -121,7 +121,7 @@ class SenecaAuthenticatorService
     {
         $fieldsString = '';
         foreach ($fields as $key => $value) {
-            $fieldsString .= $key.'='.$value.'&';
+            $fieldsString .= $key.'='.rawurlencode($value).'&';
         }
         $fieldsString = rtrim($fieldsString, '&');
 
