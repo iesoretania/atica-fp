@@ -251,7 +251,7 @@ class TrackingController extends Controller
     }
 
     /**
-     * @Route("/api/v1/acuerdo/listar", name="api_workplace_training_agreement_list",
+     * @Route("/api/v2/acuerdo/listar", name="api_workplace_training_agreement_list",
      *     methods={"GET"})
      */
     public function apiListAction(
@@ -281,6 +281,18 @@ class TrackingController extends Controller
         );
 
         $agreements = $queryBuilder->getQuery()->getArrayResult();
-        return new JsonResponse($agreements);
+        $agreements2 = [
+            'agreements' => []
+        ];
+        foreach ($agreements as $agreement) {
+            $agreements2['agreements'][] = [
+                'agreement' => $agreement[0],
+                'horas_totales' => $agreement[1],
+                'horas_bloqueadas' => $agreement[2],
+                'jornadas_sin_asistir' => $agreement[3],
+                'faltas_justificadas' => $agreement[4]
+            ];
+        }
+        return new JsonResponse($agreements2);
     }
 }

@@ -652,7 +652,7 @@ class TrackingCalendarController extends Controller
     }
 
     /**
-     * @Route("/api/v1/{id}", name="api_workplace_training_tracking_calendar_list",
+     * @Route("/api/v2/{id}", name="api_workplace_training_tracking_calendar_list",
      *     requirements={"id" = "\d+"}, methods={"GET"})
      */
     public function apiIndexAction(
@@ -720,7 +720,7 @@ class TrackingCalendarController extends Controller
     }
 
     /**
-     * @Route("/api/v1/jornada/{workDay}/{agreementEnrollment}", name="api_workplace_training_tracking_calendar_form",
+     * @Route("/api/v2/jornada/{workDay}/{agreementEnrollment}", name="api_workplace_training_tracking_calendar_form",
      *     requirements={"id" = "\d+", "agreementEnrollment" = "\d+"}, methods={"GET"})
      */
     public function apiEditAction(
@@ -785,7 +785,7 @@ class TrackingCalendarController extends Controller
     }
 
     /**
-     * @Route("/api/v1/jornada/modificar/{trackedWorkDay}",
+     * @Route("/api/v2/jornada/modificar/{trackedWorkDay}",
      *     name="api_workplace_training_tracking_calendar_edit",
      *     requirements={"trackedWorkDay" = "\d+"}, methods={"POST"})
      */
@@ -826,7 +826,7 @@ class TrackingCalendarController extends Controller
     }
 
     /**
-     * @Route("/api/v1/jornada/actividad/{trackedWorkDay}/{activity}",
+     * @Route("/api/v2/jornada/actividad/{trackedWorkDay}/{activity}",
      *     name="api_workplace_training_tracking_calendar_edit_activity",
      *     requirements={"trackedWorkDay" = "\d+", "activity" = "\d+"}, methods={"POST"})
      */

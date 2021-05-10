@@ -7,6 +7,7 @@ en la distintas versiones de la misma.
 3.x.x (xxxx-xx-xx)
 ------------------
 * fix: Intento de arreglar la autenticación con Séneca si la contraseña tiene caracteres extraños
+* chore: Actualizada la API (v2) para facilitar la implantación de una aplicación Android
 
 3.5.3 (2021-04-07)
 ------------------
