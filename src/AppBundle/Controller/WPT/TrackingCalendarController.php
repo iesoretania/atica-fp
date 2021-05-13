@@ -433,6 +433,9 @@ class TrackingCalendarController extends Controller
             $total = $activityTrackingRepository->getTrackedHoursFromStudentEnrollment(
                 $agreementEnrollment->getStudentEnrollment()
             );
+            $totalHours = $activityTrackingRepository->getTotalHoursFromStudentEnrollment(
+                $agreementEnrollment->getStudentEnrollment()
+            );
             $educationalTutors = $wptTeacherRepository->findEducationalTutorsByStudentEnrollment(
                 $agreementEnrollment->getStudentEnrollment()
             );
@@ -442,7 +445,7 @@ class TrackingCalendarController extends Controller
                 'student_enrollment' => $agreementEnrollment->getStudentEnrollment(),
                 'data' => $data,
                 'shift' => $shift,
-                'total_hours' => $shift->getHours(),
+                'total_hours' => $totalHours,
                 'total' => $total,
                 'educational_tutors' => $educationalTutors,
                 'title' => $title

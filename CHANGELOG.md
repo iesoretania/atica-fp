@@ -8,6 +8,7 @@ en la distintas versiones de la misma.
 ------------------
 * fix: Intento de arreglar la autenticación con Séneca si la contraseña tiene caracteres extraños
 * chore: Actualizada la API (v2) para facilitar la implantación de una aplicación Android
+* chore: Calcular porcentaje en el registro de actividades de FCT sobre las horas reales del calendario
 
 3.5.3 (2021-04-07)
 ------------------
