@@ -396,6 +396,7 @@ class TrackingCalendarController extends Controller
         ActivityTrackingRepository $activityTrackingRepository,
         ActivityRepository $activityRepository,
         WPTTeacherRepository $wptTeacherRepository,
+        WorkDayRepository $workDayRepository,
         AgreementEnrollment $agreementEnrollment
     ) {
         $mpdfService = new MpdfService();
@@ -433,8 +434,8 @@ class TrackingCalendarController extends Controller
             $total = $activityTrackingRepository->getTrackedHoursFromStudentEnrollment(
                 $agreementEnrollment->getStudentEnrollment()
             );
-            $totalHours = $activityTrackingRepository->getTotalHoursFromStudentEnrollment(
-                $agreementEnrollment->getStudentEnrollment()
+            $totalHours = $workDayRepository->getTotalHoursByAgreement(
+                $agreementEnrollment->getAgreement()
             );
             $educationalTutors = $wptTeacherRepository->findEducationalTutorsByStudentEnrollment(
                 $agreementEnrollment->getStudentEnrollment()
