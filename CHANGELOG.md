@@ -2,7 +2,7 @@ CHANGELOG
 =========
 
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
-en la distintas versiones de la misma.
+en las distintas versiones de la misma.
 
 3.5.4 (2021-05-26)
 ------------------
