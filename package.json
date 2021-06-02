@@ -17,7 +17,7 @@
     "autoprefixer": "^9.8.6",
     "bootstrap": "^4.6.0",
     "bootswatch": "^4.6.0",
-    "ckeditor4": "^4.16.0",
+    "ckeditor4": "^4.16.1",
     "jquery": "^3.6.0",
     "lodash.debounce": "^4.0.8",
     "node-sass": "^4.14.1",
