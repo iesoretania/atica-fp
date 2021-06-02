@@ -748,10 +748,18 @@ class TrackingCalendarController extends Controller
         WorkDay $workDay,
         AgreementEnrollment $agreementEnrollment
     ) {
-        $trackedWorkDay = $trackedWorkDayRepository->findOneOrNewByWorkDayAndAgreementEnrollment(
-            $workDay,
-            $agreementEnrollment
-        );
+        try {
+            $trackedWorkDay = $trackedWorkDayRepository->findOneOrNewByWorkDayAndAgreementEnrollment(
+                $workDay,
+                $agreementEnrollment
+            );
+
+            $this->getDoctrine()->getManager()->flush();
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                                        'result' => 'error'
+                                    ], 500);
+        }
 
         if (null === $trackedWorkDay) {
             throw $this->createAccessDeniedException();

@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 3.5.x (2021-xx-xx)
 ------------------
 * chore: La API devuelve los días del calendario de FCT que aún no se ha cumplimentado
+* fix: Devolver el 'id' correcto de la jornada de trabajo en la API de seguimiento de la FCT
 
 3.5.4 (2021-05-26)
 ------------------
