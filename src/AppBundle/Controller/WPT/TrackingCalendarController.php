@@ -679,22 +679,38 @@ class TrackingCalendarController extends Controller
             foreach ($month as $weekId => $week) {
                 $newData[$id][$weekId] = [];
                 foreach ($week['days'] as $dayId => $day) {
-                    if (!isset($day[1])) {
+                    if (!isset($day[0])) {
                         $newData[$id][$weekId][$dayId] = [];
                     } else {
-                        $newData[$id][$weekId][$dayId] = [
-                            'id' => $day[0]->getId(),
-                            'total_hours' => $day[0]->getHours() * 100,
-                            'registered_hours' => $day[2] ?: 0,
-                            'locked' => $day[1]->isLocked(),
-                            'absence' => $day[1]->getAbsence(),
-                            'start_time1' => $day[1]->getStartTime1(),
-                            'end_time1' => $day[1]->getEndTime1(),
-                            'start_time2' => $day[1]->getStartTime2(),
-                            'end_time2' => $day[1]->getEndTime2(),
-                            'other_activities' => $day[1]->getOtherActivities(),
-                            'notes' => $day[1]->getNotes()
-                        ];
+                        if (!isset($day[1])) {
+                            $newData[$id][$weekId][$dayId] = [
+                                'id' => $day[0]->getId(),
+                                'total_hours' => $day[0]->getHours() * 100,
+                                'registered_hours' => 0,
+                                'locked' => false,
+                                'absence' => 0,
+                                'start_time1' => null,
+                                'end_time1' => null,
+                                'start_time2' => null,
+                                'end_time2' => null,
+                                'other_activities' => null,
+                                'notes' => null
+                            ];
+                        } else {
+                            $newData[$id][$weekId][$dayId] = [
+                                'id' => $day[0]->getId(),
+                                'total_hours' => $day[0]->getHours() * 100,
+                                'registered_hours' => $day[2] ?: 0,
+                                'locked' => $day[1]->isLocked(),
+                                'absence' => $day[1]->getAbsence(),
+                                'start_time1' => $day[1]->getStartTime1(),
+                                'end_time1' => $day[1]->getEndTime1(),
+                                'start_time2' => $day[1]->getStartTime2(),
+                                'end_time2' => $day[1]->getEndTime2(),
+                                'other_activities' => $day[1]->getOtherActivities(),
+                                'notes' => $day[1]->getNotes()
+                            ];
+                        }
                     }
                 }
             }

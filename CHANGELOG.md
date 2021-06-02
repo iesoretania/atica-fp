@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+3.5.x (2021-xx-xx)
+------------------
+* chore: La API devuelve los días del calendario de FCT que aún no se ha cumplimentado
+
 3.5.4 (2021-05-26)
 ------------------
 * fix: Intento de arreglar la autenticación con Séneca si la contraseña tiene caracteres extraños
