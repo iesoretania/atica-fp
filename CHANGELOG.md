@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * chore: La API devuelve los días del calendario de FCT que aún no se ha cumplimentado
 * fix: Devolver el 'id' correcto de la jornada de trabajo en la API de seguimiento de la FCT
+* feat: Desde la API se puede modificar la hora de inicio/fin de la jornada laboral en la FCT
 
 3.5.4 (2021-05-26)
 ------------------

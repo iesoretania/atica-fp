@@ -838,6 +838,10 @@ class TrackingCalendarController extends Controller
         }
         $trackedWorkDay->setNotes($request->get('notes'));
         $trackedWorkDay->setOtherActivities($request->get('other_activities'));
+        $trackedWorkDay->setStartTime1($request->get('start_time1'));
+        $trackedWorkDay->setStartTime2($request->get('start_time2'));
+        $trackedWorkDay->setEndTime1($request->get('end_time1'));
+        $trackedWorkDay->setEndTime2($request->get('end_time2'));
 
         $em = $this->getDoctrine()->getManager();
 
