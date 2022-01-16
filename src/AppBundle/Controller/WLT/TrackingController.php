@@ -132,7 +132,8 @@ class TrackingController extends Controller
         // ver siempre las propias
         if ($groups) {
             $queryBuilder
-                ->andWhere('se.group IN (:groups) OR se.person = :person OR a.workTutor = :person')
+                ->leftJoin('a.educationalTutor', 'et')
+                ->andWhere('se.group IN (:groups) OR se.person = :person OR a.workTutor = :person OR et.person = :person')
                 ->setParameter('groups', $groups)
                 ->setParameter('person', $person);
         }

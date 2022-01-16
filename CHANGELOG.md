@@ -4,11 +4,12 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-3.5.x (2021-xx-xx)
+3.5.x (2022-xx-xx)
 ------------------
 * chore: La API devuelve los días del calendario de FCT que aún no se ha cumplimentado
 * fix: Devolver el 'id' correcto de la jornada de trabajo en la API de seguimiento de la FCT
 * feat: Desde la API se puede modificar la hora de inicio/fin de la jornada laboral en la FCT
+* fix: Mostrar siempre el alumnado de FP dual al responsable del seguimiento
 
 3.5.4 (2021-05-26)
 ------------------
