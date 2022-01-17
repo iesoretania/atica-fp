@@ -91,7 +91,7 @@ class ShiftController extends Controller
 
         if (!$isManager) {
             $queryBuilder
-                ->andWhere('p.manager = :manager OR (d.head IS NOT NULL AND h.person = :manager)')
+                ->andWhere('d.head IS NOT NULL AND h.person = :manager')
                 ->setParameter('manager', $this->getUser()->getPerson());
         }
 
