@@ -22,7 +22,7 @@ use AppBundle\Entity\Person;
 use AppBundle\Entity\User;
 use AppBundle\Form\Type\UserType;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -119,7 +119,7 @@ class UserController extends Controller
                 ->setParameter('q', $q);
         }
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

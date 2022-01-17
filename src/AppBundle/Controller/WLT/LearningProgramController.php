@@ -35,7 +35,7 @@ use AppBundle\Security\WLT\ProjectVoter;
 use AppBundle\Utils\CsvImporter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -157,7 +157,7 @@ class LearningProgramController extends Controller
             ->andWhere('cp.project = :project')
             ->setParameter('project', $project);
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         $pager
             ->setMaxPerPage($this->getParameter('page.size'));

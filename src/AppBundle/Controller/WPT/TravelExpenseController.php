@@ -34,7 +34,7 @@ use AppBundle\Security\WPT\WPTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Mpdf\Mpdf;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -193,7 +193,7 @@ class TravelExpenseController extends Controller
                 ->andWhere('te.teacher = :teacher')
                 ->setParameter('teacher', $teacher);
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager
@@ -284,7 +284,7 @@ class TravelExpenseController extends Controller
                 ->andWhere('t IN (:teachers)')
                 ->setParameter('teachers', $teachers);
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

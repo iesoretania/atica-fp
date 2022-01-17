@@ -26,7 +26,7 @@ use AppBundle\Repository\SurveyQuestionRepository;
 use AppBundle\Security\SurveyVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -154,7 +154,7 @@ class SurveyQuestionController extends Controller
             ->andWhere('sq.survey = :survey')
             ->setParameter('survey', $survey);
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

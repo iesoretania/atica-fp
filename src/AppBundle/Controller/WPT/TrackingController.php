@@ -27,7 +27,7 @@ use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WPT\WPTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -185,7 +185,7 @@ class TrackingController extends Controller
             $q
         );
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

@@ -9,7 +9,7 @@ use AppBundle\Form\Type\Edu\CriterionType;
 use AppBundle\Repository\Edu\CriterionRepository;
 use AppBundle\Security\Edu\TrainingVoter;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -146,7 +146,7 @@ class CriterionController extends Controller
             ->andWhere('c.learningOutcome = :learning_outcome')
             ->setParameter('learning_outcome', $learningOutcome);
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

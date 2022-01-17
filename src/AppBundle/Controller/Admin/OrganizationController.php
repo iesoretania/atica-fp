@@ -25,7 +25,7 @@ use AppBundle\Form\Type\OrganizationType;
 use AppBundle\Repository\OrganizationRepository;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -111,7 +111,7 @@ class OrganizationController extends Controller
                 ->setParameter('q', $q);
         }
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

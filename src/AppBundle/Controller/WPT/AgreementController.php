@@ -37,7 +37,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -352,7 +352,7 @@ class AgreementController extends Controller
             ->andWhere('a.shift = :shift')
             ->setParameter('shift', $shift);
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

@@ -25,7 +25,7 @@ use AppBundle\Repository\Edu\CompetencyRepository;
 use AppBundle\Security\Edu\TrainingVoter;
 use AppBundle\Security\OrganizationVoter;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -149,7 +149,7 @@ class CompetencyController extends Controller
             ->andWhere('c.training = :training')
             ->setParameter('training', $training);
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

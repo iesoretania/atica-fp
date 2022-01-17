@@ -24,7 +24,7 @@ use AppBundle\Form\Type\Edu\LearningOutcomeType;
 use AppBundle\Repository\Edu\LearningOutcomeRepository;
 use AppBundle\Security\Edu\TrainingVoter;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -150,7 +150,7 @@ class LearningOutcomeController extends Controller
             ->andWhere('l.subject = :subject')
             ->setParameter('subject', $subject);
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

@@ -26,7 +26,7 @@ use AppBundle\Security\OrganizationVoter;
 use AppBundle\Security\WorkcenterVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -153,7 +153,7 @@ class WorkcenterController extends Controller
             ->andWhere('w.company = :company')
             ->setParameter('company', $company);
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

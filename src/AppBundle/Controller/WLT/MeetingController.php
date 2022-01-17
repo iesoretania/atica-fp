@@ -33,7 +33,7 @@ use AppBundle\Security\WLT\MeetingVoter;
 use AppBundle\Security\WLT\WLTOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -288,7 +288,7 @@ class MeetingController extends Controller
             ->setParameter('academic_year', $academicYear);
 
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

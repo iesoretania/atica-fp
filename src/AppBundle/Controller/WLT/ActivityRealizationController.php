@@ -24,7 +24,7 @@ use AppBundle\Form\Type\WLT\ActivityRealizationType;
 use AppBundle\Repository\WLT\ActivityRealizationRepository;
 use AppBundle\Security\WLT\ProjectVoter;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -150,7 +150,7 @@ class ActivityRealizationController extends Controller
             ->andWhere('ar.activity = :activity')
             ->setParameter('activity', $activity);
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

@@ -25,7 +25,7 @@ use AppBundle\Security\Edu\ReportTemplateVoter;
 use AppBundle\Security\OrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -157,7 +157,7 @@ class ReportTemplateController extends Controller
             ->andWhere('rt.organization = :organization')
             ->setParameter('organization', $organization);
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

@@ -24,7 +24,7 @@ use AppBundle\Repository\Edu\TravelRouteRepository;
 use AppBundle\Security\Edu\EduOrganizationVoter;
 use AppBundle\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -142,7 +142,7 @@ class TravelRouteController extends Controller
                 ->andWhere('tr.organization = :organization')
                 ->setParameter('organization', $organization);
 
-        $adapter = new DoctrineORMAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager
