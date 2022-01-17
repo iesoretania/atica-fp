@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
-    "@symfony/webpack-encore": "^1.7",
+    "@symfony/webpack-encore": "^1.7.0",
     "autoprefixer": "^9.8.8",
     "bootstrap": "^4.6.1",
     "bootswatch": "^4.6.1",
