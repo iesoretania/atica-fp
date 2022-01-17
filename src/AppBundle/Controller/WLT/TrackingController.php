@@ -87,6 +87,7 @@ class TrackingController extends Controller
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->join('a.workTutor', 'wt')
+            ->join('a.educationalTutor', 'et')
             ->groupBy('a')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
@@ -132,21 +133,20 @@ class TrackingController extends Controller
         // ver siempre las propias
         if ($groups) {
             $queryBuilder
-                ->leftJoin('a.educationalTutor', 'et')
                 ->andWhere('se.group IN (:groups) OR se.person = :person OR a.workTutor = :person OR et.person = :person')
                 ->setParameter('groups', $groups)
                 ->setParameter('person', $person);
         }
         if ($projects) {
             $queryBuilder
-                ->andWhere('pro IN (:projects) OR se.person = :person OR a.workTutor = :person')
+                ->andWhere('pro IN (:projects) OR se.person = :person OR a.workTutor = :person OR et.person = :person')
                 ->setParameter('projects', $projects)
                 ->setParameter('person', $person);
         }
 
         if (false === $isWltManager && false === $isManager && !$projects && !$groups) {
             $queryBuilder
-                ->andWhere('se.person = :person OR a.workTutor = :person')
+                ->andWhere('se.person = :person OR a.workTutor = :person OR et.person = :person')
                 ->setParameter('person', $person);
         }
 
