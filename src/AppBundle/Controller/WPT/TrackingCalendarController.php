@@ -351,7 +351,6 @@ class TrackingCalendarController extends Controller
             if ($template) {
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $template->getData());
-                $mpdf->SetImportUse();
                 $mpdf->SetDocTemplate($tmp, true);
             }
 
@@ -411,7 +410,6 @@ class TrackingCalendarController extends Controller
             if ($template) {
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $template->getData());
-                $mpdf->SetImportUse();
                 $mpdf->SetDocTemplate($tmp, true);
             }
 
@@ -502,7 +500,6 @@ class TrackingCalendarController extends Controller
                     $tmp,
                     $agreementEnrollment->getAgreement()->getShift()->getWeeklyActivityReportTemplate()->getData()
                 );
-                $mpdf->SetImportUse();
                 $mpdf->SetDocTemplate($tmp, true);
             }
             $mpdf->SetFont('DejaVuSansCondensed');

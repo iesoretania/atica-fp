@@ -422,7 +422,6 @@ class VisitController extends Controller
             if ($template) {
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $template->getData());
-                $mpdf->SetImportUse();
                 $mpdf->SetDocTemplate($tmp, true);
             }
 

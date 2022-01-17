@@ -4,8 +4,8 @@ namespace AppBundle\Migrations;
 
 use AppBundle\Entity\Edu\Training;
 use AppBundle\Entity\Role;
-use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
@@ -15,7 +15,7 @@ class Version20190707224037 extends AbstractMigration
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema) : void
     {
         // crear proyectos
         $workLinkedTrainings = $this->connection->createQueryBuilder()
@@ -220,7 +220,7 @@ class Version20190707224037 extends AbstractMigration
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->throwIrreversibleMigrationException("Sorry! Cannot downgrade to 1.x");
