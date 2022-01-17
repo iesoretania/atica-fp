@@ -118,12 +118,6 @@ class OrganizationRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function count()
-    {
-        $query = $this->createQueryBuilder('o')->select('count(o)')->getQuery();
-        return $query->getSingleScalarResult();
-    }
-
     /**
      * Pasado un array de ids de organizaciones, devolver la lista de objetos exceptuando la organización actual
      * @param $items
