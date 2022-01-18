@@ -1,42 +1,42 @@
 {
-  "name": "atica-fp",
-  "version": "1.0.0",
-  "description": "Aplicación web para el seguimiento del alumnado durante el período de alternancia y en la FCT",
-  "scripts": {
-    "test": "phpunit -c app/"
-  },
-  "author": "Luis Ramón López López",
-  "license": "AGPL-3.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/iesoretania/atica-tic.git"
-  },
-  "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.4",
-    "@symfony/webpack-encore": "^1.7.0",
-    "autoprefixer": "^9.8.8",
-    "bootstrap": "^4.6.1",
-    "bootswatch": "^4.6.1",
-    "ckeditor4": "^4.17.1",
-    "file-loader": "^6.2.0",
-    "jquery": "^3.6.0",
-    "lodash.debounce": "^4.0.8",
-    "node-sass": "^6.0",
-    "popper.js": "^1.16.1",
-    "postcss-loader": "^4.3.0",
-    "sass-loader": "^10.2.1",
-    "select2": "^4.0.13",
-    "select2-theme-bootstrap4": "^0.2.0-beta.6",
-    "webpack-notifier": "^1.15.0"
-  },
-  "browserslist": [
-    "Android 2.3",
-    "Android >= 4",
-    "Chrome >= 20",
-    "Firefox >= 3.6",
-    "Explorer >= 8",
-    "iOS >= 6",
-    "Opera >= 12",
-    "Safari >= 6"
-  ]
+    "devDependencies": {
+        "@fortawesome/fontawesome-free": "^5.15.4",
+        "@hotwired/stimulus": "^3.0.0",
+        "@symfony/stimulus-bridge": "^3.0.0",
+        "@symfony/webpack-encore": "^1.7.0",
+        "autoprefixer": "^9.8.8",
+        "bootstrap": "^4.6.1",
+        "bootswatch": "^4.6.1",
+        "ckeditor4": "^4.17.1",
+        "core-js": "^3.0.0",
+        "file-loader": "^6.2.0",
+        "jquery": "^3.6.0",
+        "lodash.debounce": "^4.0.8",
+        "node-sass": "^6.0",
+        "popper.js": "^1.16.1",
+        "postcss-loader": "^4.3.0",
+        "regenerator-runtime": "^0.13.2",
+        "sass-loader": "^10.2.1",
+        "select2": "^4.0.13",
+        "select2-theme-bootstrap4": "^1.0.0",
+        "webpack-notifier": "^1.6.0"
+    },
+    "browserslist": [
+        "Android 2.3",
+        "Android >= 4",
+        "Chrome >= 20",
+        "Firefox >= 3.6",
+        "Explorer >= 8",
+        "iOS >= 6",
+        "Opera >= 12",
+        "Safari >= 6"
+    ],
+    "license": "UNLICENSED",
+    "private": true,
+    "scripts": {
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "watch": "encore dev --watch",
+        "build": "encore production --progress"
+    }
 }

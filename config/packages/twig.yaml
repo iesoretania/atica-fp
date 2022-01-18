@@ -1,0 +1,15 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    exception_controller: null
+    form_themes:
+        - 'bootstrap_4_horizontal_layout.html.twig'
+        - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+        - '@TetranzSelect2Entity/Form/fields.html.twig'
+    globals:
+        app_name:     '%env(APP_NAME)%'
+        app_repository: 'https://github.com/iesoretania/atica-fp'
+        app_version:  ''
+        user_extension: '@App\Service\UserExtensionService'
+        menu_extension: "@app.menu_builders_chain"

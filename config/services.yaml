@@ -1,0 +1,71 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    # Prefijo de las notificaciones enviadas a los usuarios
+    notification.prefix:        "%env(APP_NOTIFICATION_PREFIX)%"
+
+    # Remitente de las notificaciones
+    notification.email_from:    "%env(APP_NOTIFICATION_EMAIL_FROM)%"
+
+    # Caducidad de los restablecimientos de contraseña (en minutos)
+    password_reset.expire:      "%env(APP_PASSWORD_RESET_EXPIRE)%"
+
+    # Elementos predeterminados por página en los listados
+    page.size:                  "%env(APP_PAGE_SIZE)%"
+
+    # iSéneca web URL
+    # Poner a "true" la siguiente opción para activar a nivel global la comprobación externa
+    external.enabled:           "%env(APP_EXTERNAL_ENABLED)%"
+    external.url:               "%env(APP_EXTERNAL_URL)%"
+    # El siguiente parámetro evita que se pueda interceptar las credenciales mediante un ataque MITM
+    # así que sólo debe ponerse a "false" si existe algún problema con los certificados de la Consejería de Educación
+    external.url.force_security: "%env(APP_EXTERNAL_URL_FORCE_SECURITY)%"
+
+    # Nombre de la sesión que se utilizará para almacenar datos en el navegador del usuario
+    session_name:               "%env(APP_SESSION_NAME)%"
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+            - '../src/Utils/'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+    _instanceof:
+        App\Service\MenuBuilderInterface:
+            tags: [ app.menu ]
+
+
+    app.menu_builders_chain:
+        class: App\Service\MenuBuilderChain
+        arguments:
+            - !tagged_iterator app.menu
+
+    App\Service\MailerService:
+        autowire: false
+        arguments: ["%notification.prefix%", "%notification.email_from%", "@mailer", "@translator"]
+
+    App\Service\SenecaAuthenticatorService:
+        autowire: false
+        arguments: ["%external.url%", "%external.url.force_security%", "%external.enabled%"]

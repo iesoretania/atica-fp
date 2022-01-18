@@ -1,0 +1,41 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        db_provider:
+            entity:
+                class: App:User
+
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt
+
+    role-hierarchy:
+        ROLE_ADMIN: [ROLE_ALLOWED_TO_SWITCH]
+
+    hide_user_not_found: false
+
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        login:
+            pattern:  ^/(entrar|restablecer|publico)
+            anonymous: ~
+
+        main:
+            guard:
+                authenticators:
+                    - App\Security\FormAuthenticator
+
+            logout:
+                path: logout
+                target: /
+
+            switch_user:
+                role: ROLE_ALLOWED_TO_SWITCH
+                parameter: _switch_user
+
+            user_checker: App\Security\UserChecker
+

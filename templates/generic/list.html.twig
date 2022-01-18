@@ -1,0 +1,50 @@
+{% trans_default_domain domain %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block content %}
+    {% block before_filter %}{% endblock %}
+    <div class="row">
+        <div class="form-group col-sm-5">
+            <input type="search" id="search" class="form-control" autofocus="autofocus" placeholder="&#xF002; {{ 'table.filter'|trans }}" autocomplete="off" value="{{ q }}">
+            <span id="search-clear"><i class="fas fa-times"></i></span>
+        </div>
+        {% block new_action %}
+        <div class="form-group col-sm-7">
+            <a href="{% block path_new %}{% endblock %}" class="btn btn-success"><i class="fa fa-plus"></i> {{ 'table.new'|trans }}</a>
+            {% block more_actions %}{% endblock %}
+        </div>
+        {% endblock %}
+    </div>
+    {% block before_table %}{% endblock %}
+    <section id="exchange">
+    <div id="table" class="w-100 table-responsive table-responsive-sm">
+        {% if pager and pager.count %}
+            <h4>{{ 'table.total'|transchoice(pager.count) }}</h4>
+        {% endif %}
+        <table id="list" class="table table-bordered table-hover table-striped table-sm">
+            <thead>
+            <tr>
+                {% block table_header %}{% endblock %}
+            </tr>
+            </thead>
+            <tbody>
+            {% block table_body %}{% endblock %}
+            </tbody>
+        </table>
+        {% if pager and pager.haveToPaginate %}
+            <div class="pagerfanta">
+                {% block pagerfanta %}
+                {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden'}) }}
+                {% endblock %}
+            </div>
+        {% endif %}
+    </div>
+    </section>
+    {% block after_table %}{% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('list') }}
+{% endblock %}

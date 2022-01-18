@@ -1,0 +1,19 @@
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+        types:
+            datetime:
+                class: App\DoctrineExtension\DBAL\Type\UTCDateTimeType
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        dql:
+            datetime_functions:
+                date: Oro\ORM\Query\AST\Functions\SimpleFunction
+        mappings:
+            App:
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App

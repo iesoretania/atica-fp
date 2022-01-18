@@ -1,0 +1,17 @@
+{% trans_default_domain 'wlt_meeting' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ m.start_button() }}
+        {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
+        {{ m.link_button(path('work_linked_training_meeting_list', {'academicYear': academic_year.id}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.end_button() }}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('wlt_meeting') }}
+{% endblock %}

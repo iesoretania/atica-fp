@@ -1,0 +1,26 @@
+simple_things_entity_audit:
+    audited_entities:
+        - App\Entity\Company
+        - App\Entity\Person
+        - App\Entity\Role
+        - App\Entity\User
+        - App\Entity\Workcenter
+        - App\Entity\Edu\AcademicYear
+        - App\Entity\WLT\ActivityRealizationGrade
+        - App\Entity\WLT\AgreementActivityRealization
+        - App\Entity\WLT\LearningProgram
+        - App\Entity\WLT\Meeting
+        - App\Entity\WLT\Project
+        - App\Entity\WLT\Visit
+        - App\Entity\WLT\WorkDay
+        - App\Entity\WPT\Activity
+        - App\Entity\WPT\Agreement
+        #- App\Entity\WPT\Report
+        - App\Entity\WPT\Shift
+        - App\Entity\WPT\WorkDay
+        - App\Entity\Survey
+        - App\Entity\SurveyQuestion
+        - App\Entity\AnsweredSurvey
+        - App\Entity\AnsweredSurveyQuestion
+    global_ignore_columns:
+        - last_access
