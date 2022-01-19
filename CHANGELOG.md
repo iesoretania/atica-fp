@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-4.0.x (2022-xx-xx)
+4.x.x (2022-xx-xx)
 ------------------
 * chore: La API devuelve los días del calendario de FCT que aún no se ha cumplimentado
 * fix: Devolver el 'id' correcto de la jornada de trabajo en la API de seguimiento de la FCT
@@ -13,6 +13,9 @@ en las distintas versiones de la misma.
 * chore: Actualizar código a la versión 8.* de MPDF y del componente de migraciones
 * chore: Actualizar dependencias para PHP >=7.2 y NodeJS >=16
 * chore: Arreglar mensajes "deprecated" para preparar la migración a Symfony 4.4
+* feat: Actualizado el estilo de la interfaz para plegar el menú lateral
+* feat: Modificada la configuración de Docker para ejecutar la aplicación con los últimos cambios
+* docs: Actualizado CHANGELOG, README y UPGRADE con los cambios más relevantes
 
 3.5.4 (2021-05-26)
 ------------------

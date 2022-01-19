@@ -1,11 +1,13 @@
 ATICA-FP
 ========
 
-Aplicación web para ayudar en el seguimiento del alumnado de FP dual.
+Aplicación web para ayudar en el seguimiento del alumnado de FP durante la Formación en Centros de Trabajo y
+durante el período de alternancia de FP dual.
 
 Puedes seguir el desarrollo de esta herramienta vía Twitter siguiendo a [@aticaFP].
 
-Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos componentes que se instalan usando [Composer] y [npmjs].
+Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos componentes que se instalan usando
+[Composer] y [npmjs].
 
 ## Requisitos
 
@@ -15,13 +17,15 @@ Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos comp
 - PHP [Composer].
 - [Node.js] ≥12.
 
-## Instalación mediante Docker Compose
+## Prueba rápida mediante Docker Compose
 
+**ATENCIÓN: No se recomienda ejecutarlo así en entornos de producción, tan sólo se sugiere para pruebas internas.**
 - Ejecutar `docker-compose up -d` desde la carpeta del proyecto
 - Esperar...
 - Acceder desde el navegador a la dirección http://127.0.0.1:9999
   * Si usas Docker Toolbox usa esta dirección en su lugar: http://192.168.99.100:9999
 - ¡Listo!
+
 
 ## Instalación
 
