@@ -1,5 +1,6 @@
 title.welcome: ¡Bienvenido!
 hint.close: Cerrar
+hint.toggle: Abrir/cerrar
 
 user.logged.as: "Conectado como %user%"
 user.logout: Desconectar
