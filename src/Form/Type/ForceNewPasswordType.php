@@ -58,11 +58,11 @@ class ForceNewPasswordType extends AbstractType
                         ]),
                         new NotNull()
                     ],
-                    'attr' => ['tabindex' => 3, 'autofocus' => '', 'placeholder' => 'form.reset.min_password_length'],
+                    'attr' => ['tabindex' => 3, 'autofocus' => ''],
                 ],
                 'second_options' => [
                     'label' => 'form.reset.password_repeat',
-                    'attr' => ['tabindex' => 4, 'placeholder' => 'form.reset.min_password_length']
+                    'attr' => ['tabindex' => 4]
                 ]
             ]);
     }
