@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-4.x.x (2022-xx-xx)
+4.0.0 (2022-01-20)
 ------------------
 * chore: La API devuelve los días del calendario de FCT que aún no se ha cumplimentado
 * fix: Devolver el 'id' correcto de la jornada de trabajo en la API de seguimiento de la FCT
