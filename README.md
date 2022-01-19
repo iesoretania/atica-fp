@@ -9,11 +9,11 @@ Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos comp
 
 ## Requisitos
 
-- PHP 5.6.17 o superior.
+- PHP 7.2.24 o superior.
 - Servidor web Apache2 (podría funcionar con nginx, pero no se ha probado aún).
-- Servidor de base de datos MySQL 5 o derivado (como MariaDB, Percona, etc).
+- Servidor de base de datos MySQL 5.7 o superior, o bien algún derivado (como MariaDB, Percona, etc).
 - PHP [Composer].
-- [Node.js] y [npmjs] (si se ha descargado una build completa, no serán necesarios).
+- [Node.js] ≥12.
 
 ## Instalación mediante Docker Compose
 
@@ -26,11 +26,13 @@ Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos comp
 ## Instalación
 
 - Ejecutar `composer install` desde la carpeta del proyecto.
-  - Puedes modificar la configuración de la aplicación contestando ahora las preguntas o bien posteriormente modificando el fichero `app/config/parameters.yml`.
+- Hacer una copia del fichero `.env` en `.env.local`
+  - Modifica la configuración cambiando el contenido de `.env.local`
 - Ejecutar `npm install`
 - Ejecutar el comando `node_modules/.bin/encore prod` para generar los assets.
-- Configurar el sitio de Apache2 para que el `DocumentRoot` sea la carpeta `web/` dentro de la carpeta de instalación.
-- Si aún no se ha hecho, modificar el fichero `parameters.yml` con los datos de acceso al sistema gestor de bases de datos deseados y otros parámetros de configuración globales que considere interesantes.
+- Configurar el sitio de Apache2 para que el `DocumentRoot` sea la carpeta `public/` dentro de la carpeta de instalación.
+- Activar en Apache2 `mod_rewrite` (en S.O. Linux prueba con el comando `a2enmod rewrite` y reiniciando el servicio)
+- Si aún no se ha hecho, modificar el fichero `.env.local` con los datos de acceso al sistema gestor de bases de datos deseados y otros parámetros de configuración globales que considere interesantes.
 - Para crear la base de datos: `php bin/console doctrine:database:create`
 - Para crear las tablas:
   - `php bin/console doctrine:schema:create`
@@ -58,5 +60,4 @@ Esta aplicación se ofrece bajo licencia [AGPL versión 3].
 [Composer]: http://getcomposer.org
 [AGPL versión 3]: http://www.gnu.org/licenses/agpl.html
 [Node.js]: https://nodejs.org/en/
-[npmjs]: https://www.npmjs.com/
 [@aticaFP]: https://twitter.com/aticaFP
