@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+4.0.1 (2022-01-20)
+------------------
+* docs: Añadidas instrucciones críticas para actualizar la configuración
+
 4.0.0 (2022-01-20)
 ------------------
 * chore: La API devuelve los días del calendario de FCT que aún no se ha cumplimentado
