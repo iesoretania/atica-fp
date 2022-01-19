@@ -17,6 +17,18 @@ Nuevos requisitos mínimos
 Ahora es necesario tener instalado PHP 7.2 o superior, así como NodeJS 12 o una versión
 más reciente para poder generar los estilos y scripts necesarios.
 
+Cambios en la configuración
+---------------------------
+Si se actualiza una versión 3.x o anterior, hay que copiar el fichero `.env` en otro fichero
+llamado `.env.local` y copiar manualmente los parámetros de configuración que se encontraban
+en `app\config\parameters.yml`. De otra forma, no funcionará la aplicación.
+
+El formato de configuración de la conexión a la base de datos es, en ese fichero, así:
+> DATABASE_URL="mysql://`usuario`:`contraseña`@`host`:3306/`nombre_base_de_datos`?serverVersion=5.7"
+
+La configuración del envío de correo electrónico usando GMail:
+> MAILER_URL=gmail://`usuario@gmail.com`:`contraseña`@localhost
+
 Formato de la tabla de migraciones actualizado
 ----------------------------------------------
 Hay un cambio interno en la tabla que se encarga de controlar qué actualizaciones de la base
