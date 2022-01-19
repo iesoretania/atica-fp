@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 
 # Instalar Apache2+PHP y el resto de dependencias
 ENV DEBIAN_FRONTEND noninteractive
@@ -17,7 +17,7 @@ RUN apt-get update \
         php-gd \
         mysql-client \
         zip \
-    && curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - \
+    && curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - \
     && apt -yq install nodejs \
     && rm -rf /var/lib/apt/lists/*
 
@@ -25,8 +25,8 @@ RUN apt-get update \
 RUN curl --insecure https://getcomposer.org/composer.phar -o /usr/bin/composer && chmod +x /usr/bin/composer
 
 # Añadir configuración de zona horaria a PHP
-ADD ./docker/symfony.ini /etc/php/7.0/apache2/conf.d/
-ADD ./docker/symfony.ini /etc/php/7.0/cli/conf.d/
+ADD ./docker/symfony.ini /etc/php/7.4/apache2/conf.d/
+ADD ./docker/symfony.ini /etc/php/7.4/cli/conf.d/
 
 # Activar mod_rewrite para URL amigables
 RUN a2enmod rewrite
@@ -42,11 +42,11 @@ ADD ./docker/run.sh /run.sh
 # al nuevo DocumentRoot y aceptar configuración
 # por .htaccess
 RUN chmod 0755 /run.sh \
-    && sed -i 's!/var/www/html!/var/www/symfony/web!g' /etc/apache2/sites-available/000-default.conf \
+    && sed -i 's!/var/www/html!/var/www/symfony/public!g' /etc/apache2/sites-available/000-default.conf \
     && sed -i 's!AllowOverride None!AllowOverride All!g' /etc/apache2/apache2.conf
 
 # Copiar parámetros de la aplicación Symfony
-COPY ./docker/parameters.yml /var/www/symfony/app/config/
+COPY ./docker/.env.local /var/www/symfony/
 
 # Asegurar los permisos correctos en la aplicación
 RUN chown -R www-data:www-data /var/www
