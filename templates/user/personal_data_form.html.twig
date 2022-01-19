@@ -2,6 +2,16 @@
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
+    {% if user.tokenType is not null and user.tokenType != 'password' and user.tokenExpiration > date() %}
+        <div class="alert alert-warning">
+            {{ 'prompt.email_change_warning'|trans({
+                '%email%': user.tokenType,
+                '%date%': user.tokenExpiration|date('format.date'|trans({}, 'general'), false),
+                '%time%': user.tokenExpiration|date('format.time'|trans({}, 'general'), false)
+            })
+            }}
+        </div>
+    {% endif %}
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ m.start_button() }}

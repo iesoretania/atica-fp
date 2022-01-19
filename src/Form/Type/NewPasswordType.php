@@ -41,7 +41,7 @@ class NewPasswordType extends AbstractType
                 'mapped' => false,
                 'invalid_message' => 'password.no_match',
                 'first_options' => [
-                    'label' => 'form.reset.password_new',
+                    'label' => false,
                     'constraints' => [
                         new Length([
                             'min' => 7,
@@ -49,11 +49,11 @@ class NewPasswordType extends AbstractType
                         ]),
                         new NotNull()
                     ],
-                    'attr' => ['tabindex' => 2, 'autofocus' => '', 'placeholder' => 'form.reset.min_password_length']
+                    'attr' => ['tabindex' => 2, 'autofocus' => '', 'placeholder' => 'form.reset.password_new']
                 ],
                 'second_options' => [
-                    'label' => 'form.reset.password_repeat',
-                    'attr' => ['tabindex' => 3, 'placeholder' => 'form.reset.min_password_length']
+                    'label' => false,
+                    'attr' => ['tabindex' => 3, 'placeholder' => 'form.reset.password_repeat']
                 ]
             ]);
     }

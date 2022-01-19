@@ -8,19 +8,17 @@
 {% block login_content %}
 <form method="post" action="{{ path('login_check') }}" role="form">
     <div class="form-group">
-        <label for="email">{{ 'form.login.username_email'|trans }}</label>
         <input type="text" name="_username" id="email" required="" class="form-control" tabindex="1"
                autocorrect="off" autocapitalize="none" value="{{ last_username | default('') }}"
-               {% if not last_username %}autofocus="" {% endif %}>
+               {% if not last_username %}autofocus="" {% endif %} placeholder="{{ 'form.login.username_email'|trans }}">
     </div>
     <div class="form-group">
-        <div class="text-right"><a href="{{ path('login_password_reset') }}" tabindex="4">{{ 'form.login.password.reset'|trans }}</a></div>
-        <label for="password">{{ 'form.login.password'|trans }}</label>
         <input type="password" name="_password" id="password" required="" class="form-control" tabindex="2"
-               {% if last_username %}autofocus="" {% endif %}>
+               {% if last_username %}autofocus="" {% endif %} placeholder="{{ 'form.login.password'|trans }}">
     </div>
     <div class="form-group">
         <button type="submit" name="login" class="btn btn-info btn-block" tabindex="4">{{ 'form.login.submit'|trans }}</button>
     </div>
+    <div class="extra-action"><a href="{{ path('login_password_reset') }}" tabindex="4">{{ 'form.login.password.reset'|trans }}</a></div>
 </form>
 {% endblock %}

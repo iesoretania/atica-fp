@@ -52,7 +52,14 @@ class PersonalDataController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $passwordSubmitted = $this->processPasswordAndEmailChanges($form, $user, $oldEmail, $mailerService, $translator);
+            $passwordSubmitted = $this->processPasswordAndEmailChanges(
+                $form,
+                $user,
+                $oldEmail,
+                $mailerService,
+                $translator
+            );
+
             $message = $translator->trans(
                 $passwordSubmitted ? 'message.password_changed' : 'message.saved',
                 [],

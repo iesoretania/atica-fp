@@ -2,15 +2,17 @@
 {% extends 'base.html.twig' %}
 {% import 'layout/macros_layout.html.twig' as ml %}
 
+{% block title %}
+    {% block login_title %}{% endblock %}
+{% endblock title %}
 {% block body %}
     <section class="login-form">
-        <h1 class="text-center">
-            <span class="app-name">{{ app_name|upper }} </span>
-            {% if app_version %}<span class="app-version">{{ app_version }}</span>{% endif %}
-        </h1>
         <div class="panel panel-default">
-            <div class="panel-heading">{% block login_title %}{% endblock %}</div>
             <div class="panel-body">
+                <h1 class="text-center">
+                    <p class="app-name">{{ app_name|upper }} </p>
+                    {% if app_version %}<span class="app-version">{{ app_version }}</span>{% endif %}
+                </h1>
                 {{ ml.flash_message('success', 'success') }}
                 {{ ml.flash_message('error', 'danger') }}
                 {% if login_error is defined and login_error %}

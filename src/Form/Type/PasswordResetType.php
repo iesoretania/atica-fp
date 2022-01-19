@@ -32,12 +32,13 @@ class PasswordResetType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'form.login.email',
+                'label' => false,
                 'attr' => [
                     'autocorrect' => 'off',
                     'autocapitalize' => 'none',
                     'tabindex' => 1,
-                    'autofocus' => ''
+                    'autofocus' => '',
+                    'placeholder' => 'form.login.email'
                 ]
             ]);
     }

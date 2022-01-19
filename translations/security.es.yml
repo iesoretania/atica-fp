@@ -1,5 +1,5 @@
 form.login.submit: ACCEDER A LA APLICACIÓN
-form.login.title: Introduzca sus credenciales de acceso
+form.login.title: ¡Bienvenido!
 form.login.username_email: Nombre de usuario o correo electrónico
 form.login.email: Correo electrónico
 form.login.password: Contraseña
@@ -10,21 +10,20 @@ form.login.footer.second: con licencia
 form.login.footer.link.agpl_caption: AGPL3
 
 form.login.organization.title: Seleccione centro
-form.login.organization.submit: Entrar en el centro seleccionado
-form.login.organization.back: Volver a la pantalla de entrada
+form.login.organization.submit: ENTRAR EN EL CENTRO SELECCIONADO
+form.login.organization.back: No, gracias. Volver a la pantalla de entrada
 form.login.error.no_membership: El usuario no pertenece actualmente a ningún centro educativo. Por favor contacte con la dirección de su centro.
 
 form.user.impersonate.exit: Volver al usuario normal y seleccionar otro centro
 
-form.reset.title: Restablecimiento de contraseña
-form.reset.submit: COMENZAR PROCESO
-form.reset.back: Volver al formulario de entrada
+form.reset.title: Restablecer contraseña
+form.reset.submit: COMENZAR PROCESO DE RECUPERACIÓN
+form.reset.back: No, gracias. Volver al formulario de entrada
 form.reset.notfound: No se ha encontrado la dirección indicada.
 form.reset.notvalid: No se ha encontrado la petición de restablecimiento o bien ha caducado. Vuelva a solicitarla.
 form.reset.password_old: Introduzca la contraseña actual
-form.reset.password_new: Introduzca la nueva contraseña
-form.reset.password_repeat: Vuelva a introducirla
-form.reset.min_password_length: Longitud mínima de 7 caracteres
+form.reset.password_new: Introduzca la nueva contraseña (mín. 7 caracteres)
+form.reset.password_repeat: Vuelva a introducir la nueva contraseña
 form.reset.submit_set: CONFIGURAR NUEVA CONTRASEÑA
 form.reset.sent: Se han enviado instrucciones a la dirección %email%.
 form.reset.error: No se han podido enviar las instrucciones a la dirección indicada.
@@ -50,6 +49,7 @@ form.change_email.notvalid: No se ha encontrado la petición de cambio de direcc
 form.change_email.message: La nueva dirección de correo ha sido confirmada con éxito.
 form.change_email.error: No se ha podido actualizar la dirección de correo electrónico, sigue en vigor su valor anterior.
 form.change_email.email.warning: "%name%, ¿desea cambiar la dirección de correo electrónico de su perfil a '%email%'?"
+form.change_email.email.warning2: "?"
 form.change_email.email.submit: Confirmar nueva dirección
 form.change_email.email.subject: Confirmación de cambio de dirección de correo
 form.change_email.email.body: |

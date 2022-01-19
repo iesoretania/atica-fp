@@ -10,66 +10,73 @@
 {%- endblock %}
 
 {% block body %}
-
-    <nav class="navbar navbar-dark navbar-expand-md sticky-top bg-dark">
+<div id="wrapper" class="animate">
+    <nav class="navbar header-top fixed-top navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="{{ path('frontpage') }}">{{ app_name }}</a>
-        <span class="nav-text ml-auto mr-0 text-light">
-            {{ 'user.logged.as'|trans({'%user%': app.user}, 'layout') }}
-        </span>
-        <ul class="navbar-nav">
-            {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin_user_list', {'_switch_user': '_exit'}) }}">
-                        <i class="fas fa-user-slash"></i>
-                        {{ 'user.exit_impersonation'|trans({}, 'layout') }}
-                    </a>
-                </li>
-            {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('logout') }}"><i class="fas fa-power-off"></i> {{ 'user.logout'|trans({}, 'layout') }}</a>
-                </li>
-            {% endif %}
-        </ul>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText"
+                aria-expanded="false" aria-label="{{ 'hint.toggle'|trans }}">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav animate side-nav">
+                {% for item in menu_extension.menu.children %}
+                    {{ ml.navbar_item(item.caption, item.icon, item.routeName) }}
+                {% endfor %}
+            </ul>
+
+            <ul class="navbar-nav ml-md-auto d-md-flex">
+                {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin_user_list', {'_switch_user': '_exit'}) }}">
+                            <i class="fas fa-user-slash"></i>
+                            {{ 'user.exit_impersonation'|trans({}, 'layout') }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('logout') }}"><i class="fas fa-power-off"></i> {{ 'user.logout'|trans({}, 'layout') }}</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
     </nav>
 
     <div class="container-fluid">
-    <div class="row">
+        <div class="row">
+            <main role="main" class="col-md-12 ml-sm-auto pt-0 px-4">
+                <ol class="breadcrumb">
+                    {% set last_url = "" %}
+                    {% for menu_item in menu_extension.pathByRouteName(menu_path|default(app.request.get('_route'))) %}
+                        <li class="breadcrumb-item">
+                        {% if not loop.last or (breadcrumb is defined and breadcrumb) %}{% set last_url = path(menu_item.routeName, menu_item.routeParams) %}<a href="{{ last_url }}" class="breadcrumb-link">{% endif %}
+                        {%- if menu_item.icon %}<i class="fa fa-{{ menu_item.icon }}"></i> {% endif -%}
+                        {%- if not loop.first and menu_item.caption %}{% if menu_item.icon %}<span class="hidden-xs hidden-sm">{% endif %}{{- menu_item.caption|trans({}, 'menu') -}}{% if menu_item.icon %}</span>{% endif %}{% endif %}
+                        {%- if loop.first %}<span class="hidden-xs hidden-sm">{{- user_extension.currentOrganization.name -}}</span>{% endif %}
+                        {% if not loop.last or (breadcrumb is defined and breadcrumb) %}</a>{% endif %}
+                        </li>
+                    {%- endfor -%}
+                    {% for item in breadcrumb|default([]) %}
+                        <li class="breadcrumb-item active">
+                            {%- if item.routeName is defined %}{% set last_url = path(item.routeName, item.routeParams ?: {}) %}<a href="{{ last_url }}" class="breadcrumb-link">{% endif -%}
+                                {%- if item.icon is defined %}<i class="fa fa-{{ item.icon }}"></i> {% endif -%}
+                                {%- if item.caption is defined %}{{- item.caption|trans({}, 'menu') -}}{% endif %}{{- item.fixed|default('') -}}
+                                {%- if item.routeName is defined %}</a>{% endif -%}
+                        </li>
+                    {%- endfor %}
+                </ol>
 
-        {% include 'layout/partial_sidebar.html.twig' %}
-
-        <main role="main" class="col-md-10 ml-sm-auto pt-3 px-4">
-            <ol class="breadcrumb">
-                {% set last_url = "" %}
-                {% for menu_item in menu_extension.pathByRouteName(menu_path|default(app.request.get('_route'))) %}
-                    <li class="breadcrumb-item">
-                    {% if not loop.last or (breadcrumb is defined and breadcrumb) %}{% set last_url = path(menu_item.routeName, menu_item.routeParams) %}<a href="{{ last_url }}" class="breadcrumb-link">{% endif %}
-                    {%- if menu_item.icon %}<i class="fa fa-{{ menu_item.icon }}"></i> {% endif -%}
-                    {%- if not loop.first and menu_item.caption %}{% if menu_item.icon %}<span class="hidden-xs hidden-sm">{% endif %}{{- menu_item.caption|trans({}, 'menu') -}}{% if menu_item.icon %}</span>{% endif %}{% endif %}
-                    {%- if loop.first %}<span class="hidden-xs hidden-sm">{{- user_extension.currentOrganization.name -}}</span>{% endif %}
-                    {% if not loop.last or (breadcrumb is defined and breadcrumb) %}</a>{% endif %}
-                    </li>
-                {%- endfor -%}
-                {% for item in breadcrumb|default([]) %}
-                    <li class="breadcrumb-item active">
-                        {%- if item.routeName is defined %}{% set last_url = path(item.routeName, item.routeParams ?: {}) %}<a href="{{ last_url }}" class="breadcrumb-link">{% endif -%}
-                            {%- if item.icon is defined %}<i class="fa fa-{{ item.icon }}"></i> {% endif -%}
-                            {%- if item.caption is defined %}{{- item.caption|trans({}, 'menu') -}}{% endif %}{{- item.fixed|default('') -}}
-                            {%- if item.routeName is defined %}</a>{% endif -%}
-                    </li>
-                {%- endfor %}
-            </ol>
-
-            {% block content_header %}
-                {% if title is defined and (show_title is not defined or show_title == true) %}
-                    <h1 class="well">{{ title }}</h1>
+                {% block content_header %}
+                    {% if title is defined and (show_title is not defined or show_title == true) %}
+                        <h1 class="well">{{ title }}</h1>
+                    {% endif %}
+                    {% include 'layout/partial_flash.html.twig' %}
+                {% endblock %}
+                {% if menu ?? false %}
+                    {% include 'layout/partial_menu.html.twig' %}
                 {% endif %}
-                {% include 'layout/partial_flash.html.twig' %}
-            {% endblock %}
-            {% if menu ?? false %}
-                {% include 'layout/partial_menu.html.twig' %}
-            {% endif %}
-            {% block content %}{% endblock %}
-        </main>
+                {% block content %}{% endblock %}
+            </main>
+        </div>
     </div>
 </div>
 
