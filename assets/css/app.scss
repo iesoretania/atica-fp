@@ -134,22 +134,12 @@ body {
     text-align: right;
 }
 
-form.login {
-    color: #858585;
+section.login-form input {
+    font-size: 20px;
 }
 
-form.login label {
-    font-weight: normal;
-}
-
-form.login input {
-    margin: 0;
+section.login-form button {
     font-size: 18px;
-}
-
-form.login button {
-    font-weight: bold;
-    font-size: 110%;
 }
 
 /* Baldosas para los menús */
@@ -166,24 +156,9 @@ form.login button {
     text-decoration: none;
 }
 
-// Dashboard
-
-.feather {
-    width: 16px;
-    height: 16px;
-    vertical-align: text-bottom;
-}
-
 /*
  * Utilities
  */
-.border-top {
-    border-top: 1px solid #e5e5e5;
-}
-
-.border-bottom {
-    border-bottom: 1px solid #e5e5e5;
-}
 
 /* Más ajustes de formularios */
 label.required:after {
