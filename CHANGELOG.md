@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 4.x.x (2022-xx-xx)
 ------------------
 * docs: Mejoradas las instrucciones de actualización
+* fix: Ajustar .env para que el entorno por defecto sea producción y el motor de bases de datos, MySQL
 
 4.0.1 (2022-01-20)
 ------------------
