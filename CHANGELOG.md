@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+4.x.x (2022-xx-xx)
+------------------
+* docs: Mejoradas las instrucciones de actualización
+
 4.0.1 (2022-01-20)
 ------------------
 * docs: Añadidas instrucciones críticas para actualizar la configuración
