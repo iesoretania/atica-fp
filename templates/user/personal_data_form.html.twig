@@ -6,8 +6,8 @@
         <div class="alert alert-warning">
             {{ 'prompt.email_change_warning'|trans({
                 '%email%': user.tokenType,
-                '%date%': user.tokenExpiration|date('format.date'|trans({}, 'general'), false),
-                '%time%': user.tokenExpiration|date('format.time'|trans({}, 'general'), false)
+                '%date%': user.tokenExpiration|date('format.date'|trans({}, 'general')),
+                '%time%': user.tokenExpiration|date('format.time'|trans({}, 'general'))
             })
             }}
         </div>
