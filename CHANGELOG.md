@@ -10,6 +10,7 @@ en las distintas versiones de la misma.
 * fix: Ajustar .env para que el entorno por defecto sea producción y el motor de bases de datos, MySQL
 * fix: Mostrar la fecha del token de cambio de correo electrónico en la zona horaria correcta
 * style: Ajustes realizados al CSS principal y eliminación de estilos no utilizados
+* chore: Actualizar npm a la última versión en Docker
 
 4.0.1 (2022-01-20)
 ------------------

@@ -16,6 +16,7 @@ source /etc/apache2/envvars
 sudo -u www-data composer install
 
 # Instalar componentes de npm
+sudo -u www-data npm install -g npm
 sudo -u www-data npm install
 
 # Compilar assets de CSS y JS
