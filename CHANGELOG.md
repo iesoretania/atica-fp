@@ -12,6 +12,7 @@ en las distintas versiones de la misma.
 * style: Ajustes realizados al CSS principal y eliminación de estilos no utilizados
 * chore: Actualizar npm a la última versión en Docker
 * fix: Mostrar todos los profesores de FP dual en la lista cuando un responsable crea una visita
+* fix: Mostrar correctamente los proyectos al registrar una visita de FP dual
 
 4.0.1 (2022-01-20)
 ------------------
