@@ -133,6 +133,8 @@ class VisitController extends AbstractController
             } else {
                 $groups = $wltGroupRepository->findByAcademicYearAndWLTTeacherPerson($academicYear, $person);
             }
+        } else {
+            $groups = $wltGroupRepository->findByOrganization($organization);
         }
         $teachers = [];
         if (!$isManager && !$isDepartmentHead && $teacher && !$readOnly) {

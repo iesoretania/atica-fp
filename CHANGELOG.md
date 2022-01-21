@@ -11,6 +11,7 @@ en las distintas versiones de la misma.
 * fix: Mostrar la fecha del token de cambio de correo electrónico en la zona horaria correcta
 * style: Ajustes realizados al CSS principal y eliminación de estilos no utilizados
 * chore: Actualizar npm a la última versión en Docker
+* fix: Mostrar todos los profesores de FP dual en la lista cuando un responsable crea una visita
 
 4.0.1 (2022-01-20)
 ------------------
