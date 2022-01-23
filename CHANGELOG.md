@@ -13,6 +13,7 @@ en las distintas versiones de la misma.
 * chore: Actualizar npm a la última versión en Docker
 * fix: Mostrar todos los profesores de FP dual en la lista cuando un responsable crea una visita
 * fix: Mostrar correctamente los proyectos al registrar una visita de FP dual
+* style: Ajustar el tamaño de los campos del formulario de entrada
 
 4.0.1 (2022-01-20)
 ------------------
