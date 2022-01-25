@@ -19,6 +19,7 @@
 namespace App\Repository\WLT;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\Edu\Teaching;
 use App\Entity\Organization;
@@ -26,6 +27,7 @@ use App\Entity\WLT\Agreement;
 use App\Entity\WLT\EducationalTutorAnsweredSurvey;
 use App\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
 
 class WLTTeacherRepository extends ServiceEntityRepository
@@ -50,6 +52,39 @@ class WLTTeacherRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByGroupsOrEducationalTutor($groups, AcademicYear $academicYear)
+    {
+        /**
+         * @var Collection|Teacher[]
+         */
+        $teachers = $this->createQueryBuilder('t')
+            ->distinct()
+            ->join('t.teachings', 'te')
+            ->andWhere('te.group IN (:groups)')
+            ->setParameter('groups', $groups)
+            ->getQuery()
+            ->getResult();
+
+        $educationalTutors = $this->createQueryBuilder('t')
+            ->distinct()
+            ->join(Agreement::class, 'a', 'WITH', 'a.educationalTutor = t')
+            ->join(StudentEnrollment::class, 'se')
+            ->andWhere('se.group IN (:groups)')
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('groups', $groups)
+            ->setParameter('academic_year', $academicYear)
+            ->getQuery()
+            ->getResult();
+
+        foreach ($educationalTutors as $educationalTutor) {
+            if (!in_array($educationalTutor, $teachers, false))
+                array_unshift($teachers, $educationalTutor);
+        }
+
+        return $educationalTutors;
+    }
+
     public function findOneByOrganizationAndId(Organization $organization, $id)
     {
         return $this->createQueryBuilder('t')

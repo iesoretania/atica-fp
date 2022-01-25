@@ -26,6 +26,7 @@ use App\Repository\Edu\TeacherRepository;
 use App\Repository\WLT\ProjectRepository;
 use App\Repository\WLT\VisitRepository;
 use App\Repository\WLT\WLTGroupRepository;
+use App\Repository\WLT\WLTTeacherRepository;
 use App\Security\Edu\EduOrganizationVoter;
 use App\Security\OrganizationVoter;
 use App\Security\WLT\VisitVoter;
@@ -55,7 +56,8 @@ class VisitController extends AbstractController
         UserExtensionService $userExtensionService,
         Security $security,
         TeacherRepository $teacherRepository,
-        WLTGroupRepository $wltGroupRepository
+        WLTGroupRepository $wltGroupRepository,
+        WLTTeacherRepository $wltTeacherRepository
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_CREATE_VISIT, $organization);
@@ -81,6 +83,7 @@ class VisitController extends AbstractController
             $security,
             $teacherRepository,
             $wltGroupRepository,
+            $wltTeacherRepository,
             $visit
         );
     }
@@ -96,6 +99,7 @@ class VisitController extends AbstractController
         Security $security,
         TeacherRepository $teacherRepository,
         WLTGroupRepository $wltGroupRepository,
+        WLTTeacherRepository $wltTeacherRepository,
         Visit $visit
     ) {
         $this->denyAccessUnlessGranted(VisitVoter::ACCESS, $visit);
@@ -140,7 +144,7 @@ class VisitController extends AbstractController
         if (!$isManager && !$isDepartmentHead && $teacher && !$readOnly) {
             $teachers = [$teacher];
         } elseif ($groups) {
-            $teachers = $teacherRepository->findByGroups($groups);
+            $teachers = $wltTeacherRepository->findByGroupsOrEducationalTutor($groups, $academicYear);
         }
 
         $form = $this->createForm(VisitType::class, $visit, [
