@@ -16,6 +16,8 @@ en las distintas versiones de la misma.
 * style: Ajustar el tamaño de los campos del formulario de entrada
 * fix: Arreglar selección de grupos y docentes al registrar una visita de FP dual
 * fix: Incluir siempre en la lista de profesorado visitante a los responsables de seguimiento de FP dual
+* fix: Desactivar el defer en los scripts para permitir la carga de personas en los formularios
+
 4.0.1 (2022-01-20)
 ------------------
 * docs: Añadidas instrucciones críticas para actualizar la configuración
