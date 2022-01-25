@@ -82,7 +82,7 @@ class WLTTeacherRepository extends ServiceEntityRepository
                 array_unshift($teachers, $educationalTutor);
         }
 
-        return $educationalTutors;
+        return $teachers;
     }
 
     public function findOneByOrganizationAndId(Organization $organization, $id)
