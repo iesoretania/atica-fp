@@ -222,6 +222,7 @@ class SubjectController extends AbstractController
     public function formNewTeachingAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
         Subject $subject
     ) {
         $teaching = new Teaching();
@@ -230,7 +231,7 @@ class SubjectController extends AbstractController
 
         $this->getDoctrine()->getManager()->persist($teaching);
 
-        return $this->formTeachingAction($request, $userExtensionService, $teaching);
+        return $this->formTeachingAction($request, $userExtensionService, $translator, $teaching);
     }
 
     /**

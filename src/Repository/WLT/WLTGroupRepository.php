@@ -34,7 +34,7 @@ class WLTGroupRepository extends ServiceEntityRepository
         parent::__construct($registry, Group::class);
     }
 
-    public function findByOrganization(Organization $organization)
+    public function findByOrganizationAndAcademicYear(Organization $organization, AcademicYear $academicYear)
     {
         return $this->getEntityManager()->createQueryBuilder()
             ->select('g')
@@ -44,8 +44,9 @@ class WLTGroupRepository extends ServiceEntityRepository
             ->join('g.grade', 'gr')
             ->join('gr.training', 'tr')
             ->join('tr.academicYear', 'ay')
-            ->where('p.organization = :organization')
+            ->where('p.organization = :organization AND tr.academicYear = :academic_year')
             ->setParameter('organization', $organization)
+            ->setParameter('academic_year', $academicYear)
             ->addOrderBy('g.name')
             ->getQuery()
             ->getResult();
