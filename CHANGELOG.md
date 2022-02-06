@@ -17,6 +17,7 @@ en las distintas versiones de la misma.
 * fix: Arreglar selección de grupos y docentes al registrar una visita de FP dual
 * fix: Incluir siempre en la lista de profesorado visitante a los responsables de seguimiento de FP dual
 * fix: Desactivar el defer en los scripts para permitir la carga de personas en los formularios
+* fix: Ajustado script de Docker para arrancar en producción
 
 4.0.1 (2022-01-20)
 ------------------

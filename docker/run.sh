@@ -16,7 +16,7 @@ source /etc/apache2/envvars
 sudo -u www-data composer install
 
 # Instalar componentes de npm
-sudo -u www-data npm install -g npm
+sudo npm install -g npm
 sudo -u www-data npm install
 
 # Compilar assets de CSS y JS
@@ -30,7 +30,7 @@ sudo -u www-data php bin/console --no-interaction d:m:m
 RESULT=`MYSQL_PWD=atica mysql -h db --user=atica aticafp -N -s -r -e "SELECT COUNT(*) FROM user"`
 if [ "$RESULT" == "0" ]; then
    SECRET="`hexdump -n 16 -e '4/4 "%08X" 1 "\n"' /dev/random`" && sudo -u www-data sed -i -e "s/APP_SECRET=:.*/APP_SECRET=$SECRET/" /var/www/symfony/.env.local
-   sudo -u www-data php bin/console d:f:l -n
+   sudo -u www-data php bin/console d:f:l -n -e dev
 fi
 
 # Arrancar Apache2

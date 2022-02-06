@@ -9,7 +9,6 @@
         "ext-curl": "*",
         "ext-iconv": "*",
         "doctrine/doctrine-bundle": "^2",
-        "doctrine/doctrine-fixtures-bundle": "^3.4",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.11",
         "friendsofsymfony/ckeditor-bundle": "^2.0",
@@ -41,6 +40,7 @@
         "white-october/pagerfanta-bundle": "^1.0"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
         "symfony/stopwatch": "4.4.*",
         "symfony/web-profiler-bundle": "4.4.*"
     },
