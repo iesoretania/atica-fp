@@ -127,7 +127,7 @@
             {% endif %}
         {% endfor %}
         {% if no_data %}
-            <tr colspan="6">{{ 'report.no_agreements'|trans }}</tr>
+            <tr><td colspan="6">{{ 'report.no_agreements'|trans }}</td></tr>
         {% endif %}
         </tbody>
         {% if agreement_data|length > 0 and sum1 > 0 %}
@@ -164,22 +164,27 @@
         {% set sum6 = 0 %}
         {% set sum7 = 0 %}
         {% set sum8 = 0 %}
-        {% for data in agreement_data if data[5] %}
-            <tr>
-                <td>{{ data[0].studentEnrollment }}</td>
-                <td>{{ data[0].workcenter }}</td>
-                <td class="center">{{ data[5] }}</td>
-                <td class="center">{{ data[6] }} ({{ (data[6]*100/data[5])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
-                <td class="center">{{ data[7] }} ({{ (data[7]*100/data[5])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
-                <td class="center">{{ data[8] }} ({{ (data[8]*100/data[5])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
-                {% set sum5 = sum5 + data[5] %}
-                {% set sum6 = sum6 + data[6] %}
-                {% set sum7 = sum7 + data[7] %}
-                {% set sum8 = sum8 + data[8] %}
-            </tr>
-        {% else %}
-            <tr colspan="6">{{ 'report.no_agreements'|trans }}</tr>
+        {% set no_data = 1 %}
+        {% for data in agreement_data %}
+            {% if data[5] %}
+                {% set no_data = 0 %}
+                <tr>
+                    <td>{{ data[0].studentEnrollment }}</td>
+                    <td>{{ data[0].workcenter }}</td>
+                    <td class="center">{{ data[5] }}</td>
+                    <td class="center">{{ data[6] }} ({{ (data[6]*100/data[5])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                    <td class="center">{{ data[7] }} ({{ (data[7]*100/data[5])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                    <td class="center">{{ data[8] }} ({{ (data[8]*100/data[5])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                    {% set sum5 = sum5 + data[5] %}
+                    {% set sum6 = sum6 + data[6] %}
+                    {% set sum7 = sum7 + data[7] %}
+                    {% set sum8 = sum8 + data[8] %}
+                </tr>
+            {% endif %}
         {% endfor %}
+        {% if no_data %}
+            <tr><td colspan="6">{{ 'report.no_agreements'|trans }}</td></tr>
+        {% endif %}
         </tbody>
         {% if agreement_data|length > 0 and sum5 %}
             <tfoot>
