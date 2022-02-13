@@ -76,6 +76,7 @@ class ReportController extends AbstractController
     public function studentListAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         AcademicYear $academicYear = null,
         $page = 1
@@ -83,6 +84,7 @@ class ReportController extends AbstractController
         return $this->genericListAction(
             $request,
             $userExtensionService,
+            $translator,
             $academicYearRepository,
             'title.student_survey',
             'work_linked_training_report_student_survey_report',
@@ -98,6 +100,7 @@ class ReportController extends AbstractController
     public function companyListAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         AcademicYear $academicYear = null,
         $page = 1
@@ -105,6 +108,7 @@ class ReportController extends AbstractController
         return $this->genericListAction(
             $request,
             $userExtensionService,
+            $translator,
             $academicYearRepository,
             'title.company_survey',
             'work_linked_training_report_company_survey_report',
@@ -121,6 +125,7 @@ class ReportController extends AbstractController
     public function educationalTutorListAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         AcademicYear $academicYear = null,
         $page = 1
@@ -128,6 +133,7 @@ class ReportController extends AbstractController
         return $this->genericListAction(
             $request,
             $userExtensionService,
+            $translator,
             $academicYearRepository,
             'title.educational_tutor_survey',
             'work_linked_training_report_educational_tutor_survey_report',
@@ -143,6 +149,7 @@ class ReportController extends AbstractController
     public function meetingListAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         AcademicYear $academicYear = null,
         $page = 1
@@ -150,6 +157,7 @@ class ReportController extends AbstractController
         return $this->genericListAction(
             $request,
             $userExtensionService,
+            $translator,
             $academicYearRepository,
             'title.meeting',
             'work_linked_training_report_meeting_report',
@@ -165,6 +173,7 @@ class ReportController extends AbstractController
     public function attendanceListAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         AcademicYear $academicYear = null,
         $page = 1
@@ -172,6 +181,7 @@ class ReportController extends AbstractController
         return $this->genericListAction(
             $request,
             $userExtensionService,
+            $translator,
             $academicYearRepository,
             'title.attendance',
             'work_linked_training_report_attendance_report',
@@ -187,6 +197,7 @@ class ReportController extends AbstractController
     public function gradingListAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         AcademicYear $academicYear = null,
         $page = 1
@@ -194,6 +205,7 @@ class ReportController extends AbstractController
         return $this->genericListAction(
             $request,
             $userExtensionService,
+            $translator,
             $academicYearRepository,
             'title.grading',
             'work_linked_training_report_grading_report',

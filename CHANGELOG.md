@@ -18,6 +18,7 @@ en las distintas versiones de la misma.
 * fix: Incluir siempre en la lista de profesorado visitante a los responsables de seguimiento de FP dual
 * fix: Desactivar el defer en los scripts para permitir la carga de personas en los formularios
 * fix: Ajustado script de Docker para arrancar en producción
+* fix: Arreglado error 500 que ocurría al intentar generar informes
 
 4.0.1 (2022-01-20)
 ------------------
