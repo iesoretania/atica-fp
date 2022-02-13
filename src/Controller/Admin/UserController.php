@@ -31,6 +31,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -43,8 +44,12 @@ class UserController extends AbstractController
      * @Route("/nuevo", name="admin_user_form_new", methods={"GET", "POST"})
      * @Route("/{id}", name="admin_user_form_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
-    public function indexAction(Request $request, TranslatorInterface $translator, User $localUser = null)
-    {
+    public function indexAction(
+        Request $request,
+        TranslatorInterface $translator,
+        PasswordEncoderInterface $passwordEncoder,
+        User $localUser = null
+    ) {
         $em = $this->getDoctrine()->getManager();
 
         if (null === $localUser) {
@@ -64,7 +69,7 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $message = $this->processPasswordChange($localUser, $translator, $form);
+            $message = $this->processPasswordChange($localUser, $translator, $form, $passwordEncoder);
 
             try {
                 $em->flush();
@@ -79,7 +84,7 @@ class UserController extends AbstractController
 
         $breadcrumb = [
             $localUser->getId() ?
-                ['fixed' => (string) $localUser] :
+                ['fixed' => (string)$localUser] :
                 ['fixed' => $translator->trans('title.new', [], 'user')]
         ];
 
@@ -116,7 +121,7 @@ class UserController extends AbstractController
                 ->orWhere('p.firstName LIKE :tq')
                 ->orWhere('p.lastName LIKE :tq')
                 ->orWhere('u.emailAddress LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%')
+                ->setParameter('tq', '%' . $q . '%')
                 ->setParameter('q', $q);
         }
 
@@ -206,13 +211,19 @@ class UserController extends AbstractController
      * @param FormInterface $form
      * @return string
      */
-    private function processPasswordChange(User $user, TranslatorInterface $translator, FormInterface $form)
-    {
+    private function processPasswordChange(
+        User $user,
+        TranslatorInterface $translator,
+        FormInterface $form,
+        PasswordEncoderInterface $passwordEncoder
+    ) {
         // Si es solicitado, cambiar la contraseña
         $passwordSubmit = $form->get('changePassword');
         if (($passwordSubmit instanceof SubmitButton) && $passwordSubmit->isClicked()) {
-            $user->setPassword($this->container->get('security.password_encoder')
-                ->encodePassword($user, $form->get('newPassword')->get('first')->getData()));
+            $user->setPassword(
+                $passwordEncoder
+                    ->encodePassword($user, $form->get('newPassword')->get('first')->getData())
+            );
             $message = $translator->trans('message.password_changed', [], 'user');
         } else {
             $message = $translator->trans('message.saved', [], 'user');

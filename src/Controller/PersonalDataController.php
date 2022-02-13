@@ -27,6 +27,7 @@ use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PersonalDataController extends AbstractController
@@ -37,6 +38,7 @@ class PersonalDataController extends AbstractController
     public function userProfileFormAction(
         Request $request,
         TranslatorInterface $translator,
+        PasswordEncoderInterface $passwordEncoder,
         MailerService $mailerService
     ) {
         /** @var User $user */
@@ -57,7 +59,8 @@ class PersonalDataController extends AbstractController
                 $user,
                 $oldEmail,
                 $mailerService,
-                $translator
+                $translator,
+                $passwordEncoder
             );
 
             $message = $translator->trans(
@@ -165,7 +168,8 @@ class PersonalDataController extends AbstractController
         User $user,
         $oldEmail,
         MailerService $mailerService,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        PasswordEncoderInterface $passwordEncoder
     ) {
         // comprobar si ha cambiado el correo electrónico
         if ($user->getEmailAddress() !== $oldEmail) {
@@ -176,7 +180,7 @@ class PersonalDataController extends AbstractController
         $passwordSubmitted = ($form->has('changePassword') &&
                 $form->get('changePassword') instanceof SubmitButton) && $form->get('changePassword')->isClicked();
         if ($passwordSubmitted) {
-            $user->setPassword($this->get('security.password_encoder')
+            $user->setPassword($passwordEncoder
                 ->encodePassword($user, $form->get('newPassword')->get('first')->getData()));
         }
         return $passwordSubmitted;
