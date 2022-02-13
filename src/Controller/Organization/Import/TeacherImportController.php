@@ -34,7 +34,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TeacherImportController extends AbstractController
@@ -46,7 +46,7 @@ class TeacherImportController extends AbstractController
         UserExtensionService $userExtensionService,
         MembershipRepository $membershipRepository,
         TranslatorInterface $translator,
-        PasswordEncoderInterface $passwordEncoder,
+        UserPasswordEncoderInterface $passwordEncoder,
         Request $request
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -107,7 +107,7 @@ class TeacherImportController extends AbstractController
         MembershipRepository $membershipRepository,
         Organization $organization,
         AcademicYear $academicYear,
-        PasswordEncoderInterface $encoder,
+        UserPasswordEncoderInterface $encoder,
         $options = []
     ) {
         $generatePassword = isset($options['generate_password']) && $options['generate_password'];
@@ -145,8 +145,8 @@ class TeacherImportController extends AbstractController
                         if (null === $user) {
                             $user = new User();
                             $person = $em->getRepository(Person::class)->findOneBy([
-                                                                                       'uniqueIdentifier' => $userData['DNI/Pasaporte']
-                                                                                   ]);
+                                   'uniqueIdentifier' => $userData['DNI/Pasaporte']
+                               ]);
 
                             if (null === $person) {
                                 $person = new Person();
@@ -203,10 +203,10 @@ class TeacherImportController extends AbstractController
 
                     /** @var Membership $membership */
                     $membership = $user->getId() ? $em->getRepository(Membership::class)->findOneBy([
-                                                                                                        'organization' => $organization,
-                                                                                                        'user' => $user,
-                                                                                                        'validFrom' => $validFrom
-                                                                                                    ]) : null;
+                                'organization' => $organization,
+                                'user' => $user,
+                                'validFrom' => $validFrom
+                            ]) : null;
 
                     if (null === $membership) {
                         $membership = new Membership();
@@ -227,15 +227,16 @@ class TeacherImportController extends AbstractController
                     }
 
                     $teacher = $person->getId() ? $em->getRepository(Teacher::class)->findOneBy([
-                                                                                                    'academicYear' => $academicYear,
-                                                                                                    'person' => $person
-                                                                                                ]) : null;
+                            'academicYear' => $academicYear,
+                            'person' => $person
+                        ]) : null;
 
                     if (null === $teacher) {
                         $teacher = new Teacher();
                         $teacher
                             ->setAcademicYear($academicYear)
                             ->setPerson($person);
+                        $em->flush(); // hack, o no funciona con nuevos profesores. TODO: Investigar
                         $em->persist($teacher);
                     }
                 }

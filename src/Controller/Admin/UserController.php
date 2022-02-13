@@ -31,7 +31,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -47,7 +47,7 @@ class UserController extends AbstractController
     public function indexAction(
         Request $request,
         TranslatorInterface $translator,
-        PasswordEncoderInterface $passwordEncoder,
+        UserPasswordEncoderInterface $passwordEncoder,
         User $localUser = null
     ) {
         $em = $this->getDoctrine()->getManager();
@@ -215,7 +215,7 @@ class UserController extends AbstractController
         User $user,
         TranslatorInterface $translator,
         FormInterface $form,
-        PasswordEncoderInterface $passwordEncoder
+        UserPasswordEncoderInterface $passwordEncoder
     ) {
         // Si es solicitado, cambiar la contraseña
         $passwordSubmit = $form->get('changePassword');

@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+4.x.x (xxxx-xx-xx)
+------------------
+* fix: Solucionar problema con la importación de profesorado
+
 4.1.0 (2022-02-13)
 ------------------
 * docs: Mejoradas las instrucciones de actualización

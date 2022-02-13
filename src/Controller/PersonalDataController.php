@@ -27,7 +27,7 @@ use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PersonalDataController extends AbstractController
@@ -38,7 +38,7 @@ class PersonalDataController extends AbstractController
     public function userProfileFormAction(
         Request $request,
         TranslatorInterface $translator,
-        PasswordEncoderInterface $passwordEncoder,
+        UserPasswordEncoderInterface $passwordEncoder,
         MailerService $mailerService
     ) {
         /** @var User $user */
@@ -169,7 +169,7 @@ class PersonalDataController extends AbstractController
         $oldEmail,
         MailerService $mailerService,
         TranslatorInterface $translator,
-        PasswordEncoderInterface $passwordEncoder
+        UserPasswordEncoderInterface $passwordEncoder
     ) {
         // comprobar si ha cambiado el correo electrónico
         if ($user->getEmailAddress() !== $oldEmail) {
