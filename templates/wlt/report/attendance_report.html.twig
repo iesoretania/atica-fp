@@ -108,22 +108,27 @@
         {% set sum2 = 0 %}
         {% set sum3 = 0 %}
         {% set sum4 = 0 %}
-        {% for data in agreement_data if data[1] %}
-            <tr>
-                <td>{{ data[0].studentEnrollment }}</td>
-                <td>{{ data[0].workcenter }}</td>
-                <td class="center">{{ data[1] }}</td>
-                <td class="center">{{ data[2] }} ({{ (data[2]*100/data[1])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
-                <td class="center">{{ data[3] }} ({{ (data[3]*100/data[1])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
-                <td class="center">{{ data[4] }} ({{ (data[4]*100/data[1])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
-                {% set sum1 = sum1 + data[1] %}
-                {% set sum2 = sum2 + data[2] %}
-                {% set sum3 = sum3 + data[3] %}
-                {% set sum4 = sum4 + data[4] %}
-            </tr>
-        {% else %}
-            <tr colspan="6">{{ 'report.no_agreements'|trans }}</tr>
+        {% set none = 1 %}
+        {% for data in agreement_data %}
+            {% if data[1] %}
+                {% set none = 0 %}
+                <tr>
+                    <td>{{ data[0].studentEnrollment }}</td>
+                    <td>{{ data[0].workcenter }}</td>
+                    <td class="center">{{ data[1] }}</td>
+                    <td class="center">{{ data[2] }} ({{ (data[2]*100/data[1])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                    <td class="center">{{ data[3] }} ({{ (data[3]*100/data[1])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                    <td class="center">{{ data[4] }} ({{ (data[4]*100/data[1])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</td>
+                    {% set sum1 = sum1 + data[1] %}
+                    {% set sum2 = sum2 + data[2] %}
+                    {% set sum3 = sum3 + data[3] %}
+                    {% set sum4 = sum4 + data[4] %}
+                </tr>
+            {% endif %}
         {% endfor %}
+        {% if none %}
+            <tr colspan="6">{{ 'report.no_agreements'|trans }}</tr>
+        {% endif %}
         </tbody>
         {% if agreement_data|length > 0 and sum1 > 0 %}
             <tfoot>

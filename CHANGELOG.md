@@ -19,6 +19,7 @@ en las distintas versiones de la misma.
 * fix: Desactivar el defer en los scripts para permitir la carga de personas en los formularios
 * fix: Ajustado script de Docker para arrancar en producción
 * fix: Arreglado error 500 que ocurría al intentar generar informes
+* fix: Solucionado un problema de incompatibilidad con Twig 2.0
 
 4.0.1 (2022-01-20)
 ------------------
