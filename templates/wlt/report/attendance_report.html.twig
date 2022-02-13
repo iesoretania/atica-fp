@@ -108,10 +108,10 @@
         {% set sum2 = 0 %}
         {% set sum3 = 0 %}
         {% set sum4 = 0 %}
-        {% set none = 1 %}
+        {% set no_data = 1 %}
         {% for data in agreement_data %}
             {% if data[1] %}
-                {% set none = 0 %}
+                {% set no_data = 0 %}
                 <tr>
                     <td>{{ data[0].studentEnrollment }}</td>
                     <td>{{ data[0].workcenter }}</td>
@@ -126,7 +126,7 @@
                 </tr>
             {% endif %}
         {% endfor %}
-        {% if none %}
+        {% if no_data %}
             <tr colspan="6">{{ 'report.no_agreements'|trans }}</tr>
         {% endif %}
         </tbody>
