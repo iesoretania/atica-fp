@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 4.x.x (xxxx-xx-xx)
 ------------------
 * fix: Solucionar problema con la importación de profesorado
+* fix: Problema con el informe de asistencia arreglado
 
 4.1.0 (2022-02-13)
 ------------------
