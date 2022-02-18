@@ -124,7 +124,8 @@
             </tr>
             </thead>
             <tbody>
-            {% for answer in stats[0] if answer[0].type starts with "range" %}
+            {% for answer in stats[0] %}
+                {%  if answer[0].type starts with "range" %}
                 <tr>
                     <td class="right">{{ answer[0].description|raw }}</td>
                     <td class="center">{{ answer[1]|default('report.no_data'|trans) }}</td>
@@ -132,6 +133,7 @@
                     <td class="center">{{ answer[4] ? answer[4]|number_format(2, 'format.decimal_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
                     <td class="center">{{ answer[2] ? answer[2]|number_format(2, 'format.decimal_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
                 </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>
@@ -193,11 +195,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for answer in agreement.studentSurvey.answers if answer.surveyQuestion.type != "fixed"  %}
+                {% for answer in agreement.studentSurvey.answers %}
+                    {% if answer.surveyQuestion.type != "fixed" %}
                     <tr>
                         <td class="right">{{ answer.surveyQuestion.description|raw }}</td>
                         <td>{{ answer.numericValue|default(answer.textValue)|default('report.no_answer'|trans) }}</td>
                     </tr>
+                    {% endif %}
                 {% endfor %}
                 </tbody>
             </table>

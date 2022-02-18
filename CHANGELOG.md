@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * fix: Solucionar problema con la importación de profesorado
 * fix: Problema con el informe de asistencia arreglado
+* fix: Arregladas las plantillas de informes de encuestas de FP dual
 
 4.1.0 (2022-02-13)
 ------------------
