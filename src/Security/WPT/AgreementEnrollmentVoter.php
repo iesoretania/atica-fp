@@ -217,7 +217,7 @@ class AgreementEnrollmentVoter extends CachedVoter
      * @return bool
      * @throws \Exception
      */
-    private function checkSurvey(Survey $survey)
+    private function checkSurvey(Survey $survey = null)
     {
         $now = new \DateTime();
 

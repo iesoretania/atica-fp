@@ -229,7 +229,7 @@ class AgreementVoter extends CachedVoter
      * @return bool
      * @throws \Exception
      */
-    private function checkSurvey(Survey $wltCompanySurvey)
+    private function checkSurvey(Survey $wltCompanySurvey = null)
     {
         $now = new \DateTime();
 
