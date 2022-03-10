@@ -30,8 +30,8 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class AcademicYearVoter extends CachedVoter
 {
-    const MANAGE = 'ACADEMIC_YEAR_MANAGE';
-    const ACCESS = 'ACADEMIC_YEAR_ACCESS';
+    public const MANAGE = 'ACADEMIC_YEAR_MANAGE';
+    public const ACCESS = 'ACADEMIC_YEAR_ACCESS';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -63,12 +63,7 @@ class AcademicYearVoter extends CachedVoter
         if (!$subject instanceof AcademicYear) {
             return false;
         }
-
-        if (!in_array($attribute, [self::MANAGE, self::ACCESS], true)) {
-            return false;
-        }
-
-        return true;
+        return in_array($attribute, [self::MANAGE, self::ACCESS], true);
     }
 
     /**

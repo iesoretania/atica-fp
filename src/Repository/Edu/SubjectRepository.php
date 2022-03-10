@@ -147,7 +147,7 @@ class SubjectRepository extends ServiceEntityRepository
             ->setParameter('group', $group)
             ->orderBy('s.name', 'ASC');
 
-        if ($person) {
+        if ($person !== null) {
             $qb
                 ->join('s.teachings', 't')
                 ->join('t.teacher', 'te')

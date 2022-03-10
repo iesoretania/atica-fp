@@ -77,13 +77,13 @@ class AgreementType extends AbstractType
                 $company
             ) : [];
 
-        $teachers = $studentEnrollment ?
+        $teachers = $studentEnrollment !== null ?
             $this->teacherRepository->findByAcademicYear(
                 $studentEnrollment->getGroup()->getGrade()->getTraining()->getAcademicYear()
             ) : [];
 
-        if ($studentEnrollment) {
-            if ($company) {
+        if ($studentEnrollment !== null) {
+            if ($company !== null) {
                 $activityRealizations = $this->activityRealizationRepository->
                     findByProjectAndCompany($project, $company);
             } else {

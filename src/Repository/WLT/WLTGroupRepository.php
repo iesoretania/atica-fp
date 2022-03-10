@@ -211,7 +211,7 @@ class WLTGroupRepository extends ServiceEntityRepository
     private function appendGroups(ArrayCollection $groups, $newGroups)
     {
         foreach ($newGroups as $group) {
-            if (false === $groups->contains($group)) {
+            if (!$groups->contains($group)) {
                 $groups->add($group);
             }
         }

@@ -31,8 +31,8 @@ use Symfony\Component\Security\Core\Security;
 
 class TrainingVoter extends CachedVoter
 {
-    const MANAGE = 'TRAINING_MANAGE';
-    const ACCESS = 'TRAINING_ACCESS';
+    public const MANAGE = 'TRAINING_MANAGE';
+    public const ACCESS = 'TRAINING_ACCESS';
 
     /** @var UserExtensionService $userExtensionService */
     private $userExtensionService;
@@ -65,12 +65,7 @@ class TrainingVoter extends CachedVoter
         if (!$subject instanceof Training) {
             return false;
         }
-
-        if (!in_array($attribute, [self::MANAGE, self::ACCESS], true)) {
-            return false;
-        }
-
-        return true;
+        return in_array($attribute, [self::MANAGE, self::ACCESS], true);
     }
 
     /**

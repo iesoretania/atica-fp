@@ -29,16 +29,16 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class ShiftVoter extends CachedVoter
 {
-    const MANAGE = 'WPT_SHIFT_MANAGE';
-    const ACCESS_MANAGER_SURVEY = 'WPT_MANAGER_SURVEY_ACCESS';
-    const FILL_MANAGER_SURVEY = 'WPT_MANAGER_SURVEY_MANAGE';
-    const ACCESS_EDUCATIONAL_TUTOR_SURVEY = 'WPT_EDUCATIONAL_TUTOR_SURVEY_ACCESS';
-    const FILL_EDUCATIONAL_TUTOR_SURVEY = 'WPT_EDUCATIONAL_TUTOR_SURVEY_MANAGE';
-    const REPORT_STUDENT_SURVEY = 'WPT_STUDENT_SURVEY_REPORT';
-    const REPORT_COMPANY_SURVEY = 'WPT_COMPANY_SURVEY_REPORT';
-    const REPORT_MEETING = 'WPT_MEETING_REPORT';
-    const REPORT_ATTENDANCE = 'WPT_ATTENDANCE_REPORT';
-    const REPORT_GRADING = 'WPT_GRADING_REPORT';
+    public const MANAGE = 'WPT_SHIFT_MANAGE';
+    public const ACCESS_MANAGER_SURVEY = 'WPT_MANAGER_SURVEY_ACCESS';
+    public const FILL_MANAGER_SURVEY = 'WPT_MANAGER_SURVEY_MANAGE';
+    public const ACCESS_EDUCATIONAL_TUTOR_SURVEY = 'WPT_EDUCATIONAL_TUTOR_SURVEY_ACCESS';
+    public const FILL_EDUCATIONAL_TUTOR_SURVEY = 'WPT_EDUCATIONAL_TUTOR_SURVEY_MANAGE';
+    public const REPORT_STUDENT_SURVEY = 'WPT_STUDENT_SURVEY_REPORT';
+    public const REPORT_COMPANY_SURVEY = 'WPT_COMPANY_SURVEY_REPORT';
+    public const REPORT_MEETING = 'WPT_MEETING_REPORT';
+    public const REPORT_ATTENDANCE = 'WPT_ATTENDANCE_REPORT';
+    public const REPORT_GRADING = 'WPT_GRADING_REPORT';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -65,7 +65,7 @@ class ShiftVoter extends CachedVoter
         if (!$subject instanceof Shift) {
             return false;
         }
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::MANAGE,
             self::ACCESS_MANAGER_SURVEY,
             self::FILL_MANAGER_SURVEY,
@@ -76,11 +76,7 @@ class ShiftVoter extends CachedVoter
             self::REPORT_MEETING,
             self::REPORT_ATTENDANCE,
             self::REPORT_GRADING
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**

@@ -121,7 +121,7 @@ class MeetingRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->setParameter('academic_year', $academicYear);
 
-        if ($teacher) {
+        if ($teacher !== null) {
             $qb
                 ->andWhere('m.createdBy = :teacher')
                 ->setParameter('teacher', $teacher);

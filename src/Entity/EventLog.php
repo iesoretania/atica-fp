@@ -26,11 +26,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class EventLog
 {
-    const ACCESS = 'access';
-    const LOGIN_SUCCESS = 'login';
-    const LOGIN_ERROR = 'login_error';
-    const SWITCH_USER = 'switch_user';
-    const LOGOUT = 'logout';
+    public const ACCESS = 'access';
+    public const LOGIN_SUCCESS = 'login';
+    public const LOGIN_ERROR = 'login_error';
+    public const SWITCH_USER = 'switch_user';
+    public const LOGOUT = 'logout';
 
     /**
      * @ORM\Id
@@ -96,7 +96,7 @@ class EventLog
      * @param \DateTime $dateTime
      * @return EventLog
      */
-    public function setDateTime($dateTime)
+    public function setDateTime(\DateTimeInterface $dateTime)
     {
         $this->dateTime = $dateTime;
         return $this;

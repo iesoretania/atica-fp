@@ -33,7 +33,7 @@ class Version20200130213703 extends AbstractMigration
                 ->execute()
                 ->fetchAll();
 
-            if (count($project) > 0) {
+            if ($project !== []) {
                 $this->connection->createQueryBuilder()
                     ->update('wlt_activity_realization_grade', 'arg')
                     ->set('arg.project_id', $project[0]['id'])

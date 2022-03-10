@@ -145,7 +145,7 @@ class GroupImportController extends AbstractController
                         $trainings = explode(',', $gradeName);
                         $gradeName = $trainings[0];
 
-                        list($calculatedGradeName, $trainingName) = ImportParser::parseGradeName($gradeName);
+                        [$calculatedGradeName, $trainingName] = ImportParser::parseGradeName($gradeName);
 
                         if (isset($trainingCollection[$trainingName])) {
                             $training = $trainingCollection[$trainingName];
@@ -167,8 +167,8 @@ class GroupImportController extends AbstractController
                             $trainingCollection[$trainingName] = $training;
                         }
 
-                        if (false === isset($gradeCollection[$calculatedGradeName])) {
-                            if ($training->getId()) {
+                        if (!isset($gradeCollection[$calculatedGradeName])) {
+                            if ($training->getId() !== 0) {
                                 $grade = $em->getRepository(Grade::class)->findOneBy([
                                     'internalCode' => $calculatedGradeName,
                                     'training' => $training
@@ -195,7 +195,7 @@ class GroupImportController extends AbstractController
 
                     $group = null;
                     if ($grade->getId()) {
-                        if (false === isset($groupCollection[$groupName])) {
+                        if (!isset($groupCollection[$groupName])) {
                             $group = $em->getRepository(Group::class)->findOneBy([
                                 'internalCode' => $groupName,
                                 'grade' => $grade
@@ -249,10 +249,7 @@ class GroupImportController extends AbstractController
 
         // ordenar por nombre antes de devolverlo
         usort($collection, function (Group $a, Group $b) {
-            if ($a->getName() === $b->getName()) {
-                return 0;
-            }
-            return ($a->getName() < $b->getName()) ? -1 : 1;
+            return $a->getName() <=> $b->getName();
         });
 
         return [

@@ -31,22 +31,22 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class WPTOrganizationVoter extends CachedVoter
 {
-    const WPT_ACCESS_SECTION = 'ORGANIZATION_ACCESS_WORKPLACE_TRAINING';
-    const WPT_ACCESS = 'ORGANIZATION_ACCESS_WORKPLACE_TRAINING_TRACKING';
-    const WPT_MANAGE = 'ORGANIZATION_MANAGE_WORKPLACE_TRAINING_TRACKING';
-    const WPT_FILL_REPORT = 'ORGANIZATION_FILL_REPORT_WORKPLACE_TRAINING';
+    public const WPT_ACCESS_SECTION = 'ORGANIZATION_ACCESS_WORKPLACE_TRAINING';
+    public const WPT_ACCESS = 'ORGANIZATION_ACCESS_WORKPLACE_TRAINING_TRACKING';
+    public const WPT_MANAGE = 'ORGANIZATION_MANAGE_WORKPLACE_TRAINING_TRACKING';
+    public const WPT_FILL_REPORT = 'ORGANIZATION_FILL_REPORT_WORKPLACE_TRAINING';
 
-    const WPT_GROUP_TUTOR = 'ORGANIZATION_WPT_GROUP_TUTOR';
-    const WPT_WORK_TUTOR = 'ORGANIZATION_WPT_WORK_TUTOR';
-    const WPT_STUDENT = 'ORGANIZATION_WPT_STUDENT';
-    const WPT_EDUCATIONAL_TUTOR = 'ORGANIZATION_WPT_EDUCATIONAL_TUTOR';
-    const WPT_DEPARTMENT_HEAD = 'ORGANIZATION_WPT_DEPARTMENT_HEAD';
+    public const WPT_GROUP_TUTOR = 'ORGANIZATION_WPT_GROUP_TUTOR';
+    public const WPT_WORK_TUTOR = 'ORGANIZATION_WPT_WORK_TUTOR';
+    public const WPT_STUDENT = 'ORGANIZATION_WPT_STUDENT';
+    public const WPT_EDUCATIONAL_TUTOR = 'ORGANIZATION_WPT_EDUCATIONAL_TUTOR';
+    public const WPT_DEPARTMENT_HEAD = 'ORGANIZATION_WPT_DEPARTMENT_HEAD';
 
-    const WPT_ACCESS_VISIT = 'ORGANIZATION_WPT_ACCESS_VISIT';
-    const WPT_CREATE_VISIT = 'ORGANIZATION_WPT_CREATE_VISIT';
+    public const WPT_ACCESS_VISIT = 'ORGANIZATION_WPT_ACCESS_VISIT';
+    public const WPT_CREATE_VISIT = 'ORGANIZATION_WPT_CREATE_VISIT';
 
-    const WPT_ACCESS_EXPENSE = 'ORGANIZATION_WPT_ACCESS_EXPENSE';
-    const WPT_CREATE_EXPENSE = 'ORGANIZATION_WPT_CREATE_EXPENSE';
+    public const WPT_ACCESS_EXPENSE = 'ORGANIZATION_WPT_ACCESS_EXPENSE';
+    public const WPT_CREATE_EXPENSE = 'ORGANIZATION_WPT_CREATE_EXPENSE';
 
     private $decisionManager;
     private $wptGroupRepository;
@@ -73,8 +73,7 @@ class WPTOrganizationVoter extends CachedVoter
         if (!$subject instanceof Organization) {
             return false;
         }
-
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::WPT_ACCESS_SECTION,
             self::WPT_ACCESS,
             self::WPT_MANAGE,
@@ -88,11 +87,7 @@ class WPTOrganizationVoter extends CachedVoter
             self::WPT_ACCESS_VISIT,
             self::WPT_ACCESS_EXPENSE,
             self::WPT_CREATE_EXPENSE
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**
@@ -191,13 +186,9 @@ class WPTOrganizationVoter extends CachedVoter
                 if ($this->decisionManager->decide($token, [self::WPT_DEPARTMENT_HEAD], $subject)) {
                     return true;
                 }
-
                 // 3) Tutores laborales y docentes
-                if ($this->decisionManager->decide($token, [self::WPT_WORK_TUTOR], $subject) ||
-                    $this->decisionManager->decide($token, [self::WPT_EDUCATIONAL_TUTOR], $subject)) {
-                    return true;
-                }
-                return false;
+                return $this->decisionManager->decide($token, [self::WPT_WORK_TUTOR], $subject) ||
+                    $this->decisionManager->decide($token, [self::WPT_EDUCATIONAL_TUTOR], $subject);
 
             case self::WPT_CREATE_VISIT:
             case self::WPT_ACCESS_VISIT:

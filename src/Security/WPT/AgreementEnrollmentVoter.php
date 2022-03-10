@@ -30,17 +30,17 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class AgreementEnrollmentVoter extends CachedVoter
 {
-    const MANAGE = 'WPT_AGREEMENT_ENROLLMENT_MANAGE';
-    const ACCESS = 'WPT_AGREEMENT_ENROLLMENT_ACCESS';
-    const ATTENDANCE = 'WPT_AGREEMENT_ENROLLMENT_ATTENDANCE';
-    const LOCK = 'WPT_AGREEMENT_ENROLLMENT_LOCK';
-    const FILL_REPORT = 'WPT_AGREEMENT_ENROLLMENT_FILL_REPORT';
-    const VIEW_REPORT = 'WPT_AGREEMENT_ENROLLMENT_VIEW_REPORT';
-    const VIEW_STUDENT_SURVEY = 'WPT_AGREEMENT_ENROLLMENT_VIEW_STUDENT_SURVEY';
-    const FILL_STUDENT_SURVEY = 'WPT_AGREEMENT_ENROLLMENT_FILL_STUDENT_SURVEY';
-    const VIEW_COMPANY_SURVEY = 'WPT_AGREEMENT_ENROLLMENT_VIEW_COMPANY_SURVEY';
-    const FILL_COMPANY_SURVEY = 'WPT_AGREEMENT_ENROLLMENT_FILL_COMPANY_SURVEY';
-    const VIEW_ACTIVITY_REPORT = 'WPT_AGREEMENT_ENROLLMENT_VIEW_ACTIVITY_REPORT';
+    public const MANAGE = 'WPT_AGREEMENT_ENROLLMENT_MANAGE';
+    public const ACCESS = 'WPT_AGREEMENT_ENROLLMENT_ACCESS';
+    public const ATTENDANCE = 'WPT_AGREEMENT_ENROLLMENT_ATTENDANCE';
+    public const LOCK = 'WPT_AGREEMENT_ENROLLMENT_LOCK';
+    public const FILL_REPORT = 'WPT_AGREEMENT_ENROLLMENT_FILL_REPORT';
+    public const VIEW_REPORT = 'WPT_AGREEMENT_ENROLLMENT_VIEW_REPORT';
+    public const VIEW_STUDENT_SURVEY = 'WPT_AGREEMENT_ENROLLMENT_VIEW_STUDENT_SURVEY';
+    public const FILL_STUDENT_SURVEY = 'WPT_AGREEMENT_ENROLLMENT_FILL_STUDENT_SURVEY';
+    public const VIEW_COMPANY_SURVEY = 'WPT_AGREEMENT_ENROLLMENT_VIEW_COMPANY_SURVEY';
+    public const FILL_COMPANY_SURVEY = 'WPT_AGREEMENT_ENROLLMENT_FILL_COMPANY_SURVEY';
+    public const VIEW_ACTIVITY_REPORT = 'WPT_AGREEMENT_ENROLLMENT_VIEW_ACTIVITY_REPORT';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -67,7 +67,7 @@ class AgreementEnrollmentVoter extends CachedVoter
         if (!$subject instanceof AgreementEnrollment) {
             return false;
         }
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::MANAGE,
             self::ACCESS,
             self::ATTENDANCE,
@@ -79,11 +79,7 @@ class AgreementEnrollmentVoter extends CachedVoter
             self::VIEW_COMPANY_SURVEY,
             self::FILL_COMPANY_SURVEY,
             self::VIEW_ACTIVITY_REPORT
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**
@@ -221,15 +217,12 @@ class AgreementEnrollmentVoter extends CachedVoter
     {
         $now = new \DateTime();
 
-        if (!$survey) {
+        if ($survey === null) {
             return false;
         }
         if ($survey->getStartTimestamp() && $survey->getStartTimestamp() > $now) {
             return false;
         }
-        if ($survey->getEndTimestamp() && $survey->getEndTimestamp() < $now) {
-            return false;
-        }
-        return true;
+        return !($survey->getEndTimestamp() && $survey->getEndTimestamp() < $now);
     }
 }

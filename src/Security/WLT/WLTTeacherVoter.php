@@ -32,8 +32,8 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class WLTTeacherVoter extends CachedVoter
 {
-    const ACCESS_EDUCATIONAL_TUTOR_SURVEY = 'WLT_TEACHER_EDUCATIONAL_TUTOR_SURVEY_ACCESS';
-    const FILL_EDUCATIONAL_TUTOR_SURVEY = 'WLT_TEACHER_EDUCATIONAL_TUTOR_SURVEY_FILL';
+    public const ACCESS_EDUCATIONAL_TUTOR_SURVEY = 'WLT_TEACHER_EDUCATIONAL_TUTOR_SURVEY_ACCESS';
+    public const FILL_EDUCATIONAL_TUTOR_SURVEY = 'WLT_TEACHER_EDUCATIONAL_TUTOR_SURVEY_FILL';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -67,14 +67,10 @@ class WLTTeacherVoter extends CachedVoter
         if (!$subject instanceof Teacher) {
             return false;
         }
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::ACCESS_EDUCATIONAL_TUTOR_SURVEY,
             self::FILL_EDUCATIONAL_TUTOR_SURVEY
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**

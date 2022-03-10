@@ -141,7 +141,7 @@ class OrganizationController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator)
     {
-        list($redirect, $organizations) = $this->processOperations($request, $translator, $userExtensionService);
+        [$redirect, $organizations] = $this->processOperations($request, $translator, $userExtensionService);
 
         if ($redirect) {
             return $this->redirectToRoute('admin_organization_list');
@@ -220,7 +220,7 @@ class OrganizationController extends AbstractController
     private function processSwitchOrganization(Request $request, TranslatorInterface $translator, $em)
     {
         $organization = $em->getRepository('App:Organization')->find($request->request->get('switch', null));
-        if ($organization) {
+        if ($organization !== null) {
             $this->get('session')->set('organization_id', $organization->getId());
             $this->addFlash('success', $translator->
                 trans('message.switched', ['%name%' => $organization->getName()], 'organization'));
@@ -246,7 +246,7 @@ class OrganizationController extends AbstractController
         }
 
         $items = $request->request->get('organizations', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             $redirect = true;
         }
 

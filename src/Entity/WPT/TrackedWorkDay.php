@@ -30,9 +30,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class TrackedWorkDay
 {
-    const NO_ABSENCE = 0;
-    const UNJUSTIFIED_ABSENCE = 1;
-    const JUSTIFIED_ABSENCE = 2;
+    public const NO_ABSENCE = 0;
+    public const UNJUSTIFIED_ABSENCE = 1;
+    public const JUSTIFIED_ABSENCE = 2;
 
     /**
      * @ORM\Id

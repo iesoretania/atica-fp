@@ -88,7 +88,7 @@ class ActivityRealizationController extends AbstractController
         }
 
         $title = $translator->trans(
-            $activityRealization->getId() ? 'title.edit' : 'title.new',
+            $activityRealization->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'wlt_activity_realization'
         );
@@ -104,7 +104,7 @@ class ActivityRealizationController extends AbstractController
                 'routeName' => 'work_linked_training_project_activity_realization_list',
                 'routeParams' => ['id' => $activity->getId()]
             ],
-            $activityRealization->getId() ?
+            $activityRealization->getId() !== 0 ?
                 ['fixed' => $activityRealization->getCode()] :
                 ['fixed' => $translator->trans('title.new', [], 'wlt_activity_realization')]
         ];
@@ -201,7 +201,7 @@ class ActivityRealizationController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute(
                 'work_linked_training_project_activity_realization_list',
                 ['id' => $activity->getId()]

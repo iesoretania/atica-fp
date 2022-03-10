@@ -77,7 +77,7 @@ class CriterionController extends AbstractController
         }
 
         $title = $translator->trans(
-            $criterion->getId() ? 'title.edit' : 'title.new',
+            $criterion->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'edu_criterion'
         );
@@ -98,7 +98,7 @@ class CriterionController extends AbstractController
                 'routeName' => 'organization_training_criterion_list',
                 'routeParams' => ['id' => $criterion->getLearningOutcome()->getId()]
             ],
-            $criterion->getId() ?
+            $criterion->getId() !== 0 ?
                 ['fixed' => $criterion->getCode()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_criterion')]
         ];
@@ -204,7 +204,7 @@ class CriterionController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_training_criterion_list', ['id' => $learningOutcome->getId()]);
         }
 
@@ -335,7 +335,7 @@ class CriterionController extends AbstractController
 
         foreach ($items as $item) {
             preg_match('/^(.{1,10})\) (.*)/u', $item, $matches);
-            if ($matches) {
+            if ($matches !== []) {
                 $output[$matches[1]] = $matches[2];
             }
         }

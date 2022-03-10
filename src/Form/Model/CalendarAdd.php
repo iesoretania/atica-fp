@@ -22,8 +22,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class CalendarAdd
 {
-    const OVERWRITE_ACTION_REPLACE = 1;
-    const OVERWRITE_ACTION_ADD = 2;
+    public const OVERWRITE_ACTION_REPLACE = 1;
+    public const OVERWRITE_ACTION_ADD = 2;
 
     /** @var \DateTime */
     private $startDate;
@@ -81,7 +81,7 @@ class CalendarAdd
      * @param \DateTime $startDate
      * @return CalendarAdd
      */
-    public function setStartDate($startDate)
+    public function setStartDate(\DateTimeInterface $startDate)
     {
         $this->startDate = $startDate;
         return $this;

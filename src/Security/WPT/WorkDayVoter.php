@@ -29,8 +29,8 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class WorkDayVoter extends CachedVoter
 {
-    const FILL = 'WPT_WORK_DAY_MANAGE';
-    const ACCESS = 'WPT_WORK_DAY_ACCESS';
+    public const FILL = 'WPT_WORK_DAY_MANAGE';
+    public const ACCESS = 'WPT_WORK_DAY_ACCESS';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -57,14 +57,10 @@ class WorkDayVoter extends CachedVoter
         if (!$subject instanceof WorkDay) {
             return false;
         }
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::FILL,
             self::ACCESS
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**

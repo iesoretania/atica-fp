@@ -92,13 +92,13 @@ class CompanyController extends AbstractController
         }
 
         $title = $translator->trans(
-            $company->getId() ? 'title.edit' : 'title.new',
+            $company->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'company'
         );
 
         $breadcrumb = [
-            $company->getId() ?
+            $company->getId() !== 0 ?
                 ['fixed' => $company->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'company')]
         ];
@@ -181,7 +181,7 @@ class CompanyController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('company');
         }
 
@@ -226,11 +226,7 @@ class CompanyController extends AbstractController
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
 
-        if ($term === null) {
-            $persons = [];
-        } else {
-            $persons = [$personRepository->findOneByUniqueIdentifier($term)];
-        }
+        $persons = $term === null ? [] : [$personRepository->findOneByUniqueIdentifier($term)];
 
         if (count($persons) === 0) {
             $data = [

@@ -75,11 +75,19 @@ class UserExtensionService
         }
 
         return $this->session->has('organization_id')
-            && count($this->em->getRepository('App:Organization')->getMembershipByPersonQueryBuilder($user)
+            && (is_array($this->em->getRepository('App:Organization')->getMembershipByPersonQueryBuilder($user)
                 ->andWhere('o = :organization')
                 ->setParameter('organization', $this->getCurrentOrganization())
                 ->getQuery()
-                ->getResult()) > 0;
+                ->getResult()) || $this->em->getRepository('App:Organization')->getMembershipByPersonQueryBuilder($user)
+                ->andWhere('o = :organization')
+                ->setParameter('organization', $this->getCurrentOrganization())
+                ->getQuery()
+                ->getResult() instanceof \Countable ? count($this->em->getRepository('App:Organization')->getMembershipByPersonQueryBuilder($user)
+                ->andWhere('o = :organization')
+                ->setParameter('organization', $this->getCurrentOrganization())
+                ->getQuery()
+                ->getResult()) : 0) > 0;
     }
 
     public function isUserGlobalAdministrator()

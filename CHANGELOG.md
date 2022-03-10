@@ -15,6 +15,7 @@ en las distintas versiones de la misma.
 * fix: Intento de solucionar la copia del calendario
 * fix: Solucionado problema con la administración de las organizaciones
 * feat: Eliminada separación entre personas y usuarios para simplificar la gestión
+* chore: Aplicado RectorPHP para actualizar el código
 
 4.1.0 (2022-02-13)
 ------------------

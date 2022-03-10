@@ -76,10 +76,10 @@ class UserController extends AbstractController
             }
         }
 
-        $title = $translator->trans($localUser->getId() ? 'title.edit' : 'title.new', [], 'user');
+        $title = $translator->trans($localUser->getId() !== 0 ? 'title.edit' : 'title.new', [], 'user');
 
         $breadcrumb = [
-            $localUser->getId() ?
+            $localUser->getId() !== 0 ?
                 ['fixed' => (string)$localUser] :
                 ['fixed' => $translator->trans('title.new', [], 'user')]
         ];
@@ -151,7 +151,7 @@ class UserController extends AbstractController
         $queryBuilder = $em->createQueryBuilder();
 
         $items = $request->request->get('users', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('admin_user_list');
         }
 

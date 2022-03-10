@@ -31,9 +31,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class Person implements UserInterface
 {
-    const GENDER_NEUTRAL = 0;
-    const GENDER_MALE = 1;
-    const GENDER_FEMALE = 2;
+    public const GENDER_NEUTRAL = 0;
+    public const GENDER_MALE = 1;
+    public const GENDER_FEMALE = 2;
 
     /**
      * @ORM\Id
@@ -179,7 +179,7 @@ class Person implements UserInterface
     public function getFullDisplayName()
     {
         $prefix = $this->getFirstName() . ' ' . $this->getLastName();
-        return $this->getUniqueIdentifier() ? $prefix . ' - ' . $this->getUniqueIdentifier() : $prefix;
+        return $this->getUniqueIdentifier() !== '' && $this->getUniqueIdentifier() !== '0' ? $prefix . ' - ' . $this->getUniqueIdentifier() : $prefix;
     }
 
     /**
@@ -497,7 +497,7 @@ class Person implements UserInterface
      *
      * @return Person
      */
-    public function setTokenExpiration($tokenExpiration)
+    public function setTokenExpiration(\DateTimeInterface $tokenExpiration)
     {
         $this->tokenExpiration = $tokenExpiration;
 
@@ -521,7 +521,7 @@ class Person implements UserInterface
      *
      * @return Person
      */
-    public function setLastAccess($lastAccess)
+    public function setLastAccess(\DateTimeInterface $lastAccess)
     {
         $this->lastAccess = $lastAccess;
 
@@ -545,7 +545,7 @@ class Person implements UserInterface
      *
      * @return Person
      */
-    public function setBlockedUntil($blockedUntil)
+    public function setBlockedUntil(\DateTimeInterface $blockedUntil)
     {
         $this->blockedUntil = $blockedUntil;
 

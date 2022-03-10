@@ -116,8 +116,7 @@ class AgreementRepository extends ServiceEntityRepository
                 ->select('COUNT(a)')
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NoResultException $e) {
-        } catch (NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException $e) {
         }
 
         return 0;
@@ -150,8 +149,7 @@ class AgreementRepository extends ServiceEntityRepository
                 ->setParameter('academic_year', $academicYear)
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NoResultException $e) {
-        } catch (NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException $e) {
         }
 
         return 0;
@@ -184,8 +182,7 @@ class AgreementRepository extends ServiceEntityRepository
                 ->setParameter('academic_year', $academicYear)
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NoResultException $e) {
-        } catch (NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException $e) {
         }
 
         return 0;
@@ -218,13 +215,13 @@ class AgreementRepository extends ServiceEntityRepository
     public function updateDates(Agreement $agreement)
     {
         $workDays = $this->workDayRepository->findByAgreement($agreement);
-        if (count($workDays) === 0) {
+        if ((is_array($workDays) || $workDays instanceof \Countable ? count($workDays) : 0) === 0) {
             return;
         }
         /** @var WorkDay $first */
         $first = $workDays[0];
         /** @var WorkDay $last */
-        $last = $workDays[count($workDays) - 1];
+        $last = $workDays[(is_array($workDays) || $workDays instanceof \Countable ? count($workDays) : 0) - 1];
         $agreement
             ->setStartDate($first->getDate())
             ->setEndDate($last->getDate());
@@ -235,7 +232,7 @@ class AgreementRepository extends ServiceEntityRepository
     public function cloneCalendarFromAgreement(Agreement $destination, Agreement $source, $overwrite = false)
     {
         $workDays = $this->workDayRepository->findByAgreement($source);
-        if (count($workDays) === 0) {
+        if ((is_array($workDays) || $workDays instanceof \Countable ? count($workDays) : 0) === 0) {
             return;
         }
 

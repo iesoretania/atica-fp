@@ -30,8 +30,8 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class AgreementVoter extends CachedVoter
 {
-    const MANAGE = 'WPT_AGREEMENT_MANAGE';
-    const ACCESS = 'WPT_AGREEMENT_ACCESS';
+    public const MANAGE = 'WPT_AGREEMENT_MANAGE';
+    public const ACCESS = 'WPT_AGREEMENT_ACCESS';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -58,14 +58,10 @@ class AgreementVoter extends CachedVoter
         if (!$subject instanceof Agreement) {
             return false;
         }
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::MANAGE,
             self::ACCESS
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**
@@ -140,15 +136,12 @@ class AgreementVoter extends CachedVoter
     {
         $now = new \DateTime();
 
-        if (!$survey) {
+        if ($survey === null) {
             return false;
         }
         if ($survey->getStartTimestamp() && $survey->getStartTimestamp() > $now) {
             return false;
         }
-        if ($survey->getEndTimestamp() && $survey->getEndTimestamp() < $now) {
-            return false;
-        }
-        return true;
+        return !($survey->getEndTimestamp() && $survey->getEndTimestamp() < $now);
     }
 }

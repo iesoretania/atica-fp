@@ -114,7 +114,7 @@ class TravelExpense
      * @param \DateTime $fromDateTime
      * @return TravelExpense
      */
-    public function setFromDateTime($fromDateTime)
+    public function setFromDateTime(\DateTimeInterface $fromDateTime)
     {
         $this->fromDateTime = $fromDateTime;
         return $this;
@@ -132,7 +132,7 @@ class TravelExpense
      * @param \DateTime $toDateTime
      * @return TravelExpense
      */
-    public function setToDateTime($toDateTime)
+    public function setToDateTime(\DateTimeInterface $toDateTime)
     {
         $this->toDateTime = $toDateTime;
         return $this;

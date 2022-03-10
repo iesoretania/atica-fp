@@ -245,7 +245,7 @@ class AgreementCalendarController extends AbstractController
         $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute(
                 'work_linked_training_agreement_calendar_list',
                 ['id' => $agreement->getId()]

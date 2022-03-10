@@ -98,7 +98,7 @@ class LearningProgramRepository extends ServiceEntityRepository
                 );
 
                 if ($newActivityRealization &&
-                    false === $newLearningProgram->getActivityRealizations()->contains($newActivityRealization)) {
+                    !$newLearningProgram->getActivityRealizations()->contains($newActivityRealization)) {
                     $newLearningProgram->getActivityRealizations()->add($newActivityRealization);
                 }
             }

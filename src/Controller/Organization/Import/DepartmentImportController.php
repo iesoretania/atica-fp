@@ -157,10 +157,7 @@ class DepartmentImportController extends AbstractController
 
         // ordenar por nombre antes de devolverlo
         usort($collection, function (Department $a, Department $b) {
-            if ($a->getName() === $b->getName()) {
-                return 0;
-            }
-            return ($a->getName() < $b->getName()) ? -1 : 1;
+            return $a->getName() <=> $b->getName();
         });
 
         return [

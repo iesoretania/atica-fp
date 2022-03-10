@@ -127,7 +127,7 @@ class MeetingController extends AbstractController
         $groups = [];
         $teacher = null;
 
-        if (false === $isManager) {
+        if (!$isManager) {
             /** @var Person $person */
             $person = $this->getUser();
 
@@ -173,7 +173,7 @@ class MeetingController extends AbstractController
         }
 
         $title = $translator->trans(
-            $meeting->getId() ? 'title.edit' : 'title.new',
+            $meeting->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'wlt_meeting'
         );
@@ -242,7 +242,7 @@ class MeetingController extends AbstractController
 
         /** @var Person $person */
         $person = $this->getUser();
-        if (false === $isWltManager && false === $isManager) {
+        if (!$isWltManager && !$isManager) {
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento o tutor de grupo  -> ver sólo visitas de los
             // estudiantes de sus grupos
@@ -283,7 +283,7 @@ class MeetingController extends AbstractController
                 ->setParameter('teacher', $teacher);
         }
 
-        if (false === $isWltManager && false === $isManager && !$projects && !$groups) {
+        if (!$isWltManager && !$isManager && !$projects && !$groups) {
             $queryBuilder
                 ->andWhere('m.createdBy = :teacher')
                 ->setParameter('teacher', $teacher);
@@ -335,7 +335,7 @@ class MeetingController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('work_linked_training_meeting_list');
         }
 

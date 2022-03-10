@@ -91,8 +91,7 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
                 $return[] = $element;
             }
         }
-        $return = array_chunk($return, 3);
-        return $return;
+        return array_chunk($return, 3);
     }
 
     public function findByAgreementEnrollmentGroupByMonthAndWeekNumber(AgreementEnrollment $agreementEnrollment)
@@ -235,7 +234,7 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
             $month = (int) $date->format('n');
             $monthCode = (int) $date->format('Y') * 12 + $month - 1;
 
-            if (false === isset($collection[$monthCode])) {
+            if (!isset($collection[$monthCode])) {
                 $firstMonthDate = date_create($date->format('Y-m-01'));
                 $firstMonthDow = (int) $firstMonthDate->format('N') - 1;
                 $currentDate = clone $firstMonthDate;

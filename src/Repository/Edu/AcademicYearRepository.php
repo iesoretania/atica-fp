@@ -68,7 +68,10 @@ class AcademicYearRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByDate(\DateTime $date)
+    /**
+     * @param \DateTime|\DateTimeImmutable $date
+     */
+    public function findByDate(\DateTimeInterface $date)
     {
         $startDate = clone $date;
         $startDate->setTime(0, 0);

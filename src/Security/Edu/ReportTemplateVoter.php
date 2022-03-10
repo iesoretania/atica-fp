@@ -29,8 +29,8 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class ReportTemplateVoter extends CachedVoter
 {
-    const EDU_REPORT_TEMPLATE_VIEW = 'EDU_REPORT_TEMPLATE_VIEW';
-    const EDU_REPORT_TEMPLATE_MANAGE = 'EDU_REPORT_TEMPLATE_MANAGE';
+    public const EDU_REPORT_TEMPLATE_VIEW = 'EDU_REPORT_TEMPLATE_VIEW';
+    public const EDU_REPORT_TEMPLATE_MANAGE = 'EDU_REPORT_TEMPLATE_MANAGE';
 
     private $decisionManager;
     private $userExtensionService;
@@ -54,15 +54,10 @@ class ReportTemplateVoter extends CachedVoter
         if (!$subject instanceof ReportTemplate) {
             return false;
         }
-
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::EDU_REPORT_TEMPLATE_VIEW,
             self::EDU_REPORT_TEMPLATE_MANAGE,
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**
@@ -86,15 +81,9 @@ class ReportTemplateVoter extends CachedVoter
             // si el usuario no ha entrado, denegar
             return false;
         }
-
         // Si es administrador de la organización actual, permitir siempre
-        if ($subject->getOrganization() === $this->userExtensionService->getCurrentOrganization()
-            && $this->decisionManager->decide($token, [OrganizationVoter::LOCAL_MANAGE], $subject->getOrganization())
-        ) {
-            return true;
-        }
-
         // denegamos en cualquier otro caso
-        return false;
+        return $subject->getOrganization() === $this->userExtensionService->getCurrentOrganization()
+            && $this->decisionManager->decide($token, [OrganizationVoter::LOCAL_MANAGE], $subject->getOrganization());
     }
 }

@@ -110,7 +110,7 @@ class WorkDay
      * @param \DateTime $date
      * @return WorkDay
      */
-    public function setDate($date)
+    public function setDate(\DateTimeInterface $date)
     {
         $this->date = $date;
         return $this;

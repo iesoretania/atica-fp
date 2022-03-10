@@ -31,8 +31,8 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class TravelExpenseVoter extends CachedVoter
 {
-    const MANAGE = 'WPT_TRAVEL_EXPENSE_MANAGE';
-    const ACCESS = 'WPT_TRAVEL_EXPENSE_ACCESS';
+    public const MANAGE = 'WPT_TRAVEL_EXPENSE_MANAGE';
+    public const ACCESS = 'WPT_TRAVEL_EXPENSE_ACCESS';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -59,14 +59,10 @@ class TravelExpenseVoter extends CachedVoter
         if (!$subject instanceof TravelExpense) {
             return false;
         }
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::MANAGE,
             self::ACCESS
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**

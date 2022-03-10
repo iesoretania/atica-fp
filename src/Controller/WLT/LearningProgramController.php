@@ -99,7 +99,7 @@ class LearningProgramController extends AbstractController
         }
 
         $title = $translator->trans(
-            $learningProgram->getId() ? 'title.edit' : 'title.new',
+            $learningProgram->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'wlt_learning_program'
         );
@@ -110,7 +110,7 @@ class LearningProgramController extends AbstractController
                 'routeName' => 'work_linked_training_learning_program_list',
                 'routeParams' => ['project' => $project->getId()]
             ],
-            $learningProgram->getId() ?
+            $learningProgram->getId() !== 0 ?
                 ['fixed' => $learningProgram->getCompany()] :
                 ['fixed' => $translator->trans('title.new', [], 'wlt_learning_program')]
         ];
@@ -203,10 +203,8 @@ class LearningProgramController extends AbstractController
 
         $items = $request->request->get('items', []);
 
-        if (count($items) !== 0) {
-            if ('' === $request->get('delete')) {
-                return $this->deleteAction($items, $request, $translator, $learningProgramRepository, $project);
-            }
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) !== 0 && '' === $request->get('delete')) {
+            return $this->deleteAction($items, $request, $translator, $learningProgramRepository, $project);
         }
 
         return $this->redirectToRoute(
@@ -348,8 +346,8 @@ class LearningProgramController extends AbstractController
                         continue;
                     }
 
-                    if ($companiesParsed === false && '' === $lineData[0]) {
-                        $count = count($lineData);
+                    if (!$companiesParsed && '' === $lineData[0]) {
+                        $count = is_array($lineData) || $lineData instanceof \Countable ? count($lineData) : 0;
                         for ($i = 3; $i <= $count - 1; $i++) {
                             if ($lineData[$i]) {
                                 /** @var Company $company */
@@ -397,39 +395,36 @@ class LearningProgramController extends AbstractController
                             } else {
                                 $lastCode = $activity->getCode();
                             }
-                        } else {
-                            if ($activity && strpos($lineData[0], $lastCode) === 0 &&
-                                (strlen($lineData[2]) === 2 || strlen($lineData[2]) === 1)) {
-                                // Procesar concreción
-                                $activityRealization = $activityRealizationRepository->findOneByProjectAndCode(
-                                    $project,
-                                    $lineData[0]
-                                );
-                                if (null === $activityRealization) {
-                                    $activityRealization = new ActivityRealization();
-                                    $activityRealization
-                                        ->setActivity($activity)
-                                        ->setCode($lineData[0])
-                                        ->setDescription($lineData[1]);
-                                    $entityManager->persist($activityRealization);
-                                    $newActivityCount++;
-                                } else {
-                                    $oldActivityCount++;
-                                }
-
-                                /** @var LearningProgram $learningProgram */
-                                foreach ($learningPrograms as $n => $learningProgram) {
-                                    if (isset($lineData[$n])) {
-                                        $activityRealizations = $learningProgram->getActivityRealizations();
-                                        if ((strpos($lineData[$n], 'S') === 0) &&
-                                            false === $activityRealizations->contains($activityRealization)
-                                        ) {
-                                            $activityRealizations->add($activityRealization);
-                                        } elseif ((strpos($lineData[$n], 'N') === 0) &&
-                                            true === $activityRealizations->contains($activityRealization)
-                                        ) {
-                                            $activityRealizations->removeElement($activityRealization);
-                                        }
+                        } elseif ($activity && strpos($lineData[0], $lastCode) === 0 &&
+                            (strlen($lineData[2]) === 2 || strlen($lineData[2]) === 1)) {
+                            // Procesar concreción
+                            $activityRealization = $activityRealizationRepository->findOneByProjectAndCode(
+                                $project,
+                                $lineData[0]
+                            );
+                            if (null === $activityRealization) {
+                                $activityRealization = new ActivityRealization();
+                                $activityRealization
+                                    ->setActivity($activity)
+                                    ->setCode($lineData[0])
+                                    ->setDescription($lineData[1]);
+                                $entityManager->persist($activityRealization);
+                                $newActivityCount++;
+                            } else {
+                                $oldActivityCount++;
+                            }
+                            /** @var LearningProgram $learningProgram */
+                            foreach ($learningPrograms as $n => $learningProgram) {
+                                if (isset($lineData[$n])) {
+                                    $activityRealizations = $learningProgram->getActivityRealizations();
+                                    if ((strpos($lineData[$n], 'S') === 0) &&
+                                        !$activityRealizations->contains($activityRealization)
+                                    ) {
+                                        $activityRealizations->add($activityRealization);
+                                    } elseif ((strpos($lineData[$n], 'N') === 0) &&
+                                        $activityRealizations->contains($activityRealization)
+                                    ) {
+                                        $activityRealizations->removeElement($activityRealization);
                                     }
                                 }
                             }

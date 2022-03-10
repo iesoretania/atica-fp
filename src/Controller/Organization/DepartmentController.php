@@ -79,13 +79,13 @@ class DepartmentController extends AbstractController
         }
 
         $title = $translator->trans(
-            $department->getId() ? 'title.edit' : 'title.new',
+            $department->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'edu_department'
         );
 
         $breadcrumb = [
-            $department->getId() ?
+            $department->getId() !== 0 ?
                 ['fixed' => $department->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_department')]
         ];
@@ -173,7 +173,7 @@ class DepartmentController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_department_list', ['academicYear' => $academicYear->getId()]);
         }
 

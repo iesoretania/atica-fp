@@ -61,6 +61,9 @@ class VisitType extends AbstractType
         $this->WPTWorkcenterRepository = $WPTWorkcenterRepository;
     }
 
+    /**
+     * @param \DateTime|\DateTimeImmutable $dateTime
+     */
     private function addElements(
         FormInterface $form,
         AcademicYear $academicYear = null,
@@ -68,7 +71,7 @@ class VisitType extends AbstractType
         Teacher $teacher = null,
         $selectedAgreements = [],
         $teachers = [],
-        \DateTime $dateTime = null
+        \DateTimeInterface $dateTime = null
     ) {
         $workcenters = [];
 
@@ -83,7 +86,7 @@ class VisitType extends AbstractType
         }
         $studentEnrollments = [];
 
-        if ($teacher) {
+        if ($teacher !== null) {
             $workcenters = $this->WPTWorkcenterRepository->findByWPTEducationalTutor($teacher);
         }
         if ($teacher && $workcenter && $dateTime) {
@@ -109,8 +112,8 @@ class VisitType extends AbstractType
             $agreements = [];
         }
 
-        $canSelectAgreements = count($agreements) > 0;
-        $canSelectStudentEnrollments = count($studentEnrollments) > 0;
+        $canSelectAgreements = (is_array($agreements) || $agreements instanceof \Countable ? count($agreements) : 0) > 0;
+        $canSelectStudentEnrollments = $studentEnrollments !== [];
 
         $form
             ->add('dateTime', DateTimeType::class, [

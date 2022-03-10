@@ -102,11 +102,7 @@ class VisitController extends AbstractController
         $this->denyAccessUnlessGranted(VisitVoter::ACCESS, $visit);
 
         $organization = $userExtensionService->getCurrentOrganization();
-        if ($visit->getTeacher()) {
-            $academicYear = $visit->getTeacher()->getAcademicYear();
-        } else {
-            $academicYear = $organization->getCurrentAcademicYear();
-        }
+        $academicYear = $visit->getTeacher() ? $visit->getTeacher()->getAcademicYear() : $organization->getCurrentAcademicYear();
 
         $em = $this->getDoctrine()->getManager();
 
@@ -147,7 +143,7 @@ class VisitController extends AbstractController
         }
 
         $title = $translator->trans(
-            $visit->getId() ? 'title.edit' : 'title.new',
+            $visit->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'wpt_visit'
         );
@@ -359,7 +355,7 @@ class VisitController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('workplace_training_visit_detail_list', ['id' => $teacher->getId()]);
         }
 

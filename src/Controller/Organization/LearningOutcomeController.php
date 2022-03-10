@@ -88,7 +88,7 @@ class LearningOutcomeController extends AbstractController
         }
 
         $title = $translator->trans(
-            $learningOutcome->getId() ? 'title.edit' : 'title.new',
+            $learningOutcome->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'edu_learning_outcome'
         );
@@ -104,7 +104,7 @@ class LearningOutcomeController extends AbstractController
                 'routeName' => 'organization_training_learning_outcome_list',
                 'routeParams' => ['id' => $subject->getId()]
             ],
-            $learningOutcome->getId() ?
+            $learningOutcome->getId() !== 0 ?
                 ['fixed' => $learningOutcome->getCode()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_learning_outcome')]
         ];
@@ -198,7 +198,7 @@ class LearningOutcomeController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_training_learning_outcome_list', ['id' => $subject->getId()]);
         }
 
@@ -319,7 +319,7 @@ class LearningOutcomeController extends AbstractController
 
         foreach ($items as $item) {
             preg_match('/^(.{1,10})\: (.*)/u', $item, $matches);
-            if ($matches) {
+            if ($matches !== []) {
                 $output[$matches[1]] = $matches[2];
             }
         }

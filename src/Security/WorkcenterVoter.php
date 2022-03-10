@@ -30,8 +30,8 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class WorkcenterVoter extends CachedVoter
 {
-    const MANAGE = 'WORKCENTER_MANAGE';
-    const ACCESS = 'WORKCENTER_ACCESS';
+    public const MANAGE = 'WORKCENTER_MANAGE';
+    public const ACCESS = 'WORKCENTER_ACCESS';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -67,12 +67,7 @@ class WorkcenterVoter extends CachedVoter
         if (!$subject instanceof Workcenter) {
             return false;
         }
-
-        if (!in_array($attribute, [self::MANAGE, self::ACCESS], true)) {
-            return false;
-        }
-
-        return true;
+        return in_array($attribute, [self::MANAGE, self::ACCESS], true);
     }
 
     /**

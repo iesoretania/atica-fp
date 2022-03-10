@@ -71,7 +71,7 @@ class AcademicYearController extends AbstractController
         }
 
         $form = $this->createForm(AcademicYearType::class, $academicYear, [
-            'academic_year' => $academicYear->getId() ? $academicYear : null
+            'academic_year' => $academicYear->getId() !== 0 ? $academicYear : null
         ]);
 
         $form->handleRequest($request);
@@ -87,13 +87,13 @@ class AcademicYearController extends AbstractController
         }
 
         $title = $translator->trans(
-            $academicYear->getId() ? 'title.edit' : 'title.new',
+            $academicYear->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'edu_academic_year'
         );
 
         $breadcrumb = [
-            $academicYear->getId() ?
+            $academicYear->getId() !== 0 ?
                 ['fixed' => (string) $academicYear] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_academic_year')]
         ];
@@ -178,7 +178,7 @@ class AcademicYearController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
-        list($redirect, $academicYears) = $this->processOperations(
+        [$redirect, $academicYears] = $this->processOperations(
             $request,
             $translator,
             $userExtensionService->getCurrentOrganization(),
@@ -217,7 +217,7 @@ class AcademicYearController extends AbstractController
         }
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             $redirect = true;
         }
 

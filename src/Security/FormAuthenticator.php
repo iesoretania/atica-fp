@@ -124,9 +124,9 @@ class FormAuthenticator extends AbstractGuardAuthenticator
         if ($user->getExternalCheck()) {
             $result = $this->senecaAuthenticator->checkUserCredentials($user->getLoginUsername(), $plainPassword);
 
-            if (true === $result) {
+            if ($result) {
                 // contraseña correcta, actualizar en local por si perdemos la conectividad
-                if (false === $this->encoder->isPasswordValid($user, $plainPassword)) {
+                if (!$this->encoder->isPasswordValid($user, $plainPassword)) {
                     $user->setPassword($this->encoder->encodePassword($user, $plainPassword));
                     $em = $this->managerRegistry->getManager();
                     if ($em) {
@@ -136,7 +136,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
                 return true;
             }
 
-            if (false === $result) {
+            if (!$result) {
                 return false;
             }
 
@@ -144,7 +144,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
         }
 
         // comprobación local
-        if (false === $this->encoder->isPasswordValid($user, $plainPassword)) {
+        if (!$this->encoder->isPasswordValid($user, $plainPassword)) {
             throw new BadCredentialsException();
         }
 

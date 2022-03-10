@@ -136,7 +136,7 @@ class Survey
      * @param \DateTime $startTimestamp
      * @return Survey
      */
-    public function setStartTimestamp($startTimestamp)
+    public function setStartTimestamp(\DateTimeInterface $startTimestamp)
     {
         $this->startTimestamp = $startTimestamp;
         return $this;
@@ -154,7 +154,7 @@ class Survey
      * @param \DateTime $endTimestamp
      * @return Survey
      */
-    public function setEndTimestamp($endTimestamp)
+    public function setEndTimestamp(\DateTimeInterface $endTimestamp)
     {
         $this->endTimestamp = $endTimestamp;
         return $this;

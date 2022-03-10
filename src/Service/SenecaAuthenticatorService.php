@@ -44,13 +44,13 @@ class SenecaAuthenticatorService
     public function checkUserCredentials($user, $password)
     {
         // devolver error si no está habilitado
-        if (false === $this->enabled) {
+        if (!$this->enabled) {
             return null;
         }
 
         // obtener URL de entrada
         $str = $this->getUrl($this->url, $this->forceSecurity);
-        if (!$str) {
+        if ($str === '' || $str === '0') {
             return null;
         }
 
@@ -77,7 +77,7 @@ class SenecaAuthenticatorService
 
         $str = $this->postToUrl($fields, $postUrl, $this->url, $this->forceSecurity);
 
-        if (!$str) {
+        if ($str === '' || $str === '0') {
             return null;
         }
 

@@ -87,7 +87,7 @@ class WorkcenterController extends AbstractController
         }
 
         $title = $translator->trans(
-            $workcenter->getId() ? 'title.edit' : 'title.new',
+            $workcenter->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'workcenter'
         );
@@ -103,7 +103,7 @@ class WorkcenterController extends AbstractController
                 'routeName' => 'company_workcenter_list',
                 'routeParams' => ['id' => $workcenter->getCompany()->getId()]
             ],
-            $workcenter->getId() ?
+            $workcenter->getId() !== 0 ?
                 ['fixed' => $workcenter->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'workcenter')]
         ];
@@ -204,7 +204,7 @@ class WorkcenterController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('company_workcenter_list', ['id' => $company->getId()]);
         }
 

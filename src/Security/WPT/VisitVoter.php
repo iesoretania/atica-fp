@@ -32,8 +32,8 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class VisitVoter extends CachedVoter
 {
-    const MANAGE = 'WPT_VISIT_MANAGE';
-    const ACCESS = 'WPT_VISIT_ACCESS';
+    public const MANAGE = 'WPT_VISIT_MANAGE';
+    public const ACCESS = 'WPT_VISIT_ACCESS';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -64,14 +64,10 @@ class VisitVoter extends CachedVoter
         if (!$subject instanceof Visit) {
             return false;
         }
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::MANAGE,
             self::ACCESS
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**

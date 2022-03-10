@@ -31,16 +31,16 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class AgreementVoter extends CachedVoter
 {
-    const MANAGE = 'WLT_AGREEMENT_MANAGE';
-    const ACCESS = 'WLT_AGREEMENT_ACCESS';
-    const ATTENDANCE = 'WLT_AGREEMENT_ATTENDANCE';
-    const LOCK = 'WLT_AGREEMENT_LOCK';
-    const GRADE = 'WLT_AGREEMENT_GRADE';
-    const VIEW_GRADE = 'WLT_AGREEMENT_VIEW_GRADE';
-    const VIEW_STUDENT_SURVEY = 'WLT_AGREEMENT_VIEW_STUDENT_SURVEY';
-    const FILL_STUDENT_SURVEY = 'WLT_AGREEMENT_FILL_STUDENT_SURVEY';
-    const VIEW_COMPANY_SURVEY = 'WLT_AGREEMENT_VIEW_COMPANY_SURVEY';
-    const FILL_COMPANY_SURVEY = 'WLT_AGREEMENT_FILL_COMPANY_SURVEY';
+    public const MANAGE = 'WLT_AGREEMENT_MANAGE';
+    public const ACCESS = 'WLT_AGREEMENT_ACCESS';
+    public const ATTENDANCE = 'WLT_AGREEMENT_ATTENDANCE';
+    public const LOCK = 'WLT_AGREEMENT_LOCK';
+    public const GRADE = 'WLT_AGREEMENT_GRADE';
+    public const VIEW_GRADE = 'WLT_AGREEMENT_VIEW_GRADE';
+    public const VIEW_STUDENT_SURVEY = 'WLT_AGREEMENT_VIEW_STUDENT_SURVEY';
+    public const FILL_STUDENT_SURVEY = 'WLT_AGREEMENT_FILL_STUDENT_SURVEY';
+    public const VIEW_COMPANY_SURVEY = 'WLT_AGREEMENT_VIEW_COMPANY_SURVEY';
+    public const FILL_COMPANY_SURVEY = 'WLT_AGREEMENT_FILL_COMPANY_SURVEY';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -67,7 +67,7 @@ class AgreementVoter extends CachedVoter
         if (!$subject instanceof Agreement) {
             return false;
         }
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::MANAGE,
             self::ACCESS,
             self::ATTENDANCE,
@@ -78,11 +78,7 @@ class AgreementVoter extends CachedVoter
             self::FILL_STUDENT_SURVEY,
             self::VIEW_COMPANY_SURVEY,
             self::FILL_COMPANY_SURVEY
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**
@@ -233,15 +229,12 @@ class AgreementVoter extends CachedVoter
     {
         $now = new \DateTime();
 
-        if (!$wltCompanySurvey) {
+        if ($wltCompanySurvey === null) {
             return false;
         }
         if ($wltCompanySurvey->getStartTimestamp() && $wltCompanySurvey->getStartTimestamp() > $now) {
             return false;
         }
-        if ($wltCompanySurvey->getEndTimestamp() && $wltCompanySurvey->getEndTimestamp() < $now) {
-            return false;
-        }
-        return true;
+        return !($wltCompanySurvey->getEndTimestamp() && $wltCompanySurvey->getEndTimestamp() < $now);
     }
 }

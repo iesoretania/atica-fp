@@ -48,8 +48,9 @@ class NonWorkingDayRepository extends ServiceEntityRepository
     /**
      * @param AcademicYear $academicYear
      * @return NonWorkingDay|null
+     * @param \DateTime|\DateTimeImmutable $dateTime
      */
-    public function findOneByAcademicYearAndDate(AcademicYear $academicYear, \DateTime $dateTime)
+    public function findOneByAcademicYearAndDate(AcademicYear $academicYear, \DateTimeInterface $dateTime)
     {
         return $this->createQueryBuilder('n')
             ->where('n.academicYear = :academic_year')

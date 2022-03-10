@@ -104,7 +104,7 @@ class AgreementCalendarController extends AbstractController
         $calendarAdd = new CalendarAdd();
         $calendarAdd
             ->setTotalHours(
-                $agreement->getShift()->getHours()
+                $agreement->getShift()->getHours() !== 0
                 ? max(0, $agreement->getShift()->getHours() - $totalHours)
                 : 0
             );
@@ -253,7 +253,7 @@ class AgreementCalendarController extends AbstractController
         $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute(
                 'workplace_training_agreement_calendar_list',
                 ['id' => $agreement->getId()]

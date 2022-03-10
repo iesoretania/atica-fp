@@ -29,15 +29,15 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class ProjectVoter extends CachedVoter
 {
-    const MANAGE = 'WLT_PROJECT_MANAGE';
-    const ACCESS_EDUCATIONAL_TUTOR_SURVEY = 'WLT_EDUCATIONAL_TUTOR_SURVEY_ACCESS';
-    const FILL_EDUCATIONAL_TUTOR_SURVEY = 'WLT_EDUCATIONAL_TUTOR_SURVEY_MANAGE';
-    const REPORT_STUDENT_SURVEY = 'WLT_STUDENT_SURVEY_REPORT';
-    const REPORT_COMPANY_SURVEY = 'WLT_COMPANY_SURVEY_REPORT';
-    const REPORT_ORGANIZATION_SURVEY = 'WLT_ORGANIZATION_SURVEY_REPORT';
-    const REPORT_MEETING = 'WLT_MEETING_REPORT';
-    const REPORT_ATTENDANCE = 'WLT_ATTENDANCE_REPORT';
-    const REPORT_GRADING = 'WLT_GRADING_REPORT';
+    public const MANAGE = 'WLT_PROJECT_MANAGE';
+    public const ACCESS_EDUCATIONAL_TUTOR_SURVEY = 'WLT_EDUCATIONAL_TUTOR_SURVEY_ACCESS';
+    public const FILL_EDUCATIONAL_TUTOR_SURVEY = 'WLT_EDUCATIONAL_TUTOR_SURVEY_MANAGE';
+    public const REPORT_STUDENT_SURVEY = 'WLT_STUDENT_SURVEY_REPORT';
+    public const REPORT_COMPANY_SURVEY = 'WLT_COMPANY_SURVEY_REPORT';
+    public const REPORT_ORGANIZATION_SURVEY = 'WLT_ORGANIZATION_SURVEY_REPORT';
+    public const REPORT_MEETING = 'WLT_MEETING_REPORT';
+    public const REPORT_ATTENDANCE = 'WLT_ATTENDANCE_REPORT';
+    public const REPORT_GRADING = 'WLT_GRADING_REPORT';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -64,7 +64,7 @@ class ProjectVoter extends CachedVoter
         if (!$subject instanceof Project) {
             return false;
         }
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::MANAGE,
             self::ACCESS_EDUCATIONAL_TUTOR_SURVEY,
             self::FILL_EDUCATIONAL_TUTOR_SURVEY,
@@ -74,11 +74,7 @@ class ProjectVoter extends CachedVoter
             self::REPORT_MEETING,
             self::REPORT_ATTENDANCE,
             self::REPORT_GRADING
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**

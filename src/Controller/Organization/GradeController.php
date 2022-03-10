@@ -77,13 +77,13 @@ class GradeController extends AbstractController
         }
 
         $title = $translator->trans(
-            $grade->getId() ? 'title.edit' : 'title.new',
+            $grade->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'edu_grade'
         );
 
         $breadcrumb = [
-            $grade->getId() ?
+            $grade->getId() !== 0 ?
                 ['fixed' => $grade->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_grade')]
         ];
@@ -173,7 +173,7 @@ class GradeController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_grade_list', ['academicYear' => $academicYear->getId()]);
         }
 

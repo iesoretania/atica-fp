@@ -105,6 +105,9 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @param \DateTimeInterface $date
+     */
     public function findOneByAgreementAndDate(Agreement $agreement, \DateTimeInterface $date)
     {
         return $this->createQueryBuilder('wr')
@@ -130,8 +133,7 @@ class WorkDayRepository extends ServiceEntityRepository
                 ->setParameter('agreement', $agreement)
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NoResultException $e) {
-        } catch (NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException $e) {
         }
         return 0;
     }
@@ -143,7 +145,7 @@ class WorkDayRepository extends ServiceEntityRepository
 
     /**
      * @param Agreement $agreement
-     * @param \DateTime $startDate
+     * @param \DateTimeInterface $startDate
      * @param int $hours
      * @param int[] $weekHours
      * @param bool $overwrite
@@ -152,7 +154,7 @@ class WorkDayRepository extends ServiceEntityRepository
      */
     public function createWorkDayCollectionByAcademicYear(
         Agreement $agreement,
-        \DateTime $startDate,
+        \DateTimeInterface $startDate,
         $hours,
         $weekHours,
         $overwrite = false
@@ -188,7 +190,7 @@ class WorkDayRepository extends ServiceEntityRepository
 
         while ($hours > 0) {
             $dow = (int) $date->format('N') - 1;
-            if ($weekHours[$dow] > 0 && false === isset($nonWorkingDaysData[$date->format('Ymd')])) {
+            if ($weekHours[$dow] > 0 && !isset($nonWorkingDaysData[$date->format('Ymd')])) {
                 $min = min($weekHours[$dow], $hours);
                 if ($countCurrentWorkDays && $date >= $agreement->getStartDate() && $date <= $agreement->getEndDate()) {
                     $workDay = $this->findOneByAgreementAndDate($agreement, $date);
@@ -233,7 +235,7 @@ class WorkDayRepository extends ServiceEntityRepository
      */
     public function createWorkDayCollectionByAcademicYearGroupByMonthAndWeekNumber(
         Agreement $agreement,
-        \DateTime $startDate,
+        \DateTimeInterface $startDate,
         $hours,
         $weekHours,
         $overWrite
@@ -266,7 +268,7 @@ class WorkDayRepository extends ServiceEntityRepository
             $month = (int) $date->format('n');
             $monthCode = (int) $date->format('Y') * 12 + $month - 1;
 
-            if (false === isset($collection[$monthCode])) {
+            if (!isset($collection[$monthCode])) {
                 $firstMonthDate = date_create($date->format('Y-m-01'));
                 $firstMonthDow = (int) $firstMonthDate->format('N') - 1;
                 $currentDate = clone $firstMonthDate;
@@ -304,7 +306,10 @@ class WorkDayRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findUnfilledWorkDaysBeforeDateByAgreement(Agreement $agreement, \DateTime $date)
+    /**
+     * @param \DateTimeInterface $date
+     */
+    public function findUnfilledWorkDaysBeforeDateByAgreement(Agreement $agreement, \DateTimeInterface $date)
     {
         return $this->createQueryBuilder('wd')
             ->where('wd.agreement = :agreement')

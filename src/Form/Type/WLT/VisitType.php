@@ -77,13 +77,16 @@ class VisitType extends AbstractType
         $this->wltStudentEnrollmentRepository = $wltStudentEnrollmentRepository;
     }
 
+    /**
+     * @param \DateTime|\DateTimeImmutable $dateTime
+     */
     private function addElements(
         FormInterface $form,
         AcademicYear $academicYear = null,
         Workcenter $workcenter = null,
         $selectedProjects = [],
         $teachers = [],
-        \DateTime $dateTime = null
+        \DateTimeInterface $dateTime = null
     ) {
         $workcenters = $this->workcenterRepository->findAll();
 
@@ -97,9 +100,9 @@ class VisitType extends AbstractType
             $teachers = [];
         }
         $studentEnrollments = [];
-        if ($workcenter) {
+        if ($workcenter !== null) {
             $projects = $this->projectRepository->findByAcademicYearAndWorkcenter($academicYear, $workcenter);
-            if (count($projects) > 0) {
+            if ((is_array($projects) || $projects instanceof \Countable ? count($projects) : 0) > 0) {
                 $studentEnrollments =
                     $this
                         ->wltStudentEnrollmentRepository
@@ -108,8 +111,8 @@ class VisitType extends AbstractType
         } else {
             $projects = [];
         }
-        $canSelectProjects = count($projects) > 0;
-        $canSelectStudentEnrollments = count($studentEnrollments) > 0;
+        $canSelectProjects = (is_array($projects) || $projects instanceof \Countable ? count($projects) : 0) > 0;
+        $canSelectStudentEnrollments = (is_array($studentEnrollments) || $studentEnrollments instanceof \Countable ? count($studentEnrollments) : 0) > 0;
 
         $form
             ->add('dateTime', DateTimeType::class, [

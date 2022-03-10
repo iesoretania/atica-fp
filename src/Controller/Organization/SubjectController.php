@@ -83,13 +83,13 @@ class SubjectController extends AbstractController
         }
 
         $title = $translator->trans(
-            $subject->getId() ? 'title.edit' : 'title.new',
+            $subject->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'edu_subject'
         );
 
         $breadcrumb = [
-            $subject->getId() ?
+            $subject->getId() !== 0 ?
                 ['fixed' => $subject->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_subject')]
         ];
@@ -185,7 +185,7 @@ class SubjectController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_subject_list', ['academicYear' => $academicYear->getId()]);
         }
 
@@ -268,7 +268,7 @@ class SubjectController extends AbstractController
         }
 
         $title = $translator->trans(
-            $teaching->getId() ? 'title.edit' : 'title.new',
+            $teaching->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'edu_teaching'
         );
@@ -279,7 +279,7 @@ class SubjectController extends AbstractController
                 'routeName' => 'organization_subject_list',
                 'routeParams' => ['academicYear' => $academicYear->getId()]
             ],
-            $teaching->getId() ?
+            $teaching->getId() !== 0 ?
                 ['fixed' => $teaching->getTeacher()->getPerson() .
                     ' - ' . $teaching->getSubject()->getName() .
                     ' (' . $teaching->getGroup()->getName() . ')'] :

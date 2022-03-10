@@ -90,7 +90,7 @@ class ActivityController extends AbstractController
         }
 
         $title = $translator->trans(
-            $activity->getId() ? 'title.edit' : 'title.new',
+            $activity->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'wlt_activity'
         );
@@ -102,7 +102,7 @@ class ActivityController extends AbstractController
                 'routeParams' => ['id' => $project->getId()]
             ],
             ['fixed' => $translator->trans(
-                $activity->getId() ? 'title.edit' : 'title.new',
+                $activity->getId() !== 0 ? 'title.edit' : 'title.new',
                 [],
                 'wlt_activity'
             )]
@@ -192,7 +192,7 @@ class ActivityController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('work_linked_training_project_activity_list', ['id' => $project->getId()]);
         }
 
@@ -259,7 +259,7 @@ class ActivityController extends AbstractController
                     $activityCopy->getProject()
                 );
 
-                if (true === $activityCopy->getCopyLearningProgram()) {
+                if ($activityCopy->getCopyLearningProgram()) {
                     $learningProgramRepository->copyFromProject(
                         $project,
                         $activityCopy->getProject()

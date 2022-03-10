@@ -145,7 +145,7 @@ class SubjectImportController extends AbstractController
                     $groupName = $subjectData['Unidad'];
 
                     $group = null;
-                    if (false === isset($groupCollection[$groupName])) {
+                    if (!isset($groupCollection[$groupName])) {
                         $group = $groupRepository->findOneByAcademicYearAndInternalCode($academicYear, $groupName);
                         $groupCollection[$groupName] = $group;
                     } else {
@@ -153,12 +153,12 @@ class SubjectImportController extends AbstractController
                     }
 
                     // si el grupo existe
-                    if ($group) {
-                        list($gradeName, $trainingName) = ImportParser::parseGradeName($subjectData['Curso']);
+                    if ($group !== null) {
+                        [$gradeName, $trainingName] = ImportParser::parseGradeName($subjectData['Curso']);
 
                         $subject = null;
                         $indexSubject = $subjectName . '.' . $gradeName;
-                        if (false === isset($subjectCollection[$indexSubject])) {
+                        if (!isset($subjectCollection[$indexSubject])) {
                             $subject = $subjectRepository->findOneByAcademicYearAndInternalCode(
                                 $academicYear,
                                 $subjectName,
@@ -175,7 +175,7 @@ class SubjectImportController extends AbstractController
 
                         if (null === $subject) {
                             $grade = null;
-                            if (false === isset($gradeCollection[$gradeName])) {
+                            if (!isset($gradeCollection[$gradeName])) {
                                 $grade = $gradeRepository->
                                     findOneByAcademicYearAndInternalCode($academicYear, $gradeName);
                                 $gradeCollection[$gradeName] = $grade;
@@ -183,7 +183,7 @@ class SubjectImportController extends AbstractController
                                 $grade = $gradeCollection[$gradeName];
                             }
 
-                            if ($grade) {
+                            if ($grade !== null) {
                                 $subject = new Subject();
                                 $subject
                                     ->setGrade($grade)
@@ -203,7 +203,7 @@ class SubjectImportController extends AbstractController
                             $teacherName = $subjectData['Profesor/a'];
 
                             $teacher = null;
-                            if (false === isset($teacherCollection[$teacherName])) {
+                            if (!isset($teacherCollection[$teacherName])) {
                                 $teacher = $teacherRepository->
                                     findByAcademicYearAndInternalCode($academicYear, $teacherName);
                                 $teacherCollection[$teacherName] = $teacher;
@@ -214,7 +214,7 @@ class SubjectImportController extends AbstractController
                             // si el profesor existe
                             if ($teacher && $subject) {
                                 $indexSubject = $teacherName . '.' . $groupName . '.' . $subjectName;
-                                if (false === isset($teachingCollection[$indexSubject])) {
+                                if (!isset($teachingCollection[$indexSubject])) {
                                     $teaching = $teachingRepository->findOneBy(
                                         [
                                             'teacher' => $teacher,
@@ -276,10 +276,7 @@ class SubjectImportController extends AbstractController
         usort($collection, function (Subject $a, Subject $b) {
             $aValue = $a->getGrade()->getTraining()->getName() . $a->getGrade()->getName() . $a->getName();
             $bValue = $b->getGrade()->getTraining()->getName() . $b->getGrade()->getName() . $b->getName();
-            if ($aValue === $bValue) {
-                return 0;
-            }
-            return ($aValue < $bValue) ? -1 : 1;
+            return $aValue <=> $bValue;
         });
 
         return [

@@ -30,9 +30,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class WorkDay
 {
-    const NO_ABSENCE = 0;
-    const UNJUSTIFIED_ABSENCE = 1;
-    const JUSTIFIED_ABSENCE = 2;
+    public const NO_ABSENCE = 0;
+    public const UNJUSTIFIED_ABSENCE = 1;
+    public const JUSTIFIED_ABSENCE = 2;
 
     /**
      * @ORM\Id
@@ -183,7 +183,7 @@ class WorkDay
      * @param \DateTime $date
      * @return WorkDay
      */
-    public function setDate($date)
+    public function setDate(\DateTimeInterface $date)
     {
         $this->date = $date;
         return $this;

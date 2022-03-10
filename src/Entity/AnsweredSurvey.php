@@ -97,7 +97,7 @@ class AnsweredSurvey
      * @param \DateTime $timestamp
      * @return AnsweredSurvey
      */
-    public function setTimestamp($timestamp)
+    public function setTimestamp(\DateTimeInterface $timestamp)
     {
         $this->timestamp = $timestamp;
         return $this;

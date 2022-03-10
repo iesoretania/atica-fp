@@ -47,7 +47,7 @@ class TeachingType extends AbstractType
         /** @var Subject $subject */
         $subject = $options['subject'];
         $groups = $subject->getGrade()->getGroups();
-        if (count($groups) > 0) {
+        if ($groups !== []) {
             $group = $groups[0];
         }
         $academicYear = $subject->getGrade()->getTraining()->getAcademicYear();

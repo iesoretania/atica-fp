@@ -31,6 +31,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Agreement
 {
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection|\Doctrine\Common\Collections\Collection&\App\Entity\WPT\Activity[]|mixed
+     */
+    public $activities;
+    /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
@@ -125,7 +129,7 @@ class Agreement
 
     public function __toString()
     {
-        return $this->getShift() . ' - ' . $this->getWorkcenter() . ($this->getName() ? ' - ' . $this->getName() : '');
+        return $this->getShift() . ' - ' . $this->getWorkcenter() . ($this->getName() !== '' && $this->getName() !== '0' ? ' - ' . $this->getName() : '');
     }
 
     /**
@@ -202,7 +206,7 @@ class Agreement
      * @param \DateTime $startDate
      * @return Agreement
      */
-    public function setStartDate($startDate)
+    public function setStartDate(\DateTimeInterface $startDate)
     {
         $this->startDate = $startDate;
         return $this;
@@ -220,7 +224,7 @@ class Agreement
      * @param \DateTime $endDate
      * @return Agreement
      */
-    public function setEndDate($endDate)
+    public function setEndDate(\DateTimeInterface $endDate)
     {
         $this->endDate = $endDate;
         return $this;
@@ -238,7 +242,7 @@ class Agreement
      * @param \DateTime $signDate
      * @return Agreement
      */
-    public function setSignDate($signDate)
+    public function setSignDate(\DateTimeInterface $signDate)
     {
         $this->signDate = $signDate;
         return $this;

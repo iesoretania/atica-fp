@@ -26,9 +26,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Report
 {
-    const GRADE_NEGATIVE = 0;
-    const GRADE_POSITIVE = 1;
-    const GRADE_EXCELLENT = 2;
+    public const GRADE_NEGATIVE = 0;
+    public const GRADE_POSITIVE = 1;
+    public const GRADE_EXCELLENT = 2;
 
     /**
      * @ORM\Id
@@ -313,7 +313,7 @@ class Report
      * @param \DateTime $signDate
      * @return Report
      */
-    public function setSignDate($signDate)
+    public function setSignDate(\DateTimeInterface $signDate)
     {
         $this->signDate = $signDate;
         return $this;

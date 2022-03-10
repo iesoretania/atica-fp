@@ -31,11 +31,11 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class OrganizationVoter extends CachedVoter
 {
-    const MANAGE = 'ORGANIZATION_MANAGE';
-    const ACCESS = 'ORGANIZATION_ACCESS';
-    const ACCESS_SECTION = 'ORGANIZATION_ACCESS_SECTION';
-    const LOCAL_MANAGE = 'ORGANIZATION_LOCAL_MANAGE';
-    const MANAGE_COMPANIES = 'ORGANIZATION_MANAGE_COMPANIES';
+    public const MANAGE = 'ORGANIZATION_MANAGE';
+    public const ACCESS = 'ORGANIZATION_ACCESS';
+    public const ACCESS_SECTION = 'ORGANIZATION_ACCESS_SECTION';
+    public const LOCAL_MANAGE = 'ORGANIZATION_LOCAL_MANAGE';
+    public const MANAGE_COMPANIES = 'ORGANIZATION_MANAGE_COMPANIES';
 
     private $decisionManager;
     private $roleRepository;
@@ -65,18 +65,13 @@ class OrganizationVoter extends CachedVoter
         if (!$subject instanceof Organization) {
             return false;
         }
-
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::MANAGE,
             self::ACCESS,
             self::ACCESS_SECTION,
             self::LOCAL_MANAGE,
             self::MANAGE_COMPANIES
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**

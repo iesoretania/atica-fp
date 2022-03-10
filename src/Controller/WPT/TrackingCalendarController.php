@@ -136,7 +136,7 @@ class TrackingCalendarController extends AbstractController
             $agreementEnrollment
         );
 
-        if (null === $trackedWorkDay) {
+        if (!$trackedWorkDay instanceof \App\Entity\WPT\TrackedWorkDay) {
             throw $this->createAccessDeniedException();
         }
 
@@ -179,7 +179,7 @@ class TrackingCalendarController extends AbstractController
                     foreach ($trackedActivities as $trackedActivity) {
                         if ($trackedActivity->getHours() == 0) {
                             $trackedActivities->removeElement($trackedActivity);
-                            if ($trackedWorkDay->getId()) {
+                            if ($trackedWorkDay->getId() !== 0) {
                                 $this->getDoctrine()->getManager()->remove($trackedActivity);
                             }
                         } else {
@@ -264,7 +264,7 @@ class TrackingCalendarController extends AbstractController
         }
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute(
                 'workplace_training_tracking_calendar_list',
                 ['id' => $agreementEnrollment->getId()]
@@ -478,7 +478,7 @@ class TrackingCalendarController extends AbstractController
     ) {
         $weekDays = $trackedWorkDayRepository->findByYearWeekAndAgreementEnrollment($year, $week, $agreementEnrollment);
 
-        if (count($weekDays) === 0) {
+        if ((is_array($weekDays) || $weekDays instanceof \Countable ? count($weekDays) : 0) === 0) {
             // no hay jornadas, volver al listado
             return $this->redirectToRoute(
                 'workplace_training_tracking_calendar_list',
@@ -515,7 +515,7 @@ class TrackingCalendarController extends AbstractController
 
             /** @var TrackedWorkDay $trackedWorkDay */
             foreach ($weekDays as $trackedWorkDay) {
-                if (false === $trackedWorkDay->isLocked()) {
+                if (!$trackedWorkDay->isLocked()) {
                     $isLocked = false;
                 }
                 $day = $trackedWorkDay->getWorkDay()->getDate()->format('N');
@@ -523,7 +523,7 @@ class TrackingCalendarController extends AbstractController
                 $hours[$day] = '';
 
                 foreach ($trackedWorkDay->getTrackedActivities() as $trackedActivity) {
-                    if ($trackedActivity->getActivity()->getCode()) {
+                    if ($trackedActivity->getActivity()->getCode() !== '' && $trackedActivity->getActivity()->getCode() !== '0') {
                         $activities[$day] .= '<b>' .
                             htmlentities($trackedActivity->getActivity()->getCode()) . ': </b>';
                     }
@@ -543,7 +543,7 @@ class TrackingCalendarController extends AbstractController
                     $hours[$day] .= '</ul>';
                 }
 
-                if ($trackedWorkDay->getOtherActivities()) {
+                if ($trackedWorkDay->getOtherActivities() !== '' && $trackedWorkDay->getOtherActivities() !== '0') {
                     $activities[$day] .= htmlentities($trackedWorkDay->getOtherActivities()) . '<br/>';
                 }
 
@@ -678,36 +678,34 @@ class TrackingCalendarController extends AbstractController
                 foreach ($week['days'] as $dayId => $day) {
                     if (!isset($day[0])) {
                         $newData[$id][$weekId][$dayId] = [];
+                    } elseif (!isset($day[1])) {
+                        $newData[$id][$weekId][$dayId] = [
+                            'id' => $day[0]->getId(),
+                            'total_hours' => $day[0]->getHours() * 100,
+                            'registered_hours' => 0,
+                            'locked' => false,
+                            'absence' => 0,
+                            'start_time1' => null,
+                            'end_time1' => null,
+                            'start_time2' => null,
+                            'end_time2' => null,
+                            'other_activities' => null,
+                            'notes' => null
+                        ];
                     } else {
-                        if (!isset($day[1])) {
-                            $newData[$id][$weekId][$dayId] = [
-                                'id' => $day[0]->getId(),
-                                'total_hours' => $day[0]->getHours() * 100,
-                                'registered_hours' => 0,
-                                'locked' => false,
-                                'absence' => 0,
-                                'start_time1' => null,
-                                'end_time1' => null,
-                                'start_time2' => null,
-                                'end_time2' => null,
-                                'other_activities' => null,
-                                'notes' => null
-                            ];
-                        } else {
-                            $newData[$id][$weekId][$dayId] = [
-                                'id' => $day[0]->getId(),
-                                'total_hours' => $day[0]->getHours() * 100,
-                                'registered_hours' => $day[2] ?: 0,
-                                'locked' => $day[1]->isLocked(),
-                                'absence' => $day[1]->getAbsence(),
-                                'start_time1' => $day[1]->getStartTime1(),
-                                'end_time1' => $day[1]->getEndTime1(),
-                                'start_time2' => $day[1]->getStartTime2(),
-                                'end_time2' => $day[1]->getEndTime2(),
-                                'other_activities' => $day[1]->getOtherActivities(),
-                                'notes' => $day[1]->getNotes()
-                            ];
-                        }
+                        $newData[$id][$weekId][$dayId] = [
+                            'id' => $day[0]->getId(),
+                            'total_hours' => $day[0]->getHours() * 100,
+                            'registered_hours' => $day[2] ?: 0,
+                            'locked' => $day[1]->isLocked(),
+                            'absence' => $day[1]->getAbsence(),
+                            'start_time1' => $day[1]->getStartTime1(),
+                            'end_time1' => $day[1]->getEndTime1(),
+                            'start_time2' => $day[1]->getStartTime2(),
+                            'end_time2' => $day[1]->getEndTime2(),
+                            'other_activities' => $day[1]->getOtherActivities(),
+                            'notes' => $day[1]->getNotes()
+                        ];
                     }
                 }
             }
@@ -758,7 +756,7 @@ class TrackingCalendarController extends AbstractController
                                     ], 500);
         }
 
-        if (null === $trackedWorkDay) {
+        if (!$trackedWorkDay instanceof \App\Entity\WPT\TrackedWorkDay) {
             throw $this->createAccessDeniedException();
         }
 
@@ -895,7 +893,7 @@ class TrackingCalendarController extends AbstractController
             }
             if ($trackedActivity->getHours() == 0) {
                 $trackedActivities->removeElement($trackedActivity);
-                if ($trackedWorkDay->getId()) {
+                if ($trackedWorkDay->getId() !== 0) {
                     $this->getDoctrine()->getManager()->remove($trackedActivity);
                 }
             } else {
@@ -903,7 +901,7 @@ class TrackingCalendarController extends AbstractController
             }
         }
 
-        if (false === $found) {
+        if (!$found) {
             return new JsonResponse([
                 'result' => 'not found'
             ], 404);

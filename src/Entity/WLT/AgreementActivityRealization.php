@@ -161,7 +161,7 @@ class AgreementActivityRealization
      * @param \DateTime $gradedOn
      * @return AgreementActivityRealization
      */
-    public function setGradedOn(\DateTime $gradedOn = null)
+    public function setGradedOn(\DateTimeInterface $gradedOn = null)
     {
         $this->gradedOn = $gradedOn;
         return $this;

@@ -182,7 +182,7 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('login');
         }
 
-        if (false === $user->isForcePasswordChange()) {
+        if (!$user->isForcePasswordChange()) {
             return $this->redirectToRoute('frontpage');
         }
 
@@ -383,49 +383,46 @@ class SecurityController extends AbstractController
             if ($this->getParameter('external.enabled') && $user->getExternalCheck()) {
                 $this->addFlash('error', $translator->
                     trans('form.reset.external_login.error', [], 'security'));
+            } elseif ($user->getToken() && $user->getTokenExpiration() > new \DateTime()) {
+                $error = $translator->trans('form.reset.wait', ['%expiry%' => $expire], 'security');
             } else {
-                // comprobar que no se ha generado un token hace poco
-                if ($user->getToken() && $user->getTokenExpiration() > new \DateTime()) {
-                    $error = $translator->trans('form.reset.wait', ['%expiry%' => $expire], 'security');
+                // generar un nuevo token
+                $token = bin2hex(random_bytes(16));
+                $user->setToken($token);
+
+                // calcular fecha de expiración del token
+                $validity = new \DateTime();
+                $validity->add(new \DateInterval('PT'.$expire.'M'));
+                $user->setTokenExpiration($validity)->setTokenType('password');
+
+                // enviar correo
+                if (0 === $mailerService->sendEmail(
+                    [$user],
+                    ['id' => 'form.reset.email.subject', 'parameters' => []],
+                    [
+                        'id' => 'form.reset.email.body',
+                        'parameters' => [
+                            '%name%' => $user->getFirstName(),
+                            '%link%' => $this->generateUrl(
+                                'login_password_reset_do',
+                                ['userId' => $user->getId(), 'token' => $token],
+                                UrlGeneratorInterface::ABSOLUTE_URL
+                            ),
+                            '%expiry%' => $expire
+                        ]
+                    ],
+                    'security'
+                )) {
+                    $this->addFlash('error', $translator->trans('form.reset.error', [], 'security'));
                 } else {
-                    // generar un nuevo token
-                    $token = bin2hex(random_bytes(16));
-                    $user->setToken($token);
+                    // guardar token
+                    $this->get('doctrine')->getManager()->flush();
 
-                    // calcular fecha de expiración del token
-                    $validity = new \DateTime();
-                    $validity->add(new \DateInterval('PT'.$expire.'M'));
-                    $user->setTokenExpiration($validity)->setTokenType('password');
-
-                    // enviar correo
-                    if (0 === $mailerService->sendEmail(
-                        [$user],
-                        ['id' => 'form.reset.email.subject', 'parameters' => []],
-                        [
-                            'id' => 'form.reset.email.body',
-                            'parameters' => [
-                                '%name%' => $user->getFirstName(),
-                                '%link%' => $this->generateUrl(
-                                    'login_password_reset_do',
-                                    ['userId' => $user->getId(), 'token' => $token],
-                                    UrlGeneratorInterface::ABSOLUTE_URL
-                                ),
-                                '%expiry%' => $expire
-                            ]
-                        ],
-                        'security'
-                    )) {
-                        $this->addFlash('error', $translator->trans('form.reset.error', [], 'security'));
-                    } else {
-                        // guardar token
-                        $this->get('doctrine')->getManager()->flush();
-
-                        $this->addFlash(
-                            'success',
-                            $translator->trans('form.reset.sent', ['%email%' => $email], 'security')
-                        );
-                        return $this->redirectToRoute('login');
-                    }
+                    $this->addFlash(
+                        'success',
+                        $translator->trans('form.reset.sent', ['%email%' => $email], 'security')
+                    );
+                    return $this->redirectToRoute('login');
                 }
             }
         }

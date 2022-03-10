@@ -31,6 +31,10 @@ use Doctrine\ORM\Mapping as ORM;
 class Teacher
 {
     /**
+     * @var bool
+     */
+    public $wltEducationalTutor;
+    /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")

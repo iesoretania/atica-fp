@@ -26,13 +26,13 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SurveyQuestion
 {
-    const FIXED = 'fixed';
-    const TEXTFIELD = 'text';
-    const TEXTAREA = 'textarea';
-    const RANGE_1_5 = 'range_1_5';
-    const RANGE_1_10 = 'range_1_10';
+    public const FIXED = 'fixed';
+    public const TEXTFIELD = 'text';
+    public const TEXTAREA = 'textarea';
+    public const RANGE_1_5 = 'range_1_5';
+    public const RANGE_1_10 = 'range_1_10';
 
-    const TYPES = [
+    public const TYPES = [
         self::RANGE_1_5,
         self::RANGE_1_10,
         self::TEXTFIELD,

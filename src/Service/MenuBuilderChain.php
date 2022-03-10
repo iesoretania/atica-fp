@@ -52,7 +52,7 @@ class MenuBuilderChain
 
     public function getMenu()
     {
-        if ($this->menuCache) {
+        if ($this->menuCache !== null) {
             return $this->menuCache;
         }
 
@@ -92,7 +92,7 @@ class MenuBuilderChain
      */
     private function checkMenuRouteName($route, MenuItem $item = null)
     {
-        if (null === $item) {
+        if (!$item instanceof \App\Menu\MenuItem) {
             return null;
         }
 
@@ -129,6 +129,6 @@ class MenuBuilderChain
     public function getPathByRouteName($route)
     {
         $item = $this->checkMenuRouteName($route, $this->getMenu());
-        return $item ? $item->getPath() : null;
+        return $item !== null ? $item->getPath() : null;
     }
 }

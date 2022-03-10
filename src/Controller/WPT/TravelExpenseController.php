@@ -103,7 +103,7 @@ class TravelExpenseController extends AbstractController
             $teacher
         );
 
-        if (count($agreements) === 0) {
+        if ((is_array($agreements) || $agreements instanceof \Countable ? count($agreements) : 0) === 0) {
             throw $this->createAccessDeniedException();
         }
 
@@ -127,7 +127,7 @@ class TravelExpenseController extends AbstractController
         }
 
         $title = $translator->trans(
-            $travelExpense->getId() ? 'title.edit' : 'title.new',
+            $travelExpense->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'wpt_travel_expense'
         );
@@ -275,7 +275,7 @@ class TravelExpenseController extends AbstractController
         /** @var Person $person */
         /** @var Person $person */
         $person = $this->getUser();
-        if (false === $isManager) {
+        if (!$isManager) {
             $teachers = [$WPTTeacherRepository->findOneByPersonAndAcademicYear($person, $academicYear)];
         } else {
             $teachers = $WPTTeacherRepository->findByAcademicYear($academicYear);
@@ -325,7 +325,7 @@ class TravelExpenseController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('workplace_training_travel_expense_detail_list');
         }
 

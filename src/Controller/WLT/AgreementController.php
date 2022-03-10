@@ -122,7 +122,7 @@ class AgreementController extends AbstractController
                     $this->getDoctrine()->getManager()->persist($agreementActivityRealization);
                 }
 
-                if ($agreement->getId()) {
+                if ($agreement->getId() !== 0) {
                     $toRemove = array_diff(
                         $oldActivityRealizations->toArray(),
                         $currentActivityRealizations->toArray()
@@ -141,7 +141,7 @@ class AgreementController extends AbstractController
         }
 
         $title = $translator->trans(
-            $agreement->getId() ? 'title.edit' : 'title.new',
+            $agreement->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'wlt_agreement'
         );
@@ -157,7 +157,7 @@ class AgreementController extends AbstractController
                 'routeName' => 'work_linked_training_agreement_list',
                 'routeParams' => ['id' => $agreement->getProject()->getId()]
             ],
-            $agreement->getId() ?
+            $agreement->getId() !== 0 ?
                 ['fixed' => (string) $agreement] :
                 ['fixed' => $translator->trans('title.new', [], 'wlt_agreement')]
         ];
@@ -300,7 +300,7 @@ class AgreementController extends AbstractController
 
         $items = $request->request->get('items', []);
 
-        if (count($items) !== 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) !== 0) {
             if ('' === $request->get('delete')) {
                 return $this->deleteAction($items, $request, $translator, $agreementRepository, $project);
             }
@@ -368,6 +368,7 @@ class AgreementController extends AbstractController
         AgreementRepository $agreementRepository,
         Project $project
     ) {
+        $agreement = null;
         $em = $this->getDoctrine()->getManager();
 
         $selectedAgreements = $agreementRepository->findAllInListByIdAndProject($items, $project);

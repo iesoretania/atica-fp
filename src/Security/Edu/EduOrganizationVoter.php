@@ -30,9 +30,9 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class EduOrganizationVoter extends CachedVoter
 {
-    const EDU_DEPARTMENT_HEAD = 'ORGANIZATION_DEPARTMENT_HEAD';
-    const EDU_TEACHER = 'ORGANIZATION_TEACHER';
-    const EDU_FINANCIAL_MANAGER = 'ORGANIZATION_FINANCIAL_MANAGER';
+    public const EDU_DEPARTMENT_HEAD = 'ORGANIZATION_DEPARTMENT_HEAD';
+    public const EDU_TEACHER = 'ORGANIZATION_TEACHER';
+    public const EDU_FINANCIAL_MANAGER = 'ORGANIZATION_FINANCIAL_MANAGER';
 
     private $decisionManager;
     private $trainingRepository;
@@ -59,16 +59,11 @@ class EduOrganizationVoter extends CachedVoter
         if (!$subject instanceof Organization) {
             return false;
         }
-
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::EDU_DEPARTMENT_HEAD,
             self::EDU_TEACHER,
             self::EDU_FINANCIAL_MANAGER
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**

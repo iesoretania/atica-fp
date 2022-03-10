@@ -97,7 +97,7 @@ class SurveyQuestionController extends AbstractController
         }
 
         $title = $translator->trans(
-            $surveyQuestion->getId() ? 'title.edit' : 'title.new',
+            $surveyQuestion->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'survey_question'
         );
@@ -108,7 +108,7 @@ class SurveyQuestionController extends AbstractController
                 'routeName' => 'organization_survey_question_list',
                 'routeParams' => ['id' => $survey->getId()]
             ],
-            $surveyQuestion->getId() ?
+            $surveyQuestion->getId() !== 0 ?
                 ['fixed' => $translator->trans('title.edit', [], 'survey_question')] :
                 ['fixed' => $translator->trans('title.new', [], 'survey_question')]
         ];
@@ -206,7 +206,7 @@ class SurveyQuestionController extends AbstractController
         }
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0 || $survey->getAnswers()->count() > 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0 || $survey->getAnswers()->count() > 0) {
             return $this->redirectToRoute('organization_survey_question_list', ['id' => $survey->getId()]);
         }
 
@@ -234,7 +234,7 @@ class SurveyQuestionController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $surveys = $surveyQuestionRepository->findAllInListByIdAndOrganization($items, $organization);
-        if (count($surveys) === 0) {
+        if ($surveys === []) {
             return $this->redirectToRoute('organization_survey_question_list', ['id' => $survey->getId()]);
         }
 
@@ -264,7 +264,7 @@ class SurveyQuestionController extends AbstractController
         $surveyQuestion = $surveyQuestionRepository->find($request->request->get('up'));
         if ($surveyQuestion && $surveyQuestion->getSurvey() === $survey) {
             $previousSurveyQuestion = $surveyQuestionRepository->getPreviousQuestion($surveyQuestion);
-            if ($previousSurveyQuestion) {
+            if ($previousSurveyQuestion !== null) {
                 $temp = $previousSurveyQuestion->getOrderNr();
                 $previousSurveyQuestion->setOrderNr($surveyQuestion->getOrderNr());
                 $surveyQuestion->setOrderNr($temp);
@@ -282,7 +282,7 @@ class SurveyQuestionController extends AbstractController
         $surveyQuestion = $surveyQuestionRepository->find($request->request->get('down'));
         if ($surveyQuestion && $surveyQuestion->getSurvey() === $survey) {
             $nextSurveyQuestion = $surveyQuestionRepository->getNextQuestion($surveyQuestion);
-            if ($nextSurveyQuestion) {
+            if ($nextSurveyQuestion !== null) {
                 $temp = $nextSurveyQuestion->getOrderNr();
                 $nextSurveyQuestion->setOrderNr($surveyQuestion->getOrderNr());
                 $surveyQuestion->setOrderNr($temp);

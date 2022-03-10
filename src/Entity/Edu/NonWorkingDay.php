@@ -92,7 +92,7 @@ class NonWorkingDay
      * @param \DateTime $date
      * @return NonWorkingDay
      */
-    public function setDate($date)
+    public function setDate(\DateTimeInterface $date)
     {
         $this->date = $date;
         return $this;

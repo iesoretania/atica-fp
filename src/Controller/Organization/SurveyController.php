@@ -55,7 +55,7 @@ class SurveyController extends AbstractController
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
-        if ($survey) {
+        if ($survey !== null) {
             $this->denyAccessUnlessGranted(SurveyVoter::MANAGE, $survey);
         }
 
@@ -104,13 +104,13 @@ class SurveyController extends AbstractController
         }
 
         $title = $translator->trans(
-            $survey->getId() ? 'title.edit' : 'title.new',
+            $survey->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'survey'
         );
 
         $breadcrumb = [
-            $survey->getId() ?
+            $survey->getId() !== 0 ?
                 ['fixed' => $survey->getTitle()] :
                 ['fixed' => $translator->trans('title.new', [], 'survey')]
         ];
@@ -189,7 +189,7 @@ class SurveyController extends AbstractController
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_survey_list');
         }
 
@@ -226,7 +226,7 @@ class SurveyController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $surveys = $surveyRepository->findAllInListByIdAndOrganization($items, $organization);
-        if (count($surveys) === 0) {
+        if ($surveys === []) {
             return $this->redirectToRoute('organization_survey_list');
         }
         if ($request->get('confirm', '') === 'ok') {
@@ -269,7 +269,7 @@ class SurveyController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $surveys = $surveyRepository->findAllInListByIdAndOrganizationAndNoAnswers($items, $organization);
-        if (count($surveys) === 0) {
+        if ($surveys === []) {
             return $this->redirectToRoute('organization_survey_list');
         }
 

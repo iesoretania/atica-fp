@@ -359,7 +359,7 @@ class SurveyController extends AbstractController
 
         /** @var Person $person */
         $person = $this->getUser();
-        if (false === $isWltManager && false === $isManager) {
+        if (!$isWltManager && !$isManager) {
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento o tutor de grupo  -> ver los acuerdos de los
             // estudiantes de sus grupos
@@ -383,7 +383,7 @@ class SurveyController extends AbstractController
                 ->setParameter('person', $person);
         }
 
-        if (false === $isWltManager && false === $isManager && !$projects && !$groups) {
+        if (!$isWltManager && !$isManager && !$projects && !$groups) {
             $queryBuilder
                 ->andWhere('se.person = :person OR wt = :person')
                 ->setParameter('person', $person);

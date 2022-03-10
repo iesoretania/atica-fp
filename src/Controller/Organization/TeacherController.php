@@ -169,7 +169,7 @@ class TeacherController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('users', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_teacher_list', ['academicYear' => $academicYear->getId()]);
         }
 

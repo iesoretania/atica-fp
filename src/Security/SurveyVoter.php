@@ -28,7 +28,7 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class SurveyVoter extends CachedVoter
 {
-    const MANAGE = 'SURVEY_MANAGE';
+    public const MANAGE = 'SURVEY_MANAGE';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -55,14 +55,7 @@ class SurveyVoter extends CachedVoter
         if (!$subject instanceof Survey) {
             return false;
         }
-
-        if (!in_array($attribute, [
-            self::MANAGE
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        return $attribute === self::MANAGE;
     }
 
     /**
@@ -87,12 +80,9 @@ class SurveyVoter extends CachedVoter
             return false;
         }
 
-        // Si es administrador de la organización, permitir siempre
-        switch ($attribute) {
-            case self::MANAGE:
-                return $this->roleRepository->
-                    personHasRole($subject->getOrganization(), $user, Role::ROLE_LOCAL_ADMIN);
-
+        if ($attribute === self::MANAGE) {
+            return $this->roleRepository->
+                personHasRole($subject->getOrganization(), $user, Role::ROLE_LOCAL_ADMIN);
         }
 
         // denegamos en cualquier otro caso

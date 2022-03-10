@@ -59,7 +59,7 @@ class EvaluationController extends AbstractController
 
         $em = $this->getDoctrine()->getManager();
 
-        $readOnly = false === $this->isGranted(AgreementVoter::GRADE, $agreement);
+        $readOnly = !$this->isGranted(AgreementVoter::GRADE, $agreement);
 
         $form = $this->createForm(AgreementEvaluationType::class, $agreement, [
             'disabled' => $readOnly
@@ -171,7 +171,7 @@ class EvaluationController extends AbstractController
 
         /** @var Person $person */
         $person = $this->getUser();
-        if (false === $isWltManager && false === $isManager) {
+        if (!$isWltManager && !$isManager) {
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento o tutor de grupo  -> ver los acuerdos de los
             // estudiantes de sus grupos
@@ -194,7 +194,7 @@ class EvaluationController extends AbstractController
                 ->setParameter('person', $person);
         }
 
-        if (false === $isWltManager && false === $isManager && !$projects && !$groups) {
+        if (!$isWltManager && !$isManager && !$projects && !$groups) {
             $queryBuilder
                 ->andWhere('se.person = :person OR a.workTutor = :person')
                 ->setParameter('person', $person);

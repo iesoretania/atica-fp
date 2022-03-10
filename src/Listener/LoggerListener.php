@@ -59,7 +59,7 @@ class LoggerListener implements EventSubscriberInterface
     {
         if ($event->isMasterRequest()) {
             /** @var Person $user */
-            $user = $this->token->getToken() ? $this->token->getToken()->getUser() : null;
+            $user = $this->token->getToken() !== null ? $this->token->getToken()->getUser() : null;
             $user = is_string($user) ? null : $user;
 
             $ip = $event->getRequest()->getClientIp();

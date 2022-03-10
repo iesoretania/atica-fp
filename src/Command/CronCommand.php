@@ -115,7 +115,7 @@ class CronCommand extends Command
             /** @var Agreement $agreement */
             foreach ($agreements as $agreement) {
                 $workDays = $this->workDayRepository->findUnfilledWorkDaysBeforeDateByAgreement($agreement, $limit);
-                $count = count($workDays);
+                $count = is_array($workDays) || $workDays instanceof \Countable ? count($workDays) : 0;
                 $table
                     ->addRow([
                         $academicYear->getOrganization()->getName(),
@@ -136,7 +136,7 @@ class CronCommand extends Command
         }
         $table->render();
 
-        if (count($warning) > 0) {
+        if ($warning !== []) {
             $resultList = [];
             $style->text($this->translator->trans('message.sending_warnings', [], 'cron'));
             $style->progressStart(count($warning));
@@ -159,7 +159,7 @@ class CronCommand extends Command
                 $person = $studentEnrollment->getPerson();
                 if (null === $person) {
                     $result = 'message.sending_warnings.no_user';
-                } elseif (!$person->getEmailAddress()) {
+                } elseif ($person->getEmailAddress() === '' || $person->getEmailAddress() === '0') {
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
@@ -202,7 +202,7 @@ class CronCommand extends Command
             }
             $style->progressFinish();
             $output->writeln('');
-            if (count($resultList) > 0) {
+            if ($resultList !== []) {
                 $style->listing($resultList);
             }
         }
@@ -285,7 +285,7 @@ class CronCommand extends Command
         }
         $table->render();
 
-        if (count($warning) > 0) {
+        if ($warning !== []) {
             $resultList = [];
             $style->text($this->translator->trans('message.sending_warnings', [], 'cron'));
             $style->progressStart(count($warning));
@@ -297,7 +297,7 @@ class CronCommand extends Command
                 $person = $workTutor->getPerson();
                 if (null === $person) {
                     $result = 'message.sending_warnings.no_user';
-                } elseif (!$person->getEmailAddress()) {
+                } elseif ($person->getEmailAddress() === '' || $person->getEmailAddress() === '0') {
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
@@ -340,7 +340,7 @@ class CronCommand extends Command
             }
             $style->progressFinish();
             $output->writeln('');
-            if (count($resultList) > 0) {
+            if ($resultList !== []) {
                 $style->listing($resultList);
             }
         }
@@ -407,7 +407,7 @@ class CronCommand extends Command
         }
         $table->render();
 
-        if (count($warning) > 0) {
+        if ($warning !== []) {
             $resultList = [];
             $style->text($this->translator->trans('message.sending_warnings', [], 'cron'));
             $style->progressStart(count($warning));
@@ -418,7 +418,7 @@ class CronCommand extends Command
                 $person = $agreement->getWorkTutor();
                 if (null === $person) {
                     $result = 'message.sending_warnings.no_user';
-                } elseif (!$person->getEmailAddress()) {
+                } elseif ($person->getEmailAddress() === '' || $person->getEmailAddress() === '0') {
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
@@ -462,7 +462,7 @@ class CronCommand extends Command
             }
             $style->progressFinish();
             $output->writeln('');
-            if (count($resultList) > 0) {
+            if ($resultList !== []) {
                 $style->listing($resultList);
             }
         }
@@ -529,7 +529,7 @@ class CronCommand extends Command
         }
         $table->render();
 
-        if (count($warning) > 0) {
+        if ($warning !== []) {
             $resultList = [];
             $style->text($this->translator->trans('message.sending_warnings', [], 'cron'));
             $style->progressStart(count($warning));
@@ -538,7 +538,7 @@ class CronCommand extends Command
                 $person = $teacher->getPerson();
                 if (null === $person) {
                     $result = 'message.sending_warnings.no_user';
-                } elseif (!$person->getEmailAddress()) {
+                } elseif ($person->getEmailAddress() === '' || $person->getEmailAddress() === '0') {
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
@@ -575,7 +575,7 @@ class CronCommand extends Command
             }
             $style->progressFinish();
             $output->writeln('');
-            if (count($resultList) > 0) {
+            if ($resultList !== []) {
                 $style->listing($resultList);
             }
         }

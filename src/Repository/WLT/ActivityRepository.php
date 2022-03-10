@@ -129,7 +129,7 @@ class ActivityRepository extends ServiceEntityRepository
                     }
                 }
 
-                if ($newTraining) {
+                if ($newTraining !== null) {
                     $competency = $this->competencyRepository
                         ->findOneByCodeAndTraining($competency->getCode(), $newTraining);
 
@@ -173,7 +173,7 @@ class ActivityRepository extends ServiceEntityRepository
                         }
                     }
 
-                    if ($newSubject) {
+                    if ($newSubject !== null) {
                         $newLearningOutcome = $this->learningOutcomeRepository->findOneByCodeAndSubject(
                             $learningOutcome->getCode(),
                             $newSubject

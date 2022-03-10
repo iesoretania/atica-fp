@@ -51,12 +51,15 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
             ->addOrderBy('s.firstName');
     }
 
+    /**
+     * @param \DateTime|\DateTimeImmutable $dateTime
+     */
     public function findByProjectsAndAgreementDateQueryBuilder(
         $projects,
-        \DateTime $dateTime = null
+        \DateTimeInterface $dateTime = null
     ) {
         $qb = $this->findByProjectsQueryBuilder($projects);
-        if ($dateTime) {
+        if ($dateTime !== null) {
             $startDate = clone $dateTime;
             $startDate->setTime(0, 0, 0);
             $endDate = clone $dateTime;
@@ -73,10 +76,13 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
         return $qb;
     }
 
+    /**
+     * @param \DateTime|\DateTimeImmutable $dateTime
+     */
     public function findByWorkcenterProjectsAndAgreementDate(
         Workcenter $workcenter,
         $projects,
-        \DateTime $dateTime = null
+        \DateTimeInterface $dateTime = null
     ) {
         return $this->findByProjectsAndAgreementDateQueryBuilder($projects, $dateTime)
             ->andWhere('ag.workcenter = :workcenter')
@@ -85,7 +91,10 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByProjectAndAcademicYearDate(Project $project, \DateTime $dateTime = null)
+    /**
+     * @param \DateTime|\DateTimeImmutable $dateTime
+     */
+    public function findByProjectAndAcademicYearDate(Project $project, \DateTimeInterface $dateTime = null)
     {
         $startDate = clone $dateTime;
         $startDate->setTime(0, 0, 0);
@@ -93,7 +102,7 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
         $startDate->add(new \DateInterval('P1D'));
         $qb = $this->findByProjectsQueryBuilder([$project]);
 
-        if ($dateTime) {
+        if ($dateTime !== null) {
             $qb
                 ->andWhere('a.startDate < :end_date_time')
                 ->andWhere('a.endDate >= :start_date_time')

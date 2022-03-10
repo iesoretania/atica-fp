@@ -85,7 +85,7 @@ class ActivityRealizationGradeController extends AbstractController
         }
 
         $title = $translator->trans(
-            $activityRealizationGrade->getId() ? 'title.edit' : 'title.new',
+            $activityRealizationGrade->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'wlt_activity_realization_grade'
         );
@@ -101,7 +101,7 @@ class ActivityRealizationGradeController extends AbstractController
                 'routeName' => 'work_linked_training_activity_realization_grade_list',
                 'routeParams' => ['id' => $activityRealizationGrade->getProject()->getId()]
             ],
-            $activityRealizationGrade->getId() ?
+            $activityRealizationGrade->getId() !== 0 ?
                 ['fixed' => $activityRealizationGrade->getDescription()] :
                 ['fixed' => $translator->trans('title.new', [], 'wlt_activity_realization_grade')]
         ];
@@ -194,7 +194,7 @@ class ActivityRealizationGradeController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('work_linked_training_activity_realization_grade_list', [
                 'id' => $project->getId()
             ]);

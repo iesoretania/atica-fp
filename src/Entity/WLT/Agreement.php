@@ -267,7 +267,7 @@ class Agreement
      * @param \DateTime $startDate
      * @return Agreement
      */
-    public function setStartDate($startDate)
+    public function setStartDate(\DateTimeInterface $startDate)
     {
         $this->startDate = $startDate;
         return $this;
@@ -285,7 +285,7 @@ class Agreement
      * @param \DateTime $endDate
      * @return Agreement
      */
-    public function setEndDate($endDate)
+    public function setEndDate(\DateTimeInterface $endDate)
     {
         $this->endDate = $endDate;
         return $this;

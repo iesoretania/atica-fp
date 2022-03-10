@@ -67,7 +67,7 @@ abstract class CachedVoter extends Voter
             $vote = $this->voteOnAttribute($attribute, $subject, $token) ? self::ACCESS_GRANTED : self::ACCESS_DENIED;
 
             // write vote on cache
-            if ($cachedItem) {
+            if ($cachedItem !== null) {
                 $cachedItem->expiresAfter(1);
                 $cachedItem->set($vote);
                 $this->cacheItemPool->save($cachedItem);

@@ -147,7 +147,7 @@ class AgreementController extends AbstractController
         }
 
         $title = $translator->trans(
-            $agreement->getId() ? 'title.edit' : 'title.new',
+            $agreement->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'wpt_agreement'
         );
@@ -163,7 +163,7 @@ class AgreementController extends AbstractController
                 'routeName' => 'workplace_training_agreement_list',
                 'routeParams' => ['id' => $agreement->getShift()->getId()]
             ],
-            $agreement->getId() ?
+            $agreement->getId() !== 0 ?
                 ['fixed' => (string) $agreement] :
                 ['fixed' => $translator->trans('title.new', [], 'wpt_agreement')]
         ];
@@ -218,7 +218,7 @@ class AgreementController extends AbstractController
         }
 
         $title = $translator->trans(
-            $agreement->getId() ? 'title.edit' : 'title.new',
+            $agreement->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'wpt_agreement'
         );
@@ -234,7 +234,7 @@ class AgreementController extends AbstractController
                 'routeName' => 'workplace_training_agreement_list',
                 'routeParams' => ['id' => $agreement->getShift()->getId()]
             ],
-            $agreement->getId() ?
+            $agreement->getId() !== 0 ?
                 ['fixed' => $agreement->getWorkcenter()] :
                 ['fixed' => $translator->trans('title.new', [], 'wpt_agreement')]
         ];
@@ -368,7 +368,7 @@ class AgreementController extends AbstractController
 
         $items = $request->request->get('items', []);
 
-        if (count($items) !== 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) !== 0) {
             if ('' === $request->get('delete')) {
                 return $this->deleteAction($items, $request, $translator, $agreementRepository, $shift);
             }
@@ -390,6 +390,7 @@ class AgreementController extends AbstractController
         AgreementRepository $agreementRepository,
         Shift $shift
     ) {
+        $agreement = null;
         $em = $this->getDoctrine()->getManager();
 
         $agreements = $agreementRepository->findAllInListByIdAndShift($items, $shift);

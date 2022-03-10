@@ -120,7 +120,7 @@ class TrackingController extends AbstractController
 
         /** @var Person $person */
         $person = $this->getUser();
-        if (false === $isWltManager && false === $isManager) {
+        if (!$isWltManager && !$isManager) {
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento, docente o tutor de grupo  -> ver los acuerdos de los
             // estudiantes de sus grupos
@@ -146,7 +146,7 @@ class TrackingController extends AbstractController
                 ->setParameter('person', $person);
         }
 
-        if (false === $isWltManager && false === $isManager && !$projects && !$groups) {
+        if (!$isWltManager && !$isManager && !$projects && !$groups) {
             $queryBuilder
                 ->andWhere('se.person = :person OR a.workTutor = :person OR et.person = :person')
                 ->setParameter('person', $person);

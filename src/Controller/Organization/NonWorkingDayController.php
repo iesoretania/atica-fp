@@ -89,14 +89,14 @@ class NonWorkingDayController extends AbstractController
         }
 
         $title = $translator->trans(
-            $nonWorkingDay->getId() ? 'title.edit' : 'title.new',
+            $nonWorkingDay->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'edu_non_working_day'
         );
 
         $breadcrumb = [
             ['fixed' => $nonWorkingDay->getAcademicYear()->getDescription()],
-            $nonWorkingDay->getId() ?
+            $nonWorkingDay->getId() !== 0 ?
                 ['fixed' => $nonWorkingDay->getDate()->format($translator->trans('format.date', [], 'general'))] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_non_working_day')]
         ];
@@ -190,7 +190,7 @@ class NonWorkingDayController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_non_working_day_list', ['academicYear' => $academicYear->getId()]);
         }
 

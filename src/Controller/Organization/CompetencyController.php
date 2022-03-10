@@ -87,7 +87,7 @@ class CompetencyController extends AbstractController
         }
 
         $title = $translator->trans(
-            $competency->getId() ? 'title.edit' : 'title.new',
+            $competency->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'edu_competency'
         );
@@ -103,7 +103,7 @@ class CompetencyController extends AbstractController
                 'routeName' => 'organization_training_competency_list',
                 'routeParams' => ['id' => $training->getId()]
             ],
-            $competency->getId() ?
+            $competency->getId() !== 0 ?
                 ['fixed' => $competency->getCode()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_competency')]
         ];
@@ -194,7 +194,7 @@ class CompetencyController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_training_competency_list', ['id' => $training->getId()]);
         }
 
@@ -308,7 +308,7 @@ class CompetencyController extends AbstractController
 
         foreach ($items as $item) {
             preg_match('/^(.{1,10})\) (.*)/u', $item, $matches);
-            if ($matches) {
+            if ($matches !== []) {
                 $output[$matches[1]] = $matches[2];
             }
         }

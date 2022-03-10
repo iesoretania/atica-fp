@@ -118,7 +118,7 @@ class NonWorkingDayImportController extends AbstractController
         /** @var Event $event */
         foreach ($events as $event) {
             $index = substr($event->dtstart, 0, 8);
-            if (false === isset($currentData[$index])) {
+            if (!isset($currentData[$index])) {
                 $newCount++;
                 $nonWorkingDay = new NonWorkingDay();
                 $nonWorkingDay

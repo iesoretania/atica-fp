@@ -55,7 +55,7 @@ class ShiftController extends AbstractController
         $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (!$academicYear) {
+        if ($academicYear === null) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -178,13 +178,13 @@ class ShiftController extends AbstractController
         }
 
         $title = $translator->trans(
-            $shift->getId() ? 'title.edit' : 'title.new',
+            $shift->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'wpt_shift'
         );
 
         $breadcrumb = [
-            $shift->getId() ?
+            $shift->getId() !== 0 ?
                 ['fixed' => $shift->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'wpt_shift')]
         ];
@@ -266,7 +266,7 @@ class ShiftController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('workplace_training_shift_list');
         }
         $selectedItems = $shiftRepository->findAllInListByIdAndAcademicYear($items, $academicYear);

@@ -102,7 +102,7 @@ class EvaluationSummaryController extends AbstractController
         $isWltManager = $this->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
         $isWorkTutor = $this->isGranted(WLTOrganizationVoter::WLT_WORK_TUTOR, $organization);
 
-        if (false === $isManager && false === $isWltManager) {
+        if (!$isManager && !$isWltManager) {
             /** @var Person $person */
             $person = $this->getUser();
 
@@ -113,7 +113,6 @@ class EvaluationSummaryController extends AbstractController
 
             if ($teacher) {
                 $groups = $wltGroupRepository->findByAcademicYearAndPerson($academicYear, $teacher->getPerson());
-
                 if ($groups->count() > 0) {
                     $queryBuilder
                         ->andWhere('g IN (:groups)')
@@ -125,13 +124,10 @@ class EvaluationSummaryController extends AbstractController
                         ->orWhere('a.workTutor = :person')
                         ->setParameter('person', $person);
                 }
-            } else {
-                // si solo es tutor laboral, necesita ser el tutor para verlo
-                if ($isWorkTutor) {
-                    $queryBuilder
-                        ->andWhere('a.workTutor = :person')
-                        ->setParameter('person', $person);
-                }
+            } elseif ($isWorkTutor) {
+                $queryBuilder
+                    ->andWhere('a.workTutor = :person')
+                    ->setParameter('person', $person);
             }
         }
 

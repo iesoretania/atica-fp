@@ -37,7 +37,7 @@ class MenuCompilerPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds(
             'app.menu'
         );
-        foreach ($taggedServices as $id => $tags) {
+        foreach (array_keys($taggedServices) as $id) {
             $definition->addMethodCall(
                 'addMenuBuilder',
                 array(new Reference($id))

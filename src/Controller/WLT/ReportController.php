@@ -225,7 +225,7 @@ class ReportController extends AbstractController
         $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (!$academicYear) {
+        if ($academicYear === null) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 

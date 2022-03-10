@@ -32,9 +32,13 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Shift
 {
-    const QUARTER_FIRST = 1;
-    const QUARTER_SECOND = 2;
-    const QUARTER_THIRD = 3;
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    public $studentEnrollments;
+    public const QUARTER_FIRST = 1;
+    public const QUARTER_SECOND = 2;
+    public const QUARTER_THIRD = 3;
 
     /**
      * @ORM\Id

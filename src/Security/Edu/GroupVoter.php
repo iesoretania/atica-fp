@@ -30,9 +30,9 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class GroupVoter extends CachedVoter
 {
-    const MANAGE = 'EDU_GROUP_MANAGE';
-    const ACCESS = 'EDU_GROUP_ACCESS';
-    const TEACH = 'EDU_GROUP_TEACH';
+    public const MANAGE = 'EDU_GROUP_MANAGE';
+    public const ACCESS = 'EDU_GROUP_ACCESS';
+    public const TEACH = 'EDU_GROUP_TEACH';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -64,16 +64,11 @@ class GroupVoter extends CachedVoter
         if (!$subject instanceof Group) {
             return false;
         }
-
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::MANAGE,
             self::ACCESS,
             self::TEACH
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**

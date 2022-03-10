@@ -105,7 +105,7 @@ class Visit
      * @param \DateTime $dateTime
      * @return Visit
      */
-    public function setDateTime($dateTime)
+    public function setDateTime(\DateTimeInterface $dateTime)
     {
         $this->dateTime = $dateTime;
         return $this;

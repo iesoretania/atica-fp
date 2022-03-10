@@ -113,7 +113,7 @@ class Meeting
      * @param \DateTime $dateTime
      * @return Meeting
      */
-    public function setDateTime($dateTime)
+    public function setDateTime(\DateTimeInterface $dateTime)
     {
         $this->dateTime = $dateTime;
         return $this;

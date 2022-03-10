@@ -109,7 +109,7 @@ class FinalReportController extends AbstractController
     ) {
         $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::VIEW_REPORT, $agreementEnrollment);
 
-        $readOnly = false === $this->isGranted(AgreementEnrollmentVoter::FILL_REPORT, $agreementEnrollment);
+        $readOnly = !$this->isGranted(AgreementEnrollmentVoter::FILL_REPORT, $agreementEnrollment);
 
         $em = $this->getDoctrine()->getManager();
 

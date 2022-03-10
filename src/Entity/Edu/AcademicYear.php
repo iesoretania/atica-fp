@@ -183,7 +183,7 @@ class AcademicYear
      * @param \DateTime $startDate
      * @return AcademicYear
      */
-    public function setStartDate($startDate)
+    public function setStartDate(\DateTimeInterface $startDate)
     {
         $this->startDate = $startDate;
         return $this;
@@ -201,7 +201,7 @@ class AcademicYear
      * @param \DateTime $endDate
      * @return AcademicYear
      */
-    public function setEndDate($endDate)
+    public function setEndDate(\DateTimeInterface $endDate)
     {
         $this->endDate = $endDate;
         return $this;

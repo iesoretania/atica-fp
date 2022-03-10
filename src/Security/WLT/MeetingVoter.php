@@ -29,8 +29,8 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class MeetingVoter extends CachedVoter
 {
-    const MANAGE = 'WLT_MEETING_MANAGE';
-    const ACCESS = 'WLT_MEETING_ACCESS';
+    public const MANAGE = 'WLT_MEETING_MANAGE';
+    public const ACCESS = 'WLT_MEETING_ACCESS';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -57,14 +57,10 @@ class MeetingVoter extends CachedVoter
         if (!$subject instanceof Meeting) {
             return false;
         }
-        if (!in_array($attribute, [
+        return in_array($attribute, [
             self::MANAGE,
             self::ACCESS
-        ], true)) {
-            return false;
-        }
-
-        return true;
+        ], true);
     }
 
     /**

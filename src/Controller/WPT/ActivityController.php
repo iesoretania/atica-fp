@@ -103,7 +103,7 @@ class ActivityController extends AbstractController
         }
 
         $title = $translator->trans(
-            $activity->getId() ? 'title.edit' : 'title.new',
+            $activity->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'wpt_activity'
         );
@@ -119,7 +119,7 @@ class ActivityController extends AbstractController
                 'routeName' => 'workplace_training_activity_list',
                 'routeParams' => ['id' => $activity->getShift()->getId()]
             ],
-            $activity->getId() ?
+            $activity->getId() !== 0 ?
                 ['fixed' => $activity->getCode()] :
                 ['fixed' => $translator->trans('title.new', [], 'wpt_activity')]
         ];
@@ -220,7 +220,7 @@ class ActivityController extends AbstractController
 
         $items = $request->request->get('items', []);
 
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('workplace_training_activity_list', ['id' => $shift->getId()]);
         }
 
@@ -312,7 +312,7 @@ class ActivityController extends AbstractController
 
         foreach ($items as $item) {
             preg_match('/^(.{1,10}): (.*)/u', $item, $matches);
-            if ($matches) {
+            if ($matches !== []) {
                 $output[$matches[1]] = $matches[2];
             }
         }

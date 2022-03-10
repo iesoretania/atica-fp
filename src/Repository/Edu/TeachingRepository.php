@@ -67,9 +67,7 @@ class TeachingRepository extends ServiceEntityRepository
                 ->setParameter('grade', $group->getGrade())
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NonUniqueResultException $e) {
-            return 0;
-        } catch (NoResultException $e) {
+        } catch (NonUniqueResultException|NoResultException $e) {
             return 0;
         }
     }

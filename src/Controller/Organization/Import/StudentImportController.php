@@ -135,13 +135,13 @@ class StudentImportController extends AbstractController
                     );
 
                     // ignorar alumnado de grupos no existentes en la plataforma
-                    if (null === $group) {
+                    if (!$group instanceof \App\Entity\Edu\Group) {
                         continue;
                     }
 
                     $uniqueIdentifier = $studentData['DNI/Pasaporte'] ?: $studentData['Nº Id. Escolar'];
 
-                    if (false === isset($personCollection[$uniqueIdentifier])) {
+                    if (!isset($personCollection[$uniqueIdentifier])) {
                         $person = $personRepository->findOneBy([
                             'uniqueIdentifier' => $uniqueIdentifier
                         ]);

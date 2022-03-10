@@ -56,7 +56,7 @@ class ProjectController extends AbstractController
         $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (!$academicYear) {
+        if ($academicYear === null) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -189,13 +189,13 @@ class ProjectController extends AbstractController
         }
 
         $title = $translator->trans(
-            $project->getId() ? 'title.edit' : 'title.new',
+            $project->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'wlt_project'
         );
 
         $breadcrumb = [
-            $project->getId() ?
+            $project->getId() !== 0 ?
                 ['fixed' => $project->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'wlt_project')]
         ];
@@ -275,7 +275,7 @@ class ProjectController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('work_linked_training_project_list');
         }
         $selectedItems = $projectRepository->findAllInListByIdAndOrganization($items, $organization);

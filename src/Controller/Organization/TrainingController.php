@@ -81,13 +81,13 @@ class TrainingController extends AbstractController
         }
 
         $title = $translator->trans(
-            $training->getId() ? 'title.edit' : 'title.new',
+            $training->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'edu_training'
         );
 
         $breadcrumb = [
-            $training->getId() ?
+            $training->getId() !== 0 ?
                 ['fixed' => $training->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_training')]
         ];
@@ -181,7 +181,7 @@ class TrainingController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_training_list', ['academicYear' => $academicYear->getId()]);
         }
 

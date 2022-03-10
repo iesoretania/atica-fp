@@ -65,7 +65,7 @@ class ReportTemplateController extends AbstractController
     ) {
         $this->denyAccessUnlessGranted(ReportTemplateVoter::EDU_REPORT_TEMPLATE_VIEW, $template);
 
-        $readOnly = false === $this->isGranted(ReportTemplateVoter::EDU_REPORT_TEMPLATE_MANAGE, $template);
+        $readOnly = !$this->isGranted(ReportTemplateVoter::EDU_REPORT_TEMPLATE_MANAGE, $template);
 
         $form = $this->createForm(ReportTemplateType::class, $template, [
             'disabled' => $readOnly
@@ -87,13 +87,13 @@ class ReportTemplateController extends AbstractController
         }
 
         $title = $translator->trans(
-            $template->getId() ? 'title.edit' : 'title.new',
+            $template->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'edu_report_template'
         );
 
         $breadcrumb = [
-            $template->getId() ?
+            $template->getId() !== 0 ?
                 ['fixed' => $template->getDescription()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_report_template')]
         ];
@@ -192,7 +192,7 @@ class ReportTemplateController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_report_template_list');
         }
 

@@ -68,10 +68,13 @@ class MeetingType extends AbstractType
         $this->userExtensionService = $userExtensionService;
     }
 
+    /**
+     * @param \DateTime|\DateTimeImmutable $dateTime
+     */
     private function addElements(
         FormInterface $form,
         $createdByTeachers,
-        \DateTime $dateTime = null,
+        \DateTimeInterface $dateTime = null,
         Project $project = null,
         $projects = []
     ) {
@@ -87,7 +90,7 @@ class MeetingType extends AbstractType
             $teachers = [];
         }
 
-        $canSelectStudentEnrollments = count($studentEnrollments) > 0;
+        $canSelectStudentEnrollments = (is_array($studentEnrollments) || $studentEnrollments instanceof \Countable ? count($studentEnrollments) : 0) > 0;
 
         $form
             ->add('dateTime', DateTimeType::class, [

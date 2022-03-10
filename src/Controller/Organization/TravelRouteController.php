@@ -92,7 +92,7 @@ class TravelRouteController extends AbstractController
         }
 
         $title = $translator->trans(
-            $travelRoute->getId() ? 'title.edit' : 'title.new',
+            $travelRoute->getId() !== 0 ? 'title.edit' : 'title.new',
             [],
             'edu_travel_route'
         );
@@ -178,7 +178,7 @@ class TravelRouteController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_travel_route_list');
         }
 

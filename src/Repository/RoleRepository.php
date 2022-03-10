@@ -51,12 +51,10 @@ class RoleRepository extends ServiceEntityRepository
 
     public function findByOrganizationAndRole(Organization $organization, $roleName)
     {
-        $roles = $this->findBy([
+        return $this->findBy([
             'organization' => $organization,
             'role' => $roleName
         ]);
-
-        return $roles;
     }
 
     public function updateOrganizationRoles(Organization $organization, $rolesData)

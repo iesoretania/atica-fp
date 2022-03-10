@@ -22,8 +22,8 @@ use App\Entity\WLT\Agreement;
 
 class CalendarCopy
 {
-    const OVERWRITE_ACTION_REPLACE = 1;
-    const OVERWRITE_ACTION_ADD = 2;
+    public const OVERWRITE_ACTION_REPLACE = 1;
+    public const OVERWRITE_ACTION_ADD = 2;
 
     /** @var Agreement */
     private $agreement;

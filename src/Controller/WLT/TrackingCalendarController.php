@@ -64,7 +64,7 @@ class TrackingCalendarController extends AbstractController
         $today->setTime(0, 0);
         $workDayToday = $workDayRepository->findOneByAgreementAndDate($agreement, $today);
 
-        $workDayStats = count($agreement->getWorkDays()) > 0
+        $workDayStats = $agreement->getWorkDays() !== []
             ? $workDayRepository->hoursStatsByAgreement($agreement)
             : [];
 
@@ -146,14 +146,14 @@ class TrackingCalendarController extends AbstractController
 
                     // comprobar que no se intenta activar una concreción ya bloqueada
                     $invalid = array_intersect($toInsert, $lockedActivityRealizations);
-                    if (!$lockManager && count($invalid) > 0) {
+                    if (!$lockManager && $invalid !== []) {
                         throw $this->createAccessDeniedException();
                     }
 
                     // asegurar que no se pierden las concreciones marcadas pero bloqueadas
                     $toInsert = array_intersect($lockedActivityRealizations, $oldActivityRealizations->toArray());
                     foreach ($toInsert as $activityRealization) {
-                        if ($workDay->getActivityRealizations()->contains($activityRealization) === false) {
+                        if (!$workDay->getActivityRealizations()->contains($activityRealization)) {
                             $workDay->getActivityRealizations()->add($activityRealization);
                         }
                     }
@@ -235,7 +235,7 @@ class TrackingCalendarController extends AbstractController
         }
 
         $items = $request->request->get('items', []);
-        if (count($items) === 0) {
+        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
             return $this->redirectToRoute(
                 'work_linked_training_tracking_calendar_list',
                 ['id' => $agreement->getId()]
@@ -362,7 +362,7 @@ class TrackingCalendarController extends AbstractController
     ) {
         $weekDays = $workDayRepository->findByYearWeekAndAgreement($year, $week, $agreement);
 
-        if (count($weekDays) === 0) {
+        if ((is_array($weekDays) || $weekDays instanceof \Countable ? count($weekDays) : 0) === 0) {
             // no hay jornadas, volver al listado
             return $this->redirectToRoute('work_linked_training_tracking_calendar_list', ['id' => $agreement->getId()]);
         }
@@ -393,7 +393,7 @@ class TrackingCalendarController extends AbstractController
 
             /** @var WorkDay $workDay */
             foreach ($weekDays as $workDay) {
-                if (false === $workDay->isLocked()) {
+                if (!$workDay->isLocked()) {
                     $isLocked = false;
                 }
                 $day = $workDay->getDate()->format('N');
@@ -406,13 +406,13 @@ class TrackingCalendarController extends AbstractController
                 );
 
                 foreach ($workDay->getActivityRealizations() as $activityRealization) {
-                    if ($activityRealization->getCode()) {
+                    if ($activityRealization->getCode() !== '' && $activityRealization->getCode() !== '0') {
                         $activities[$day] .= '<b>' . htmlentities($activityRealization->getCode()) . ': </b>';
                     }
                     $activities[$day] .= htmlentities($activityRealization->getDescription()) . '<br/>';
                 }
 
-                if ($workDay->getOtherActivities()) {
+                if ($workDay->getOtherActivities() !== '' && $workDay->getOtherActivities() !== '0') {
                     $activities[$day] .= htmlentities($workDay->getOtherActivities()) . '<br/>';
                 }
 
