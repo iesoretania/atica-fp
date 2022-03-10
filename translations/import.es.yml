@@ -29,8 +29,6 @@ form.teacher.do_import: Importar profesorado
 report.teacher.list: Docentes nuevos dados de alta en la plataforma
 report.teacher.existing_teachers: Docentes ya existentes
 report.teacher.new_teachers: Docentes nuevos incorporados
-report.teacher.existing_memberships: Pertenencias ya existentes
-report.teacher.new_memberships: Pertenencias nuevas incorporadas
 
 title.group.import: Importación de grupos
 form.group.academic_year: Curso académico

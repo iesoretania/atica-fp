@@ -20,7 +20,7 @@ namespace App\Repository;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Organization;
-use App\Entity\User;
+use App\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -59,30 +59,21 @@ class OrganizationRepository extends ServiceEntityRepository
      * Devuelve las organizaciones a las que pertenece el usuario en la fecha indicada.
      * Si no se especifica fecha, se devuelven todas a las que pertenece.
      *
-     * @param User $user
-     * @param \DateTime $date
+     * @param Person $user
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function getMembershipByUserQueryBuilder(User $user, \DateTime $date = null)
+    public function getMembershipByPersonQueryBuilder(Person $user)
     {
         if ($user->isGlobalAdministrator()) {
             return $this->createQueryBuilder('o')
                 ->orderBy('o.name');
         }
 
-        $query = $this->createQueryBuilder('o')
-            ->join('o.memberships', 'm');
-
-        if ($date) {
-            $query = $query
-                ->andWhere('m.validUntil >= :date')
-                ->orWhere('m.validUntil IS NULL')
-                ->andWhere('m.validFrom <= :date')
-                ->setParameter('date', $date);
-        }
+        $query = $this->createQueryBuilder('o');
         return $query
-            ->andWhere('m.user = :user')
-            ->setParameter('user', $user)
+            //->andWhere('m.user = :user')
+            //->setParameter('user', $user)
+            ->distinct()
             ->orderBy('o.name');
     }
 
@@ -90,28 +81,41 @@ class OrganizationRepository extends ServiceEntityRepository
      * Devuelve la primera organización a la que pertenece el usuario indicado en la fecha pasada
      * como parámetro.
      *
-     * @param User $user
-     * @param \DateTime $date
+     * @param Person $user
      * @return Organization|null
      */
-    public function findFirstByUserOrNull(User $user, \DateTime $date = null)
+    public function findFirstByUserOrNull(Person $user)
     {
-        $query = $this->getMembershipByUserQueryBuilder($user, $date);
+        $query = $this->getMembershipByPersonQueryBuilder($user);
         return $query
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
     }
 
     /**
+     * Devuelve si el usuario pertenece a la organización
+     */
+    public function findByUserAndOrganization(Person $user, Organization $organization) : bool
+    {
+        $query = $this->getMembershipByPersonQueryBuilder($user);
+        return $query
+            ->select('COUNT(o)')
+            ->andWhere('o = :organization')
+            ->setParameter('organization', $organization)
+            ->getQuery()
+            ->getSingleColumnResult() > 0;
+    }
+
+    /**
      * Devuelve el número de organizaciones a las que pertenece un usuario en una fecha determinada.
      *
-     * @param User $user
-     * @param \DateTime $date
+     * @param Person $user
      * @return int
      */
-    public function countOrganizationsByUser(User $user, \DateTime $date = null)
+    public function countOrganizationsByPerson(Person $user)
     {
-        $query = $this->getMembershipByUserQueryBuilder($user, $date);
+        $query = $this->getMembershipByPersonQueryBuilder($user);
         return $query
             ->select('COUNT(DISTINCT o)')
             ->getQuery()

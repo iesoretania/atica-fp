@@ -19,7 +19,7 @@
 namespace App\Security\WPT;
 
 use App\Entity\Edu\Teaching;
-use App\Entity\User;
+use App\Entity\Person;
 use App\Entity\WPT\TravelExpense;
 use App\Security\CachedVoter;
 use App\Security\Edu\EduOrganizationVoter;
@@ -83,10 +83,10 @@ class TravelExpenseVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -107,11 +107,11 @@ class TravelExpenseVoter extends CachedVoter
         switch ($attribute) {
             case self::MANAGE:
                 // El propio docente puede gestionar su visita si es del curso académico actual
-                return $subject->getTeacher()->getPerson() === $user->getPerson()
+                return $subject->getTeacher()->getPerson() === $user
                     && $subject->getTeacher()->getAcademicYear() === $organization->getCurrentAcademicYear();
             case self::ACCESS:
                 // Puede acceder a los datos de la visita el propio docente
-                if ($subject->getTeacher()->getPerson() === $user->getPerson()) {
+                if ($subject->getTeacher()->getPerson() === $user) {
                     return true;
                 }
                 // Puede acceder el jefe/a de departamento
@@ -122,7 +122,7 @@ class TravelExpenseVoter extends CachedVoter
                     if ($group->getGrade()->getTraining()->getDepartment() &&
                         $group->getGrade()->getTraining()->getDepartment()->getHead() &&
                         $group->getGrade()->getTraining()->getDepartment()->getHead()->getPerson()
-                            === $user->getPerson()) {
+                            === $user) {
                         return true;
                     }
                 }

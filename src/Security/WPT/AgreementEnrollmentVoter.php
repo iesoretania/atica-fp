@@ -18,8 +18,8 @@
 
 namespace App\Security\WPT;
 
+use App\Entity\Person;
 use App\Entity\Survey;
-use App\Entity\User;
 use App\Entity\WPT\AgreementEnrollment;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
@@ -100,10 +100,10 @@ class AgreementEnrollmentVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -120,7 +120,7 @@ class AgreementEnrollmentVoter extends CachedVoter
             return true;
         }
 
-        $person = $user->getPerson();
+        $person = $user;
 
         $isDepartmentHead = false;
         $isGroupTutor = false;
@@ -128,7 +128,7 @@ class AgreementEnrollmentVoter extends CachedVoter
         $academicYearIsCurrent = true;
 
         // Tutor laboral y de seguimiento
-        $isWorkTutor = $subject->getWorkTutor() && $user === $subject->getWorkTutor()->getUser();
+        $isWorkTutor = $user === $subject->getWorkTutor();
         $isEducationalTutor =
             $subject->getEducationalTutor() && $subject->getEducationalTutor()->getPerson() === $person;
 
@@ -147,14 +147,14 @@ class AgreementEnrollmentVoter extends CachedVoter
             // Tutor del grupo del acuerdo
             $tutors = $subject->getStudentEnrollment()->getGroup()->getTutors();
             foreach ($tutors as $tutor) {
-                if ($tutor->getPerson()->getUser() === $user) {
+                if ($tutor->getPerson() === $user) {
                     $isGroupTutor = true;
                     break;
                 }
             }
 
             // Estudiante del acuerdo
-            $isStudent = $user === $subject->getStudentEnrollment()->getPerson()->getUser();
+            $isStudent = $user === $subject->getStudentEnrollment()->getPerson();
 
             $academicYearIsCurrent = $organization->getCurrentAcademicYear() === $training->getAcademicYear();
         }
@@ -193,13 +193,13 @@ class AgreementEnrollmentVoter extends CachedVoter
                 return $isDepartmentHead || $isEducationalTutor || $isStudent || $isGroupTutor;
 
             case self::FILL_STUDENT_SURVEY:
-                $studentSurvey = $subject->getProject()->getStudentSurvey();
+                $studentSurvey = $subject->getAgreement()->getShift()->getStudentSurvey();
                 return $academicYearIsCurrent
                     && ($isDepartmentHead || $isEducationalTutor || $isStudent || $isGroupTutor)
                     && $this->checkSurvey($studentSurvey);
 
             case self::FILL_COMPANY_SURVEY:
-                $companySurvey = $subject->getProject()->getCompanySurvey();
+                $companySurvey = $subject->getAgreement()->getShift()->getCompanySurvey();
                 return $academicYearIsCurrent
                     && ($isDepartmentHead || $isEducationalTutor || $isWorkTutor || $isGroupTutor)
                     && $this->checkSurvey($companySurvey);

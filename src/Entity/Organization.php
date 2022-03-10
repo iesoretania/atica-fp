@@ -19,8 +19,6 @@
 namespace App\Entity;
 
 use App\Entity\Edu\AcademicYear;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -101,12 +99,6 @@ class Organization
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="Membership", mappedBy="organization")
-     * @var Collection
-     */
-    private $memberships;
-
-    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Edu\AcademicYear")
      * @var AcademicYear
      */
@@ -117,7 +109,6 @@ class Organization
      */
     public function __construct()
     {
-        $this->memberships = new ArrayCollection();
     }
 
     /**
@@ -378,16 +369,6 @@ class Organization
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * Get memberships
-     *
-     * @return Collection
-     */
-    public function getMemberships()
-    {
-        return $this->memberships;
     }
 
     /**

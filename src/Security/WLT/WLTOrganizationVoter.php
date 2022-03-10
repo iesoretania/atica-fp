@@ -19,7 +19,7 @@
 namespace App\Security\WLT;
 
 use App\Entity\Organization;
-use App\Entity\User;
+use App\Entity\Person;
 use App\Repository\WLT\AgreementRepository;
 use App\Repository\WLT\ProjectRepository;
 use App\Repository\WLT\WLTGroupRepository;
@@ -117,10 +117,10 @@ class WLTOrganizationVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -212,7 +212,7 @@ class WLTOrganizationVoter extends CachedVoter
                     $this->decisionManager->decide($token, [self::WLT_TEACHER], $subject);
 
             case self::WLT_MANAGER:
-                return $this->projectRepository->countByOrganizationAndManagerPerson($subject, $user->getPerson()) > 0;
+                return $this->projectRepository->countByOrganizationAndManagerPerson($subject, $user) > 0;
 
             case self::WLT_GROUP_TUTOR:
                 if ($this->decisionManager->decide($token, [self::WLT_MANAGER], $subject)) {
@@ -221,7 +221,7 @@ class WLTOrganizationVoter extends CachedVoter
                 return
                     $this->WLTGroupRepository->countAcademicYearAndWLTGroupTutorPerson(
                         $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
+                        $user
                     ) > 0;
 
             case self::WLT_STUDENT:
@@ -231,7 +231,7 @@ class WLTOrganizationVoter extends CachedVoter
                 return
                     $this->agreementRepository->countAcademicYearAndStudentPerson(
                         $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
+                        $user
                     ) > 0;
 
             case self::WLT_WORK_TUTOR:
@@ -241,7 +241,7 @@ class WLTOrganizationVoter extends CachedVoter
                 return
                     $this->agreementRepository->countAcademicYearAndWorkTutorPerson(
                         $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
+                        $user
                     ) > 0;
 
             case self::WLT_TEACHER:
@@ -251,7 +251,7 @@ class WLTOrganizationVoter extends CachedVoter
                 return
                     $this->WLTGroupRepository->countAcademicYearAndWLTTeacherPerson(
                         $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
+                        $user
                     ) > 0;
 
             case self::WLT_EDUCATIONAL_TUTOR:
@@ -261,14 +261,14 @@ class WLTOrganizationVoter extends CachedVoter
                 return
                     $this->agreementRepository->countAcademicYearAndEducationalTutorPerson(
                         $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
+                        $user
                     ) > 0;
 
             case self::WLT_DEPARTMENT_HEAD:
                 return
                     $this->WLTGroupRepository->countAcademicYearAndWLTDepartmentHeadPerson(
                         $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
+                        $user
                     ) > 0;
         }
 

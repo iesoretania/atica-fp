@@ -19,7 +19,7 @@
 namespace App\Service;
 
 use App\Entity\Organization;
-use App\Entity\User;
+use App\Entity\Person;
 use App\Security\OrganizationVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -66,7 +66,7 @@ class UserExtensionService
 
     public function checkCurrentOrganization(UserInterface $user)
     {
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             return false;
         }
 
@@ -75,7 +75,7 @@ class UserExtensionService
         }
 
         return $this->session->has('organization_id')
-            && count($this->em->getRepository('App:Organization')->getMembershipByUserQueryBuilder($user)
+            && count($this->em->getRepository('App:Organization')->getMembershipByPersonQueryBuilder($user)
                 ->andWhere('o = :organization')
                 ->setParameter('organization', $this->getCurrentOrganization())
                 ->getQuery()

@@ -19,7 +19,7 @@
 namespace App\Security\Edu;
 
 use App\Entity\Edu\Training;
-use App\Entity\User;
+use App\Entity\Person;
 use App\Repository\Edu\TeacherRepository;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
@@ -93,10 +93,10 @@ class TrainingVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -112,14 +112,14 @@ class TrainingVoter extends CachedVoter
         }
 
         // Si es el jefe de departamento de la enseñanza, permitir siempre
-        if ($subject->getDepartment() && $subject->getDepartment()->getHead()->getPerson() === $user->getPerson()) {
+        if ($subject->getDepartment() && $subject->getDepartment()->getHead()->getPerson() === $user) {
             return true;
         }
 
         // Si es permiso de acceso, comprobar que es un profesor de ese curso académico
         if ($attribute === self::ACCESS) {
             return null !== $this->teacherRepository->
-                findOneByPersonAndAcademicYear($user->getPerson(), $subject->getAcademicYear());
+                findOneByPersonAndAcademicYear($user, $subject->getAcademicYear());
         }
 
         // denegamos en cualquier otro caso

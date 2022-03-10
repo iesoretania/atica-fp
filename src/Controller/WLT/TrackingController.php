@@ -19,6 +19,7 @@
 namespace App\Controller\WLT;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Person;
 use App\Entity\WLT\Agreement;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\WLT\ProjectRepository;
@@ -117,7 +118,8 @@ class TrackingController extends AbstractController
         $groups = [];
         $projects = [];
 
-        $person = $this->getUser()->getPerson();
+        /** @var Person $person */
+        $person = $this->getUser();
         if (false === $isWltManager && false === $isManager) {
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento, docente o tutor de grupo  -> ver los acuerdos de los

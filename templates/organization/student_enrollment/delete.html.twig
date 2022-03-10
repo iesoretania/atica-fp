@@ -21,7 +21,7 @@
                     {% for item in items %}
                         <tr>
                             <td>{{ item.person.lastName }}, {{ item.person.firstName }}</td>
-                            <td>{{ item.person.user.userNameAndEmailAddress|default('') }}</td>
+                            <td>{{ item.person.userNameAndEmailAddress|default('') }}</td>
                             <td>{{ item.group }}</td>
                         </tr>
                     {% endfor %}

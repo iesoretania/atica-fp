@@ -19,7 +19,7 @@
 namespace App\Form\Type\Edu;
 
 use App\Entity\Edu\Teacher;
-use App\Entity\User;
+use App\Entity\Person;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -44,7 +44,7 @@ class TeacherType extends AbstractType
             ])
             ->add('loginUsername', null, [
                 'label' => 'form.user_name',
-                'property_path' => 'person.user.loginUsername',
+                'property_path' => 'person.loginUsername',
                 'disabled' => true
             ])
             ->add('personFirstName', null, [
@@ -59,7 +59,7 @@ class TeacherType extends AbstractType
             ])
             ->add('emailAddress', EmailType::class, [
                 'label' => 'form.email_address',
-                'property_path' => 'person.user.emailAddress',
+                'property_path' => 'person.emailAddress',
                 'disabled' => true
             ])
             ->add('personGender', ChoiceType::class, [
@@ -68,9 +68,9 @@ class TeacherType extends AbstractType
                 'expanded' => true,
                 'property_path' => 'person.gender',
                 'choices' => [
-                    'form.gender.neutral' => User::GENDER_NEUTRAL,
-                    'form.gender.male' => User::GENDER_MALE,
-                    'form.gender.female' => User::GENDER_FEMALE
+                    'form.gender.neutral' => Person::GENDER_NEUTRAL,
+                    'form.gender.male' => Person::GENDER_MALE,
+                    'form.gender.female' => Person::GENDER_FEMALE
                 ]
             ])
             ->add('enabled', ChoiceType::class, [
@@ -82,7 +82,7 @@ class TeacherType extends AbstractType
                     'form.enabled.yes' => true,
                     'form.enabled.no' => false
                 ],
-                'property_path' => 'person.user.enabled'
+                'property_path' => 'person.enabled'
             ])
             ->add('allowExternalCheck', ChoiceType::class, [
                 'label' => 'form.allow_external_check',
@@ -93,7 +93,7 @@ class TeacherType extends AbstractType
                     'form.allow_external_check.yes' => true,
                     'form.allow_external_check.no' => false
                 ],
-                'property_path' => 'person.user.allowExternalCheck',
+                'property_path' => 'person.allowExternalCheck',
             ]);
     }
 
@@ -106,10 +106,10 @@ class TeacherType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $builder = $event->getForm();
-            /** @var User $data */
+            /** @var Person $data */
             $data = $event->getData();
 
-            if ($data->getPerson()->getUser()->getAllowExternalCheck()) {
+            if ($data->getAllowExternalCheck()) {
                 $builder
                     ->add('externalCheck', ChoiceType::class, [
                         'label' => 'form.external_check',
@@ -120,7 +120,7 @@ class TeacherType extends AbstractType
                             'form.external_check.yes' => true,
                             'form.external_check.no' => false
                         ],
-                        'property_path' => 'person.user.externalCheck',
+                        'property_path' => 'person.externalCheck',
                     ]);
             }
         });

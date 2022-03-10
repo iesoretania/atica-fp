@@ -31,6 +31,6 @@ class Version20200130213632 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $$this->throwIrreversibleMigrationException("Sorry! Cannot downgrade to 2.0.x");
+        $this->throwIrreversibleMigrationException("Sorry! Cannot downgrade to 2.0.x");
     }
 }

@@ -18,8 +18,8 @@
 
 namespace App\Security\WPT;
 
+use App\Entity\Person;
 use App\Entity\Survey;
-use App\Entity\User;
 use App\Entity\WPT\Agreement;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
@@ -82,10 +82,10 @@ class AgreementVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -102,7 +102,7 @@ class AgreementVoter extends CachedVoter
             return true;
         }
 
-        $person = $user->getPerson();
+        $person = $user;
 
         $academicYearIsCurrent = $subject->getShift()->getGrade()
             && $subject->getShift()->getGrade()->getTraining()->getAcademicYear()

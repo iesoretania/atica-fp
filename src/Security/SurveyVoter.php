@@ -18,9 +18,9 @@
 
 namespace App\Security;
 
+use App\Entity\Person;
 use App\Entity\Role;
 use App\Entity\Survey;
-use App\Entity\User;
 use App\Repository\RoleRepository;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -79,10 +79,10 @@ class SurveyVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -91,7 +91,7 @@ class SurveyVoter extends CachedVoter
         switch ($attribute) {
             case self::MANAGE:
                 return $this->roleRepository->
-                    personHasRole($subject->getOrganization(), $user->getPerson(), Role::ROLE_LOCAL_ADMIN);
+                    personHasRole($subject->getOrganization(), $user, Role::ROLE_LOCAL_ADMIN);
 
         }
 

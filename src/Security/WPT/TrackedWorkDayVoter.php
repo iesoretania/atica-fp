@@ -18,7 +18,7 @@
 
 namespace App\Security\WPT;
 
-use App\Entity\User;
+use App\Entity\Person;
 use App\Entity\WPT\TrackedWorkDay;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
@@ -81,10 +81,10 @@ class TrackedWorkDayVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }

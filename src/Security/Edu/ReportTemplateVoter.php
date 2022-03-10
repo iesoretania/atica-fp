@@ -19,7 +19,7 @@
 namespace App\Security\Edu;
 
 use App\Entity\Edu\ReportTemplate;
-use App\Entity\User;
+use App\Entity\Person;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
@@ -79,10 +79,10 @@ class ReportTemplateVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }

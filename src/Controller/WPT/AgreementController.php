@@ -25,8 +25,6 @@ use App\Form\Model\WPT\CalendarCopy;
 use App\Form\Type\WPT\AgreementEnrollmentType;
 use App\Form\Type\WPT\AgreementType;
 use App\Form\Type\WPT\CalendarCopyType;
-use App\Repository\MembershipRepository;
-use App\Repository\UserRepository;
 use App\Repository\WPT\ActivityRepository;
 use App\Repository\WPT\AgreementRepository;
 use App\Security\WPT\AgreementVoter;
@@ -61,7 +59,6 @@ class AgreementController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        MembershipRepository $membershipRepository,
         Shift $shift
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -77,7 +74,6 @@ class AgreementController extends AbstractController
             $request,
             $userExtensionService,
             $translator,
-            $membershipRepository,
             $agreement
         );
     }
@@ -89,7 +85,6 @@ class AgreementController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        MembershipRepository $membershipRepository,
         Agreement $agreement
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -117,16 +112,6 @@ class AgreementController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                // dar acceso al tutor laboral a la organización
-                if (null === $agreement->getId() && $form->get('workTutor')->getData()) {
-                    $membershipRepository->addNewOrganizationMembership(
-                        $academicYear->getOrganization(),
-                        $form->get('workTutor')->getData()->getUser(),
-                        $academicYear->getStartDate(),
-                        $academicYear->getEndDate()
-                    );
-                }
-
                 $enrollments = $form->get('studentEnrollments')->getData();
                 foreach ($enrollments as $studentEnrollment) {
                     if (!$currentStudentEnrollments->contains($studentEnrollment)) {
@@ -201,9 +186,7 @@ class AgreementController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        MembershipRepository $membershipRepository,
-        AgreementEnrollment $agreementEnrollment,
-        UserRepository $userRepository
+        AgreementEnrollment $agreementEnrollment
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
@@ -224,18 +207,6 @@ class AgreementController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                // dar acceso al tutor laboral a la organización
-                if ($agreementEnrollment->getWorkTutor()) {
-                    if (null === $agreementEnrollment->getWorkTutor()->getUser()) {
-                        $userRepository->createUserForPersonAndEmail($agreementEnrollment->getWorkTutor());
-                    }
-                    $membershipRepository->addNewOrganizationMembership(
-                        $academicYear->getOrganization(),
-                        $agreementEnrollment->getWorkTutor()->getUser(),
-                        $academicYear->getStartDate(),
-                        $academicYear->getEndDate()
-                    );
-                }
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wpt_agreement'));
                 return $this->redirectToRoute('workplace_training_agreement_list', [

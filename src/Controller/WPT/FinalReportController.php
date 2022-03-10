@@ -71,7 +71,7 @@ class FinalReportController extends AbstractController
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
-        $person = $this->getUser()->getPerson();
+        $person = $this->getUser();
         $maxPerPage = $this->getParameter('page.size');
 
         $pager = TrackingController::generateAgreementPaginator(

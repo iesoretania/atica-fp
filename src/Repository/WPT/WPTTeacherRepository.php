@@ -29,7 +29,6 @@ class WPTTeacherRepository extends TeacherRepository
     {
         return $this->createQueryBuilder('t')
             ->join('t.person', 'p')
-            ->join('p.user', 'u')
             ->join(AgreementEnrollment::class, 'ae', 'WITH', 'ae.educationalTutor = t')
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear)

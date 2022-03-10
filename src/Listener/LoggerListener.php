@@ -19,7 +19,7 @@
 namespace App\Listener;
 
 use App\Entity\EventLog;
-use App\Entity\User;
+use App\Entity\Person;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -58,6 +58,7 @@ class LoggerListener implements EventSubscriberInterface
     public function onKernelRequest(GetResponseEvent $event)
     {
         if ($event->isMasterRequest()) {
+            /** @var Person $user */
             $user = $this->token->getToken() ? $this->token->getToken()->getUser() : null;
             $user = is_string($user) ? null : $user;
 
@@ -71,7 +72,7 @@ class LoggerListener implements EventSubscriberInterface
 
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
     {
-        /** @var User $user */
+        /** @var Person $user */
         $user = $event->getAuthenticationToken()->getUser();
 
         $ip = $event->getRequest()->getClientIp();
@@ -83,7 +84,7 @@ class LoggerListener implements EventSubscriberInterface
 
     public function onSecuritySwitchUser(SwitchUserEvent $event)
     {
-        /** @var User $user */
+        /** @var Person $user */
         $user = $event->getTargetUser();
 
         $ip = $event->getRequest()->getClientIp();
@@ -96,7 +97,7 @@ class LoggerListener implements EventSubscriberInterface
 
     public function onAuthenticationFailure(AuthenticationFailureEvent $event)
     {
-        /** @var User $user */
+        /** @var Person $user */
         $user = $event->getAuthenticationToken()->getUser();
 
         $ip = $this->requestStack->getMasterRequest()->getClientIp();
@@ -118,12 +119,12 @@ class LoggerListener implements EventSubscriberInterface
 
     /**
      * @param $eventName
-     * @param User $user
+     * @param Person $user
      * @param $ip
      * @param $data
      * @throws \Exception
      */
-    private function createLogEntry($eventName, User $user = null, $ip = null, $data = null)
+    private function createLogEntry($eventName, Person $user = null, $ip = null, $data = null)
     {
         $em = $this->managerRegistry->getManager();
         $logEntry = new EventLog();

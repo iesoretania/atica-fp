@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-4.x.x (xxxx-xx-xx)
+5.0.0 (2022-03-xx)
 ------------------
 * fix: Solucionar problema con la importación de profesorado
 * fix: Problema con el informe de asistencia arreglado
@@ -14,6 +14,7 @@ en las distintas versiones de la misma.
 * fix: Solucionado otro problema con una plantilla no actualizada
 * fix: Intento de solucionar la copia del calendario
 * fix: Solucionado problema con la administración de las organizaciones
+* feat: Eliminada separación entre personas y usuarios para simplificar la gestión
 
 4.1.0 (2022-02-13)
 ------------------

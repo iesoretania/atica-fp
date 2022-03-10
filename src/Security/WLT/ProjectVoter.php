@@ -18,9 +18,8 @@
 
 namespace App\Security\WLT;
 
-use App\Entity\User;
+use App\Entity\Person;
 use App\Entity\WLT\Project;
-use App\Repository\WLT\AgreementRepository;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
@@ -46,19 +45,14 @@ class ProjectVoter extends CachedVoter
     /** @var UserExtensionService */
     private $userExtensionService;
 
-    /** @var AgreementRepository */
-    private $agreementRepository;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
         AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService,
-        AgreementRepository $agreementRepository
+        UserExtensionService $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
         $this->decisionManager = $decisionManager;
         $this->userExtensionService = $userExtensionService;
-        $this->agreementRepository = $agreementRepository;
     }
 
     /**
@@ -101,10 +95,10 @@ class ProjectVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -121,7 +115,7 @@ class ProjectVoter extends CachedVoter
             return true;
         }
 
-        $isProjectManager = $subject->getManager() === $user->getPerson();
+        $isProjectManager = $subject->getManager() === $user;
 
         $isCurrentAcademicYear = false;
         foreach ($subject->getGroups() as $group) {
@@ -145,7 +139,7 @@ class ProjectVoter extends CachedVoter
             if ($group->getGrade()->getTraining()->getDepartment()->getHead() &&
                 $group
                     ->getGrade()->getTraining()
-                    ->getDepartment()->getHead()->getPerson() === $user->getPerson()
+                    ->getDepartment()->getHead()->getPerson() === $user
             ) {
                 $isDepartmentHead = true;
                 break;
@@ -172,7 +166,7 @@ class ProjectVoter extends CachedVoter
 
                 // El responsable de seguimiento de un acuerdo también puede
                 foreach ($subject->getAgreements() as $agreement) {
-                    if ($agreement->getEducationalTutor()->getPerson() === $user->getPerson()) {
+                    if ($agreement->getEducationalTutor()->getPerson() === $user) {
                         return true;
                     }
                 }

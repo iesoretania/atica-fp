@@ -39,7 +39,6 @@ class TeacherRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->addSelect('p')
             ->join('t.person', 'p')
-            ->join('p.user', 'u')
             ->join('t.academicYear', 'a')
             ->andWhere('a.organization = :organization')
             ->setParameter('organization', $organization)
@@ -54,7 +53,6 @@ class TeacherRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->addSelect('p')
             ->join('t.person', 'p')
-            ->join('p.user', 'u')
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear)
             ->orderBy('p.lastName')
@@ -80,7 +78,6 @@ class TeacherRepository extends ServiceEntityRepository
         try {
             return $this->createQueryBuilder('t')
                 ->join('t.person', 'p')
-                ->join('p.user', 'u')
                 ->andWhere('t.academicYear = :academic_year')
                 ->andWhere('p.internalCode = :internal_code')
                 ->setParameter('academic_year', $academicYear)
@@ -109,7 +106,6 @@ class TeacherRepository extends ServiceEntityRepository
     ) {
         return $this->createQueryBuilder('t')
             ->join('t.person', 'p')
-            ->join('p.user', 'u')
             ->where('t.id IN (:items)')
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('items', $items)

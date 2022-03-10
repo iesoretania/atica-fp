@@ -21,7 +21,7 @@ namespace App\Form\Type\Edu;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Group;
 use App\Entity\Edu\StudentEnrollment;
-use App\Entity\User;
+use App\Entity\Person;
 use App\Repository\Edu\GroupRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -71,9 +71,9 @@ class StudentEnrollmentType extends AbstractType
                 'expanded' => true,
                 'property_path' => 'person.gender',
                 'choices' => [
-                    'form.gender.neutral' => User::GENDER_NEUTRAL,
-                    'form.gender.male' => User::GENDER_MALE,
-                    'form.gender.female' => User::GENDER_FEMALE
+                    'form.gender.neutral' => Person::GENDER_NEUTRAL,
+                    'form.gender.male' => Person::GENDER_MALE,
+                    'form.gender.female' => Person::GENDER_FEMALE
                 ],
                 'required' => true
             ]);

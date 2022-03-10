@@ -20,7 +20,7 @@ namespace App\Controller\WPT;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
-use App\Entity\User;
+use App\Entity\Person;
 use App\Entity\WPT\TravelExpense;
 use App\Form\Type\WPT\TravelExpenseType;
 use App\Repository\Edu\AcademicYearRepository;
@@ -272,10 +272,11 @@ class TravelExpenseController extends AbstractController
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        /** @var User $user */
-        $user = $this->getUser();
+        /** @var Person $person */
+        /** @var Person $person */
+        $person = $this->getUser();
         if (false === $isManager) {
-            $teachers = [$WPTTeacherRepository->findOneByPersonAndAcademicYear($user->getPerson(), $academicYear)];
+            $teachers = [$WPTTeacherRepository->findOneByPersonAndAcademicYear($person, $academicYear)];
         } else {
             $teachers = $WPTTeacherRepository->findByAcademicYear($academicYear);
         }
@@ -325,7 +326,7 @@ class TravelExpenseController extends AbstractController
 
         $items = $request->request->get('items', []);
         if (count($items) === 0) {
-            return $this->redirectToRoute('workplace_training_visit_list');
+            return $this->redirectToRoute('workplace_training_travel_expense_detail_list');
         }
 
         $travelExpenses = $travelExpenseRepository->findAllInListById($items);

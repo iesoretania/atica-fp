@@ -16,7 +16,7 @@
                 {% set url = path('admin_user_form_edit', {'id': user.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <label><input type="checkbox" name="users[]" value="{{ user.id }}" {% if user.id == app.user.id %} disabled="disabled"{% else %} class="selectable"{% endif %}> <a href="{{ url }}">{{ user.person.lastName }}, {{ user.person.firstName }}</a></label>
+                        <label><input type="checkbox" name="users[]" value="{{ user.id }}" {% if user.id == app.user.id %} disabled="disabled"{% else %} class="selectable"{% endif %}> <a href="{{ url }}">{{ user.lastName }}, {{ user.firstName }}</a></label>
                         {%- if user.globalAdministrator %} <i class="fas fa-cogs"></i>{% endif -%}
                         {%- if user.forcePasswordChange %} <i class="fas fa-recycle"></i>{% endif -%}
                     </td>

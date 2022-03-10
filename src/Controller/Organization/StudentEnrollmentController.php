@@ -23,8 +23,6 @@ use App\Entity\Edu\StudentEnrollment;
 use App\Form\Type\Edu\StudentEnrollmentType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\StudentEnrollmentRepository;
-use App\Repository\MembershipRepository;
-use App\Repository\UserRepository;
 use App\Security\Edu\AcademicYearVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
@@ -116,13 +114,11 @@ class StudentEnrollmentController extends AbstractController
         $queryBuilder
             ->select('se')
             ->addSelect('p')
-            ->addSelect('u')
             ->addSelect('g')
             ->from(StudentEnrollment::class, 'se')
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName')
             ->innerJoin('se.person', 'p')
-            ->leftJoin('p.user', 'u')
             ->innerJoin('se.group', 'g')
             ->innerJoin('g.grade', 'gr')
             ->innerJoin('gr.training', 't');
@@ -130,11 +126,11 @@ class StudentEnrollmentController extends AbstractController
         $q = $request->get('q', null);
         if ($q) {
             $queryBuilder
-                ->andWhere('u.id = :q')
-                ->orWhere('u.loginUsername LIKE :tq')
+                ->andWhere('p.id = :q')
+                ->orWhere('p.loginUsername LIKE :tq')
                 ->orWhere('p.firstName LIKE :tq')
                 ->orWhere('p.lastName LIKE :tq')
-                ->orWhere('u.emailAddress LIKE :tq')
+                ->orWhere('p.emailAddress LIKE :tq')
                 ->orWhere('g.name LIKE :tq')
                 ->orWhere('p.uniqueIdentifier LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%')
@@ -175,8 +171,6 @@ class StudentEnrollmentController extends AbstractController
         StudentEnrollmentRepository $studentEnrollmentRepository,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        UserRepository $userRepository,
-        MembershipRepository $membershipRepository,
         AcademicYear $academicYear
     ) {
         $this->denyAccessUnlessGranted(
@@ -212,45 +206,6 @@ class StudentEnrollmentController extends AbstractController
                     'academicYear' => $academicYear->getId()
                 ]
             );
-        }
-
-        if ($request->get('confirm-create-membership', '') === 'ok') {
-            try {
-                $students = [];
-                foreach ($studentEnrollments as $studentEnrollment) {
-                    if (false === isset($students[$studentEnrollment->getPerson()->getId()])) {
-                        $user = $userRepository->findByPersonOrCreate($studentEnrollment->getPerson());
-                        $membershipRepository->addNewOrganizationMembership(
-                            $academicYear->getOrganization(),
-                            $user,
-                            $academicYear->getStartDate(),
-                            $academicYear->getEndDate()
-                        );
-                        $students[$studentEnrollment->getPerson()->getId()] = true;
-                    }
-                }
-                $em->flush();
-                $this->addFlash('success', $translator->trans('message.created', [], 'edu_student_enrollment'));
-            } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.create_error', [], 'edu_student_enrollment'));
-            }
-            return $this->redirectToRoute(
-                'organization_student_enrollment_list',
-                [
-                    'academicYear' => $academicYear->getId()
-                ]
-            );
-        }
-
-        if ($request->get('create-membership', null) === '') {
-            return $this->render('organization/student_enrollment/create_membership.html.twig', [
-                'menu_path' => 'organization_student_enrollment_list',
-                'breadcrumb' => [
-                    ['fixed' => $translator->trans('title.create_membership', [], 'edu_student_enrollment')]
-                ],
-                'title' => $translator->trans('title.create_membership', [], 'edu_student_enrollment'),
-                'items' => $studentEnrollments
-            ]);
         }
 
         return $this->render('organization/student_enrollment/delete.html.twig', [

@@ -3,10 +3,10 @@ security:
     providers:
         db_provider:
             entity:
-                class: App:User
+                class: App\Entity\Person
 
     encoders:
-        App\Entity\User:
+        App\Entity\Person:
             algorithm: bcrypt
 
     role-hierarchy:

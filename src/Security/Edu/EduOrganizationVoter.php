@@ -19,7 +19,7 @@
 namespace App\Security\Edu;
 
 use App\Entity\Organization;
-use App\Entity\User;
+use App\Entity\Person;
 use App\Repository\Edu\TeacherRepository;
 use App\Repository\Edu\TrainingRepository;
 use App\Security\CachedVoter;
@@ -85,10 +85,10 @@ class EduOrganizationVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -104,20 +104,20 @@ class EduOrganizationVoter extends CachedVoter
                 return
                     $this->trainingRepository->countAcademicYearAndDepartmentHead(
                         $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
+                        $user
                     ) > 0;
 
             case self::EDU_TEACHER:
                 return
                     $this->teacherRepository->findOneByAcademicYearAndPerson(
                         $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
+                        $user
                     ) !== null;
 
             case self::EDU_FINANCIAL_MANAGER:
                 $teacher = $this->teacherRepository->findOneByAcademicYearAndPerson(
                     $subject->getCurrentAcademicYear(),
-                    $user->getPerson());
+                    $user);
 
                 return
                     $teacher && $subject->getCurrentAcademicYear()->getFinancialManager()

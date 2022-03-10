@@ -19,7 +19,7 @@
 namespace App\Security\Edu;
 
 use App\Entity\Edu\Group;
-use App\Entity\User;
+use App\Entity\Person;
 use App\Repository\Edu\TeachingRepository;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
@@ -90,10 +90,10 @@ class GroupVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -109,7 +109,7 @@ class GroupVoter extends CachedVoter
         // 1) Jefe del departamento del ciclo formativo del grupo
         $training = $subject->getGrade()->getTraining();
         if (null !== $training->getDepartment() && $training->getDepartment()->getHead() &&
-            $training->getDepartment()->getHead()->getPerson() === $user->getPerson()
+            $training->getDepartment()->getHead()->getPerson() === $user
         ) {
             return true;
         }
@@ -119,7 +119,7 @@ class GroupVoter extends CachedVoter
         // tutores del grupo
         $tutors = $subject->getTutors();
         foreach ($tutors as $tutor) {
-            if ($tutor->getPerson()->getUser() === $user) {
+            if ($tutor->getPerson() === $user) {
                 $isGroupTutor = true;
                 break;
             }
@@ -128,7 +128,7 @@ class GroupVoter extends CachedVoter
         // profesor del grupo del acuerdo
         $isTeacher = $this->teachingRepository->countByGroupAndPerson(
             $subject,
-            $user->getPerson()
+            $user
         ) > 0;
 
         switch ($attribute) {

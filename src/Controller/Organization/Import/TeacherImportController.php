@@ -20,13 +20,11 @@ namespace App\Controller\Organization\Import;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
-use App\Entity\Membership;
 use App\Entity\Organization;
 use App\Entity\Person;
-use App\Entity\User;
 use App\Form\Model\TeacherImport;
 use App\Form\Type\Import\TeacherImportType;
-use App\Repository\MembershipRepository;
+use App\Repository\PersonRepository;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use App\Utils\CsvImporter;
@@ -44,9 +42,9 @@ class TeacherImportController extends AbstractController
      */
     public function indexAction(
         UserExtensionService $userExtensionService,
-        MembershipRepository $membershipRepository,
         TranslatorInterface $translator,
         UserPasswordEncoderInterface $passwordEncoder,
+        PersonRepository $personRepository,
         Request $request
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -66,10 +64,9 @@ class TeacherImportController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $stats = $this->importTeachersFromCsv(
                 $formData->getFile()->getPathname(),
-                $membershipRepository,
-                $organization,
                 $formData->getAcademicYear(),
                 $passwordEncoder,
+                $personRepository,
                 [
                     'generate_password' => $formData->getGeneratePassword(),
                     'external_check' => $formData->isExternalPassword()
@@ -96,7 +93,6 @@ class TeacherImportController extends AbstractController
 
     /**
      * @param string $file
-     * @param MembershipRepository $membershipRepository
      * @param Organization $organization
      * @param AcademicYear $academicYear
      * @param array $options
@@ -104,66 +100,50 @@ class TeacherImportController extends AbstractController
      */
     private function importTeachersFromCsv(
         $file,
-        MembershipRepository $membershipRepository,
-        Organization $organization,
         AcademicYear $academicYear,
         UserPasswordEncoderInterface $encoder,
-        $options = []
+        PersonRepository $personRepository,
+        array $options = []
     ) {
         $generatePassword = isset($options['generate_password']) && $options['generate_password'];
         $external = isset($options['external_check']) && $options['external_check'];
         $newUserCount = 0;
-        $newMemberships = 0;
         $existingUsers = 0;
-        $existingMemberships = 0;
 
         $em = $this->getDoctrine()->getManager();
 
         $importer = new CsvImporter($file, true);
 
-        $userCollection = [];
-        $newUserCollection = [];
-
-        $now = new \DateTime();
+        $personCollection = [];
+        $newPersonCollection = [];
 
         try {
             while ($data = $importer->get(100)) {
-                foreach ($data as $userData) {
-                    if (!isset($userData['Usuario IdEA'])) {
+                foreach ($data as $personData) {
+                    if (!isset($personData['Usuario IdEA'])) {
                         return null;
                     }
-                    $userName = $userData['Usuario IdEA'];
+                    $userName = $personData['Usuario IdEA'];
 
-                    $alreadyProcessed = isset($userCollection[$userName]);
+                    $alreadyProcessed = isset($personCollection[$userName]);
 
                     if ($alreadyProcessed) {
-                        $user = $userCollection[$userName];
-                        $person = $user->getPerson();
+                        $person = $personCollection[$userName];
                         $existingUsers++;
                     } else {
-                        $user = $em->getRepository(User::class)->findOneBy(['loginUsername' => $userName]);
-                        if (null === $user) {
-                            $user = new User();
-                            $person = $em->getRepository(Person::class)->findOneBy([
-                                   'uniqueIdentifier' => $userData['DNI/Pasaporte']
-                               ]);
+                        $person = $personRepository->findOneByUniqueIdentifier($personData['DNI/Pasaporte']);
 
-                            if (null === $person) {
-                                $person = new Person();
+                        if (null === $person) {
+                            $person = new Person();
 
-                                $fullName = explode(', ', $userData['Empleado/a']);
+                            $fullName = explode(', ', $personData['Empleado/a']);
 
-                                $person
-                                    ->setFirstName($fullName[1])
-                                    ->setLastName($fullName[0])
-                                    ->setGender(User::GENDER_NEUTRAL);
-                            }
                             $person
-                                ->setUniqueIdentifier($userData['DNI/Pasaporte'])
-                                ->setInternalCode($userData['Empleado/a'])
-                                ->setUser($user);
-
-                            $user
+                                ->setFirstName($fullName[1])
+                                ->setLastName($fullName[0])
+                                ->setGender(Person::GENDER_NEUTRAL)
+                                ->setUniqueIdentifier($personData['DNI/Pasaporte'])
+                                ->setInternalCode($personData['Empleado/a'])
                                 ->setLoginUsername($userName)
                                 ->setEnabled(true)
                                 ->setGlobalAdministrator(false)
@@ -171,59 +151,20 @@ class TeacherImportController extends AbstractController
                                 ->setExternalCheck($external);
 
                             if ($generatePassword) {
-                                $user
-                                    ->setPassword($encoder->encodePassword($user, $userData['Usuario IdEA']))
+                                $person
+                                    ->setPassword($encoder->encodePassword($person, $personData['Usuario IdEA']))
                                     ->setForcePasswordChange(true);
                             }
 
                             $em->persist($person);
-                            $em->persist($user);
-
-                            $userCollection[$userName] = $user;
-                            $newUserCollection[$userName] = $user;
-
+                            $newPersonCollection[$userName] = $person;
                             $newUserCount++;
-                        } else {
-                            $person = $user->getPerson();
-                            $existingUsers++;
                         }
-                    }
+                        else {
+                             $existingUsers++;
+                        }
 
-                    $validFrom = \DateTime::createFromFormat(
-                        'd/m/Y H:i:s',
-                        $userData['Fecha de toma de posesión'] . '00:00:00'
-                    );
-                    $validUntil = ($userData['Fecha de cese']) ?
-                        \DateTime::createFromFormat('d/m/Y H:i:s', $userData['Fecha de cese'] . '23:59:59') :
-                        null;
-
-                    if (false === $validFrom || (null !== $validUntil && $validUntil < $now)) {
-                        continue;
-                    }
-
-                    /** @var Membership $membership */
-                    $membership = $user->getId() ? $em->getRepository(Membership::class)->findOneBy([
-                                'organization' => $organization,
-                                'user' => $user,
-                                'validFrom' => $validFrom
-                            ]) : null;
-
-                    if (null === $membership) {
-                        $membership = new Membership();
-                        $membership
-                            ->setOrganization($organization)
-                            ->setUser($user)
-                            ->setValidFrom($validFrom)
-                            ->setValidUntil($validUntil);
-
-                        $em->persist($membership);
-
-                        $newMemberships++;
-                    } else {
-                        $membership
-                            ->setValidUntil($validUntil);
-
-                        $existingMemberships++;
+                        $personCollection[$userName] = $person;
                     }
 
                     $teacher = $person->getId() ? $em->getRepository(Teacher::class)->findOneBy([
@@ -243,9 +184,6 @@ class TeacherImportController extends AbstractController
             }
             $em->flush();
 
-            // por último, borrar pertenencias caducadas
-            $membershipRepository->deleteOldMemberships(new \DateTime());
-
             $em->flush();
         } catch (Exception $e) {
             return null;
@@ -253,10 +191,8 @@ class TeacherImportController extends AbstractController
 
         return [
             'new_user_count' => $newUserCount,
-            'new_membership_count' => $newMemberships,
             'existing_user_count' => $existingUsers,
-            'existing_membership_count' => $existingMemberships,
-            'user_collection' => $newUserCollection
+            'user_collection' => $newPersonCollection
         ];
     }
 }

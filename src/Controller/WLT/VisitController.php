@@ -19,6 +19,7 @@
 namespace App\Controller\WLT;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Person;
 use App\Entity\WLT\Visit;
 use App\Form\Type\WLT\VisitType;
 use App\Repository\Edu\AcademicYearRepository;
@@ -63,7 +64,8 @@ class VisitController extends AbstractController
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_CREATE_VISIT, $organization);
 
         $academicYear = $organization->getCurrentAcademicYear();
-        $person = $this->getUser()->getPerson();
+        /** @var Person $person */
+        $person = $this->getUser();
         $teacher = $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
         $visit = new Visit();
@@ -123,7 +125,8 @@ class VisitController extends AbstractController
         $teacher = null;
 
         if (false === $isManager) {
-            $person = $this->getUser()->getPerson();
+            /** @var Person $person */
+            $person = $this->getUser();
 
             if (!$isWltManager) {
                 // no es administrador ni coordinador de FP:
@@ -239,7 +242,8 @@ class VisitController extends AbstractController
         $groups = [];
         $projects = [];
 
-        $person = $this->getUser()->getPerson();
+        /** @var Person $person */
+        $person = $this->getUser();
         if (false === $isWltManager && false === $isManager && false === $isDepartmentHead) {
             // no es administrador ni coordinador de FP ni jefe de familia profesional:
             // puede ser tutor de grupo  -> ver sólo visitas de los
@@ -266,8 +270,10 @@ class VisitController extends AbstractController
         }
 
         // ver siempre las propias
+        /** @var Person $user */
+        $user = $this->getUser();
         $teacher =
-            $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $this->getUser()->getPerson());
+            $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $user);
 
         if ($groups) {
             $queryBuilder

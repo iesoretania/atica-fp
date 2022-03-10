@@ -266,7 +266,7 @@ class ReportController extends AbstractController
         if (!$isManager) {
             $queryBuilder
                 ->andWhere('p.manager = :manager OR (d.head IS NOT NULL AND h.person = :manager)')
-                ->setParameter('manager', $this->getUser()->getPerson());
+                ->setParameter('manager', $this->getUser());
         }
 
         $queryBuilder

@@ -19,8 +19,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Person;
-use App\Entity\User;
-use App\Form\Type\UserType;
+use App\Form\Type\PersonType;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
@@ -48,19 +47,16 @@ class UserController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         UserPasswordEncoderInterface $passwordEncoder,
-        User $localUser = null
+        Person $localUser = null
     ) {
         $em = $this->getDoctrine()->getManager();
 
         if (null === $localUser) {
             $localPerson = new Person();
-            $localUser = new User();
-            $localPerson->setUser($localUser);
             $em->persist($localPerson);
-            $em->persist($localUser);
         }
 
-        $form = $this->createForm(UserType::class, $localUser, [
+        $form = $this->createForm(PersonType::class, $localUser, [
             'own' => $this->getUser()->getId() === $localUser->getId(),
             'admin' => $this->getUser()->isGlobalAdministrator(),
             'new' => $localUser->getId() === null
@@ -107,20 +103,19 @@ class UserController extends AbstractController
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
 
         $queryBuilder
-            ->select('u')
-            ->from('App:User', 'u')
+            ->select('p')
+            ->from('App:Person', 'p')
             ->orderBy('p.lastName')
-            ->addOrderBy('p.firstName')
-            ->innerJoin('u.person', 'p');
+            ->addOrderBy('p.firstName');
 
         $q = $request->get('q', null);
         if ($q) {
             $queryBuilder
-                ->where('u.id = :q')
-                ->orWhere('u.loginUsername LIKE :tq')
+                ->where('p.id = :q')
+                ->orWhere('p.loginUsername LIKE :tq')
                 ->orWhere('p.firstName LIKE :tq')
                 ->orWhere('p.lastName LIKE :tq')
-                ->orWhere('u.emailAddress LIKE :tq')
+                ->orWhere('p.emailAddress LIKE :tq')
                 ->setParameter('tq', '%' . $q . '%')
                 ->setParameter('q', $q);
         }
@@ -161,11 +156,10 @@ class UserController extends AbstractController
         }
 
         $users = $queryBuilder
-            ->select('u')
-            ->from('App:User', 'u')
-            ->join('u.person', 'p')
-            ->where('u.id IN (:items)')
-            ->andWhere('u.id != :current')
+            ->select('p')
+            ->from('App:Person', 'p')
+            ->where('p.id IN (:items)')
+            ->andWhere('p.id != :current')
             ->setParameter('items', $items)
             ->setParameter('current', $this->getUser()->getId())
             ->orderBy('p.firstName')
@@ -175,17 +169,9 @@ class UserController extends AbstractController
 
         if ($request->get('confirm', '') === 'ok') {
             try {
-                /* Borrar primero las pertenencias */
                 $em->createQueryBuilder()
-                    ->delete('App:Membership', 'm')
-                    ->where('m.user IN (:items)')
-                    ->setParameter('items', $items)
-                    ->getQuery()
-                    ->execute();
-
-                $em->createQueryBuilder()
-                    ->delete('App:User', 'u')
-                    ->where('u IN (:items)')
+                    ->delete('App:Person', 'p')
+                    ->where('p IN (:items)')
                     ->setParameter('items', $items)
                     ->getQuery()
                     ->execute();
@@ -207,12 +193,12 @@ class UserController extends AbstractController
     }
 
     /**
-     * @param User $user
+     * @param Person $user
      * @param FormInterface $form
      * @return string
      */
     private function processPasswordChange(
-        User $user,
+        Person $user,
         TranslatorInterface $translator,
         FormInterface $form,
         UserPasswordEncoderInterface $passwordEncoder

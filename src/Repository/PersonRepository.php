@@ -18,30 +18,18 @@
 
 namespace App\Repository;
 
-use App\Entity\Organization;
 use App\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-class PersonRepository extends ServiceEntityRepository
+class PersonRepository extends ServiceEntityRepository implements UserLoaderInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Person::class);
-    }
-
-    public function findAllByOrganizationSorted(Organization $organization)
-    {
-        return $this->createQueryBuilder('p')
-            ->join('App:User', 'u', 'WITH', 'u.person = p')
-            ->join('u.memberships', 'm')
-            ->join('m.organization', 'o')
-            ->orderBy('p.lastName')
-            ->addOrderBy('p.firstName')
-            ->andWhere('o.id = :organization')
-            ->setParameter('organization', $organization)
-            ->getQuery()
-            ->getResult();
     }
 
     public function findByPartialNameOrUniqueIdentifier($id, $pageLimit = 0)
@@ -63,14 +51,63 @@ class PersonRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByUniqueIdentifier($id)
+    public function findOneByUniqueIdentifier($id)
     {
         return $this->createQueryBuilder('p')
             ->where('p.uniqueIdentifier = :q')
             ->setParameter('q', $id)
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName')
+            ->setMaxResults(1)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Loads the user for the given username.
+     *
+     * This method must return null if the user is not found.
+     *
+     * @param string $username The username
+     *
+     * @return UserInterface|null
+     */
+    public function loadUserByUsername($username)
+    {
+        if (!$username) {
+            return null;
+        }
+        try {
+            return $this->getEntityManager()
+                ->createQuery('SELECT p FROM App:Person p
+                           WHERE p.loginUsername = :username
+                           OR p.emailAddress = :username')
+                ->setParameters([
+                                    'username' => $username
+                                ])
+                ->setMaxResults(1)
+                ->getOneOrNullResult();
+        }
+        catch(NonUniqueResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param UserInterface $user
+     * @return null|UserInterface
+     */
+    public function refreshUser(UserInterface $user)
+    {
+        return $this->loadUserByUsername($user->getUsername());
+    }
+
+    /**
+     * @param $class
+     * @return bool
+     */
+    public function supportsClass($class)
+    {
+        return $class === Person::class;
     }
 }

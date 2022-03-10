@@ -20,6 +20,7 @@ namespace App\Controller\WPT;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
+use App\Entity\Person;
 use App\Entity\WPT\Visit;
 use App\Form\Type\WPT\VisitType;
 use App\Repository\Edu\AcademicYearRepository;
@@ -473,7 +474,8 @@ class VisitController extends AbstractController
         $teacher = null;
 
         if (false === $isManager) {
-            $person = $this->getUser()->getPerson();
+            /** @var Person $person */
+            $person = $this->getUser();
 
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento, tutor de grupo o profesor -> ver sólo sus grupos

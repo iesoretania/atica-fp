@@ -20,7 +20,6 @@ namespace App\Controller\API;
 
 use App\Entity\Person;
 use App\Form\Type\NewPersonType;
-use App\Repository\UserRepository;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,8 +36,7 @@ class PersonAPIController extends AbstractController
     public function apiNewPersonAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        UserPasswordEncoderInterface $passwordEncoder,
-        UserRepository $userRepository
+        UserPasswordEncoderInterface $passwordEncoder
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
@@ -56,8 +54,10 @@ class PersonAPIController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $emailAddress = $form->get('userEmailAddress')->getData();
-            $userRepository->createUserForPersonAndEmail($newPerson, $emailAddress);
-
+            $uid = $form->get('uniqueIdentifier')->getData();
+            $newPerson->setEmailAddress($emailAddress);
+            $newPerson->setLoginUsername($uid);
+            $newPerson->setPassword($passwordEncoder->encodePassword($newPerson, $uid));
             $em->persist($newPerson);
             $em->flush();
 

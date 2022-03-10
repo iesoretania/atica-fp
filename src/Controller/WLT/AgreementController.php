@@ -18,13 +18,13 @@
 
 namespace App\Controller\WLT;
 
+use App\Entity\Person;
 use App\Entity\WLT\Agreement;
 use App\Entity\WLT\AgreementActivityRealization;
 use App\Entity\WLT\Project;
 use App\Form\Model\WLT\CalendarCopy;
 use App\Form\Type\WLT\AgreementType;
 use App\Form\Type\WLT\CalendarCopyType;
-use App\Repository\MembershipRepository;
 use App\Repository\WLT\AgreementActivityRealizationRepository;
 use App\Repository\WLT\AgreementRepository;
 use App\Security\WLT\AgreementVoter;
@@ -53,7 +53,6 @@ class AgreementController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        MembershipRepository $membershipRepository,
         AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
         Project $project
     ) {
@@ -70,7 +69,6 @@ class AgreementController extends AbstractController
             $request,
             $userExtensionService,
             $translator,
-            $membershipRepository,
             $agreementActivityRealizationRepository,
             $agreement
         );
@@ -83,7 +81,6 @@ class AgreementController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        MembershipRepository $membershipRepository,
         AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
         Agreement $agreement
     ) {
@@ -113,15 +110,6 @@ class AgreementController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                // dar acceso al tutor laboral a la organización si ha cambiado
-                if ($agreement->getWorkTutor() !== $oldWorkTutor && $agreement->getWorkTutor()->getUser()) {
-                    $membershipRepository->addNewOrganizationMembership(
-                        $academicYear->getOrganization(),
-                        $agreement->getWorkTutor()->getUser(),
-                        $academicYear->getStartDate(),
-                        $academicYear->getEndDate()
-                    );
-                }
                 // actualizar concreciones del convenio
                 $currentActivityRealizations = $form->get('activityRealizations')->getData();
 
@@ -256,7 +244,8 @@ class AgreementController extends AbstractController
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        $person = $this->getUser()->getPerson();
+        /** @var Person $person */
+        $person = $this->getUser();
 
         $projects = $agreementRepository->setQueryBuilderFilterByOrganizationManagerPersonProjectAndReturnProjects(
             $queryBuilder,

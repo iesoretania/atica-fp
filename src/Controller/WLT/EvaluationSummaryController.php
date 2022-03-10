@@ -20,6 +20,7 @@ namespace App\Controller\WLT;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\StudentEnrollment;
+use App\Entity\Person;
 use App\Entity\WLT\Agreement;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\SubjectRepository;
@@ -102,7 +103,8 @@ class EvaluationSummaryController extends AbstractController
         $isWorkTutor = $this->isGranted(WLTOrganizationVoter::WLT_WORK_TUTOR, $organization);
 
         if (false === $isManager && false === $isWltManager) {
-            $person = $this->getUser()->getPerson();
+            /** @var Person $person */
+            $person = $this->getUser();
 
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento, tutor de grupo o profesor
@@ -179,9 +181,11 @@ class EvaluationSummaryController extends AbstractController
         $isGroupTutor = $this->isGranted(GroupVoter::MANAGE, $studentEnrollment->getGroup());
         $isWltManager = $this->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
 
+        /** @var Person $user */
+        $user = $this->getUser();
         $subjects = $subjectRepository->findByGroupAndPerson(
             $studentEnrollment->getGroup(),
-            $isGroupTutor || $isWltManager ? null : $this->getUser()->getPerson()
+            $isGroupTutor || $isWltManager ? null : $user
         );
 
         $report = [];

@@ -19,7 +19,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\Person;
-use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -41,22 +40,14 @@ class LoadInitialUserData extends Fixture
         $person
             ->setFirstName('Admin')
             ->setLastName('Admin')
-            ->setGender(User::GENDER_NEUTRAL);
-
-        $manager->persist($person);
-
-        $userAdmin = new User();
-        $userAdmin
+            ->setGender(Person::GENDER_NEUTRAL)
             ->setLoginUsername('admin')
             ->setEnabled(true)
             ->setGlobalAdministrator(true)
-            ->setPassword($this->passwordEncoder->encodePassword($userAdmin, 'admin'))
+            ->setPassword($this->passwordEncoder->encodePassword($person, 'admin'))
             ->setForcePasswordChange(true);
 
-        $person
-            ->setUser($userAdmin);
-
-        $manager->persist($userAdmin);
+        $manager->persist($person);
 
         $manager->flush();
     }

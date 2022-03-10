@@ -22,14 +22,13 @@ use App\Entity\AnsweredSurvey;
 use App\Entity\AnsweredSurveyQuestion;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
+use App\Entity\Person;
 use App\Entity\WLT\Agreement;
 use App\Entity\WLT\EducationalTutorAnsweredSurvey;
-use App\Entity\WLT\ManagerAnsweredSurvey;
 use App\Entity\WLT\Project;
 use App\Form\Type\AnsweredSurveyType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\WLT\EducationalTutorAnsweredSurveyRepository;
-use App\Repository\WLT\ManagerAnsweredSurveyRepository;
 use App\Repository\WLT\ProjectRepository;
 use App\Repository\WLT\WLTGroupRepository;
 use App\Security\OrganizationVoter;
@@ -358,7 +357,8 @@ class SurveyController extends AbstractController
         $groups = [];
         $projects = [];
 
-        $person = $this->getUser()->getPerson();
+        /** @var Person $person */
+        $person = $this->getUser();
         if (false === $isWltManager && false === $isManager) {
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento o tutor de grupo  -> ver los acuerdos de los
@@ -589,7 +589,8 @@ class SurveyController extends AbstractController
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
         $isWltManager = $this->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
 
-        $person = $this->getUser()->getPerson();
+        /** @var Person $person */
+        $person = $this->getUser();
         if (!$isManager && $isWltManager) {
             $projects = $projectRepository->findByManager($person);
             $queryBuilder

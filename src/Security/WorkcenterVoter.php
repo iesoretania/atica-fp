@@ -18,7 +18,7 @@
 
 namespace App\Security;
 
-use App\Entity\User;
+use App\Entity\Person;
 use App\Entity\Workcenter;
 use App\Repository\Edu\TeacherRepository;
 use App\Repository\Edu\TrainingRepository;
@@ -90,10 +90,10 @@ class WorkcenterVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -107,14 +107,14 @@ class WorkcenterVoter extends CachedVoter
             // Si es permiso de acceso, comprobar que es un profesor de ese curso académico
             case self::ACCESS:
                 return null !== $this->teacherRepository
-                        ->findOneByPersonAndAcademicYear($user->getPerson(), $subject->getAcademicYear());
+                        ->findOneByPersonAndAcademicYear($user, $organization->getAcademicYear());
 
             // Si es jefe de algún departamento de FP o el coordinador de FP dual, permitir gestionar
             case self::MANAGE:
                 // 1) Jefe de departamento
                 if ($this->trainingRepository->countAcademicYearAndDepartmentHead(
-                    $subject->getAcademicYear(),
-                    $user->getPerson()
+                    $organization->getAcademicYear(),
+                    $user
                 ) > 0) {
                     return true;
                 }

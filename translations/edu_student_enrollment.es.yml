@@ -19,8 +19,6 @@ form.external_check.no: Sólo se comprobará en local
 form.save: Guardar cambios
 form.delete: Eliminar las matrículas seleccionadas
 form.delete_confirm: Confirmar borrado
-form.create_membership: Permitir acceder al alumnado seleccionado
-form.create_membership_confirm: Confirmar concesión de acceso
 form.back: Volver
 
 table.new: Importar estudiantes
@@ -30,18 +28,8 @@ prompt.delete_confirm: |
 
   Esta operación no se puede deshacer.
 
-prompt.create_membership_confirm: |
-  ¿Está seguro de que desea permitir que estos estudiantes accedan al centro educativo? Podrán acceder durante todo el curso académico.
-
-  ATENCIÓN: Este proceso puede llevar mucho tiempo debido a la creación masiva de contraseñas.
-
-prompt.create_membership_info: |
-  Si no tenían usuario previo, se les creará uno con su DNI o, si carecen de él, NIE. La contraseña por defecto será de nuevo el usuario.
-  En el caso de que tuvieran usuario previo, se les mantendrá tanto el nombre de usuario como la contraseña.
-
 title.edit: Datos de la matrícula
 title.delete: Eliminar matrícula
-title.create_membership: Permitir acceso
 
 title.list: Listado de matrículas
 
@@ -57,11 +45,8 @@ header.unique_identifier: Identificador
 header.group: Grupo
 header.user: Usuario
 header.login_username: Nombre de usuario
-header.already_created: ¿Tiene usuario previo?
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Matrículas eliminadas del centro.
 message.delete_error: Ha ocurrido un error al eliminar las matrículas del centro.
-message.created: Se han permitido al usuario seleccionado acceder al centro.
-message.create_error: Ha ocurrido un error al dar acceso a los estudiantes.

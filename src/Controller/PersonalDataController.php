@@ -18,8 +18,8 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Form\Type\UserType;
+use App\Entity\Person;
+use App\Form\Type\PersonType;
 use App\Service\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -41,10 +41,10 @@ class PersonalDataController extends AbstractController
         UserPasswordEncoderInterface $passwordEncoder,
         MailerService $mailerService
     ) {
-        /** @var User $user */
+        /** @var Person $user */
         $user = $this->getUser();
 
-        $form = $this->createForm(UserType::class, $user, [
+        $form = $this->createForm(PersonType::class, $user, [
             'own' => true,
             'admin' => $user->isGlobalAdministrator()
         ]);
@@ -93,11 +93,11 @@ class PersonalDataController extends AbstractController
     /**
      * Requests an email address change confirmation
      *
-     * @param User $user
+     * @param Person $user
      * @param string $oldEmail
      */
     private function requestEmailAddressChange(
-        User $user,
+        Person $user,
         $oldEmail,
         MailerService $mailerService,
         TranslatorInterface $translator
@@ -133,7 +133,7 @@ class PersonalDataController extends AbstractController
                 [
                     'id' => 'form.change_email.email.body',
                     'parameters' => [
-                        '%name%' => $user->getPerson()->getFirstName(),
+                        '%name%' => $user->getFirstName(),
                         '%link%' => $this->generateUrl(
                             'email_reset_do',
                             ['userId' => $user->getId(), 'token' => $token],
@@ -159,13 +159,13 @@ class PersonalDataController extends AbstractController
     /**
      * Checks if a password/email change has been requested and process it
      * @param FormInterface $form
-     * @param User $user
+     * @param Person $user
      * @param string $oldEmail
      * @return bool
      */
     private function processPasswordAndEmailChanges(
         FormInterface $form,
-        User $user,
+        Person $user,
         $oldEmail,
         MailerService $mailerService,
         TranslatorInterface $translator,

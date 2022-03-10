@@ -14,14 +14,13 @@
                     <tr>
                         <th class="col-sm-4">{{ 'header.name'|trans }}</label></th>
                         <th class="col-sm-4">{{ 'header.username'|trans }}</th>
-                        <th class="col-sm-4">{{ 'header.profiles'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for teacher in teachers %}
                         <tr>
                             <td>{{ teacher.person.firstName }} {{ teacher.person.lastName }}</td>
-                            <td>{{ teacher.person.user.userNameAndEmailAddress }}</td>
+                            <td>{{ teacher.person.userNameAndEmailAddress }}</td>
                             <td></td>
                         </tr>
                     {% endfor %}

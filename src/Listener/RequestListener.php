@@ -18,7 +18,7 @@
 
 namespace App\Listener;
 
-use App\Entity\User;
+use App\Entity\Person;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -65,7 +65,7 @@ class RequestListener implements EventSubscriberInterface
         if (
             $event->isMasterRequest() &&
             $this->token->getToken() &&
-            $this->token->getToken()->getUser() instanceof User &&
+            $this->token->getToken()->getUser() instanceof Person &&
             $this->token->getToken()->getUser()->isForcePasswordChange()
         ) {
             $route = $event->getRequest()->get('_route');

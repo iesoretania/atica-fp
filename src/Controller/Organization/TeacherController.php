@@ -46,7 +46,7 @@ class TeacherController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        if (null === $teacher->getPerson()->getUser()) {
+        if (null === $teacher->getPerson()) {
             return $this->redirectToRoute(
                 'organization_teacher_list',
                 [
@@ -112,21 +112,19 @@ class TeacherController extends AbstractController
         $queryBuilder
             ->select('t')
             ->addSelect('p')
-            ->addSelect('u')
             ->from('App:Edu\Teacher', 't')
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName')
-            ->innerJoin('t.person', 'p')
-            ->innerJoin('p.user', 'u');
+            ->innerJoin('t.person', 'p');
 
         $q = $request->get('q');
         if ($q) {
             $queryBuilder
-                ->andWhere('u.id = :q')
-                ->orWhere('u.loginUsername LIKE :tq')
+                ->andWhere('p.id = :q')
+                ->orWhere('p.loginUsername LIKE :tq')
                 ->orWhere('p.firstName LIKE :tq')
                 ->orWhere('p.lastName LIKE :tq')
-                ->orWhere('u.emailAddress LIKE :tq')
+                ->orWhere('p.emailAddress LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%')
                 ->setParameter('q', $q);
         }

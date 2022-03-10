@@ -18,8 +18,8 @@
 
 namespace App\Security\WLT;
 
+use App\Entity\Person;
 use App\Entity\Survey;
-use App\Entity\User;
 use App\Entity\WLT\Agreement;
 use App\Security\CachedVoter;
 use App\Security\Edu\GroupVoter;
@@ -99,10 +99,10 @@ class AgreementVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -119,7 +119,7 @@ class AgreementVoter extends CachedVoter
             return true;
         }
 
-        $person = $user->getPerson();
+        $person = $user;
 
         $isDepartmentHead = false;
         $isGroupTutor = false;
@@ -134,7 +134,7 @@ class AgreementVoter extends CachedVoter
         }
 
         // Tutor laboral y de seguimiento
-        $isWorkTutor = $subject->getWorkTutor() && $user === $subject->getWorkTutor()->getUser();
+        $isWorkTutor = $user === $subject->getWorkTutor();
         $isEducationalTutor =
             $subject->getEducationalTutor() && $subject->getEducationalTutor()->getPerson() === $person;
 
@@ -153,14 +153,14 @@ class AgreementVoter extends CachedVoter
             // Tutor del grupo del acuerdo
             $tutors = $subject->getStudentEnrollment()->getGroup()->getTutors();
             foreach ($tutors as $tutor) {
-                if ($tutor->getPerson()->getUser() === $user) {
+                if ($tutor->getPerson() === $user) {
                     $isGroupTutor = true;
                     break;
                 }
             }
 
             // Estudiante del acuerdo
-            $isStudent = $user === $subject->getStudentEnrollment()->getPerson()->getUser();
+            $isStudent = $user === $subject->getStudentEnrollment()->getPerson();
 
             // Docente del grupo del acuerdo
             $isTeacher = $this->decisionManager->decide(

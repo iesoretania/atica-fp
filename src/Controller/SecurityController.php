@@ -19,12 +19,12 @@
 namespace App\Controller;
 
 use App\Entity\Organization;
-use App\Entity\User;
+use App\Entity\Person;
 use App\Form\Type\ForceNewPasswordType;
 use App\Form\Type\NewPasswordType;
 use App\Form\Type\PasswordResetType;
 use App\Repository\OrganizationRepository;
-use App\Repository\UserRepository;
+use App\Repository\PersonRepository;
 use App\Service\MailerService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -76,7 +76,7 @@ class SecurityController extends AbstractController
         MailerService $mailerService,
         Session $session,
         TranslatorInterface $translator,
-        UserRepository $userRepository
+        PersonRepository $personRepository
     ) {
 
         $data = [
@@ -93,7 +93,7 @@ class SecurityController extends AbstractController
 
         // ¿se ha enviado una dirección?
         if ($form->isSubmitted() && $form->isValid()) {
-            $error = $this->passwordResetRequest($email, $mailerService, $translator, $userRepository);
+            $error = $this->passwordResetRequest($email, $mailerService, $translator, $personRepository);
 
             if (!is_string($error)) {
                 return $error;
@@ -115,15 +115,15 @@ class SecurityController extends AbstractController
      */
     public function emailResetAction(
         Request $request,
-        UserRepository $userRepository,
+        PersonRepository $personRepositoryRepository,
         TranslatorInterface $translator,
         $userId,
         $token
     ) {
         /**
-         * @var User
+         * @var Person
          */
-        $user = $userRepository->findOneBy([
+        $user = $personRepositoryRepository->findOneBy([
             'id' => $userId,
             'token' => $token
         ]);
@@ -174,7 +174,7 @@ class SecurityController extends AbstractController
         TranslatorInterface $translator,
         Session $session
     ) {
-        /** @var User $user */
+        /** @var Person $user */
         $user = $this->getUser();
 
         // si no hay usuario activo, volver
@@ -242,16 +242,16 @@ class SecurityController extends AbstractController
      */
     public function passwordResetAction(
         Request $request,
-        UserRepository $userRepository,
+        PersonRepository $personRepository,
         UserPasswordEncoderInterface $passwordEncoder,
         TranslatorInterface $translator,
         $userId,
         $token
     ) {
         /**
-         * @var User
+         * @var Person
          */
-        $user = $userRepository->findOneBy([
+        $user = $personRepository->findOneBy([
             'id' => $userId,
             'token' => $token,
             'tokenType' => 'password'
@@ -318,14 +318,16 @@ class SecurityController extends AbstractController
 
         $data = ['organization' => $this->getUser()->getDefaultOrganization()];
 
-        $count = $organizationRepository->countOrganizationsByUser($this->getUser(), new \DateTime());
+        /** @var Person $user */
+        $user = $this->getUser();
+        $count = $organizationRepository->countOrganizationsByPerson($user);
 
         $form = $this->createFormBuilder($data)
             ->add('organization', EntityType::class, [
                 'expanded' => $count < 5,
                 'class' => Organization::class,
-                'query_builder' => function (OrganizationRepository $er) {
-                    return $er->getMembershipByUserQueryBuilder($this->getUser(), new \DateTime());
+                'query_builder' => function (OrganizationRepository $er) use ($user) {
+                    return $er->getMembershipByPersonQueryBuilder($user);
                 },
                 'required' => true
             ])
@@ -361,11 +363,11 @@ class SecurityController extends AbstractController
         $email,
         MailerService $mailerService,
         TranslatorInterface $translator,
-        UserRepository $userRepository
+        PersonRepository $personRepository
     ) {
-        /** @var User $user */
+        /** @var Person $user */
         // comprobar que está asociada a un usuario
-        $user = $userRepository->findOneBy(['emailAddress' => $email]);
+        $user = $personRepository->findOneBy(['emailAddress' => $email]);
 
         $error = '';
 
@@ -402,7 +404,7 @@ class SecurityController extends AbstractController
                         [
                             'id' => 'form.reset.email.body',
                             'parameters' => [
-                                '%name%' => $user->getPerson()->getFirstName(),
+                                '%name%' => $user->getFirstName(),
                                 '%link%' => $this->generateUrl(
                                     'login_password_reset_do',
                                     ['userId' => $user->getId(), 'token' => $token],

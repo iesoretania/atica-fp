@@ -18,7 +18,7 @@
 
 namespace App\Security\WPT;
 
-use App\Entity\User;
+use App\Entity\Person;
 use App\Entity\WPT\Shift;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
@@ -97,10 +97,10 @@ class ShiftVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -123,7 +123,7 @@ class ShiftVoter extends CachedVoter
 
         // El jefe de departamento de la familia profesional de proyecto también puede
         $isDepartmentHead = $subject->getGrade()->getTraining()->getDepartment()->getHead() &&
-            $subject->getGrade()->getTraining()->getDepartment()->getHead()->getPerson() === $user->getPerson();
+            $subject->getGrade()->getTraining()->getDepartment()->getHead()->getPerson() === $user;
 
         switch ($attribute) {
             case self::MANAGE:
@@ -145,7 +145,7 @@ class ShiftVoter extends CachedVoter
                 }
                 // si es el responsable de seguimiento
                 foreach ($subject->getAgreements() as $agreement) {
-                    if ($agreement->getEducationalTutor()->getPerson() === $user->getPerson()
+                    if ($agreement->getEducationalTutor()->getPerson() === $user
                     ) {
                         return true;
                     }

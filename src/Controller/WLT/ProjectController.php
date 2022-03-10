@@ -19,6 +19,7 @@
 namespace App\Controller\WLT;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Person;
 use App\Entity\WLT\Project;
 use App\Form\Type\WLT\ProjectStudentEnrollmentType;
 use App\Form\Type\WLT\ProjectType;
@@ -96,7 +97,7 @@ class ProjectController extends AbstractController
         if (!$isManager) {
             $queryBuilder
                 ->andWhere('p.manager = :manager OR (d.head IS NOT NULL AND h.person = :manager)')
-                ->setParameter('manager', $this->getUser()->getPerson());
+                ->setParameter('manager', $this->getUser());
         }
 
         $queryBuilder
@@ -143,8 +144,10 @@ class ProjectController extends AbstractController
             ->setOrganization($organization);
 
         if (!$isManager) {
+            /** @var Person $manager */
+            $manager = $this->getUser();
             $project
-                ->setManager($this->getUser()->getPerson());
+                ->setManager($manager);
         }
 
         $this->getDoctrine()->getManager()->persist($project);

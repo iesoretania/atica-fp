@@ -30,7 +30,6 @@ table.activities: Actividades
 
 header.name: Nombre
 header.department: Familia profesional
-header.work_linked_training: DUAL
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

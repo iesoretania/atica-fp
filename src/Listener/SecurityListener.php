@@ -18,7 +18,7 @@
 
 namespace App\Listener;
 
-use App\Entity\User;
+use App\Entity\Person;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -39,7 +39,7 @@ class SecurityListener implements EventSubscriberInterface
 
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
     {
-        /** @var User $user */
+        /** @var Person $user */
         $user = $event->getAuthenticationToken()->getUser();
 
         $em = $this->doctrine->getManager();
@@ -50,7 +50,7 @@ class SecurityListener implements EventSubscriberInterface
         // comprobar si es administrador global y, en ese caso, devolver todas las organizaciones
         if ($user->isGlobalAdministrator()) {
             $organizationsCount = $em->getRepository('App:Organization')
-                ->countOrganizationsByUser($user);
+                ->countOrganizationsByPerson($user);
 
             if ($organizationsCount > 1) {
                 $this->session->set(
@@ -66,15 +66,14 @@ class SecurityListener implements EventSubscriberInterface
         }
 
         // no es administrador global, consultar las pertenencias activas
-        $date = new \DateTime;
         $organizationsCount = $em->getRepository('App:Organization')
-            ->countOrganizationsByUser($user, $date);
+            ->countOrganizationsByPerson($user);
 
         switch ($organizationsCount) {
             case 0:
                 throw new CustomUserMessageAuthenticationException('form.login.error.no_membership');
             case 1:
-                $organization = $em->getRepository('App:Organization')->findFirstByUserOrNull($user, $date);
+                $organization = $em->getRepository('App:Organization')->findFirstByUserOrNull($user);
                 $this->session->set('organization_id', $organization->getId());
                 break;
             default:

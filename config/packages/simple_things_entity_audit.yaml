@@ -3,7 +3,6 @@ simple_things_entity_audit:
         - App\Entity\Company
         - App\Entity\Person
         - App\Entity\Role
-        - App\Entity\User
         - App\Entity\Workcenter
         - App\Entity\Edu\AcademicYear
         - App\Entity\WLT\ActivityRealizationGrade
@@ -15,7 +14,6 @@ simple_things_entity_audit:
         - App\Entity\WLT\WorkDay
         - App\Entity\WPT\Activity
         - App\Entity\WPT\Agreement
-        #- App\Entity\WPT\Report
         - App\Entity\WPT\Shift
         - App\Entity\WPT\WorkDay
         - App\Entity\Survey

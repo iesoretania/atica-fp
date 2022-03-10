@@ -17,7 +17,6 @@
                     <td>
                         <label><input type="checkbox" name="users[]" value="{{ teacher.id }}" class="selectable"> <a href="{{ url }}">{{ person.lastName }}, {{ teacher.person.firstName }}</a></label>
                     </td>
-                    {% set user = person.user %}
                     <td>
                         {% for teaching in teacher.teachings %}{{ teaching.subject.name }} ({{ teaching.group }}){% if not loop.last %}, {% endif %}{% endfor %}
                     </td>

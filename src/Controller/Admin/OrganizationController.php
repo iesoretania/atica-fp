@@ -19,7 +19,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Edu\AcademicYear;
-use App\Entity\Membership;
 use App\Entity\Organization;
 use App\Form\Type\OrganizationType;
 use App\Repository\OrganizationRepository;
@@ -142,7 +141,7 @@ class OrganizationController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator)
     {
-        list($redirect, $organizations) = $this->processOperations($request, $userExtensionService, $translator);
+        list($redirect, $organizations) = $this->processOperations($request, $translator, $userExtensionService);
 
         if ($redirect) {
             return $this->redirectToRoute('admin_organization_list');
@@ -164,14 +163,6 @@ class OrganizationController extends AbstractController
     private function deleteOrganizations($organizations)
     {
         $em = $this->getDoctrine()->getManager();
-
-        /* Borrar primero las pertenencias */
-        $em->createQueryBuilder()
-            ->delete(Membership::class, 'm')
-            ->where('m.organization IN (:items)')
-            ->setParameter('items', $organizations)
-            ->getQuery()
-            ->execute();
 
         /* Borrar los cursos académicos */
         $em->createQueryBuilder()
@@ -202,7 +193,7 @@ class OrganizationController extends AbstractController
     /**
      * @param Request $request
      * @param $organizations
-     * @param \Doctrine\Common\Persistence\ObjectManager $em
+     * @param ObjectManager $em
      * @return bool
      */
     private function processRemoveOrganizations(Request $request, TranslatorInterface $translator, $organizations, $em)
@@ -242,8 +233,11 @@ class OrganizationController extends AbstractController
      * @param Request $request
      * @return array
      */
-    private function processOperations(Request $request, UserExtensionService $userExtensionService, TranslatorInterface $translator)
-    {
+    private function processOperations(
+        Request $request,
+        TranslatorInterface $translator,
+        UserExtensionService $userExtensionService
+    ) {
         $em = $this->getDoctrine()->getManager();
 
         $redirect = false;

@@ -18,10 +18,10 @@
 
 namespace App\Security;
 
-use App\Entity\Membership;
 use App\Entity\Organization;
+use App\Entity\Person;
 use App\Entity\Role;
-use App\Entity\User;
+use App\Repository\OrganizationRepository;
 use App\Repository\RoleRepository;
 use App\Security\Edu\EduOrganizationVoter;
 use App\Security\WLT\WLTOrganizationVoter;
@@ -39,15 +39,21 @@ class OrganizationVoter extends CachedVoter
 
     private $decisionManager;
     private $roleRepository;
+    /**
+     * @var OrganizationRepository
+     */
+    private $organizationRepository;
 
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
         AccessDecisionManagerInterface $decisionManager,
+        OrganizationRepository $organizationRepository,
         RoleRepository $roleRepository
     ) {
         parent::__construct($cacheItemPoolItemPool);
         $this->decisionManager = $decisionManager;
         $this->roleRepository = $roleRepository;
+        $this->organizationRepository = $organizationRepository;
     }
 
     /**
@@ -87,10 +93,10 @@ class OrganizationVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -104,7 +110,7 @@ class OrganizationVoter extends CachedVoter
         switch ($attribute) {
             case self::LOCAL_MANAGE:
                 return $this->roleRepository->
-                    personHasRole($subject, $user->getPerson(), Role::ROLE_LOCAL_ADMIN);
+                    personHasRole($subject, $user, Role::ROLE_LOCAL_ADMIN);
 
             case self::ACCESS_SECTION:
                 return $this->decisionManager->decide($token, [self::LOCAL_MANAGE], $subject) ||
@@ -125,14 +131,7 @@ class OrganizationVoter extends CachedVoter
             case self::ACCESS:
                 // Si es permiso de acceso, comprobar que pertenece actualmente a la organización
                 if ($attribute === self::ACCESS) {
-                    $date = new \DateTime();
-                    /** @var Membership $membership */
-                    foreach ($user->getMemberships() as $membership) {
-                        if ($membership->getOrganization() === $subject && $membership->getValidFrom() <= $date &&
-                            ($membership->getValidUntil() === null || $membership->getValidUntil() >= $date)) {
-                            return true;
-                        }
-                    }
+                    return $this->organizationRepository->findByUserAndOrganization($user, $subject);
                 }
                 break;
         }

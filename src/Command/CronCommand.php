@@ -21,9 +21,12 @@ namespace App\Command;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
 use App\Entity\WLT\Agreement;
+use App\Entity\WLT\Project;
 use App\Entity\WLT\WorkDay;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\WLT\AgreementRepository;
+use App\Repository\WLT\EducationalTutorAnsweredSurveyRepository;
+use App\Repository\WLT\ProjectRepository;
 use App\Repository\WLT\WLTTeacherRepository;
 use App\Repository\WLT\WorkDayRepository;
 use App\Service\MailerService;
@@ -42,6 +45,8 @@ class CronCommand extends Command
     private $academicYearRepository;
     private $agreementRepository;
     private $wltTeacherRepository;
+    private $projectRepository;
+    private $educationalTutorAnsweredSurveyRepository;
 
     public function __construct(
         TranslatorInterface $translator,
@@ -49,7 +54,9 @@ class CronCommand extends Command
         WorkDayRepository $workDayRepository,
         AgreementRepository $agreementRepository,
         AcademicYearRepository $academicYearRepository,
-        WLTTeacherRepository $wltTeacherRepository
+        ProjectRepository $projectRepository,
+        WLTTeacherRepository $wltTeacherRepository,
+        EducationalTutorAnsweredSurveyRepository $educationalTutorAnsweredSurveyRepository
     ) {
         parent::__construct();
         $this->translator = $translator;
@@ -58,6 +65,8 @@ class CronCommand extends Command
         $this->academicYearRepository = $academicYearRepository;
         $this->agreementRepository = $agreementRepository;
         $this->wltTeacherRepository = $wltTeacherRepository;
+        $this->projectRepository = $projectRepository;
+        $this->educationalTutorAnsweredSurveyRepository = $educationalTutorAnsweredSurveyRepository;
     }
 
     protected function configure()
@@ -148,9 +157,9 @@ class CronCommand extends Command
                 $agreement = $agreementData[0];
                 $studentEnrollment = $agreement->getStudentEnrollment();
                 $person = $studentEnrollment->getPerson();
-                if (null === $person->getUser()) {
+                if (null === $person) {
                     $result = 'message.sending_warnings.no_user';
-                } elseif (!$person->getUser()->getEmailAddress()) {
+                } elseif (!$person->getEmailAddress()) {
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
@@ -168,7 +177,7 @@ class CronCommand extends Command
                     ];
 
                     $this->mailerService->sendEmail(
-                        [$person->getUser()],
+                        [$person],
                         [
                             'id' => 'notification.inactivity_warning.subject',
                             'parameters' => $params
@@ -233,11 +242,8 @@ class CronCommand extends Command
             /** @var Agreement $agreement */
             foreach ($agreements as $agreement) {
                 $referenceSurvey = $agreement
-                    ->getStudentEnrollment()
-                    ->getGroup()
-                    ->getGrade()
-                    ->getTraining()
-                    ->getWltStudentSurvey();
+                    ->getProject()
+                    ->getStudentSurvey();
                 $count = 0;
                 if ($referenceSurvey) {
                     if ($agreement->getStudentSurvey()) {
@@ -289,9 +295,9 @@ class CronCommand extends Command
                 $agreement = $agreementData[0];
                 $workTutor = $agreement->getStudentEnrollment();
                 $person = $workTutor->getPerson();
-                if (null === $person->getUser()) {
+                if (null === $person) {
                     $result = 'message.sending_warnings.no_user';
-                } elseif (!$person->getUser()->getEmailAddress()) {
+                } elseif (!$person->getEmailAddress()) {
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
@@ -309,7 +315,7 @@ class CronCommand extends Command
                     ];
 
                     $this->mailerService->sendEmail(
-                        [$person->getUser()],
+                        [$person],
                         [
                             'id' => 'notification.unanswered_survey_warning.subject',
                             'parameters' => $params
@@ -357,11 +363,8 @@ class CronCommand extends Command
             /** @var Agreement $agreement */
             foreach ($agreements as $agreement) {
                 $referenceSurvey = $agreement
-                    ->getStudentEnrollment()
-                    ->getGroup()
-                    ->getGrade()
-                    ->getTraining()
-                    ->getWltCompanySurvey();
+                    ->getProject()
+                    ->getCompanySurvey();
                 $count = 0;
                 if ($referenceSurvey) {
                     if ($agreement->getCompanySurvey()) {
@@ -413,9 +416,9 @@ class CronCommand extends Command
                 /** @var Agreement $agreement */
                 $agreement = $agreementData[0];
                 $person = $agreement->getWorkTutor();
-                if (null === $person->getUser()) {
+                if (null === $person) {
                     $result = 'message.sending_warnings.no_user';
-                } elseif (!$person->getUser()->getEmailAddress()) {
+                } elseif (!$person->getEmailAddress()) {
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
@@ -434,7 +437,7 @@ class CronCommand extends Command
                     ];
 
                     $this->mailerService->sendEmail(
-                        [$person->getUser()],
+                        [$person],
                         [
                             'id' => 'notification.unanswered_survey_warning.subject',
                             'parameters' => $params
@@ -478,15 +481,17 @@ class CronCommand extends Command
             );
 
         $warning = [];
-        /** @var AcademicYear $academicYear */
-        foreach ($academicYears as $academicYear) {
-            $teachers = $this->wltTeacherRepository->findByAcademicYear($academicYear);
+
+        $projects = $this->projectRepository->findAll();
+
+        /** @var Project $project */
+        foreach ($projects as $project) {
+            $referenceSurvey = $project->getEducationalTutorSurvey();
             /** @var Teacher $teacher */
-            foreach ($teachers as $teacher) {
-                $referenceSurvey = $teacher->getAcademicYear()->getWltOrganizationSurvey();
+            foreach ($this->wltTeacherRepository->findByProject($project) as $teacher) {
                 $count = 0;
                 if ($referenceSurvey) {
-                    if ($teacher->getWltTeacherSurvey()) {
+                    if ($this->educationalTutorAnsweredSurveyRepository->findOneByProjectAndTeacher($project, $teacher)) {
                         $status = 'table.wlt.unaswered_survey_warning.status.ok';
                     } else {
                         $status = 'table.wlt.unaswered_survey_warning.status.on_time';
@@ -531,9 +536,9 @@ class CronCommand extends Command
             foreach ($warning as $personData) {
                 $teacher = $personData[0];
                 $person = $teacher->getPerson();
-                if (null === $person->getUser()) {
+                if (null === $person) {
                     $result = 'message.sending_warnings.no_user';
-                } elseif (!$person->getUser()->getEmailAddress()) {
+                } elseif (!$person->getEmailAddress()) {
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
@@ -545,7 +550,7 @@ class CronCommand extends Command
                     ];
 
                     $this->mailerService->sendEmail(
-                        [$person->getUser()],
+                        [$person],
                         [
                             'id' => 'notification.unanswered_survey_warning.subject',
                             'parameters' => $params

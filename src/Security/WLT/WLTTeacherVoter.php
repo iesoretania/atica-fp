@@ -20,7 +20,7 @@ namespace App\Security\WLT;
 
 use App\Entity\Edu\Group;
 use App\Entity\Edu\Teacher;
-use App\Entity\User;
+use App\Entity\Person;
 use App\Entity\WLT\Project;
 use App\Repository\WLT\ProjectRepository;
 use App\Security\CachedVoter;
@@ -91,10 +91,10 @@ class WLTTeacherVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -125,18 +125,18 @@ class WLTTeacherVoter extends CachedVoter
         return false;
     }
 
-    private function checkAccessPermission(Teacher $subject, User $user)
+    private function checkAccessPermission(Teacher $subject, Person $user)
     {
         $projects = $this->projectRepository->findByEducationalTutor($subject);
 
         // El propio docente puede ver sus encuestas siempre
-        if ($subject->getPerson() === $user->getPerson()) {
+        if ($subject->getPerson() === $user) {
             return true;
         }
         // El coordinador/a de sus proyectos
         /** @var Project $project */
         foreach ($projects as $project) {
-            if ($project->getManager() === $user->getPerson()) {
+            if ($project->getManager() === $user) {
                 return true;
             }
             $groups = $project->getGroups();
@@ -146,7 +146,7 @@ class WLTTeacherVoter extends CachedVoter
                 if ($group->getGrade()->getTraining()->getDepartment() &&
                     $group->getGrade()->getTraining()->getDepartment()->getHead() &&
                     $group->getGrade()->getTraining()
-                        ->getDepartment()->getHead()->getPerson() === $user->getPerson()) {
+                        ->getDepartment()->getHead()->getPerson() === $user) {
                     return true;
                 }
             }

@@ -41,7 +41,6 @@ class WLTTeacherRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('t')
             ->join('t.person', 'p')
-            ->join('p.user', 'u')
             ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
             ->join('te.group', 'g')
             ->join(Project::class, 'pr', 'WITH', 'g MEMBER OF pr.groups')
@@ -89,7 +88,6 @@ class WLTTeacherRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('t')
             ->join('t.person', 'p')
-            ->join('p.user', 'u')
             ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
             ->join('te.group', 'g')
             ->join(Project::class, 'pr', 'WITH', 'g MEMBER OF pr.groups')
@@ -108,7 +106,6 @@ class WLTTeacherRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('t')
             ->join('t.person', 'p')
-            ->join('p.user', 'u')
             ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
             ->join('te.group', 'g')
             ->join(Project::class, 'pr', 'WITH', 'g MEMBER OF pr.groups')

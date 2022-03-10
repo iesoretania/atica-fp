@@ -18,7 +18,7 @@
 
 namespace App\Security;
 
-use App\Entity\User;
+use App\Entity\Person;
 use App\Service\SenecaAuthenticatorService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -114,7 +114,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             throw new AuthenticationServiceException();
         }
 
@@ -128,7 +128,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
                 // contraseña correcta, actualizar en local por si perdemos la conectividad
                 if (false === $this->encoder->isPasswordValid($user, $plainPassword)) {
                     $user->setPassword($this->encoder->encodePassword($user, $plainPassword));
-                    $em = $this->managerRegistry->getManagerForClass(User::class);
+                    $em = $this->managerRegistry->getManager();
                     if ($em) {
                         $em->flush();
                     }

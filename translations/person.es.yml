@@ -1,3 +1,4 @@
+form.user_name: Nombre de usuario
 form.first_name: Nombre
 form.last_name: Apellidos
 form.unique_indentifier: DNI/NIE
@@ -6,6 +7,25 @@ form.gender.neutral: No especificado
 form.gender.male: Hombre
 form.gender.female: Mujer
 form.email_address: Correo electrónico
+
+form.enabled: Acceso
+form.enabled.no: El acceso a la aplicación le está denegado
+form.enabled.yes: El acceso a la aplicación le está permitido
+form.global_administrator: El usuario puede administrar todos los centros
+
+form.force_password_change: Forzar cambio de contraseña en el próximo inicio
+form.force_password_change.no: No
+form.force_password_change.yes: Sí, se forzará un cambio de contraseña en el próximo inicio de sesión
+
+form.disconnect: Salir de la aplicación
+
+form.allow_external_check: Permitir comprobación de contraseña externa
+form.allow_external_check.yes: "El usuario puede activar la autenticación desde Séneca. NOTA: el nombre de usuario deberá ser su usuario IdEA"
+form.allow_external_check.no: El usuario solamente puede utilizar la contraseña almacenada en local
+
+form.external_check: Comprobación de contraseña
+form.external_check.yes: Se comprobará primero en Séneca y luego en local si Séneca no está disponible
+form.external_check.no: Sólo se comprobará en local
 
 form.save: Guardar cambios
 form.delete: Eliminar personas seleccionadas
@@ -21,11 +41,27 @@ prompt.delete_confirm: |
 
   Esta operación no se puede deshacer.
 
+prompt.email_change_warning: >
+  ¡ATENCIÓN! Existe una petición pendiente de cambio de correo electrónico a %email%. Confirme en el mensaje enviado
+  el cambio de dirección haciendo clic en el enlace incluído. El enlace caducará el %date% a las %time%.
+
+prompt.forced_password_change: |
+  ¡Atención! Es necesario cambiar la contraseña actual para poder acceder a la plataforma.
+
+form.old_password: Contraseña actual
+form.new_password: Nueva contraseña
+form.new_password_repeat: Repetir contraseña
+form.change_password: Guardar cambios y cambiar la contraseña
+
 message.saved: Datos actualizados con éxito.
+message.password_changed: Datos personales y contraseña actualizados con éxito.
+message.email_change.info: ¡Atención! Para que la nueva dirección de correo electrónico entre en vigor debe confirmarla mediante un mensaje que le acaba de ser enviado a '%email%'.
+message.email_change.error: Ha ocurrido un error enviando la petición de confirmación de cambio de dirección de correo electrónico. Contacte con el administrador.
 message.error: No se han podido actualizar los datos.
 message.deleted: Las personas seleccionadas han sido eliminadas con éxito.
 message.delete_error: No se han podido eliminar las personas seleccionadas.
 
+title.force_password_change: Cambio obligatorio de contraseña
 title.new: No encontrado. Registrar nueva persona
 title.edit: Datos de la persona
 title.delete: Eliminar personas
@@ -39,6 +75,11 @@ table.filter: Filtrar...
 header.name: Nombre completo
 header.username: Usuario
 header.unique_indentifier: DNI/NIE
+header.email: Correo-e
+header.profiles: Perfiles
+header.last_login: Últ. conexión
 
 input.unique_identifier: 'Introduzca el DNI/NIE completo (con letra) para buscar'
 input.searching: 'Buscando...'
+
+role.global_administrator: Administrador global

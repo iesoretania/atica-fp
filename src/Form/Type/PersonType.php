@@ -18,7 +18,7 @@
 
 namespace App\Form\Type;
 
-use App\Entity\User;
+use App\Entity\Person;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -33,7 +33,7 @@ use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class UserType extends AbstractType
+class PersonType extends AbstractType
 {
     /**
      * Formulario base
@@ -43,33 +43,36 @@ class UserType extends AbstractType
     private function buildBaseForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('uniqueIdentifier', null, [
+                'label' => 'form.unique_indentifier',
+                'required' => true,
+                'disabled' => true
+            ])
             ->add('loginUsername', null, [
                 'label' => 'form.user_name',
                 'disabled' => !$options['admin']
             ])
-            ->add('personFirstName', null, [
+            ->add('firstName', null, [
                 'label' => 'form.first_name',
-                'property_path' => 'person.firstName',
                 'disabled' => !$options['admin']
             ])
-            ->add('personLastName', null, [
+            ->add('lastName', null, [
                 'label' => 'form.last_name',
-                'property_path' => 'person.lastName',
+                'disabled' => !$options['admin']
+            ])
+            ->add('gender', ChoiceType::class, [
+                'label' => 'form.gender',
+                'expanded' => true,
+                'choices' => [
+                    'form.gender.neutral' => Person::GENDER_NEUTRAL,
+                    'form.gender.male' => Person::GENDER_MALE,
+                    'form.gender.female' => Person::GENDER_FEMALE
+                ],
                 'disabled' => !$options['admin']
             ])
             ->add('emailAddress', EmailType::class, [
                 'label' => 'form.email_address',
                 'required' => false,
-            ])
-            ->add('personGender', ChoiceType::class, [
-                'label' => 'form.gender',
-                'property_path' => 'person.gender',
-                'expanded' => true,
-                'choices' => [
-                    'form.gender.neutral' => User::GENDER_NEUTRAL,
-                    'form.gender.male' => User::GENDER_MALE,
-                    'form.gender.female' => User::GENDER_FEMALE
-                ]
             ]);
     }
 
@@ -110,7 +113,7 @@ class UserType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $builder = $event->getForm();
-            /** @var User $data */
+            /** @var Person $data */
             $data = $event->getData();
 
             if ($data->getAllowExternalCheck() || $options['admin']) {
@@ -206,8 +209,8 @@ class UserType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
-            'translation_domain' => 'user',
+            'data_class' => Person::class,
+            'translation_domain' => 'person',
             'admin' => false,
             'new' => false,
             'own' => false

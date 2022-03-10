@@ -18,7 +18,7 @@
 
 namespace App\Service;
 
-use App\Entity\User;
+use App\Entity\Person;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MailerService
@@ -45,7 +45,7 @@ class MailerService
     }
 
     /**
-     * @param User[] $users
+     * @param Person[] $users
      * @param array $subject
      * @param array $body
      * @param string|null $translationDomain

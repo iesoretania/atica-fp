@@ -19,7 +19,7 @@
 namespace App\Security\WPT;
 
 use App\Entity\Organization;
-use App\Entity\User;
+use App\Entity\Person;
 use App\Repository\WPT\AgreementRepository;
 use App\Repository\WPT\WPTGroupRepository;
 use App\Security\CachedVoter;
@@ -109,10 +109,10 @@ class WPTOrganizationVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -214,7 +214,7 @@ class WPTOrganizationVoter extends CachedVoter
                 return
                     $this->wptGroupRepository->countAcademicYearAndWPTGroupTutorPerson(
                         $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
+                        $user
                     ) > 0;
 
             case self::WPT_STUDENT:
@@ -224,7 +224,7 @@ class WPTOrganizationVoter extends CachedVoter
                 return
                     $this->agreementRepository->countAcademicYearAndStudentPerson(
                         $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
+                        $user
                     ) > 0;
 
             case self::WPT_WORK_TUTOR:
@@ -234,7 +234,7 @@ class WPTOrganizationVoter extends CachedVoter
                 return
                     $this->agreementRepository->countAcademicYearAndWorkTutorPerson(
                         $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
+                        $user
                     ) > 0;
 
             case self::WPT_EDUCATIONAL_TUTOR:
@@ -244,14 +244,14 @@ class WPTOrganizationVoter extends CachedVoter
                 return
                     $this->agreementRepository->countAcademicYearAndEducationalTutorPerson(
                         $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
+                        $user
                     ) > 0;
 
             case self::WPT_DEPARTMENT_HEAD:
                 return
                     $this->wptGroupRepository->countAcademicYearAndWPTDepartmentHeadPerson(
                         $subject->getCurrentAcademicYear(),
-                        $user->getPerson()
+                        $user
                     ) > 0;
         }
 

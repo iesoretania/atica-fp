@@ -18,7 +18,7 @@
 
 namespace App\Security\WLT;
 
-use App\Entity\User;
+use App\Entity\Person;
 use App\Entity\WLT\Meeting;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
@@ -81,10 +81,10 @@ class MeetingVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -105,31 +105,31 @@ class MeetingVoter extends CachedVoter
         switch ($attribute) {
             case self::MANAGE:
                 // El propio docente puede gestionar sus reuniones si es del curso académico actual
-                return $subject->getCreatedBy()->getPerson() === $user->getPerson()
+                return $subject->getCreatedBy()->getPerson() === $user
                     && $subject->getCreatedBy()->getAcademicYear() === $organization->getCurrentAcademicYear();
             case self::ACCESS:
                 // Puede acceder a los datos de la visita el propio docente
                 if ($subject->getCreatedBy()
-                    && $subject->getCreatedBy()->getPerson() === $user->getPerson()) {
+                    && $subject->getCreatedBy()->getPerson() === $user) {
                     return true;
                 }
                 // Puede acceder a los datos de la visita cualquier docente asociado a ella
                 foreach ($subject->getTeachers() as $teacher) {
-                    if ($teacher->getPerson() === $user->getPerson()) {
+                    if ($teacher->getPerson() === $user) {
                         return true;
                     }
                 }
                 // Puede acceder el coordinador de cualquier proyecto asociado a las visitas, el jefe/a de departamento
                 // de los grupos de los proyectos
                 $project = $subject->getProject();
-                if ($project->getManager() === $user->getPerson()) {
+                if ($project->getManager() === $user) {
                     return true;
                 }
                 foreach ($project->getGroups() as $group) {
                     if ($group->getGrade()->getTraining()->getDepartment() &&
                         $group->getGrade()->getTraining()->getDepartment()->getHead() &&
                         $group->getGrade()->getTraining()->getDepartment()->getHead()->getPerson()
-                            === $user->getPerson()) {
+                            === $user) {
                         return true;
                     }
                 }
@@ -137,7 +137,7 @@ class MeetingVoter extends CachedVoter
                 // Puede acceder el tutor de los estudiantes visitados
                 foreach ($subject->getStudentEnrollments() as $studentEnrollment) {
                     foreach ($studentEnrollment->getGroup()->getTutors() as $tutor) {
-                        if ($tutor->getPerson() === $user->getPerson()) {
+                        if ($tutor->getPerson() === $user) {
                             return true;
                         }
                     }

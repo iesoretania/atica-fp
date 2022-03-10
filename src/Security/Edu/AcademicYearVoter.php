@@ -19,7 +19,7 @@
 namespace App\Security\Edu;
 
 use App\Entity\Edu\AcademicYear;
-use App\Entity\User;
+use App\Entity\Person;
 use App\Repository\Edu\TeacherRepository;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
@@ -91,10 +91,10 @@ class AcademicYearVoter extends CachedVoter
             return true;
         }
 
-        /** @var User $user */
+        /** @var Person $user */
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
         }
@@ -106,7 +106,7 @@ class AcademicYearVoter extends CachedVoter
 
         // Si es permiso de acceso, comprobar que es un profesor de ese curso académico
         if ($attribute === self::ACCESS) {
-            return null !== $this->teacherRepository->findOneByPersonAndAcademicYear($user->getPerson(), $subject);
+            return null !== $this->teacherRepository->findOneByPersonAndAcademicYear($user, $subject);
         }
 
         // denegamos en cualquier otro caso

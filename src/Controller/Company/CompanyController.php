@@ -229,7 +229,7 @@ class CompanyController extends AbstractController
         if ($term === null) {
             $persons = [];
         } else {
-            $persons = $personRepository->findByUniqueIdentifier($term);
+            $persons = [$personRepository->findOneByUniqueIdentifier($term)];
         }
 
         if (count($persons) === 0) {
