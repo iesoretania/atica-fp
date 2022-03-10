@@ -10,6 +10,7 @@ en las distintas versiones de la misma.
 * fix: Problema con el informe de asistencia arreglado
 * fix: Arregladas las plantillas de informes de encuestas de FP dual
 * fix: Comprobar correctamente las encuestas si no están definidas
+* fix: Si se intenta forzar un cambio de contraseña no válido, redirigir
 
 4.1.0 (2022-02-13)
 ------------------

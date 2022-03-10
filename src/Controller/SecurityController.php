@@ -183,7 +183,7 @@ class SecurityController extends AbstractController
         }
 
         if (false === $user->isForcePasswordChange()) {
-            throw $this->createAccessDeniedException();
+            return $this->redirectToRoute('frontpage');
         }
 
         $data = [
