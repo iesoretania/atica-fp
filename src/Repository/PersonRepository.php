@@ -74,7 +74,7 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
      */
     public function loadUserByUsername($username)
     {
-        if ($username === '' || $username === '0') {
+        if ($username === '' || $username === null) {
             return null;
         }
         try {

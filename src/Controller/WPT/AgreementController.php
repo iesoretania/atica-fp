@@ -147,7 +147,7 @@ class AgreementController extends AbstractController
         }
 
         $title = $translator->trans(
-            $agreement->getId() !== 0 ? 'title.edit' : 'title.new',
+            $agreement->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'wpt_agreement'
         );
@@ -163,7 +163,7 @@ class AgreementController extends AbstractController
                 'routeName' => 'workplace_training_agreement_list',
                 'routeParams' => ['id' => $agreement->getShift()->getId()]
             ],
-            $agreement->getId() !== 0 ?
+            $agreement->getId() !== null ?
                 ['fixed' => (string) $agreement] :
                 ['fixed' => $translator->trans('title.new', [], 'wpt_agreement')]
         ];
@@ -218,7 +218,7 @@ class AgreementController extends AbstractController
         }
 
         $title = $translator->trans(
-            $agreement->getId() !== 0 ? 'title.edit' : 'title.new',
+            $agreement->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'wpt_agreement'
         );
@@ -234,7 +234,7 @@ class AgreementController extends AbstractController
                 'routeName' => 'workplace_training_agreement_list',
                 'routeParams' => ['id' => $agreement->getShift()->getId()]
             ],
-            $agreement->getId() !== 0 ?
+            $agreement->getId() !== null ?
                 ['fixed' => $agreement->getWorkcenter()] :
                 ['fixed' => $translator->trans('title.new', [], 'wpt_agreement')]
         ];

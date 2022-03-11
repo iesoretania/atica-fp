@@ -52,8 +52,8 @@ class UserController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         if (null === $localUser) {
-            $localPerson = new Person();
-            $em->persist($localPerson);
+            $localUser = new Person();
+            $em->persist($localUser);
         }
 
         $form = $this->createForm(PersonType::class, $localUser, [
@@ -76,10 +76,10 @@ class UserController extends AbstractController
             }
         }
 
-        $title = $translator->trans($localUser->getId() !== 0 ? 'title.edit' : 'title.new', [], 'user');
+        $title = $translator->trans($localUser->getId() !== null ? 'title.edit' : 'title.new', [], 'user');
 
         $breadcrumb = [
-            $localUser->getId() !== 0 ?
+            $localUser->getId() !== null ?
                 ['fixed' => (string)$localUser] :
                 ['fixed' => $translator->trans('title.new', [], 'user')]
         ];

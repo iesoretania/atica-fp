@@ -159,7 +159,7 @@ class CronCommand extends Command
                 $person = $studentEnrollment->getPerson();
                 if (null === $person) {
                     $result = 'message.sending_warnings.no_user';
-                } elseif ($person->getEmailAddress() === '' || $person->getEmailAddress() === '0') {
+                } elseif ($person->getEmailAddress() === '') {
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
@@ -297,7 +297,7 @@ class CronCommand extends Command
                 $person = $workTutor->getPerson();
                 if (null === $person) {
                     $result = 'message.sending_warnings.no_user';
-                } elseif ($person->getEmailAddress() === '' || $person->getEmailAddress() === '0') {
+                } elseif ($person->getEmailAddress() === '' || $person->getEmailAddress() === null) {
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
@@ -418,7 +418,7 @@ class CronCommand extends Command
                 $person = $agreement->getWorkTutor();
                 if (null === $person) {
                     $result = 'message.sending_warnings.no_user';
-                } elseif ($person->getEmailAddress() === '' || $person->getEmailAddress() === '0') {
+                } elseif ($person->getEmailAddress() === '' || $person->getEmailAddress() === null) {
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
@@ -538,7 +538,7 @@ class CronCommand extends Command
                 $person = $teacher->getPerson();
                 if (null === $person) {
                     $result = 'message.sending_warnings.no_user';
-                } elseif ($person->getEmailAddress() === '' || $person->getEmailAddress() === '0') {
+                } elseif ($person->getEmailAddress() === '' || $person->getEmailAddress() === null) {
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [

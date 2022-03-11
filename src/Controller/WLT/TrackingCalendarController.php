@@ -406,13 +406,13 @@ class TrackingCalendarController extends AbstractController
                 );
 
                 foreach ($workDay->getActivityRealizations() as $activityRealization) {
-                    if ($activityRealization->getCode() !== '' && $activityRealization->getCode() !== '0') {
+                    if ($activityRealization->getCode() !== '' && $activityRealization->getCode() !== null) {
                         $activities[$day] .= '<b>' . htmlentities($activityRealization->getCode()) . ': </b>';
                     }
                     $activities[$day] .= htmlentities($activityRealization->getDescription()) . '<br/>';
                 }
 
-                if ($workDay->getOtherActivities() !== '' && $workDay->getOtherActivities() !== '0') {
+                if ($workDay->getOtherActivities() !== '' && $workDay->getOtherActivities() !== null) {
                     $activities[$day] .= htmlentities($workDay->getOtherActivities()) . '<br/>';
                 }
 

@@ -99,7 +99,7 @@ class LearningProgramController extends AbstractController
         }
 
         $title = $translator->trans(
-            $learningProgram->getId() !== 0 ? 'title.edit' : 'title.new',
+            $learningProgram->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'wlt_learning_program'
         );
@@ -110,7 +110,7 @@ class LearningProgramController extends AbstractController
                 'routeName' => 'work_linked_training_learning_program_list',
                 'routeParams' => ['project' => $project->getId()]
             ],
-            $learningProgram->getId() !== 0 ?
+            $learningProgram->getId() !== null ?
                 ['fixed' => $learningProgram->getCompany()] :
                 ['fixed' => $translator->trans('title.new', [], 'wlt_learning_program')]
         ];

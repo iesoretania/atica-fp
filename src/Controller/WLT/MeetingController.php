@@ -173,7 +173,7 @@ class MeetingController extends AbstractController
         }
 
         $title = $translator->trans(
-            $meeting->getId() !== 0 ? 'title.edit' : 'title.new',
+            $meeting->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'wlt_meeting'
         );

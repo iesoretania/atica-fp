@@ -77,13 +77,13 @@ class GradeController extends AbstractController
         }
 
         $title = $translator->trans(
-            $grade->getId() !== 0 ? 'title.edit' : 'title.new',
+            $grade->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'edu_grade'
         );
 
         $breadcrumb = [
-            $grade->getId() !== 0 ?
+            $grade->getId() !== null ?
                 ['fixed' => $grade->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_grade')]
         ];

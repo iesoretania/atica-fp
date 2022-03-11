@@ -122,7 +122,7 @@ class AgreementController extends AbstractController
                     $this->getDoctrine()->getManager()->persist($agreementActivityRealization);
                 }
 
-                if ($agreement->getId() !== 0) {
+                if ($agreement->getId() !== null) {
                     $toRemove = array_diff(
                         $oldActivityRealizations->toArray(),
                         $currentActivityRealizations->toArray()
@@ -141,7 +141,7 @@ class AgreementController extends AbstractController
         }
 
         $title = $translator->trans(
-            $agreement->getId() !== 0 ? 'title.edit' : 'title.new',
+            $agreement->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'wlt_agreement'
         );
@@ -157,7 +157,7 @@ class AgreementController extends AbstractController
                 'routeName' => 'work_linked_training_agreement_list',
                 'routeParams' => ['id' => $agreement->getProject()->getId()]
             ],
-            $agreement->getId() !== 0 ?
+            $agreement->getId() !== null ?
                 ['fixed' => (string) $agreement] :
                 ['fixed' => $translator->trans('title.new', [], 'wlt_agreement')]
         ];

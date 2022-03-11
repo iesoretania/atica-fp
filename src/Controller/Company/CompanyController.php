@@ -92,13 +92,13 @@ class CompanyController extends AbstractController
         }
 
         $title = $translator->trans(
-            $company->getId() !== 0 ? 'title.edit' : 'title.new',
+            $company->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'company'
         );
 
         $breadcrumb = [
-            $company->getId() !== 0 ?
+            $company->getId() !== null ?
                 ['fixed' => $company->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'company')]
         ];

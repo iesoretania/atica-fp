@@ -79,13 +79,13 @@ class DepartmentController extends AbstractController
         }
 
         $title = $translator->trans(
-            $department->getId() !== 0 ? 'title.edit' : 'title.new',
+            $department->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'edu_department'
         );
 
         $breadcrumb = [
-            $department->getId() !== 0 ?
+            $department->getId() !== null ?
                 ['fixed' => $department->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_department')]
         ];

@@ -77,13 +77,13 @@ class GroupController extends AbstractController
         }
 
         $title = $translator->trans(
-            $group->getId() !== 0 ? 'title.edit' : 'title.new',
+            $group->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'edu_group'
         );
 
         $breadcrumb = [
-            $group->getId() !== 0 ?
+            $group->getId() !== null ?
                 ['fixed' => $group->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_group')]
         ];

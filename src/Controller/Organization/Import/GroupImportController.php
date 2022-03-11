@@ -168,7 +168,7 @@ class GroupImportController extends AbstractController
                         }
 
                         if (!isset($gradeCollection[$calculatedGradeName])) {
-                            if ($training->getId() !== 0) {
+                            if ($training->getId() !== null) {
                                 $grade = $em->getRepository(Grade::class)->findOneBy([
                                     'internalCode' => $calculatedGradeName,
                                     'training' => $training

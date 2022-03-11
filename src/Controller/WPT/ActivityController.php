@@ -103,7 +103,7 @@ class ActivityController extends AbstractController
         }
 
         $title = $translator->trans(
-            $activity->getId() !== 0 ? 'title.edit' : 'title.new',
+            $activity->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'wpt_activity'
         );
@@ -119,7 +119,7 @@ class ActivityController extends AbstractController
                 'routeName' => 'workplace_training_activity_list',
                 'routeParams' => ['id' => $activity->getShift()->getId()]
             ],
-            $activity->getId() !== 0 ?
+            $activity->getId() !== null ?
                 ['fixed' => $activity->getCode()] :
                 ['fixed' => $translator->trans('title.new', [], 'wpt_activity')]
         ];

@@ -77,7 +77,7 @@ class CriterionController extends AbstractController
         }
 
         $title = $translator->trans(
-            $criterion->getId() !== 0 ? 'title.edit' : 'title.new',
+            $criterion->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'edu_criterion'
         );
@@ -98,7 +98,7 @@ class CriterionController extends AbstractController
                 'routeName' => 'organization_training_criterion_list',
                 'routeParams' => ['id' => $criterion->getLearningOutcome()->getId()]
             ],
-            $criterion->getId() !== 0 ?
+            $criterion->getId() !== null ?
                 ['fixed' => $criterion->getCode()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_criterion')]
         ];

@@ -71,7 +71,7 @@ class AcademicYearController extends AbstractController
         }
 
         $form = $this->createForm(AcademicYearType::class, $academicYear, [
-            'academic_year' => $academicYear->getId() !== 0 ? $academicYear : null
+            'academic_year' => $academicYear->getId() !== null ? $academicYear : null
         ]);
 
         $form->handleRequest($request);
@@ -87,13 +87,13 @@ class AcademicYearController extends AbstractController
         }
 
         $title = $translator->trans(
-            $academicYear->getId() !== 0 ? 'title.edit' : 'title.new',
+            $academicYear->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'edu_academic_year'
         );
 
         $breadcrumb = [
-            $academicYear->getId() !== 0 ?
+            $academicYear->getId() !== null ?
                 ['fixed' => (string) $academicYear] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_academic_year')]
         ];

@@ -83,13 +83,13 @@ class SubjectController extends AbstractController
         }
 
         $title = $translator->trans(
-            $subject->getId() !== 0 ? 'title.edit' : 'title.new',
+            $subject->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'edu_subject'
         );
 
         $breadcrumb = [
-            $subject->getId() !== 0 ?
+            $subject->getId() !== null ?
                 ['fixed' => $subject->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_subject')]
         ];
@@ -268,7 +268,7 @@ class SubjectController extends AbstractController
         }
 
         $title = $translator->trans(
-            $teaching->getId() !== 0 ? 'title.edit' : 'title.new',
+            $teaching->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'edu_teaching'
         );
@@ -279,7 +279,7 @@ class SubjectController extends AbstractController
                 'routeName' => 'organization_subject_list',
                 'routeParams' => ['academicYear' => $academicYear->getId()]
             ],
-            $teaching->getId() !== 0 ?
+            $teaching->getId() !== null ?
                 ['fixed' => $teaching->getTeacher()->getPerson() .
                     ' - ' . $teaching->getSubject()->getName() .
                     ' (' . $teaching->getGroup()->getName() . ')'] :

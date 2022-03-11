@@ -87,7 +87,7 @@ class WorkcenterController extends AbstractController
         }
 
         $title = $translator->trans(
-            $workcenter->getId() !== 0 ? 'title.edit' : 'title.new',
+            $workcenter->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'workcenter'
         );
@@ -103,7 +103,7 @@ class WorkcenterController extends AbstractController
                 'routeName' => 'company_workcenter_list',
                 'routeParams' => ['id' => $workcenter->getCompany()->getId()]
             ],
-            $workcenter->getId() !== 0 ?
+            $workcenter->getId() !== null ?
                 ['fixed' => $workcenter->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'workcenter')]
         ];

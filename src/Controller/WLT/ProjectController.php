@@ -189,13 +189,13 @@ class ProjectController extends AbstractController
         }
 
         $title = $translator->trans(
-            $project->getId() !== 0 ? 'title.edit' : 'title.new',
+            $project->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'wlt_project'
         );
 
         $breadcrumb = [
-            $project->getId() !== 0 ?
+            $project->getId() !== null ?
                 ['fixed' => $project->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'wlt_project')]
         ];

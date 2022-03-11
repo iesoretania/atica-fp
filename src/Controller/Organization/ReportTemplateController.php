@@ -87,13 +87,13 @@ class ReportTemplateController extends AbstractController
         }
 
         $title = $translator->trans(
-            $template->getId() !== 0 ? 'title.edit' : 'title.new',
+            $template->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'edu_report_template'
         );
 
         $breadcrumb = [
-            $template->getId() !== 0 ?
+            $template->getId() !== null ?
                 ['fixed' => $template->getDescription()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_report_template')]
         ];

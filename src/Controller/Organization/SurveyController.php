@@ -104,13 +104,13 @@ class SurveyController extends AbstractController
         }
 
         $title = $translator->trans(
-            $survey->getId() !== 0 ? 'title.edit' : 'title.new',
+            $survey->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'survey'
         );
 
         $breadcrumb = [
-            $survey->getId() !== 0 ?
+            $survey->getId() !== null ?
                 ['fixed' => $survey->getTitle()] :
                 ['fixed' => $translator->trans('title.new', [], 'survey')]
         ];

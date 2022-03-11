@@ -81,13 +81,13 @@ class TrainingController extends AbstractController
         }
 
         $title = $translator->trans(
-            $training->getId() !== 0 ? 'title.edit' : 'title.new',
+            $training->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'edu_training'
         );
 
         $breadcrumb = [
-            $training->getId() !== 0 ?
+            $training->getId() !== null ?
                 ['fixed' => $training->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_training')]
         ];

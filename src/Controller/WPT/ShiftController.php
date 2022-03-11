@@ -178,13 +178,13 @@ class ShiftController extends AbstractController
         }
 
         $title = $translator->trans(
-            $shift->getId() !== 0 ? 'title.edit' : 'title.new',
+            $shift->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'wpt_shift'
         );
 
         $breadcrumb = [
-            $shift->getId() !== 0 ?
+            $shift->getId() !== null ?
                 ['fixed' => $shift->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'wpt_shift')]
         ];

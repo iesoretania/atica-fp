@@ -129,7 +129,7 @@ class Agreement
 
     public function __toString()
     {
-        return $this->getShift() . ' - ' . $this->getWorkcenter() . ($this->getName() !== '' && $this->getName() !== '0' ? ' - ' . $this->getName() : '');
+        return $this->getShift() . ' - ' . $this->getWorkcenter() . ($this->getName() !== '' && $this->getName() !== null ? ' - ' . $this->getName() : '');
     }
 
     /**

@@ -89,14 +89,14 @@ class NonWorkingDayController extends AbstractController
         }
 
         $title = $translator->trans(
-            $nonWorkingDay->getId() !== 0 ? 'title.edit' : 'title.new',
+            $nonWorkingDay->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'edu_non_working_day'
         );
 
         $breadcrumb = [
             ['fixed' => $nonWorkingDay->getAcademicYear()->getDescription()],
-            $nonWorkingDay->getId() !== 0 ?
+            $nonWorkingDay->getId() !== null ?
                 ['fixed' => $nonWorkingDay->getDate()->format($translator->trans('format.date', [], 'general'))] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_non_working_day')]
         ];

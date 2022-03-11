@@ -87,7 +87,7 @@ class CompetencyController extends AbstractController
         }
 
         $title = $translator->trans(
-            $competency->getId() !== 0 ? 'title.edit' : 'title.new',
+            $competency->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'edu_competency'
         );
@@ -103,7 +103,7 @@ class CompetencyController extends AbstractController
                 'routeName' => 'organization_training_competency_list',
                 'routeParams' => ['id' => $training->getId()]
             ],
-            $competency->getId() !== 0 ?
+            $competency->getId() !== null ?
                 ['fixed' => $competency->getCode()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_competency')]
         ];

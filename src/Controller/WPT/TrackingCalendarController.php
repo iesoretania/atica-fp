@@ -179,7 +179,7 @@ class TrackingCalendarController extends AbstractController
                     foreach ($trackedActivities as $trackedActivity) {
                         if ($trackedActivity->getHours() == 0) {
                             $trackedActivities->removeElement($trackedActivity);
-                            if ($trackedWorkDay->getId() !== 0) {
+                            if ($trackedWorkDay->getId() !== null) {
                                 $this->getDoctrine()->getManager()->remove($trackedActivity);
                             }
                         } else {
@@ -523,7 +523,7 @@ class TrackingCalendarController extends AbstractController
                 $hours[$day] = '';
 
                 foreach ($trackedWorkDay->getTrackedActivities() as $trackedActivity) {
-                    if ($trackedActivity->getActivity()->getCode() !== '' && $trackedActivity->getActivity()->getCode() !== '0') {
+                    if ($trackedActivity->getActivity()->getCode() !== '' && $trackedActivity->getActivity()->getCode() !== null) {
                         $activities[$day] .= '<b>' .
                             htmlentities($trackedActivity->getActivity()->getCode()) . ': </b>';
                     }
@@ -543,7 +543,7 @@ class TrackingCalendarController extends AbstractController
                     $hours[$day] .= '</ul>';
                 }
 
-                if ($trackedWorkDay->getOtherActivities() !== '' && $trackedWorkDay->getOtherActivities() !== '0') {
+                if ($trackedWorkDay->getOtherActivities() !== '' && $trackedWorkDay->getOtherActivities() !== null) {
                     $activities[$day] .= htmlentities($trackedWorkDay->getOtherActivities()) . '<br/>';
                 }
 
@@ -893,7 +893,7 @@ class TrackingCalendarController extends AbstractController
             }
             if ($trackedActivity->getHours() == 0) {
                 $trackedActivities->removeElement($trackedActivity);
-                if ($trackedWorkDay->getId() !== 0) {
+                if ($trackedWorkDay->getId() !== null) {
                     $this->getDoctrine()->getManager()->remove($trackedActivity);
                 }
             } else {

@@ -90,7 +90,7 @@ class ActivityController extends AbstractController
         }
 
         $title = $translator->trans(
-            $activity->getId() !== 0 ? 'title.edit' : 'title.new',
+            $activity->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'wlt_activity'
         );
@@ -102,7 +102,7 @@ class ActivityController extends AbstractController
                 'routeParams' => ['id' => $project->getId()]
             ],
             ['fixed' => $translator->trans(
-                $activity->getId() !== 0 ? 'title.edit' : 'title.new',
+                $activity->getId() !== null ? 'title.edit' : 'title.new',
                 [],
                 'wlt_activity'
             )]

@@ -127,7 +127,7 @@ class TravelExpenseController extends AbstractController
         }
 
         $title = $translator->trans(
-            $travelExpense->getId() !== 0 ? 'title.edit' : 'title.new',
+            $travelExpense->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'wpt_travel_expense'
         );

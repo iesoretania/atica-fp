@@ -77,7 +77,7 @@ class SenecaAuthenticatorService
 
         $str = $this->postToUrl($fields, $postUrl, $this->url, $this->forceSecurity);
 
-        if ($str === '' || $str === '0') {
+        if ($str === '' || $str === null) {
             return null;
         }
 

@@ -164,7 +164,7 @@ class VisitController extends AbstractController
         }
 
         $title = $translator->trans(
-            $visit->getId() !== 0 ? 'title.edit' : 'title.new',
+            $visit->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'wlt_visit'
         );

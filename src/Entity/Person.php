@@ -179,7 +179,7 @@ class Person implements UserInterface
     public function getFullDisplayName()
     {
         $prefix = $this->getFirstName() . ' ' . $this->getLastName();
-        return $this->getUniqueIdentifier() !== '' && $this->getUniqueIdentifier() !== '0' ? $prefix . ' - ' . $this->getUniqueIdentifier() : $prefix;
+        return $this->getUniqueIdentifier() !== '' && $this->getUniqueIdentifier() !== null ? $prefix . ' - ' . $this->getUniqueIdentifier() : $prefix;
     }
 
     /**

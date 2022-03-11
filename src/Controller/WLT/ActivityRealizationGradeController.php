@@ -85,7 +85,7 @@ class ActivityRealizationGradeController extends AbstractController
         }
 
         $title = $translator->trans(
-            $activityRealizationGrade->getId() !== 0 ? 'title.edit' : 'title.new',
+            $activityRealizationGrade->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'wlt_activity_realization_grade'
         );
@@ -101,7 +101,7 @@ class ActivityRealizationGradeController extends AbstractController
                 'routeName' => 'work_linked_training_activity_realization_grade_list',
                 'routeParams' => ['id' => $activityRealizationGrade->getProject()->getId()]
             ],
-            $activityRealizationGrade->getId() !== 0 ?
+            $activityRealizationGrade->getId() !== null ?
                 ['fixed' => $activityRealizationGrade->getDescription()] :
                 ['fixed' => $translator->trans('title.new', [], 'wlt_activity_realization_grade')]
         ];

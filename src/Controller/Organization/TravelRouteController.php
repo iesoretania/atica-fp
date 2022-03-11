@@ -92,7 +92,7 @@ class TravelRouteController extends AbstractController
         }
 
         $title = $translator->trans(
-            $travelRoute->getId() !== 0 ? 'title.edit' : 'title.new',
+            $travelRoute->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'edu_travel_route'
         );

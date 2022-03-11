@@ -88,7 +88,7 @@ class ActivityRealizationController extends AbstractController
         }
 
         $title = $translator->trans(
-            $activityRealization->getId() !== 0 ? 'title.edit' : 'title.new',
+            $activityRealization->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'wlt_activity_realization'
         );
@@ -104,7 +104,7 @@ class ActivityRealizationController extends AbstractController
                 'routeName' => 'work_linked_training_project_activity_realization_list',
                 'routeParams' => ['id' => $activity->getId()]
             ],
-            $activityRealization->getId() !== 0 ?
+            $activityRealization->getId() !== null ?
                 ['fixed' => $activityRealization->getCode()] :
                 ['fixed' => $translator->trans('title.new', [], 'wlt_activity_realization')]
         ];

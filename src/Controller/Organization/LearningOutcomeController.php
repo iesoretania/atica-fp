@@ -88,7 +88,7 @@ class LearningOutcomeController extends AbstractController
         }
 
         $title = $translator->trans(
-            $learningOutcome->getId() !== 0 ? 'title.edit' : 'title.new',
+            $learningOutcome->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'edu_learning_outcome'
         );
@@ -104,7 +104,7 @@ class LearningOutcomeController extends AbstractController
                 'routeName' => 'organization_training_learning_outcome_list',
                 'routeParams' => ['id' => $subject->getId()]
             ],
-            $learningOutcome->getId() !== 0 ?
+            $learningOutcome->getId() !== null ?
                 ['fixed' => $learningOutcome->getCode()] :
                 ['fixed' => $translator->trans('title.new', [], 'edu_learning_outcome')]
         ];
