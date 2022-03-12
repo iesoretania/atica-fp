@@ -229,7 +229,7 @@ class AgreementController extends AbstractController
             ->addOrderBy('a.startDate')
             ->addOrderBy('c.name');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('g.name LIKE :tq')

@@ -78,7 +78,7 @@ class ShiftController extends AbstractController
             ->leftJoin('d.head', 'h')
             ->orderBy('s.name');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('s.name LIKE :tq')

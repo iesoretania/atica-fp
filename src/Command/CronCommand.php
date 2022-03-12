@@ -163,7 +163,7 @@ class CronCommand extends Command
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
-                        '%name%' => (string) $studentEnrollment->getPerson()->getFirstName(),
+                        '%name%' => $studentEnrollment->getPerson()->getFirstName(),
                         '%company%' => $agreement->getWorkcenter()->getCompany()->getName(),
                         '%days%' => $days,
                         '%organization%' => $studentEnrollment
@@ -209,6 +209,7 @@ class CronCommand extends Command
 
         $style->success($this->translator->trans('message.wlt_inactivity_warning.done', [], 'cron'));
     }
+
     /**
      * @param OutputInterface $output
      * @param SymfonyStyle $style
@@ -245,7 +246,7 @@ class CronCommand extends Command
                     ->getProject()
                     ->getStudentSurvey();
                 $count = 0;
-                if ($referenceSurvey) {
+                if ($referenceSurvey !== null) {
                     if ($agreement->getStudentSurvey()) {
                         $status = 'table.wlt.unaswered_survey_warning.status.ok';
                     } else {
@@ -301,7 +302,7 @@ class CronCommand extends Command
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
-                        '%name%' => (string) $workTutor->getPerson()->getFirstName(),
+                        '%name%' => $workTutor->getPerson()->getFirstName(),
                         '%company%' => $agreement->getWorkcenter()->getCompany()->getName(),
                         '%limit%' => $agreementData[1],
                         '%count%' => $agreementData[2],
@@ -347,7 +348,6 @@ class CronCommand extends Command
 
         $style->success($this->translator->trans('message.unaswered_survey_warning.done', [], 'cron'));
 
-
         // Empresas
         $table = new Table($output);
 
@@ -366,7 +366,7 @@ class CronCommand extends Command
                     ->getProject()
                     ->getCompanySurvey();
                 $count = 0;
-                if ($referenceSurvey) {
+                if ($referenceSurvey !== null) {
                     if ($agreement->getCompanySurvey()) {
                         $status = 'table.wlt.unaswered_survey_warning.status.ok';
                     } else {
@@ -422,7 +422,7 @@ class CronCommand extends Command
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
-                        '%name%' => (string) $person->getFirstName(),
+                        '%name%' => $person->getFirstName(),
                         '%student%' => $agreement->getStudentEnrollment()->getPerson(),
                         '%company%' => $agreement->getWorkcenter()->getCompany()->getName(),
                         '%limit%' => $agreementData[1],
@@ -490,7 +490,7 @@ class CronCommand extends Command
             /** @var Teacher $teacher */
             foreach ($this->wltTeacherRepository->findByProject($project) as $teacher) {
                 $count = 0;
-                if ($referenceSurvey) {
+                if ($referenceSurvey !== null) {
                     if ($this->educationalTutorAnsweredSurveyRepository->findOneByProjectAndTeacher($project, $teacher)) {
                         $status = 'table.wlt.unaswered_survey_warning.status.ok';
                     } else {
@@ -542,7 +542,7 @@ class CronCommand extends Command
                     $result = 'message.sending_warnings.no_email_address';
                 } else {
                     $params = [
-                        '%name%' => (string) $person->getFirstName(),
+                        '%name%' => $person->getFirstName(),
                         '%academic_year%' => $teacher->getAcademicYear()->getDescription(),
                         '%limit%' => $personData[1],
                         '%count%' => $personData[2],

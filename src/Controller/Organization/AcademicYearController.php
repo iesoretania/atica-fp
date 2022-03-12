@@ -131,7 +131,7 @@ class AcademicYearController extends AbstractController
             ->leftJoin('p.person', 'pp')
             ->orderBy('ay.description', 'DESC');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->andWhere('ay.description LIKE :tq')
@@ -270,7 +270,7 @@ class AcademicYearController extends AbstractController
     ) {
         $academicYear = $em->getRepository(AcademicYear::class)->findOneBy(
             [
-                'id' => $request->request->get('switch', null),
+                'id' => $request->request->get('switch'),
                 'organization' => $organization
             ]
         );

@@ -138,7 +138,7 @@ class LearningOutcomeController extends AbstractController
             ->from(LearningOutcome::class, 'l')
             ->orderBy('l.code');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('l.code LIKE :tq')

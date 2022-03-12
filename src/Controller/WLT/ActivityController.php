@@ -137,7 +137,7 @@ class ActivityController extends AbstractController
             ->from(Activity::class, 'a')
             ->orderBy('a.code');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('a.code LIKE :tq')

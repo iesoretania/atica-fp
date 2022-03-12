@@ -31,7 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Agreement
 {
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection|\Doctrine\Common\Collections\Collection&\App\Entity\WPT\Activity[]|mixed
+     * @var ArrayCollection|Collection|Activity[]|mixed
      */
     public $activities;
     /**

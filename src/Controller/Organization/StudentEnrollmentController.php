@@ -123,7 +123,7 @@ class StudentEnrollmentController extends AbstractController
             ->innerJoin('g.grade', 'gr')
             ->innerJoin('gr.training', 't');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->andWhere('p.id = :q')

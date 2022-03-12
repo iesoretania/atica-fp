@@ -125,7 +125,7 @@ class GradeController extends AbstractController
             ->orderBy('g.name')
             ->innerJoin('g.training', 't');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('g.name LIKE :tq')

@@ -19,6 +19,7 @@
 namespace App\Controller\Organization\Import;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Group;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Person;
 use App\Form\Model\StudentImport;
@@ -135,7 +136,7 @@ class StudentImportController extends AbstractController
                     );
 
                     // ignorar alumnado de grupos no existentes en la plataforma
-                    if (!$group instanceof \App\Entity\Edu\Group) {
+                    if (!$group instanceof Group) {
                         continue;
                     }
 

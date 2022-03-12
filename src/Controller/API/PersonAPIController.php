@@ -25,6 +25,7 @@ use App\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -37,7 +38,7 @@ class PersonAPIController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         UserPasswordEncoderInterface $passwordEncoder
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);

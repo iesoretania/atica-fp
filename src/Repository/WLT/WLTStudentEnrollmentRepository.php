@@ -61,7 +61,7 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
         $qb = $this->findByProjectsQueryBuilder($projects);
         if ($dateTime !== null) {
             $startDate = clone $dateTime;
-            $startDate->setTime(0, 0, 0);
+            $startDate->setTime(0, 0);
             $endDate = clone $dateTime;
             $startDate->add(new \DateInterval('P1D'));
 
@@ -97,7 +97,7 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
     public function findByProjectAndAcademicYearDate(Project $project, \DateTimeInterface $dateTime = null)
     {
         $startDate = clone $dateTime;
-        $startDate->setTime(0, 0, 0);
+        $startDate->setTime(0, 0);
         $endDate = clone $dateTime;
         $startDate->add(new \DateInterval('P1D'));
         $qb = $this->findByProjectsQueryBuilder([$project]);

@@ -31,6 +31,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -47,7 +48,7 @@ class WorkcenterController extends AbstractController
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
         Company $company
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
 
@@ -69,7 +70,7 @@ class WorkcenterController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         Workcenter $workcenter
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(WorkcenterVoter::MANAGE, $workcenter);
 
         $form = $this->createForm(WorkcenterType::class, $workcenter);
@@ -126,7 +127,7 @@ class WorkcenterController extends AbstractController
         TranslatorInterface $translator,
         Company $company,
         $page = 1
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
@@ -140,13 +141,13 @@ class WorkcenterController extends AbstractController
             ->orderBy('w.name')
             ->addOrderBy('w.city');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('w.name LIKE :tq')
                 ->orWhere('w.city LIKE :tq')
                 ->orWhere('w.emailAddress LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
+                ->setParameter('tq', '%' . $q . '%');
         }
 
         $queryBuilder
@@ -179,7 +180,7 @@ class WorkcenterController extends AbstractController
         return $this->render('company/workcenter_list.html.twig', [
             'menu_path' => 'company',
             'title' => $title,
-            'breadcrumb'=> $breadcrumb,
+            'breadcrumb' => $breadcrumb,
             'pager' => $pager,
             'q' => $q,
             'company' => $company,
@@ -196,7 +197,7 @@ class WorkcenterController extends AbstractController
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
         Company $company
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);

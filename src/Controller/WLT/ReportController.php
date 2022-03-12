@@ -248,7 +248,7 @@ class ReportController extends AbstractController
             ->leftJoin('d.head', 'h')
             ->orderBy('p.name');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('p.name LIKE :tq')

@@ -303,7 +303,7 @@ class AgreementController extends AbstractController
             ->addOrderBy('w.name')
             ->addOrderBy('a.name');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('w.name LIKE :tq')

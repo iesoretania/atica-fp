@@ -16,6 +16,8 @@ en las distintas versiones de la misma.
 * fix: Solucionado problema con la administración de las organizaciones
 * feat: Eliminada separación entre personas y usuarios para simplificar la gestión
 * chore: Aplicado RectorPHP para actualizar el código
+* chore: Eliminado formulario y controlador no usados en la gestión de FCT
+* chore: Limpieza de código
 
 4.1.0 (2022-02-13)
 ------------------

@@ -30,6 +30,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -42,7 +43,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/entrar", name="login", methods={"GET"})
      */
-    public function loginAction(AuthenticationUtils $authenticationUtils)
+    public function loginAction(AuthenticationUtils $authenticationUtils): Response
     {
         // obtener el error de entrada, si existe alguno
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -63,7 +64,7 @@ class SecurityController extends AbstractController
      * @Route("/comprobar", name="login_check", methods={"POST", "GET"})
      * @Route("/salir", name="logout", methods={"GET"})
      */
-    public function logInOutCheckAction()
+    public function logInOutCheckAction(): Response
     {
         return $this->redirectToRoute('login');
     }
@@ -77,7 +78,7 @@ class SecurityController extends AbstractController
         Session $session,
         TranslatorInterface $translator,
         PersonRepository $personRepository
-    ) {
+    ): Response {
 
         $data = [
             'email' => ''
@@ -119,7 +120,7 @@ class SecurityController extends AbstractController
         TranslatorInterface $translator,
         $userId,
         $token
-    ) {
+    ): Response {
         /**
          * @var Person
          */
@@ -173,7 +174,7 @@ class SecurityController extends AbstractController
         UserPasswordEncoderInterface $passwordEncoder,
         TranslatorInterface $translator,
         Session $session
-    ) {
+    ): Response {
         /** @var Person $user */
         $user = $this->getUser();
 
@@ -247,7 +248,7 @@ class SecurityController extends AbstractController
         TranslatorInterface $translator,
         $userId,
         $token
-    ) {
+    ): Response {
         /**
          * @var Person
          */
@@ -310,7 +311,7 @@ class SecurityController extends AbstractController
         Request $request,
         Session $session,
         OrganizationRepository $organizationRepository
-    ) {
+    ): Response {
         // si no hay usuario activo, volver
         if (null === $this->getUser()) {
             return $this->redirectToRoute('login');
@@ -357,7 +358,11 @@ class SecurityController extends AbstractController
 
     /**
      * @param $email
+     * @param MailerService $mailerService
+     * @param TranslatorInterface $translator
+     * @param PersonRepository $personRepository
      * @return string|RedirectResponse
+     * @throws \Exception
      */
     private function passwordResetRequest(
         $email,

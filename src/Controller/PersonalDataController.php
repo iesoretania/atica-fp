@@ -25,6 +25,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -40,7 +41,7 @@ class PersonalDataController extends AbstractController
         TranslatorInterface $translator,
         UserPasswordEncoderInterface $passwordEncoder,
         MailerService $mailerService
-    ) {
+    ): Response {
         /** @var Person $user */
         $user = $this->getUser();
 
@@ -95,6 +96,9 @@ class PersonalDataController extends AbstractController
      *
      * @param Person $user
      * @param string $oldEmail
+     * @param MailerService $mailerService
+     * @param TranslatorInterface $translator
+     * @throws \Exception
      */
     private function requestEmailAddressChange(
         Person $user,
@@ -161,7 +165,11 @@ class PersonalDataController extends AbstractController
      * @param FormInterface $form
      * @param Person $user
      * @param string $oldEmail
+     * @param MailerService $mailerService
+     * @param TranslatorInterface $translator
+     * @param UserPasswordEncoderInterface $passwordEncoder
      * @return bool
+     * @throws \Exception
      */
     private function processPasswordAndEmailChanges(
         FormInterface $form,

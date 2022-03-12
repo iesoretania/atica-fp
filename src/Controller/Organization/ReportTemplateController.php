@@ -146,7 +146,7 @@ class ReportTemplateController extends AbstractController
             ->from(ReportTemplate::class, 'rt')
             ->orderBy('rt.description');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('rt.description LIKE :tq')

@@ -126,7 +126,7 @@ class DepartmentController extends AbstractController
             ->from(Department::class, 'd')
             ->orderBy('d.name');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('d.name LIKE :tq')

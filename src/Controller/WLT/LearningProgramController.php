@@ -145,7 +145,7 @@ class LearningProgramController extends AbstractController
             ->join('cp.company', 'c')
             ->addOrderBy('c.name');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('c.name LIKE :tq')

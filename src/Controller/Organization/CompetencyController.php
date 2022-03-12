@@ -137,7 +137,7 @@ class CompetencyController extends AbstractController
             ->from(Competency::class, 'c')
             ->orderBy('c.code');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('c.code LIKE :tq')

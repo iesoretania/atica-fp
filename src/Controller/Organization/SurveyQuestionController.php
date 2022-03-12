@@ -143,7 +143,7 @@ class SurveyQuestionController extends AbstractController
             ->from(SurveyQuestion::class, 'sq')
             ->orderBy('sq.orderNr');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('sq.description LIKE :tq')

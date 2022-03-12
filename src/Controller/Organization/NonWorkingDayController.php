@@ -137,7 +137,7 @@ class NonWorkingDayController extends AbstractController
             ->from(NonWorkingDay::class, 'n')
             ->orderBy('n.date');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
 
         if ($q) {
             $queryBuilder

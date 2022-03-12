@@ -138,7 +138,7 @@ class ActivityRealizationController extends AbstractController
             ->from(ActivityRealization::class, 'ar')
             ->orderBy('ar.code');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('ar.code LIKE :tq')

@@ -92,7 +92,7 @@ class MenuBuilderChain
      */
     private function checkMenuRouteName($route, MenuItem $item = null)
     {
-        if (!$item instanceof \App\Menu\MenuItem) {
+        if (!$item instanceof MenuItem) {
             return null;
         }
 

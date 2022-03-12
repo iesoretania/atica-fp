@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class MenuCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    final public function process(ContainerBuilder $container): void
     {
         if (!$container->has('app.menu_builders_chain')) {
             return;

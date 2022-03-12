@@ -133,7 +133,7 @@ class CriterionController extends AbstractController
             ->from(Criterion::class, 'c')
             ->orderBy('c.code');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('c.code LIKE :tq')

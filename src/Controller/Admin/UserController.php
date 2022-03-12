@@ -29,6 +29,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -48,7 +49,7 @@ class UserController extends AbstractController
         TranslatorInterface $translator,
         UserPasswordEncoderInterface $passwordEncoder,
         Person $localUser = null
-    ) {
+    ): Response {
         $em = $this->getDoctrine()->getManager();
 
         if (null === $localUser) {
@@ -97,7 +98,7 @@ class UserController extends AbstractController
      * @Route("/listar/{page}", name="admin_user_list", requirements={"page" = "\d+"},
      *     methods={"GET"})
      */
-    public function listAction(Request $request, TranslatorInterface $translator, $page = 1)
+    public function listAction(Request $request, TranslatorInterface $translator, $page = 1): Response
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -108,7 +109,7 @@ class UserController extends AbstractController
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('p.id = :q')
@@ -143,7 +144,7 @@ class UserController extends AbstractController
     /**
      * @Route("/eliminar", name="admin_user_delete", methods={"POST"})
      */
-    public function deleteAction(Request $request, TranslatorInterface $translator)
+    public function deleteAction(Request $request, TranslatorInterface $translator): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -194,7 +195,9 @@ class UserController extends AbstractController
 
     /**
      * @param Person $user
+     * @param TranslatorInterface $translator
      * @param FormInterface $form
+     * @param UserPasswordEncoderInterface $passwordEncoder
      * @return string
      */
     private function processPasswordChange(
@@ -202,7 +205,7 @@ class UserController extends AbstractController
         TranslatorInterface $translator,
         FormInterface $form,
         UserPasswordEncoderInterface $passwordEncoder
-    ) {
+    ): string {
         // Si es solicitado, cambiar la contraseña
         $passwordSubmit = $form->get('changePassword');
         if (($passwordSubmit instanceof SubmitButton) && $passwordSubmit->isClicked()) {

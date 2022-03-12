@@ -20,6 +20,7 @@ namespace App\Controller\Admin;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -30,7 +31,7 @@ class MenuController extends AbstractController
     /**
      * @Route("/admin", name="admin", methods={"GET"})
      */
-    public function indexAction()
+    public function indexAction(): Response
     {
         return $this->render(
             'default/index.html.twig',

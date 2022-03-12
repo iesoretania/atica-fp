@@ -11,9 +11,9 @@ use Doctrine\DBAL\Types\DateTimeType;
 
 class UTCDateTimeType extends DateTimeType
 {
-    static private $utc = null;
+    private static $utc;
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    final public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         if ($value === null) {
             return null;
@@ -28,7 +28,7 @@ class UTCDateTimeType extends DateTimeType
         return $value->format($platform->getDateTimeFormatString());
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    final public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         if ($value === null) {
             return null;

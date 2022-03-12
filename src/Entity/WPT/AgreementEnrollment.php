@@ -116,7 +116,7 @@ class AgreementEnrollment
 
     public function __toString()
     {
-        return (string) $this->getAgreement() . ' - ' . $this->getStudentEnrollment();
+        return $this->getAgreement() . ' - ' . $this->getStudentEnrollment();
     }
 
     /**

@@ -22,6 +22,7 @@ use App\Entity\Edu\AcademicYear;
 use App\Entity\Organization;
 use App\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 class OrganizationRepository extends ServiceEntityRepository
@@ -60,7 +61,7 @@ class OrganizationRepository extends ServiceEntityRepository
      * Si no se especifica fecha, se devuelven todas a las que pertenece.
      *
      * @param Person $user
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     public function getMembershipByPersonQueryBuilder(Person $user)
     {

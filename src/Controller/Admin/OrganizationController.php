@@ -31,6 +31,7 @@ use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -49,7 +50,7 @@ class OrganizationController extends AbstractController
         OrganizationRepository $organizationRepository,
         TranslatorInterface $translator,
         Organization $organization = null
-    ) {
+    ): Response {
         $em = $this->getDoctrine()->getManager();
 
         if (null === $organization) {
@@ -75,12 +76,14 @@ class OrganizationController extends AbstractController
         return $this->render('admin/organization/form.html.twig', [
             'menu_path' => 'admin_organization_list',
             'breadcrumb' => [
-                ['fixed' => $organization->getId() ?
-                    (string) $organization :
-                    $translator->trans('title.new', [], 'organization')]
+                [
+                    'fixed' => $organization->getId() ?
+                        (string)$organization :
+                        $translator->trans('title.new', [], 'organization')
+                ]
             ],
             'title' => $translator->
-                trans($organization->getId() ? 'title.edit' : 'title.new', [], 'organization'),
+            trans($organization->getId() ? 'title.edit' : 'title.new', [], 'organization'),
             'form' => $form->createView(),
             'user' => $organization
         ]);
@@ -90,7 +93,7 @@ class OrganizationController extends AbstractController
      * @Route("/listar/{page}", name="admin_organization_list", requirements={"page" = "\d+"},
      *     defaults={"page" = "1"}, methods={"GET"})
      */
-    public function listAction(TranslatorInterface $translator, $page, Request $request)
+    public function listAction(TranslatorInterface $translator, $page, Request $request): Response
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -100,7 +103,7 @@ class OrganizationController extends AbstractController
             ->from('App:Organization', 'o')
             ->orderBy('o.name');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('o.id = :q')
@@ -139,8 +142,8 @@ class OrganizationController extends AbstractController
     public function operationAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        TranslatorInterface $translator)
-    {
+        TranslatorInterface $translator
+    ): Response {
         [$redirect, $organizations] = $this->processOperations($request, $translator, $userExtensionService);
 
         if ($redirect) {
@@ -192,6 +195,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @param Request $request
+     * @param TranslatorInterface $translator
      * @param $organizations
      * @param ObjectManager $em
      * @return bool
@@ -214,16 +218,23 @@ class OrganizationController extends AbstractController
 
     /**
      * @param Request $request
+     * @param TranslatorInterface $translator
      * @param ObjectManager $em
      * @return bool
      */
-    private function processSwitchOrganization(Request $request, TranslatorInterface $translator, $em)
-    {
+    private function processSwitchOrganization(
+        Request $request,
+        TranslatorInterface $translator,
+        ObjectManager $em
+    ): bool {
         $organization = $em->getRepository('App:Organization')->find($request->request->get('switch', null));
         if ($organization !== null) {
             $this->get('session')->set('organization_id', $organization->getId());
-            $this->addFlash('success', $translator->
-                trans('message.switched', ['%name%' => $organization->getName()], 'organization'));
+            $this->addFlash(
+                'success',
+                $translator->
+                trans('message.switched', ['%name%' => $organization->getName()], 'organization')
+            );
             return true;
         }
         return false;
@@ -237,7 +248,7 @@ class OrganizationController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService
-    ) {
+    ): array {
         $em = $this->getDoctrine()->getManager();
 
         $redirect = false;
@@ -253,7 +264,7 @@ class OrganizationController extends AbstractController
         $organizations = [];
         if (!$redirect) {
             $organizations = $em->getRepository('App:Organization')->
-                findAllInListByIdButCurrent($items, $userExtensionService->getCurrentOrganization());
+            findAllInListByIdButCurrent($items, $userExtensionService->getCurrentOrganization());
             $redirect = $this->processRemoveOrganizations($request, $translator, $organizations, $em);
         }
         return array($redirect, $organizations);

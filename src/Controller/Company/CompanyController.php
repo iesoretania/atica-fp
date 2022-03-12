@@ -32,6 +32,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -47,7 +48,7 @@ class CompanyController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService
-    ) {
+    ): Response {
         $company = new Company();
 
         $this->getDoctrine()->getManager()->persist($company);
@@ -64,7 +65,7 @@ class CompanyController extends AbstractController
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
         Company $company
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
 
@@ -121,7 +122,7 @@ class CompanyController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         $page = 1
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
@@ -135,7 +136,7 @@ class CompanyController extends AbstractController
             ->orderBy('c.name')
             ->addOrderBy('c.city');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('c.code LIKE :tq')
@@ -172,8 +173,8 @@ class CompanyController extends AbstractController
         Request $request,
         CompanyRepository $companyRepository,
         TranslatorInterface $translator,
-        UserExtensionService $userExtensionService)
-    {
+        UserExtensionService $userExtensionService
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
@@ -219,7 +220,7 @@ class CompanyController extends AbstractController
         UserExtensionService $userExtensionService,
         PersonRepository $personRepository,
         TranslatorInterface $translator
-    ) {
+    ): Response {
         $term = $request->get('q');
 
         $organization = $userExtensionService->getCurrentOrganization();

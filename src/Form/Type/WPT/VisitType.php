@@ -94,7 +94,7 @@ class VisitType extends AbstractType
                 ->findByWorkcenterAndTeacher($workcenter, $teacher);
 
             $startDate = clone $dateTime;
-            $startDate->setTime(0, 0, 0);
+            $startDate->setTime(0, 0);
             $endDate = clone $dateTime;
             $endDate->add(new \DateInterval('P1D'));
 

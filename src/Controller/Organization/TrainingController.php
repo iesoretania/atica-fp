@@ -128,7 +128,7 @@ class TrainingController extends AbstractController
             ->from(Training::class, 't')
             ->orderBy('t.name');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('t.name LIKE :tq')

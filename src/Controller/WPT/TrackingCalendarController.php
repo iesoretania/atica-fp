@@ -88,7 +88,7 @@ class TrackingCalendarController extends AbstractController
         $title = $translator->trans('title.calendar', [], 'wpt_tracking');
 
         $breadcrumb = [
-            ['fixed' => (string) $agreementEnrollment],
+            ['fixed' => (string)$agreementEnrollment],
             ['fixed' => $title]
         ];
 
@@ -136,7 +136,7 @@ class TrackingCalendarController extends AbstractController
             $agreementEnrollment
         );
 
-        if (!$trackedWorkDay instanceof \App\Entity\WPT\TrackedWorkDay) {
+        if (!$trackedWorkDay instanceof TrackedWorkDay) {
             throw $this->createAccessDeniedException();
         }
 
@@ -204,7 +204,7 @@ class TrackingCalendarController extends AbstractController
 
         $breadcrumb = [
             [
-                'fixed' => (string) $agreement,
+                'fixed' => (string)$agreement,
                 'routeName' => 'workplace_training_tracking_calendar_list',
                 'routeParams' => ['id' => $agreementEnrollment->getId()]
             ],
@@ -272,7 +272,7 @@ class TrackingCalendarController extends AbstractController
         }
 
         $trackedWorkDays = $trackedWorkDayRepository->
-            findInListByWorkDayIdAndAgreementEnrollment($items, $agreementEnrollment);
+        findInListByWorkDayIdAndAgreementEnrollment($items, $agreementEnrollment);
 
         // comprobar si es bloqueo de jornadas
         $locked = $request->get('lock') === '';
@@ -312,7 +312,7 @@ class TrackingCalendarController extends AbstractController
 
         $breadcrumb = [
             [
-                'fixed' => (string) $agreementEnrollment,
+                'fixed' => (string)$agreementEnrollment,
                 'routeName' => 'workplace_training_tracking_calendar_list',
                 'routeParams' => ['id' => $agreementEnrollment->getId()]
             ],
@@ -523,21 +523,22 @@ class TrackingCalendarController extends AbstractController
                 $hours[$day] = '';
 
                 foreach ($trackedWorkDay->getTrackedActivities() as $trackedActivity) {
-                    if ($trackedActivity->getActivity()->getCode() !== '' && $trackedActivity->getActivity()->getCode() !== null) {
+                    if ($trackedActivity->getActivity()->getCode() !== '' && $trackedActivity->getActivity()->getCode(
+                        ) !== null) {
                         $activities[$day] .= '<b>' .
                             htmlentities($trackedActivity->getActivity()->getCode()) . ': </b>';
                     }
                     $activities[$day] .= htmlentities($trackedActivity->getActivity()->getDescription()) . '<br/>';
                     if ($hours[$day] === '') {
                         $hours[$day] =
-                            '<ul style="list-style-position: inside; padding: 0; margin: 0; list-style: square;">';
+                            '<ul style="padding: 0; margin: 0; list-style: square inside;">';
                     }
                     $hours[$day] .= '<li>' . $translator->transChoice(
-                        'form.r_hours',
-                        $trackedActivity->getHours(),
-                        ['%hours%' => $trackedActivity->getHours() / 100.0],
-                        'calendar'
-                    );
+                            'form.r_hours',
+                            $trackedActivity->getHours(),
+                            ['%hours%' => $trackedActivity->getHours() / 100.0],
+                            'calendar'
+                        );
                 }
                 if ($hours[$day] !== '') {
                     $hours[$day] .= '</ul>';
@@ -559,10 +560,50 @@ class TrackingCalendarController extends AbstractController
             $first = reset($weekDays);
             $last = end($weekDays);
 
-            self::pdfWriteFixedPosHTML($mpdf, $first->getWorkDay()->getDate()->format('j'), 54.5, 33.5, 8, 5, 'auto', 'center');
-            self::pdfWriteFixedPosHTML($mpdf, $last->getWorkDay()->getDate()->format('j'), 67.5, 33.5, 10, 5, 'auto', 'center');
-            self::pdfWriteFixedPosHTML($mpdf, $translator->trans('r_month' . ($last->getWorkDay()->getDate()->format('n') - 1), [], 'calendar'), 85, 33.5, 23.6, 5, 'auto', 'center');
-            self::pdfWriteFixedPosHTML($mpdf, $last->getWorkDay()->getDate()->format('y'), 118.5, 33.5, 6, 5, 'auto', 'center');
+            self::pdfWriteFixedPosHTML(
+                $mpdf,
+                $first->getWorkDay()->getDate()->format('j'),
+                54.5,
+                33.5,
+                8,
+                5,
+                'auto',
+                'center'
+            );
+            self::pdfWriteFixedPosHTML(
+                $mpdf,
+                $last->getWorkDay()->getDate()->format('j'),
+                67.5,
+                33.5,
+                10,
+                5,
+                'auto',
+                'center'
+            );
+            self::pdfWriteFixedPosHTML(
+                $mpdf,
+                $translator->trans(
+                    'r_month' . ($last->getWorkDay()->getDate()->format('n') - 1),
+                    [],
+                    'calendar'
+                ),
+                85,
+                33.5,
+                23.6,
+                5,
+                'auto',
+                'center'
+            );
+            self::pdfWriteFixedPosHTML(
+                $mpdf,
+                $last->getWorkDay()->getDate()->format('y'),
+                118.5,
+                33.5,
+                6,
+                5,
+                'auto',
+                'center'
+            );
 
             // añadir números de página
             $weekCounter = $trackedWorkDayRepository->getWeekInformation($first);
@@ -570,13 +611,51 @@ class TrackingCalendarController extends AbstractController
             self::pdfWriteFixedPosHTML($mpdf, $weekCounter['total'], 254.8, 21.9, 6, 5, 'auto', 'center');
 
             // añadir campos de la cabecera
-            self::pdfWriteFixedPosHTML($mpdf, (string) $agreementEnrollment->getAgreement()->getWorkcenter(), 192, 40.8, 72, 5, 'auto', 'left');
-            self::pdfWriteFixedPosHTML($mpdf, $agreementEnrollment->getAgreement()->getShift()->getGrade()->getTraining()->getAcademicYear()->getOrganization(), 62.7, 40.9, 80, 5, 'auto', 'left');
-            self::pdfWriteFixedPosHTML($mpdf, (string) $agreementEnrollment->getEducationalTutor(), 97.5, 46.5, 46, 5, 'auto', 'left');
-            self::pdfWriteFixedPosHTML($mpdf, (string) $agreementEnrollment->getWorkTutor(), 198, 46.5, 66, 5, 'auto', 'left');
-            self::pdfWriteFixedPosHTML($mpdf, (string) $agreementEnrollment->getStudentEnrollment()->getGroup()->getGrade()->getTraining(), 172, 54, 61, 5, 'auto', 'left');
-            self::pdfWriteFixedPosHTML($mpdf, (string) $agreementEnrollment->getAgreement()->getShift()->getType(), 244, 54, 20, 5, 'auto', 'left');
-            self::pdfWriteFixedPosHTML($mpdf, (string) $agreementEnrollment->getStudentEnrollment()->getPerson(), 63, 54, 80, 5, 'auto', 'left');
+            self::pdfWriteFixedPosHTML(
+                $mpdf,
+                (string)$agreementEnrollment->getAgreement()->getWorkcenter(),
+                192,
+                40.8,
+                72,
+                5
+            );
+            self::pdfWriteFixedPosHTML(
+                $mpdf,
+                $agreementEnrollment->getAgreement()->getShift()->getGrade()->getTraining()->getAcademicYear(
+                )->getOrganization(),
+                62.7,
+                40.9,
+                80,
+                5,
+                'auto',
+                'left'
+            );
+            self::pdfWriteFixedPosHTML($mpdf, (string)$agreementEnrollment->getEducationalTutor(), 97.5, 46.5, 46, 5);
+            self::pdfWriteFixedPosHTML($mpdf, (string)$agreementEnrollment->getWorkTutor(), 198, 46.5, 66, 5);
+            self::pdfWriteFixedPosHTML(
+                $mpdf,
+                (string)$agreementEnrollment->getStudentEnrollment()->getGroup()->getGrade()->getTraining(),
+                172,
+                54,
+                61,
+                5
+            );
+            self::pdfWriteFixedPosHTML(
+                $mpdf,
+                $agreementEnrollment->getAgreement()->getShift()->getType(),
+                244,
+                54,
+                20,
+                5
+            );
+            self::pdfWriteFixedPosHTML(
+                $mpdf,
+                (string)$agreementEnrollment->getStudentEnrollment()->getPerson(),
+                63,
+                54,
+                80,
+                5
+            );
 
             // añadir actividades semanales
             for ($n = 1; $n < 6; $n++) {
@@ -589,15 +668,55 @@ class TrackingCalendarController extends AbstractController
                     $hour = '';
                     $note = '';
                 }
-                self::pdfWriteFixedPosHTML($mpdf, $activity, 58, 73.0 + ($n - 1) * 17.8, 128, 15.8, 'auto', 'left', false);
+                self::pdfWriteFixedPosHTML(
+                    $mpdf,
+                    $activity,
+                    58,
+                    73.0 + ($n - 1) * 17.8,
+                    128,
+                    15.8,
+                    'auto',
+                    'left',
+                    false
+                );
                 self::pdfWriteFixedPosHTML($mpdf, $hour, 189, 73.0 + ($n - 1) * 17.8, 25, 15.8, 'auto', 'left', false);
-                self::pdfWriteFixedPosHTML($mpdf, $note, 217.5, 73.0 + ($n - 1) * 17.8, 46, 15.8, 'auto', 'justify', true);
+                self::pdfWriteFixedPosHTML(
+                    $mpdf,
+                    $note,
+                    217.5,
+                    73.0 + ($n - 1) * 17.8,
+                    46,
+                    15.8,
+                    'auto',
+                    'justify'
+                );
             }
 
             // añadir pie de firmas
-            self::pdfWriteFixedPosHTML($mpdf, (string) $agreementEnrollment->getStudentEnrollment()->getPerson(), 68, 185.4, 53, 5, 'auto', 'left');
-            self::pdfWriteFixedPosHTML($mpdf, (string) $agreementEnrollment->getEducationalTutor(), 136, 186.9, 53, 5, 'auto', 'left');
-            self::pdfWriteFixedPosHTML($mpdf, (string) $agreementEnrollment->getWorkTutor(), 204, 184.9, 53, 5, 'auto', 'left');
+            self::pdfWriteFixedPosHTML(
+                $mpdf,
+                (string)$agreementEnrollment->getStudentEnrollment()->getPerson(),
+                68,
+                185.4,
+                53,
+                5
+            );
+            self::pdfWriteFixedPosHTML(
+                $mpdf,
+                (string)$agreementEnrollment->getEducationalTutor(),
+                136,
+                186.9,
+                53,
+                5
+            );
+            self::pdfWriteFixedPosHTML(
+                $mpdf,
+                (string)$agreementEnrollment->getWorkTutor(),
+                204,
+                184.9,
+                53,
+                5
+            );
 
             // si no está bloqueada la semana, agregar la marca de agua de borrador
             if (!$isLocked) {
@@ -724,14 +843,14 @@ class TrackingCalendarController extends AbstractController
             $this->isGranted(AgreementEnrollmentVoter::ATTENDANCE, $agreementEnrollment);
 
         return new JsonResponse([
-            'selectable' => $selectable,
-            'activity_stats' => $activityStats,
-            'activity_tracked_count' => $activityTrackedCount,
-            'activity_total_count' => $activityTotalCount,
-            'activity_total_hours' => $activityTotalHours,
-            'calendar' => $newData,
-            'read_only' => $readOnly
-        ]);
+                                    'selectable' => $selectable,
+                                    'activity_stats' => $activityStats,
+                                    'activity_tracked_count' => $activityTrackedCount,
+                                    'activity_total_count' => $activityTotalCount,
+                                    'activity_total_hours' => $activityTotalHours,
+                                    'calendar' => $newData,
+                                    'read_only' => $readOnly
+                                ]);
     }
 
     /**
@@ -756,7 +875,7 @@ class TrackingCalendarController extends AbstractController
                                     ], 500);
         }
 
-        if (!$trackedWorkDay instanceof \App\Entity\WPT\TrackedWorkDay) {
+        if (!$trackedWorkDay instanceof TrackedWorkDay) {
             throw $this->createAccessDeniedException();
         }
 
@@ -790,21 +909,21 @@ class TrackingCalendarController extends AbstractController
             ];
         }
         return new JsonResponse([
-            'read_only' => $readOnly,
-            'tracked_work_day' => [
-                'id' => $trackedWorkDay->getId(),
-                'date' => $trackedWorkDay->getWorkDay()->getDate(),
-                'hours' => $trackedWorkDay->getWorkDay()->getHours() * 100,
-                'absence' => $trackedWorkDay->getAbsence(),
-                'notes' => $trackedWorkDay->getNotes(),
-                'start_time1' => $trackedWorkDay->getStartTime1(),
-                'start_time2' => $trackedWorkDay->getStartTime2(),
-                'end_time1' => $trackedWorkDay->getEndTime1(),
-                'end_time2' => $trackedWorkDay->getEndTime2(),
-                'other_activities' => $trackedWorkDay->getOtherActivities()
-            ],
-            'tracked_activities' => $trackedActivitiesData
-        ]);
+                                    'read_only' => $readOnly,
+                                    'tracked_work_day' => [
+                                        'id' => $trackedWorkDay->getId(),
+                                        'date' => $trackedWorkDay->getWorkDay()->getDate(),
+                                        'hours' => $trackedWorkDay->getWorkDay()->getHours() * 100,
+                                        'absence' => $trackedWorkDay->getAbsence(),
+                                        'notes' => $trackedWorkDay->getNotes(),
+                                        'start_time1' => $trackedWorkDay->getStartTime1(),
+                                        'start_time2' => $trackedWorkDay->getStartTime2(),
+                                        'end_time1' => $trackedWorkDay->getEndTime1(),
+                                        'end_time2' => $trackedWorkDay->getEndTime2(),
+                                        'other_activities' => $trackedWorkDay->getOtherActivities()
+                                    ],
+                                    'tracked_activities' => $trackedActivitiesData
+                                ]);
     }
 
     /**
@@ -823,10 +942,10 @@ class TrackingCalendarController extends AbstractController
                 AgreementEnrollmentVoter::ATTENDANCE,
                 $trackedWorkDay->getAgreementEnrollment()
             );
-            $absence = $request->get('absence');
-            if ($absence != TrackedWorkDay::NO_ABSENCE
-                && $absence != TrackedWorkDay::JUSTIFIED_ABSENCE
-                && $absence != TrackedWorkDay::UNJUSTIFIED_ABSENCE) {
+            $absence = (int) $request->get('absence');
+            if ($absence !== TrackedWorkDay::NO_ABSENCE
+                && $absence !== TrackedWorkDay::JUSTIFIED_ABSENCE
+                && $absence !== TrackedWorkDay::UNJUSTIFIED_ABSENCE) {
                 return $this->createAccessDeniedException();
             }
             $trackedWorkDay->setAbsence($absence);
@@ -843,12 +962,12 @@ class TrackingCalendarController extends AbstractController
         try {
             $em->flush();
             return new JsonResponse([
-                'result' => 'ok'
-            ]);
+                                        'result' => 'ok'
+                                    ]);
         } catch (\Exception $e) {
             return new JsonResponse([
-                'result' => 'error'
-            ], 500);
+                                        'result' => 'error'
+                                    ], 500);
         }
     }
 
@@ -888,7 +1007,7 @@ class TrackingCalendarController extends AbstractController
         $found = false;
         foreach ($trackedActivities as $trackedActivity) {
             if ($trackedActivity->getActivity() === $activity) {
-                $trackedActivity->setHours((int) $request->get('hours'));
+                $trackedActivity->setHours((int)$request->get('hours'));
                 $found = true;
             }
             if ($trackedActivity->getHours() == 0) {
@@ -903,20 +1022,20 @@ class TrackingCalendarController extends AbstractController
 
         if (!$found) {
             return new JsonResponse([
-                'result' => 'not found'
-            ], 404);
+                                        'result' => 'not found'
+                                    ], 404);
         }
 
         try {
             $trackedWorkDay->setTrackedActivities($trackedActivities);
             $em->flush();
             return new JsonResponse([
-                'result' => 'ok'
-            ]);
+                                        'result' => 'ok'
+                                    ]);
         } catch (\Exception $e) {
             return new JsonResponse([
-                'result' => 'error'
-            ], 500);
+                                        'result' => 'error'
+                                    ], 500);
         }
     }
 }

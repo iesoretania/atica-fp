@@ -128,7 +128,7 @@ class GroupController extends AbstractController
             ->innerJoin('g.grade', 'gr')
             ->innerJoin('gr.training', 't');
 
-        $q = $request->get('q', null);
+        $q = $request->get('q');
         if ($q) {
             $queryBuilder
                 ->where('g.name LIKE :tq')
