@@ -32,10 +32,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Shift
 {
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    public $studentEnrollments;
     public const QUARTER_FIRST = 1;
     public const QUARTER_SECOND = 2;
     public const QUARTER_THIRD = 3;
@@ -139,7 +135,6 @@ class Shift
 
     public function __construct()
     {
-        $this->studentEnrollments = new ArrayCollection();
         $this->agreements = new ArrayCollection();
         $this->activities = new ArrayCollection();
     }

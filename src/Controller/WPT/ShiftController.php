@@ -198,57 +198,6 @@ class ShiftController extends AbstractController
     }
 
     /**
-     * @Route("/estudiantes/{id}", name="workplace_training_shift_student_enrollment",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function studentEnrollmentsAction(
-        Request $request,
-        TranslatorInterface $translator,
-        Shift $shift
-    ) {
-        $organization = $shift->getGrade()->getTraining()->getAcademicYear()->getOrganization();
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
-
-        $em = $this->getDoctrine()->getManager();
-
-        $form = $this->createForm(ShiftStudentEnrollmentType::class, $shift, [
-            'groups' => $shift->getGrade()->getGroups()
-        ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $em->flush();
-                $this->addFlash('success', $translator->trans('message.saved', [], 'wpt_shift'));
-                return $this->redirectToRoute('workplace_training_shift_list', [
-                    'academicYear' => $shift->getGrade()->getTraining()->getAcademicYear()->getId()
-                ]);
-            } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.error', [], 'wpt_shift'));
-            }
-        }
-
-        $title = $translator->trans(
-            'title.student_enrollment',
-            [],
-            'wpt_shift'
-        );
-
-        $breadcrumb = [
-            ['fixed' => $shift->getName()],
-            ['fixed' => $translator->trans('title.student_enrollment', [], 'wpt_shift')]
-        ];
-
-        return $this->render('wpt/shift/student_enrollment_form.html.twig', [
-            'menu_path' => 'workplace_training_shift_list',
-            'breadcrumb' => $breadcrumb,
-            'title' => $title,
-            'form' => $form->createView()
-        ]);
-    }
-
-    /**
      * @Route("/eliminar/{academicYear}", name="workplace_training_shift_operation",
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
