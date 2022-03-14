@@ -1,0 +1,137 @@
+{% trans_default_domain 'wlt_report' %}
+<html>
+<head>
+    <title>{{ 'title.learning_program'|trans }} - {{ project.organization }} - {{ project }}</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        table {
+            font-family: dejavusanscondensed, sans-serif;
+            border-style: solid;
+            border-width: 1px;
+            border-collapse: collapse;
+        }
+
+        table td {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        table th {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        table.data {
+            width: 100%;
+        }
+
+        table.data td {
+            padding: 0.3em;
+        }
+
+        table.data td.info {
+            font-family: dejavusanscondensed, sans-serif;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        table.survey {
+            margin-top: 1em;
+            width: 100%;
+        }
+
+        table.survey td {
+            padding: 0.3em;
+        }
+
+        table.survey th {
+            background-color: #cccccc;
+            padding: 0.3em;
+        }
+
+        table.survey {
+            font-size: 80%;
+        }
+
+        table.survey tfoot th {
+            font-size: 120%;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
+    <h2>{{ 'title.learning_program'|trans }}</h2>
+    <h3>{{ 'title.learning_program.summary'|trans }}</h3>
+    <table class="survey">
+        <thead>
+        <tr>
+            <th width="70%">{{ 'header.company'|trans }}</th>
+            <th width="30%">{{ 'header.activity_count'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for learning_program in learning_programs %}
+            <tr>
+                <td>{{ learning_program.company }}</td>
+                <td>{{ learning_program.activityRealizations.count() }}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="4">{{ 'report.no_learning_programs'|trans }}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% for learning_program in learning_programs %}
+        <pagebreak></pagebreak>
+
+        <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
+        <h2>{{ 'title.company'|trans }}: {{ learning_program.company }}</h2>
+
+        <table class="survey">
+            <thead>
+            <tr>
+                <th width="70%">{{ 'header.activity_realization'|trans }}</th>
+                <th width="30%">{{ 'header.learning_outcomes'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% set last_activity = null %}
+            {% for activity_realization in learning_program.activityRealizations %}
+                {% if last_activity != activity_realization.activity.id %}
+                    {% set last_activity = activity_realization.activity.id %}
+                    <tr>
+                        <th colspan="2">{{ activity_realization.activity }}</th>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td>{% if activity_realization.code %}<b>{{ activity_realization.code }}: </b> {% endif %}{{ activity_realization.description }}</td>
+                    <td>
+                        <ul>
+                            {% for subject, learning_outcomes in activity_realization.subjectLearningOutcomes %}
+                                <li>
+                                    <i>{{ subject }}: </i>
+                                    {% for learning_outcome in learning_outcomes %}
+                                        {{ learning_outcome.code }}{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+</body>
+</html>

@@ -271,6 +271,17 @@ class WLTMenu implements MenuBuilderInterface
                     ->setPriority(6000);
 
                 $menu2->addChild($menu3);
+
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('work_linked_training_report_learning_program')
+                    ->setRouteName('work_linked_training_report_learning_program_list')
+                    ->setCaption('menu.work_linked_training.report.learning_program')
+                    ->setDescription('menu.work_linked_training.report.learning_program.detail')
+                    ->setIcon('chalkboard-teacher')
+                    ->setPriority(7000);
+
+                $menu2->addChild($menu3);
             }
         }
 

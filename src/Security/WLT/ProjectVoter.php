@@ -38,6 +38,7 @@ class ProjectVoter extends CachedVoter
     public const REPORT_MEETING = 'WLT_MEETING_REPORT';
     public const REPORT_ATTENDANCE = 'WLT_ATTENDANCE_REPORT';
     public const REPORT_GRADING = 'WLT_GRADING_REPORT';
+    public const REPORT_LEARNING_PROGRAM = 'WLT_LEARNING_PROGRAM';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -73,7 +74,8 @@ class ProjectVoter extends CachedVoter
             self::REPORT_ORGANIZATION_SURVEY,
             self::REPORT_MEETING,
             self::REPORT_ATTENDANCE,
-            self::REPORT_GRADING
+            self::REPORT_GRADING,
+            self::REPORT_LEARNING_PROGRAM
         ], true);
     }
 
@@ -149,6 +151,7 @@ class ProjectVoter extends CachedVoter
             case self::REPORT_MEETING:
             case self::REPORT_ATTENDANCE:
             case self::REPORT_GRADING:
+            case self::REPORT_LEARNING_PROGRAM:
                 return $isProjectManager || $isDepartmentHead;
 
             case self::REPORT_ORGANIZATION_SURVEY:

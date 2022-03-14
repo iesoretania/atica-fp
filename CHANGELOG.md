@@ -18,6 +18,7 @@ en las distintas versiones de la misma.
 * chore: Aplicado RectorPHP para actualizar el código
 * chore: Eliminado formulario y controlador no usados en la gestión de FCT
 * chore: Limpieza de código
+* feat: Nuevo informe de resumen de programa formativo de FP dual
 
 4.1.0 (2022-02-13)
 ------------------

@@ -127,6 +127,9 @@ menu.work_linked_training.report.attendance.detail: Generar el informe resumen d
 menu.work_linked_training.report.grading: Resumen de evaluación
 menu.work_linked_training.report.grading.detail: Generar el informe resumen de evaluación del alumnado de FP dual
 
+menu.work_linked_training.report.learning_program: Resumen de programa formativo
+menu.work_linked_training.report.learning_program.detail: Generar el informe de programa formativo del proyecto de FP dual
+
 menu.workplace_training: FCT
 menu.workplace_training.detail: Actividades relacionadas con la Formación en Centros de Trabajo
 

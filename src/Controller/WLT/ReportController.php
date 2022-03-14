@@ -28,6 +28,7 @@ use App\Repository\Edu\SubjectRepository;
 use App\Repository\SurveyQuestionRepository;
 use App\Repository\WLT\ActivityRealizationRepository;
 use App\Repository\WLT\AgreementRepository;
+use App\Repository\WLT\LearningProgramRepository;
 use App\Repository\WLT\MeetingRepository;
 use App\Repository\WLT\WLTAnsweredSurveyRepository;
 use App\Repository\WLT\WLTTeacherRepository;
@@ -209,6 +210,30 @@ class ReportController extends AbstractController
             $academicYearRepository,
             'title.grading',
             'work_linked_training_report_grading_report',
+            $academicYear,
+            $page
+        );
+    }
+
+    /**
+     * @Route("/programa_formativo/listar/{academicYear}/{page}", name="work_linked_training_report_learning_program_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
+     */
+    public function learningProgramListAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        AcademicYearRepository $academicYearRepository,
+        AcademicYear $academicYear = null,
+        $page = 1
+    ) {
+        return $this->genericListAction(
+            $request,
+            $userExtensionService,
+            $translator,
+            $academicYearRepository,
+            'title.learning_program',
+            'work_linked_training_report_learning_program_report',
             $academicYear,
             $page
         );
@@ -610,6 +635,38 @@ class ReportController extends AbstractController
             . $project->getName() . '.pdf';
 
         $mpdfService = new MpdfService();
+        $response = $mpdfService->generatePdfResponse($html);
+        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/programa_formativo/{id}", name="work_linked_training_report_learning_program_report",
+     *     requirements={"id" = "\d+"}, methods={"GET"})
+     */
+    public function learningProgramReportAction(
+        TranslatorInterface $translator,
+        Environment $engine,
+        LearningProgramRepository $wltLearningProgramRepository,
+        Project $project
+    ) {
+        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_ATTENDANCE, $project);
+
+        $learningPrograms = $wltLearningProgramRepository->findByProject($project);
+
+        $html = $engine->render('wlt/report/learning_program_report.html.twig', [
+            'project' => $project,
+            'learning_programs' => $learningPrograms
+        ]);
+
+        $fileName = $translator->trans('title.learning_program', [], 'wlt_report')
+            . ' - ' . $project->getOrganization() . ' - '
+            . $project->getName() . '.pdf';
+
+        $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
+
         $response = $mpdfService->generatePdfResponse($html);
         $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
 

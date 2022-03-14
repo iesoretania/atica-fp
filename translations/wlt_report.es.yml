@@ -12,6 +12,10 @@ title.meeting_teacher: Resumen de tutorización por docente
 
 title.grading: Resumen de evaluación por estudiante
 
+title.learning_program: Programa formativo
+title.learning_program.summary: Resumen del programa formativo del proyecto
+title.company: Empresa
+
 report.academic_year: "Curso académico:"
 report.student: "Estudiante:"
 report.workcenter: "Centro de trabajo:"
@@ -46,6 +50,13 @@ header.academic_year: Curso académico
 header.datetime: Fecha y hora
 header.teachers: Profesorado
 header.info: Información
+
+report.no_learning_programs: No hay programas formativos en el proyecto
+header.company: Empresa
+header.activity_count: Actividades formativo/productivas
+header.code: Código
+header.activity_realization: Actividad formativo/productiva
+header.learning_outcomes: Resultados de aprendizajes asociados
 
 report.status.answered: Sí
 report.status.unanswered: No
