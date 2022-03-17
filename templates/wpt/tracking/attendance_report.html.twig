@@ -80,26 +80,28 @@
     <tbody>
         <tr>
             {% set total = 0 %}
-            {% for data in workdays if data and (data[2] > 0 or (data[1] and data[1].otherActivities is not empty)) %}
-                {% set total = total + 1 %}
-                {% set workday = data[0] %}
-                {% set trackedWorkday = data[1] %}
-                <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.date|date('report.date_format'|trans) }}</td>
-                <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ trackedWorkday.startTime1|slice(0, 5)|default('report.no_data'|trans) }}</td>
-                <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ trackedWorkday.endTime1|slice(0, 5)|default('report.no_data'|trans) }}</td>
-                {% set column = column + 1 %}
-                {% if column == 4 %}
-                    {% set column = 0 %}
-                    </tr><tr>
-                {% endif %}
-                {% if trackedWorkday.startTime2 %}
+            {% for data in workdays %}
+                {% if data and (data[2] > 0 or (data[1] and data[1].otherActivities is not empty)) %}
+                    {% set total = total + 1 %}
+                    {% set workday = data[0] %}
+                    {% set trackedWorkday = data[1] %}
                     <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.date|date('report.date_format'|trans) }}</td>
-                    <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ trackedWorkday.startTime2|slice(0, 5)|default('report.no_data'|trans) }}</td>
-                    <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ trackedWorkday.endTime2|slice(0, 5)|default('report.no_data'|trans) }}</td>
+                    <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ trackedWorkday.startTime1|slice(0, 5)|default('report.no_data'|trans) }}</td>
+                    <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ trackedWorkday.endTime1|slice(0, 5)|default('report.no_data'|trans) }}</td>
                     {% set column = column + 1 %}
                     {% if column == 4 %}
                         {% set column = 0 %}
                         </tr><tr>
+                    {% endif %}
+                    {% if trackedWorkday.startTime2 %}
+                        <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.date|date('report.date_format'|trans) }}</td>
+                        <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ trackedWorkday.startTime2|slice(0, 5)|default('report.no_data'|trans) }}</td>
+                        <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ trackedWorkday.endTime2|slice(0, 5)|default('report.no_data'|trans) }}</td>
+                        {% set column = column + 1 %}
+                        {% if column == 4 %}
+                            {% set column = 0 %}
+                            </tr><tr>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             {% endfor %}
