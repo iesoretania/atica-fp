@@ -12,4 +12,4 @@ twig:
         app_repository: 'https://github.com/iesoretania/atica-fp'
         app_version:  ''
         user_extension: '@App\Service\UserExtensionService'
-        menu_extension: "@app.menu_builders_chain"
+        menu_extension: '@App\Service\MenuBuilderChain'

@@ -20,7 +20,6 @@ namespace App\Controller\Organization\Import;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
-use App\Entity\Organization;
 use App\Entity\Person;
 use App\Form\Model\TeacherImport;
 use App\Form\Type\Import\TeacherImportType;
@@ -93,8 +92,9 @@ class TeacherImportController extends AbstractController
 
     /**
      * @param string $file
-     * @param Organization $organization
      * @param AcademicYear $academicYear
+     * @param UserPasswordEncoderInterface $encoder
+     * @param PersonRepository $personRepository
      * @param array $options
      * @return array|null
      */
@@ -159,8 +159,7 @@ class TeacherImportController extends AbstractController
                             $em->persist($person);
                             $newPersonCollection[$userName] = $person;
                             $newUserCount++;
-                        }
-                        else {
+                        } else {
                              $existingUsers++;
                         }
 
@@ -177,13 +176,11 @@ class TeacherImportController extends AbstractController
                         $teacher
                             ->setAcademicYear($academicYear)
                             ->setPerson($person);
-                        $em->flush(); // hack, o no funciona con nuevos profesores. TODO: Investigar
                         $em->persist($teacher);
+                        $em->flush(); // hack, o no funciona con nuevos profesores. TODO: Investigar
                     }
                 }
             }
-            $em->flush();
-
             $em->flush();
         } catch (Exception $e) {
             return null;

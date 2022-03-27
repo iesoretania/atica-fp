@@ -54,13 +54,16 @@ services:
     # please note that last definitions always *replace* previous ones
     _instanceof:
         App\Service\MenuBuilderInterface:
-            tags: [ app.menu ]
+            tags: [ 'app.menu' ]
 
+        App\Service\OrganizationBuilderInterface:
+            tags: [ 'app.organization' ]
 
-    app.menu_builders_chain:
-        class: App\Service\MenuBuilderChain
-        arguments:
-            - !tagged_iterator app.menu
+    App\Service\MenuBuilderChain:
+        arguments: [!tagged { tag: 'app.menu' }]
+
+    App\Service\OrganizationBuilderChain:
+        arguments: [!tagged { tag: 'app.organization' }]
 
     App\Service\MailerService:
         autowire: false

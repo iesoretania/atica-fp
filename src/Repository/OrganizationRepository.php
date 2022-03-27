@@ -21,15 +21,20 @@ namespace App\Repository;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Organization;
 use App\Entity\Person;
+use App\Service\OrganizationBuilderChain;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 class OrganizationRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /** @var OrganizationBuilderChain */
+    private $builderChain;
+
+    public function __construct(ManagerRegistry $registry, OrganizationBuilderChain $builderChain)
     {
         parent::__construct($registry, Organization::class);
+        $this->builderChain = $builderChain;
     }
 
     public function createEducationalOrganization()
@@ -71,11 +76,14 @@ class OrganizationRepository extends ServiceEntityRepository
         }
 
         $query = $this->createQueryBuilder('o');
+
+        $organizations = $this->builderChain->getOrganizations($user);
         return $query
             //->andWhere('m.user = :user')
-            //->setParameter('user', $user)
             ->distinct()
-            ->orderBy('o.name');
+            ->orderBy('o.name')
+            ->andWhere('o IN (:organizations)')
+            ->setParameter('organizations', $organizations);
     }
 
     /**

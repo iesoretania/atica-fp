@@ -21,11 +21,9 @@
             <a href="{{ path('frontpage', {'id': app.user.id, '_switch_user': '_exit'}) }}" class="btn btn-primary btn-block"><i class="fas fa-arrow-left"></i> {{ 'form.user.impersonate.exit'|trans }}</a>
         {% endif %}
         {{ form_end(form) }}
-        {% if not app.session.has('organization_selected') %}
-            <div class="extra-action">
-                <a href="{{ path('logout') }}">{{ 'form.login.organization.back'|trans }}</a>
-            </div>
-        {% endif %}
+        <div class="extra-action">
+            <a href="{{ path('logout') }}">{{ 'form.login.organization.back'|trans }}</a>
+        </div>
     </form>
     {% else %}
         <div class="alert alert-warning">{{ 'form.login.error.no_membership'|trans }}</div>
