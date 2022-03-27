@@ -81,7 +81,7 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findOneByAgreementAndDate(Agreement $agreement, \DateTime $date)
+    public function findOneByAgreementAndDate(Agreement $agreement, \DateTimeInterface $date)
     {
         return $this->createQueryBuilder('wr')
             ->where('wr.agreement = :agreement')

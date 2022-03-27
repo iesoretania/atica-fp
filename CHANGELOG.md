@@ -12,6 +12,7 @@ en las distintas versiones de la misma.
 * fix: Comprobar correctamente las encuestas si no están definidas
 * fix: Si se intenta forzar un cambio de contraseña no válido, redirigir
 * fix: Solucionado otro problema con una plantilla no actualizada
+* fix: Intento de solucionar la copia del calendario
 
 4.1.0 (2022-02-13)
 ------------------

@@ -239,15 +239,17 @@ class AgreementRepository extends ServiceEntityRepository
             return;
         }
 
+        $utc = new \DateTimeZone('UTC');
+
         /** @var WorkDay $workDay */
         foreach ($workDays as $workDay) {
-            $newDate = clone $workDay->getDate();
+            $newDate = new \DateTimeImmutable($workDay->getDate()->format('Y/m/d'), $utc);
             $newWorkDay = $this->workDayRepository->findOneByAgreementAndDate($destination, $newDate);
             if (null === $newWorkDay) {
                 $newWorkDay = new WorkDay();
                 $newWorkDay
                     ->setAgreement($destination)
-                    ->setDate($newDate)
+                    ->setDate(new \DateTime($newDate->format('Y/m/d'), $utc))
                     ->setHours($workDay->getHours());
                 $this->getEntityManager()->persist($newWorkDay);
             } elseif ($overwrite) {
