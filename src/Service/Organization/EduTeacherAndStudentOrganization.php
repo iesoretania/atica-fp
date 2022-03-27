@@ -21,23 +21,17 @@ namespace App\Service\Organization;
 use App\Entity\Person;
 use App\Repository\Edu\EduOrganizationRepository;
 use App\Service\OrganizationBuilderInterface;
-use Symfony\Component\Security\Core\Security;
 
-class EduOrganization implements OrganizationBuilderInterface
+class EduTeacherAndStudentOrganization implements OrganizationBuilderInterface
 {
     /**
      * @var EduOrganizationRepository
      */
     private $eduOrganizationRepository;
-    /**
-     * @var Security
-     */
-    private $security;
 
-    public function __construct(EduOrganizationRepository $eduOrganizationRepository, Security $security)
+    public function __construct(EduOrganizationRepository $eduOrganizationRepository)
     {
         $this->eduOrganizationRepository = $eduOrganizationRepository;
-        $this->security = $security;
     }
 
     public function getOrganizations(Person $person): array

@@ -493,11 +493,11 @@ class Person implements UserInterface
     /**
      * Set tokenExpiration
      *
-     * @param \DateTime $tokenExpiration
+     * @param ?\DateTime $tokenExpiration
      *
      * @return Person
      */
-    public function setTokenExpiration(\DateTimeInterface $tokenExpiration)
+    public function setTokenExpiration(?\DateTimeInterface $tokenExpiration)
     {
         $this->tokenExpiration = $tokenExpiration;
 
