@@ -25,6 +25,7 @@ use App\Form\Type\OrganizationType;
 use App\Repository\OrganizationRepository;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ObjectManager;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -141,7 +142,7 @@ class OrganizationController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator)
     {
-        list($redirect, $organizations) = $this->processOperations($request, $userExtensionService);
+        list($redirect, $organizations) = $this->processOperations($request, $userExtensionService, $translator);
 
         if ($redirect) {
             return $this->redirectToRoute('admin_organization_list');
@@ -222,7 +223,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @param Request $request
-     * @param \Doctrine\Common\Persistence\ObjectManager $em
+     * @param ObjectManager $em
      * @return bool
      */
     private function processSwitchOrganization(Request $request, TranslatorInterface $translator, $em)
@@ -241,13 +242,13 @@ class OrganizationController extends AbstractController
      * @param Request $request
      * @return array
      */
-    private function processOperations(Request $request, UserExtensionService $userExtensionService)
+    private function processOperations(Request $request, UserExtensionService $userExtensionService, TranslatorInterface $translator)
     {
         $em = $this->getDoctrine()->getManager();
 
         $redirect = false;
         if ($request->request->has('switch')) {
-            $redirect = $this->processSwitchOrganization($request, $em);
+            $redirect = $this->processSwitchOrganization($request, $translator, $em);
         }
 
         $items = $request->request->get('organizations', []);
@@ -259,7 +260,7 @@ class OrganizationController extends AbstractController
         if (!$redirect) {
             $organizations = $em->getRepository('App:Organization')->
                 findAllInListByIdButCurrent($items, $userExtensionService->getCurrentOrganization());
-            $redirect = $this->processRemoveOrganizations($request, $organizations, $em);
+            $redirect = $this->processRemoveOrganizations($request, $translator, $organizations, $em);
         }
         return array($redirect, $organizations);
     }

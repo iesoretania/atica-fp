@@ -13,6 +13,7 @@ en las distintas versiones de la misma.
 * fix: Si se intenta forzar un cambio de contraseña no válido, redirigir
 * fix: Solucionado otro problema con una plantilla no actualizada
 * fix: Intento de solucionar la copia del calendario
+* fix: Solucionado problema con la administración de las organizaciones
 
 4.1.0 (2022-02-13)
 ------------------
