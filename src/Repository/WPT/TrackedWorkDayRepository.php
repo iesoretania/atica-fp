@@ -18,6 +18,7 @@
 
 namespace App\Repository\WPT;
 
+use App\Entity\WPT\ActivityTracking;
 use App\Entity\WPT\AgreementEnrollment;
 use App\Entity\WPT\TrackedWorkDay;
 use App\Entity\WPT\WorkDay;
@@ -195,13 +196,13 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
                 ->select('SUM(wd.hours)')
                 ->from(WorkDay::class, 'wd')
                 ->addSelect('SUM(CASE WHEN twd.absence = 0 THEN twd.locked * wd.hours ELSE 0 END)')
-                ->addSelect('SUM(CASE WHEN twd.absence = 1 THEN wd.hours ELSE 0 END)')
-                ->addSelect('SUM(CASE WHEN twd.absence = 2 THEN wd.hours ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN twd.absence = 1 THEN twd.locked * wd.hours ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN twd.absence = 2 THEN twd.locked * wd.hours ELSE 0 END)')
                 ->addSelect('SUM(CASE WHEN twd.locked = 1 THEN wd.hours ELSE 0 END)')
                 ->addSelect('COUNT(wd)')
                 ->addSelect('SUM(CASE WHEN twd.absence = 0 THEN twd.locked ELSE 0 END)')
-                ->addSelect('SUM(CASE WHEN twd.absence = 1 THEN 1 ELSE 0 END)')
-                ->addSelect('SUM(CASE WHEN twd.absence = 2 THEN 1 ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN twd.absence = 1 THEN twd.locked ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN twd.absence = 2 THEN twd.locked ELSE 0 END)')
                 ->addSelect('SUM(twd.locked)')
                 ->join('wd.agreement', 'a')
                 ->leftJoin(
@@ -285,5 +286,17 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
         }
 
         return $trackedWorkDay;
+    }
+
+    public function realHoursByAgreementEnrollment(AgreementEnrollment $agreementEnrollment)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('SUM(at.hours)')
+            ->from(ActivityTracking::class, 'at')
+            ->join('at.trackedWorkDay', 'twd')
+            ->where('twd.agreementEnrollment = :agreement_enrollment AND twd.locked = 1')
+            ->setParameter('agreement_enrollment', $agreementEnrollment)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

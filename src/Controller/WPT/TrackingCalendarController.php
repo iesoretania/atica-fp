@@ -85,6 +85,10 @@ class TrackingCalendarController extends AbstractController
             ? $trackedWorkDayRepository->hoursStatsByAgreementEnrollment($agreementEnrollment)
             : [];
 
+        $workDayRealStats = count($agreement->getWorkDays()) > 0
+            ? $trackedWorkDayRepository->realHoursByAgreementEnrollment($agreementEnrollment) / 100
+            : 0;
+
         $title = $translator->trans('title.calendar', [], 'wpt_tracking');
 
         $breadcrumb = [
@@ -109,6 +113,7 @@ class TrackingCalendarController extends AbstractController
             'selectable' => $selectable,
             'work_day_stats' => $workDayStats,
             'work_day_today' => $workDayToday,
+            'work_day_real_stats' => $workDayRealStats,
             'activity_stats' => $activityStats,
             'activity_tracked_count' => $activityTrackedCount,
             'activity_total_count' => $activityTotalCount,

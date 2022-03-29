@@ -19,6 +19,7 @@ en las distintas versiones de la misma.
 * chore: Eliminado formulario y controlador no usados en la gestión de FCT
 * chore: Limpieza de código
 * feat: Nuevo informe de resumen de programa formativo de FP dual
+* fix: Arregladas estadísticas de actividades en la FCT
 
 4.1.0 (2022-02-13)
 ------------------

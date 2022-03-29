@@ -61,9 +61,10 @@ class ActivityTrackingRepository extends ServiceEntityRepository
     public function getTrackedHoursFromStudentEnrollment(StudentEnrollment $studentEnrollment)
     {
         return $this->createQueryBuilder('at')
-            ->select('SUM(at.hours)')
+            ->select('SUM(ta.hours)')
             ->join('at.trackedWorkDay', 'twd')
             ->join('twd.agreementEnrollment', 'ae')
+            ->join('twd.trackedActivities', 'ta')
             ->andWhere('ae.studentEnrollment = :student_enrollment')
             ->setParameter('student_enrollment', $studentEnrollment)
             ->getQuery()
