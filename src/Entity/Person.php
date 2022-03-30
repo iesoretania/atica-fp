@@ -83,7 +83,7 @@ class Person implements UserInterface
     private $loginUsername;
 
     /**
-     * @ORM\Column(type="string", unique=true, nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      * @var string
      */
     private $password;

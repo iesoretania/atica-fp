@@ -131,7 +131,7 @@ class TeacherImportController extends AbstractController
                         $person = $personCollection[$userName];
                         $existingUsers++;
                     } else {
-                        $person = $personRepository->findOneByUniqueIdentifier($personData['DNI/Pasaporte']);
+                        $person = $personRepository->findOneByUniqueIdentifiers($personData['DNI/Pasaporte']);
 
                         if (null === $person) {
                             $person = new Person();

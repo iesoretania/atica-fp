@@ -67,6 +67,7 @@ table.no_users: No hay usuarios
 table.new: Nuevo usuario
 table.filter: Filtrar...
 
+header.unique_identifier: Identificador
 header.username: Usuario
 header.name: Nombre completo
 header.email: Correo-e

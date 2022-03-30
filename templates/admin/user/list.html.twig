@@ -5,10 +5,11 @@
 {% block path_new %}{{ path('admin_user_form_new') }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-40"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-30"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-20">{{ 'header.unique_identifier'|trans }}</th>
     <th class="w-20">{{ 'header.username'|trans }}</th>
     <th class="w-20">{{ 'header.email'|trans }}</th>
-    <th class="w-20">{{ 'header.last_login'|trans }}</th>
+    <th class="w-10">{{ 'header.last_login'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
@@ -19,11 +20,18 @@
                         <label><input type="checkbox" name="users[]" value="{{ user.id }}" {% if user.id == app.user.id %} disabled="disabled"{% else %} class="selectable"{% endif %}> <a href="{{ url }}">{{ user.lastName }}, {{ user.firstName }}</a></label>
                         {%- if user.globalAdministrator %} <i class="fas fa-cogs"></i>{% endif -%}
                         {%- if user.forcePasswordChange %} <i class="fas fa-recycle"></i>{% endif -%}
+                        {%- if not user.enabled %} <i class="fas fa-ban"></i>{% endif -%}
                     </td>
                     <td>
                         <a href="{{ url }}">{{ user.loginUsername }}</a>{% if user.externalCheck and user.allowExternalCheck %} <i class="fa fa-sign-out"></i>{% endif -%}
                     </td>
-                    <td><a href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">
+                            {{ user.uniqueIdentifier }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ url }}">
                             {{ user.emailAddress }}
                         </a>
                     </td>
@@ -33,7 +41,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="4">{{ 'table.no_users'|trans }}</td>
+                    <td colspan="5">{{ 'table.no_users'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

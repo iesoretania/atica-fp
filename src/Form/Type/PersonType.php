@@ -50,6 +50,7 @@ class PersonType extends AbstractType
             ])
             ->add('loginUsername', null, [
                 'label' => 'form.user_name',
+                'required' => true,
                 'disabled' => !$options['admin']
             ])
             ->add('firstName', null, [

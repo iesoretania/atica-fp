@@ -20,8 +20,9 @@ en las distintas versiones de la misma.
 * chore: Limpieza de código
 * feat: Nuevo informe de resumen de programa formativo de FP dual
 * fix: Arregladas estadísticas de actividades en la FCT
+* feat: Búsqueda de personas por correo electrónico o identificador
 
-4.1.0 (2022-02-13)
+* 4.1.0 (2022-02-13)
 ------------------
 * docs: Mejoradas las instrucciones de actualización
 * fix: Ajustar .env para que el entorno por defecto sea producción y el motor de bases de datos, MySQL
