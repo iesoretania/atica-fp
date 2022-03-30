@@ -139,7 +139,7 @@ class AgreementType extends AbstractType
                 'multiple' => false,
                 'text_property' => 'fullDisplayName',
                 'class' => Person::class,
-                'minimum_input_length' => 9,
+                'minimum_input_length' => 4,
                 'remote_route' => 'api_person_query',
                 'placeholder' => 'form.work_tutor.none',
                 'attr' => ['class' => 'person'],

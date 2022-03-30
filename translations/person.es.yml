@@ -79,7 +79,7 @@ header.email: Correo-e
 header.profiles: Perfiles
 header.last_login: Últ. conexión
 
-input.unique_identifier: 'Introduzca el DNI/NIE completo (con letra) para buscar'
+input.unique_identifier: 'Introduzca el DNI/NIE completo (con letra) o la dirección de correo para buscar'
 input.searching: 'Buscando...'
 
 role.global_administrator: Administrador global

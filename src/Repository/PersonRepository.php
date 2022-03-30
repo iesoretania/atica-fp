@@ -63,6 +63,18 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
             ->getOneOrNullResult();
     }
 
+    public function findOneByUniqueIdentifierOrEmailAddress($id)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.uniqueIdentifier = :q OR p.emailAddress = :q')
+            ->setParameter('q', $id)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     /**
      * Loads the user for the given username.
      *

@@ -34,7 +34,11 @@ $(function () {
             var data = e.params.data;
             if (data.id === 0) {
                 $('#new_person form').trigger('reset');
-                $('#new_person_uniqueIdentifier').val(data.term);
+                if (data.term.includes("@")) {
+                    $('#new_person_userEmailAddress').val(data.term);
+                } else {
+                    $('#new_person_uniqueIdentifier').val(data.term);
+                }
                 $('#new_person').modal('show');
                 $('input#new_person_firstName').focus();
             }

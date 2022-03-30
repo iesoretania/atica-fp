@@ -227,9 +227,11 @@ class CompanyController extends AbstractController
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
 
-        $persons = $term === null ? [] : [$personRepository->findOneByUniqueIdentifier($term)];
+        $persons = $term === null ? [] : [$personRepository->findOneByUniqueIdentifierOrEmailAddress($term)];
 
-        if (count($persons) === 0) {
+        dump($persons);
+
+        if (count($persons) === 0 || null === $persons[0]) {
             $data = [
                 ['id' => 0, 'term' => $term, 'text' => $translator->trans('title.new', [], 'person')]
             ];
