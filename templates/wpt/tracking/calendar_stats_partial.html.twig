@@ -90,7 +90,11 @@
                     </td>
                     <td>{{ item[0].description }}</td>
                     <td>
-                        {{ 'form.stats.activities.info' | transchoice(activity_tracked_count, {'%total%': activity_total_hours/100, '%hours%': item[2]/100, '%workdays%': item[1] }) }} ({{ (100*item[2]/activity_total_hours)|number_format }} %)
+                        {% if activity_total_hours %}
+                            {{ 'form.stats.activities.info' | transchoice(item[1], {'%total%': activity_total_hours/100, '%hours%': item[2]/100, '%workdays%': item[1] }) }} ({{ (100*item[2]/activity_total_hours)|number_format }} %)
+                        {% else %}
+                            {{ 'form.stats.activities.info' | transchoice(item[1], {'%total%': '0', '%hours%': item[2]/100, '%workdays%': item[1] }) }} ({{ (0)|number_format }} %)
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

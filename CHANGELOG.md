@@ -23,6 +23,7 @@ en las distintas versiones de la misma.
 * feat: Búsqueda de personas por correo electrónico o identificador
 * fix: Asignar usuarios automáticamente al importar alumnado
 * feat: Autenticación segura con Séneca. Se permite autenticar alumnado y padres
+* fix: Se evita un error cuando se bloquean jornadas pero no hay ninguna actividad realizada
 
 * 4.1.0 (2022-02-13)
 ------------------
