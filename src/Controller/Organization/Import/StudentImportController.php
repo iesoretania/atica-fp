@@ -35,6 +35,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class StudentImportController extends AbstractController
@@ -49,6 +50,7 @@ class StudentImportController extends AbstractController
         PersonRepository $personRepository,
         TranslatorInterface $translator,
         EntityManagerInterface $entityManager,
+        UserPasswordEncoderInterface $passwordEncoder,
         Request $request
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -70,7 +72,8 @@ class StudentImportController extends AbstractController
                 $studentEnrollmentRepository,
                 $groupRepository,
                 $personRepository,
-                $entityManager
+                $entityManager,
+                $passwordEncoder
             );
 
             if (null !== $stats) {
@@ -97,6 +100,7 @@ class StudentImportController extends AbstractController
      * @param GroupRepository $groupRepository
      * @param PersonRepository $personRepository
      * @param EntityManagerInterface $entityManager
+     * @param UserPasswordEncoderInterface $passwordEncoder
      * @param array $options
      * @return array|null
      */
@@ -106,7 +110,8 @@ class StudentImportController extends AbstractController
         StudentEnrollmentRepository $studentEnrollmentRepository,
         GroupRepository $groupRepository,
         PersonRepository $personRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        UserPasswordEncoderInterface $passwordEncoder
     ) {
         $newCount = 0;
         $oldCount = 0;
@@ -117,6 +122,7 @@ class StudentImportController extends AbstractController
 
         $personCollection = [];
 
+        $porDefecto = $passwordEncoder->encodePassword(new Person(), $academicYear->getOrganization()->getCode());
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $studentData) {
@@ -140,14 +146,13 @@ class StudentImportController extends AbstractController
                         continue;
                     }
 
-                    $uniqueIdentifier = $studentData['DNI/Pasaporte'] ?: $studentData['Nº Id. Escolar'];
+                    $uniqueIdentifier1 = $studentData['Nº Id. Escolar'];
+                    $uniqueIdentifier2 = $studentData['DNI/Pasaporte'];
 
-                    if (!isset($personCollection[$uniqueIdentifier])) {
-                        $person = $personRepository->findOneBy([
-                            'uniqueIdentifier' => $uniqueIdentifier
-                        ]);
+                    if (!isset($personCollection[$uniqueIdentifier1])) {
+                        $person = $personRepository->findOneByUniqueIdentifiers($uniqueIdentifier1, $uniqueIdentifier2);
                     } else {
-                        $person = $personCollection[$uniqueIdentifier];
+                        $person = $personCollection[$uniqueIdentifier1];
                     }
                     if (null === $person) {
                         $gender = $studentData['Sexo'];
@@ -164,7 +169,6 @@ class StudentImportController extends AbstractController
 
                         $person = new Person();
                         $person
-                            ->setUniqueIdentifier($uniqueIdentifier)
                             ->setFirstName($studentData['Nombre'])
                             ->setLastName(
                                 $studentData['Primer apellido'] .
@@ -182,7 +186,15 @@ class StudentImportController extends AbstractController
                             'group' => $group
                         ]);
                     }
-                    $personCollection[$uniqueIdentifier] = $person;
+                    $person->setUniqueIdentifier($uniqueIdentifier1);
+                    if ($person->getLoginUsername() === null) {
+                        $person
+                            ->setLoginUsername($uniqueIdentifier1)
+                            ->setPassword($porDefecto)
+                            ->setEnabled(true)
+                            ->setForcePasswordChange(true);
+                    }
+                    $personCollection[$uniqueIdentifier1] = $person;
 
                     if (null === $enrollment) {
                         $enrollment = new StudentEnrollment();
