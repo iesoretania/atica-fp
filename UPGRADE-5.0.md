@@ -14,3 +14,15 @@ Simplificación de la gestión de usuarios
 ----------------------------------------
 A partir de esta versión se crean usuarios automáticamente para las personas implicadas, así
 que no será necesario activar o desactivar el acceso a la plataforma al alumnado.
+
+Autenticación con Séneca más segura
+-----------------------------------
+Ahora se cifra el envío de contraseña y, además, se permite autenticar alumnado (usuario iPasen).
+**Debido a esto, la URL de autenticación ha cambiado**. Por favor, comprueba que la línea que comienza
+por APP_EXTERNAL_URL no existe en el fichero `.env.local` o la autenticación de Séneca
+no funcionará.
+
+Nuevos informes
+---------------
+Se ha añadido un nuevo informe resumen de programa formativo de FP dual, ideal para incluir
+en la documentación de los proyectos.

@@ -22,6 +22,7 @@ en las distintas versiones de la misma.
 * fix: Arregladas estadísticas de actividades en la FCT
 * feat: Búsqueda de personas por correo electrónico o identificador
 * fix: Asignar usuarios automáticamente al importar alumnado
+* feat: Autenticación segura con Séneca. Se permite autenticar alumnado y padres
 
 * 4.1.0 (2022-02-13)
 ------------------

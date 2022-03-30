@@ -129,9 +129,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
                 if (!$this->encoder->isPasswordValid($user, $plainPassword)) {
                     $user->setPassword($this->encoder->encodePassword($user, $plainPassword));
                     $em = $this->managerRegistry->getManager();
-                    if ($em) {
-                        $em->flush();
-                    }
+                    $em->flush();
                 }
                 return true;
             }

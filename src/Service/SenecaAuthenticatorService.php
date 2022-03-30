@@ -18,6 +18,8 @@
 
 namespace App\Service;
 
+use phpseclib3\Math\BigInteger;
+
 class SenecaAuthenticatorService
 {
     /** @var string */
@@ -45,50 +47,47 @@ class SenecaAuthenticatorService
     {
         // devolver error si no está habilitado
         if (!$this->enabled) {
-            return null;
+            return false;
         }
 
-        // obtener URL de entrada
-        $str = $this->getUrl($this->url, $this->forceSecurity);
-        if ($str === '' || $str === '0') {
-            return null;
+        $passwordCodificada = "";
+        $password = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $password);
+        for ($i = 0, $iMax = strlen($password); $i < $iMax; $i++) {
+            $passwordCodificada .= ord($password[$i]);
         }
 
-        $dom = new \DOMDocument();
-        libxml_use_internal_errors(true);
-        $dom->loadHTML($str);
-        $xpath = new \DOMXPath($dom);
-        $form = $xpath->query('//form')->item(0);
-        $hidden = $xpath->query('//input[@name="N_V_"]')->item(0);
+        $p = new BigInteger($passwordCodificada);
 
-        if (!$form || !$hidden) {
-            return null;
-        }
-
-        // enviar datos del formulario
-        $postUrl = $form->getAttribute('action');
-        $hiddenValue = $hidden->getAttribute('value');
+        $passwordCifrada = $p->powMod(
+            new BigInteger('3584956249', 10),
+            new BigInteger('356056806984207294102423357623243547284021', 10)
+        )->toString();
 
         $fields = array(
             'USUARIO' => $user,
-            'CLAVE' => $password,
-            'N_V_' => $hiddenValue
+            'rndval' => random_int(10000000, 99999999),
+            'CLAVECIFRADA' => $passwordCifrada,
+            'CON_PRUEBA' => 'N',
+            'N_V_' => 'NV_' . random_int(1, 9999),
+            'NAV_WEB_NOMBRE' => 'Chrome',
+            'NAV_WEB_VERSION' => '99',
+            'C_INTERFAZ' => 'PASEN'
+
         );
 
-        $str = $this->postToUrl($fields, $postUrl, $this->url, $this->forceSecurity);
+        $str = $this->postToUrl($fields, $this->url, $this->url, $this->forceSecurity);
 
-        if ($str === '' || $str === null) {
-            return null;
+        if ($str === '') {
+            return false;
         }
 
         $dom = new \DOMDocument();
         libxml_use_internal_errors(true);
-        $dom->loadHTML($str);
+        $dom->loadXML($str);
         $xpath = new \DOMXPath($dom);
-        $nav = $xpath->query('//nav');
-        $error = $xpath->query('//p[@class="text-danger"]');
+        $nav = $xpath->query('//correcto');
 
-        return $nav->length === 1 && $error->length === 0;
+        return $nav->length === 1 && $nav->item(0)->textContent === "SI";
     }
 
     /**
