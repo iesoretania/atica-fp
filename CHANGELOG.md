@@ -27,6 +27,7 @@ en las distintas versiones de la misma.
 * fix: Mostrar mensaje correcto cuando no hay jornadas bloqueadas en la FCT
 * chore: Usar la fecha de fin del acuerdo en el informe de registro de actividades de la FCT 
 * feat: Mostrar otras actividades anotadas en el registro de actividades de la FCT
+* feat: Un administrador puede impersonar un usuario que no haya cambiado la contraseña
 
 4.1.0 (2022-02-13)
 ------------------

@@ -25,6 +25,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
 class RequestListener implements EventSubscriberInterface
 {
@@ -38,10 +39,16 @@ class RequestListener implements EventSubscriberInterface
      */
     private $token;
 
-    public function __construct(RouterInterface $router, TokenStorageInterface $token)
+    /**
+     * @var AccessDecisionManagerInterface
+     */
+    private $accessDecisionManager;
+
+    public function __construct(RouterInterface $router, TokenStorageInterface $token, AccessDecisionManagerInterface $accessDecisionManager)
     {
         $this->router = $router;
         $this->token = $token;
+        $this->accessDecisionManager = $accessDecisionManager;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
@@ -66,7 +73,8 @@ class RequestListener implements EventSubscriberInterface
             $event->isMasterRequest() &&
             $this->token->getToken() &&
             $this->token->getToken()->getUser() instanceof Person &&
-            $this->token->getToken()->getUser()->isForcePasswordChange()
+            $this->token->getToken()->getUser()->isForcePasswordChange() &&
+            !$this->accessDecisionManager->decide($this->token->getToken(), ['ROLE_PREVIOUS_ADMIN'])
         ) {
             $route = $event->getRequest()->get('_route');
             if ($route && strpos($route, 'log') !== 0 && strpos($route, 'force') !== 0 && $route[0] !== '_') {
