@@ -10,6 +10,12 @@ de la plataforma y la 5.0.
 Lea con atención porque algunos de ellos implican la imposibilidad de volver a versiones anteriores
 manteniendo la base de datos.
 
+Cambios en la configuración
+---------------------------
+### Configuración local
+Es necesario eliminar la línea APP_EXTERNAL_URL en el fichero `.env.local` si existe y se usa autenticación
+externa desde Séneca.
+
 Simplificación de la gestión de usuarios
 ----------------------------------------
 A partir de esta versión se crean usuarios automáticamente para las personas implicadas, así
