@@ -24,6 +24,7 @@ en las distintas versiones de la misma.
 * fix: Asignar usuarios automáticamente al importar alumnado
 * feat: Autenticación segura con Séneca. Se permite autenticar alumnado y padres
 * fix: Se evita un error cuando se bloquean jornadas pero no hay ninguna actividad realizada
+* fix: Mostrar mensaje correcto cuando no hay jornadas bloqueadas en la FCT
 
 * 4.1.0 (2022-02-13)
 ------------------

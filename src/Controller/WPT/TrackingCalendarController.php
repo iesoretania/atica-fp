@@ -92,7 +92,7 @@ class TrackingCalendarController extends AbstractController
         $title = $translator->trans('title.calendar', [], 'wpt_tracking');
 
         $breadcrumb = [
-            ['fixed' => (string)$agreementEnrollment],
+            ['fixed' => $agreementEnrollment->__toString()],
             ['fixed' => $title]
         ];
 

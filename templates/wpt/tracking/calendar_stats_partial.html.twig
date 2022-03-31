@@ -36,7 +36,7 @@
                 </tr>
                 <tr>
                     <td>{{ 'form.stats.hours.locked.caption'|trans }}</td>
-                    <td>{{ 'form.stats.hours.locked.days'|transchoice(work_day_stats[10], {'%total%': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[10]/work_day_stats[6])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.days'|transchoice(work_day_stats[10] ?: 0, {'%total%': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[10]/work_day_stats[6])|number_format }} %){% endif %}</td>
                     <td>{{ 'form.stats.hours.locked.hours'|transchoice(work_day_real_locked_stats, {'%total%': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_real_locked_stats/work_day_stats[1])|number_format }} %){% endif %}</td>
                 </tr>
                 <tr>
