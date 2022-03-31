@@ -452,6 +452,7 @@ class TrackingCalendarController extends AbstractController
                 'total_hours' => $totalHours,
                 'total' => $total,
                 'educational_tutors' => $educationalTutors,
+                'document_date' => $agreementEnrollment->getAgreement()->getEndDate(),
                 'title' => $title
             ]);
 

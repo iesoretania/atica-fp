@@ -25,6 +25,7 @@ en las distintas versiones de la misma.
 * feat: Autenticación segura con Séneca. Se permite autenticar alumnado y padres
 * fix: Se evita un error cuando se bloquean jornadas pero no hay ninguna actividad realizada
 * fix: Mostrar mensaje correcto cuando no hay jornadas bloqueadas en la FCT
+* chore: Usar la fecha de fin del acuerdo en el informe de registro de actividades de la FCT 
 
 * 4.1.0 (2022-02-13)
 ------------------
