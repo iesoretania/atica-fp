@@ -54,10 +54,7 @@ class PersonAPIController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $emailAddress = $form->get('userEmailAddress')->getData();
             $uid = $form->get('uniqueIdentifier')->getData();
-            $newPerson->setEmailAddress($emailAddress);
-            $newPerson->setLoginUsername($uid);
             $newPerson->setPassword($passwordEncoder->encodePassword($newPerson, $uid));
             $em->persist($newPerson);
             $em->flush();

@@ -120,7 +120,8 @@ class TeacherImportController extends AbstractController
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $personData) {
-                    if (!isset($personData['Usuario IdEA'])) {
+                    if (!isset($personData['Usuario IdEA']) || !isset($personData['DNI/Pasaporte'])
+                        || !isset($personData['Empleado/a'])) {
                         return null;
                     }
                     $userName = $personData['Usuario IdEA'];
@@ -131,7 +132,7 @@ class TeacherImportController extends AbstractController
                         $person = $personCollection[$userName];
                         $existingUsers++;
                     } else {
-                        $person = $personRepository->findOneByUniqueIdentifiers($personData['DNI/Pasaporte']);
+                        $person = $personRepository->findOneByUniqueIdentifiers($personData['DNI/Pasaporte'], $personData['Usuario IdEA']);
 
                         if (null === $person) {
                             $person = new Person();
@@ -142,7 +143,7 @@ class TeacherImportController extends AbstractController
                                 ->setFirstName($fullName[1])
                                 ->setLastName($fullName[0])
                                 ->setGender(Person::GENDER_NEUTRAL)
-                                ->setUniqueIdentifier($personData['DNI/Pasaporte'])
+                                ->setUniqueIdentifier($personData['Usuario IdEA'])
                                 ->setInternalCode($personData['Empleado/a'])
                                 ->setLoginUsername($userName)
                                 ->setEnabled(true)
@@ -160,7 +161,8 @@ class TeacherImportController extends AbstractController
                             $newPersonCollection[$userName] = $person;
                             $newUserCount++;
                         } else {
-                             $existingUsers++;
+                            $person->setUniqueIdentifier($personData['Usuario IdEA']);
+                            $existingUsers++;
                         }
 
                         $personCollection[$userName] = $person;

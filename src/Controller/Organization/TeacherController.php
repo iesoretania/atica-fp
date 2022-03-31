@@ -20,6 +20,7 @@ namespace App\Controller\Organization;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
+use App\Form\Type\Edu\NewTeacherType;
 use App\Form\Type\Edu\TeacherType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\TeacherRepository;
@@ -74,6 +75,64 @@ class TeacherController extends AbstractController
         }
 
         $title = $translator->trans('title.edit', [], 'edu_teacher');
+
+        $breadcrumb = [
+            ['fixed' => (string) $teacher->getPerson()]
+        ];
+
+        return $this->render('organization/teacher/form.html.twig', [
+            'menu_path' => 'organization_teacher_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'form' => $form->createView(),
+            'user' => $teacher
+        ]);
+    }
+
+    /**
+     * @Route("/nuevo", name="organization_teacher_new", methods={"GET", "POST"})
+     */
+    public function newAction(
+        Request $request,
+        TranslatorInterface $translator,
+        UserExtensionService $userExtensionService,
+        TeacherRepository $teacherRepository
+    )
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $academicYear = $userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
+
+        $teacher = new Teacher();
+        $teacher->setAcademicYear($academicYear);
+        $em->persist($teacher);
+
+        $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $teacher->getAcademicYear());
+
+        $form = $this->createForm(NewTeacherType::class, $teacher);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $otherTeacher = $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $teacher->getPerson());
+                if ($otherTeacher === null) {
+                    $teacher->getPerson()->setExternalCheck(true);
+                    $teacher->getPerson()->setAllowExternalCheck(true);
+                    $em->flush();
+                    $this->addFlash('success', $translator->trans('message.saved', [], 'edu_teacher'));
+                    return $this->redirectToRoute('organization_teacher_list', [
+                        'academicYear' => $teacher->getAcademicYear()
+                    ]);
+                } else {
+                    $this->addFlash('error', $translator->trans('message.repeated_error', [], 'edu_teacher'));
+                }
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.error', [], 'edu_teacher'));
+            }
+        }
+
+        $title = $translator->trans('title.new', [], 'edu_teacher');
 
         $breadcrumb = [
             ['fixed' => (string) $teacher->getPerson()]

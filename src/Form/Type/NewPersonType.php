@@ -35,7 +35,14 @@ class NewPersonType extends AbstractType
     {
         $builder
             ->add('uniqueIdentifier', null, [
-                'label' => 'form.unique_indentifier',
+                'label' => 'form.unique_identifier',
+                'attr' => [
+                    'placeholder' => 'form.unique_identifier.placeholder'
+                ],
+                'required' => false
+            ])
+            ->add('loginUsername', null, [
+                'label' => 'form.user_name',
                 'required' => true
             ])
             ->add('firstName', null, [
@@ -55,9 +62,8 @@ class NewPersonType extends AbstractType
                     'form.gender.female' => Person::GENDER_FEMALE
                 ]
             ])
-            ->add('userEmailAddress', EmailType::class, [
+            ->add('emailAddress', EmailType::class, [
                 'label' => 'form.email_address',
-                'mapped' => false,
                 'required' => false
             ]);
     }
@@ -69,7 +75,8 @@ class NewPersonType extends AbstractType
     {
         $resolver->setDefaults([
             'constraints' => [
-                new UniqueEntity(['fields' => 'uniqueIdentifier'])
+                new UniqueEntity(['fields' => 'uniqueIdentifier']),
+                new UniqueEntity(['fields' => 'emailAddress'])
             ],
             'data_class' => Person::class,
             'translation_domain' => 'person'

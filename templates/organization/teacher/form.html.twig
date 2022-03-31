@@ -9,4 +9,29 @@
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+
+    <input type="hidden" id="new-person-label" value="{{ 'title.new'|trans({}, 'edu_teacher') }}" />
+    {% include 'user/new_person_modal.partial.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
+    {{ encore_entry_script_tags('person') }}
+    <script>
+        $(document).ready(function () {
+            $('.select2entity[data-autostart="true"]').select2('destroy');
+            $('.select2entity[data-autostart="true"]').select2entity({
+                theme: "bootstrap",
+                language: {
+                    inputTooShort: function () {
+                        return "{{ 'input.unique_identifier'|trans({}, 'person') }}";
+                    },
+                    searching: function () {
+                        return "{{ 'input.searching'|trans({}, 'person') }}";
+                    }
+                }
+            });
+        });
+    </script>
 {% endblock %}

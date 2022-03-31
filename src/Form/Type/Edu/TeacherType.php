@@ -42,9 +42,16 @@ class TeacherType extends AbstractType
                 'label' => 'form.academic_year',
                 'disabled' => true
             ])
+            ->add('uniqueIdentifier', null, [
+                'label' => 'form.unique_identifier',
+                'property_path' => 'person.uniqueIdentifier',
+                'disabled' => true,
+                'required' => true
+            ])
             ->add('loginUsername', null, [
                 'label' => 'form.user_name',
                 'property_path' => 'person.loginUsername',
+                'required' => true
             ])
             ->add('personFirstName', null, [
                 'label' => 'form.first_name',
@@ -57,6 +64,7 @@ class TeacherType extends AbstractType
             ->add('emailAddress', EmailType::class, [
                 'label' => 'form.email_address',
                 'property_path' => 'person.emailAddress',
+                'required' => false
             ])
             ->add('personGender', ChoiceType::class, [
                 'label' => 'form.gender',

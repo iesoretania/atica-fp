@@ -1,4 +1,6 @@
 form.academic_year: Curso académico
+form.person: Usuario
+form.unique_identifier: Identificador
 form.user_name: Nombre de usuario
 form.first_name: Nombre
 form.last_name: Apellidos
@@ -10,6 +12,7 @@ form.gender.female: Mujer
 form.enabled: Acceso
 form.enabled.no: El acceso a la aplicación le está denegado
 form.enabled.yes: El acceso a la aplicación le está permitido
+form.teacher.none: Seleccione el usuario a añadir como docente
 
 form.wlt_educational_tutor: Responsable de seguimiento de FP dual
 form.wlt_educational_tutor.yes: El docente realiza seguimiento al alumnado de FP dual
@@ -28,7 +31,8 @@ form.delete: Eliminar el profesorado seleccionado
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
-table.new: Importar profesorado
+table.import: Importar profesorado
+table.new: Incorporar docente
 
 prompt.delete_confirm: |
   ¿Está seguro de que desea eliminar el profesorado siguiente? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
@@ -36,6 +40,7 @@ prompt.delete_confirm: |
   Esta operación no se puede deshacer.
 
 title.edit: Datos del docente
+title.new: Incorporar docente
 title.delete: Eliminar profesorado
 
 title.list: Listado de profesorado
@@ -49,5 +54,6 @@ header.subjects: Docencia
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
+message.repeated_error: El docente ya existe en el curso académico indicado.
 message.deleted: Profesorado eliminado del centro.
 message.delete_error: Ha ocurrido un error al eliminar el profesorado del centro.

@@ -31,6 +31,7 @@ en las distintas versiones de la misma.
 * feat: Un acuerdo de FCT puede ser seguido por un tutor docente y laboral adicional opcional
 * feat: Importación de usuarios PASEN para el alumnado, habilitando la autenticación por Séneca
 * feat: Ahora se pueden modificar los datos del profesorado del centro
+* feat: Se pueden incorporar nuevos docentes en un curso académico manualmente
 
 4.1.0 (2022-02-13)
 ------------------

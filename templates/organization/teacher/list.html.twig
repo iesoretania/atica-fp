@@ -2,7 +2,11 @@
 {% extends 'generic/list.html.twig' %}
 {% import 'macros.html.twig' as m %}
 
-{% block path_new %}{{ path('organization_import_teacher_form') }}{% endblock %}
+
+{% block path_new %}{{ path('organization_teacher_new') }}{% endblock %}
+{% block more_actions %}
+    <a href="{{ path('organization_import_teacher_form') }}" class="btn btn-info"><i class="fa fa-download"></i> {{ 'table.import'|trans }}</a>
+{% endblock %}
 
 {% block table_header %}
     <th class="w-20"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
