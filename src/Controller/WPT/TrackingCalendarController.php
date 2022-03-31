@@ -433,7 +433,6 @@ class TrackingCalendarController extends AbstractController
                 $item[0] = $agreementEnrollment2;
                 $item[1] = $activityRepository->getProgramActivitiesStatsFromAgreementEnrollment($agreementEnrollment2);
                 $item[2] = $trackedWorkDayRepository->getOtherActivitiesFromAgreementEnrollment($agreementEnrollment2);
-                dump($item[2]);
                 $data[] = $item;
             }
             $shift = $agreementEnrollment->getAgreement()->getShift();

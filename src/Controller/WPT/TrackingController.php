@@ -86,8 +86,11 @@ class TrackingController extends AbstractController
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->join('ae.workTutor', 'wt')
+            ->leftJoin('ae.additionalWorkTutor', 'awt')
             ->join('ae.educationalTutor', 'et')
+            ->leftJoin('ae.additionalEducationalTutor', 'aet')
             ->join('et.person', 'etp')
+            ->leftJoin('aet.person', 'aetp')
             ->groupBy('ae')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
@@ -105,8 +108,12 @@ class TrackingController extends AbstractController
                 ->orWhere('g.name LIKE :tq')
                 ->orWhere('wt.firstName LIKE :tq')
                 ->orWhere('wt.lastName LIKE :tq')
+                ->orWhere('awt.firstName LIKE :tq')
+                ->orWhere('awt.lastName LIKE :tq')
                 ->orWhere('etp.firstName LIKE :tq')
                 ->orWhere('etp.lastName LIKE :tq')
+                ->orWhere('aetp.firstName LIKE :tq')
+                ->orWhere('aetp.lastName LIKE :tq')
                 ->orWhere('wt.uniqueIdentifier LIKE :tq')
                 ->orWhere('shi.name LIKE :tq')
                 ->setParameter('tq', '%' . $q . '%');
@@ -131,7 +138,8 @@ class TrackingController extends AbstractController
             $queryBuilder
                 ->andWhere(
                     'se.group IN (:groups) OR se.person = :person OR ' .
-                    'ae.workTutor = :person OR ae.educationalTutor = :teacher'
+                    'ae.workTutor = :person OR ae.educationalTutor = :teacher OR ' .
+                    'ae.additionalWorkTutor = :person OR ae.additionalEducationalTutor = :teacher'
                 )
                 ->setParameter('groups', $groups)
                 ->setParameter('person', $person)
@@ -140,7 +148,9 @@ class TrackingController extends AbstractController
 
         if (false === $isManager && !$groups) {
             $queryBuilder
-                ->andWhere('se.person = :person OR ae.workTutor = :person OR ae.educationalTutor = :teacher')
+                ->andWhere('se.person = :person OR ' .
+                           'ae.workTutor = :person OR ae.educationalTutor = :teacher OR ' .
+                           'ae.additionalWorkTutor = :person OR ae.additionalEducationalTutor = :teacher')
                 ->setParameter('person', $person)
                 ->setParameter('teacher', $teacher);
         }

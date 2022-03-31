@@ -85,16 +85,34 @@ class AgreementEnrollmentType extends AbstractType
                 'placeholder' => 'form.educational_tutor.none',
                 'required' => true
             ])
+            ->add('additionalEducationalTutor', EntityType::class, [
+                'label' => 'form.additional_educational_tutor',
+                'class' => Teacher::class,
+                'choices' => $teachers,
+                'placeholder' => 'form.additional_educational_tutor.none',
+                'required' => false
+            ])
             ->add('workTutor', Select2EntityType::class, [
                 'label' => 'form.work_tutor',
                 'multiple' => false,
                 'text_property' => 'fullDisplayName',
                 'class' => Person::class,
-                'minimum_input_length' => 9,
+                'minimum_input_length' => 3,
                 'remote_route' => 'api_person_query',
                 'placeholder' => 'form.work_tutor.none',
                 'attr' => ['class' => 'person'],
                 'required' => true
+            ])
+            ->add('additionalWorkTutor', Select2EntityType::class, [
+                'label' => 'form.additional_work_tutor',
+                'multiple' => false,
+                'text_property' => 'fullDisplayName',
+                'class' => Person::class,
+                'minimum_input_length' => 3,
+                'remote_route' => 'api_person_query',
+                'placeholder' => 'form.additional_work_tutor.none',
+                'attr' => ['class' => 'person'],
+                'required' => false
             ])
             ->add('activities', EntityType::class, [
                 'label' => 'form.activities',

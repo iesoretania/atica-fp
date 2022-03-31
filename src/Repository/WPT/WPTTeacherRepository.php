@@ -29,7 +29,7 @@ class WPTTeacherRepository extends TeacherRepository
     {
         return $this->createQueryBuilder('t')
             ->join('t.person', 'p')
-            ->join(AgreementEnrollment::class, 'ae', 'WITH', 'ae.educationalTutor = t')
+            ->join(AgreementEnrollment::class, 'ae', 'WITH', 'ae.educationalTutor = t OR ae.additionalEducationalTutor = t')
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear)
             ->orderBy('p.lastName')
@@ -42,7 +42,7 @@ class WPTTeacherRepository extends TeacherRepository
     {
         return $this->createQueryBuilder('t')
             ->distinct(true)
-            ->join(AgreementEnrollment::class, 'ae', 'WITH', 'ae.educationalTutor = t')
+            ->join(AgreementEnrollment::class, 'ae', 'WITH', 'ae.educationalTutor = t OR ae.additionalEducationalTutor = t')
             ->join('ae.agreement', 'a')
             ->join('t.person', 'p')
             ->where('ae.studentEnrollment = :student_enrollment')
@@ -55,7 +55,7 @@ class WPTTeacherRepository extends TeacherRepository
     {
         return $this->createQueryBuilder('t')
             ->distinct(true)
-            ->join(AgreementEnrollment::class, 'ae', 'WITH', 'ae.educationalTutor = t')
+            ->join(AgreementEnrollment::class, 'ae', 'WITH', 'ae.educationalTutor = t OR ae.additionalEducationalTutor = t')
             ->join('ae.studentEnrollment', 'se')
             ->andWhere('se.group IN (:groups)')
             ->setParameter('groups', $groups)

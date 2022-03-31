@@ -59,7 +59,7 @@ class WorkcenterType extends AbstractType
                 'multiple' => false,
                 'text_property' => 'fullDisplayName',
                 'class' => Person::class,
-                'minimum_input_length' => 9,
+                'minimum_input_length' => 3,
                 'remote_route' => 'api_person_query',
                 'placeholder' => 'form.manager.no_manager',
                 'attr' => ['class' => 'person'],

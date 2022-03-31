@@ -31,7 +31,7 @@ class WPTWorkcenterRepository extends WorkcenterRepository
             ->join(Agreement::class, 'a', 'WITH', 'a.workcenter = w')
             ->join('a.agreementEnrollments', 'ae')
             ->join('w.company', 'c')
-            ->andWhere('ae.educationalTutor = :teacher')
+            ->andWhere('ae.educationalTutor = :teacher OR ae.additionalEducationalTutor = :teacher')
             ->setParameter('teacher', $teacher)
             ->orderBy('c.name')
             ->addOrderBy('w.name')

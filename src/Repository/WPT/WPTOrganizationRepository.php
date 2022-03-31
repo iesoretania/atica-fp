@@ -44,7 +44,7 @@ class WPTOrganizationRepository extends ServiceEntityRepository
             ->join(Shift::class, 's', 'WITH', 's.subject = su')
             ->join('s.agreements', 'a')
             ->join('a.agreementEnrollments', 'ae')
-            ->where('ae.workTutor = :user')
+            ->where('ae.workTutor = :user OR ae.additionalWorkTutor = :user')
             ->setParameter('user', $person)
             ->getQuery()
             ->getResult();

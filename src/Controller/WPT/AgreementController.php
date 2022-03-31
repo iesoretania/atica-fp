@@ -297,7 +297,9 @@ class AgreementController extends AbstractController
             ->join('se.group', 'g')
             ->leftJoin('ar.workTutor', 'wtp')
             ->leftJoin('ar.educationalTutor', 'et')
+            ->leftJoin('ar.additionalEducationalTutor', 'aet')
             ->leftJoin('et.person', 'etp')
+            ->leftJoin('aet.person', 'aetp')
             ->orderBy('shi.name')
             ->addOrderBy('c.name')
             ->addOrderBy('w.name')
@@ -314,6 +316,8 @@ class AgreementController extends AbstractController
                 ->orWhere('sep.lastName LIKE :tq')
                 ->orWhere('etp.firstName LIKE :tq')
                 ->orWhere('etp.lastName LIKE :tq')
+                ->orWhere('aetp.firstName LIKE :tq')
+                ->orWhere('aetp.lastName LIKE :tq')
                 ->orWhere('wtp.firstName LIKE :tq')
                 ->orWhere('wtp.lastName LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');

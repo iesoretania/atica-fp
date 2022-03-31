@@ -9,9 +9,13 @@ form.student_enrollment.none: Seleccione un estudiante
 form.work_tutor: Tutor/a laboral
 form.default_work_tutor: Tutor/a laboral por defecto
 form.work_tutor.none: Seleccione el/la tutor/a laboral
+form.additional_work_tutor: Tutor/a laboral adicional
+form.additional_work_tutor.none: Opcionalmente seleccione otro tutor/a laboral
 form.educational_tutor: Tutor/a docente
 form.default_educational_tutor: Tutor/a docente por defecto
 form.educational_tutor.none: Seleccione el/la docente
+form.additional_educational_tutor: Tutor/a docente adicional
+form.additional_educational_tutor.none: Opcionalmente seleccione otro docente
 form.sign_date: Fecha de firma del acuerdo
 form.start_date: Fecha de comienzo
 form.end_date: Fecha de finalización

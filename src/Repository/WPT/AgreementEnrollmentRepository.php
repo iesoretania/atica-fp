@@ -48,7 +48,7 @@ class AgreementEnrollmentRepository extends ServiceEntityRepository
     public function findByEducationalTutor(Teacher $teacher)
     {
         return $this->createQueryBuilder('ae')
-            ->where('ae.educationalTutor = :teacher')
+            ->where('ae.educationalTutor = :teacher OR ae.additionalEducationalTutor = :teacher')
             ->setParameter('teacher', $teacher)
             ->getQuery()
             ->getResult();

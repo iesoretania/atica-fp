@@ -118,7 +118,8 @@ class ShiftVoter extends CachedVoter
                 ->getAcademicYear() === $this->userExtensionService->getCurrentOrganization();
 
         // El jefe de departamento de la familia profesional de proyecto también puede
-        $isDepartmentHead = $subject->getGrade()->getTraining()->getDepartment()->getHead() &&
+        $isDepartmentHead = $subject->getGrade()->getTraining()->getDepartment() && $subject->getGrade()->getTraining(
+            )->getDepartment()->getHead() &&
             $subject->getGrade()->getTraining()->getDepartment()->getHead()->getPerson() === $user;
 
         switch ($attribute) {
@@ -141,9 +142,12 @@ class ShiftVoter extends CachedVoter
                 }
                 // si es el responsable de seguimiento
                 foreach ($subject->getAgreements() as $agreement) {
-                    if ($agreement->getEducationalTutor()->getPerson() === $user
+                    foreach ($agreement->getAgreementEnrollments() as $agreementEnrollment) {
+                        if ($agreementEnrollment->getEducationalTutor()->getPerson() === $user ||
+                            $agreementEnrollment->getAdditionalEducationalTutor()->getPerson() === $user
                     ) {
-                        return true;
+                            return true;
+                        }
                     }
                 }
                 return false;

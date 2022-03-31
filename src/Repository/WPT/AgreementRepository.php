@@ -138,7 +138,7 @@ class AgreementRepository extends ServiceEntityRepository
                     AgreementEnrollment::class,
                     'ae',
                     'WITH',
-                    'ae.agreement = a AND ae.workTutor = :work_tutor'
+                    'ae.agreement = a AND (ae.workTutor = :work_tutor OR ae.additionalWorkTutor = :work_tutor)'
                 )
                 ->join('a.shift', 'sh')
                 ->join('sh.subject', 'su')
@@ -175,7 +175,7 @@ class AgreementRepository extends ServiceEntityRepository
                     AgreementEnrollment::class,
                     'ae',
                     'WITH',
-                    'ae.agreement = a AND ae.educationalTutor = te'
+                    'ae.agreement = a AND (ae.educationalTutor = te OR ae.additionalEducationalTutor = te)'
                 )
                 ->andWhere('t.academicYear = :academic_year')
                 ->setParameter('educational_tutor', $educationalTutor)
@@ -264,7 +264,7 @@ class AgreementRepository extends ServiceEntityRepository
             ->distinct()
             ->join('a.agreementEnrollments', 'ae')
             ->andWhere('a.workcenter = :workcenter')
-            ->andWhere('ae.educationalTutor = :teacher')
+            ->andWhere('ae.educationalTutor = :teacher OR ae.additionalEducationalTutor = :teacher')
             ->setParameter('workcenter', $workcenter)
             ->setParameter('teacher', $teacher)
             ->getQuery()
@@ -309,7 +309,7 @@ class AgreementRepository extends ServiceEntityRepository
             ->join('t.department', 'd')
             ->leftJoin('d.head', 'h')
             ->where('t.academicYear = :academic_year')
-            ->andWhere('h.person = :person OR ae.educationalTutor = :teacher')
+            ->andWhere('h.person = :person OR ae.educationalTutor = :teacher OR ae.additionalEducationalTutor = :teacher')
             ->setParameter('academic_year', $academicYear)
             ->setParameter('person', $teacher->getPerson())
             ->setParameter('teacher', $teacher)
