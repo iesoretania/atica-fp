@@ -45,26 +45,21 @@ class TeacherType extends AbstractType
             ->add('loginUsername', null, [
                 'label' => 'form.user_name',
                 'property_path' => 'person.loginUsername',
-                'disabled' => true
             ])
             ->add('personFirstName', null, [
                 'label' => 'form.first_name',
                 'property_path' => 'person.firstName',
-                'disabled' => true
             ])
             ->add('personLastName', null, [
                 'label' => 'form.last_name',
                 'property_path' => 'person.lastName',
-                'disabled' => true
             ])
             ->add('emailAddress', EmailType::class, [
                 'label' => 'form.email_address',
                 'property_path' => 'person.emailAddress',
-                'disabled' => true
             ])
             ->add('personGender', ChoiceType::class, [
                 'label' => 'form.gender',
-                'disabled' => true,
                 'expanded' => true,
                 'property_path' => 'person.gender',
                 'choices' => [
@@ -75,7 +70,6 @@ class TeacherType extends AbstractType
             ])
             ->add('enabled', ChoiceType::class, [
                 'label' => 'form.enabled',
-                'disabled' => true,
                 'required' => true,
                 'expanded' => true,
                 'choices' => [
@@ -86,7 +80,6 @@ class TeacherType extends AbstractType
             ])
             ->add('allowExternalCheck', ChoiceType::class, [
                 'label' => 'form.allow_external_check',
-                'disabled' => true,
                 'required' => true,
                 'expanded' => true,
                 'choices' => [
@@ -109,11 +102,10 @@ class TeacherType extends AbstractType
             /** @var Person $data */
             $data = $event->getData();
 
-            if ($data->getAllowExternalCheck()) {
+            if ($data->getPerson()->getAllowExternalCheck()) {
                 $builder
                     ->add('externalCheck', ChoiceType::class, [
                         'label' => 'form.external_check',
-                        'disabled' => true,
                         'required' => true,
                         'expanded' => true,
                         'choices' => [
