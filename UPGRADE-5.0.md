@@ -34,3 +34,12 @@ autenticar a los estudiantes con el mismo usuario/contraseña usados en los serv
 Consejería (Moodle, iPasen, etc.)
 
 El fichero necesario se exporta desde Séneca con el perfil de Dirección.
+
+Tutores adicionales en los acuerdos de FCT
+------------------------------------------
+Ahora es posible especificar un tutor docente o laboral adicional que tendrá
+las mismas posibilidades que el principal, que es el que aparecerá en las
+pantallas e informes.
+
+Esto permite asignar profesorado sustituto o de apoyo, así como soportar el caso
+en el que el seguimiento real por parte de la empresa lo realice otro empleado.
