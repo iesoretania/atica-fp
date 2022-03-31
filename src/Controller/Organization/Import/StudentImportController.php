@@ -23,7 +23,9 @@ use App\Entity\Edu\Group;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Person;
 use App\Form\Model\StudentImport;
+use App\Form\Model\StudentLoginImport;
 use App\Form\Type\Import\StudentImportType;
+use App\Form\Type\Import\StudentLoginImportType;
 use App\Repository\Edu\GroupRepository;
 use App\Repository\Edu\StudentEnrollmentRepository;
 use App\Repository\PersonRepository;
@@ -101,7 +103,6 @@ class StudentImportController extends AbstractController
      * @param PersonRepository $personRepository
      * @param EntityManagerInterface $entityManager
      * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param array $options
      * @return array|null
      */
     private function importFromCsv(
@@ -216,6 +217,164 @@ class StudentImportController extends AbstractController
             'new_items' => $newCount,
             'old_items' => $oldCount,
             'collection' => $collection
+        ];
+    }
+
+    /**
+     * @Route("/centro/importar/estudiante/login", name="organization_import_student_login_form", methods={"GET", "POST"})
+     */
+    public function loginAction(
+        UserExtensionService $userExtensionService,
+        StudentEnrollmentRepository $studentEnrollmentRepository,
+        TranslatorInterface $translator,
+        EntityManagerInterface $entityManager,
+        Request $request
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
+
+        $formData = new StudentLoginImport();
+        $formData->setAcademicYear($organization->getCurrentAcademicYear());
+
+        $form = $this->createForm(StudentLoginImportType::class, $formData);
+        $form->handleRequest($request);
+
+        $stats = null;
+        $breadcrumb = [];
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $stats = $this->importLoginFromCsv(
+                $formData->getFile()->getPathname(),
+                $formData->getAcademicYear(),
+                $studentEnrollmentRepository,
+                $entityManager
+            );
+
+            if (null !== $stats) {
+                $this->addFlash('success', $translator->trans('message.import_ok', [], 'import'));
+                $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
+            } else {
+                $this->addFlash('error', $translator->trans('message.import_error', [], 'import'));
+            }
+        }
+        $title = $translator->trans('title.student_login.import', [], 'import');
+
+        return $this->render('admin/organization/import/student_login_import_form.html.twig', [
+            'title' => $title,
+            'breadcrumb' => $breadcrumb,
+            'form' => $form->createView(),
+            'stats' => $stats
+        ]);
+    }
+    /**
+     * @param string $file
+     * @param AcademicYear $academicYear
+     * @param StudentEnrollmentRepository $studentEnrollmentRepository
+     * @param EntityManagerInterface $entityManager
+     * @param array $options
+     */
+    private function importLoginFromCsv(
+        $file,
+        AcademicYear $academicYear,
+        StudentEnrollmentRepository $studentEnrollmentRepository,
+        EntityManagerInterface $entityManager
+    ) {
+        $updatedCount = 0;
+        $totalCount = 0;
+
+        $importer = new CsvImporter($file, true);
+
+        $collection = [];
+
+        $conflicts = [];
+
+        $lastName = '';
+        $lastUsername = '';
+        $conflict = false;
+        try {
+            while ($data = $importer->get(100)) {
+                foreach ($data as $studentData) {
+                    $totalCount++;
+                    if (!isset($studentData['Nombre']) || !isset($studentData['Usuario IdEA']) || !isset($studentData['Activo en Séneca'])) {
+                        return null;
+                    }
+
+                    // ignorar estudiantes no activos
+                    if ($studentData['Activo en Séneca'] !== 'Sí') {
+                        continue;
+                    }
+
+                    $name = $studentData['Nombre'];
+                    $username = $studentData['Usuario IdEA'];
+
+                    if ($name === $lastName) {
+                        if (!$conflict) {
+                            $conflicts[] = [
+                                'name' => $lastName,
+                                'username' => $lastUsername,
+                                'student_enrollments' => null
+                            ];
+                            $conflict = true;
+                        }
+                        $conflicts[] = [
+                            'name' => $name,
+                            'username' => $username,
+                            'student_enrollments' => null
+                        ];
+                        $lastUsername = $studentData['Usuario IdEA'];
+                        continue;
+                    }
+
+                    $conflict = false;
+                    $lastName = $name;
+                    $lastUsername = $username;
+
+                    $pieces = preg_split('/\,\ /', $name, 2);
+
+                    $studentEnrollments = $studentEnrollmentRepository->findByAcademicYearNameAndSurname(
+                        $academicYear,
+                        $pieces[1],
+                        $pieces[0]
+                    );
+
+                    if (count($studentEnrollments) == 0) {
+                        continue;
+                    }
+
+                    if (count($studentEnrollments) > 1) {
+                        $conflicts[] = [
+                            'name' => $name,
+                            'username' => $username,
+                            'student_enrollments' => $studentEnrollments
+                        ];
+                        continue;
+                    }
+
+                    /** @var StudentEnrollment $studentEnrollment */
+                    $studentEnrollment = $studentEnrollments[0];
+                    $studentEnrollment->getPerson()->setLoginUsername($username);
+                    $studentEnrollment->getPerson()->setAllowExternalCheck(true);
+                    $studentEnrollment->getPerson()->setExternalCheck(true);
+
+                    $collection[] = [
+                        'name' => $name,
+                        'username' => $username,
+                        'student_enrollment' => $studentEnrollment
+                    ];
+
+                    $updatedCount++;
+                }
+            }
+            $entityManager->flush();
+        } catch (Exception $e) {
+            return null;
+        }
+
+        return [
+            'updated_items' => $updatedCount,
+            'total_items' => $totalCount,
+            'collection' => $collection,
+            'conflicts' => $conflicts
         ];
     }
 }

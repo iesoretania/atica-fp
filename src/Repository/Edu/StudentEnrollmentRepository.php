@@ -85,4 +85,20 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function findByAcademicYearNameAndSurname(AcademicYear $academicYear, $firstName, $lastName)
+    {
+        return $this->createQueryBuilder('se')
+            ->join('se.person', 'p')
+            ->join('se.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->where('t.academicYear = :academic_year AND p.firstName = :first_name AND p.lastName = :last_name')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('first_name', $firstName)
+            ->setParameter('last_name', $lastName)
+            ->addOrderBy('g.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

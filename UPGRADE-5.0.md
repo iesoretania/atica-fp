@@ -26,3 +26,11 @@ Nuevos informes
 ---------------
 Se ha añadido un nuevo informe resumen de programa formativo de FP dual, ideal para incluir
 en la documentación de los proyectos.
+
+Importación de usuarios PASEN para el alumnado
+----------------------------------------------
+Existe la posibilidad de importar los usuarios PASEN/IdEA del alumnado con el objeto de permitir
+autenticar a los estudiantes con el mismo usuario/contraseña usados en los servicios de la
+Consejería (Moodle, iPasen, etc.)
+
+El fichero necesario se exporta desde Séneca con el perfil de Dirección.

@@ -78,6 +78,19 @@ report.student.list: Estudiantes procesados
 report.student.new: Estudiantes nuevos incorporados
 report.student.old: Estudiantes ya existentes
 
+title.student_login.import: Importación de usuario PASEN
+form.student_login.academic_year: Curso académico
+form.student_login.do_import: Importar usuarios PASEN
+
+report.student_login.list: Nombres de usuario procesados
+report.student_login.updated: Estudiantes actualizados con el nombre de usuario
+report.student_login.conflicts: Conflictos
+
+warning.student_login.conflicts: |
+  ¡Atención! Se han detectado conflictos en la importación que habrá que resolver
+  manualmente. Es importante que revise la parte inferior del informe para obtener
+  más información de qué datos no han podido importarse.
+
 title.non_working_day.import: Importación de días no lectivos
 form.non_working_day.academic_year: Curso académico
 form.non_working_day.do_import: Importar días no lectivos

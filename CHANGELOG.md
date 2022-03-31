@@ -29,6 +29,7 @@ en las distintas versiones de la misma.
 * feat: Mostrar otras actividades anotadas en el registro de actividades de la FCT
 * feat: Un administrador puede impersonar un usuario que no haya cambiado la contraseña
 * feat: Un acuerdo de FCT puede ser seguido por un tutor docente y laboral adicional opcional
+* feat: Importación de usuarios PASEN para el alumnado, habilitando la autenticación por Séneca
 
 4.1.0 (2022-02-13)
 ------------------

@@ -279,12 +279,23 @@ class EduMenu implements MenuBuilderInterface
 
                 $menu3 = new MenuItem();
                 $menu3
+                    ->setName('organization_import_login_student')
+                    ->setRouteName('organization_import_student_login_form')
+                    ->setCaption('menu.organization.import.student_login')
+                    ->setDescription('menu.organization.import.student_login.detail')
+                    ->setIcon('address-book')
+                    ->setPriority(40);
+
+                $menu2->addChild($menu3);
+
+                $menu3 = new MenuItem();
+                $menu3
                     ->setName('organization_import_department')
                     ->setRouteName('organization_import_department_form')
                     ->setCaption('menu.organization.import.department')
                     ->setDescription('menu.organization.import.department.detail')
                     ->setIcon('users')
-                    ->setPriority(40);
+                    ->setPriority(50);
 
                 $menu2->addChild($menu3);
 
@@ -295,7 +306,7 @@ class EduMenu implements MenuBuilderInterface
                     ->setCaption('menu.organization.import.non_working_day')
                     ->setDescription('menu.organization.import.non_working_day.detail')
                     ->setIcon('calendar-times')
-                    ->setPriority(50);
+                    ->setPriority(60);
 
                 $menu2->addChild($menu3);
             }
