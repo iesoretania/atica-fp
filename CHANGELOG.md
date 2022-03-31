@@ -26,8 +26,9 @@ en las distintas versiones de la misma.
 * fix: Se evita un error cuando se bloquean jornadas pero no hay ninguna actividad realizada
 * fix: Mostrar mensaje correcto cuando no hay jornadas bloqueadas en la FCT
 * chore: Usar la fecha de fin del acuerdo en el informe de registro de actividades de la FCT 
+* feat: Mostrar otras actividades anotadas en el registro de actividades de la FCT
 
-* 4.1.0 (2022-02-13)
+4.1.0 (2022-02-13)
 ------------------
 * docs: Mejoradas las instrucciones de actualización
 * fix: Ajustar .env para que el entorno por defecto sea producción y el motor de bases de datos, MySQL

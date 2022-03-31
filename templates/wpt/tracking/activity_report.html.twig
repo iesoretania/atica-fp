@@ -96,6 +96,17 @@
                 {% endif %}
             </td>
         </tr>
+    {% if item[2] %}
+            <tr>
+                <td colspan="3" style="padding: 0.1cm; border: 1px solid; background-color: #EEEEEE; text-align: center">{{ 'report.other_activities'|trans }}</td>
+            </tr>
+            {% for other_activity in item[2] %}
+                <tr>
+                    <td colspan="3" style="border:1px solid; padding: 0.1cm; font-size: 90%">{{ other_activity.otherActivities|nl2br }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
     </table>
 {% endfor %}
 

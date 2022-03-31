@@ -24,6 +24,7 @@ report.activity.description: Descripción de la actividad
 report.activity.hours: Nº de horas
 report.activity.percentage: Porcentaje
 report.activity.total: TOTAL DEL CENTRO DE TRABAJO
+report.other_activities: Otras actividades realizadas
 
 report.summary.hours: "NÚMERO TOTAL DE HORAS DE FCT REALIZADAS"
 report.summary.percentage: "PORCENTAJE SOBRE LAS PROGRAMADAS"

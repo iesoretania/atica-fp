@@ -299,4 +299,14 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function getOtherActivitiesFromAgreementEnrollment(AgreementEnrollment $agreementEnrollment)
+    {
+        return $this->createQueryBuilder('twd')
+            ->select('twd.otherActivities')
+            ->where('twd.agreementEnrollment = :agreement_enrollment AND twd.locked = 1 AND twd.otherActivities IS NOT NULL')
+            ->setParameter('agreement_enrollment', $agreementEnrollment)
+            ->getQuery()
+            ->getArrayResult();
+    }
 }
