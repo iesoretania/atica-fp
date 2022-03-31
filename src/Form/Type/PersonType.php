@@ -44,9 +44,12 @@ class PersonType extends AbstractType
     {
         $builder
             ->add('uniqueIdentifier', null, [
-                'label' => 'form.unique_indentifier',
-                'required' => true,
-                'disabled' => true
+                'label' => 'form.unique_identifier',
+                'attr' => [
+                    'placeholder' => 'form.unique_identifier.placeholder'
+                ],
+                'required' => false,
+                'disabled' => false
             ])
             ->add('loginUsername', null, [
                 'label' => 'form.user_name',

@@ -2,7 +2,7 @@ form.user_name: Nombre de usuario
 form.first_name: Nombre
 form.last_name: Apellidos
 form.unique_identifier: Identificador
-form.unique_identifier.placeholder: IdEA si estudiante o docente; DNI/NIE si externo
+form.unique_identifier.placeholder: IdEA si estudiante o docente; DNI/NIE opcional si es persona externa
 form.gender: Sexo
 form.gender.neutral: No especificado
 form.gender.male: Hombre

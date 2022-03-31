@@ -32,6 +32,7 @@ en las distintas versiones de la misma.
 * feat: Importación de usuarios PASEN para el alumnado, habilitando la autenticación por Séneca
 * feat: Ahora se pueden modificar los datos del profesorado del centro
 * feat: Se pueden incorporar nuevos docentes en un curso académico manualmente
+* fix: Solucionado problema al modificar usuarios
 
 4.1.0 (2022-02-13)
 ------------------
