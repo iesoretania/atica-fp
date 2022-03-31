@@ -18,6 +18,7 @@
 
 namespace App\Repository\WLT;
 
+use App\Entity\Company;
 use App\Entity\WLT\ActivityRealization;
 use App\Entity\WLT\LearningProgram;
 use App\Entity\WLT\Project;
@@ -81,19 +82,24 @@ class LearningProgramRepository extends ServiceEntityRepository
 
         /** @var LearningProgram $learningProgram */
         foreach ($learningPrograms as $learningProgram) {
-            $newLearningProgram = new LearningProgram();
-            $newLearningProgram
-                ->setCompany($learningProgram->getCompany())
-                ->setProject($destination);
+            $newLearningProgram = $this
+                ->findByProjectAndCompany($destination, $learningProgram->getCompany());
 
-            $this->getEntityManager()->persist($newLearningProgram);
+            if (null === $newLearningProgram) {
+                $newLearningProgram = new LearningProgram();
+                $newLearningProgram
+                    ->setCompany($learningProgram->getCompany())
+                    ->setProject($destination);
+
+                $this->getEntityManager()->persist($newLearningProgram);
+            }
 
             $activityRealizations = $learningProgram->getActivityRealizations();
 
             /** @var ActivityRealization $activityRealization */
             foreach ($activityRealizations as $activityRealization) {
                 $newActivityRealization = $this->activityRealizationRepository->findOneByProjectAndCode(
-                    $source,
+                    $destination,
                     $activityRealization->getCode()
                 );
 
@@ -103,6 +109,14 @@ class LearningProgramRepository extends ServiceEntityRepository
                 }
             }
         }
+    }
 
+    private function findByProjectAndCompany(Project $project, Company $company)
+    {
+        return $this->findByProjectQueryBuilder($project)
+            ->andWhere('lp.company = :company')
+            ->setParameter('company', $company)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

@@ -25,7 +25,7 @@ en las distintas versiones de la misma.
 * feat: Autenticación segura con Séneca. Se permite autenticar alumnado y padres
 * fix: Se evita un error cuando se bloquean jornadas pero no hay ninguna actividad realizada
 * fix: Mostrar mensaje correcto cuando no hay jornadas bloqueadas en la FCT
-* chore: Usar la fecha de fin del acuerdo en el informe de registro de actividades de la FCT 
+* chore: Usar la fecha de fin del acuerdo en el informe de registro de actividades de la FCT
 * feat: Mostrar otras actividades anotadas en el registro de actividades de la FCT
 * feat: Un administrador puede impersonar un usuario que no haya cambiado la contraseña
 * feat: Un acuerdo de FCT puede ser seguido por un tutor docente y laboral adicional opcional
@@ -33,6 +33,7 @@ en las distintas versiones de la misma.
 * feat: Ahora se pueden modificar los datos del profesorado del centro
 * feat: Se pueden incorporar nuevos docentes en un curso académico manualmente
 * fix: Solucionado problema al modificar usuarios
+* fix: Arreglado un problema con la copia de los programas formativos de los proyectos de FP dual
 
 4.1.0 (2022-02-13)
 ------------------

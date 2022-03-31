@@ -229,8 +229,6 @@ class CompanyController extends AbstractController
 
         $persons = $term === null ? [] : [$personRepository->findOneByUniqueIdentifierOrUsernameOrEmailAddress($term)];
 
-        dump($persons);
-
         if (count($persons) === 0 || null === $persons[0]) {
             $data = [
                 ['id' => 0, 'term' => $term, 'text' => $translator->trans('title.new', [], 'person')]

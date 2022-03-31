@@ -258,7 +258,7 @@ class ActivityController extends AbstractController
                     $project,
                     $activityCopy->getProject()
                 );
-
+                $this->getDoctrine()->getManager()->flush();
                 if ($activityCopy->getCopyLearningProgram()) {
                     $learningProgramRepository->copyFromProject(
                         $project,
