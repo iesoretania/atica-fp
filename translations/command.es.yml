@@ -1,0 +1,8 @@
+title.admin: Creación/actualización de un usuario administrador
+title.organization: Creación de un centro educativo
+
+message.admin.updating: Actualizando usuario ya existente
+message.organization.exists: No se puede crear un centro que ya existe
+
+message.success: Operación realizada con éxito
+message.error: Ocurrió un error al realizar la operación
