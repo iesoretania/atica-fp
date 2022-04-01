@@ -69,8 +69,9 @@ class AdminCommand extends Command
         $style = new SymfonyStyle($input, $output);
         $style->title($this->translator->trans('title.admin', [], 'command'));
         $username = $input->getArgument('username');
-        $style->text('Creating user "' . $username . '"...');
-        $password = $input->getOption('password') ?: $style->askHidden('Enter password: ');
+        $style->text($this->translator->trans('message.admin.creating', ['%user%' => $username], 'command'));
+        $password = $input->getOption('password')
+            ?: $style->askHidden($this->translator->trans('input.admin.password', [], 'command'), [$this, 'notEmpty']);
 
         $user = $this->personRepository->findOneBy(['loginUsername' => $username]);
         if (null === $user) {
@@ -93,8 +94,16 @@ class AdminCommand extends Command
         try {
             $this->entityManager->flush();
             $style->success($this->translator->trans('message.success', [], 'command'));
+            return 0;
         } catch (\Exception $e) {
             $style->error($this->translator->trans('message.error', [], 'command'));
+            return 1;
         }
+    }
+
+    final public function notEmpty(?string $str) : string
+    {
+        if ($str === null || $str === '') throw new \RuntimeException($this->translator->trans('message.empty_error', [], 'command'));
+        return $str;
     }
 }

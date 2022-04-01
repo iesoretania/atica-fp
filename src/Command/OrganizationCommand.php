@@ -58,31 +58,43 @@ class OrganizationCommand extends Command
             ->addOption('city', null, InputOption::VALUE_REQUIRED, 'Organization city');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output) : int
     {
         $style = new SymfonyStyle($input, $output);
         $style->title($this->translator->trans('title.organization', [], 'command'));
         $organizationName = $input->getArgument('name');
-        $style->text('Creating new organization "' . $organizationName . '"...');
+        $style->text(
+            $this->translator->trans('message.organization.creating', ['%organization%' => $organizationName], 'command')
+        );
 
         $organization = $this->organizationRepository->findOneBy(['name' => $organizationName]);
         if (null === $organization) {
             $organization = new Organization();
             $organization
                 ->setName($organizationName)
-                ->setCode($input->getOption('code'))
-                ->setCity($input->getOption('city'));
+                ->setCode($input->getOption('code')
+                              ?: $style->ask($this->translator->trans('input.organization.code', [], 'command'), null, [$this, 'notEmpty']))
+                ->setCity($input->getOption('city')
+                              ?: $style->ask($this->translator->trans('input.organization.city', [], 'command'), null, [$this, 'notEmpty']));
             $this->entityManager->persist($organization);
         } else {
             $style->error($this->translator->trans('message.organization.exists', [], 'command'));
-            return;
+            return 1;
         }
 
         try {
             $this->entityManager->flush();
             $style->success($this->translator->trans('message.success', [], 'command'));
+            return 0;
         } catch (\Exception $e) {
             $style->error($this->translator->trans('message.error', [], 'command'));
+            return 1;
         }
+    }
+
+    final public function notEmpty(?string $str) : string
+    {
+        if ($str === null || $str === '') throw new \RuntimeException($this->translator->trans('message.empty_error', [], 'command'));
+        return $str;
     }
 }

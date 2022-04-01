@@ -1,8 +1,14 @@
 title.admin: Creación/actualización de un usuario administrador
-title.organization: Creación de un centro educativo
-
+message.admin.creating: Creando usuario administrador "%user%"...
 message.admin.updating: Actualizando usuario ya existente
+input.admin.password: "Introduzca contraseña"
+
+title.organization: Creación de un centro educativo
 message.organization.exists: No se puede crear un centro que ya existe
+message.organization.creating: Creando centro educativo "%organization%"...
+input.organization.code: "Introduzca código de centro"
+input.organization.city: "Introduzca localidad"
 
 message.success: Operación realizada con éxito
 message.error: Ocurrió un error al realizar la operación
+message.empty_error: Campo obligatorio, no puede estar vacío
