@@ -37,6 +37,7 @@ en las distintas versiones de la misma.
 * feat: Creación de usuarios administradores y centros educativos desde la consola de comandos
 * fix: Arreglada validación del perfil de usuario
 * fix: Arreglado problema con la creación de acuerdos y convenios
+* feat: Permitir elegir cualquier acuerdo de colaboración al copiar calendario de FCT
 
 4.1.0 (2022-02-13)
 ------------------

@@ -84,6 +84,53 @@ class AgreementRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByAcademicYearQueryBuilder(
+        AcademicYear $academicYear
+    ) {
+        return $this->createQueryBuilder('a')
+            ->join('a.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->join('a.shift', 'sh')
+            ->join('sh.subject', 's')
+            ->join('s.grade', 'g')
+            ->join('g.training', 't')
+            ->where('t.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear)
+            ->orderBy('sh.name')
+            ->addOrderBy('c.name')
+            ->addOrderBy('w.name')
+            ->addOrderBy('a.name');
+    }
+
+    /**
+     * @return Agreement[]
+     */
+    public function findAllInListByIdAndAcademicYear(
+        $items,
+        AcademicYear $academicYear
+    ) {
+        return $this->findByAcademicYearQueryBuilder($academicYear)
+            ->andWhere('a.id IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Agreement[]
+     */
+    public function findAllInListByNotIdAndAcademicYear(
+        $items,
+        AcademicYear $academicYear
+    ) {
+        return $this->findByAcademicYearQueryBuilder($academicYear)
+            ->andWhere('a.id NOT IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @param AcademicYear $academicYear
      * @param Person $student

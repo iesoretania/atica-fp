@@ -445,12 +445,13 @@ class AgreementController extends AbstractController
     ) {
         $em = $this->getDoctrine()->getManager();
 
-        $selectedAgreements = $agreementRepository->findAllInListByIdAndShift($items, $shift);
+        $academicYear = $shift->getGrade()->getTraining()->getAcademicYear();
+        $selectedAgreements = $agreementRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
         // comprobar individualmente que tenemos acceso
         foreach ($selectedAgreements as $agreement) {
             $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
         }
-        $agreementChoices = $agreementRepository->findAllInListByNotIdAndShift($items, $shift);
+        $agreementChoices = $agreementRepository->findAllInListByNotIdAndAcademicYear($items, $academicYear);
         $calendarCopy = new CalendarCopy();
 
         $form = $this->createForm(CalendarCopyType::class, $calendarCopy, [
