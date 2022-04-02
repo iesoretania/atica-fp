@@ -195,7 +195,7 @@ class Agreement
     }
 
     /**
-     * @return \DateTime
+     * @return ?\DateTimeInterface
      */
     public function getStartDate()
     {
@@ -203,17 +203,17 @@ class Agreement
     }
 
     /**
-     * @param \DateTime $startDate
+     * @param ?\DateTimeInterface $startDate
      * @return Agreement
      */
-    public function setStartDate(\DateTimeInterface $startDate)
+    public function setStartDate(?\DateTimeInterface $startDate)
     {
         $this->startDate = $startDate;
         return $this;
     }
 
     /**
-     * @return \DateTime
+     * @return ?\DateTime
      */
     public function getEndDate()
     {
@@ -221,17 +221,17 @@ class Agreement
     }
 
     /**
-     * @param \DateTime $endDate
+     * @param ?\DateTimeInterface $endDate
      * @return Agreement
      */
-    public function setEndDate(\DateTimeInterface $endDate)
+    public function setEndDate(?\DateTimeInterface $endDate)
     {
         $this->endDate = $endDate;
         return $this;
     }
 
     /**
-     * @return \DateTime
+     * @return ?\DateTimeInterface
      */
     public function getSignDate()
     {
@@ -239,10 +239,10 @@ class Agreement
     }
 
     /**
-     * @param \DateTime $signDate
+     * @param ?\DateTimeInterface $signDate
      * @return Agreement
      */
-    public function setSignDate(\DateTimeInterface $signDate)
+    public function setSignDate(?\DateTimeInterface $signDate)
     {
         $this->signDate = $signDate;
         return $this;
