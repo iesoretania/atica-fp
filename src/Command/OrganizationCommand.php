@@ -18,7 +18,6 @@
 
 namespace App\Command;
 
-use App\Entity\Organization;
 use App\Repository\OrganizationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -58,24 +57,40 @@ class OrganizationCommand extends Command
             ->addOption('city', null, InputOption::VALUE_REQUIRED, 'Organization city');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) : int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new SymfonyStyle($input, $output);
         $style->title($this->translator->trans('title.organization', [], 'command'));
         $organizationName = $input->getArgument('name');
         $style->text(
-            $this->translator->trans('message.organization.creating', ['%organization%' => $organizationName], 'command')
+            $this->translator->trans(
+                'message.organization.creating',
+                ['%organization%' => $organizationName],
+                'command'
+            )
         );
 
         $organization = $this->organizationRepository->findOneBy(['name' => $organizationName]);
         if (null === $organization) {
-            $organization = new Organization();
+            $organization = $this->organizationRepository->createEducationalOrganization();
             $organization
                 ->setName($organizationName)
-                ->setCode($input->getOption('code')
-                              ?: $style->ask($this->translator->trans('input.organization.code', [], 'command'), null, [$this, 'notEmpty']))
-                ->setCity($input->getOption('city')
-                              ?: $style->ask($this->translator->trans('input.organization.city', [], 'command'), null, [$this, 'notEmpty']));
+                ->setCode(
+                    $input->getOption('code')
+                    ?: $style->ask(
+                        $this->translator->trans('input.organization.code', [], 'command'),
+                        null,
+                        [$this, 'notEmpty']
+                    )
+                )
+                ->setCity(
+                    $input->getOption('city')
+                    ?: $style->ask(
+                        $this->translator->trans('input.organization.city', [], 'command'),
+                        null,
+                        [$this, 'notEmpty']
+                    )
+                );
             $this->entityManager->persist($organization);
         } else {
             $style->error($this->translator->trans('message.organization.exists', [], 'command'));
@@ -92,9 +107,11 @@ class OrganizationCommand extends Command
         }
     }
 
-    final public function notEmpty(?string $str) : string
+    final public function notEmpty(?string $str): string
     {
-        if ($str === null || $str === '') throw new \RuntimeException($this->translator->trans('message.empty_error', [], 'command'));
+        if ($str === null || $str === '') {
+            throw new \RuntimeException($this->translator->trans('message.empty_error', [], 'command'));
+        }
         return $str;
     }
 }
