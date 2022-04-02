@@ -592,9 +592,9 @@ class Person implements UserInterface
     public function validate(ExecutionContextInterface $context)
     {
         // comprobar si se ha especificado al menos el nombre de usuario o el correo electrónico
-        if (!$this->getUniqueIdentifier() && !$this->getEmailAddress()) {
+        if (!$this->getLoginUsername() && !$this->getEmailAddress()) {
             $context->buildViolation('user.id.not_found')
-                ->atPath('userName')
+                ->atPath('loginUsername')
                 ->addViolation();
             $context->buildViolation('user.id.not_found')
                 ->atPath('emailAddress')

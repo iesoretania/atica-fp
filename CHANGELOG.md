@@ -35,6 +35,7 @@ en las distintas versiones de la misma.
 * fix: Solucionado problema al modificar usuarios
 * fix: Arreglado un problema con la copia de los programas formativos de los proyectos de FP dual
 * feat: Creación de usuarios administradores y centros educativos desde la consola de comandos
+* fix: Arreglada validación del perfil de usuario
 
 4.1.0 (2022-02-13)
 ------------------
