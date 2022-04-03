@@ -36,6 +36,7 @@ COPY . /var/www/symfony/
 
 # Copiar el script de inicialización
 ADD ./docker/run.sh /run.sh
+ADD ./docker/demo.sql /demo.sql
 
 # Añadir permisos de ejecución al script y
 # cambiar configuración de apache2 para apuntar

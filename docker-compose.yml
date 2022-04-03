@@ -8,16 +8,16 @@ services:
             MYSQL_USER: atica
             MYSQL_PASSWORD: atica
         volumes:
-            - db:/var/lib/mysql
+            - ./data:/var/lib/mysql
         restart: always
 
     app:
         image: iesoretania/atica-fp-app
         build: .
+        environment:
+            - "DEMO=${DEMO}"
         ports:
            - 9999:80
         restart: always
         depends_on:
            - db
-volumes:
-   db:

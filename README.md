@@ -21,10 +21,14 @@ Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos comp
 
 **ATENCIÓN: No se recomienda ejecutarlo así en entornos de producción, tan sólo se sugiere para pruebas internas.**
 - Ejecutar `docker-compose up -d` desde la carpeta del proyecto
+  * El usuario será `admin` y la contraseña `admin`. Habrá que cambiarla en la primera entrada.
+  *Si usas Linux, con el comando `DEMO=1 docker-compose up -d` se instalarán unos datos de prueba. En ese caso, el usuario será `admin` y la contraseña `aticafp`
 - Esperar...
 - Acceder desde el navegador a la dirección http://127.0.0.1:9999
   * Si usas Docker Toolbox usa esta dirección en su lugar: http://192.168.99.100:9999
 - ¡Listo!
+
+**NOTA: La carpeta `data` contendrá la base de datos, puedes sacar copias de seguridad de la misma si lo estimas conveniente.**
 
 
 ## Instalación
@@ -41,7 +45,10 @@ Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos comp
 - Para crear las tablas:
   - `php bin/console doctrine:schema:create`
   - `php bin/console doctrine:migrations:version --add --all`
-- Para insertar los datos iniciales: `php bin/console doctrine:fixtures:load -n` (¡cuidado! Esto elimina todos los datos existentes en la base de datos).
+- Para insertar los datos iniciales: (con la base de datos vacía)
+  - `bin/console app:organization "I.E.S. Test" --code=23999999 --city=Linares` (cambia los datos según tu centro)
+  - `bin/console app:admin admin --firstname=Admin --lastname=ATICA --password=admin`
+  - Esto creará un usuario `admin` con contraseña `admin`. Habrá que cambiarla la primera vez que se acceda.
 
 ## Configuración
 
@@ -64,4 +71,5 @@ Esta aplicación se ofrece bajo licencia [AGPL versión 3].
 [Composer]: http://getcomposer.org
 [AGPL versión 3]: http://www.gnu.org/licenses/agpl.html
 [Node.js]: https://nodejs.org/en/
+[npmjs]: https://npmjs.com/
 [@aticaFP]: https://twitter.com/aticaFP

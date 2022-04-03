@@ -38,6 +38,7 @@ en las distintas versiones de la misma.
 * fix: Arreglada validación del perfil de usuario
 * fix: Arreglado problema con la creación de acuerdos y convenios
 * feat: Permitir elegir cualquier acuerdo de colaboración al copiar calendario de FCT
+* feat: Opción de crear una instancia Docker con datos de demostración
 
 4.1.0 (2022-02-13)
 ------------------

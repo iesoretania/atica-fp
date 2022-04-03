@@ -26,12 +26,19 @@ sudo -u www-data node_modules/.bin/encore prod
 sudo -u www-data php bin/console --no-interaction d:m:m
 
 # Comprobar si hay usuarios en la base de datos
-# Si no es así, generar un secreto nuevo y lanzar fixtures
-RESULT=`MYSQL_PWD=atica mysql -h db --user=atica aticafp -N -s -r -e "SELECT COUNT(*) FROM user"`
+RESULT=`MYSQL_PWD=atica mysql -h db --user=atica aticafp -N -s -r -e "SELECT COUNT(*) FROM person"`
 if [ "$RESULT" == "0" ]; then
-   SECRET="`hexdump -n 16 -e '4/4 "%08X" 1 "\n"' /dev/random`" && sudo -u www-data sed -i -e "s/APP_SECRET=:.*/APP_SECRET=$SECRET/" /var/www/symfony/.env.local
-   sudo -u www-data php bin/console app:organization "I.E.S. Test" --code=23999999 --city=Linares
-   sudo -u www-data php bin/console app:admin admin --firstname=Admin --lastname=ATICA --password=admin
+    # Si no es así, generar un secreto nuevo
+    SECRET="`hexdump -n 16 -e '4/4 "%08X" 1 "\n"' /dev/random`" && sudo -u www-data sed -i -e "s/APP_SECRET=:.*/APP_SECRET=$SECRET/" /var/www/symfony/.env.local
+    if [ "$DEMO" == "1" ]; then
+        # Datos de demostración
+        echo "Incorporando datos de prueba..."
+        MYSQL_PWD=atica mysql -h db --user=atica aticafp < /demo.sql
+    else
+        # Crear un centro inicial y un usuario "admin" con contraseña "admin"
+        sudo -u www-data php bin/console app:organization "I.E.S. Test" --code=23999999 --city=Linares
+        sudo -u www-data php bin/console app:admin admin --firstname=Admin --lastname=ATICA --password=admin
+    fi
 fi
 
 # Arrancar Apache2
