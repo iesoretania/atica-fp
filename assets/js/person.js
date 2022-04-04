@@ -1,3 +1,5 @@
+var item;
+
 function sendForm(form, callback)
 {
     var values = {};
@@ -31,6 +33,7 @@ my_item = $("select.person");
 
 $(function () {
         my_item.on('select2:select', function (e) {
+            item = e.target;
             var data = e.params.data;
             if (data.id === 0) {
                 $('#new_person form').trigger('reset');
@@ -50,7 +53,7 @@ $('#create_person').on('click', function (e) {
     sendForm($('.modal-body').find('form'), function (response) {
         if (typeof response == "object") {
             var newOption = new Option(response.name, response.id, true, true);
-            $('select.person').append(newOption).trigger('change');
+            $(item).append(newOption).trigger('change');
 
             $('#new_person').modal('hide');
 

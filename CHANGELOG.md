@@ -40,6 +40,7 @@ en las distintas versiones de la misma.
 * feat: Permitir elegir cualquier acuerdo de colaboración al copiar calendario de FCT
 * feat: Opción de crear una instancia Docker con datos de demostración
 * feat: Un convenio de FP dual puede ser seguido por responsables de seguimiento opcionales
+* fix: Solucionar un problema al añadir un nuevo responsable o tutor laboral
 
 4.1.0 (2022-02-13)
 ------------------
