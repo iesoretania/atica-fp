@@ -67,7 +67,12 @@ class WLTTeacherRepository extends ServiceEntityRepository
 
         $educationalTutors = $this->createQueryBuilder('t')
             ->distinct()
-            ->join(Agreement::class, 'a', 'WITH', 'a.educationalTutor = t')
+            ->join(
+                Agreement::class,
+                'a',
+                'WITH',
+                'a.educationalTutor = t OR a.additionalEducationalTutor = t'
+            )
             ->join(StudentEnrollment::class, 'se')
             ->andWhere('se.group IN (:groups)')
             ->andWhere('t.academicYear = :academic_year')
@@ -123,7 +128,12 @@ class WLTTeacherRepository extends ServiceEntityRepository
             ->select('t')
             ->addSelect('etas')
             ->join('t.person', 'p')
-            ->join(Agreement::class, 'a', 'WITH', 'a.educationalTutor = t')
+            ->join(
+                Agreement::class,
+                'a',
+                'WITH',
+                'a.educationalTutor = t OR a.additionalEducationalTutor = t'
+            )
             ->join(Project::class, 'pr', 'WITH', 'a.project = pr')
             ->leftJoin(
                 EducationalTutorAnsweredSurvey::class,

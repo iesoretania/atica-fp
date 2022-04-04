@@ -130,9 +130,13 @@ class AgreementVoter extends CachedVoter
         }
 
         // Tutor laboral y de seguimiento
-        $isWorkTutor = $user === $subject->getWorkTutor();
+        $isWorkTutor = ($user === $subject->getWorkTutor() || $user === $subject->getAdditionalWorkTutor());
         $isEducationalTutor =
-            $subject->getEducationalTutor() && $subject->getEducationalTutor()->getPerson() === $person;
+            ($subject->getEducationalTutor() && $subject->getEducationalTutor()->getPerson() === $person) ||
+            (
+                $subject->getAdditionalEducationalTutor() &&
+                $subject->getAdditionalEducationalTutor()->getPerson() === $person
+            );
 
         // hay estudiante asociado (puede que no lo haya si es un convenio nuevo)
         if ($subject->getStudentEnrollment()) {

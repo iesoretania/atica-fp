@@ -165,7 +165,12 @@ class ProjectVoter extends CachedVoter
 
                 // El responsable de seguimiento de un acuerdo también puede
                 foreach ($subject->getAgreements() as $agreement) {
-                    if ($agreement->getEducationalTutor()->getPerson() === $user) {
+                    if ($agreement->getEducationalTutor()->getPerson() === $user ||
+                        (
+                            $agreement->getAdditionalEducationalTutor() &&
+                            $agreement->getAdditionalEducationalTutor()->getPerson() === $user
+                        )
+                    ) {
                         return true;
                     }
                 }

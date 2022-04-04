@@ -7,8 +7,12 @@ form.student_enrollment: Estudiante
 form.student_enrollment.none: Seleccione un estudiante
 form.work_tutor: Reponsable laboral
 form.work_tutor.none: Seleccione el reponsable laboral
+form.additional_work_tutor: Responsable laboral adicional
+form.additional_work_tutor.none: Opcionalmente seleccione otro responsable laboral
 form.educational_tutor: Reponsable de seguimiento
 form.educational_tutor.none: Seleccione el reponsable de seguimiento
+form.additional_educational_tutor: Reponsable de seguimiento adicional
+form.additional_educational_tutor.none: Opcionalmente seleccione otro docente
 form.start_date: Fecha de comienzo
 form.end_date: Fecha de finalización
 form.default_start_time_1: Hora de inicio, primer tramo

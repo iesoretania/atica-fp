@@ -110,6 +110,13 @@ class AgreementType extends AbstractType
                 'placeholder' => 'form.educational_tutor.none',
                 'required' => true
             ])
+            ->add('additionalEducationalTutor', EntityType::class, [
+                'label' => 'form.additional_educational_tutor',
+                'class' => Teacher::class,
+                'choices' => $teachers,
+                'placeholder' => 'form.additional_educational_tutor.none',
+                'required' => false
+            ])
             ->add('company', EntityType::class, [
                 'label' => 'form.company',
                 'mapped' => false,
@@ -142,6 +149,17 @@ class AgreementType extends AbstractType
                 'minimum_input_length' => 3,
                 'remote_route' => 'api_person_query',
                 'placeholder' => 'form.work_tutor.none',
+                'attr' => ['class' => 'person'],
+                'required' => false
+            ])
+            ->add('additionalWorkTutor', Select2EntityType::class, [
+                'label' => 'form.additional_work_tutor',
+                'multiple' => false,
+                'text_property' => 'fullDisplayName',
+                'class' => Person::class,
+                'minimum_input_length' => 3,
+                'remote_route' => 'api_person_query',
+                'placeholder' => 'form.additional_work_tutor.none',
                 'attr' => ['class' => 'person'],
                 'required' => false
             ])

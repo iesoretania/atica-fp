@@ -88,7 +88,9 @@ class TrackingController extends AbstractController
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->join('a.workTutor', 'wt')
+            ->leftJoin('a.additionalWorkTutor', 'awt')
             ->join('a.educationalTutor', 'et')
+            ->leftJoin('a.additionalEducationalTutor', 'aet')
             ->groupBy('a')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
@@ -108,6 +110,9 @@ class TrackingController extends AbstractController
                 ->orWhere('wt.firstName LIKE :tq')
                 ->orWhere('wt.lastName LIKE :tq')
                 ->orWhere('wt.uniqueIdentifier LIKE :tq')
+                ->orWhere('awt.firstName LIKE :tq')
+                ->orWhere('awt.lastName LIKE :tq')
+                ->orWhere('awt.uniqueIdentifier LIKE :tq')
                 ->orWhere('pro.name LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
@@ -135,20 +140,31 @@ class TrackingController extends AbstractController
         // ver siempre las propias
         if ($groups) {
             $queryBuilder
-                ->andWhere('se.group IN (:groups) OR se.person = :person OR a.workTutor = :person OR et.person = :person')
+                ->andWhere(
+                    'se.group IN (:groups) OR ' .
+                    'se.person = :person OR a.workTutor = :person OR et.person = :person OR ' .
+                    'a.additionalWorkTutor = :person OR aet.person = :person'
+                )
                 ->setParameter('groups', $groups)
                 ->setParameter('person', $person);
         }
         if ($projects) {
             $queryBuilder
-                ->andWhere('pro IN (:projects) OR se.person = :person OR a.workTutor = :person OR et.person = :person')
+                ->andWhere(
+                    'pro IN (:projects)' .
+                    'se.person = :person OR a.workTutor = :person OR et.person = :person OR ' .
+                    'a.additionalWorkTutor = :person OR aet.person = :person'
+                )
                 ->setParameter('projects', $projects)
                 ->setParameter('person', $person);
         }
 
         if (!$isWltManager && !$isManager && !$projects && !$groups) {
             $queryBuilder
-                ->andWhere('se.person = :person OR a.workTutor = :person OR et.person = :person')
+                ->andWhere(
+                    'se.person = :person OR a.workTutor = :person OR et.person = :person OR ' .
+                    'a.additionalWorkTutor = :person OR aet.person = :person'
+                )
                 ->setParameter('person', $person);
         }
 

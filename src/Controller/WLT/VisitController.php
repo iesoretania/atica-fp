@@ -107,7 +107,9 @@ class VisitController extends AbstractController
         $this->denyAccessUnlessGranted(VisitVoter::ACCESS, $visit);
 
         $organization = $userExtensionService->getCurrentOrganization();
-        $academicYear = $visit->getTeacher() ? $visit->getTeacher()->getAcademicYear() : $organization->getCurrentAcademicYear();
+        $academicYear = $visit->getTeacher()
+            ? $visit->getTeacher()->getAcademicYear()
+            : $organization->getCurrentAcademicYear();
 
         $em = $this->getDoctrine()->getManager();
 

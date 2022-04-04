@@ -39,6 +39,7 @@ en las distintas versiones de la misma.
 * fix: Arreglado problema con la creación de acuerdos y convenios
 * feat: Permitir elegir cualquier acuerdo de colaboración al copiar calendario de FCT
 * feat: Opción de crear una instancia Docker con datos de demostración
+* feat: Un convenio de FP dual puede ser seguido por responsables de seguimiento opcionales
 
 4.1.0 (2022-02-13)
 ------------------

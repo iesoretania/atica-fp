@@ -183,7 +183,7 @@ class ProjectRepository extends ServiceEntityRepository
             ->addSelect('a')
             ->distinct()
             ->join('p.agreements', 'a')
-            ->andWhere('a.educationalTutor = :teacher')
+            ->andWhere('a.educationalTutor = :teacher OR a.additionalEducationalTutor = :teacher')
             ->setParameter('teacher', $teacher)
             ->getQuery()
             ->getResult();

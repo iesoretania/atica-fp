@@ -74,11 +74,25 @@ class Agreement
     private $workTutor;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Person")
+     * @ORM\JoinColumn(nullable=true)
+     * @var Person
+     */
+    private $additionalWorkTutor;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher")
      * @ORM\JoinColumn(nullable=false)
      * @var Teacher
      */
     private $educationalTutor;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher")
+     * @ORM\JoinColumn(nullable=true)
+     * @var Teacher
+     */
+    private $additionalEducationalTutor;
 
     /**
      * @ORM\Column(type="date", nullable=true)
@@ -238,6 +252,24 @@ class Agreement
     }
 
     /**
+     * @return ?Person
+     */
+    public function getAdditionalWorkTutor()
+    {
+        return $this->additionalWorkTutor;
+    }
+
+    /**
+     * @param ?Person $workTutor
+     * @return Agreement
+     */
+    public function setAdditionalWorkTutor(?Person $workTutor)
+    {
+        $this->additionalWorkTutor = $workTutor;
+        return $this;
+    }
+
+    /**
      * @return Teacher
      */
     public function getEducationalTutor()
@@ -249,9 +281,27 @@ class Agreement
      * @param Teacher $educationalTutor
      * @return Agreement
      */
-    public function setEducationalTutor($educationalTutor)
+    public function setEducationalTutor(?Teacher $educationalTutor)
     {
         $this->educationalTutor = $educationalTutor;
+        return $this;
+    }
+
+    /**
+     * @return ?Teacher
+     */
+    public function getAdditionalEducationalTutor()
+    {
+        return $this->additionalEducationalTutor;
+    }
+
+    /**
+     * @param ?Teacher $educationalTutor
+     * @return Agreement
+     */
+    public function setAdditionalEducationalTutor(?Teacher $educationalTutor)
+    {
+        $this->additionalEducationalTutor = $educationalTutor;
         return $this;
     }
 

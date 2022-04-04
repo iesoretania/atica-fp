@@ -28,7 +28,6 @@ use App\Repository\Edu\TeacherRepository;
 use App\Repository\WLT\ActivityRealizationRepository;
 use App\Repository\WLT\WLTGroupRepository;
 use App\Security\Edu\GroupVoter;
-use App\Security\OrganizationVoter;
 use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -81,8 +80,13 @@ class EvaluationSummaryController extends AbstractController
             ->join('se.group', 'g')
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
+            ->leftJoin('t.department', 'd')
+            ->leftJoin('d.head', 'h')
             ->join(Agreement::class, 'a', 'WITH', 'a.studentEnrollment = se')
             ->join('a.evaluatedActivityRealizations', 'ar')
+            ->join('a.educationalTutor', 'et')
+            ->leftJoin('a.additionalEducationalTutor', 'aet')
+            ->join('a.project', 'pr')
             ->groupBy('se')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
@@ -98,37 +102,29 @@ class EvaluationSummaryController extends AbstractController
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $this->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
-        $isWorkTutor = $this->isGranted(WLTOrganizationVoter::WLT_WORK_TUTOR, $organization);
+        /** @var Person $person */
+        $person = $this->getUser();
 
-        if (!$isManager && !$isWltManager) {
-            /** @var Person $person */
-            $person = $this->getUser();
+        // Darle acceso si es profesor/a de algún grupo
+        $teacher =
+            $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
-            // no es administrador ni coordinador de FP:
-            // puede ser jefe de departamento, tutor de grupo o profesor
-            $teacher =
-                $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
-
-            if ($teacher) {
-                $groups = $wltGroupRepository->findByAcademicYearAndPerson($academicYear, $teacher->getPerson());
-                if ($groups->count() > 0) {
-                    $queryBuilder
-                        ->andWhere('g IN (:groups)')
-                        ->setParameter('groups', $groups);
-                }
-                // si también es tutor laboral, mostrar los suyos aunque sean de otros grupos
-                if ($isWorkTutor) {
-                    $queryBuilder
-                        ->orWhere('a.workTutor = :person')
-                        ->setParameter('person', $person);
-                }
-            } elseif ($isWorkTutor) {
+        if ($teacher) {
+            $groups = $wltGroupRepository->findByAcademicYearAndPerson($academicYear, $teacher->getPerson());
+            if ($groups->count() > 0) {
                 $queryBuilder
-                    ->andWhere('a.workTutor = :person')
-                    ->setParameter('person', $person);
+                    ->andWhere('g IN (:groups) OR et.person = :person OR aet.person = :person ' .
+                    'OR a.workTutor = :person OR a.additionalWorkTutor = :person ' .
+                    'OR pr.manager = :person OR h.person = :person')
+                    ->setParameter('person', $person)
+                    ->setParameter('groups', $groups);
             }
+        } else {
+            $queryBuilder
+                ->andWhere('et.person = :person OR aet.person = :person ' .
+                           'OR a.workTutor = :person OR a.additionalWorkTutor = :person ' .
+                           'OR pr.manager = :person OR h.person = :person')
+                ->setParameter('person', $person);
         }
 
         $queryBuilder

@@ -42,7 +42,7 @@ class WLTOrganizationRepository extends ServiceEntityRepository
             ->join('se.group', 'g')
             ->join('g.grade', 'gr')
             ->join('gr.training', 't', 'WITH', 't.academicYear = o.currentAcademicYear')
-            ->where('a.workTutor = :user')
+            ->where('a.workTutor = :user OR a.additionalWorkTutor = :user')
             ->setParameter('user', $person)
             ->getQuery()
             ->getResult();

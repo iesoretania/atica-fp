@@ -328,6 +328,7 @@ class SurveyController extends AbstractController
             ->join('g.grade', 'gr')
             ->join('gr.training', 't')
             ->join('a.workTutor', 'wt')
+            ->leftJoin('a.additionalWorkTutor', 'awt')
             ->groupBy('a')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
@@ -347,6 +348,9 @@ class SurveyController extends AbstractController
                 ->orWhere('wt.firstName LIKE :tq')
                 ->orWhere('wt.lastName LIKE :tq')
                 ->orWhere('wt.uniqueIdentifier LIKE :tq')
+                ->orWhere('awt.firstName LIKE :tq')
+                ->orWhere('awt.lastName LIKE :tq')
+                ->orWhere('awt.uniqueIdentifier LIKE :tq')
                 ->orWhere('pro.name LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
@@ -372,20 +376,20 @@ class SurveyController extends AbstractController
         // ver siempre las propias
         if ($groups) {
             $queryBuilder
-                ->andWhere('se.group IN (:groups) OR se.person = :person OR wt = :person')
+                ->andWhere('se.group IN (:groups) OR se.person = :person OR wt = :person OR awt = :person')
                 ->setParameter('groups', $groups)
                 ->setParameter('person', $person);
         }
         if ($projects) {
             $queryBuilder
-                ->andWhere('pro IN (:projects) OR se.person = :person OR wt = :person')
+                ->andWhere('pro IN (:projects) OR se.person = :person OR wt = :person OR awt = :person')
                 ->setParameter('projects', $projects)
                 ->setParameter('person', $person);
         }
 
         if (!$isWltManager && !$isManager && !$projects && !$groups) {
             $queryBuilder
-                ->andWhere('se.person = :person OR wt = :person')
+                ->andWhere('se.person = :person OR wt = :person OR awt = :person')
                 ->setParameter('person', $person);
         }
 
@@ -557,7 +561,7 @@ class SurveyController extends AbstractController
             ->addSelect('ay.description AS academicYearDescription')
             ->addSelect('COUNT(etas)')
             ->from(Teacher::class, 't')
-            ->join(Agreement::class, 'a', 'WITH', 'a.educationalTutor = t')
+            ->join(Agreement::class, 'a', 'WITH', 'a.educationalTutor = t OR a.additionalEducationalTutor = t')
             ->join(Project::class, 'pro', 'WITH', 'a.project = pro')
             ->join('t.person', 'p')
             ->join('a.studentEnrollment', 'se')
