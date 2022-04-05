@@ -46,11 +46,14 @@ Importación de RAs y criterios de evaluación
 Ahora se pueden importar los RAs y criterios de evaluación de módulos profesionales a partir
 de los ficheros generados desde Séneca.
 
-Tutores adicionales en los acuerdos de FCT
-------------------------------------------
-Ahora es posible especificar un tutor docente o laboral adicional que tendrá
-las mismas posibilidades que el principal, que es el que aparecerá en las
+Tutores adicionales en los acuerdos de FCT y convenios de FP dual
+-----------------------------------------------------------------
+Ahora es posible especificar en los acuerdos de FCT un tutor docente o laboral adicional que
+tendrá las mismas posibilidades que el principal, que es el que aparecerá en las
 pantallas e informes.
+
+De igual forma, en los convenios de FP dual se pueden incluir responsables laborales y responsables
+de seguimiento adicionales.
 
 Esto permite asignar profesorado sustituto o de apoyo, así como soportar el caso
 en el que el seguimiento real por parte de la empresa lo realice otro empleado.
