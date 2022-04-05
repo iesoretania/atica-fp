@@ -42,6 +42,7 @@ en las distintas versiones de la misma.
 * feat: Un convenio de FP dual puede ser seguido por responsables de seguimiento opcionales
 * fix: Solucionar un problema al añadir un nuevo responsable o tutor laboral
 * feat: Importar resultados de aprendizaje y criterios de evaluación desde Séneca
+* fix: Corregido un error de permisos para permitir el despliegue en Docker para Windows
 
 4.1.0 (2022-02-13)
 ------------------

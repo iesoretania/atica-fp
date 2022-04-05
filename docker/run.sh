@@ -5,9 +5,10 @@
 
 # Corregir permisos
 mkdir -p var/log
+mkdir -p var/cache/prod
 touch var/log/prod.log
-chgrp -R www-data .
 chmod -R g+w var/log
+chown -R www-data:www-data var
 
 # Cargar variables de entorno de Apache2
 source /etc/apache2/envvars
