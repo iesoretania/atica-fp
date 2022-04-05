@@ -268,6 +268,17 @@ class EduMenu implements MenuBuilderInterface
 
                 $menu3 = new MenuItem();
                 $menu3
+                    ->setName('organization_import_subject_criteria')
+                    ->setRouteName('organization_import_criteria_form')
+                    ->setCaption('menu.organization.import.criteria')
+                    ->setDescription('menu.organization.import.criteria.detail')
+                    ->setIcon('clipboard-list')
+                    ->setPriority(20);
+
+                $menu2->addChild($menu3);
+
+                $menu3 = new MenuItem();
+                $menu3
                     ->setName('organization_import_student')
                     ->setRouteName('organization_import_student_form')
                     ->setCaption('menu.organization.import.student')

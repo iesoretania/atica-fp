@@ -67,6 +67,9 @@ menu.organization.import.department.detail: Importar departamentos de familia pr
 menu.organization.import.subject: Importar materias
 menu.organization.import.subject.detail: Importar asignaturas y módulos profesionales desde Séneca
 
+menu.organization.import.criteria: Importar RAs y criterios
+menu.organization.import.criteria.detail: Importar RAs y criterios de evaluación
+
 menu.organization.import.student: Importar estudiantes
 menu.organization.import.student.detail: Importar estudiantes desde Séneca
 

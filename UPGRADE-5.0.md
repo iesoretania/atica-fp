@@ -41,6 +41,11 @@ Consejería (Moodle, iPasen, etc.)
 
 El fichero necesario se exporta desde Séneca con el perfil de Dirección.
 
+Importación de RAs y criterios de evaluación
+--------------------------------------------
+Ahora se pueden importar los RAs y criterios de evaluación de módulos profesionales a partir
+de los ficheros generados desde Séneca.
+
 Tutores adicionales en los acuerdos de FCT
 ------------------------------------------
 Ahora es posible especificar un tutor docente o laboral adicional que tendrá

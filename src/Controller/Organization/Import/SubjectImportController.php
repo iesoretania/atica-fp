@@ -19,12 +19,19 @@
 namespace App\Controller\Organization\Import;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Criterion;
+use App\Entity\Edu\Grade;
+use App\Entity\Edu\LearningOutcome;
 use App\Entity\Edu\Subject;
 use App\Entity\Edu\Teaching;
+use App\Form\Model\SubjectDataImport;
 use App\Form\Model\SubjectImport;
+use App\Form\Type\Import\SubjectDataImportType;
 use App\Form\Type\Import\SubjectImportType;
+use App\Repository\Edu\CriterionRepository;
 use App\Repository\Edu\GradeRepository;
 use App\Repository\Edu\GroupRepository;
+use App\Repository\Edu\LearningOutcomeRepository;
 use App\Repository\Edu\SubjectRepository;
 use App\Repository\Edu\TeacherRepository;
 use App\Repository\Edu\TeachingRepository;
@@ -284,6 +291,193 @@ class SubjectImportController extends AbstractController
             'old_items' => $oldCount,
             'collection' => $collection,
             'deleted_list' => $deletedList
+        ];
+    }
+
+    /**
+     * @Route("/centro/importar/criterios", name="organization_import_criteria_form", methods={"GET", "POST"})
+     */
+    public function dataAction(
+        UserExtensionService $userExtensionService,
+        SubjectRepository $subjectRepository,
+        LearningOutcomeRepository $learningOutcomeRepository,
+        CriterionRepository $criterionRepository,
+        TranslatorInterface $translator,
+        EntityManagerInterface $entityManager,
+        Request $request
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
+
+        $formData = new SubjectDataImport();
+        $form = $this->createForm(SubjectDataImportType::class, $formData);
+        $form->handleRequest($request);
+
+        $stats = null;
+        $breadcrumb = [];
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $stats = $this->importDataFromCsv(
+                $formData->getFile()->getPathname(),
+                $formData->getGrade(),
+                $subjectRepository,
+                $learningOutcomeRepository,
+                $criterionRepository,
+                $entityManager
+            );
+
+            if (null !== $stats) {
+                $this->addFlash('success', $translator->trans('message.import_ok', [], 'import'));
+                $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
+            } else {
+                $this->addFlash('error', $translator->trans('message.import_error', [], 'import'));
+            }
+        }
+        $title = $translator->trans('title.criteria.import', [], 'import');
+
+        return $this->render('admin/organization/import/subject_data_import_form.html.twig', [
+            'title' => $title,
+            'breadcrumb' => $breadcrumb,
+            'form' => $form->createView(),
+            'stats' => $stats
+        ]);
+    }
+
+    /**
+     * @param string $file
+     * @param Grade $grade
+     * @param SubjectRepository $subjectRepository
+     * @param LearningOutcomeRepository $learingOutcomeRepository
+     * @param CriterionRepository $criterionRepository
+     * @param EntityManagerInterface $entityManager
+     * @param array $options
+     * @return array|null
+     */
+    private function importDataFromCsv(
+        $file,
+        Grade $grade,
+        SubjectRepository $subjectRepository,
+        LearningOutcomeRepository $learningOutcomeRepository,
+        CriterionRepository $criterionRepository,
+        EntityManagerInterface $entityManager,
+        $options = []
+    ) {
+        $newSubjectCount = 0;
+        $updatedSubjectCount = 0;
+        $newLearningOutcomes = 0;
+        $updatedLearningOutcomes = 0;
+        $newCriteria = 0;
+        $updatedCriteria = 0;
+
+        $importer = new CsvImporter($file, true);
+
+        $subjectCollection = [];
+
+        $learningOutcomeCollection = [];
+
+        try {
+            while ($data = $importer->get(100)) {
+                foreach ($data as $criteriaData) {
+                    if (!isset($criteriaData['Módulo Profesional'], $criteriaData['Resultado de Aprendizaje'],
+                        $criteriaData['Criterios de Evaluación'])) {
+                        return null;
+                    }
+                    $subjectName = trim($criteriaData['Módulo Profesional']);
+
+                    if (!isset($subjectCollection[$subjectName])) {
+                        $subject = $subjectRepository->findOneByGradeAndName($grade, $subjectName);
+                        if ($subject !== null) {
+                            $updatedSubjectCount++;
+                        }
+                    } else {
+                        $subject = $subjectCollection[$subjectName];
+                    }
+
+                    // si el módulo no existe
+                    if (null === $subject) {
+                        $subject = new Subject();
+                        $subject
+                            ->setGrade($grade)
+                            ->setInternalCode($subjectName)
+                            ->setName($subjectName);
+
+                        $subjectCollection[$subjectName] = $subject;
+                        $newSubjectCount++;
+
+                        $entityManager->persist($subject);
+                    } else {
+                        $subjectCollection[$subjectName] = $subject;
+                    }
+                    if (!isset($learningOutcomeCollection[$subjectName])) {
+                        $learningOutcomeCollection[$subjectName] = [];
+                    }
+
+                    $learningOutcomeDescription = $criteriaData['Resultado de Aprendizaje'];
+                    preg_match('/^(\d*). (.*)/u', $learningOutcomeDescription, $matches);
+                    $learningOutcomeCode = 'RA' . $matches[1];
+                    $learningOutcomeDescription = trim($matches[2]);
+
+                    $criterionDescription = $criteriaData['Criterios de Evaluación'];
+                    preg_match('/^(.*)\) (.*)/u', $criterionDescription, $matches);
+                    $criterionCode = $matches[1];
+                    $criterionDescription = trim($matches[2]);
+
+                    if (!isset($learningOutcomeCollection[$subjectName][$learningOutcomeCode])) {
+                        $learningOutcome = $learningOutcomeRepository->findOneByCodeAndSubject(
+                            $learningOutcomeCode,
+                            $subject
+                        );
+
+                        if ($learningOutcome === null) {
+                            $newLearningOutcomes++;
+                            $learningOutcome = new LearningOutcome();
+                            $learningOutcome
+                                ->setCode($learningOutcomeCode)
+                                ->setSubject($subject);
+                            $entityManager->persist($learningOutcome);
+                        } else {
+                            $updatedLearningOutcomes++;
+                        }
+                        $learningOutcome
+                            ->setDescription($learningOutcomeDescription);
+
+                        $learningOutcomeCollection[$subjectName][$learningOutcomeCode] = $learningOutcome;
+                    }
+
+                    if ($learningOutcome->getId() !== null) {
+                        $criterion = $criterionRepository->findOneByCodeAndLearningOutcome(
+                            $criterionCode,
+                            $learningOutcome
+                        );
+                    } else {
+                        $criterion = null;
+                    }
+                    if ($criterion === null) {
+                        $newCriteria++;
+                        $criterion = new Criterion();
+                        $criterion
+                            ->setCode($criterionCode)
+                            ->setLearningOutcome($learningOutcome);
+                        $entityManager->persist($criterion);
+                    } else {
+                        $updatedCriteria++;
+                    }
+                    $criterion
+                        ->setName($criterionDescription);
+                }
+            }
+            $entityManager->flush();
+        } catch (Exception $e) {
+            return null;
+        }
+
+        return [
+            'new_subjects' => $newSubjectCount,
+            'updated_subjects' => $updatedSubjectCount,
+            'new_learning_outcomes' => $newLearningOutcomes,
+            'updated_learning_outcomes' => $updatedLearningOutcomes,
+            'new_criteria' => $newCriteria,
+            'updated_criteria' => $updatedCriteria,
         ];
     }
 }

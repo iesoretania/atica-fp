@@ -205,4 +205,16 @@ class SubjectRepository extends ServiceEntityRepository
             $this->learningOutcomeRepository->copyFromSubject($newSubject, $subject);
         }
     }
+
+    public function findOneByGradeAndName(Grade $grade, string $subjectName)
+    {
+
+        return $this->createQueryBuilder('s')
+            ->where('s.grade = :grade')
+            ->andWhere('s.name = :subject')
+            ->setParameter('grade', $grade)
+            ->setParameter('subject', $subjectName)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

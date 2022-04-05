@@ -70,9 +70,16 @@ report.subject.deleted_list: Duplicados eliminados
 report.subject.new: Materias nuevas incorporados
 report.subject.old: Materias ya existentes
 
-title.student.import: Importación de estudiantes
-form.student.academic_year: Curso académico
-form.student.do_import: Importar estudiantes
+title.criteria.import: Importación de RAs y criterios de evaluación
+form.criteria.grade: Curso
+form.criteria.do_import: Importar datos
+
+report.criteria.new_subjects: Módulos profesionales incorporados
+report.criteria.updated_subjects: Módulos profesionales actualizados
+report.criteria.new_learning_outcomes: Resultados de aprendizaje incorporados
+report.criteria.updated_learning_outcomes: Resultados de aprendizaje actualizados
+report.criteria.new_criteria: Criterios de evaluación incorporados
+report.criteria.updated_criteria: Criterios de evaluación actualizados
 
 report.student.list: Estudiantes procesados
 report.student.new: Estudiantes nuevos incorporados
