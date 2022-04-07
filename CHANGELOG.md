@@ -43,6 +43,7 @@ en las distintas versiones de la misma.
 * fix: Solucionar un problema al añadir un nuevo responsable o tutor laboral
 * feat: Importar resultados de aprendizaje y criterios de evaluación desde Séneca
 * fix: Corregido un error de permisos para permitir el despliegue en Docker para Windows
+* feat: Incluido un desplegable de cambio rápido de centro educativo
 
 4.1.0 (2022-02-13)
 ------------------

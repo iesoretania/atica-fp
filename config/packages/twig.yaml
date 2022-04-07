@@ -13,3 +13,4 @@ twig:
         app_version:  ''
         user_extension: '@App\Service\UserExtensionService'
         menu_extension: '@App\Service\MenuBuilderChain'
+        organization_extension: '@App\Service\OrganizationBuilderChain'

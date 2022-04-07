@@ -25,6 +25,7 @@ use App\Form\Type\NewPasswordType;
 use App\Form\Type\PasswordResetType;
 use App\Repository\OrganizationRepository;
 use App\Repository\PersonRepository;
+use App\Security\OrganizationVoter;
 use App\Service\MailerService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -306,47 +307,58 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/organizacion", name="login_organization", methods={"GET", "POST"})
+     * @Route("/organizacion/{id}", name="switch_organization", methods={"GET"})
      */
     public function organizationAction(
         Request $request,
         Session $session,
-        OrganizationRepository $organizationRepository
+        OrganizationRepository $organizationRepository,
+        Organization $organization = null
     ): Response {
         // si no hay usuario activo, volver
         if (null === $this->getUser()) {
             return $this->redirectToRoute('login');
         }
 
-        $data = ['organization' => $this->getUser()->getDefaultOrganization()];
+        if ($organization === null) {
+            $data = ['organization' => $this->getUser()->getDefaultOrganization()];
 
-        /** @var Person $user */
-        $user = $this->getUser();
-        $count = $organizationRepository->countOrganizationsByPerson($user);
+            /** @var Person $user */
+            $user = $this->getUser();
+            $count = $organizationRepository->countOrganizationsByPerson($user);
 
-        $form = $this->createFormBuilder($data)
-            ->add('organization', EntityType::class, [
-                'expanded' => $count < 5,
-                'class' => Organization::class,
-                'query_builder' => function (OrganizationRepository $er) use ($user) {
-                    return $er->getMembershipByPersonQueryBuilder($user);
-                },
-                'required' => true
-            ])
-            ->getForm();
+            $form = $this->createFormBuilder($data)
+                ->add('organization', EntityType::class, [
+                    'expanded' => $count < 5,
+                    'class' => Organization::class,
+                    'query_builder' => function (OrganizationRepository $er) use ($user) {
+                        return $er->getMembershipByPersonQueryBuilder($user);
+                    },
+                    'required' => true
+                ])
+                ->getForm();
 
-        $form->handleRequest($request);
+            $form->handleRequest($request);
 
-        // ¿se ha seleccionado una organización?
-        if ($form->isSubmitted() && $form->isValid() && $form->get('organization')->getData()) {
-            $session->set('organization_id', $form->get('organization')->getData()->getId());
+            // ¿se ha seleccionado una organización?
+            if ($form->isSubmitted() && $form->isValid() && $form->get('organization')->getData()) {
+                $organization = $form->get('organization')->getData();
+            }
+        }
+
+        if ($organization !== null) {
+            $this->denyAccessUnlessGranted(OrganizationVoter::ACCESS, $organization);
+            $organizationId = $organization->getId();
+            $session->set('organization_id', $organizationId);
             $session->set('organization_selected', true);
-            $this->getUser()->setDefaultOrganization($form->get('organization')->getData());
+            $this->getUser()->setDefaultOrganization($organization);
             $this->getDoctrine()->getManager()->flush();
 
             $url = $session->get('_security.organization.target_path', $this->generateUrl('frontpage'));
             $session->remove('_security.organization.target_path');
             return new RedirectResponse($url);
         }
+
         return $this->render(
             'security/login_organization.html.twig',
             [

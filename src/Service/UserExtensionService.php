@@ -20,6 +20,7 @@ namespace App\Service;
 
 use App\Entity\Organization;
 use App\Entity\Person;
+use App\Repository\OrganizationRepository;
 use App\Security\OrganizationVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -28,29 +29,21 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserExtensionService
 {
-    /**
-     * @var EntityManagerInterface
-     */
     private $em;
-
-    /**
-     * @var SessionInterface
-     */
     private $session;
-
-    /**
-     * @var AuthorizationCheckerInterface
-     */
     private $authorizationChecker;
+    private $organizationRepository;
 
     public function __construct(
         EntityManagerInterface $em,
         SessionInterface $session,
-        AuthorizationCheckerInterface $authorizationChecker
+        AuthorizationCheckerInterface $authorizationChecker,
+        OrganizationRepository $organizationRepository
     ) {
         $this->em = $em;
         $this->session = $session;
         $this->authorizationChecker = $authorizationChecker;
+        $this->organizationRepository = $organizationRepository;
     }
 
     /**
@@ -99,5 +92,10 @@ class UserExtensionService
     {
         return $this->authorizationChecker->isGranted('ROLE_ADMIN')
             || $this->authorizationChecker->isGranted(OrganizationVoter::MANAGE, $this->getCurrentOrganization());
+    }
+
+    public function getOrganizations(Person $user)
+    {
+        return $this->organizationRepository->getMembershipByPerson($user);
     }
 }

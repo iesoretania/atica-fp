@@ -62,8 +62,7 @@ class OrganizationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Devuelve las organizaciones a las que pertenece el usuario en la fecha indicada.
-     * Si no se especifica fecha, se devuelven todas a las que pertenece.
+     * Devuelve las organizaciones a las que pertenece el usuario.
      *
      * @param Person $user
      * @return QueryBuilder
@@ -84,6 +83,19 @@ class OrganizationRepository extends ServiceEntityRepository
             ->orderBy('o.name')
             ->andWhere('o IN (:organizations)')
             ->setParameter('organizations', $organizations);
+    }
+
+    /**
+     * Devuelve las organizaciones a las que pertenece el usuario.
+     *
+     * @param Person $user
+     * @return QueryBuilder
+     */
+    public function getMembershipByPerson(Person $user)
+    {
+        return $this->getMembershipByPersonQueryBuilder($user)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
