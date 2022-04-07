@@ -63,6 +63,7 @@ en las distintas versiones de la misma.
 * fix: Solucionado un problema de incompatibilidad con Twig 2.0
 * fix: Eliminado uso obsoleto del codificador de contraseñas
 * feat: Permitir abrir informes en una nueva pestaña/ventana
+* fix: Solucionado problema con el informe de asistencia de FP dual
 
 4.0.1 (2022-01-20)
 ------------------
