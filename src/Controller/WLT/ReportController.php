@@ -247,7 +247,8 @@ class ReportController extends AbstractController
         $title,
         $routeName,
         AcademicYear $academicYear = null,
-        $page = 1
+        $page = 1,
+        $newWindow = false
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         if ($academicYear === null) {

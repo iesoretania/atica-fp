@@ -41,7 +41,7 @@
                             <a href="{{ alt_url }}">{{ agreementEnrollment.workTutor }}</a>
                         </td>
                         <td>
-                            {{ m.link_button(path('workplace_training_agreement_program_report', {'id': agreementEnrollment.id}), 'file-alt', 'btn-primary btn-sm btn-block', 'table.program_report'|trans) }}
+                            {{ m.link_button_new(path('workplace_training_agreement_program_report', {'id': agreementEnrollment.id}), 'file-alt', 'btn-primary btn-sm btn-block', 'table.program_report'|trans) }}
                         </td>
                         {% if loop.first %}
                             <td rowspan="{{ item.agreementEnrollments|length }}">

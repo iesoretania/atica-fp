@@ -31,7 +31,7 @@
         {% endif %}
         {% if is_granted('WLT_AGREEMENT_ATTENDANCE', agreement) %}{{ m.submit_button('attendance', 'user-slash', 'btn-danger enable-on-items', 'form.attendance'|trans) }}{% endif %}
     {% endif %}
-    {{ m.link_button(path('work_linked_training_tracking_calendar_attendance_report', {'id': agreement.id}), 'file-alt', 'btn-primary', 'form.attendance_report'|trans) }}
+    {{ m.link_button_new(path('work_linked_training_tracking_calendar_attendance_report', {'id': agreement.id}), 'file-alt', 'btn-primary', 'form.attendance_report'|trans, null, null) }}
     </form>
 </section>
 {% endblock %}

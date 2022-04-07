@@ -14,6 +14,14 @@
     <button type="submit" name="{{ name }}" class="btn btn-sm-block {{ class }}"{% if disabled %} disabled="disabled"{% endif %}{% if value %} value="{{ value }}"{% endif %}>{% if icon %}<i class="fa fa-{{ icon }}"></i> {% endif %}{{ caption }}</button>
 {% endmacro %}
 
-{% macro link_button(href, icon = null, class = 'btn-success', caption, id = null, responsive = null) %}
-    <a href="{{ href }}" class="btn btn-sm-block {{ class }}"{% if id %} id="{{ id }}"{% endif %}>{% if icon %}<i class="fa fa-{{ icon }}"></i> {% endif %}{% if responsive %}<span class="{{ responsive }}">{% endif %}{{ caption }}{% if responsive %}</span>{% endif %}</a>
+{% macro submit_button_new(name, icon = null, class = 'btn-success', caption, disabled, value, new_window = false) %}
+    {{ _self.submit_button(name, icon, class, caption, disabled, true) }}
+{% endmacro %}
+
+{% macro link_button(href, icon = null, class = 'btn-success', caption, id = null, responsive = null, new_window = false) %}
+    <a href="{{ href }}" class="btn btn-sm-block {{ class }}"{% if id %} id="{{ id }}"{% endif %}{% if new_window %} target="_blank"{% endif %}>{% if icon %}<i class="fa fa-{{ icon }}"></i> {% endif %}{% if responsive %}<span class="{{ responsive }}">{% endif %}{{ caption }}{% if responsive %}</span>{% endif %}</a>
+{% endmacro %}
+
+{% macro link_button_new(href, icon = null, class = 'btn-success', caption, id = null, responsive = null) %}
+    {{ _self.link_button(href, icon, class, caption, id, responsive, true) }}
 {% endmacro %}

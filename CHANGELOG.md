@@ -62,6 +62,7 @@ en las distintas versiones de la misma.
 * fix: Arreglado error 500 que ocurría al intentar generar informes
 * fix: Solucionado un problema de incompatibilidad con Twig 2.0
 * fix: Eliminado uso obsoleto del codificador de contraseñas
+* feat: Permitir abrir informes en una nueva pestaña/ventana
 
 4.0.1 (2022-01-20)
 ------------------

@@ -27,7 +27,7 @@
                 {{ item[2] }}
             </td>
             <td>
-                {{ m.link_button(path('workplace_training_visit_report', {'id': item[0].id}), 'file-alt', 'btn-primary btn-sm btn-block', 'table.visit_report'|trans) }}
+                {{ m.link_button_new(path('workplace_training_visit_report', {'id': item[0].id}), 'file-alt', 'btn-primary btn-sm btn-block', 'table.visit_report'|trans) }}
             </td>
         </tr>
     {% else %}

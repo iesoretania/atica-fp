@@ -59,7 +59,7 @@
                                     {% if not all_locked %}<button type="submit" name="lock_week" value="{{ week_code }}" class="btn btn-link" title="{{ 'form.lock_week_action'|trans }}"><i class="fas fa-lock fa-fw"></i></button>{% endif %}
                                     {% if not all_unlocked %}<button type="submit" name="unlock_week" value="{{ week_code }}" class="btn btn-link" title="{{ 'form.unlock_week_action'|trans }}"><i class="fas fa-unlock fa-fw"></i></button>{% endif %}
                                     {% endif %}
-                                    <button type="submit" name="week_report" value="{{ week_code }}" class="btn btn-link" title="{{ 'form.activity_report'|trans }}"><i class="fas fa-print fa-fw"></i></button>
+                                    <button type="submit" name="week_report" value="{{ week_code }}" class="btn btn-link" title="{{ 'form.activity_report'|trans }}" formtarget="_blank"><i class="fas fa-print fa-fw"></i></button>
                                 {% endif %}
                             </td>
                         </tr>

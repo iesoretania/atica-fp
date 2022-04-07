@@ -35,7 +35,7 @@
                         {{ (item[3] > 0 and item[3] == item[1] ? 'table.verified_yes' : 'table.verified_no')|trans }}
                     </td>
                     <td>
-                        {{ m.link_button(path('workplace_training_travel_expense_report', {'id': item[0].id}), 'file-alt', 'btn-primary btn-sm btn-block', 'table.travel_expense_report'|trans) }}
+                        {{ m.link_button_new(path('workplace_training_travel_expense_report', {'id': item[0].id}), 'file-alt', 'btn-primary btn-sm btn-block', 'table.travel_expense_report'|trans) }}
                     </td>
                 </tr>
             {% else %}
