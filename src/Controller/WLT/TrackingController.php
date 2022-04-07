@@ -151,7 +151,7 @@ class TrackingController extends AbstractController
         if ($projects) {
             $queryBuilder
                 ->andWhere(
-                    'pro IN (:projects)' .
+                    'pro IN (:projects) OR ' .
                     'se.person = :person OR a.workTutor = :person OR et.person = :person OR ' .
                     'a.additionalWorkTutor = :person OR aet.person = :person'
                 )
