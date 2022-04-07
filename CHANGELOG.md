@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-5.0.0 (2022-03-xx)
+5.0.0 (2022-04-xx)
 ------------------
 * fix: Solucionar problema con la importación de profesorado
 * fix: Problema con el informe de asistencia arreglado
@@ -44,6 +44,7 @@ en las distintas versiones de la misma.
 * feat: Importar resultados de aprendizaje y criterios de evaluación desde Séneca
 * fix: Corregido un error de permisos para permitir el despliegue en Docker para Windows
 * feat: Incluido un desplegable de cambio rápido de centro educativo
+* fix: Mostrar el fichero seleccionado en los formularios que permiten subir ficheros
 
 4.1.0 (2022-02-13)
 ------------------
