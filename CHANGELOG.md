@@ -45,6 +45,7 @@ en las distintas versiones de la misma.
 * fix: Corregido un error de permisos para permitir el despliegue en Docker para Windows
 * feat: Incluido un desplegable de cambio rápido de centro educativo
 * fix: Mostrar el fichero seleccionado en los formularios que permiten subir ficheros
+* fix: Arregladas algunas traducciones que se modificaron de forma no intencionada
 
 4.1.0 (2022-02-13)
 ------------------

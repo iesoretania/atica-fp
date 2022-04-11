@@ -85,9 +85,9 @@ report.student.list: Estudiantes procesados
 report.student.new: Estudiantes nuevos incorporados
 report.student.old: Estudiantes ya existentes
 
-title.student.import: Importación de usuario PASEN
+title.student.import: Importación de estudiantes
 form.student.academic_year: Curso académico
-form.student.do_import: Importar usuarios PASEN
+form.student.do_import: Importar estudiantes
 
 title.student_login.import: Importación de usuario PASEN
 form.student_login.academic_year: Curso académico
