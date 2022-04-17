@@ -5,11 +5,11 @@
         <tr>
             {% if loop.first %}
                 <td rowspan="{{ data|length }}">
-                    {{ datum.studentEnrollment }}
+                    {{ datum.workTutor }}
                 </td>
             {% endif %}
             <td>
-                {{ datum.workcenter }}
+                {{ datum.studentEnrollment }}
             </td>
             {% if loop.first %}
                 <td rowspan="{{ data|length }}" class="center">
@@ -22,7 +22,7 @@
 
 <html>
 <head>
-    <title>{{ 'title.student_survey'|trans }} - {{ project.organization }} - {{ project }}</title>
+    <title>{{ 'title.company_survey'|trans }} - {{ project.organization }} - {{ project }}</title>
     <style>
         body {
             font-family: sans-serif;
@@ -93,13 +93,13 @@
 <body>
     <h1>{{ app_name }} - {{ project.organization }}<br>{{ project }}</h1>
     {% if academic_year %}<h2>{{ 'header.academic_year'|trans }} {{ academic_year }}</h2>{% endif %}
-    <h2>{{ 'title.student_survey'|trans }}</h2>
-    <h3>{{ 'title.student_survey.summary'|trans }}</h3>
+    <h2>{{ 'title.company_survey'|trans }}</h2>
+    <h3>{{ 'title.company_survey.summary'|trans }}</h3>
     <table class="survey">
         <thead>
         <tr>
+            <th width="40%">{{ 'header.work_tutor'|trans }}</th>
             <th width="40%">{{ 'header.student'|trans }}</th>
-            <th width="40%">{{ 'header.workcenter'|trans }}</th>
             <th width="20%">{{ 'header.status'|trans }}</th>
         </tr>
         </thead>
@@ -109,12 +109,12 @@
         {% set last_id = 0 %}
         {% set data = [] %}
         {% set additional = 0 %}
-        {% for item in student_enrollment_stats %}
-            {% if last_id != item[0].studentEnrollment.id ~ '-' ~ item[0].project.id %}
+        {% for item in work_tutor_stats %}
+            {% if last_id != item[0].workTutor.id ~ '-' ~ item[0].project.id %}
                 {% if last_id != 0 %}{{ _self.row(data, additional) }}{% endif %}
-                {% set last_id = item[0].studentEnrollment.id ~ '-' ~ item[0].project.id %}
+                {% set last_id = item[0].workTutor.id ~ '-' ~ item[0].project.id %}
                 {% set data = [item[0]] %}
-                {% set answered = answered + additional %}
+                {% set answered = answered + additional ? 1 : 0 %}
                 {% set additional = item[1] %}
                 {% set total = total + 1 %}
             {% else %}
@@ -128,37 +128,36 @@
         {% endfor %}
         {% if last_id != 0 %}
             {{ _self.row(data, additional) }}
-            {% set answered = answered + additional %}
+            {% set answered = answered + additional ? 1 : 0 %}
         {% endif %}
         </tbody>
         {% if total %}
             <tfoot>
-                <tr>
-                    <td class="right" colspan="4"><b>{{ 'report.answered_surveys'|trans }}  {{ answered }}/{{ total }} ({{ (answered*100/total)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
-                </tr>
+            <tr>
+                <td class="right" colspan="4"><b>{{ 'report.answered_surveys'|trans }}  {{ answered }}/{{ total }} ({{ (answered*100/total)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
+            </tr>
             </tfoot>
         {% endif %}
     </table>
 
     {% include 'wlt/report/survey_stats_partial.html.twig' %}
 
-    {% for student_survey in student_answered_surveys %}
+    {% for work_tutor_survey in work_tutor_surveys %}
         <pagebreak></pagebreak>
-
-        <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
-        <h2>{{ 'title.student_survey'|trans }}</h2>
+        <h1>{{ app_name }} - {{ project.organization }}</h1>
+        <h2>{{ 'title.company_survey'|trans }}</h2>
         <table class="data">
             <tr>
-                <td class="info">{{ 'report.student'|trans }}</td>
-                <td>{{ student_survey.studentEnrollment }}</td>
+                <td class="info">{{ 'report.work_tutor'|trans }}</td>
+                <td>{{ work_tutor_survey.workTutor }}</td>
             </tr>
             <tr>
                 <td class="info">{{ 'report.answered_on'|trans }}</td>
-                <td>{{ student_survey.answeredSurvey.timestamp|date('format.datetime'|trans({}, 'general')) }}</td>
+                <td>{{ work_tutor_survey.answeredSurvey.timestamp|date('format.datetime'|trans({}, 'general')) }}</td>
             </tr>
         </table>
 
-        {% set answered_survey = student_survey.answeredSurvey %}
+        {% set answered_survey = work_tutor_survey.answeredSurvey %}
         {% include 'wlt/report/anwsered_survey_responses_partial.html.twig' %}
     {% endfor %}
 </body>

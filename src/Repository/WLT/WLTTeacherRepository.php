@@ -23,18 +23,32 @@ use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\Edu\Teaching;
 use App\Entity\Organization;
+use App\Entity\Person;
 use App\Entity\WLT\Agreement;
 use App\Entity\WLT\EducationalTutorAnsweredSurvey;
 use App\Entity\WLT\Project;
+use App\Security\OrganizationVoter;
+use App\Security\WLT\WLTOrganizationVoter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Security;
 
 class WLTTeacherRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    private $security;
+
+    private $projectRepository;
+
+    public function __construct(
+        ManagerRegistry $registry,
+        Security $security,
+        ProjectRepository $projectRepository
+    ) {
         parent::__construct($registry, Teacher::class);
+        $this->security = $security;
+        $this->projectRepository = $projectRepository;
     }
 
     public function findByAcademicYear(AcademicYear $academicYear)
@@ -122,9 +136,11 @@ class WLTTeacherRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByEducationalTutorProjectWithAnsweredSurvey(Project $project)
-    {
-        $data = $this->createQueryBuilder('t')
+    public function getStatsByProjectAndAcademicYearWithAnsweredSurvey(
+        Project $project,
+        ?AcademicYear $academicYear
+    ) {
+        $qb = $this->createQueryBuilder('t')
             ->select('t')
             ->addSelect('etas')
             ->join('t.person', 'p')
@@ -142,12 +158,92 @@ class WLTTeacherRepository extends ServiceEntityRepository
                 'etas.teacher = t AND etas.project = pr'
             )
             ->where('pr = :project')
-            ->setParameter('project', $project)
+            ->setParameter('project', $project);
+
+        if ($academicYear) {
+            $qb
+                ->andWhere('t.academicYear = :academic_year')
+                ->setParameter('academic_year', $academicYear);
+        }
+        $data = $qb
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName')
             ->groupBy('t, pr, etas')
             ->getQuery()
             ->getResult();
+
         return array_chunk($data, 2);
+    }
+
+    public function findTeachersDataByProjectGroupByProjectAndPersonFilteredQueryBuilder(
+        $q,
+        AcademicYear $academicYear,
+        Person $person
+    ) {
+        $organization = $academicYear->getOrganization();
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+        $queryBuilder
+            ->select('t.id AS teacherId')
+            ->addSelect('p.firstName AS firstName')
+            ->addSelect('p.lastName AS lastName')
+            ->addSelect('pro.id AS projectId')
+            ->addSelect('pro.name AS projectName')
+            ->addSelect('ay.id AS academicYearId')
+            ->addSelect('ay.description AS academicYearDescription')
+            ->addSelect('COUNT(etas)')
+            ->from(Teacher::class, 't')
+            ->join(Agreement::class, 'a', 'WITH', 'a.educationalTutor = t OR a.additionalEducationalTutor = t')
+            ->join(Project::class, 'pro', 'WITH', 'a.project = pro')
+            ->join('t.person', 'p')
+            ->join('a.studentEnrollment', 'se')
+            ->join('se.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 'tr')
+            ->join('tr.academicYear', 'ay')
+            ->leftJoin(
+                EducationalTutorAnsweredSurvey::class,
+                'etas',
+                'WITH',
+                'etas.teacher = t AND etas.project = pro'
+            )
+            ->addGroupBy('t, pro')
+            ->addOrderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->addOrderBy('pro.name');
+
+        if ($q) {
+            $queryBuilder
+                ->orWhere('pro.name LIKE :tq')
+                ->orWhere('p.lastName LIKE :tq')
+                ->orWhere('p.firstName LIKE :tq')
+                ->setParameter('tq', '%'.$q.'%');
+        }
+
+        $isManager = $this->security->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+
+        if (!$isManager && $isWltManager) {
+            $projects = $this->projectRepository->findByManager($person);
+            $queryBuilder
+                ->andWhere('pro IN (:projects) OR p = :person')
+                ->setParameter('projects', $projects)
+                ->setParameter('person', $person);
+        }
+
+        if (!$isWltManager && !$isManager) {
+            $queryBuilder
+                ->andWhere('p = :person')
+                ->setParameter('person', $person);
+        }
+
+        $queryBuilder
+            ->andWhere('tr.academicYear = :academic_year')
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear);
+
+        return $queryBuilder;
     }
 }

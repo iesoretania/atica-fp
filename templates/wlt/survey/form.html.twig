@@ -9,13 +9,14 @@
         {% endif %}
         <div class="card mb-4">
             <div class="card-header">
-                {% if agreement is defined %}
+                {% if project is defined %}
                     <h3>
-                        {{ agreement }} {{ agreement.startDate ? ' - ' ~ agreement.startDate|date('format.date'|trans({}, 'general')) }} {{ agreement.endDate ? ' - ' ~ agreement.endDate|date('format.date'|trans({}, 'general')) }}
+                        {{ project }}
                     </h3>
-                {% elseif project is defined %}
+                {% endif %}
+                {% if person is defined %}
                     <h3>
-                        {{ project }} - {{ academicYear }}
+                        {{ person }}
                     </h3>
                 {% endif %}
                 {% if survey.startTimestamp or survey.endTimestamp %}

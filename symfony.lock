@@ -136,12 +136,6 @@
     "oro/doctrine-extensions": {
         "version": "1.3.2"
     },
-    "pagerfanta/core": {
-        "version": "v2.7.2"
-    },
-    "pagerfanta/doctrine-orm-adapter": {
-        "version": "v2.7.2"
-    },
     "pagerfanta/pagerfanta": {
         "version": "v2.3.0"
     },

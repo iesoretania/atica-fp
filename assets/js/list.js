@@ -2,8 +2,9 @@ const debounce = require('lodash.debounce');
 var last_value_q = "";
 var last_value_f = "";
 
-function updateTable(url) {
-// obtener nueva tabla
+function updateTable(url)
+{
+    // obtener nueva tabla
     $('table#list').addClass('loading');
     $.ajax({
         url: url,
@@ -20,7 +21,7 @@ function updateTable(url) {
     });
 }
 
-var reload = function(filter) {
+var reload = function (filter) {
     var url = window.location.href;
     var q = $('input#search').val();
     var f = 0;
@@ -34,23 +35,22 @@ var reload = function(filter) {
     last_value_f = f;
 
     // quitar parámetros
-    url = url.replace(/\/([0-9]*?)(&|$)/,'');
-    url = url.replace(/(\?|&q=).*?(&|$)/,'');
-    url = url.replace(/(\?f=).*?(&|$)/,'');
+    url = url.replace(/(\?.*$)/,'');
 
     // codificar parámetros
     if (f && f != 0) {
         url = url + '?f=' + encodeURIComponent(f);
-        if (q) url = url + '&q=' + encodeURIComponent(q);
-    }
-    else if (q) {
+        if (q) {
+            url = url + '&q=' + encodeURIComponent(q);
+        }
+    } else if (q) {
         url = url + '?q=' + encodeURIComponent(q);
     }
 
     updateTable(url);
 };
-var dynamicFormInit = function () {
 
+var dynamicFormInit = function () {
     function itemChange()
     {
         var url = window.location.href;
@@ -80,13 +80,12 @@ var dynamicFormInit = function () {
         f.parent().on('click', reload);
     }
 
-    $("#search-clear").click(function (){
+    $("#search-clear").click(function () {
         $('input#search').val('');
         reload();
     });
 
     jQuery(document).ready(function ($) {
-
         var updateButton = function () {
             $(".enable-on-items").prop('disabled', $("input[type='checkbox']:checked").length === 0);
         };

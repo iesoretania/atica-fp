@@ -18,7 +18,6 @@
 
 namespace App\Entity\WLT;
 
-use App\Entity\AnsweredSurvey;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\Person;
@@ -62,35 +61,35 @@ class Agreement
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Edu\StudentEnrollment")
      * @ORM\JoinColumn(nullable=false)
-     * @var StudentEnrollment
+     * @var ?StudentEnrollment
      */
     private $studentEnrollment;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Person")
      * @ORM\JoinColumn(nullable=false)
-     * @var Person
+     * @var ?Person
      */
     private $workTutor;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Person")
      * @ORM\JoinColumn(nullable=true)
-     * @var Person
+     * @var ?Person
      */
     private $additionalWorkTutor;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher")
      * @ORM\JoinColumn(nullable=false)
-     * @var Teacher
+     * @var ?Teacher
      */
     private $educationalTutor;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher")
      * @ORM\JoinColumn(nullable=true)
-     * @var Teacher
+     * @var ?Teacher
      */
     private $additionalEducationalTutor;
 
@@ -105,20 +104,6 @@ class Agreement
      * @var \DateTime
      */
     private $endDate;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AnsweredSurvey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var AnsweredSurvey
-     */
-    private $studentSurvey;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AnsweredSurvey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var AnsweredSurvey
-     */
-    private $companySurvey;
 
     /**
      * @ORM\Column(type="string", length=5, nullable=true)
@@ -338,42 +323,6 @@ class Agreement
     public function setEndDate(?\DateTimeInterface $endDate)
     {
         $this->endDate = $endDate;
-        return $this;
-    }
-
-    /**
-     * @return AnsweredSurvey
-     */
-    public function getStudentSurvey()
-    {
-        return $this->studentSurvey;
-    }
-
-    /**
-     * @param AnsweredSurvey $studentSurvey
-     * @return Agreement
-     */
-    public function setStudentSurvey(AnsweredSurvey $studentSurvey = null)
-    {
-        $this->studentSurvey = $studentSurvey;
-        return $this;
-    }
-
-    /**
-     * @return AnsweredSurvey
-     */
-    public function getCompanySurvey()
-    {
-        return $this->companySurvey;
-    }
-
-    /**
-     * @param AnsweredSurvey $companySurvey
-     * @return Agreement
-     */
-    public function setCompanySurvey(AnsweredSurvey $companySurvey = null)
-    {
-        $this->companySurvey = $companySurvey;
         return $this;
     }
 

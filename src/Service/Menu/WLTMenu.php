@@ -167,8 +167,8 @@ class WLTMenu implements MenuBuilderInterface
             ) {
                 $menu3 = new MenuItem();
                 $menu3
-                    ->setName('work_linked_training_survey_company')
-                    ->setRouteName('work_linked_training_survey_company_list')
+                    ->setName('work_linked_training_survey_work_tutor')
+                    ->setRouteName('work_linked_training_survey_work_tutor_list')
                     ->setCaption('menu.work_linked_training.survey.company')
                     ->setDescription('menu.work_linked_training.survey.company.detail')
                     ->setIcon('industry')
@@ -219,8 +219,8 @@ class WLTMenu implements MenuBuilderInterface
 
                 $menu3 = new MenuItem();
                 $menu3
-                    ->setName('work_linked_training_report_company_survey')
-                    ->setRouteName('work_linked_training_report_company_survey_list')
+                    ->setName('work_linked_training_report_work_tutor_survey')
+                    ->setRouteName('work_linked_training_report_work_tutor_survey_list')
                     ->setCaption('menu.work_linked_training.report.company_survey')
                     ->setDescription('menu.work_linked_training.report.company_survey.detail')
                     ->setIcon('chart-pie')

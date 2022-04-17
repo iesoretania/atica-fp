@@ -78,21 +78,21 @@ class Project
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Survey")
      * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var Survey
+     * @var ?Survey
      */
     private $studentSurvey;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Survey")
      * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var Survey
+     * @var ?Survey
      */
     private $companySurvey;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Survey")
      * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var Survey
+     * @var ?Survey
      */
     private $educationalTutorSurvey;
 
@@ -232,7 +232,7 @@ class Project
     }
 
     /**
-     * @return Survey
+     * @return ?Survey
      */
     public function getStudentSurvey()
     {
@@ -240,17 +240,17 @@ class Project
     }
 
     /**
-     * @param Survey $studentSurvey
+     * @param ?Survey $studentSurvey
      * @return Project
      */
-    public function setStudentSurvey(Survey $studentSurvey = null)
+    public function setStudentSurvey(?Survey $studentSurvey = null)
     {
         $this->studentSurvey = $studentSurvey;
         return $this;
     }
 
     /**
-     * @return Survey
+     * @return ?Survey
      */
     public function getCompanySurvey()
     {
@@ -258,17 +258,17 @@ class Project
     }
 
     /**
-     * @param Survey $companySurvey
+     * @param ?Survey $companySurvey
      * @return Project
      */
-    public function setCompanySurvey(Survey $companySurvey = null)
+    public function setCompanySurvey(?Survey $companySurvey = null)
     {
         $this->companySurvey = $companySurvey;
         return $this;
     }
 
     /**
-     * @return Survey
+     * @return ?Survey
      */
     public function getEducationalTutorSurvey()
     {
@@ -276,10 +276,10 @@ class Project
     }
 
     /**
-     * @param Survey $educationalTutorSurvey
+     * @param ?Survey $educationalTutorSurvey
      * @return Project
      */
-    public function setEducationalTutorSurvey($educationalTutorSurvey)
+    public function setEducationalTutorSurvey(?Survey $educationalTutorSurvey = null)
     {
         $this->educationalTutorSurvey = $educationalTutorSurvey;
         return $this;

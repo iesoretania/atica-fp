@@ -19,14 +19,14 @@
 namespace App\Entity\WLT;
 
 use App\Entity\AnsweredSurvey;
-use App\Entity\Edu\Teacher;
+use App\Entity\Edu\StudentEnrollment;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="wlt_educational_tutor_answered_survey")
+ * @ORM\Table(name="wlt_student_answered_survey")
  */
-class EducationalTutorAnsweredSurvey
+class StudentAnsweredSurvey
 {
     /**
      * @ORM\Id
@@ -44,11 +44,11 @@ class EducationalTutorAnsweredSurvey
     private $project;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\StudentEnrollment")
      * @ORM\JoinColumn(nullable=false)
-     * @var Teacher
+     * @var StudentEnrollment
      */
-    private $teacher;
+    private $studentEnrollment;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AnsweredSurvey")
@@ -84,20 +84,20 @@ class EducationalTutorAnsweredSurvey
     }
 
     /**
-     * @return Teacher
+     * @return StudentEnrollment
      */
-    public function getTeacher()
+    public function getStudentEnrollment()
     {
-        return $this->teacher;
+        return $this->studentEnrollment;
     }
 
     /**
-     * @param Teacher $teacher
+     * @param StudentEnrollment $studentEnrollment
      * @return self
      */
-    public function setTeacher($teacher)
+    public function setStudentEnrollment($studentEnrollment)
     {
-        $this->teacher = $teacher;
+        $this->studentEnrollment = $studentEnrollment;
         return $this;
     }
 

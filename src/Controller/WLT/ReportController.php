@@ -30,9 +30,11 @@ use App\Repository\WLT\ActivityRealizationRepository;
 use App\Repository\WLT\AgreementRepository;
 use App\Repository\WLT\LearningProgramRepository;
 use App\Repository\WLT\MeetingRepository;
+use App\Repository\WLT\StudentAnsweredSurveyRepository;
 use App\Repository\WLT\WLTAnsweredSurveyRepository;
 use App\Repository\WLT\WLTTeacherRepository;
 use App\Repository\WLT\WorkDayRepository;
+use App\Repository\WLT\WorkTutorAnsweredSurveyRepository;
 use App\Security\OrganizationVoter;
 use App\Security\WLT\ProjectVoter;
 use App\Security\WLT\WLTOrganizationVoter;
@@ -71,79 +73,6 @@ class ReportController extends AbstractController
     }
 
     /**
-     * @Route("/encuesta/estudiantes/listar/{academicYear}/{page}", name="work_linked_training_report_student_survey_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function studentListAction(
-        Request $request,
-        UserExtensionService $userExtensionService,
-        TranslatorInterface $translator,
-        AcademicYearRepository $academicYearRepository,
-        AcademicYear $academicYear = null,
-        $page = 1
-    ) {
-        return $this->genericListAction(
-            $request,
-            $userExtensionService,
-            $translator,
-            $academicYearRepository,
-            'title.student_survey',
-            'work_linked_training_report_student_survey_report',
-            $academicYear,
-            $page
-        );
-    }
-
-    /**
-     * @Route("/encuesta/empresas/listar/{academicYear}/{page}", name="work_linked_training_report_company_survey_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function companyListAction(
-        Request $request,
-        UserExtensionService $userExtensionService,
-        TranslatorInterface $translator,
-        AcademicYearRepository $academicYearRepository,
-        AcademicYear $academicYear = null,
-        $page = 1
-    ) {
-        return $this->genericListAction(
-            $request,
-            $userExtensionService,
-            $translator,
-            $academicYearRepository,
-            'title.company_survey',
-            'work_linked_training_report_company_survey_report',
-            $academicYear,
-            $page
-        );
-    }
-
-    /**
-     * @Route("/encuesta/centro/listar/{academicYear}/{page}",
-     *     name="work_linked_training_report_educational_tutor_survey_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function educationalTutorListAction(
-        Request $request,
-        UserExtensionService $userExtensionService,
-        TranslatorInterface $translator,
-        AcademicYearRepository $academicYearRepository,
-        AcademicYear $academicYear = null,
-        $page = 1
-    ) {
-        return $this->genericListAction(
-            $request,
-            $userExtensionService,
-            $translator,
-            $academicYearRepository,
-            'title.educational_tutor_survey',
-            'work_linked_training_report_educational_tutor_survey_report',
-            $academicYear,
-            $page
-        );
-    }
-
-    /**
      * @Route("/reuniones/listar/{academicYear}/{page}", name="work_linked_training_report_meeting_list",
      *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
      */
@@ -153,7 +82,7 @@ class ReportController extends AbstractController
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         AcademicYear $academicYear = null,
-        $page = 1
+        int $page = 1
     ) {
         return $this->genericListAction(
             $request,
@@ -177,7 +106,7 @@ class ReportController extends AbstractController
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         AcademicYear $academicYear = null,
-        $page = 1
+        int $page = 1
     ) {
         return $this->genericListAction(
             $request,
@@ -201,7 +130,7 @@ class ReportController extends AbstractController
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         AcademicYear $academicYear = null,
-        $page = 1
+        int $page = 1
     ) {
         return $this->genericListAction(
             $request,
@@ -225,7 +154,7 @@ class ReportController extends AbstractController
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         AcademicYear $academicYear = null,
-        $page = 1
+        int $page = 1
     ) {
         return $this->genericListAction(
             $request,
@@ -247,8 +176,7 @@ class ReportController extends AbstractController
         $title,
         $routeName,
         AcademicYear $academicYear = null,
-        $page = 1,
-        $newWindow = false
+        int $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         if ($academicYear === null) {
@@ -264,7 +192,7 @@ class ReportController extends AbstractController
 
         $queryBuilder
             ->select('p')
-            ->distinct(true)
+            ->distinct()
             ->from(Project::class, 'p')
             ->leftJoin('p.manager', 'm')
             ->join('p.groups', 'g')
@@ -320,176 +248,6 @@ class ReportController extends AbstractController
             'academic_years' => $academicYearRepository->findAllByOrganization($organization),
             'route_name' => $routeName
         ]);
-    }
-
-    /**
-     * @Route("/encuesta/estudiantes/{id}", name="work_linked_training_report_student_survey_report",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
-     */
-    public function studentsReportAction(
-        TranslatorInterface $translator,
-        Environment $engine,
-        WLTAnsweredSurveyRepository $wltAnsweredSurveyRepository,
-        SurveyQuestionRepository $surveyQuestionRepository,
-        AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
-        Project $project
-    ) {
-        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_STUDENT_SURVEY, $project);
-
-        $mpdfService = new MpdfService();
-
-        $agreements = $project->getAgreements();
-
-        $stats = [];
-
-        $survey = $project->getStudentSurvey();
-
-        if ($survey) {
-            $list = $wltAnsweredSurveyRepository->findByStudentSurveyAndProject($project);
-
-            $surveyStats = $surveyQuestionRepository
-                ->answerStatsBySurveyAndAnsweredSurveyList($list);
-
-            $answers = $answeredSurveyQuestionRepository
-                ->notNumericAnswersBySurveyAndAnsweredSurveyList($list);
-
-            $stats = [$surveyStats, $answers];
-        }
-
-        if (empty($stats)) {
-            return $this->render('wlt/report/no_survey.html.twig', [
-                'menu_path' => 'work_linked_training_report_student_survey_list'
-            ]);
-        }
-
-        $html = $engine->render('wlt/report/student_survey_report.html.twig', [
-            'agreements' => $agreements,
-            'project' => $project,
-            'stats' => $stats
-        ]);
-
-        $fileName = $translator->trans('title.student_survey', [], 'wlt_report')
-            . ' - ' . $project->getOrganization() . ' - '
-            . $project->getName() . '.pdf';
-
-        $response = $mpdfService->generatePdfResponse($html);
-        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
-
-        return $response;
-    }
-
-    /**
-     * @Route("/encuesta/empresas/{id}", name="work_linked_training_report_company_survey_report",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
-     */
-    public function companyReportAction(
-        TranslatorInterface $translator,
-        Environment $engine,
-        WLTAnsweredSurveyRepository $wltAnsweredSurveyRepository,
-        SurveyQuestionRepository $surveyQuestionRepository,
-        AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
-        Project $project
-    ) {
-        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_COMPANY_SURVEY, $project);
-
-        $mpdfService = new MpdfService();
-
-        $agreements = $project->getAgreements();
-
-        $stats = [];
-
-        $survey = $project->getStudentSurvey();
-
-        if ($survey) {
-            $list = $wltAnsweredSurveyRepository->findByCompanySurveyAndProject($project);
-
-            $surveyStats = $surveyQuestionRepository
-                ->answerStatsBySurveyAndAnsweredSurveyList($list);
-
-            $answers = $answeredSurveyQuestionRepository
-                ->notNumericAnswersBySurveyAndAnsweredSurveyList($list);
-
-            $stats = [$surveyStats, $answers];
-        }
-
-        if (empty($stats)) {
-            return $this->render('wlt/report/no_survey.html.twig', [
-                'menu_path' => 'work_linked_training_report_company_survey_list'
-            ]);
-        }
-
-        $html = $engine->render('wlt/report/company_survey_report.html.twig', [
-            'agreements' => $agreements,
-            'project' => $project,
-            'stats' => $stats
-        ]);
-
-        $fileName = $translator->trans('title.company_survey', [], 'wlt_report')
-            . ' - ' . $project->getOrganization() . ' - '
-            . $project->getName() . '.pdf';
-
-        $response = $mpdfService->generatePdfResponse($html);
-        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
-
-        return $response;
-    }
-
-    /**
-     * @Route("/encuesta/centro/{id}", name="work_linked_training_report_educational_tutor_survey_report",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
-     */
-    public function educationalTutorReportAction(
-        TranslatorInterface $translator,
-        Environment $engine,
-        WLTAnsweredSurveyRepository $wltAnsweredSurveyRepository,
-        SurveyQuestionRepository $surveyQuestionRepository,
-        AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
-        WLTTeacherRepository $wltTeacherRepository,
-        Project $project
-    ) {
-        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_ORGANIZATION_SURVEY, $project);
-
-        $mpdfService = new MpdfService();
-
-        $stats = [];
-
-        $survey = $project->getEducationalTutorSurvey();
-
-        if ($survey) {
-            $list = $wltAnsweredSurveyRepository->findByEducationalTutorSurveyAndProject($project);
-
-            $surveyStats = $surveyQuestionRepository
-                ->answerStatsBySurveyAndAnsweredSurveyList($list);
-
-            $answers = $answeredSurveyQuestionRepository
-                ->notNumericAnswersBySurveyAndAnsweredSurveyList($list);
-
-            $stats = [$surveyStats, $answers];
-        }
-
-        $teachers = $wltTeacherRepository->findByEducationalTutorProjectWithAnsweredSurvey($project);
-
-
-        if (empty($stats)) {
-            return $this->render('wlt/report/no_survey.html.twig', [
-                'menu_path' => 'work_linked_training_report_educational_tutor_survey_list'
-            ]);
-        }
-
-        $html = $engine->render('wlt/report/educational_tutor_survey_report.twig', [
-            'teachers' => $teachers,
-            'project' => $project,
-            'stats' => $stats
-        ]);
-
-        $fileName = $translator->trans('title.educational_tutor_survey', [], 'wlt_report')
-            . ' - ' . $project->getOrganization() . ' - '
-            . $project->getName() . '.pdf';
-
-        $response = $mpdfService->generatePdfResponse($html);
-        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
-
-        return $response;
     }
 
     /**
@@ -551,8 +309,6 @@ class ReportController extends AbstractController
     public function gradingReportAction(
         TranslatorInterface $translator,
         Environment $engine,
-        UserExtensionService $userExtensionService,
-        StudentEnrollmentRepository $studentEnrollmentRepository,
         SubjectRepository $subjectRepository,
         ActivityRealizationRepository $activityRealizationRepository,
         Project $project
@@ -667,6 +423,272 @@ class ReportController extends AbstractController
 
         $mpdfService = new MpdfService();
         ini_set("pcre.backtrack_limit", "5000000");
+
+        $response = $mpdfService->generatePdfResponse($html);
+        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+        return $response;
+    }
+    /**
+     * @Route("/encuesta/estudiantes/listar/{academicYear}/{page}", name="work_linked_training_report_student_survey_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
+     */
+    public function studentListAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        AcademicYearRepository $academicYearRepository,
+        AcademicYear $academicYear = null,
+        $page = 1
+    ) {
+        return $this->genericListAction(
+            $request,
+            $userExtensionService,
+            $translator,
+            $academicYearRepository,
+            'title.student_survey',
+            'work_linked_training_report_student_survey_report',
+            $academicYear,
+            $page
+        );
+    }
+
+    /**
+     * @Route("/encuesta/empresas/listar/{academicYear}/{page}", name="work_linked_training_report_work_tutor_survey_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
+     */
+    public function companyListAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        AcademicYearRepository $academicYearRepository,
+        AcademicYear $academicYear = null,
+        $page = 1
+    ) {
+        return $this->genericListAction(
+            $request,
+            $userExtensionService,
+            $translator,
+            $academicYearRepository,
+            'title.company_survey',
+            'work_linked_training_report_work_tutor_survey_report',
+            $academicYear,
+            $page
+        );
+    }
+
+    /**
+     * @Route("/encuesta/centro/listar/{academicYear}/{page}",
+     *     name="work_linked_training_report_educational_tutor_survey_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
+     */
+    public function educationalTutorListAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        AcademicYearRepository $academicYearRepository,
+        AcademicYear $academicYear = null,
+        $page = 1
+    ) {
+        return $this->genericListAction(
+            $request,
+            $userExtensionService,
+            $translator,
+            $academicYearRepository,
+            'title.educational_tutor_survey',
+            'work_linked_training_report_educational_tutor_survey_report',
+            $academicYear,
+            $page
+        );
+    }
+
+    /**
+     * @Route("/encuesta/estudiantes/{id}/{academicYear}", name="work_linked_training_report_student_survey_report",
+     *     requirements={"id" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
+     */
+    public function studentsReportAction(
+        TranslatorInterface $translator,
+        Environment $engine,
+        StudentAnsweredSurveyRepository $studentAnsweredSurveyRepository,
+        SurveyQuestionRepository $surveyQuestionRepository,
+        AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
+        Project $project,
+        AcademicYear $academicYear = null
+    ) {
+        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_STUDENT_SURVEY, $project);
+
+        $mpdfService = new MpdfService();
+
+        $studentEnrollmentStats = $studentAnsweredSurveyRepository
+            ->getStatsByProjectAndAcademicYear($project, $academicYear);
+
+        $stats = [];
+        $studentAnswers = [];
+
+        $survey = $project->getStudentSurvey();
+
+        if ($survey) {
+            $studentAnswers = $studentAnsweredSurveyRepository->findByProjectAndAcademicYear($project, $academicYear);
+
+            $list = [];
+            foreach ($studentAnswers as $studentAnswer) {
+                $list[] = $studentAnswer->getAnsweredSurvey();
+            }
+
+            $surveyStats = $surveyQuestionRepository
+                ->answerStatsBySurveyAndAnsweredSurveyList($list);
+
+            $answers = $answeredSurveyQuestionRepository
+                ->notNumericAnswersBySurveyAndAnsweredSurveyList($list);
+
+            $stats = [$surveyStats, $answers];
+        }
+
+        if (empty($stats)) {
+            return $this->render('wlt/report/no_survey.html.twig', [
+                'menu_path' => 'work_linked_training_report_student_survey_list'
+            ]);
+        }
+
+        $html = $engine->render('wlt/report/student_survey_report.html.twig', [
+            'student_enrollment_stats' => $studentEnrollmentStats,
+            'project' => $project,
+            'academic_year' => $academicYear,
+            'stats' => $stats,
+            'student_answered_surveys' => $studentAnswers
+        ]);
+
+        $fileName = $translator->trans('title.student_survey', [], 'wlt_report')
+            . ' - ' . $project->getOrganization() . ' - '
+            . $project->getName() . '.pdf';
+
+        $response = $mpdfService->generatePdfResponse($html);
+        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/encuesta/empresas/{id}/{academicYear}", name="work_linked_training_report_work_tutor_survey_report",
+     *     requirements={"id" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
+     */
+    public function workTutorReportAction(
+        TranslatorInterface $translator,
+        Environment $engine,
+        WLTAnsweredSurveyRepository $wltAnsweredSurveyRepository,
+        SurveyQuestionRepository $surveyQuestionRepository,
+        AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
+        WorkTutorAnsweredSurveyRepository $workTutorAnsweredSurveyRepository,
+        Project $project,
+        AcademicYear $academicYear = null
+    ) {
+        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_COMPANY_SURVEY, $project);
+
+        $mpdfService = new MpdfService();
+
+        $workTutorStats = $workTutorAnsweredSurveyRepository
+            ->getStatsByProjectAndAcademicYear($project, $academicYear);
+
+        $stats = [];
+        $workTutorAnswers = [];
+
+        $survey = $project->getStudentSurvey();
+
+        if ($survey) {
+            $workTutorAnswers = $workTutorAnsweredSurveyRepository->findByProjectAndAcademicYear($project, $academicYear);
+
+            $list = $wltAnsweredSurveyRepository->findByWorkTutorSurveyProjectAndAcademicYear(
+                $project,
+                $academicYear
+            );
+
+            $surveyStats = $surveyQuestionRepository
+                ->answerStatsBySurveyAndAnsweredSurveyList($list);
+
+            $answers = $answeredSurveyQuestionRepository
+                ->notNumericAnswersBySurveyAndAnsweredSurveyList($list);
+
+            $stats = [$surveyStats, $answers];
+        }
+
+        if (empty($stats)) {
+            return $this->render('wlt/report/no_survey.html.twig', [
+                'menu_path' => 'work_linked_training_report_work_tutor_survey_list'
+            ]);
+        }
+
+        $html = $engine->render('wlt/report/work_tutor_survey_report.html.twig', [
+            'work_tutor_stats' => $workTutorStats,
+            'project' => $project,
+            'academic_year' => $academicYear,
+            'stats' => $stats,
+            'work_tutor_surveys' => $workTutorAnswers
+        ]);
+
+        $fileName = $translator->trans('title.company_survey', [], 'wlt_report')
+            . ' - ' . $project->getOrganization() . ' - '
+            . $project->getName() . '.pdf';
+
+        $response = $mpdfService->generatePdfResponse($html);
+        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/encuesta/centro/{id}/{academicYear}", name="work_linked_training_report_educational_tutor_survey_report",
+     *     requirements={"id" = "\d+"}, methods={"GET"})
+     */
+    public function educationalTutorReportAction(
+        TranslatorInterface $translator,
+        Environment $engine,
+        WLTAnsweredSurveyRepository $wltAnsweredSurveyRepository,
+        SurveyQuestionRepository $surveyQuestionRepository,
+        AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
+        WLTTeacherRepository $wltTeacherRepository,
+        Project $project,
+        AcademicYear $academicYear = null
+    ) {
+        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_ORGANIZATION_SURVEY, $project);
+
+        $mpdfService = new MpdfService();
+
+        $stats = [];
+
+        $survey = $project->getEducationalTutorSurvey();
+
+        if ($survey) {
+            $list = $wltAnsweredSurveyRepository
+                ->findByEducationalTutorSurveyProjectAndAcademicYear($project, $academicYear);
+
+            $surveyStats = $surveyQuestionRepository
+                ->answerStatsBySurveyAndAnsweredSurveyList($list);
+
+            $answers = $answeredSurveyQuestionRepository
+                ->notNumericAnswersBySurveyAndAnsweredSurveyList($list);
+
+            $stats = [$surveyStats, $answers];
+        }
+
+        $teachers = $wltTeacherRepository
+            ->getStatsByProjectAndAcademicYearWithAnsweredSurvey($project, $academicYear);
+
+        if (empty($stats)) {
+            return $this->render('wlt/report/no_survey.html.twig', [
+                'menu_path' => 'work_linked_training_report_educational_tutor_survey_list'
+            ]);
+        }
+
+        $html = $engine->render('wlt/report/educational_tutor_survey_report.twig', [
+            'teachers' => $teachers,
+            'project' => $project,
+            'academic_year' => $academicYear,
+            'stats' => $stats
+        ]);
+
+        $fileName = $translator->trans('title.educational_tutor_survey', [], 'wlt_report')
+            . ' - ' . $project->getOrganization() . ' - '
+            . $project->getName() . '.pdf';
 
         $response = $mpdfService->generatePdfResponse($html);
         $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');

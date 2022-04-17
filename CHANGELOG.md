@@ -46,6 +46,7 @@ en las distintas versiones de la misma.
 * feat: Incluido un desplegable de cambio rápido de centro educativo
 * fix: Mostrar el fichero seleccionado en los formularios que permiten subir ficheros
 * fix: Arregladas algunas traducciones que se modificaron de forma no intencionada
+* feat: Las encuestas de FP dual se realizan únicamente una vez por curso académico y proyecto
 
 4.1.0 (2022-02-13)
 ------------------

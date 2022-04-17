@@ -18,7 +18,10 @@
 
 namespace App\Repository\WLT;
 
+use App\Entity\AnsweredSurvey;
+use App\Entity\AnsweredSurveyQuestion;
 use App\Entity\Edu\Teacher;
+use App\Entity\Survey;
 use App\Entity\WLT\EducationalTutorAnsweredSurvey;
 use App\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -44,5 +47,38 @@ class EducationalTutorAnsweredSurveyRepository extends ServiceEntityRepository
             ->setParameter('teacher', $teacher)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+
+    public function createNewAnsweredSurvey(
+        Survey $survey,
+        Project $project,
+        Teacher $teacher
+    ) {
+        $studentSurvey = new AnsweredSurvey();
+        $studentSurvey->setSurvey($survey);
+
+        $educationalTutorAnsweredSurvey = new EducationalTutorAnsweredSurvey();
+        $educationalTutorAnsweredSurvey
+            ->setAnsweredSurvey($studentSurvey)
+            ->setProject($project)
+            ->setTeacher($teacher);
+
+
+        $this->getEntityManager()->persist($studentSurvey);
+        $this->getEntityManager()->persist($educationalTutorAnsweredSurvey);
+
+        foreach ($survey->getQuestions() as $question) {
+            $answeredQuestion = new AnsweredSurveyQuestion();
+            $answeredQuestion
+                ->setAnsweredSurvey($studentSurvey)
+                ->setSurveyQuestion($question);
+
+            $studentSurvey->getAnswers()->add($answeredQuestion);
+
+            $this->getEntityManager()->persist($answeredQuestion);
+        }
+
+        return $educationalTutorAnsweredSurvey;
     }
 }

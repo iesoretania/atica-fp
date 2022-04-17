@@ -38,20 +38,20 @@ use Symfony\Component\Security\Core\Security;
 class AgreementRepository extends ServiceEntityRepository
 {
     private $workDayRepository;
-    private $WLTGroupRepository;
+    private $wltGroupRepository;
     private $projectRepository;
     private $security;
 
     public function __construct(
         ManagerRegistry $registry,
         WorkDayRepository $workDayRepository,
-        WLTGroupRepository $WLTGroupRepository,
+        WLTGroupRepository $wltGroupRepository,
         ProjectRepository $projectRepository,
         Security $security
     ) {
         parent::__construct($registry, Agreement::class);
         $this->workDayRepository = $workDayRepository;
-        $this->WLTGroupRepository = $WLTGroupRepository;
+        $this->wltGroupRepository = $wltGroupRepository;
         $this->projectRepository = $projectRepository;
         $this->security = $security;
     }
@@ -146,19 +146,30 @@ class AgreementRepository extends ServiceEntityRepository
      * @param AcademicYear $academicYear
      * @param Person $person
      *
+     * @return QueryBuilder
+     */
+    private function countAcademicYearAndEducationalTutorPersonQueryBuilder(AcademicYear $academicYear, Person $person)
+    {
+        return $this->createQueryBuilder('a')
+            ->select('COUNT(a)')
+            ->join('a.educationalTutor', 't')
+            ->leftJoin('a.additionalEducationalTutor', 'aet')
+            ->andWhere('t.academicYear = :academic_year')
+            ->andWhere('t.person = :educational_tutor OR aet.person = :educational_tutor')
+            ->setParameter('educational_tutor', $person)
+            ->setParameter('academic_year', $academicYear);
+    }
+
+    /**
+     * @param AcademicYear $academicYear
+     * @param Person $person
+     *
      * @return int
      */
     public function countAcademicYearAndEducationalTutorPerson(AcademicYear $academicYear, Person $person)
     {
         try {
-            return $this->createQueryBuilder('a')
-                ->select('COUNT(a)')
-                ->join('a.educationalTutor', 't')
-                ->leftJoin('a.additionalEducationalTutor', 'aet')
-                ->andWhere('t.academicYear = :academic_year')
-                ->andWhere('t.person = :educational_tutor OR aet.person = :educational_tutor')
-                ->setParameter('educational_tutor', $person)
-                ->setParameter('academic_year', $academicYear)
+            return $this->countAcademicYearAndEducationalTutorPersonQueryBuilder($academicYear, $person)
                 ->getQuery()
                 ->getSingleScalarResult();
         } catch (NoResultException|NonUniqueResultException $e) {
@@ -388,7 +399,7 @@ class AgreementRepository extends ServiceEntityRepository
             // no es administrador ni coordinador de FP:
             // puede ser jefe de departamento, tutor de grupo o profesor
             $groups =
-                $this->WLTGroupRepository->findByOrganizationAndPerson($organization, $person);
+                $this->wltGroupRepository->findByOrganizationAndPerson($organization, $person);
 
             if (!$groups->isEmpty()) {
                 $queryBuilder
@@ -458,5 +469,100 @@ class AgreementRepository extends ServiceEntityRepository
             ->setParameter('organization', $organization);
 
         return $projects;
+    }
+
+    public function findByAcademicYearAndPersonFilterQueryBuilder(
+        $q,
+        AcademicYear $academicYear,
+        Person $person
+    ) {
+        $organization = $academicYear->getOrganization();
+        $isManager = $this->security->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+
+        $queryBuilder = $this->createQueryBuilder('a')
+            ->select('se, pro, a, p, g, wt, w, c')
+            ->distinct()
+            ->join('a.project', 'pro')
+            ->join('a.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('a.workTutor', 'wt')
+            ->join('a.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->leftJoin('a.additionalWorkTutor', 'awt')
+            ->join('a.educationalTutor', 'et')
+            ->leftJoin('a.additionalEducationalTutor', 'aet')
+            ->join('se.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't');
+
+        if ($q) {
+            $queryBuilder
+                ->orWhere('g.name LIKE :tq')
+                ->orWhere('p.lastName LIKE :tq')
+                ->orWhere('p.firstName LIKE :tq')
+                ->orWhere('pro.name LIKE :tq')
+                ->orWhere('w.name LIKE :tq')
+                ->orWhere('c.name LIKE :tq')
+                ->orWhere('wt.firstName LIKE :tq')
+                ->orWhere('wt.lastName LIKE :tq')
+                ->setParameter('tq', '%'.$q.'%');
+        }
+
+        $groups = [];
+        $projects = [];
+
+        if (!$isWltManager && !$isManager) {
+            // no es administrador ni coordinador de FP:
+            // puede ser jefe de departamento o tutor de grupo  -> ver los acuerdos de los
+            // estudiantes de sus grupos
+            $groups = $this->wltGroupRepository
+                ->findByAcademicYearAndGroupTutorOrDepartmentHeadPerson($academicYear, $person);
+        } elseif ($isWltManager) {
+            $projects = $this->projectRepository->findByManager($person);
+        }
+
+        // ver siempre las propias
+        if ($groups) {
+            $queryBuilder
+                ->andWhere('se.group IN (:groups) OR se.person = :person OR wt = :person OR awt = :person')
+                ->setParameter('groups', $groups)
+                ->setParameter('person', $person);
+        }
+        if ($projects) {
+            $queryBuilder
+                ->andWhere('pro IN (:projects) OR se.person = :person OR wt = :person OR awt = :person')
+                ->setParameter('projects', $projects)
+                ->setParameter('person', $person);
+        }
+
+        if (!$isWltManager && !$isManager && !$projects && !$groups) {
+            $queryBuilder
+                ->andWhere('se.person = :person OR wt = :person OR awt = :person')
+                ->setParameter('person', $person);
+        }
+
+        $queryBuilder
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear);
+
+        return $queryBuilder;
+    }
+
+    public function countAcademicYearAndEducationalTutorPersonAndProject(
+        AcademicYear $academicYear,
+        Person $person,
+        Project $project
+    ) {
+        try {
+            return $this->countAcademicYearAndEducationalTutorPersonQueryBuilder($academicYear, $person)
+                ->andWhere('a.project = :project')
+                ->setParameter('project', $project)
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NoResultException|NonUniqueResultException $e) {
+        }
+
+        return 0;
     }
 }

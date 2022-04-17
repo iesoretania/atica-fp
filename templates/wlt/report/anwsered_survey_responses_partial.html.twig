@@ -1,0 +1,20 @@
+{% trans_default_domain 'wlt_report' %}
+
+<table class="survey">
+    <thead>
+    <tr>
+        <th width="70%">{{ 'header.question'|trans }}</th>
+        <th width="30%">{{ 'header.answer'|trans }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for answer in answered_survey.answers %}
+        {% if answer.surveyQuestion.type != "fixed" %}
+            <tr>
+                <td class="right">{{ answer.surveyQuestion.description|raw }}</td>
+                <td>{{ answer.numericValue|default(answer.textValue)|default('report.no_answer'|trans) }}</td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+    </tbody>
+</table>

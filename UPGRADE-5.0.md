@@ -8,7 +8,8 @@ Este documento contiene una lista de los cambios más relevantes entre la versi�
 de la plataforma y la 5.0.
 
 Lea con atención porque algunos de ellos implican la imposibilidad de volver a versiones anteriores
-manteniendo la base de datos.
+manteniendo la base de datos o la pérdida de algunos datos (como es el caso de algunas
+encuestas de satisfacción de FP dual, ver más abajo).
 
 Cambios en la configuración
 ---------------------------
@@ -57,3 +58,13 @@ de seguimiento adicionales.
 
 Esto permite asignar profesorado sustituto o de apoyo, así como soportar el caso
 en el que el seguimiento real por parte de la empresa lo realice otro empleado.
+
+Rediseño del sistema de encuestas en FP dual
+--------------------------------------------
+Para simplificar el trabajo de las personas involucradas en los proyectos,
+ahora sólo se deberá cumplimentar una encuesta por proyecto participado y curso académico.
+
+**ATENCIÓN: Si en algún proyecto algún estudiante o responsable laboral había
+contestado más de una encuesta el mismo curso académico sobre el mismo proyecto,
+sólo se mantendrá una de ellas. El resto serán eliminadas. No se puede deshacer
+una vez actualizada la base de datos al nuevo sistema.**

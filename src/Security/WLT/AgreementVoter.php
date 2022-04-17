@@ -39,7 +39,7 @@ class AgreementVoter extends CachedVoter
     public const VIEW_GRADE = 'WLT_AGREEMENT_VIEW_GRADE';
     public const VIEW_STUDENT_SURVEY = 'WLT_AGREEMENT_VIEW_STUDENT_SURVEY';
     public const FILL_STUDENT_SURVEY = 'WLT_AGREEMENT_FILL_STUDENT_SURVEY';
-    public const VIEW_COMPANY_SURVEY = 'WLT_AGREEMENT_VIEW_COMPANY_SURVEY';
+    public const VIEW_COMPANY_SURVEY = 'WLT_AGREEMENT_VIEW_WORK_TUTOR_SURVEY';
     public const FILL_COMPANY_SURVEY = 'WLT_AGREEMENT_FILL_COMPANY_SURVEY';
 
     /** @var AccessDecisionManagerInterface */

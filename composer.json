@@ -17,7 +17,6 @@
         "johngrogg/ics-parser": "^2.1",
         "mpdf/mpdf": "^8",
         "oro/doctrine-extensions": "^1.2",
-        "pagerfanta/doctrine-orm-adapter": "^2.7",
         "phpseclib/phpseclib": "^3.0",
         "sensio/framework-extra-bundle": "^6.2",
         "sonata-project/entity-audit-bundle": "^1.0",

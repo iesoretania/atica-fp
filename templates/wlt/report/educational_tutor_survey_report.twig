@@ -71,6 +71,7 @@
 </head>
 <body>
     <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
+    {% if academic_year %}<h2>{{ 'header.academic_year'|trans }} {{ academic_year }}</h2>{% endif %}
     <h2>{{ 'title.educational_tutor_survey'|trans }}</h2>
     <h3>{{ 'title.educational_tutor_survey.summary'|trans }}</h3>
     <table class="survey">
@@ -94,7 +95,7 @@
             {% set total = total + 1 %}
             {% if teacherData[1] %}{% set answered = answered + 1 %}{% endif %}
         {% else %}
-            <tr colspan="4">{{ 'report.no_surveys'|trans }}</tr>
+            <tr colspan="3">{{ 'report.no_surveys'|trans }}</tr>
         {% endfor %}
         </tbody>
         {% if total %}
@@ -106,100 +107,32 @@
         {% endif %}
     </table>
 
-    {% if stats[0] %}
-        <pagebreak></pagebreak>
+    {% include 'wlt/report/survey_stats_partial.html.twig' %}
 
-        <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
-        <h2>{{ 'title.educational_tutor_survey'|trans }}</h2>
-
-        <table class="survey">
-            <thead>
-            <tr>
-                <th width="68%">{{ 'header.question'|trans }}</th>
-                <th width="8%">{{ 'header.count'|trans }}</th>
-                <th width="8%">{{ 'header.min'|trans }}</th>
-                <th width="8%">{{ 'header.max'|trans }}</th>
-                <th width="8%">{{ 'header.average'|trans }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for answer in stats[0] %}
-                {% if answer[0].type starts with "range" %}
+    {% for teacher_data in teachers %}
+        {% if teacher_data[1] %}
+            <pagebreak></pagebreak>
+            {% set teacher = teacher_data[0] %}
+            <h1>{{ app_name }} - {{ project.organization }}</h1>
+            <h2>{{ 'title.educational_tutor_survey'|trans }}</h2>
+            <table class="data">
                 <tr>
-                    <td class="right">{{ answer[0].description|raw }}</td>
-                    <td class="center">{{ answer[1]|default('report.no_data'|trans) }}</td>
-                    <td class="center">{{ answer[3] ? answer[3]|number_format(2, 'format.decimal_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
-                    <td class="center">{{ answer[4] ? answer[4]|number_format(2, 'format.decimal_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
-                    <td class="center">{{ answer[2] ? answer[2]|number_format(2, 'format.decimal_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
+                    <td class="info">{{ 'report.academic_year'|trans }}</td>
+                    <td>{{ teacher.academicYear }}</td>
                 </tr>
-                {% endif %}
-            {% endfor %}
-            </tbody>
-        </table>
-        {% if stats[1] %}
-            <table class="survey">
-                <thead>
                 <tr>
-                    <th width="40%">{{ 'header.question'|trans }}</th>
-                    <th width="60%">{{ 'header.answer'|trans }}</th>
+                    <td class="info">{{ 'report.educational_tutor'|trans }}</td>
+                    <td>{{ teacher.person }}</td>
                 </tr>
-                </thead>
-                <tbody>
-                {% for answer in stats[1] %}
-                    <tr>
-                        <td class="right">{{ answer.surveyQuestion.description|raw }}</td>
-                        <td>{{ answer.textValue }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
+                <tr>
+                    <td class="info">{{ 'report.answered_on'|trans }}</td>
+                    <td>{{ teacher_data[1] ? teacher_data[1].answeredSurvey.timestamp|date('format.datetime'|trans({}, 'general')) : 'report.no_survey'|trans }}</td>
+                </tr>
             </table>
+
+            {% set answered_survey = teacher_data[1].answeredSurvey %}
+            {% include 'wlt/report/anwsered_survey_responses_partial.html.twig' %}
         {% endif %}
-    {% endif %}
-
-
-    <pagebreak></pagebreak>
-    {% for teacherData in teachers %}
-        {% set teacher = teacherData[0] %}
-        <h1>{{ app_name }} - {{ project.organization }}</h1>
-        <h2>{{ 'title.educational_tutor_survey'|trans }}</h2>
-        <table class="data">
-            <tr>
-                <td class="info">{{ 'report.academic_year'|trans }}</td>
-                <td>{{ teacher.academicYear }}</td>
-            </tr>
-            <tr>
-                <td class="info">{{ 'report.educational_tutor'|trans }}</td>
-                <td>{{ teacher.person }}</td>
-            </tr>
-            <tr>
-                <td class="info">{{ 'report.answered_on'|trans }}</td>
-                <td>{{ teacherData[1] ? teacherData[1].answeredSurvey.timestamp|date('format.datetime'|trans({}, 'general')) : 'report.no_survey'|trans }}</td>
-            </tr>
-        </table>
-
-        {% if teacherData[1] %}
-        <table class="survey">
-            <thead>
-                <tr>
-                    <th width="70%">{{ 'header.question'|trans }}</th>
-                    <th width="30%">{{ 'header.answer'|trans }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for answer in teacherData[1].answeredSurvey.answers %}
-                {% if answer.surveyQuestion.type != "fixed" %}
-                <tr>
-                    <td class="right">{{ answer.surveyQuestion.description|raw }}</td>
-                    <td>{{ answer.numericValue|default(answer.textValue)|default('report.no_answer'|trans) }}</td>
-                </tr>
-                {% endif %}
-            {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-            <h2>{{ 'report.no_survey'|trans }}</h2>
-        {% endif %}
-        {% if not loop.last %}<pagebreak></pagebreak>{% endif %}
     {% endfor %}
 </body>
 </html>

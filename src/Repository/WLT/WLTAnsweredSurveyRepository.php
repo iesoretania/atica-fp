@@ -19,10 +19,12 @@
 namespace App\Repository\WLT;
 
 use App\Entity\AnsweredSurvey;
-use App\Entity\WLT\Agreement;
+use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Teacher;
 use App\Entity\WLT\EducationalTutorAnsweredSurvey;
 use App\Entity\WLT\ManagerAnsweredSurvey;
 use App\Entity\WLT\Project;
+use App\Entity\WLT\WorkTutorAnsweredSurvey;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -33,38 +35,55 @@ class WLTAnsweredSurveyRepository extends ServiceEntityRepository
         parent::__construct($registry, AnsweredSurvey::class);
     }
 
-    public function findByStudentSurveyAndProject(Project $project)
-    {
-        return $this->createQueryBuilder('asu')
-            ->join('asu.survey', 's')
-            ->join(Agreement::class, 'a', 'WITH', 'a.studentSurvey = asu')
-            ->andWhere('a.project = :project')
-            ->setParameter('project', $project)
+    public function findByWorkTutorSurveyProjectAndAcademicYear(
+        Project $project,
+        ?AcademicYear $academicYear = null
+    ) {
+        $qb = $this->createQueryBuilder('asu')
+            ->join(
+                WorkTutorAnsweredSurvey::class,
+                'wtas',
+                'WITH',
+                'wtas.project = :project AND asu = wtas.answeredSurvey'
+            )
+            ->setParameter('project', $project);
+
+        if ($academicYear) {
+            $qb
+                ->where('wtas.academicYear = :academic_year')
+                ->setParameter('academic_year', $academicYear);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }
 
-    public function findByCompanySurveyAndProject(Project $project)
-    {
-        return $this->createQueryBuilder('asu')
-            ->join('asu.survey', 's')
-            ->join(Agreement::class, 'a', 'WITH', 'a.companySurvey = asu')
-            ->andWhere('a.project = :project')
-            ->setParameter('project', $project)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByEducationalTutorSurveyAndProject(Project $project)
-    {
-        return $this->createQueryBuilder('asu')
+    public function findByEducationalTutorSurveyProjectAndAcademicYear(
+        Project $project,
+        ?AcademicYear $academicYear = null
+    ) {
+        $qb = $this->createQueryBuilder('asu')
             ->join(
                 EducationalTutorAnsweredSurvey::class,
                 'etas',
                 'WITH',
                 'etas.project = :project AND asu = etas.answeredSurvey'
             )
-            ->setParameter('project', $project)
+            ->setParameter('project', $project);
+
+        if ($academicYear) {
+            $qb
+                ->join(
+                    Teacher::class,
+                    'te',
+                    'WITH',
+                    'etas.teacher = te AND te.academicYear = :academic_year'
+                )
+                ->setParameter('academic_year', $academicYear);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }

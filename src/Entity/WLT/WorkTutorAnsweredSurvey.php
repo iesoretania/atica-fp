@@ -19,14 +19,15 @@
 namespace App\Entity\WLT;
 
 use App\Entity\AnsweredSurvey;
-use App\Entity\Edu\Teacher;
+use App\Entity\Edu\AcademicYear;
+use App\Entity\Person;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="wlt_educational_tutor_answered_survey")
+ * @ORM\Table(name="wlt_work_tutor_answered_survey")
  */
-class EducationalTutorAnsweredSurvey
+class WorkTutorAnsweredSurvey
 {
     /**
      * @ORM\Id
@@ -44,11 +45,18 @@ class EducationalTutorAnsweredSurvey
     private $project;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\AcademicYear")
      * @ORM\JoinColumn(nullable=false)
-     * @var Teacher
+     * @var AcademicYear
      */
-    private $teacher;
+    private $academicYear;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Person")
+     * @ORM\JoinColumn(nullable=false)
+     * @var Person
+     */
+    private $workTutor;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AnsweredSurvey")
@@ -84,20 +92,38 @@ class EducationalTutorAnsweredSurvey
     }
 
     /**
-     * @return Teacher
+     * @return AcademicYear
      */
-    public function getTeacher()
+    public function getAcademicYear()
     {
-        return $this->teacher;
+        return $this->academicYear;
     }
 
     /**
-     * @param Teacher $teacher
+     * @param AcademicYear $academicYear
      * @return self
      */
-    public function setTeacher($teacher)
+    public function setAcademicYear($academicYear)
     {
-        $this->teacher = $teacher;
+        $this->academicYear = $academicYear;
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getWorkTutor()
+    {
+        return $this->workTutor;
+    }
+
+    /**
+     * @param Person $workTutor
+     * @return self
+     */
+    public function setWorkTutor($workTutor)
+    {
+        $this->workTutor = $workTutor;
         return $this;
     }
 

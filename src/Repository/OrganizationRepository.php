@@ -78,7 +78,6 @@ class OrganizationRepository extends ServiceEntityRepository
 
         $organizations = $this->builderChain->getOrganizations($user);
         return $query
-            //->andWhere('m.user = :user')
             ->distinct()
             ->orderBy('o.name')
             ->andWhere('o IN (:organizations)')

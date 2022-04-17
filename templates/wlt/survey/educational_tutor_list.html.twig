@@ -13,10 +13,10 @@
 
 {% block table_body %}
             {% for item in pager %}
-                {% set url = path('work_linked_training_survey_educational_tutor_form', {'project': item.projectId, 'id': item[0].id}) %}
+                {% set url = path('work_linked_training_survey_educational_tutor_form', {'id': item.projectId, 'teacher': item.teacherId}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <a href="{{ url }}">{{ item[0].person.lastName }}, {{ item[0].person.firstName }}</a>
+                        <a href="{{ url }}">{{ item.lastName }}, {{ item.firstName }}</a>
                     </td>
                     <td>
                         {{ item.projectName }}
@@ -30,7 +30,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}
