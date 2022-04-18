@@ -35,7 +35,7 @@ class Visit
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
-     * @var int
+     * @var ?int
      */
     private $id;
 
@@ -86,7 +86,7 @@ class Visit
     }
 
     /**
-     * @return int
+     * @return ?int
      */
     public function getId()
     {

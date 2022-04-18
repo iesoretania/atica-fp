@@ -63,7 +63,7 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
             $startDate = clone $dateTime;
             $startDate->setTime(0, 0);
             $endDate = clone $dateTime;
-            $startDate->add(new \DateInterval('P1D'));
+            $endDate->add(new \DateInterval('P1D'));
 
             $qb
                 ->join(Agreement::class, 'ag', 'WITH', 'ag.studentEnrollment = se')

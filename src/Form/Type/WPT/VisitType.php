@@ -101,7 +101,8 @@ class VisitType extends AbstractType
             /** @var Agreement $agreement */
             foreach ($selectedAgreements as $agreement) {
                 foreach ($agreement->getAgreementEnrollments() as $agreementEnrollment) {
-                    if ($agreementEnrollment->getEducationalTutor() === $teacher
+                    if (($agreementEnrollment->getEducationalTutor() === $teacher
+                        || $agreementEnrollment->getAdditionalEducationalTutor() === $teacher)
                         && (!$agreement->getStartDate() || $endDate >= $agreement->getStartDate())
                         && (!$agreement->getEndDate() || $startDate <= $agreement->getEndDate())) {
                         $studentEnrollments[] = $agreementEnrollment->getStudentEnrollment();
@@ -112,7 +113,13 @@ class VisitType extends AbstractType
             $agreements = [];
         }
 
-        $canSelectAgreements = (is_array($agreements) || $agreements instanceof \Countable ? count($agreements) : 0) > 0;
+        $canSelectAgreements =
+            (
+                is_array($agreements) || $agreements instanceof \Countable
+                ? count($agreements)
+                : 0
+            ) > 0;
+
         $canSelectStudentEnrollments = $studentEnrollments !== [];
 
         $form

@@ -96,8 +96,9 @@ class WLTTeacherRepository extends ServiceEntityRepository
             ->getResult();
 
         foreach ($educationalTutors as $educationalTutor) {
-            if (!in_array($educationalTutor, $teachers, false))
+            if (!in_array($educationalTutor, $teachers, false)) {
                 array_unshift($teachers, $educationalTutor);
+            }
         }
 
         return $teachers;

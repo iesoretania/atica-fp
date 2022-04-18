@@ -24,7 +24,6 @@ use App\Entity\Edu\Teacher;
 use App\Entity\WLT\Project;
 use App\Entity\WLT\Visit;
 use App\Entity\Workcenter;
-use App\Repository\Edu\StudentEnrollmentRepository;
 use App\Repository\WLT\ProjectRepository;
 use App\Repository\WLT\WLTStudentEnrollmentRepository;
 use App\Repository\WLT\WLTTeacherRepository;
@@ -59,7 +58,7 @@ class VisitType extends AbstractType
      */
     private $projectRepository;
     /**
-     * @var StudentEnrollmentRepository
+     * @var WLTStudentEnrollmentRepository
      */
     private $wltStudentEnrollmentRepository;
 
@@ -112,7 +111,11 @@ class VisitType extends AbstractType
             $projects = [];
         }
         $canSelectProjects = (is_array($projects) || $projects instanceof \Countable ? count($projects) : 0) > 0;
-        $canSelectStudentEnrollments = (is_array($studentEnrollments) || $studentEnrollments instanceof \Countable ? count($studentEnrollments) : 0) > 0;
+        $canSelectStudentEnrollments =
+            (
+                is_array($studentEnrollments) || $studentEnrollments instanceof \Countable
+                    ? count($studentEnrollments) : 0
+            ) > 0;
 
         $form
             ->add('dateTime', DateTimeType::class, [

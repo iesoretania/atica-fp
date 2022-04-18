@@ -47,14 +47,14 @@ class Visit
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher")
      * @ORM\JoinColumn(nullable=false)
-     * @var Teacher
+     * @var ?Teacher
      */
     private $teacher;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Workcenter")
      * @ORM\JoinColumn(nullable=false)
-     * @var Workcenter
+     * @var ?Workcenter
      */
     private $workcenter;
 
@@ -111,7 +111,7 @@ class Visit
     }
 
     /**
-     * @return Teacher
+     * @return ?Teacher
      */
     public function getTeacher()
     {
@@ -129,7 +129,7 @@ class Visit
     }
 
     /**
-     * @return Workcenter
+     * @return ?Workcenter
      */
     public function getWorkcenter()
     {
