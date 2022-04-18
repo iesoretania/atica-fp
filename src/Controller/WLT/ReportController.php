@@ -503,7 +503,7 @@ class ReportController extends AbstractController
     }
 
     /**
-     * @Route("/encuesta/estudiantes/{id}/{academicYear}", name="work_linked_training_report_student_survey_report",
+     * @Route("/encuesta/estudiantes/{project}/{academicYear}", name="work_linked_training_report_student_survey_report",
      *     requirements={"id" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
      */
     public function studentsReportAction(
@@ -569,7 +569,7 @@ class ReportController extends AbstractController
     }
 
     /**
-     * @Route("/encuesta/empresas/{id}/{academicYear}", name="work_linked_training_report_work_tutor_survey_report",
+     * @Route("/encuesta/empresas/{project}/{academicYear}", name="work_linked_training_report_work_tutor_survey_report",
      *     requirements={"id" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
      */
     public function workTutorReportAction(
@@ -636,7 +636,7 @@ class ReportController extends AbstractController
     }
 
     /**
-     * @Route("/encuesta/centro/{id}/{academicYear}", name="work_linked_training_report_educational_tutor_survey_report",
+     * @Route("/encuesta/centro/{project}/{academicYear}", name="work_linked_training_report_educational_tutor_survey_report",
      *     requirements={"id" = "\d+"}, methods={"GET"})
      */
     public function educationalTutorReportAction(

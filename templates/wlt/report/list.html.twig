@@ -13,7 +13,7 @@
 
 {% block table_body %}
             {% for item in pager %}
-                {% set url = path(route_name, {'id': item.id, 'academicYear': academic_year.id}) %}
+                {% set url = path(route_name, {'project': item.id, 'academicYear': academic_year.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <a href="{{ url }}" {% if new_window|default(true) %}target="_blank"{% endif %}>{{ item.name }}</a>
