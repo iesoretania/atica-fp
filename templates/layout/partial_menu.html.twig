@@ -4,15 +4,22 @@
 <div class="row pb-sm-4">
     <div class="card-deck w-100 m-auto">
     {% set menu_item = menu_extension.getMenuByRouteName(menu_path|default(app.request.get('_route'))) %}
+    {% set l = 0 %}
     {% for item in menu_item.children %}
+        {% set l = l + 1 %}
         {{ mm.menu_item(item.caption, item.description, item.routeName, item.routeParams, item.icon) }}
-        {% if loop.index % 3 == 0 and not loop.last %}</div></div><div class="row pb-sm-4"><div class="card-deck w-100 m-auto">{% endif %}
+        {% if loop.index % 3 == 0 and (not loop.last or last_url|default(false)) %}</div></div><div class="row pb-sm-4"><div class="card-deck w-100 m-auto">{% endif %}
     {% endfor %}
     {% set l = menu_item.children|length %}
+    {% if last_url|default(false) %}
+        {% if l % 3 == 0 %}</div></div><div class="row pb-sm-4 d-lg-none"><div class="card-deck w-100 m-auto">{% endif %}
+        {% set l = l + 1 %}
+        {{ mm.menu_item('menu.back', 'menu.back.description', '', '', 'arrow-left', last_url, 'd-lg-none') }}
+        <div class="col-sm-4 d-none d-lg-flex"></div>
+    {% endif %}
     {% if l is not divisible by(3) %}
         {% for i in range(2, l % 3) %}
             <div class="col-sm-4"></div>
         {% endfor %}
     {% endif %}
-    </div>
 </div>

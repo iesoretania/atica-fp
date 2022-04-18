@@ -67,7 +67,7 @@
     <div class="container-fluid">
         <div class="row">
             <main role="main" class="col-md-12 ml-sm-auto pt-0 px-4">
-                <ol class="breadcrumb">
+                <ol class="breadcrumb d-none d-lg-flex">
                     {% set last_url = "" %}
                     {% for menu_item in menu_extension.pathByRouteName(menu_path|default(app.request.get('_route'))) %}
                         <li class="breadcrumb-item">

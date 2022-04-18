@@ -48,6 +48,7 @@ en las distintas versiones de la misma.
 * fix: Arregladas algunas traducciones que se modificaron de forma no intencionada
 * feat: Las encuestas de FP dual se realizan únicamente una vez por curso académico y proyecto
 * fix: Los tutores docentes adicionales pueden ahora registrar visitas a estudiantes correctamente
+* style: Mejorada la navegación por los menús cuando se usan pantallas pequeñas
 
 4.1.0 (2022-02-13)
 ------------------

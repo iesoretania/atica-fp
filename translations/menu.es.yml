@@ -159,3 +159,6 @@ menu.company.detail: Gestionar las empresas colaboradoras y sus centros de traba
 
 menu.personal_data: Datos personales
 menu.personal_data.detail: Modificar los datos personales
+
+menu.back: Volver
+menu.back.detail: Volver a la pantalla anterior
