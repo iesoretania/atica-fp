@@ -14,7 +14,7 @@
     {% if last_url|default(false) %}
         {% if l % 3 == 0 %}</div></div><div class="row pb-sm-4 d-lg-none"><div class="card-deck w-100 m-auto">{% endif %}
         {% set l = l + 1 %}
-        {{ mm.menu_item('menu.back', 'menu.back.description', '', '', 'arrow-left', last_url, 'd-lg-none') }}
+        {{ mm.menu_item('menu.back', 'menu.back.detail', '', '', 'arrow-left', last_url, 'd-lg-none') }}
         <div class="col-sm-4 d-none d-lg-flex"></div>
     {% endif %}
     {% if l is not divisible by(3) %}
