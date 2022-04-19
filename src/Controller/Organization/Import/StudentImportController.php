@@ -75,7 +75,10 @@ class StudentImportController extends AbstractController
                 $groupRepository,
                 $personRepository,
                 $entityManager,
-                $passwordEncoder
+                $passwordEncoder,
+                [
+                    'overwrite_usernames' => $formData->getOverwriteUserNames()
+                ]
             );
 
             if (null !== $stats) {
@@ -112,7 +115,8 @@ class StudentImportController extends AbstractController
         GroupRepository $groupRepository,
         PersonRepository $personRepository,
         EntityManagerInterface $entityManager,
-        UserPasswordEncoderInterface $passwordEncoder
+        UserPasswordEncoderInterface $passwordEncoder,
+        $options = []
     ) {
         $newCount = 0;
         $oldCount = 0;
@@ -194,6 +198,8 @@ class StudentImportController extends AbstractController
                             ->setPassword($porDefecto)
                             ->setEnabled(true)
                             ->setForcePasswordChange(true);
+                    } elseif ($options['overwrite_usernames'] ?? false) {
+                        $person->setLoginUsername($uniqueIdentifier1);
                     }
                     $personCollection[$uniqueIdentifier1] = $person;
 
