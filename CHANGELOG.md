@@ -47,6 +47,7 @@ en las distintas versiones de la misma.
 * fix: Mostrar el fichero seleccionado en los formularios que permiten subir ficheros
 * fix: Arregladas algunas traducciones que se modificaron de forma no intencionada
 * feat: Las encuestas de FP dual se realizan únicamente una vez por curso académico y proyecto
+* feat: Permitir forzar la sobreescritura de los nombres de usuario al importar estudiantes
 
 4.1.0 (2022-02-13)
 ------------------

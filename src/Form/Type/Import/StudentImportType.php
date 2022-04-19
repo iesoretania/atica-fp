@@ -26,6 +26,7 @@ use App\Repository\Edu\AcademicYearRepository;
 use App\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -71,6 +72,15 @@ class StudentImportType extends AbstractType
             ->add('file', FileType::class, [
                 'label' => 'form.file',
                 'required' => true
+            ])
+            ->add('overwriteUserNames', ChoiceType::class, [
+                'label' => 'form.group.overwrite_usernames',
+                'required' => true,
+                'expanded' => true,
+                'choices' => [
+                    'form.group.overwrite_usernames.no' => false,
+                    'form.group.overwrite_usernames.yes' => true
+                ]
             ]);
     }
 

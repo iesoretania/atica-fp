@@ -40,6 +40,10 @@ form.group.extract_tutors.no: No asignar los tutores
 form.group.extract_tutors.yes: Asignar tutores de los grupos
 form.group.do_import: Importar grupos
 
+form.group.overwrite_usernames: Sobreescribir nombres de usuario existentes
+form.group.overwrite_usernames.no: No, se mantendrán los usuarios existentes
+form.group.overwrite_usernames.yes: Sí, regenerar los nombres de usuario según la información del fichero
+
 report.group.list: Grupos procesados
 report.group.new: Grupos nuevos incorporados
 report.group.old: Grupos ya existentes

@@ -36,6 +36,16 @@ class StudentImport
     private $file;
 
     /**
+     * @var bool
+     */
+    private $overwriteUserNames;
+
+    public function __construct()
+    {
+        $this->overwriteUserNames = false;
+    }
+
+    /**
      * @return AcademicYear
      */
     public function getAcademicYear()
@@ -68,6 +78,24 @@ class StudentImport
     public function setFile($file)
     {
         $this->file = $file;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getOverwriteUserNames(): bool
+    {
+        return $this->overwriteUserNames;
+    }
+
+    /**
+     * @param bool $overwriteUserNames
+     * @return StudentImport
+     */
+    public function setOverwriteUserNames(bool $overwriteUserNames)
+    {
+        $this->overwriteUserNames = $overwriteUserNames;
         return $this;
     }
 }
