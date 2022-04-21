@@ -199,7 +199,7 @@ class EvaluationController extends AbstractController
         if ($projects) {
             $queryBuilder
                 ->andWhere('pro IN (:projects) OR se.person = :person ' .
-                           'OR a.workTutor = :person OR a.additionalWorkTutor = :person' .
+                           'OR a.workTutor = :person OR a.additionalWorkTutor = :person ' .
                            'OR et.person = :person OR aet.person = :person')
                 ->setParameter('projects', $projects)
                 ->setParameter('person', $person);
