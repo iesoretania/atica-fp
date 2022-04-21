@@ -9,6 +9,7 @@
 {% block table_header %}
     <th><label><input type="checkbox" id="select"> {{ 'header.datetime'|trans }}</label></th>
     <th>{{ 'header.teacher'|trans }}</th>
+    <th>{{ 'header.method'|trans }}</th>
     <th>{{ 'header.workcenter'|trans }}</th>
     <th>{{ 'header.projects'|trans }}</th>
     <th>{{ 'header.student_enrollments'|trans }}</th>
@@ -26,6 +27,9 @@
                         {{ item.teacher }}
                     </td>
                     <td>
+                        {{ item.method | default('form.on-site' | trans) }}
+                    </td>
+                    <td>
                         {{ item.workcenter }}
                     </td>
                     <td>
@@ -37,7 +41,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="6">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

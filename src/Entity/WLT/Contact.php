@@ -18,6 +18,7 @@
 
 namespace App\Entity\WLT;
 
+use App\Entity\Edu\ContactMethod;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\Workcenter;
@@ -74,9 +75,16 @@ class Contact
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @var string
+     * @var ?string
      */
     private $detail;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\ContactMethod")
+     * @ORM\JoinColumn(nullable=true)
+     * @var ?ContactMethod
+     */
+    private $method;
 
     public function __construct()
     {
@@ -197,6 +205,24 @@ class Contact
     public function setDetail($detail)
     {
         $this->detail = $detail;
+        return $this;
+    }
+
+    /**
+     * @return ContactMethod|null
+     */
+    public function getMethod(): ?ContactMethod
+    {
+        return $this->method;
+    }
+
+    /**
+     * @param ContactMethod|null $method
+     * @return Contact
+     */
+    public function setMethod(?ContactMethod $method): Contact
+    {
+        $this->method = $method;
         return $this;
     }
 }

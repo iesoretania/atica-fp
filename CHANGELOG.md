@@ -9,6 +9,7 @@ en las distintas versiones de la misma.
 * chore: No mostrar más de 5 centros educativos en el desplegable de cambio de centro
 * fix: Corregido un problema al listar convenios de colaboración con ciertos perfiles
 * chore: Renombrar visitas a empresas de FP dual por contacto con empresas
+* feat: Ahora se puede especificar el tipo de contacto con la empresa en la FP dual
 
 5.0.0 (2022-04-20)
 ------------------

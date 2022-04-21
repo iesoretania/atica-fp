@@ -19,11 +19,13 @@
 namespace App\Form\Type\WLT;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\ContactMethod;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\WLT\Contact;
 use App\Entity\WLT\Project;
 use App\Entity\Workcenter;
+use App\Repository\Edu\ContactMethodRepository;
 use App\Repository\WLT\ProjectRepository;
 use App\Repository\WLT\WLTStudentEnrollmentRepository;
 use App\Repository\WLT\WLTTeacherRepository;
@@ -39,34 +41,21 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class VisitType extends AbstractType
+class ContactType extends AbstractType
 {
-    /**
-     * @var WorkcenterRepository
-     */
     private $workcenterRepository;
-    /**
-     * @var WLTTeacherRepository
-     */
     private $wltTeacherRepository;
-    /**
-     * @var UserExtensionService
-     */
     private $userExtensionService;
-    /**
-     * @var ProjectRepository
-     */
     private $projectRepository;
-    /**
-     * @var WLTStudentEnrollmentRepository
-     */
     private $wltStudentEnrollmentRepository;
+    private $contactMethodRepository;
 
     public function __construct(
         WorkcenterRepository $workcenterRepository,
         WLTTeacherRepository $wltTeacherRepository,
         ProjectRepository $projectRepository,
         WLTStudentEnrollmentRepository $wltStudentEnrollmentRepository,
+        ContactMethodRepository $contactMethodRepository,
         UserExtensionService $userExtensionService
     ) {
         $this->workcenterRepository = $workcenterRepository;
@@ -74,6 +63,7 @@ class VisitType extends AbstractType
         $this->projectRepository = $projectRepository;
         $this->userExtensionService = $userExtensionService;
         $this->wltStudentEnrollmentRepository = $wltStudentEnrollmentRepository;
+        $this->contactMethodRepository = $contactMethodRepository;
     }
 
     /**
@@ -88,6 +78,7 @@ class VisitType extends AbstractType
         \DateTimeInterface $dateTime = null
     ) {
         $workcenters = $this->workcenterRepository->findAll();
+        $methods = [];
 
         if ($academicYear &&
             $academicYear->getOrganization() === $this->userExtensionService->getCurrentOrganization()
@@ -95,6 +86,7 @@ class VisitType extends AbstractType
             if (!$teachers) {
                 $teachers = $this->wltTeacherRepository->findByAcademicYear($academicYear);
             }
+            $methods = $this->contactMethodRepository->findByAcademicYear($academicYear);
         } else {
             $teachers = [];
         }
@@ -138,6 +130,13 @@ class VisitType extends AbstractType
                 'choices' => $workcenters,
                 'placeholder' => 'form.workcenter.none',
                 'required' => true
+            ])
+            ->add('method', EntityType::class, [
+                'label' => 'form.method',
+                'class' => ContactMethod::class,
+                'choices' => $methods,
+                'placeholder' => 'form.method.on-site',
+                'required' => false
             ])
             ->add('projects', EntityType::class, [
                 'label' => 'form.projects',

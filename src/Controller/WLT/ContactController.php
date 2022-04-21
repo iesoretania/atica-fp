@@ -21,7 +21,7 @@ namespace App\Controller\WLT;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Person;
 use App\Entity\WLT\Contact;
-use App\Form\Type\WLT\VisitType;
+use App\Form\Type\WLT\ContactType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\TeacherRepository;
 use App\Repository\WLT\ContactRepository;
@@ -148,7 +148,7 @@ class ContactController extends AbstractController
             $teachers = $wltTeacherRepository->findByGroupsOrEducationalTutor($groups, $academicYear);
         }
 
-        $form = $this->createForm(VisitType::class, $visit, [
+        $form = $this->createForm(ContactType::class, $visit, [
             'disabled' => $readOnly,
             'teachers' => $teachers
         ]);

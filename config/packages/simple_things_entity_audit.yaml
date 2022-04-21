@@ -5,6 +5,7 @@ simple_things_entity_audit:
         - App\Entity\Role
         - App\Entity\Workcenter
         - App\Entity\Edu\AcademicYear
+        - App\Entity\Edu\ContactMethod
         - App\Entity\WLT\ActivityRealizationGrade
         - App\Entity\WLT\AgreementActivityRealization
         - App\Entity\WLT\LearningProgram
