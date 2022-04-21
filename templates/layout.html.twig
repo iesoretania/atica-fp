@@ -25,18 +25,25 @@
             </ul>
 
             <ul class="navbar-nav ml-md-auto d-md-flex">
-                {% if user_extension.organizations(app.user) | length > 1 %}
+                {% set organizations = user_extension.organizations(app.user) %}
+                {% if organizations | length > 1 %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOrganizationLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ user_extension.currentOrganization }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownOrganizationLink">
-                        {% for organization in user_extension.organizations(app.user) %}
-                            <a class="dropdown-item" href="{{ path('switch_organization', { 'id': organization.id }) }}">
-                                {{ organization }}
-                                {% if organization.id == user_extension.currentOrganization.id %}<i class="fa fa-check"></i>{% endif %}
+                        {% if organizations | length < 6 %}
+                            {% for organization in organizations %}
+                                <a class="dropdown-item" href="{{ path('switch_organization', { 'id': organization.id }) }}">
+                                    {{ organization }}
+                                    {% if organization.id == user_extension.currentOrganization.id %}<i class="fa fa-check"></i>{% endif %}
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <a class="dropdown-item" href="{{ path('login_organization') }}">
+                                {{ 'user.organization'|trans }}
                             </a>
-                        {% endfor %}
+                        {% endif %}
                     </div>
                 </li>
                 {% endif %}
