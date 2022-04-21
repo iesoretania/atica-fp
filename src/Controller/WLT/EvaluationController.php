@@ -207,7 +207,7 @@ class EvaluationController extends AbstractController
 
         if (!$isWltManager && !$isManager && !$projects && !$groups) {
             $queryBuilder
-                ->andWhere('se.person = :person OR a.workTutor = :person OR a.additionalWorkTutor = :person' .
+                ->andWhere('se.person = :person OR a.workTutor = :person OR a.additionalWorkTutor = :person ' .
                            'OR et.person = :person OR aet.person = :person')
                 ->setParameter('person', $person);
         }
