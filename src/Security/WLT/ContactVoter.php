@@ -19,7 +19,7 @@
 namespace App\Security\WLT;
 
 use App\Entity\Person;
-use App\Entity\WLT\Visit;
+use App\Entity\WLT\Contact;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
@@ -27,10 +27,10 @@ use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
-class VisitVoter extends CachedVoter
+class ContactVoter extends CachedVoter
 {
-    public const MANAGE = 'WLT_VISIT_MANAGE';
-    public const ACCESS = 'WLT_VISIT_ACCESS';
+    public const MANAGE = 'WLT_CONTACT_MANAGE';
+    public const ACCESS = 'WLT_CONTACT_ACCESS';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -54,7 +54,7 @@ class VisitVoter extends CachedVoter
     protected function supports($attribute, $subject)
     {
 
-        if (!$subject instanceof Visit) {
+        if (!$subject instanceof Contact) {
             return false;
         }
         return in_array($attribute, [
@@ -68,7 +68,7 @@ class VisitVoter extends CachedVoter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        if (!$subject instanceof Visit) {
+        if (!$subject instanceof Contact) {
             return false;
         }
 

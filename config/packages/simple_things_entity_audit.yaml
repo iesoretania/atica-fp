@@ -10,7 +10,7 @@ simple_things_entity_audit:
         - App\Entity\WLT\LearningProgram
         - App\Entity\WLT\Meeting
         - App\Entity\WLT\Project
-        - App\Entity\WLT\Visit
+        - App\Entity\WLT\Contact
         - App\Entity\WLT\WorkDay
         - App\Entity\WPT\Activity
         - App\Entity\WPT\Agreement

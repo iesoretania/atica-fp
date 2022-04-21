@@ -18,15 +18,15 @@
 
 namespace App\Repository\WLT;
 
-use App\Entity\WLT\Visit;
+use App\Entity\WLT\Contact;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-class VisitRepository extends ServiceEntityRepository
+class ContactRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Visit::class);
+        parent::__construct($registry, Contact::class);
     }
 
     public function findAllInListById($items)
@@ -41,13 +41,13 @@ class VisitRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Visit[]
+     * @param Contact[]
      * @return mixed
      */
     public function deleteFromList($list)
     {
         return $this->getEntityManager()->createQueryBuilder()
-            ->delete(Visit::class, 'v')
+            ->delete(Contact::class, 'v')
             ->where('v IN (:list)')
             ->setParameter('list', $list)
             ->getQuery()

@@ -25,10 +25,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\WLT\VisitRepository")
- * @ORM\Table(name="wlt_visit")
+ * @ORM\Entity(repositoryClass="App\Repository\WLT\ContactRepository")
+ * @ORM\Table(name="wlt_contact")
  */
-class Visit
+class Contact
 {
     /**
      * @ORM\Id
@@ -60,14 +60,14 @@ class Visit
 
     /**
      * @ORM\ManyToMany(targetEntity="Project")
-     * @ORM\JoinTable(name="wlt_visit_project")
+     * @ORM\JoinTable(name="wlt_contact_project")
      * @var Project[]
      */
     private $projects;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Edu\StudentEnrollment", fetch="EAGER")
-     * @ORM\JoinTable(name="wlt_visit_student_enrollment")
+     * @ORM\JoinTable(name="wlt_contact_student_enrollment")
      * @var StudentEnrollment[]
      */
     private $studentEnrollments;
@@ -102,7 +102,7 @@ class Visit
 
     /**
      * @param \DateTime $dateTime
-     * @return Visit
+     * @return Contact
      */
     public function setDateTime(\DateTimeInterface $dateTime)
     {
@@ -120,7 +120,7 @@ class Visit
 
     /**
      * @param Teacher $teacher
-     * @return Visit
+     * @return Contact
      */
     public function setTeacher(Teacher $teacher)
     {
@@ -138,7 +138,7 @@ class Visit
 
     /**
      * @param Workcenter $workcenter
-     * @return Visit
+     * @return Contact
      */
     public function setWorkcenter(Workcenter $workcenter)
     {
@@ -156,7 +156,7 @@ class Visit
 
     /**
      * @param Project[] $projects
-     * @return Visit
+     * @return Contact
      */
     public function setProjects($projects)
     {
@@ -174,7 +174,7 @@ class Visit
 
     /**
      * @param StudentEnrollment[] $studentEnrollments
-     * @return Visit
+     * @return Contact
      */
     public function setStudentEnrollments($studentEnrollments)
     {
@@ -192,7 +192,7 @@ class Visit
 
     /**
      * @param string $detail
-     * @return Visit
+     * @return Contact
      */
     public function setDetail($detail)
     {

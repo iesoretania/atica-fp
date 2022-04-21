@@ -5,38 +5,38 @@ form.workcenter: Centro de trabajo
 form.workcenter.none: Seleccione uno para continuar
 form.projects: Proyectos asociados
 form.projects.none: No hay proyectos asociados al centro de trabajo
-form.student_enrollments: Estudiantes visitados
+form.student_enrollments: Estudiantes relacionados
 form.student_enrollments.none: Ninguno disponible
 form.detail: Observaciones
 
 form.save: Guardar cambios
-form.delete: Eliminar las visitas seleccionadas
+form.delete: Eliminar los contactos seleccionadas
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
-table.new: Registrar visita
+table.new: Registrar contacto
 
 prompt.delete_confirm: |
-  ¿Está seguro de que desea eliminar las siguientes visitas?
+  ¿Está seguro de que desea eliminar los siguientes contactos?
 
   Esta operación no se puede deshacer.
 
-title.edit: Datos de la visita
-title.new: Nueva visita
-title.delete: Eliminar visitas
+title.edit: Datos del contacto
+title.new: Nuevo contacto
+title.delete: Eliminar contactos
 
-title.list: Listado de visitas
+title.list: Listado de contactos
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
-table.no_items: No hay visitas que mostrar
+table.no_items: No hay contactos que mostrar
 table.filter: Filtrar...
 
 header.datetime: Fecha y hora
 header.teacher: Docente
 header.workcenter: Centro de trabajo
 header.projects: Proyectos
-header.student_enrollments: Estudiantes visitados
+header.student_enrollments: Estudiantes relacionados
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
-message.deleted: Visitas eliminadas con éxito.
-message.delete_error: Ha ocurrido un error al eliminar las visitas.
+message.deleted: Contactos eliminados con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los contactos.

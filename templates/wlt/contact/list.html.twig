@@ -1,8 +1,8 @@
-{% trans_default_domain 'wlt_visit' %}
+{% trans_default_domain 'wlt_contact' %}
 {% extends 'generic/list.html.twig' %}
 {% import 'macros.html.twig' as m %}
 
-{% block path_new %}{{ path('work_linked_training_visit_new') }}{% endblock %}
+{% block path_new %}{{ path('work_linked_training_contact_new') }}{% endblock %}
 
 {% block new_action %}{% if allow_new %}{{ parent() }}{% endif %}{% endblock %}
 
@@ -16,8 +16,8 @@
 
 {% block table_body %}
             {% for item in pager %}
-                {% set url = path('work_linked_training_visit_edit', {'id': item.id}) %}
-                {% set read_only = not is_granted('WLT_VISIT_MANAGE', item) %}
+                {% set url = path('work_linked_training_contact_edit', {'id': item.id}) %}
+                {% set read_only = not is_granted('WLT_CONTACT_MANAGE', item) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="items[]" value="{{ item.id }}"{% if not read_only %} class="selectable"{% else %} disabled="disabled"{% endif %}> <a href="{{ url }}">{{ item.datetime|date('format.datetime'|trans({}, 'general')) }}</a></label>
@@ -47,7 +47,7 @@
 {% endblock %}
 
 {% block before_table %}
-    <form action="{{ path('work_linked_training_visit_operation', {'academicYear': academic_year.id}) }}" method="post">
+    <form action="{{ path('work_linked_training_contact_operation', {'academicYear': academic_year.id}) }}" method="post">
 {% endblock %}
 
 {% block pagerfanta %}

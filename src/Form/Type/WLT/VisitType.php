@@ -21,8 +21,8 @@ namespace App\Form\Type\WLT;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
+use App\Entity\WLT\Contact;
 use App\Entity\WLT\Project;
-use App\Entity\WLT\Visit;
 use App\Entity\Workcenter;
 use App\Repository\WLT\ProjectRepository;
 use App\Repository\WLT\WLTStudentEnrollmentRepository;
@@ -231,9 +231,9 @@ class VisitType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Visit::class,
+            'data_class' => Contact::class,
             'teachers' => [],
-            'translation_domain' => 'wlt_visit'
+            'translation_domain' => 'wlt_contact'
         ]);
     }
 }

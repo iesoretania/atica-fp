@@ -97,8 +97,8 @@ menu.work_linked_training.evaluation_summary.detail: Mostrar un resumen de evalu
 menu.work_linked_training.meeting: Reuniones de tutorización
 menu.work_linked_training.meeting.detail: Registrar las reuniones de tutorización del alumnado
 
-menu.work_linked_training.visit: Visitas a empresas
-menu.work_linked_training.visit.detail: Registrar las visitas a empresas por parte de los docentes de FP dual
+menu.work_linked_training.contact: Contactos con empresas
+menu.work_linked_training.contact.detail: Registrar los contactos con empresas por parte de los docentes de FP dual
 
 menu.work_linked_training.survey: Encuestas
 menu.work_linked_training.survey.detail: Encuestas de satisfacción sobre la FP dual

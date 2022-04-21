@@ -20,17 +20,17 @@ namespace App\Controller\WLT;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Person;
-use App\Entity\WLT\Visit;
+use App\Entity\WLT\Contact;
 use App\Form\Type\WLT\VisitType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\TeacherRepository;
+use App\Repository\WLT\ContactRepository;
 use App\Repository\WLT\ProjectRepository;
-use App\Repository\WLT\VisitRepository;
 use App\Repository\WLT\WLTGroupRepository;
 use App\Repository\WLT\WLTTeacherRepository;
 use App\Security\Edu\EduOrganizationVoter;
 use App\Security\OrganizationVoter;
-use App\Security\WLT\VisitVoter;
+use App\Security\WLT\ContactVoter;
 use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -44,12 +44,12 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @Route("/dual/visita")
+ * @Route("/dual/contacto")
  */
-class VisitController extends AbstractController
+class ContactController extends AbstractController
 {
     /**
-     * @Route("/nueva", name="work_linked_training_visit_new", methods={"GET", "POST"})
+     * @Route("/nuevo", name="work_linked_training_contact_new", methods={"GET", "POST"})
      */
     public function newAction(
         Request $request,
@@ -68,7 +68,7 @@ class VisitController extends AbstractController
         $person = $this->getUser();
         $teacher = $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
-        $visit = new Visit();
+        $visit = new Contact();
         $visit
             ->setDateTime(new \DateTime());
 
@@ -91,7 +91,7 @@ class VisitController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="work_linked_training_visit_edit",
+     * @Route("/{id}", name="work_linked_training_contact_edit",
      *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
     public function indexAction(
@@ -102,9 +102,9 @@ class VisitController extends AbstractController
         TeacherRepository $teacherRepository,
         WLTGroupRepository $wltGroupRepository,
         WLTTeacherRepository $wltTeacherRepository,
-        Visit $visit
+        Contact $visit
     ) {
-        $this->denyAccessUnlessGranted(VisitVoter::ACCESS, $visit);
+        $this->denyAccessUnlessGranted(ContactVoter::ACCESS, $visit);
 
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $visit->getTeacher()
@@ -113,7 +113,7 @@ class VisitController extends AbstractController
 
         $em = $this->getDoctrine()->getManager();
 
-        $readOnly = !$this->isGranted(VisitVoter::MANAGE, $visit);
+        $readOnly = !$this->isGranted(ContactVoter::MANAGE, $visit);
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
         $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
@@ -158,25 +158,25 @@ class VisitController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_visit'));
-                return $this->redirectToRoute('work_linked_training_visit_list');
+                $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_contact'));
+                return $this->redirectToRoute('work_linked_training_contact_list');
             } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_visit'));
+                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_contact'));
             }
         }
 
         $title = $translator->trans(
             $visit->getId() !== null ? 'title.edit' : 'title.new',
             [],
-            'wlt_visit'
+            'wlt_contact'
         );
 
         $breadcrumb = [
                 ['fixed' => $title]
         ];
 
-        return $this->render('wlt/visit/form.html.twig', [
-            'menu_path' => 'work_linked_training_visit_list',
+        return $this->render('wlt/contact/form.html.twig', [
+            'menu_path' => 'work_linked_training_contact_list',
             'academic_year' => $academicYear,
             'breadcrumb' => $breadcrumb,
             'title' => $title,
@@ -186,7 +186,7 @@ class VisitController extends AbstractController
     }
 
     /**
-     * @Route("/listar/{academicYear}/{page}", name="work_linked_training_visit_list",
+     * @Route("/listar/{academicYear}/{page}", name="work_linked_training_contact_list",
      *     requirements={"page" = "\d+"}, methods={"GET"})
      */
     public function listAction(
@@ -222,7 +222,7 @@ class VisitController extends AbstractController
             ->addSelect('se')
             ->addSelect('sep')
             ->addSelect('seg')
-            ->from(Visit::class, 'v')
+            ->from(Contact::class, 'v')
             ->join('v.teacher', 't')
             ->join('t.person', 'p')
             ->join('v.workcenter', 'w')
@@ -301,13 +301,13 @@ class VisitController extends AbstractController
             $pager->setCurrentPage(1);
         }
 
-        $title = $translator->trans('title.list', [], 'wlt_visit');
+        $title = $translator->trans('title.list', [], 'wlt_contact');
 
-        return $this->render('wlt/visit/list.html.twig', [
+        return $this->render('wlt/contact/list.html.twig', [
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'domain' => 'wlt_visit',
+            'domain' => 'wlt_contact',
             'allow_new' => $allowNew,
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
@@ -315,12 +315,12 @@ class VisitController extends AbstractController
     }
 
     /**
-     * @Route("/eliminar", name="work_linked_training_visit_operation",
+     * @Route("/eliminar", name="work_linked_training_contact_operation",
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
     public function operationAction(
         Request $request,
-        VisitRepository $visitRepository,
+        ContactRepository $visitRepository,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator
     ) {
@@ -332,12 +332,12 @@ class VisitController extends AbstractController
 
         $items = $request->request->get('items', []);
         if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
-            return $this->redirectToRoute('work_linked_training_visit_list');
+            return $this->redirectToRoute('work_linked_training_contact_list');
         }
 
         $visits = $visitRepository->findAllInListById($items);
         foreach ($visits as $visit) {
-            $this->denyAccessUnlessGranted(VisitVoter::MANAGE, $visit);
+            $this->denyAccessUnlessGranted(ContactVoter::MANAGE, $visit);
         }
 
         if ($request->get('confirm', '') === 'ok') {
@@ -346,20 +346,20 @@ class VisitController extends AbstractController
                     $em->remove($visit);
                 }
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_visit'));
+                $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_contact'));
             } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_visit'));
+                $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_contact'));
             }
-            return $this->redirectToRoute('work_linked_training_visit_list');
+            return $this->redirectToRoute('work_linked_training_contact_list');
         }
 
-        $title = $translator->trans('title.delete', [], 'wlt_visit');
+        $title = $translator->trans('title.delete', [], 'wlt_contact');
         $breadcrumb = [
             ['fixed' => $title]
         ];
 
-        return $this->render('wlt/visit/delete.html.twig', [
-            'menu_path' => 'work_linked_training_visit_list',
+        return $this->render('wlt/contact/delete.html.twig', [
+            'menu_path' => 'work_linked_training_contact_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'items' => $visits
