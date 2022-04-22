@@ -51,6 +51,7 @@
 {% endblock %}
 
 {% block before_table %}
+    {% if methods | length > 1 %}
     <div class="form-group" id="mfilter_list">
         <div class="custom-control custom-switch custom-control-inline">
             {% set all = not active_methods or (active_methods | length == 1 + methods | length) %}
@@ -69,6 +70,7 @@
             </div>
         {% endfor %}
     </div>
+    {% endif %}
     <form action="{{ path('work_linked_training_contact_operation', {'academicYear': academic_year.id}) }}" method="post">
 {% endblock %}
 
