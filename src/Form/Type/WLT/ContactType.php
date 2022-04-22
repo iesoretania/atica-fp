@@ -86,7 +86,7 @@ class ContactType extends AbstractType
             if (!$teachers) {
                 $teachers = $this->wltTeacherRepository->findByAcademicYear($academicYear);
             }
-            $methods = $this->contactMethodRepository->findByAcademicYear($academicYear);
+            $methods = $this->contactMethodRepository->findEnabledByAcademicYear($academicYear);
         } else {
             $teachers = [];
         }

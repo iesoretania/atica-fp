@@ -68,3 +68,10 @@ ahora sólo se deberá cumplimentar una encuesta por proyecto participado y curs
 contestado más de una encuesta el mismo curso académico sobre el mismo proyecto,
 sólo se mantendrá una de ellas. El resto serán eliminadas. No se puede deshacer
 una vez actualizada la base de datos al nuevo sistema.**
+
+Visitas a empresas de FP dual pasa a ser contactos con empresas
+---------------------------------------------------------------
+Las antiguas visitas a empresas de FP dual se han convertido en contactos con las empresas.
+Por defecto, todos los contactos ya existentes se marcarán como "presencial", pero se puede
+modificar. La lista de tipos de contacto permitidos se configura desde la sección de centro
+educativo.

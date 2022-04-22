@@ -178,12 +178,23 @@ class EduMenu implements MenuBuilderInterface
 
                 $menu2 = new MenuItem();
                 $menu2
+                    ->setName('organization_contact_method')
+                    ->setRouteName('organization_contact_method_list')
+                    ->setCaption('menu.organization.contact_method')
+                    ->setDescription('menu.organization.contact_method.detail')
+                    ->setIcon('broadcast-tower')
+                    ->setPriority(11000);
+
+                $menu1->addChild($menu2);
+
+                $menu2 = new MenuItem();
+                $menu2
                     ->setName('organization_role')
                     ->setRouteName('organization_role')
                     ->setCaption('menu.organization.role')
                     ->setDescription('menu.organization.role.detail')
                     ->setIcon('user-tie')
-                    ->setPriority(11000);
+                    ->setPriority(12000);
 
                 $menu1->addChild($menu2);
 
@@ -194,7 +205,7 @@ class EduMenu implements MenuBuilderInterface
                     ->setCaption('menu.organization.survey')
                     ->setDescription('menu.organization.survey.detail')
                     ->setIcon('chart-pie')
-                    ->setPriority(12000);
+                    ->setPriority(13000);
 
                 $menu1->addChild($menu2);
 
@@ -205,7 +216,7 @@ class EduMenu implements MenuBuilderInterface
                     ->setCaption('menu.organization.report_template')
                     ->setDescription('menu.organization.report_template.detail')
                     ->setIcon('file')
-                    ->setPriority(12500);
+                    ->setPriority(13500);
 
                 $menu1->addChild($menu2);
             }
@@ -217,7 +228,7 @@ class EduMenu implements MenuBuilderInterface
                 ->setCaption('menu.organization.travel_route')
                 ->setDescription('menu.organization.travel_route.detail')
                 ->setIcon('map')
-                ->setPriority(12700);
+                ->setPriority(13700);
 
             $menu1->addChild($menu2);
 
@@ -229,7 +240,7 @@ class EduMenu implements MenuBuilderInterface
                     ->setCaption('menu.organization.import')
                     ->setDescription('menu.organization.import.detail')
                     ->setIcon('download')
-                    ->setPriority(13000);
+                    ->setPriority(14000);
 
                 $menu1->addChild($menu2);
 

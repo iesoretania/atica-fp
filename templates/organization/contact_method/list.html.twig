@@ -1,0 +1,51 @@
+{% trans_default_domain 'edu_contact_method' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('organization_contact_method_new') }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-60"><label><input type="checkbox" id="select"> {{ 'header.description'|trans }}</label></th>
+    <th class="w-40">{{ 'header.enabled'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('organization_contact_method_edit', {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
+                            {% if not item.enabled %}<del>{% endif %}
+                            <a href="{{ url }}">{{ item.description }}</a>
+                            {% if not item.enabled %}</del>{% endif %}
+                        </label>
+                    </td>
+                    <td>
+                        {{ (item.enabled ? 'form.yes' : 'form.no')|trans }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="2">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('organization_contact_method_delete', {'academicYear': academic_year.id}) }}" method="post">
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}

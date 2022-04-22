@@ -25,7 +25,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="App\Repository\Edu\ContactMethodRepository")
  * @ORM\Table(name="edu_contact_method"),
  *     uniqueConstraints={@ORM\UniqueConstraint(columns={"academic_year_id", "description"})}))))
- * @UniqueEntity(fields={"academic_year", "description"}, message="contact_method.unique")
+ * @UniqueEntity(fields={"academicYear", "description"}, message="contact_method.unique")
  */
 class ContactMethod
 {
@@ -50,8 +50,15 @@ class ContactMethod
      */
     private $description;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @var bool
+     */
+    private $enabled;
+
     public function __construct()
     {
+        $this->enabled = true;
     }
 
     public function __toString()
@@ -100,6 +107,24 @@ class ContactMethod
     public function setDescription(string $description): self
     {
         $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     * @return self
+     */
+    public function setEnabled(bool $enabled): self
+    {
+        $this->enabled = $enabled;
         return $this;
     }
 }

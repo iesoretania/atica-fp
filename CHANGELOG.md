@@ -10,6 +10,7 @@ en las distintas versiones de la misma.
 * fix: Corregido un problema al listar convenios de colaboración con ciertos perfiles
 * chore: Renombrar visitas a empresas de FP dual por contacto con empresas
 * feat: Ahora se puede especificar el tipo de contacto con la empresa en la FP dual
+* feat: El centro puede configurar los tipos de contacto permitidos en cada curso académico
 
 5.0.0 (2022-04-20)
 ------------------

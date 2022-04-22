@@ -21,6 +21,7 @@ namespace App\Repository\Edu;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\ContactMethod;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
 
 class ContactMethodRepository extends ServiceEntityRepository
@@ -31,13 +32,44 @@ class ContactMethodRepository extends ServiceEntityRepository
         parent::__construct($registry, ContactMethod::class);
     }
 
-    public function findByAcademicYear(AcademicYear $academicYear)
+    public function findEnabledByAcademicYear(AcademicYear $academicYear)
     {
         return $this->createQueryBuilder('cm')
             ->andWhere('cm.academicYear = :academic_year')
+            ->andWhere('cm.enabled = :enabled')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('enabled', true)
+            ->orderBy('cm.description')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param $items
+     * @param AcademicYear $academicYear
+     * @return ContactMethod[]|Collection
+     */
+    public function findAllInListByIdAndAcademicYear(
+        $items,
+        AcademicYear $academicYear
+    ) {
+        return $this->createQueryBuilder('cm')
+            ->where('cm.id IN (:items)')
+            ->andWhere('cm.academicYear = :academic_year')
+            ->setParameter('items', $items)
             ->setParameter('academic_year', $academicYear)
             ->orderBy('cm.description')
             ->getQuery()
             ->getResult();
+    }
+
+    public function deleteFromList($items)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(ContactMethod::class, 'cm')
+            ->where('cm IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
     }
 }

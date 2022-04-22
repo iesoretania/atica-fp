@@ -1,0 +1,38 @@
+form.academic_year: Curso académico
+form.description: Tipo de contacto
+form.enabled: Disponible
+form.enabled.yes: Puede usarse para registrar nuevos contactos
+form.enabled.no: No puede usarse para registrar nuevos contactos
+form.yes: Sí
+form.no: No
+
+form.save: Guardar cambios
+form.delete: Eliminar los tipos de contacto seleccionados
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nuevo tipo de contacto
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes tipos de contacto? En el caso de que alguna de ellas tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos del tipo de contacto
+title.new: Nuevo tipo de contacto
+title.delete: Eliminar tipos de contacto
+
+title.list: Listado de tipos de contacto
+table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
+table.no_items: No hay tipos de contacto
+table.filter: Filtrar...
+
+header.description: Tipo de contacto
+header.enabled: Puede usarse en nuevos contactos
+header.enabled.yes: Sí
+header.enabled.no: No
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Enseñanzas eliminadas del centro.
+message.delete_error: Ha ocurrido un error al eliminar los tipos de contacto. Asegúrese de que no se han utilizado.
