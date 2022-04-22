@@ -15,8 +15,12 @@ $(document).ready(function() {
     $('[data-toggle="popover"]').popover();
 });
 
-document.querySelector('.custom-file-input').addEventListener('change',function(e){
-    var fileName = e.target.files[0].name;
-    var nextSibling = e.target.nextElementSibling
-    nextSibling.innerText = fileName
-})
+var file = document.querySelector('.custom-file-input');
+
+if (file) {
+    file.addEventListener('change', function (e) {
+        var fileName = e.target.files[0].name;
+        var nextSibling = e.target.nextElementSibling
+        nextSibling.innerText = fileName
+    })
+}

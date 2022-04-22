@@ -51,6 +51,24 @@
 {% endblock %}
 
 {% block before_table %}
+    <div class="form-group" id="mfilter_list">
+        <div class="custom-control custom-switch custom-control-inline">
+            {% set all = not active_methods or (active_methods | length == 1 + methods | length) %}
+            <input type="checkbox" class="custom-control-input" name="mfilterall" value="1" id="all" {% if all %}checked{% endif %}>
+            <label class="custom-control-label" for="all">{{ 'form.all_methods'|trans }}</label>
+        </div>
+        <div class="custom-control custom-switch custom-control-inline">
+            <input type="checkbox" class="custom-control-input" name="mfilter[]" value="0" id="method0" {% if not all and null in active_methods %}checked{% endif %}>
+            <label class="custom-control-label" for="method0">{{ 'form.on-site'|trans }}</label>
+        </div>
+        {% for method in methods %}
+            {% set active = not all and method in active_methods %}
+            <div class="custom-control custom-switch custom-control-inline text-center">
+                <input type="checkbox" class="custom-control-input" name="mfilter[]" value="{{ method.id }}" id="method{{ method.id }}" {% if active %}checked{% endif %}>
+                <label class="custom-control-label" for="method{{ method.id }}">{{ method.description }}</label>
+            </div>
+        {% endfor %}
+    </div>
     <form action="{{ path('work_linked_training_contact_operation', {'academicYear': academic_year.id}) }}" method="post">
 {% endblock %}
 

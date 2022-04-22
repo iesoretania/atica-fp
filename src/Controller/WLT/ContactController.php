@@ -23,6 +23,7 @@ use App\Entity\Person;
 use App\Entity\WLT\Contact;
 use App\Form\Type\WLT\ContactType;
 use App\Repository\Edu\AcademicYearRepository;
+use App\Repository\Edu\ContactMethodRepository;
 use App\Repository\Edu\TeacherRepository;
 use App\Repository\WLT\ContactRepository;
 use App\Repository\WLT\ProjectRepository;
@@ -198,6 +199,7 @@ class ContactController extends AbstractController
         Security $security,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
+        ContactMethodRepository $contactMethodRepository,
         AcademicYear $academicYear = null,
         $page = 1
     ) {
@@ -208,6 +210,19 @@ class ContactController extends AbstractController
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization);
         $allowNew = $this->isGranted(WLTOrganizationVoter::WLT_CREATE_VISIT, $organization);
+
+        $mf = $request->get('mf');
+
+        $methodCollection = [];
+        if (null !== $mf) {
+            $methodIdsCollection = explode(',', $mf);
+            if (is_array($methodIdsCollection)) {
+                $methodCollection = $contactMethodRepository->findAllInListByIdAndAcademicYear($methodIdsCollection, $academicYear);
+            }
+            if (in_array('0', $methodIdsCollection, true)) {
+                $methodCollection[] = null;
+            }
+        }
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -291,6 +306,17 @@ class ContactController extends AbstractController
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear);
 
+        if (count($methodCollection) > 0) {
+            if (in_array(null, $methodCollection, true)) {
+                $queryBuilder->andWhere('v.method IN (:methods) OR v.method IS NULL');
+            } else {
+                $queryBuilder->andWhere('v.method IN (:methods)');
+            }
+
+            $queryBuilder
+                ->setParameter('methods', $methodCollection);
+        }
+
         $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
@@ -303,12 +329,19 @@ class ContactController extends AbstractController
 
         $title = $translator->trans('title.list', [], 'wlt_contact');
 
+        $methods = $contactMethodRepository->findEnabledByAcademicYear($academicYear);
+
+        $activeMethods = [];
+        $activeMethods = array_merge($activeMethods, $methodCollection);
+
         return $this->render('wlt/contact/list.html.twig', [
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
             'domain' => 'wlt_contact',
             'allow_new' => $allowNew,
+            'methods' => $methods,
+            'active_methods' => $activeMethods,
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);

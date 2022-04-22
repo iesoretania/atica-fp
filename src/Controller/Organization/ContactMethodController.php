@@ -26,7 +26,6 @@ use App\Repository\Edu\ContactMethodRepository;
 use App\Security\Edu\AcademicYearVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
-use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -110,6 +109,7 @@ class ContactMethodController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
+        ContactMethodRepository $contactMethodRepository,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
@@ -120,24 +120,8 @@ class ContactMethodController extends AbstractController
 
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('cm')
-            ->from(ContactMethod::class, 'cm')
-            ->orderBy('cm.description');
-
         $q = $request->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('cm.description LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('cm.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
+        $queryBuilder = $contactMethodRepository->getFilteredAndByAcademicYear($academicYear, $q);
 
         $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);

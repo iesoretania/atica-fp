@@ -32,16 +32,26 @@ class ContactMethodRepository extends ServiceEntityRepository
         parent::__construct($registry, ContactMethod::class);
     }
 
-    public function findEnabledByAcademicYear(AcademicYear $academicYear)
+    private function findByAcademicYearAndState(AcademicYear $academicYear, bool $enabled)
     {
         return $this->createQueryBuilder('cm')
             ->andWhere('cm.academicYear = :academic_year')
             ->andWhere('cm.enabled = :enabled')
             ->setParameter('academic_year', $academicYear)
-            ->setParameter('enabled', true)
+            ->setParameter('enabled', $enabled)
             ->orderBy('cm.description')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findEnabledByAcademicYear(AcademicYear $academicYear)
+    {
+        return $this->findByAcademicYearAndState($academicYear, true);
+    }
+
+    public function findDisabledByAcademicYear(AcademicYear $academicYear)
+    {
+        return $this->findByAcademicYearAndState($academicYear, false);
     }
 
     /**
@@ -71,5 +81,23 @@ class ContactMethodRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();
+    }
+
+    public function getFilteredAndByAcademicYear(AcademicYear $academicYear, ?string $q = '') {
+
+        $queryBuilder = $this->createQueryBuilder('cm');
+
+        $queryBuilder
+            ->orderBy('cm.description');
+
+        if ($q) {
+            $queryBuilder
+                ->where('cm.description LIKE :tq')
+                ->setParameter('tq', '%'.$q.'%');
+        }
+
+        return $queryBuilder
+            ->andWhere('cm.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear);
     }
 }

@@ -1,6 +1,22 @@
 const debounce = require('lodash.debounce');
 var last_value_q = "";
 var last_value_f = "";
+var last_value_mf = "";
+
+var state_f = document.getElementById("filter");
+
+var addCallBacks = function () {
+    var mf = document.getElementsByName("mfilter[]");
+    mf.forEach(function (e) { e.addEventListener('change', reload) });
+    var not_selected = document.querySelectorAll('input[name="mfilter[]"]:not(:checked)');
+    var mf_all = document.getElementById('all');
+    if (mf_all) {
+        mf_all.addEventListener('change', function (e) {
+            mf.forEach(function (e2) { e2.checked = false; });
+            reload();
+        })
+    }
+}
 
 function updateTable(url)
 {
@@ -14,6 +30,10 @@ function updateTable(url)
             $('div#table').replaceWith(
                 $(html).find('div#table')
             );
+            $('div#mfilter_list').replaceWith(
+                $(html).find('div#mfilter_list')
+            );
+            addCallBacks();
         },
         error: function () {
             window.location.replace(url);
@@ -21,33 +41,66 @@ function updateTable(url)
     });
 }
 
-var reload = function (filter) {
+var reload = function () {
     var url = window.location.href;
     var q = $('input#search').val();
-    var f = 0;
-    if (filter) {
-        f = $(filter.currentTarget).children().val();
+    var f = '';
+    var mf = '';
+    if (state_f) {
+        f = state_f.children().val();
     }
-    if (q === last_value_q && f === last_value_f) {
+
+    var checkboxes = document.querySelectorAll('input[name="mfilter[]"]:checked');
+    var selectedTags = '';
+
+    checkboxes.forEach(function(e) {
+        if (selectedTags !== '') {
+            selectedTags = selectedTags + ',' + e.value;
+        } else {
+            selectedTags = e.value;
+        }
+    });
+    mf = selectedTags;
+
+    var all = document.getElementById('all');
+    if (all) {
+        var not_selected = document.querySelectorAll('input[name="mfilter[]"]:not(:checked)');
+        console.log(not_selected.length);
+        if (not_selected.length === 0) {
+            all.checked = true;
+            checkboxes.forEach(function(e) {
+                e.checked = false;
+            });
+        }
+    }
+
+    if (q === last_value_q && f === last_value_f && mf === last_value_mf) {
         return;
     }
     last_value_q = q;
     last_value_f = f;
+    last_value_mf = mf;
 
     // quitar parámetros
     url = url.replace(/(\?.*$)/,'');
 
     // codificar parámetros
+    var param = '?';
+
     if (f && f != 0) {
-        url = url + '?f=' + encodeURIComponent(f);
-        if (q) {
-            url = url + '&q=' + encodeURIComponent(q);
-        }
-    } else if (q) {
-        url = url + '?q=' + encodeURIComponent(q);
+        param = param + 'f=' + encodeURIComponent(f);
     }
 
-    updateTable(url);
+    if (mf) {
+        if (param !== '?') param = param + '&';
+        param = param + 'mf=' + encodeURIComponent(mf);
+    }
+
+    if (q) {
+        if (param !== '?') param = param + '&';
+        param = param + 'q=' + encodeURIComponent(q);
+    }
+    updateTable(url + param);
 };
 
 var dynamicFormInit = function () {
@@ -58,8 +111,7 @@ var dynamicFormInit = function () {
         // quitar parámetros
         url = url.replace(/\/([0-9]*?)(&|$)/,'');
         url = url.replace(/\/([0-9]*?)(&|$)/,'');
-        url = url.replace(/(\?|&q=).*?(&|$)/,'');
-        url = url.replace(/(\?f=).*?(&|$)/,'');
+        url = url.replace(/\?.*$/,'');
 
         url = url + '/' + item.val();
         $('input#search').val('');
@@ -79,6 +131,8 @@ var dynamicFormInit = function () {
     if (f) {
         f.parent().on('click', reload);
     }
+
+    addCallBacks();
 
     $("#search-clear").click(function () {
         $('input#search').val('');
