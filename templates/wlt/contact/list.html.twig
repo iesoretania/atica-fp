@@ -51,8 +51,8 @@
 {% endblock %}
 
 {% block before_table %}
-    {% if methods | length > 1 %}
     <div class="form-group" id="mfilter_list">
+    {% if methods | length > 1 %}
         <div class="custom-control custom-switch custom-control-inline">
             {% set all = not active_methods or (active_methods | length == 1 + methods | length) %}
             <input type="checkbox" class="custom-control-input" name="mfilterall" value="1" id="all" {% if all %}checked{% endif %}>
@@ -69,8 +69,8 @@
                 <label class="custom-control-label" for="method{{ method.id }}">{{ method.description }}</label>
             </div>
         {% endfor %}
-    </div>
     {% endif %}
+    </div>
     <form action="{{ path('work_linked_training_contact_operation', {'academicYear': academic_year.id}) }}" method="post">
 {% endblock %}
 
