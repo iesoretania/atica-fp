@@ -82,7 +82,6 @@ class ShiftController extends AbstractController
         if ($q) {
             $queryBuilder
                 ->where('s.name LIKE :tq')
-                ->orWhere('p.name LIKE :tq')
                 ->orWhere('gr.name LIKE :tq')
                 ->orWhere('tr.name LIKE :tq')
                 ->orWhere('g.name LIKE :tq')

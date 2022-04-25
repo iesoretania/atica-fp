@@ -12,6 +12,7 @@ en las distintas versiones de la misma.
 * feat: Ahora se puede especificar el tipo de contacto con la empresa en la FP dual
 * feat: El centro puede configurar los tipos de contacto permitidos en cada curso académico
 * feat: En el listado de contactos se puede filtrar por tipos de contacto
+* fix: Arreglado el filtrado de convocatorias de FCT
 
 5.0.0 (2022-04-20)
 ------------------
