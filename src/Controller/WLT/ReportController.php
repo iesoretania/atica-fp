@@ -23,7 +23,6 @@ use App\Entity\Edu\StudentEnrollment;
 use App\Entity\WLT\Project;
 use App\Repository\AnsweredSurveyQuestionRepository;
 use App\Repository\Edu\AcademicYearRepository;
-use App\Repository\Edu\StudentEnrollmentRepository;
 use App\Repository\Edu\SubjectRepository;
 use App\Repository\SurveyQuestionRepository;
 use App\Repository\WLT\ActivityRealizationRepository;
@@ -32,6 +31,7 @@ use App\Repository\WLT\LearningProgramRepository;
 use App\Repository\WLT\MeetingRepository;
 use App\Repository\WLT\StudentAnsweredSurveyRepository;
 use App\Repository\WLT\WLTAnsweredSurveyRepository;
+use App\Repository\WLT\WLTStudentEnrollmentRepository;
 use App\Repository\WLT\WLTTeacherRepository;
 use App\Repository\WLT\WorkDayRepository;
 use App\Repository\WLT\WorkTutorAnsweredSurveyRepository;
@@ -251,8 +251,8 @@ class ReportController extends AbstractController
     }
 
     /**
-     * @Route("/reuniones/{id}", name="work_linked_training_report_meeting_report",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
+     * @Route("/reuniones/{project}/{academicYear}", name="work_linked_training_report_meeting_report",
+     *     requirements={"project" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
      */
     public function meetingReportAction(
         TranslatorInterface $translator,
@@ -260,33 +260,41 @@ class ReportController extends AbstractController
         UserExtensionService $userExtensionService,
         WLTTeacherRepository $wltTeacherRepository,
         AgreementRepository $agreementRepository,
-        StudentEnrollmentRepository $studentEnrollmentRepository,
+        WLTStudentEnrollmentRepository $wltStudentEnrollmentRepository,
         MeetingRepository $meetingRepository,
-        Project $project
+        Project $project,
+        AcademicYear $academicYear = null
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::REPORT_MEETING, $project);
 
-        $teachers = $wltTeacherRepository->findByProject($project);
+        $teachers = $wltTeacherRepository->findByProjectAndAcademicYear($project, $academicYear);
 
         $teacherStats = [];
 
         foreach ($teachers as $teacher) {
-            $teacherStats[] = [$teacher, $agreementRepository->meetingStatsByTeacher($teacher)];
+            $teacherStats[] = [
+                $teacher,
+                $agreementRepository->meetingStatsByTeacherAndProject($teacher, $project)
+            ];
         }
 
-        $studentEnrollments = $project->getStudentEnrollments();
+        $studentEnrollments = $wltStudentEnrollmentRepository->findByProjectAndAcademicYear(
+            $project,
+            $academicYear
+        );
 
         $studentData = [];
 
         foreach ($studentEnrollments as $studentEnrollment) {
             $studentData[] = [
                 $studentEnrollment,
-                $meetingRepository->findByStudentEnrollmentAndProject($studentEnrollment, $project)
+                $meetingRepository->findByStudentEnrollment($studentEnrollment)
             ];
         }
 
         $html = $engine->render('wlt/report/meeting_report.html.twig', [
             'project' => $project,
+            'academic_year' => $academicYear,
             'teacher_stats' => $teacherStats,
             'student_data' => $studentData
         ]);

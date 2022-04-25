@@ -247,4 +247,27 @@ class WLTTeacherRepository extends ServiceEntityRepository
 
         return $queryBuilder;
     }
+
+    public function findByProjectAndAcademicYear(Project $project, ?AcademicYear $academicYear = null)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->join('t.person', 'p')
+            ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
+            ->join('te.group', 'g')
+            ->join(Project::class, 'pr', 'WITH', 'g MEMBER OF pr.groups')
+            ->where('pr = :project')
+            ->setParameter('project', $project)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName');
+
+        if ($academicYear) {
+            $qb
+                ->andWhere('t.academicYear = :academic_year')
+                ->setParameter('academic_year', $academicYear);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

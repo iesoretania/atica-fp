@@ -318,14 +318,17 @@ class AgreementRepository extends ServiceEntityRepository
         return true;
     }
 
-    public function meetingStatsByTeacher(Teacher $teacher)
+    public function meetingStatsByTeacherAndProject(Teacher $teacher, Project $project)
     {
         return $this->createQueryBuilder('a')
             ->select('a')
             ->addSelect('se')
             ->addSelect('p')
-            ->addSelect(
+            /*->addSelect(
                 'SUM(CASE WHEN DATE(m.dateTime) >= a.startDate AND DATE(m.dateTime) <= a.endDate THEN 1 ELSE 0 END)'
+            )*/
+            ->addSelect(
+                'COUNT(m)'
             )
             ->addSelect('COUNT(m.dateTime)')
             ->join('a.studentEnrollment', 'se')
@@ -333,8 +336,9 @@ class AgreementRepository extends ServiceEntityRepository
             ->leftJoin(Meeting::class, 'm', 'WITH', 'se MEMBER OF m.studentEnrollments')
             ->leftJoin(Teacher::class, 't', 'WITH', 't MEMBER OF m.teachers')
             ->groupBy('a')
-            ->andWhere('t = :teacher')
+            ->andWhere('t = :teacher AND a.project = :project')
             ->setParameter('teacher', $teacher)
+            ->setParameter('project', $project)
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName')
             ->addOrderBy('a.startDate')

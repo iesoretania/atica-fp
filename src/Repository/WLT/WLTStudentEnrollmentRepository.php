@@ -18,6 +18,7 @@
 
 namespace App\Repository\WLT;
 
+use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\WLT\Agreement;
 use App\Entity\WLT\Project;
@@ -109,6 +110,21 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
                 ->setParameter('start_date_time', $startDate)
                 ->setParameter('end_date_time', $endDate);
         }
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByProjectAndAcademicYear(Project $project, ?AcademicYear $academicYear)
+    {
+        $qb = $this->findByProjectsQueryBuilder([$project]);
+
+        if ($academicYear) {
+            $qb
+                ->andWhere('a = :academic_year')
+                ->setParameter('academic_year', $academicYear);
+        }
+
         return $qb
             ->getQuery()
             ->getResult();

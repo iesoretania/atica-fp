@@ -80,10 +80,12 @@
             <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
             <h2>{{ 'title.meeting'|trans }}</h2>
             <table class="data">
+                {% if academic_year %}
                 <tr>
                     <td class="info">{{ 'report.academic_year'|trans }}</td>
                     <td>{{ academic_year }}</td>
                 </tr>
+                {% endif %}
                 <tr>
                     <td class="info">{{ 'report.student'|trans }}</td>
                     <td>{{ data[0] }}</td>
@@ -131,6 +133,9 @@
             {% set first = false %}
             <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
             <h2>{{ 'title.meeting_teacher'|trans }}</h2>
+            {% if academic_year %}
+                <h3>{{ 'header.academic_year'|trans }}: {{ academic_year }}</h3>
+            {% endif %}
             <table class="data">
                 <tr>
                     <td class="info">{{ 'report.educational_tutor'|trans }}</td>
@@ -171,5 +176,10 @@
             </table>
         {% endif %}
     {% endfor %}
+    {% if first %}
+        <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
+        <h2>{{ 'title.meeting_teacher'|trans }}</h2>
+        <h2>{{ 'report.empty_report'|trans }}</h2>
+    {% endif %}
     </body>
 </html>
