@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * chore: No mostrar más de 5 centros educativos en el desplegable de cambio de centro
 * fix: Corregido un problema al listar convenios de colaboración con ciertos perfiles
+* fix: Arreglado el filtrado de convocatorias de FCT
 
 5.0.0 (2022-04-20)
 ------------------
