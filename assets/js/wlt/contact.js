@@ -62,7 +62,7 @@ $(function ()
         $("#contact_projects input:checked").each(function () {
             checked.push($(this).val());
         });
-        data['visit[projects][]'] = checked;
+        data['contact[projects][]'] = checked;
 
         var next = studentEnrollments.next();
         $('#contact_studentEnrollments').replaceWith('<div id="contact_studentEnrollments"><span class="text-info"><i class="fas fa-circle-notch fa-spin fa-3x fa-fw"></i></span></div>');

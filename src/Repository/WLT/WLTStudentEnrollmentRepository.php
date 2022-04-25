@@ -62,7 +62,7 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
         if ($dateTime !== null) {
             $startDate = clone $dateTime;
             $startDate->setTime(0, 0);
-            $endDate = clone $dateTime;
+            $endDate = clone $startDate;
             $endDate->add(new \DateInterval('P1D'));
 
             $qb
