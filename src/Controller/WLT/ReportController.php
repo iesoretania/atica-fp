@@ -311,19 +311,21 @@ class ReportController extends AbstractController
     }
 
     /**
-     * @Route("/evaluacion/{id}", name="work_linked_training_report_grading_report",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
+     * @Route("/evaluacion/{project}/{academicYear}", name="work_linked_training_report_grading_report",
+     *     requirements={"project" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
      */
     public function gradingReportAction(
         TranslatorInterface $translator,
         Environment $engine,
         SubjectRepository $subjectRepository,
         ActivityRealizationRepository $activityRealizationRepository,
-        Project $project
+        WLTStudentEnrollmentRepository $wltStudentEnrollmentRepository,
+        Project $project,
+        AcademicYear $academicYear = null
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::REPORT_GRADING, $project);
 
-        $studentEnrollments = $project->getStudentEnrollments();
+        $studentEnrollments = $wltStudentEnrollmentRepository->findByProjectAndAcademicYear($project, $academicYear);
 
         $studentData = [];
 
@@ -410,14 +412,15 @@ class ReportController extends AbstractController
     }
 
     /**
-     * @Route("/programa_formativo/{id}", name="work_linked_training_report_learning_program_report",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
+     * @Route("/programa_formativo/{project}/{academicYear}", name="work_linked_training_report_learning_program_report",
+     *     requirements={"project" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
      */
     public function learningProgramReportAction(
         TranslatorInterface $translator,
         Environment $engine,
         LearningProgramRepository $wltLearningProgramRepository,
-        Project $project
+        Project $project,
+        AcademicYear $academicYear
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::REPORT_ATTENDANCE, $project);
 

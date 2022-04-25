@@ -160,5 +160,10 @@
             {% endfor %}
         {% endif %}
     {% endfor %}
+    {% if first %}
+        <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
+        <h2>{{ 'title.grading'|trans }}</h2>
+        <h2>{{ 'report.empty_report'|trans }}</h2>
+    {% endif %}
     </body>
 </html>

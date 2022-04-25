@@ -15,6 +15,7 @@ en las distintas versiones de la misma.
 * fix: Arreglado el filtrado de convocatorias de FCT
 * fix: Solucionado informe de reuniones de tutorización de FP dual
 * fix: Solucionado informe de asistencia de FP dual
+* fix: Solucionados los informes de evaluación y de programa formativo de FP dual
 
 5.0.0 (2022-04-20)
 ------------------
