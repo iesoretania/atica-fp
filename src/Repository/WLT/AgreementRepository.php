@@ -346,9 +346,9 @@ class AgreementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function attendanceStatsByProject(Project $project)
+    public function attendanceStatsByProjectAndAcademicYear(Project $project, AcademicYear $academicYear = null)
     {
-        return $this->createQueryBuilder('a')
+        $qb = $this->createQueryBuilder('a')
             ->select('a')
             ->addSelect('w')
             ->addSelect('c')
@@ -369,13 +369,23 @@ class AgreementRepository extends ServiceEntityRepository
             ->join('a.studentEnrollment', 'se')
             ->join('se.person', 'p')
             ->join('se.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 'tr')
             ->groupBy('a')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
             ->addOrderBy('a.startDate')
             ->addOrderBy('c.name')
             ->where('a.project = :project')
-            ->setParameter('project', $project)
+            ->setParameter('project', $project);
+
+        if ($academicYear) {
+            $qb
+                ->andWhere('tr.academicYear = :academic_year')
+                ->setParameter('academic_year', $academicYear);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }

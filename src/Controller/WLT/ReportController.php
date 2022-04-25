@@ -365,21 +365,23 @@ class ReportController extends AbstractController
     }
 
     /**
-     * @Route("/asistencia/{id}", name="work_linked_training_report_attendance_report",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
+     * @Route("/asistencia/{project}/{academicYear}", name="work_linked_training_report_attendance_report",
+     *     requirements={"project" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
      */
     public function attendanceReportAction(
         TranslatorInterface $translator,
         Environment $engine,
         WorkDayRepository $workDayRepository,
         AgreementRepository $agreementRepository,
-        Project $project
+        WLTStudentEnrollmentRepository $wltStudentEnrollmentRepository,
+        Project $project,
+        AcademicYear $academicYear = null
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::REPORT_ATTENDANCE, $project);
 
-        $agreementData = $agreementRepository->attendanceStatsByProject($project);
+        $agreementData = $agreementRepository->attendanceStatsByProjectAndAcademicYear($project, $academicYear);
 
-        $studentEnrollments = $project->getStudentEnrollments();
+        $studentEnrollments = $wltStudentEnrollmentRepository->findByProjectAndAcademicYear($project, $academicYear);
         $studentData = [];
 
         /** @var StudentEnrollment $studentEnrollment */
@@ -391,6 +393,7 @@ class ReportController extends AbstractController
 
         $html = $engine->render('wlt/report/attendance_report.html.twig', [
             'project' => $project,
+            'academic_year' => $academicYear,
             'agreement_data' => $agreementData,
             'student_data' => $studentData
         ]);

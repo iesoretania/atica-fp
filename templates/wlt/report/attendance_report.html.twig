@@ -80,8 +80,12 @@
 </head>
 <body>
     <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
+    {% if academic_year %}
+        <h2>{{ 'header.academic_year'|trans }}: {{ academic_year }}</h2>
+    {% endif %}
     <h2>{{ 'title.attendance'|trans }}</h2>
     <h3>{{ 'title.attendance.hours_summary'|trans }}</h3>
+
     <table class="survey">
         <thead>
         <tr>
@@ -136,6 +140,9 @@
     <pagebreak></pagebreak>
 
     <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
+    {% if academic_year %}
+        <h2>{{ 'header.academic_year'|trans }}: {{ academic_year }}</h2>
+    {% endif %}
     <h2>{{ 'title.attendance'|trans }}</h2>
     <h3>{{ 'title.attendance.workday_summary'|trans }}</h3>
     <table class="survey">
@@ -196,6 +203,12 @@
             <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
             <h2>{{ 'title.attendance'|trans }}</h2>
             <table class="data">
+                {% if academic_year %}
+                <tr>
+                    <td class="info">{{ 'report.academic_year'|trans }}</td>
+                    <td>{{ academic_year }}</td>
+                </tr>
+                {% endif %}
                 <tr>
                     <td class="info">{{ 'report.student'|trans }}</td>
                     <td>{{ data[0] }}</td>
