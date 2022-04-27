@@ -74,6 +74,7 @@ class RequestListener implements EventSubscriberInterface
             $this->token->getToken() &&
             $this->token->getToken()->getUser() instanceof Person &&
             $this->token->getToken()->getUser()->isForcePasswordChange() &&
+            !$this->token->getToken()->getUser()->getExternalCheck() &&
             !$this->accessDecisionManager->decide($this->token->getToken(), ['ROLE_PREVIOUS_ADMIN'])
         ) {
             $route = $event->getRequest()->get('_route');

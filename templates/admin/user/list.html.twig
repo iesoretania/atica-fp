@@ -19,7 +19,8 @@
                     <td>
                         <label><input type="checkbox" name="users[]" value="{{ user.id }}" {% if user.id == app.user.id %} disabled="disabled"{% else %} class="selectable"{% endif %}> <a href="{{ url }}">{{ user.lastName }}, {{ user.firstName }}</a></label>
                         {%- if user.globalAdministrator %} <i class="fas fa-cogs"></i>{% endif -%}
-                        {%- if user.forcePasswordChange %} <i class="fas fa-recycle"></i>{% endif -%}
+                        {%- if user.forcePasswordChange and not user.externalCheck %} <i class="fas fa-recycle"></i>{% endif -%}
+                        {%- if user.externalCheck %} <i class="fas fa-external-link-alt"></i>{% endif -%}
                         {%- if not user.enabled %} <i class="fas fa-ban"></i>{% endif -%}
                     </td>
                     <td>
