@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-5.x.x (xxxx-xx-xx)
+5.x.x (2022-xx-xx)
 ------------------
 * chore: No mostrar más de 5 centros educativos en el desplegable de cambio de centro
 * fix: Corregido un problema al listar convenios de colaboración con ciertos perfiles
@@ -16,6 +16,7 @@ en las distintas versiones de la misma.
 * fix: Solucionado informe de reuniones de tutorización de FP dual
 * fix: Solucionado informe de asistencia de FP dual
 * fix: Solucionados los informes de evaluación y de programa formativo de FP dual
+* fix: A los usuarios que autentican externamente no se les obliga a cambiar la contraseña
 
 5.0.0 (2022-04-20)
 ------------------
