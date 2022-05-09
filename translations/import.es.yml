@@ -14,7 +14,7 @@ message.teacher.password_info: |
 
 message.import_ok: Importación realizada con éxito
 message.import_error: Ha ocurrido un error al realizar la importación
-message.import_error_missing_columns: En el fichero columnas que son necesarias para realizar la importación
+message.import_error_missing_columns: En el fichero faltan columnas que son necesarias para realizar la importación
 message.import_error_query: Han fallado las operaciones en la base de datos durante la importación
 
 report.stats: Estadísticas de la importación
