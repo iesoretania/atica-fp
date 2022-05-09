@@ -33,6 +33,7 @@ use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use App\Utils\CsvImporter;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\QueryException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -256,11 +257,11 @@ class StudentImportController extends AbstractController
                 $entityManager
             );
 
-            if (null !== $stats) {
+            if (!isset($stats['error'])) {
                 $this->addFlash('success', $translator->trans('message.import_ok', [], 'import'));
                 $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
             } else {
-                $this->addFlash('error', $translator->trans('message.import_error', [], 'import'));
+                $this->addFlash('error', $translator->trans('message.import_error' . $stats['error'], [], 'import'));
             }
         }
         $title = $translator->trans('title.student_login.import', [], 'import');
@@ -302,7 +303,7 @@ class StudentImportController extends AbstractController
                 foreach ($data as $studentData) {
                     $totalCount++;
                     if (!isset($studentData['Nombre']) || !isset($studentData['Usuario IdEA']) || !isset($studentData['Activo en Séneca'])) {
-                        return null;
+                        return ['error' => '_missing_columns'];
                     }
 
                     // ignorar estudiantes no activos
@@ -372,8 +373,10 @@ class StudentImportController extends AbstractController
                 }
             }
             $entityManager->flush();
+        } catch (QueryException $e) {
+            return ['error' => '_query'];
         } catch (Exception $e) {
-            return null;
+            return ['error' => ''];
         }
 
         return [

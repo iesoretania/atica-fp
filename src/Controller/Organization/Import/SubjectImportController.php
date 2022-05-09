@@ -40,6 +40,7 @@ use App\Service\UserExtensionService;
 use App\Utils\CsvImporter;
 use App\Utils\ImportParser;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\QueryException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -89,11 +90,11 @@ class SubjectImportController extends AbstractController
                 ]
             );
 
-            if (null !== $stats) {
+            if (!isset($stats['error'])) {
                 $this->addFlash('success', $translator->trans('message.import_ok', [], 'import'));
                 $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
             } else {
-                $this->addFlash('error', $translator->trans('message.import_error', [], 'import'));
+                $this->addFlash('error', $translator->trans('message.import_error' . $stats['error'], [], 'import'));
             }
         }
         $title = $translator->trans('title.subject.import', [], 'import');
@@ -144,8 +145,9 @@ class SubjectImportController extends AbstractController
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $subjectData) {
-                    if (!isset($subjectData['Materia'])) {
-                        return null;
+                    if (!isset($subjectData['Materia']) || !isset($subjectData['Unidad'])
+                        || !isset($subjectData['Profesor/a'])) {
+                        return ['error' => '_missing_columns'];
                     }
                     $subjectName = trim($subjectData['Materia']);
                     $subjectName = preg_replace('/\ +/', ' ', $subjectName, -1);
@@ -275,8 +277,10 @@ class SubjectImportController extends AbstractController
 
                 $entityManager->flush();
             }
+        } catch (QueryException $e) {
+            return ['error' => '_query'];
         } catch (Exception $e) {
-            return null;
+            return ['error' => ''];
         }
 
         // ordenar por enseñanza, nivel y nombre antes de devolverlo

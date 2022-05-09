@@ -27,6 +27,7 @@ use App\Repository\PersonRepository;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use App\Utils\CsvImporter;
+use Doctrine\ORM\Query\QueryException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,11 +73,11 @@ class TeacherImportController extends AbstractController
                 ]
             );
 
-            if (null !== $stats) {
+            if (!isset($stats['error'])) {
                 $this->addFlash('success', $translator->trans('message.import_ok', [], 'import'));
                 $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
             } else {
-                $this->addFlash('error', $translator->trans('message.import_error', [], 'import'));
+                $this->addFlash('error', $translator->trans('message.import_error' . $stats['error'], [], 'import'));
             }
         }
         $title = $translator->trans('title.teacher.import', [], 'import');
@@ -122,7 +123,7 @@ class TeacherImportController extends AbstractController
                 foreach ($data as $personData) {
                     if (!isset($personData['Usuario IdEA']) || !isset($personData['DNI/Pasaporte'])
                         || !isset($personData['Empleado/a'])) {
-                        return null;
+                        return ['error' => '_missing_columns'];
                     }
                     $userName = $personData['Usuario IdEA'];
 
@@ -184,8 +185,10 @@ class TeacherImportController extends AbstractController
                 }
             }
             $em->flush();
+        } catch (QueryException $e) {
+            return ['error' => '_query'];
         } catch (Exception $e) {
-            return null;
+            return ['error' => ''];
         }
 
         return [

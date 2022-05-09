@@ -28,6 +28,7 @@ use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use App\Utils\CsvImporter;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\QueryException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -71,11 +72,11 @@ class DepartmentImportController extends AbstractController
                 ]
             );
 
-            if (null !== $stats) {
+            if (!isset($stats['error'])) {
                 $this->addFlash('success', $translator->trans('message.import_ok', [], 'import'));
                 $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
             } else {
-                $this->addFlash('error', $translator->trans('message.import_error', [], 'import'));
+                $this->addFlash('error', $translator->trans('message.import_error' . $stats['error'], [], 'import'));
             }
         }
         $title = $translator->trans('title.department.import', [], 'import');
@@ -115,8 +116,8 @@ class DepartmentImportController extends AbstractController
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $departmentData) {
-                    if (!isset($departmentData['Descripción'])) {
-                        return null;
+                    if (!isset($departmentData['Descripción']) || !isset($departmentData['Jefe de departamento'])) {
+                        return ['error' => '_missing_columns'];
                     }
                     $departmentName = $departmentData['Descripción'];
 
@@ -151,8 +152,10 @@ class DepartmentImportController extends AbstractController
                 }
             }
             $entityManager->flush();
+        } catch (QueryException $e) {
+            return ['error' => '_query'];
         } catch (Exception $e) {
-            return null;
+            return ['error' => ''];
         }
 
         // ordenar por nombre antes de devolverlo
