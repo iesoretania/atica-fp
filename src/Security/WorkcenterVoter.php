@@ -102,13 +102,13 @@ class WorkcenterVoter extends CachedVoter
             // Si es permiso de acceso, comprobar que es un profesor de ese curso académico
             case self::ACCESS:
                 return null !== $this->teacherRepository
-                        ->findOneByPersonAndAcademicYear($user, $organization->getAcademicYear());
+                        ->findOneByPersonAndAcademicYear($user, $organization->getCurrentAcademicYear());
 
             // Si es jefe de algún departamento de FP o el coordinador de FP dual, permitir gestionar
             case self::MANAGE:
                 // 1) Jefe de departamento
                 if ($this->trainingRepository->countAcademicYearAndDepartmentHead(
-                    $organization->getAcademicYear(),
+                    $organization->getCurrentAcademicYear(),
                     $user
                 ) > 0) {
                     return true;
