@@ -19,6 +19,7 @@ en las distintas versiones de la misma.
 * fix: A los usuarios que autentican externamente no se les obliga a cambiar la contraseña
 * feat: Mostrar errores más descriptivos cuando hay un problema con la importación de ficheros CSV
 * chore: Optimizada consulta de listado de acuerdos de FCT
+* fix: Los responsables de FP dual pueden acceder al resumen de evaluación de todo el alumnado
 
 5.0.0 (2022-04-20)
 ------------------

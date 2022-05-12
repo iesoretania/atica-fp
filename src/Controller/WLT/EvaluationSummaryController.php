@@ -120,11 +120,16 @@ class EvaluationSummaryController extends AbstractController
                     ->setParameter('groups', $groups);
             }
         } else {
-            $queryBuilder
-                ->andWhere('et.person = :person OR aet.person = :person ' .
-                           'OR a.workTutor = :person OR a.additionalWorkTutor = :person ' .
-                           'OR pr.manager = :person OR h.person = :person')
-                ->setParameter('person', $person);
+            $isWltManager = $this->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+            if (!$isWltManager) {
+                $queryBuilder
+                    ->andWhere(
+                        'et.person = :person OR aet.person = :person ' .
+                        'OR a.workTutor = :person OR a.additionalWorkTutor = :person ' .
+                        'OR pr.manager = :person OR h.person = :person'
+                    )
+                    ->setParameter('person', $person);
+            }
         }
 
         $queryBuilder
