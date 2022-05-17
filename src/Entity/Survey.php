@@ -125,7 +125,7 @@ class Survey
     }
 
     /**
-     * @return \DateTime
+     * @return ?\DateTimeInterface
      */
     public function getStartTimestamp()
     {
@@ -133,17 +133,17 @@ class Survey
     }
 
     /**
-     * @param \DateTime $startTimestamp
+     * @param ?\DateTimeInterface $startTimestamp
      * @return Survey
      */
-    public function setStartTimestamp(\DateTimeInterface $startTimestamp)
+    public function setStartTimestamp(?\DateTimeInterface $startTimestamp)
     {
         $this->startTimestamp = $startTimestamp;
         return $this;
     }
 
     /**
-     * @return \DateTime
+     * @return ?\DateTimeInterface
      */
     public function getEndTimestamp()
     {
@@ -151,10 +151,10 @@ class Survey
     }
 
     /**
-     * @param \DateTime $endTimestamp
+     * @param ?\DateTimeInterface $endTimestamp
      * @return Survey
      */
-    public function setEndTimestamp(\DateTimeInterface $endTimestamp)
+    public function setEndTimestamp(?\DateTimeInterface $endTimestamp)
     {
         $this->endTimestamp = $endTimestamp;
         return $this;

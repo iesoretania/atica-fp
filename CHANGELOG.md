@@ -20,6 +20,7 @@ en las distintas versiones de la misma.
 * feat: Mostrar errores más descriptivos cuando hay un problema con la importación de ficheros CSV
 * chore: Optimizada consulta de listado de acuerdos de FCT
 * fix: Los responsables de FP dual pueden acceder al resumen de evaluación de todo el alumnado
+* fix: Solucionado error al modificar encuestas sin fecha de comienzo o finalización
 
 5.0.0 (2022-04-20)
 ------------------
