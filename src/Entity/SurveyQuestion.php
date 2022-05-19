@@ -29,11 +29,15 @@ class SurveyQuestion
     public const FIXED = 'fixed';
     public const TEXTFIELD = 'text';
     public const TEXTAREA = 'textarea';
+    public const RANGE_0_5 = 'range_0_5';
     public const RANGE_1_5 = 'range_1_5';
+    public const RANGE_0_10 = 'range_0_10';
     public const RANGE_1_10 = 'range_1_10';
 
     public const TYPES = [
+        self::RANGE_0_5,
         self::RANGE_1_5,
+        self::RANGE_0_10,
         self::RANGE_1_10,
         self::TEXTFIELD,
         self::TEXTAREA,

@@ -52,7 +52,8 @@ class AnsweredSurveyQuestionType extends AbstractType
             /** @var AnsweredSurveyQuestion $data */
             $data = $event->getData();
 
-            switch ($data->getSurveyQuestion()->getType()) {
+            $type = $data->getSurveyQuestion()->getType();
+            switch ($type) {
                 case SurveyQuestion::TEXTAREA:
                     $form
                         ->add('textValue', TextareaType::class, [
@@ -68,18 +69,35 @@ class AnsweredSurveyQuestionType extends AbstractType
                             'required' => $data->getSurveyQuestion()->isMandatory()
                         ]);
                     break;
+                case SurveyQuestion::RANGE_0_5:
                 case SurveyQuestion::RANGE_1_5:
                 case SurveyQuestion::RANGE_1_10:
-                    $itemCount = $data->getSurveyQuestion()->getType() === SurveyQuestion::RANGE_1_5 ? 5 : 10;
+                    if ($type === SurveyQuestion::RANGE_1_5) {
+                        $min = 1;
+                        $max = 5;
+                    } elseif ($type === SurveyQuestion::RANGE_1_10) {
+                        $min = 1;
+                        $max = 10;
+                    } elseif ($type === SurveyQuestion::RANGE_0_5) {
+                        $min = 0;
+                        $max = 5;
+                    } else {
+                        // RANGE_0_10
+                        $min = 0;
+                        $max = 10;
+                    }
+                $itemCount = $type === SurveyQuestion::RANGE_1_5 ? 5 : 10;
                     $items = explode(';', $data->getSurveyQuestion()->getItems());
 
                     $choices = [];
-                    for ($i = 1; $i <= $itemCount; $i++) {
-                        if (isset($items[$i - 1]) && $items[$i - 1] !== null && $items[$i - 1] !== '') {
-                            $choices[trim($items[$i - 1])] = $i;
+                    $count = 0;
+                    for ($i = $min; $i <= $max; $i++) {
+                        if (isset($items[$count]) && $items[$count] !== '') {
+                            $choices[trim($items[$count])] = $i;
                         } else {
                             $choices[$i] = $i;
                         }
+                        $count++;
                     }
 
                     $form

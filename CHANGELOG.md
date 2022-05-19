@@ -22,6 +22,7 @@ en las distintas versiones de la misma.
 * fix: Los responsables de FP dual pueden acceder al resumen de evaluación de todo el alumnado
 * fix: Solucionado error al modificar encuestas sin fecha de comienzo o finalización
 * feat: Permitir añadir información adicional al evaluar el desempeño de un estudiante de dual
+* feat: Incluir más tipos de preguntas en las encuestas (números del 0-5 y 0-10)
 
 5.0.0 (2022-04-20)
 ------------------

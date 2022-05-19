@@ -257,7 +257,6 @@ class ReportController extends AbstractController
     public function meetingReportAction(
         TranslatorInterface $translator,
         Environment $engine,
-        UserExtensionService $userExtensionService,
         WLTTeacherRepository $wltTeacherRepository,
         AgreementRepository $agreementRepository,
         WLTStudentEnrollmentRepository $wltStudentEnrollmentRepository,

@@ -47,6 +47,8 @@ table.mandatory.no: No
 
 type.text: Línea de texto
 type.textarea: Texto de varias líneas
+type.range_0_5: Número del 0 al 5
+type.range_0_10: Número del 0 al 10
 type.range_1_5: Número del 1 al 5
 type.range_1_10: Número del 1 al 10
 type.fixed: Texto fijo (sin respuesta)
