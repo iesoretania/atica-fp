@@ -1,0 +1,176 @@
+{% trans_default_domain 'wlt_contact' %}
+<html>
+<head>
+    <title>{{ 'title.educational_tutor_report'|trans }} - {{ teacher }}</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        table {
+            font-family: dejavusanscondensed, sans-serif;
+            border-style: solid;
+            border-width: 1px;
+            border-collapse: collapse;
+        }
+
+        table td {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        table th {
+            border-style: solid;
+            border-width: 1px;
+        }
+        table.data {
+            width: 100%;
+        }
+
+        table.data td {
+            padding: 0.3em;
+        }
+
+        table.data td.info {
+            font-family: dejavusanscondensed, sans-serif;
+            font-weight: bold;
+            text-align: right;
+            background-color: #ddd;
+        }
+
+        table.survey {
+            margin-top: 1em;
+            width: 100%;
+        }
+
+        table.survey td {
+            padding: 0.3em;
+        }
+
+        table.survey th {
+            background-color: #cccccc;
+            padding: 0.3em;
+        }
+
+        table.survey {
+            font-size: 80%;
+        }
+
+        table.survey tfoot th {
+            font-size: 120%;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ app_name }} - {{ 'title.educational_tutor_report'|trans }} - {{ teacher }}</h1>
+    <h2>{{ 'title.summary'|trans }}</h2>
+    <table class="survey">
+        <thead>
+        <tr>
+            <th width="12%">{{ 'header.datetime'|trans }}</th>
+            <th width="13%">{{ 'header.method'|trans }}</th>
+            <th width="25%">{{ 'header.workcenter'|trans }}</th>
+            <th width="25%">{{ 'header.projects'|trans }}</th>
+            <th width="25%">{{ 'header.student_enrollments'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for contact in contacts %}
+            <tr>
+                <td>{{ contact.dateTime | date('format.datetime'|trans({}, 'general')) }}</td>
+                <td>{{ contact.method | default('form.on-site' |trans) }}</td>
+                <td>{{ contact.workcenter }}</td>
+                <td>{{ contact.projects|join('\n')|nl2br }}</td>
+                <td>{{ contact.studentEnrollments|join('\n')|nl2br }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p></p>
+    <h2>{{ 'title.contact_methods'|trans }}</h2>
+    <table class="survey">
+        <thead>
+        <tr>
+            <th width="25%">{{ 'header.method'|trans }}</th>
+            <th width="25%">{{ 'header.count'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set total = 0 %}
+        {% for contact_stat in contact_stats %}
+            <tr>
+                <td>{{ contact_stat[0] }}</td>
+                <td>{{ contact_stat[1] }}</td>
+                {% set total = total + contact_stat[1] %}
+            </tr>
+        {% endfor %}
+        <tr>
+            <td>{{ 'form.on-site'|trans }}</td>
+            <td>{{ contacts|length - total }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <pagebreak />
+    <h2>{{ 'title.details'|trans }}</h2>
+    {% for contact in contacts %}
+    <table class="data">
+        <tr>
+            <td class="info">{{ 'header.datetime'|trans }}</td>
+            <td>{{ contact.dateTime | date('format.datetime'|trans({}, 'general')) }}</td>
+        </tr>
+        <tr>
+            <td class="info">{{ 'header.method'|trans }}</td>
+            <td>{{ contact.method | default('form.on-site'|trans) }}</td>
+        </tr>
+        {% if contact.workcenter %}
+        <tr>
+            <td class="info">{{ 'header.workcenter'|trans }}</td>
+            <td>{{ contact.workcenter }}</td>
+        </tr>
+        {% endif %}
+        {% if contact.projects|length > 0 %}
+            <tr>
+                <td class="info" rowspan="{{ contact.projects|length }}">{{ 'header.projects'|trans }}</td>
+            {% for project in contact.projects %}
+                {% if not loop.first %}
+                    <tr>
+                {% endif %}
+                <td>{{ project }}</td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+        {% if contact.studentEnrollments|length > 0 %}
+            <tr>
+                <td class="info" rowspan="{{ contact.studentEnrollments|length }}">{{ 'header.student_enrollments'|trans }}</td>
+            {% for student_enrollment in contact.studentEnrollments %}
+                {% if not loop.first %}
+                    <tr>
+                {% endif %}
+                <td>{{ student_enrollment }}</td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+        {% if contact.detail %}
+            <tr>
+                <td class="info" style="text-align: center" colspan="2">{{ 'header.details'|trans }}</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    {{ contact.detail | nl2br }}
+                </td>
+            </tr>
+        {% endif %}
+    </table>
+    <p></p>
+    {% endfor %}
+</body>
+</html>

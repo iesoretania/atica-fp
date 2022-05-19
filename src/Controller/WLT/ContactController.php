@@ -18,7 +18,9 @@
 
 namespace App\Controller\WLT;
 
+use _PHPStan_8862d57cc\Symfony\Component\Finder\Exception\AccessDeniedException;
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Teacher;
 use App\Entity\Person;
 use App\Entity\WLT\Contact;
 use App\Form\Model\WLT\ContactEducationalTutorReport;
@@ -45,6 +47,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use TFox\MpdfPortBundle\Service\MpdfService;
+use Twig\Environment;
 
 /**
  * @Route("/dual/contacto")
@@ -219,7 +223,8 @@ class ContactController extends AbstractController
         if (null !== $mf) {
             $methodIdsCollection = explode(',', $mf);
             if (is_array($methodIdsCollection)) {
-                $methodCollection = $contactMethodRepository->findAllInListByIdAndAcademicYear($methodIdsCollection, $academicYear);
+                $methodCollection = $contactMethodRepository
+                    ->findAllInListByIdAndAcademicYear($methodIdsCollection, $academicYear);
             }
             if (in_array('0', $methodIdsCollection, true)) {
                 $methodCollection[] = null;
@@ -402,18 +407,21 @@ class ContactController extends AbstractController
     }
 
     /**
-     * @Route("/informe/seguimiento/{academicYear}", name="work_linked_training_contact_educational_tutor_report_form",
-     *     requirements={"academicYear" = "\d+"}, methods={"GET","POST"})
+     * @Route("/informe/seguimiento/{academicYear}/{page}", name="work_linked_training_contact_educational_tutor_report_list",
+     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
      */
-    public function educationTutorReportFormAction(
+    public function educationTutorReportListAction(
         Request $request,
         UserExtensionService $userExtensionService,
         Security $security,
         TeacherRepository $teacherRepository,
         WLTGroupRepository $wltGroupRepository,
         WLTTeacherRepository $wltTeacherRepository,
+        AcademicYearRepository $academicYearRepository,
+        ContactRepository $contactRepository,
         TranslatorInterface $translator,
-        AcademicYear $academicYear = null
+        AcademicYear $academicYear = null,
+        int $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         if ($academicYear === null) {
@@ -421,8 +429,6 @@ class ContactController extends AbstractController
         }
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization);
-
-        $organization = $userExtensionService->getCurrentOrganization();
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
         $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
@@ -457,19 +463,19 @@ class ContactController extends AbstractController
             $teachers = $wltTeacherRepository->findByGroupsOrEducationalTutor($groups, $academicYear);
         }
 
-        $contactEducationalTutorReport = new ContactEducationalTutorReport();
-        $form = $this->createForm(ContactEducationalTutorReportType::class, $contactEducationalTutorReport, [
-            'teachers' => $teachers
-        ]);
+        $q = $request->get('q');
 
-        $form->handleRequest($request);
+        $queryBuilder = $contactRepository
+            ->getTeacherStatsByIdAndFilterQueryBuilder($teachers, $q);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                return $this->redirectToRoute('work_linked_training_contact_list');
-            } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_contact'));
-            }
+        $adapter = new QueryAdapter($queryBuilder, false);
+        $pager = new Pagerfanta($adapter);
+        try {
+            $pager
+                ->setMaxPerPage($this->getParameter('page.size'))
+                ->setCurrentPage($page);
+        } catch (OutOfRangeCurrentPageException $e) {
+            $pager->setCurrentPage(1);
         }
 
         $title = $translator->trans(
@@ -482,6 +488,116 @@ class ContactController extends AbstractController
             ['fixed' => $title]
         ];
 
+        return $this->render('wlt/contact/educational_tutor_report_list.html.twig', [
+            'menu_path' => 'work_linked_training_contact_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'pager' => $pager,
+            'q' => $q,
+            'domain' => 'wlt_contact',
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
+        ]);
+    }
+
+    /**
+     * @Route("/informe/seguimiento/datos/{teacher}", name="work_linked_training_contact_educational_tutor_report_form",
+     *     requirements={"teacher" = "\d+"}, methods={"GET", "POST"})
+     */
+    public function educationTutorReportFormAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        Security $security,
+        TeacherRepository $teacherRepository,
+        WLTGroupRepository $wltGroupRepository,
+        WLTTeacherRepository $wltTeacherRepository,
+        ProjectRepository $projectRepository,
+        ContactRepository $contactRepository,
+        ContactMethodRepository $contactMethodRepository,
+        TranslatorInterface $translator,
+        Environment $engine,
+        Teacher $teacher
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization);
+
+        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+        $isDepartmentHead = $security->isGranted(EduOrganizationVoter::EDU_DEPARTMENT_HEAD, $organization);
+
+        $academicYear = $teacher->getAcademicYear();
+
+        $groups = [];
+        $currentUserTeacher = null;
+
+        if (!$isManager) {
+            /** @var Person $person */
+            $person = $this->getUser();
+
+            if (!$isWltManager) {
+                // no es administrador ni coordinador de FP:
+                // puede ser jefe de departamento, tutor de grupo o profesor -> ver sólo sus grupos
+                $currentUserTeacher =
+                    $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+
+                if ($currentUserTeacher) {
+                    $groups = $wltGroupRepository->findByAcademicYearAndWLTTeacherPerson($academicYear, $person);
+                }
+            } else {
+                $groups = $wltGroupRepository->findByAcademicYearAndWLTTeacherPerson($academicYear, $person);
+            }
+        } else {
+            $groups = $wltGroupRepository->findByOrganizationAndAcademicYear($organization, $academicYear);
+        }
+        $teachers = [];
+        if (!$isManager && !$isDepartmentHead && $currentUserTeacher) {
+            $teachers = [$currentUserTeacher];
+        } elseif ($groups) {
+            $teachers = $wltTeacherRepository->findByGroupsOrEducationalTutor($groups, $academicYear);
+        }
+
+        if (!in_array($teacher, $teachers, true)) {
+            throw new AccessDeniedException();
+        }
+
+        $contactEducationalTutorReport = new ContactEducationalTutorReport();
+        $contactEducationalTutorReport->setTeacher($teacher);
+        $contactMethods = $contactMethodRepository->findEnabledByAcademicYear($academicYear);
+        if (is_array($contactMethods)) {
+            $contactMethods[] = null;
+        }
+        $contactEducationalTutorReport->setContactMethods($contactMethods);
+        $contactEducationalTutorReport->setProjects($projectRepository->findByEducationalTutor($teacher));
+
+        $form = $this->createForm(ContactEducationalTutorReportType::class, $contactEducationalTutorReport, [
+            'teacher' => $teacher
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                return $this->educationalTutorReportAction(
+                    $translator,
+                    $engine,
+                    $contactRepository,
+                    $contactEducationalTutorReport
+                );
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.report_error', [], 'wlt_contact'));
+            }
+        }
+
+        $title = $translator->trans(
+            'title.educational_tutor_report.brief',
+            [],
+            'wlt_contact'
+        ) . ' - ' . $teacher;
+
+        $breadcrumb = [
+            ['fixed' => $title]
+        ];
+
         return $this->render('wlt/contact/educational_tutor_report_form.html.twig', [
             'menu_path' => 'work_linked_training_contact_list',
             'academic_year' => $academicYear,
@@ -489,5 +605,43 @@ class ContactController extends AbstractController
             'title' => $title,
             'form' => $form->createView()
         ]);
+    }
+
+    public function educationalTutorReportAction(
+        TranslatorInterface $translator,
+        Environment $engine,
+        ContactRepository $contactRepository,
+        ContactEducationalTutorReport $contactEducationalTutorReport
+    ) {
+        $teacher = $contactEducationalTutorReport->getTeacher();
+
+        $contactStats = $contactRepository->getContactMethodStatsByTeacherWorkcenterProjectsAndMethods(
+            $teacher,
+            $contactEducationalTutorReport->getWorkcenter(),
+            $contactEducationalTutorReport->getProjects(),
+            $contactEducationalTutorReport->getContactMethods()
+        );
+
+        $contacts = $contactRepository->findByTeacherWorkcenterProjectsAndMethods(
+            $teacher,
+            $contactEducationalTutorReport->getWorkcenter(),
+            $contactEducationalTutorReport->getProjects(),
+            $contactEducationalTutorReport->getContactMethods()
+        );
+
+        $html = $engine->render('wlt/contact/educational_tutor_report.html.twig', [
+            'teacher' => $teacher,
+            'contacts' => $contacts,
+            'contact_stats' => $contactStats
+        ]);
+
+        $fileName = $translator->trans('title.educational_tutor_report', [], 'wlt_contact')
+            . ' - ' . $teacher . '.pdf';
+
+        $mpdfService = new MpdfService();
+        $response = $mpdfService->generatePdfResponse($html);
+        $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+        return $response;
     }
 }

@@ -77,7 +77,7 @@ class ContactType extends AbstractType
         $teachers = [],
         \DateTimeInterface $dateTime = null
     ) {
-        $workcenters = $this->workcenterRepository->findAll();
+        $workcenters = $this->workcenterRepository->findAllSorted();
         $methods = [];
 
         if ($academicYear &&

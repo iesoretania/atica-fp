@@ -66,4 +66,15 @@ class WorkcenterRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function findAllSorted()
+    {
+        return $this->createQueryBuilder('w')
+            ->join('w.company', 'c')
+            ->orderBy('c.name')
+            ->addOrderBy('w.name')
+            ->addOrderBy('w.city')
+            ->getQuery()
+            ->getResult();
+    }
 }

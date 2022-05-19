@@ -18,14 +18,12 @@
 
 namespace App\Form\Type\WLT;
 
-use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
-use App\Entity\WLT\Project;
 use App\Entity\Workcenter;
 use App\Form\Model\WLT\ContactEducationalTutorReport;
 use App\Repository\Edu\ContactMethodRepository;
+use App\Repository\WLT\ContactRepository;
 use App\Repository\WLT\ProjectRepository;
-use App\Repository\WLT\WLTStudentEnrollmentRepository;
 use App\Repository\WLT\WLTTeacherRepository;
 use App\Repository\WorkcenterRepository;
 use App\Service\UserExtensionService;
@@ -45,15 +43,15 @@ class ContactEducationalTutorReportType extends AbstractType
     private $wltTeacherRepository;
     private $userExtensionService;
     private $projectRepository;
-    private $wltStudentEnrollmentRepository;
     private $contactMethodRepository;
+    private $contactRepository;
     private $translator;
 
     public function __construct(
         WorkcenterRepository $workcenterRepository,
         WLTTeacherRepository $wltTeacherRepository,
         ProjectRepository $projectRepository,
-        WLTStudentEnrollmentRepository $wltStudentEnrollmentRepository,
+        ContactRepository $contactRepository,
         ContactMethodRepository $contactMethodRepository,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator
@@ -62,7 +60,7 @@ class ContactEducationalTutorReportType extends AbstractType
         $this->wltTeacherRepository = $wltTeacherRepository;
         $this->projectRepository = $projectRepository;
         $this->userExtensionService = $userExtensionService;
-        $this->wltStudentEnrollmentRepository = $wltStudentEnrollmentRepository;
+        $this->contactRepository = $contactRepository;
         $this->contactMethodRepository = $contactMethodRepository;
         $this->translator = $translator;
     }
@@ -72,45 +70,28 @@ class ContactEducationalTutorReportType extends AbstractType
      */
     private function addElements(
         FormInterface $form,
-        AcademicYear $academicYear = null,
-        Workcenter $workcenter = null,
-        $selectedProjects = [],
-        $teachers = []
+        Teacher $teacher,
+        Workcenter $workcenter = null
     ) {
-        $workcenters = $this->workcenterRepository->findAll();
-        $methodsChoices = [];
+        $workcenters = $this->contactRepository->findWorkcentersByTeacher($teacher);
 
-        if ($academicYear &&
-            $academicYear->getOrganization() === $this->userExtensionService->getCurrentOrganization()
-        ) {
-            if (!$teachers) {
-                $teachers = $this->wltTeacherRepository->findByAcademicYear($academicYear);
-            }
-            $methods = $this->contactMethodRepository->findEnabledByAcademicYear($academicYear);
-            $methodsChoices = [
-                null,
-            ];
-            foreach ($methods as $method) {
-                $methodsChoices[] = $method;
-            }
-        } else {
-            $teachers = [];
+        $academicYear = $teacher->getAcademicYear();
+        $methods = $this->contactMethodRepository->findEnabledByAcademicYear($academicYear);
+        $methodsChoices = [
+            null,
+        ];
+        foreach ($methods as $method) {
+            $methodsChoices[] = $method;
         }
+        $projects = [null];
         if ($workcenter !== null) {
-            $projects = $this->projectRepository->findByAcademicYearAndWorkcenter($academicYear, $workcenter);
-        } else {
-            $projects = [];
+            $potentialProjects = $this->projectRepository->findByAcademicYearAndWorkcenter($academicYear, $workcenter);
+            foreach ($potentialProjects as $project) {
+                $projects[] = $project;
+            }
         }
-        $canSelectProjects = (is_array($projects) || $projects instanceof \Countable ? count($projects) : 0) > 0;
 
         $form
-            ->add('teacher', EntityType::class, [
-                'label' => 'form.teacher',
-                'class' => Teacher::class,
-                'choices' => $teachers,
-                'placeholder' => 'form.teacher.none',
-                'required' => true
-            ])
             ->add('workcenter', EntityType::class, [
                 'label' => 'form.workcenter',
                 'class' => Workcenter::class,
@@ -118,27 +99,29 @@ class ContactEducationalTutorReportType extends AbstractType
                 'placeholder' => 'form.workcenter.all',
                 'required' => false
             ])
-            ->add('projects', EntityType::class, [
-                'label' => 'form.projects',
-                'class' => Project::class,
+            ->add('projects', ChoiceType::class, [
+                'label' => 'form.projects.to_report',
                 'choices' => $projects,
-                'disabled' => !$canSelectProjects,
-                'expanded' => $canSelectProjects,
-                'mapped' => $canSelectProjects,
-                'multiple' => $canSelectProjects,
-                'placeholder' => 'form.projects.none',
-                'required' => false
+                'choice_translation_domain' => false,
+                'choice_label' => function ($p) {
+                    if ($p === null) {
+                        return $this->translator->trans('form.projects.not_specified', [], 'wlt_contact');
+                    }
+                    return $p->__toString();
+                },
+                'expanded' => true,
+                'multiple' => true,
+                'placeholder' => 'form.projects.all',
+                'required' => true
             ])
             ->add('contactMethods', ChoiceType::class, [
                 'label' => 'form.methods',
-                //'class' => ContactMethod::class,
                 'choices' => $methodsChoices,
                 'choice_translation_domain' => false,
                 'choice_label' => function ($m) {
                     if ($m === null) {
                         return $this->translator->trans('form.method.on-site', [], 'wlt_contact');
                     }
-
                     return $m->getDescription();
                 },
                 'multiple' => true,
@@ -156,18 +139,10 @@ class ContactEducationalTutorReportType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData();
 
-            if ($data->getTeacher()) {
-                $academicYear = $data->getTeacher()->getAcademicYear();
-            } else {
-                $academicYear = $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
-            }
-
             $this->addElements(
                 $form,
-                $academicYear,
-                $data->getWorkcenter(),
-                $data->getProjects(),
-                $options['teachers']
+                $options['teacher'],
+                $data->getWorkcenter()
             );
         });
 
@@ -175,29 +150,17 @@ class ContactEducationalTutorReportType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData();
 
-            if ($data['teacher']) {
-                $academicYear = $this->wltTeacherRepository->find($data['teacher'])->getAcademicYear();
-            } else {
-                $academicYear = $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
-            }
-
             if ($data['workcenter']) {
                 /** @var Workcenter $workcenter */
                 $workcenter = $this->workcenterRepository->find($data['workcenter']);
-                $selectedProjects = isset($data['projects'])
-                    ? $this->projectRepository->findByIds($data['projects'])
-                    : [];
             } else {
                 $workcenter = null;
-                $selectedProjects = [];
             }
 
             $this->addElements(
                 $form,
-                $academicYear,
-                $workcenter,
-                $selectedProjects,
-                $options['teachers']
+                $options['teacher'],
+                $workcenter
             );
         });
     }
@@ -209,7 +172,7 @@ class ContactEducationalTutorReportType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ContactEducationalTutorReport::class,
-            'teachers' => [],
+            'teacher' => null,
             'translation_domain' => 'wlt_contact'
         ]);
     }
