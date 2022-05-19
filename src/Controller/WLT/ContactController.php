@@ -21,6 +21,8 @@ namespace App\Controller\WLT;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Person;
 use App\Entity\WLT\Contact;
+use App\Form\Model\WLT\ContactEducationalTutorReport;
+use App\Form\Type\WLT\ContactEducationalTutorReportType;
 use App\Form\Type\WLT\ContactType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\ContactMethodRepository;
@@ -396,6 +398,96 @@ class ContactController extends AbstractController
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'items' => $visits
+        ]);
+    }
+
+    /**
+     * @Route("/informe/seguimiento/{academicYear}", name="work_linked_training_contact_educational_tutor_report_form",
+     *     requirements={"academicYear" = "\d+"}, methods={"GET","POST"})
+     */
+    public function educationTutorReportFormAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        Security $security,
+        TeacherRepository $teacherRepository,
+        WLTGroupRepository $wltGroupRepository,
+        WLTTeacherRepository $wltTeacherRepository,
+        TranslatorInterface $translator,
+        AcademicYear $academicYear = null
+    ) {
+        $organization = $userExtensionService->getCurrentOrganization();
+        if ($academicYear === null) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
+
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization);
+
+        $organization = $userExtensionService->getCurrentOrganization();
+
+        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isWltManager = $security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+        $isDepartmentHead = $security->isGranted(EduOrganizationVoter::EDU_DEPARTMENT_HEAD, $organization);
+
+        $groups = [];
+        $teacher = null;
+
+        if (!$isManager) {
+            /** @var Person $person */
+            $person = $this->getUser();
+
+            if (!$isWltManager) {
+                // no es administrador ni coordinador de FP:
+                // puede ser jefe de departamento, tutor de grupo o profesor -> ver sólo sus grupos
+                $teacher =
+                    $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+
+                if ($teacher) {
+                    $groups = $wltGroupRepository->findByAcademicYearAndWLTTeacherPerson($academicYear, $person);
+                }
+            } else {
+                $groups = $wltGroupRepository->findByAcademicYearAndWLTTeacherPerson($academicYear, $person);
+            }
+        } else {
+            $groups = $wltGroupRepository->findByOrganizationAndAcademicYear($organization, $academicYear);
+        }
+        $teachers = [];
+        if (!$isManager && !$isDepartmentHead && $teacher) {
+            $teachers = [$teacher];
+        } elseif ($groups) {
+            $teachers = $wltTeacherRepository->findByGroupsOrEducationalTutor($groups, $academicYear);
+        }
+
+        $contactEducationalTutorReport = new ContactEducationalTutorReport();
+        $form = $this->createForm(ContactEducationalTutorReportType::class, $contactEducationalTutorReport, [
+            'teachers' => $teachers
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                return $this->redirectToRoute('work_linked_training_contact_list');
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.error', [], 'wlt_contact'));
+            }
+        }
+
+        $title = $translator->trans(
+            'title.educational_tutor_report',
+            [],
+            'wlt_contact'
+        );
+
+        $breadcrumb = [
+            ['fixed' => $title]
+        ];
+
+        return $this->render('wlt/contact/educational_tutor_report_form.html.twig', [
+            'menu_path' => 'work_linked_training_contact_list',
+            'academic_year' => $academicYear,
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'form' => $form->createView()
         ]);
     }
 }

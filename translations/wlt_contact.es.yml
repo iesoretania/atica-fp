@@ -3,7 +3,8 @@ form.teacher: Docente
 form.teacher.none: Seleccione un docente
 form.workcenter: Centro de trabajo
 form.workcenter.none: Seleccione uno para continuar
-form.method: Tipo de contacto
+form.workcenter.all: Todos los centros de trabajo
+form.methods: Tipos de contacto a incluir
 form.method.on-site: Presencial
 form.projects: Proyectos asociados
 form.projects.none: No hay proyectos asociados al centro de trabajo
@@ -16,7 +17,11 @@ form.on-site: Presencial
 form.save: Guardar cambios
 form.delete: Eliminar los contactos seleccionadas
 form.back: Volver
+form.generate_report: Generar informe
 form.delete_confirm: Confirmar borrado
+
+form.workcenter_contact_report: Informe de centro de trabajo
+form.educational_tutor_contact_report: Informe de responsable de seguimiento
 
 table.new: Registrar contacto
 
@@ -28,6 +33,9 @@ prompt.delete_confirm: |
 title.edit: Datos del contacto
 title.new: Nuevo contacto
 title.delete: Eliminar contactos
+
+title.workcenter_report: Informe de contactos del centro de trabajo
+title.educational_tutor_report: Informe de contactos del responsable laboral
 
 title.list: Listado de contactos
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"

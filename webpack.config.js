@@ -27,6 +27,7 @@ Encore
     .addEntry('edu_travel_route', './assets/js/edu/travel_route.js')
     .addEntry('wlt_agreement', './assets/js/wlt/agreement.js')
     .addEntry('wlt_contact', './assets/js/wlt/contact.js')
+    .addEntry('wlt_contact_educational_tutor_report', './assets/js/wlt/contact_educational_tutor_report.js')
     .addEntry('wlt_meeting', './assets/js/wlt/meeting.js')
     .addEntry('wpt_agreement', './assets/js/wpt/agreement.js')
     .addEntry('wpt_visit', './assets/js/wpt/visit.js')
