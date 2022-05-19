@@ -23,6 +23,7 @@ en las distintas versiones de la misma.
 * fix: Solucionado error al modificar encuestas sin fecha de comienzo o finalización
 * feat: Permitir añadir información adicional al evaluar el desempeño de un estudiante de dual
 * feat: Incluir más tipos de preguntas en las encuestas (números del 0-5 y 0-10)
+* feat: Mostrar el número de convenio de FP dual en el listado del proyecto
 
 5.0.0 (2022-04-20)
 ------------------

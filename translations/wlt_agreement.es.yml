@@ -13,6 +13,7 @@ form.educational_tutor: Reponsable de seguimiento
 form.educational_tutor.none: Seleccione el reponsable de seguimiento
 form.additional_educational_tutor: Reponsable de seguimiento adicional
 form.additional_educational_tutor.none: Opcionalmente seleccione otro docente
+form.internal_code: Número de convenio
 form.start_date: Fecha de comienzo
 form.end_date: Fecha de finalización
 form.default_start_time_1: Hora de inicio, primer tramo
@@ -56,6 +57,7 @@ table.filter: Filtrar...
 filter.all_projects: Todos los proyectos
 
 header.student_enrollment: Estudiante
+header.internal_code: Número de convenio
 header.workcenter: Centro de trabajo
 header.work_tutor: Responsable laboral
 header.educational_tutor: Responsable seguimiento

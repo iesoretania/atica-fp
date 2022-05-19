@@ -151,6 +151,12 @@ class Agreement
      */
     private $workTutorRemarks;
 
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var string
+     */
+    private $internalCode;
+
     public function __construct()
     {
         $this->evaluatedActivityRealizations = new ArrayCollection();
@@ -305,7 +311,7 @@ class Agreement
     }
 
     /**
-     * @param \DateTime $startDate
+     * @param ?\DateTimeInterface $startDate
      * @return Agreement
      */
     public function setStartDate(?\DateTimeInterface $startDate)
@@ -315,7 +321,7 @@ class Agreement
     }
 
     /**
-     * @return \DateTime
+     * @return ?\DateTimeInterface
      */
     public function getEndDate()
     {
@@ -323,7 +329,7 @@ class Agreement
     }
 
     /**
-     * @param ?\DateTime $endDate
+     * @param ?\DateTimeInterface $endDate
      * @return Agreement
      */
     public function setEndDate(?\DateTimeInterface $endDate)
@@ -460,6 +466,24 @@ class Agreement
     public function setWorkTutorRemarks($workTutorRemarks)
     {
         $this->workTutorRemarks = $workTutorRemarks;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInternalCode()
+    {
+        return $this->internalCode;
+    }
+
+    /**
+     * @param string $internalCode
+     * @return Agreement
+     */
+    public function setInternalCode($internalCode)
+    {
+        $this->internalCode = $internalCode;
         return $this;
     }
 }

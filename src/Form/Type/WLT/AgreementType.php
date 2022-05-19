@@ -34,6 +34,7 @@ use App\Repository\WorkcenterRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -115,6 +116,10 @@ class AgreementType extends AbstractType
                 'class' => Teacher::class,
                 'choices' => $teachers,
                 'placeholder' => 'form.additional_educational_tutor.none',
+                'required' => false
+            ])
+            ->add('internalCode', TextType::class, [
+                'label' => 'form.internal_code',
                 'required' => false
             ])
             ->add('company', EntityType::class, [

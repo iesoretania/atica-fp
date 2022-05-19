@@ -6,6 +6,7 @@
 
 {% block table_header %}
     <th><label><input type="checkbox" id="select"> {{ 'header.student_enrollment'|trans }}</label></th>
+    <th>{{ 'header.internal_code'|trans }}</th>
     <th>{{ 'header.workcenter'|trans }}</th>
     <th>{{ 'header.work_tutor'|trans }}</th>
     <th>{{ 'header.educational_tutor'|trans }}</th>
@@ -19,6 +20,9 @@
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="items[]" value="{{ item.id }}"{% if is_granted('WLT_AGREEMENT_MANAGE', item) %} class="selectable"{% else %} disabled="disabled"{% endif %}> <a href="{{ url }}">{{ item.studentEnrollment }}</a></label>
+                    </td>
+                    <td>
+                        {{ item.internalCode }}
                     </td>
                     <td>
                         {{ item.workcenter }}
@@ -37,7 +41,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="6">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="7">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}
