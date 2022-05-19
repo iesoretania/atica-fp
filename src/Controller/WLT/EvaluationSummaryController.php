@@ -26,6 +26,7 @@ use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\SubjectRepository;
 use App\Repository\Edu\TeacherRepository;
 use App\Repository\WLT\ActivityRealizationRepository;
+use App\Repository\WLT\AgreementRepository;
 use App\Repository\WLT\WLTGroupRepository;
 use App\Security\Edu\GroupVoter;
 use App\Security\WLT\WLTOrganizationVoter;
@@ -166,6 +167,7 @@ class EvaluationSummaryController extends AbstractController
         TranslatorInterface $translator,
         SubjectRepository $subjectRepository,
         ActivityRealizationRepository $activityRealizationRepository,
+        AgreementRepository $agreementRepository,
         StudentEnrollment $studentEnrollment
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -199,6 +201,16 @@ class EvaluationSummaryController extends AbstractController
             $report[] = $item;
         }
 
+        // Recopilar los comentarios de las empresas
+        $agreements = $agreementRepository->findByStudentEnrollment($studentEnrollment);
+
+        $reportRemarks = [];
+        foreach ($agreements as $agreement) {
+            if ($agreement->getWorkTutorRemarks()) {
+                $reportRemarks[] = [$agreement->getWorkcenter(), $agreement->getWorkTutorRemarks()];
+            }
+        }
+
         $breadcrumb = [
             ['fixed' => (string) $studentEnrollment]
         ];
@@ -207,7 +219,8 @@ class EvaluationSummaryController extends AbstractController
             'menu_path' => 'work_linked_training_evaluation_summary_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'report' => $report
+            'report' => $report,
+            'report_remarks' => $reportRemarks
         ]);
     }
 }

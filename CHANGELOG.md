@@ -21,6 +21,7 @@ en las distintas versiones de la misma.
 * chore: Optimizada consulta de listado de acuerdos de FCT
 * fix: Los responsables de FP dual pueden acceder al resumen de evaluación de todo el alumnado
 * fix: Solucionado error al modificar encuestas sin fecha de comienzo o finalización
+* feat: Permitir añadir información adicional al evaluar el desempeño de un estudiante de dual
 
 5.0.0 (2022-04-20)
 ------------------

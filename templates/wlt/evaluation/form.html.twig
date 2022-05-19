@@ -30,6 +30,9 @@
         </tr>
     {% endfor %}
     {% if last_activity_id != 0 %}</tbody></table>{% endif %}
+    <h4>{{ 'form.remarks'|trans }}</h4>
+    {{ form_widget(form.workTutorRemarks) }}
+    <hr/>
     {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
     {{ m.link_button(path('work_linked_training_evaluation_list', {'academicYear': agreement.studentEnrollment.group.grade.training.academicYear.id}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ form_end(form) }}

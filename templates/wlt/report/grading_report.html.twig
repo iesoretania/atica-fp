@@ -85,7 +85,6 @@
                 </tr>
             </table>
             {% for subjectData in data[1] %}
-
                 <h3>{{ subjectData[0] }}{% if subjectData[0].code %} - {{ subjectData[0].code }}{% endif %}</h3>
 
                 {% set subject_sum = 0 %}
@@ -158,6 +157,21 @@
                 {% endif %}
             </div>
             {% endfor %}
+            {% if data[2] | default(false) %}
+                <h3>{{ 'title.remarks'|trans }}</h3>
+                <table class="survey">
+                    <tr>
+                        <th width="40%" class="center">{{ 'header.workcenter'|trans }}</th>
+                        <th class="center">{{ 'report.remarks'|trans }}</th>
+                    </tr>
+                    {% for report_remark in data[2] %}
+                        <tr>
+                            <td width="40%">{{ report_remark[0] }}</td>
+                            <td>{{ report_remark[1] | nl2br }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
         {% endif %}
     {% endfor %}
     {% if first %}

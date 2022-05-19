@@ -78,6 +78,21 @@
         </div>
         </div>
     {% endfor %}
+    {% if report_remarks %}
+        <div class="card mb-3">
+            <div class="card-header subject-header"><h3>{{ 'form.remarks'|trans }}</h3></div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    {% for report_remark in report_remarks %}
+                    <tr>
+                        <th class="w-20">{{ report_remark[0] }}</th>
+                        <td>{{ report_remark[1] | nl2br }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    {% endif %}
     <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
 {% endblock %}

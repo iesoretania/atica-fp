@@ -21,6 +21,7 @@ namespace App\Form\Type\WLT;
 use App\Entity\WLT\Agreement;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -36,6 +37,13 @@ class AgreementEvaluationType extends AbstractType
                 'label' => false,
                 'entry_type' => AgreementActivityRealizationType::class,
                 'entry_options' => ['label' => false]
+            ])
+            ->add('workTutorRemarks', TextareaType::class, [
+                'label' => 'form.remarks',
+                'attr' => [
+                    'rows' => 5
+                ],
+                'required' => false
             ]);
     }
 
@@ -46,7 +54,7 @@ class AgreementEvaluationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Agreement::class,
-            'translation_domain' => 'wlt_agreement_activity_realization'
+            'translation_domain' => 'wlt_agreement_activity_realization_grade'
         ]);
     }
 }

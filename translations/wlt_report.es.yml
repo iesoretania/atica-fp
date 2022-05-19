@@ -74,6 +74,7 @@ title.attendance.hours_summary: Estadísticas por convenio (horas)
 title.attendance.workday_summary: Estadísticas por convenio (jornadas)
 
 title.weekly_activities: Ficha semanal de actividades
+title.remarks: Otros comentarios
 
 header.date: Fecha
 header.absence: Asistencia
@@ -94,6 +95,8 @@ report.unjustified_absences: Faltas injustificadas
 report.justified_absences: Faltas justificadas
 
 report.no_agreements: No hay acuerdos
+
+report.remarks: Otros comentarios sobre el estudiante
 
 prompt.no_survey_warning: |
   No se ha definido cuál es la encuesta que tiene que cumplimentarse.

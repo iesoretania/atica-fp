@@ -320,6 +320,7 @@ class ReportController extends AbstractController
         SubjectRepository $subjectRepository,
         ActivityRealizationRepository $activityRealizationRepository,
         WLTStudentEnrollmentRepository $wltStudentEnrollmentRepository,
+        AgreementRepository $agreementRepository,
         Project $project,
         AcademicYear $academicYear = null
     ) {
@@ -347,7 +348,17 @@ class ReportController extends AbstractController
                 $report[] = $item;
             }
 
-            $studentData[] = [$studentEnrollment, $report];
+            // Recopilar los comentarios de las empresas
+            $agreements = $agreementRepository->findByStudentEnrollment($studentEnrollment);
+
+            $reportRemarks = [];
+            foreach ($agreements as $agreement) {
+                if ($agreement->getWorkTutorRemarks()) {
+                    $reportRemarks[] = [$agreement->getWorkcenter(), $agreement->getWorkTutorRemarks()];
+                }
+            }
+
+            $studentData[] = [$studentEnrollment, $report, $reportRemarks];
         }
 
         $html = $engine->render('wlt/report/grading_report.html.twig', [

@@ -145,6 +145,12 @@ class Agreement
      */
     private $workDays;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     * @var string
+     */
+    private $workTutorRemarks;
+
     public function __construct()
     {
         $this->evaluatedActivityRealizations = new ArrayCollection();
@@ -437,5 +443,23 @@ class Agreement
     public function getWorkDays()
     {
         return $this->workDays;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkTutorRemarks()
+    {
+        return $this->workTutorRemarks;
+    }
+
+    /**
+     * @param string $workTutorRemarks
+     * @return Agreement
+     */
+    public function setWorkTutorRemarks($workTutorRemarks)
+    {
+        $this->workTutorRemarks = $workTutorRemarks;
+        return $this;
     }
 }

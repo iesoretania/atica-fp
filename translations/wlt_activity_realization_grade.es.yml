@@ -6,6 +6,7 @@ form.save: Guardar cambios
 form.delete: Eliminar las calificaciones seleccionadas
 form.back: Volver
 form.delete_confirm: Confirmar borrado
+form.remarks: Otros comentarios sobre el estudiante
 
 prompt.delete_confirm: |
   ¿Está seguro de que desea eliminar las siguientes calificaciones? En el caso de que alguna de ellas esté siendo usada, el borrado no tendrá lugar.
