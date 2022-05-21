@@ -446,6 +446,8 @@ class SubjectImportController extends AbstractController
                             ->setDescription($learningOutcomeDescription);
 
                         $learningOutcomeCollection[$subjectName][$learningOutcomeCode] = $learningOutcome;
+                    } else {
+                        $learningOutcome = $learningOutcomeCollection[$subjectName][$learningOutcomeCode];
                     }
 
                     if ($learningOutcome->getId() !== null) {
