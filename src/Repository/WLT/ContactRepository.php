@@ -199,4 +199,32 @@ class ContactRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findWorkcentersByTeacherAndProjects(Teacher $teacher, array $projects)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select('w')
+            ->from(Workcenter::class, 'w')
+            ->join(Contact::class, 'c', 'WITH', 'c.workcenter = w AND c.teacher = :teacher')
+            ->leftJoin('c.projects', 'p')
+            ->join('w.company', 'co')
+            ->setParameter('teacher', $teacher)
+            ->orderBy('co.name')
+            ->addOrderBy('w.name');
+
+        if ($projects !== []) {
+            $noProject = false;
+            if (($key = array_search(null, $projects, true)) !== false) {
+                unset($projects[$key]);
+                $noProject = true;
+            }
+            $qb
+                ->andWhere('p IN (:projects)' . ($noProject ? ' OR p IS NULL' : ''))
+                ->setParameter('projects', $projects);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

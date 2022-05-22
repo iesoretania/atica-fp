@@ -24,9 +24,6 @@ use App\Form\Model\WLT\ContactEducationalTutorReport;
 use App\Repository\Edu\ContactMethodRepository;
 use App\Repository\WLT\ContactRepository;
 use App\Repository\WLT\ProjectRepository;
-use App\Repository\WLT\WLTTeacherRepository;
-use App\Repository\WorkcenterRepository;
-use App\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -39,41 +36,29 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ContactEducationalTutorReportType extends AbstractType
 {
-    private $workcenterRepository;
-    private $wltTeacherRepository;
-    private $userExtensionService;
     private $projectRepository;
     private $contactMethodRepository;
     private $contactRepository;
     private $translator;
 
     public function __construct(
-        WorkcenterRepository $workcenterRepository,
-        WLTTeacherRepository $wltTeacherRepository,
         ProjectRepository $projectRepository,
         ContactRepository $contactRepository,
         ContactMethodRepository $contactMethodRepository,
-        UserExtensionService $userExtensionService,
         TranslatorInterface $translator
     ) {
-        $this->workcenterRepository = $workcenterRepository;
-        $this->wltTeacherRepository = $wltTeacherRepository;
         $this->projectRepository = $projectRepository;
-        $this->userExtensionService = $userExtensionService;
         $this->contactRepository = $contactRepository;
         $this->contactMethodRepository = $contactMethodRepository;
         $this->translator = $translator;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $dateTime
-     */
     private function addElements(
         FormInterface $form,
         Teacher $teacher,
-        Workcenter $workcenter = null
+        array $selectedProjects = []
     ) {
-        $workcenters = $this->contactRepository->findWorkcentersByTeacher($teacher);
+        $workcenters = $this->contactRepository->findWorkcentersByTeacherAndProjects($teacher, $selectedProjects);
 
         $academicYear = $teacher->getAcademicYear();
         $methods = $this->contactMethodRepository->findEnabledByAcademicYear($academicYear);
@@ -83,22 +68,14 @@ class ContactEducationalTutorReportType extends AbstractType
         foreach ($methods as $method) {
             $methodsChoices[] = $method;
         }
+
         $projects = [null];
-        if ($workcenter !== null) {
-            $potentialProjects = $this->projectRepository->findByAcademicYearAndWorkcenter($academicYear, $workcenter);
-            foreach ($potentialProjects as $project) {
-                $projects[] = $project;
-            }
+        $potentialProjects = $this->projectRepository->findByEducationalTutor($teacher);
+        foreach ($potentialProjects as $project) {
+            $projects[] = $project;
         }
 
         $form
-            ->add('workcenter', EntityType::class, [
-                'label' => 'form.workcenter',
-                'class' => Workcenter::class,
-                'choices' => $workcenters,
-                'placeholder' => 'form.workcenter.all',
-                'required' => false
-            ])
             ->add('projects', ChoiceType::class, [
                 'label' => 'form.projects.to_report',
                 'choices' => $projects,
@@ -109,10 +86,23 @@ class ContactEducationalTutorReportType extends AbstractType
                     }
                     return $p->__toString();
                 },
+                'choice_value' => function ($m) {
+                    if ($m === null) {
+                        return 0;
+                    }
+                    return $m->getId();
+                },
                 'expanded' => true,
                 'multiple' => true,
                 'placeholder' => 'form.projects.all',
                 'required' => true
+            ])
+            ->add('workcenter', EntityType::class, [
+                'label' => 'form.workcenter',
+                'class' => Workcenter::class,
+                'choices' => $workcenters,
+                'placeholder' => 'form.workcenter.all',
+                'required' => false
             ])
             ->add('contactMethods', ChoiceType::class, [
                 'label' => 'form.methods',
@@ -123,6 +113,12 @@ class ContactEducationalTutorReportType extends AbstractType
                         return $this->translator->trans('form.method.on-site', [], 'wlt_contact');
                     }
                     return $m->getDescription();
+                },
+                'choice_value' => function ($m) {
+                    if ($m === null) {
+                        return 0;
+                    }
+                    return $m->getId();
                 },
                 'multiple' => true,
                 'expanded' => true,
@@ -142,7 +138,7 @@ class ContactEducationalTutorReportType extends AbstractType
             $this->addElements(
                 $form,
                 $options['teacher'],
-                $data->getWorkcenter()
+                $data->getProjects()
             );
         });
 
@@ -150,17 +146,20 @@ class ContactEducationalTutorReportType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData();
 
-            if ($data['workcenter']) {
-                /** @var Workcenter $workcenter */
-                $workcenter = $this->workcenterRepository->find($data['workcenter']);
+            if (isset($data['projects'])) {
+                $selectedProjects = $this->projectRepository->findByIds($data['projects']);
+                if (in_array('0', $data['projects'], true)) {
+                    array_unshift($selectedProjects, null);
+                }
             } else {
-                $workcenter = null;
+                $selectedProjects = [];
             }
+            dump($data, $selectedProjects);
 
             $this->addElements(
                 $form,
                 $options['teacher'],
-                $workcenter
+                $selectedProjects
             );
         });
     }

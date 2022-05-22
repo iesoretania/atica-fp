@@ -567,7 +567,9 @@ class ContactController extends AbstractController
             $contactMethods[] = null;
         }
         $contactEducationalTutorReport->setContactMethods($contactMethods);
-        $contactEducationalTutorReport->setProjects($projectRepository->findByEducationalTutor($teacher));
+        $projects = $projectRepository->findByEducationalTutor($teacher);
+        array_unshift($projects, null);
+        $contactEducationalTutorReport->setProjects($projects);
 
         $form = $this->createForm(ContactEducationalTutorReportType::class, $contactEducationalTutorReport, [
             'teacher' => $teacher

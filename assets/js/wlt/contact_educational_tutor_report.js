@@ -1,40 +1,40 @@
 $(function ()
 {
-    function workcenterChange()
+    function projectChange()
     {
         var form = $(this).closest('form');
         var data = {};
+        workcenter = $("#contact_educational_tutor_report_workcenter");
 
-        projects = $("#contact_educational_tutor_report_projects");
+        var checked = [];
+        $("#contact_educational_tutor_report_projects input:checked").each(function () {
+            checked.push($(this).val());
+        });
+        data['contact_educational_tutor_report[projects][]'] = checked;
 
-        data[teacher.attr('name')] = teacher.val();
-        data[workcenter.attr('name')] = workcenter.val();
-
-        var next = projects.next();
-        $('#contact_educational_tutor_report_projects').replaceWith('<div id="contact_educational_tutor_report_projects"><span class="text-info"><i class="fas fa-circle-notch fa-spin fa-3x fa-fw"></i></span></div>');
+        var next = workcenter.next();
+        $('#contact_educational_tutor_report_workcenter').replaceWith('<div id="contact_educational_tutor_report_workcenter"><span class="text-info"><i class="fas fa-circle-notch fa-spin fa-3x fa-fw"></i></span></div>');
         next.remove();
         $.ajax({
             url: form.attr('data-ajax'),
             type: form.attr('method'),
             data: data,
             success: function (html) {
-                $('#contact_educational_tutor_report_projects').replaceWith(
-                    $(html).find('#contact_educational_tutor_report_projects')
+                $('#contact_educational_tutor_report_workcenter').replaceWith(
+                    $(html).find('#contact_educational_tutor_report_workcenter')
                 );
-                $('select#contact_educational_tutor_report_projects').select2({
+                $('select#contact_educational_tutor_report_workcenter').select2({
                     theme: "bootstrap",
                     language: 'es'
                 });
             },
             error: function () {
-                $('#contact_educational_tutor_report_projects').replaceWith('<div id="contact_educational_tutor_report_projects"><span class="text-danger"><i class="fas fa-times-circle fa-3x"></i></span></div>');
+                $('#contact_educational_tutor_report_workcenter').replaceWith('<div id="contact_educational_tutor_report_workcenter"><span class="text-danger"><i class="fas fa-times-circle fa-3x"></i></span></div>');
             }
         });
     }
 
-    var teacher = $("#contact_educational_tutor_report_teacher");
-    var workcenter = $("#contact_educational_tutor_report_workcenter");
     var projects = $("#contact_educational_tutor_report_projects");
 
-    workcenter.change(workcenterChange);
+    projects.change(projectChange);
 });
