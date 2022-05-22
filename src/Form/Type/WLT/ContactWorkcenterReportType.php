@@ -141,8 +141,6 @@ class ContactWorkcenterReportType extends AbstractType
             } else {
                 $selectedProjects = [];
             }
-            dump($data, $selectedProjects);
-
             $this->addElements(
                 $form,
                 $options['workcenter'],

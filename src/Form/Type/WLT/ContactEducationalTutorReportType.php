@@ -154,8 +154,6 @@ class ContactEducationalTutorReportType extends AbstractType
             } else {
                 $selectedProjects = [];
             }
-            dump($data, $selectedProjects);
-
             $this->addElements(
                 $form,
                 $options['teacher'],
