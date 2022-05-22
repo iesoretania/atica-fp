@@ -31,10 +31,10 @@ use App\Repository\WLT\WLTStudentEnrollmentRepository;
 use App\Repository\WLT\WLTTeacherRepository;
 use App\Repository\WorkcenterRepository;
 use App\Service\UserExtensionService;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -160,7 +160,7 @@ class ContactType extends AbstractType
                 'placeholder' => 'form.student_enrollments.none',
                 'required' => false
             ])
-            ->add('detail', TextareaType::class, [
+            ->add('detail', CKEditorType::class, [
                 'label' => 'form.detail',
                 'required' => false,
                 'attr' => ['rows' => 10]
