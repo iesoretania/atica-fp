@@ -27,6 +27,7 @@ en las distintas versiones de la misma.
 * feat: Generación de un informe de contactos para responsables de seguimiento de FP dual
 * feat: Mejorado el flujo de trabajo del informe de contactos de responsables de seguimiento
 * feat: Generación de un informe de contactos para centros de trabajo de la FP dual
+* fix: Solucionado un problema potencial con la apertura de informes en pestañas nuevas
 
 5.0.0 (2022-04-20)
 ------------------

@@ -147,7 +147,11 @@ var dynamicFormInit = function () {
         $("section#exchange")
             .on("click", ".clickable-row", function (ev) {
                 if (ev.target.type !== "checkbox") {
-                    window.document.location = $(this).data("href");
+                    if ($(this).data("target")) {
+                        window.open($(this).data("href"), $(this).data("target")) || window.location.assign($(this).data("href"));
+                    } else {
+                        window.location.assign($(this).data("href"));
+                    }
                 }
             })
             .on("click", ".clickable-row input[type='checkbox']", updateButton)
