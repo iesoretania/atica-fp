@@ -22,7 +22,6 @@ use App\Entity\Edu\AcademicYear;
 use App\Entity\Workcenter;
 use App\Form\Model\WLT\ContactWorkcenterReport;
 use App\Repository\Edu\ContactMethodRepository;
-use App\Repository\WLT\ContactRepository;
 use App\Repository\WLT\ProjectRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -41,7 +40,6 @@ class ContactWorkcenterReportType extends AbstractType
 
     public function __construct(
         ProjectRepository $projectRepository,
-        ContactRepository $contactRepository,
         ContactMethodRepository $contactMethodRepository,
         TranslatorInterface $translator
     ) {
@@ -120,7 +118,6 @@ class ContactWorkcenterReportType extends AbstractType
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
-            $data = $event->getData();
 
             $this->addElements(
                 $form,
@@ -131,16 +128,7 @@ class ContactWorkcenterReportType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
-            $data = $event->getData();
 
-            if (isset($data['projects'])) {
-                $selectedProjects = $this->projectRepository->findByIds($data['projects']);
-                if (in_array('0', $data['projects'], true)) {
-                    array_unshift($selectedProjects, null);
-                }
-            } else {
-                $selectedProjects = [];
-            }
             $this->addElements(
                 $form,
                 $options['workcenter'],
