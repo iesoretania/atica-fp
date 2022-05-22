@@ -17,7 +17,7 @@
         {% set url = path('work_linked_training_evaluation_summary_report', {'id': item[0].id}) %}
         <tr class="clickable-row" data-href="{{ url }}">
             <td>
-                <a href="{{ url }}" href="_blank">{{ item[0] }}</a>
+                <a href="{{ url }}" target="_blank">{{ item[0] }}</a>
             </td>
             <td>{{ item[0].group.grade.training }}</td>
             <td>
