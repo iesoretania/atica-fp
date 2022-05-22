@@ -1,0 +1,45 @@
+{% trans_default_domain 'wlt_contact' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th>{{ 'header.teacher'|trans }}</th>
+    <th>{{ 'header.on_site_count'|trans }}</th>
+    <th>{{ 'header.other_count'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+    {% for item in pager %}
+        {% set url = path('work_linked_training_contact_workcenter_report_form', {'workcenter': item[0].id, 'academicYear': academic_year.id }) %}
+        <tr class="clickable-row" data-href="{{ url }}">
+            <td>
+                <a href="{{ url }}">{{ item[0] }}</a>
+            </td>
+            <td>
+                {{ item[1] - item[2] }}
+            </td>
+            <td>
+                {{ item[2] }}
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="3">{{ 'table.no_items'|trans }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}

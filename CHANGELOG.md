@@ -26,6 +26,7 @@ en las distintas versiones de la misma.
 * feat: Mostrar el número de convenio de FP dual en el listado del proyecto
 * feat: Generación de un informe de contactos para responsables de seguimiento de FP dual
 * feat: Mejorado el flujo de trabajo del informe de contactos de responsables de seguimiento
+* feat: Generación de un informe de contactos para centros de trabajo de la FP dual
 
 5.0.0 (2022-04-20)
 ------------------

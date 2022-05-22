@@ -83,6 +83,6 @@
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
         {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
         {{ m.link_button(path('work_linked_training_contact_educational_tutor_report_list'), 'book-reader', 'btn-info', 'form.educational_tutor_contact_report'|trans) }}
-        {#{ m.link_button(path('work_linked_training_contact_educational_tutor_report_list'), 'book-open', 'btn-info', 'form.workcenter_contact_report'|trans) }#}
+        {{ m.link_button(path('work_linked_training_contact_workcenter_report_list'), 'book-open', 'btn-info', 'form.workcenter_contact_report'|trans) }}
     </form>
 {% endblock %}

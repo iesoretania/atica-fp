@@ -39,6 +39,7 @@ title.delete: Eliminar contactos
 
 title.workcenter_report: Informe de contactos del centro de trabajo
 title.educational_tutor_report: Informe de contactos del responsable laboral
+title.workcenter_report.brief: Informe de centro de trabajo
 title.educational_tutor_report.brief: Informe de contactos
 title.summary: Resumen de contactos
 title.details: Detalle de contactos
