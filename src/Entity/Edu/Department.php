@@ -111,7 +111,7 @@ class Department
     }
 
     /**
-     * @return Teacher
+     * @return ?Teacher
      */
     public function getHead()
     {

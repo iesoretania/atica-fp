@@ -1,0 +1,86 @@
+{% trans_default_domain 'wpt_survey' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th>{{ 'header.work_tutor'|trans }}</th>
+    <th>{{ 'header.shift'|trans }}</th>
+    <th>{{ 'header.student'|trans }}</th>
+    <th>{{ 'header.workcenter'|trans }}</th>
+    <th>{{ 'header.dates'|trans }}</th>
+    <th>{{ 'header.status'|trans }}</th>
+{% endblock %}
+
+{% macro row(data, additional) %}
+    {% for datum in data %}
+        <tr>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}">
+                    {% set url = path('workplace_training_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].workTutor.id}) %}
+                    <a href="{{ url }}">{{ datum.workTutor }}</a>
+                    {% if datum.additionalWorkTutor %}
+                        {% set url = path('work_linked_training_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].additionalWorkTutor.id}) %}
+                        <br/><a href="{{ url }}">{{ datum.additionalWorkTutor }}</a>
+                    {% endif %}
+                </td>
+                <td rowspan="{{ data|length }}">
+                    {{ datum.agreement.shift }}
+                </td>
+            {% endif %}
+            <td>
+                {{ datum.studentEnrollment }}
+            </td>
+            <td>
+                {{ datum.agreement.workcenter }}
+            </td>
+            <td>
+                {{ datum.agreement.startDate ? datum.agreement.startDate|date('format.date'|trans({}, 'general')) }}
+                {% if datum.agreement.endDate %} - {{ datum.agreement.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
+            </td>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}">
+                    {{ (additional ? 'table.answered.yes' : 'table.answered.no')|trans }} {{ additional > 1 ? '(x' ~ additional ~ ')' }}
+                </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+{% endmacro %}
+
+{% block table_body %}
+    {% set last_id = 0 %}
+    {% set data = [] %}
+    {% set additional = 0 %}
+    {% for item in pager %}
+        {% if last_id != item[0].workTutor.id  ~ '-' ~ item[0].agreement.shift.id %}
+            {% if last_id != 0 %}{{ _self.row(data, additional) }}{% endif %}
+            {% set last_id = item[0].workTutor.id ~ '-' ~ item[0].agreement.shift.id %}
+            {% set data = [item[0]] %}
+            {% set additional = item[1] %}
+        {% else %}
+            {% set data = data|merge([item[0]]) %}
+            {% set additional = additional + item[1] %}
+        {% endif %}
+    {% else %}
+        <tr>
+            <td colspan="6">{{ 'table.no_items'|trans }}</td>
+        </tr>
+    {% endfor %}
+    {% if last_id != 0 %}
+        {{ _self.row(data, additional) }}
+    {% endif %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}

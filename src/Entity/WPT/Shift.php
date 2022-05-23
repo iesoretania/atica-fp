@@ -78,21 +78,21 @@ class Shift
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Survey")
      * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var Survey
+     * @var ?Survey
      */
     private $studentSurvey;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Survey")
      * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var Survey
+     * @var ?Survey
      */
     private $companySurvey;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Survey")
      * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var Survey
+     * @var ?Survey
      */
     private $educationalTutorSurvey;
 
@@ -243,7 +243,7 @@ class Shift
     }
 
     /**
-     * @return Grade
+     * @return ?Grade
      */
     public function getGrade()
     {
@@ -251,7 +251,7 @@ class Shift
     }
 
     /**
-     * @return Survey
+     * @return ?Survey
      */
     public function getStudentSurvey()
     {
@@ -269,7 +269,7 @@ class Shift
     }
 
     /**
-     * @return Survey
+     * @return ?Survey
      */
     public function getCompanySurvey()
     {
@@ -287,7 +287,7 @@ class Shift
     }
 
     /**
-     * @return Survey
+     * @return ?Survey
      */
     public function getEducationalTutorSurvey()
     {

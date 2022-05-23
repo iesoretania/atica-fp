@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+5.x.x (xxxx-xx-xx)
+------------------
+* feat: Implementadas encuestas de la FCT
+
 5.1.0 (2022-05-23)
 ------------------
 * chore: No mostrar más de 5 centros educativos en el desplegable de cambio de centro

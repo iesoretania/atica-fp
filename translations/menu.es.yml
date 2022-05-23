@@ -157,6 +157,18 @@ menu.workplace_training.visit.detail: Registrar las visitas a empresas por parte
 menu.workplace_training.travel_expense: Dietas de desplazamiento
 menu.workplace_training.travel_expense.detail: Registrar los desplazamientos y dietas de los tutores docentes de la FCT
 
+menu.workplace_training.survey: Encuestas
+menu.workplace_training.survey.detail: Encuestas de satisfacción sobre la FCT
+
+menu.workplace_training.survey.student: Satisfacción de alumnado
+menu.workplace_training.survey.student.detail: Cumplimentar la encuesta de satisfacción de estudiante de FCT
+
+menu.workplace_training.survey.company: Satisfacción del tutor laboral
+menu.workplace_training.survey.company.detail: Cumplimentar la encuesta de satisfacción del tutor laboral de FCT
+
+menu.workplace_training.survey.educational_tutor: Satisfacción del tutor docente
+menu.workplace_training.survey.educational_tutor.detail: Cumplimentar la encuesta de satisfacción del tutor docente
+
 menu.company: Empresas colaboradoras
 menu.company.detail: Gestionar las empresas colaboradoras y sus centros de trabajo
 

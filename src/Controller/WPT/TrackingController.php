@@ -251,7 +251,7 @@ class TrackingController extends AbstractController
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'domain' => 'wlt_tracking',
+            'domain' => 'wpt_tracking',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);

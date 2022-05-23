@@ -124,6 +124,68 @@ class WPTMenu implements MenuBuilderInterface
             }
         }
 
+        $menu2 = new MenuItem();
+        $menu2
+            ->setName('workplace_training_survey')
+            ->setRouteName('workplace_training_survey')
+            ->setCaption('menu.workplace_training.survey')
+            ->setDescription('menu.workplace_training.survey.detail')
+            ->setIcon('chart-pie')
+            ->setPriority(10000);
+
+        $menu1->addChild($menu2);
+
+        if ($this->security->isGranted(WPTOrganizationVoter::WPT_MANAGE, $organization) ||
+            $this->security->isGranted(WPTOrganizationVoter::WPT_DEPARTMENT_HEAD, $organization) ||
+            $this->security->isGranted(WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR, $organization) ||
+            $this->security->isGranted(WPTOrganizationVoter::WPT_GROUP_TUTOR, $organization) ||
+            $this->security->isGranted(WPTOrganizationVoter::WPT_STUDENT, $organization)
+        ) {
+            $menu3 = new MenuItem();
+            $menu3
+                ->setName('workplace_training_survey_student')
+                ->setRouteName('workplace_training_survey_student_list')
+                ->setCaption('menu.workplace_training.survey.student')
+                ->setDescription('menu.workplace_training.survey.student.detail')
+                ->setIcon('child')
+                ->setPriority(1000);
+
+            $menu2->addChild($menu3);
+        }
+
+        if ($this->security->isGranted(WPTOrganizationVoter::WPT_MANAGE, $organization) ||
+            $this->security->isGranted(WPTOrganizationVoter::WPT_DEPARTMENT_HEAD, $organization) ||
+            $this->security->isGranted(WPTOrganizationVoter::WPT_GROUP_TUTOR, $organization) ||
+            $this->security->isGranted(WPTOrganizationVoter::WPT_WORK_TUTOR, $organization)
+        ) {
+            $menu3 = new MenuItem();
+            $menu3
+                ->setName('workplace_training_survey_work_tutor')
+                ->setRouteName('workplace_training_survey_work_tutor_list')
+                ->setCaption('menu.workplace_training.survey.company')
+                ->setDescription('menu.workplace_training.survey.company.detail')
+                ->setIcon('industry')
+                ->setPriority(2000);
+
+            $menu2->addChild($menu3);
+        }
+
+        if ($this->security->isGranted(WPTOrganizationVoter::WPT_MANAGE, $organization) ||
+            $this->security->isGranted(WPTOrganizationVoter::WPT_DEPARTMENT_HEAD, $organization) ||
+            $this->security->isGranted(WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR, $organization)
+        ) {
+            $menu3 = new MenuItem();
+            $menu3
+                ->setName('workplace_training_survey_educational_tutor')
+                ->setRouteName('workplace_training_survey_educational_tutor_list')
+                ->setCaption('menu.workplace_training.survey.educational_tutor')
+                ->setDescription('menu.workplace_training.survey.educational_tutor.detail')
+                ->setIcon('user-clock')
+                ->setPriority(5000);
+
+            $menu2->addChild($menu3);
+        }
+
         return $root;
     }
 }

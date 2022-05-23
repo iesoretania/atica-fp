@@ -144,7 +144,8 @@ class ShiftVoter extends CachedVoter
                 foreach ($subject->getAgreements() as $agreement) {
                     foreach ($agreement->getAgreementEnrollments() as $agreementEnrollment) {
                         if ($agreementEnrollment->getEducationalTutor()->getPerson() === $user ||
-                            $agreementEnrollment->getAdditionalEducationalTutor()->getPerson() === $user
+                            ($agreementEnrollment->getAdditionalEducationalTutor() &&
+                            $agreementEnrollment->getAdditionalEducationalTutor()->getPerson() === $user)
                     ) {
                             return true;
                         }

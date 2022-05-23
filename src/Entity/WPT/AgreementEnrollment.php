@@ -232,7 +232,7 @@ class AgreementEnrollment
     }
 
     /**
-     * @return Teacher
+     * @return ?Teacher
      */
     public function getAdditionalEducationalTutor()
     {

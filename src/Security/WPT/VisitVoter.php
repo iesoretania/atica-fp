@@ -18,7 +18,7 @@
 
 namespace App\Security\WPT;
 
-use App\Entity\Edu\Group;
+use App\Entity\Edu\Training;
 use App\Entity\Person;
 use App\Entity\WPT\Agreement;
 use App\Entity\WPT\Visit;
@@ -104,30 +104,36 @@ class VisitVoter extends CachedVoter
             return true;
         }
 
+        $isHead = false;
+
+        // Puede acceder el jefe/a de departamento
+        // de los grupos de los proyectos
+        /** @var Agreement $agreement */
+        foreach ($subject->getAgreements() as $agreement) {
+            /** @var Training $training */
+            $grade = $agreement->getShift()->getGrade();
+            if ($grade) {
+                $training = $grade->getTraining();
+                if ($training->getDepartment() &&
+                    $training->getDepartment()->getHead() &&
+                    $training->getDepartment()->getHead()->getPerson()
+                    === $user) {
+                    $isHead = true;
+                    break;
+                }
+            }
+        }
         switch ($attribute) {
             case self::MANAGE:
                 // El propio docente puede gestionar su visita si es del curso académico actual
-                return $subject->getTeacher()->getPerson() === $user
+                return ($subject->getTeacher()->getPerson() === $user || $isHead)
                     && $subject->getTeacher()->getAcademicYear() === $organization->getCurrentAcademicYear();
             case self::ACCESS:
                 // Puede acceder a los datos de la visita el propio docente
                 if ($subject->getTeacher()->getPerson() === $user) {
                     return true;
                 }
-                // Puede acceder el jefe/a de departamento
-                // de los grupos de los proyectos
-                /** @var Agreement $agreement */
-                foreach ($subject->getAgreements() as $agreement) {
-                    /** @var Group $group */
-                    foreach ($agreement->getShift()->getGrade()->getTraining() as $training) {
-                        if ($training->getDepartment() &&
-                            $training->getDepartment()->getHead() &&
-                            $training->getDepartment()->getHead()->getPerson()
-                                === $user) {
-                            return true;
-                        }
-                    }
-                }
+
                 // Puede acceder el tutor de los estudiantes visitados
                 foreach ($subject->getStudentEnrollments() as $studentEnrollment) {
                     foreach ($studentEnrollment->getGroup()->getTutors() as $tutor) {

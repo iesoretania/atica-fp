@@ -19,6 +19,7 @@
 namespace App\Repository\WPT;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Teacher;
 use App\Entity\Organization;
 use App\Entity\WPT\Shift;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -101,6 +102,20 @@ class ShiftRepository extends ServiceEntityRepository
             )
             ->setParameter('organization', $organization)
             ->setParameter('shift', $shift)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByHeadOfDepartment(Teacher $teacher)
+    {
+        return $this->createQueryBuilder('s')
+            ->join('s.subject', 'su')
+            ->join('su.grade', 'gr')
+            ->join('gr.training', 'tr')
+            ->join('tr.department', 'd')
+            ->where('d.head = :head')
+            ->setParameter('head', $teacher)
+            ->orderBy('s.name')
             ->getQuery()
             ->getResult();
     }

@@ -539,20 +539,23 @@ class AgreementRepository extends ServiceEntityRepository
         // ver siempre las propias
         if ($groups) {
             $queryBuilder
-                ->andWhere('se.group IN (:groups) OR se.person = :person OR wt = :person OR awt = :person')
+                ->andWhere('se.group IN (:groups) OR se.person = :person OR wt = :person OR awt = :person' .
+                           ' OR et.person = :person OR aet.person = :person')
                 ->setParameter('groups', $groups)
                 ->setParameter('person', $person);
         }
         if ($projects) {
             $queryBuilder
-                ->andWhere('pro IN (:projects) OR se.person = :person OR wt = :person OR awt = :person')
+                ->andWhere('pro IN (:projects) OR se.person = :person OR wt = :person OR awt = :person' .
+                           ' OR et.person = :person OR aet.person = :person')
                 ->setParameter('projects', $projects)
                 ->setParameter('person', $person);
         }
 
         if (!$isWltManager && !$isManager && !$projects && !$groups) {
             $queryBuilder
-                ->andWhere('se.person = :person OR wt = :person OR awt = :person')
+                ->andWhere('se.person = :person OR wt = :person OR awt = :person' .
+                           ' OR et.person = :person OR aet.person = :person')
                 ->setParameter('person', $person);
         }
 

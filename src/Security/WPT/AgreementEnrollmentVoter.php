@@ -63,10 +63,10 @@ class AgreementEnrollmentVoter extends CachedVoter
      */
     protected function supports($attribute, $subject)
     {
-
         if (!$subject instanceof AgreementEnrollment) {
             return false;
         }
+
         return in_array($attribute, [
             self::MANAGE,
             self::ACCESS,
@@ -127,8 +127,8 @@ class AgreementEnrollmentVoter extends CachedVoter
         $isWorkTutor = $user === $subject->getWorkTutor() || $user === $subject->getAdditionalWorkTutor();
         $isEducationalTutor =
             ($subject->getEducationalTutor() && $subject->getEducationalTutor()->getPerson() === $person)
-        || ($subject->getAdditionalEducationalTutor() && $subject->getAdditionalEducationalTutor()->getPerson() === $person);
-
+            || ($subject->getAdditionalEducationalTutor() && $subject->getAdditionalEducationalTutor()->getPerson(
+                ) === $person);
         // hay estudiante asociado (puede que no lo haya si es un convenio nuevo)
         if ($subject->getStudentEnrollment()) {
             // Si es jefe de su departamento o coordinador de FP dual, permitir acceder siempre
@@ -179,12 +179,12 @@ class AgreementEnrollmentVoter extends CachedVoter
             case self::ATTENDANCE:
             case self::FILL_REPORT:
                 return $academicYearIsCurrent && ($isDepartmentHead || $isEducationalTutor
-                    || $isWorkTutor || $isGroupTutor);
+                        || $isWorkTutor || $isGroupTutor);
 
             // Si es permiso para bloquear/desbloquear jornadas, el tutor de grupo
             case self::LOCK:
                 return $academicYearIsCurrent && ($isDepartmentHead || $isEducationalTutor
-                    || $isGroupTutor);
+                        || $isGroupTutor);
 
             case self::VIEW_STUDENT_SURVEY:
                 return $isDepartmentHead || $isEducationalTutor || $isStudent || $isGroupTutor;

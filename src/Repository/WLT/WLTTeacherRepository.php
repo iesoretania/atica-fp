@@ -27,15 +27,15 @@ use App\Entity\Person;
 use App\Entity\WLT\Agreement;
 use App\Entity\WLT\EducationalTutorAnsweredSurvey;
 use App\Entity\WLT\Project;
+use App\Repository\Edu\TeacherRepository;
 use App\Security\OrganizationVoter;
 use App\Security\WLT\WLTOrganizationVoter;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Security;
 
-class WLTTeacherRepository extends ServiceEntityRepository
+class WLTTeacherRepository extends TeacherRepository
 {
     private $security;
 
@@ -44,11 +44,11 @@ class WLTTeacherRepository extends ServiceEntityRepository
     public function __construct(
         ManagerRegistry $registry,
         Security $security,
-        ProjectRepository $projectRepository
+        ProjectRepository $shiftRepository
     ) {
-        parent::__construct($registry, Teacher::class);
+        parent::__construct($registry);
         $this->security = $security;
-        $this->projectRepository = $projectRepository;
+        $this->projectRepository = $shiftRepository;
     }
 
     public function findByAcademicYear(AcademicYear $academicYear)
