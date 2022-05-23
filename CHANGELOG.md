@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-5.x.x (2022-xx-xx)
+5.1.0 (2022-05-23)
 ------------------
 * chore: No mostrar más de 5 centros educativos en el desplegable de cambio de centro
 * fix: Corregido un problema al listar convenios de colaboración con ciertos perfiles
