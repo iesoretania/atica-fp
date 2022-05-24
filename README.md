@@ -14,6 +14,8 @@ Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos comp
 - PHP 7.2.24 o superior.
 - Servidor web Apache2 (podría funcionar con nginx, pero no se ha probado aún).
 - Servidor de base de datos MySQL 5.7 o superior, o bien algún derivado (como MariaDB, Percona, etc).
+  * Atención: Con MySQL 8.0.20 o superior, es necesario aumentar el parámetro `sort_buffer_size` en
+    la sección `[mysqld]`. Con 1M parece funcionar bien.
 - PHP [Composer].
 - [Node.js] ≥12.
 
