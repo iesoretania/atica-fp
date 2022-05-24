@@ -58,7 +58,7 @@ class WPTMenu implements MenuBuilderInterface
 
             $root[] = $menu1;
 
-            if ($this->security->isGranted(WPTOrganizationVoter::WPT_MANAGE, $organization)) {
+            if ($this->security->isGranted(WPTOrganizationVoter::WPT_MANAGER, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('workplace_training_shift')
@@ -131,11 +131,11 @@ class WPTMenu implements MenuBuilderInterface
             ->setCaption('menu.workplace_training.survey')
             ->setDescription('menu.workplace_training.survey.detail')
             ->setIcon('chart-pie')
-            ->setPriority(10000);
+            ->setPriority(6000);
 
         $menu1->addChild($menu2);
 
-        if ($this->security->isGranted(WPTOrganizationVoter::WPT_MANAGE, $organization) ||
+        if ($this->security->isGranted(WPTOrganizationVoter::WPT_MANAGER, $organization) ||
             $this->security->isGranted(WPTOrganizationVoter::WPT_DEPARTMENT_HEAD, $organization) ||
             $this->security->isGranted(WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR, $organization) ||
             $this->security->isGranted(WPTOrganizationVoter::WPT_GROUP_TUTOR, $organization) ||
@@ -153,7 +153,7 @@ class WPTMenu implements MenuBuilderInterface
             $menu2->addChild($menu3);
         }
 
-        if ($this->security->isGranted(WPTOrganizationVoter::WPT_MANAGE, $organization) ||
+        if ($this->security->isGranted(WPTOrganizationVoter::WPT_MANAGER, $organization) ||
             $this->security->isGranted(WPTOrganizationVoter::WPT_DEPARTMENT_HEAD, $organization) ||
             $this->security->isGranted(WPTOrganizationVoter::WPT_GROUP_TUTOR, $organization) ||
             $this->security->isGranted(WPTOrganizationVoter::WPT_WORK_TUTOR, $organization)
@@ -170,7 +170,7 @@ class WPTMenu implements MenuBuilderInterface
             $menu2->addChild($menu3);
         }
 
-        if ($this->security->isGranted(WPTOrganizationVoter::WPT_MANAGE, $organization) ||
+        if ($this->security->isGranted(WPTOrganizationVoter::WPT_MANAGER, $organization) ||
             $this->security->isGranted(WPTOrganizationVoter::WPT_DEPARTMENT_HEAD, $organization) ||
             $this->security->isGranted(WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR, $organization)
         ) {
@@ -182,6 +182,53 @@ class WPTMenu implements MenuBuilderInterface
                 ->setDescription('menu.workplace_training.survey.educational_tutor.detail')
                 ->setIcon('user-clock')
                 ->setPriority(5000);
+
+            $menu2->addChild($menu3);
+        }
+
+        if ($this->security->isGranted(WPTOrganizationVoter::WPT_MANAGER, $organization)
+        ) {
+            $menu2 = new MenuItem();
+            $menu2
+                ->setName('workplace_training_report')
+                ->setRouteName('workplace_training_report')
+                ->setCaption('menu.workplace_training.report')
+                ->setDescription('menu.workplace_training.report.detail')
+                ->setIcon('file-alt')
+                ->setPriority(7000);
+
+            $menu1->addChild($menu2);
+
+            $menu3 = new MenuItem();
+            $menu3
+                ->setName('workplace_training_report_student_survey')
+                ->setRouteName('workplace_training_report_student_survey_list')
+                ->setCaption('menu.workplace_training.report.student_survey')
+                ->setDescription('menu.workplace_training.report.student_survey.detail')
+                ->setIcon('chart-pie')
+                ->setPriority(1000);
+
+            $menu2->addChild($menu3);
+
+            $menu3 = new MenuItem();
+            $menu3
+                ->setName('workplace_training_report_work_tutor_survey')
+                ->setRouteName('workplace_training_report_work_tutor_survey_list')
+                ->setCaption('menu.workplace_training.report.company_survey')
+                ->setDescription('menu.workplace_training.report.company_survey.detail')
+                ->setIcon('chart-pie')
+                ->setPriority(2000);
+
+            $menu2->addChild($menu3);
+
+            $menu3 = new MenuItem();
+            $menu3
+                ->setName('workplace_training_report_educational_tutor_survey')
+                ->setRouteName('workplace_training_report_educational_tutor_survey_list')
+                ->setCaption('menu.workplace_training.report.educational_tutor_survey')
+                ->setDescription('menu.workplace_training.report.educational_tutor_survey.detail')
+                ->setIcon('chart-pie')
+                ->setPriority(3000);
 
             $menu2->addChild($menu3);
         }

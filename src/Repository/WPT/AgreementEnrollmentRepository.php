@@ -76,7 +76,7 @@ class AgreementEnrollmentRepository extends ServiceEntityRepository
     ) {
         $organization = $academicYear->getOrganization();
         $isManager = $this->security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWptManager = $this->security->isGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $isWptManager = $this->security->isGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
 
         $queryBuilder = $this->createQueryBuilder('ae')
             ->select('se, shi, a, ae, p, g, wt, w, c')

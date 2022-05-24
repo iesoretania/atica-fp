@@ -62,7 +62,7 @@ class AgreementController extends AbstractController
         Shift $shift
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
 
         $agreement = new Agreement();
         $agreement
@@ -88,7 +88,7 @@ class AgreementController extends AbstractController
         Agreement $agreement
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
         $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
 
@@ -189,7 +189,7 @@ class AgreementController extends AbstractController
         AgreementEnrollment $agreementEnrollment
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $agreement = $agreementEnrollment->getAgreement();
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
         $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
@@ -265,7 +265,7 @@ class AgreementController extends AbstractController
         if ($shift) {
             $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
         } else {
-            $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+            $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         }
 
         if ($shift && $shift->getGrade()->getTraining()->getAcademicYear()->getOrganization() !== $organization) {
@@ -368,7 +368,7 @@ class AgreementController extends AbstractController
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
 
         $items = $request->request->get('items', []);
 

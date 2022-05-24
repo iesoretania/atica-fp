@@ -1,0 +1,8 @@
+{% trans_default_domain 'wpt_report' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    <div class="alert alert-warning">{{ 'prompt.no_survey_warning'|trans|nl2br }}</div>
+
+    {{ m.link_button(menu_path is defined ? path(menu_path) : last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}

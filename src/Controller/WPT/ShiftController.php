@@ -59,7 +59,7 @@ class ShiftController extends AbstractController
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -131,7 +131,7 @@ class ShiftController extends AbstractController
         AcademicYear $academicYear
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
 
         $shift = new Shift();
 
@@ -209,7 +209,7 @@ class ShiftController extends AbstractController
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
 
         $em = $this->getDoctrine()->getManager();
 

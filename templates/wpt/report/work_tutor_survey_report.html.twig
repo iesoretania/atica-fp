@@ -1,4 +1,4 @@
-{% trans_default_domain 'wlt_report' %}
+{% trans_default_domain 'wpt_report' %}
 
 {% macro row(data, additional) %}
     {% for datum in data %}
@@ -22,7 +22,7 @@
 
 <html>
 <head>
-    <title>{{ 'title.company_survey'|trans }} - {{ project.organization }} - {{ project }}</title>
+    <title>{{ 'title.company_survey'|trans }} - {{ organization }} - {{ grade }} - {{ shift }}</title>
     <style>
         body {
             font-family: sans-serif;
@@ -91,8 +91,7 @@
     </style>
 </head>
 <body>
-    <h1>{{ app_name }} - {{ project.organization }}<br>{{ project }}</h1>
-    {% if academic_year %}<h2>{{ 'header.academic_year'|trans }} {{ academic_year }}</h2>{% endif %}
+    <h1>{{ app_name }} - {{ organization }} - {{ grade }} - {{ shift }}</h1>
     <h2>{{ 'title.company_survey'|trans }}</h2>
     <h3>{{ 'title.company_survey.summary'|trans }}</h3>
     <table class="survey">
@@ -110,9 +109,9 @@
         {% set data = [] %}
         {% set additional = 0 %}
         {% for item in work_tutor_stats %}
-            {% if last_id != item[0].workTutor.id ~ '-' ~ item[0].project.id %}
+            {% if last_id != item[0].workTutor.id ~ '-' ~ item[0].agreement.shift.id %}
                 {% if last_id != 0 %}{{ _self.row(data, additional) }}{% endif %}
-                {% set last_id = item[0].workTutor.id ~ '-' ~ item[0].project.id %}
+                {% set last_id = item[0].workTutor.id ~ '-' ~ item[0].agreement.shift.id %}
                 {% set data = [item[0]] %}
                 {% set answered = answered + additional ? 1 : 0 %}
                 {% set additional = item[1] %}
@@ -140,11 +139,11 @@
         {% endif %}
     </table>
 
-    {% include 'wlt/report/survey_stats_partial.html.twig' %}
+    {% include 'wpt/report/survey_stats_partial.html.twig' %}
 
     {% for work_tutor_survey in work_tutor_surveys %}
         <pagebreak></pagebreak>
-        <h1>{{ app_name }} - {{ project.organization }}</h1>
+        <h1>{{ app_name }} - {{ organization }} - {{ grade }} - {{ shift }}</h1>
         <h2>{{ 'title.company_survey'|trans }}</h2>
         <table class="data">
             <tr>
@@ -158,7 +157,7 @@
         </table>
 
         {% set answered_survey = work_tutor_survey.answeredSurvey %}
-        {% include 'wlt/report/answered_survey_responses_partial.html.twig' %}
+        {% include 'wpt/report/answered_survey_responses_partial.html.twig' %}
     {% endfor %}
 </body>
 </html>

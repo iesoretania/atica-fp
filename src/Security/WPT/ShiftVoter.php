@@ -36,6 +36,7 @@ class ShiftVoter extends CachedVoter
     public const FILL_EDUCATIONAL_TUTOR_SURVEY = 'WPT_EDUCATIONAL_TUTOR_SURVEY_MANAGE';
     public const REPORT_STUDENT_SURVEY = 'WPT_STUDENT_SURVEY_REPORT';
     public const REPORT_COMPANY_SURVEY = 'WPT_COMPANY_SURVEY_REPORT';
+    public const REPORT_ORGANIZATION_SURVEY = 'WPT_ORGANIZATION_SURVEY_REPORT';
     public const REPORT_MEETING = 'WPT_MEETING_REPORT';
     public const REPORT_ATTENDANCE = 'WPT_ATTENDANCE_REPORT';
     public const REPORT_GRADING = 'WPT_GRADING_REPORT';
@@ -73,6 +74,7 @@ class ShiftVoter extends CachedVoter
             self::FILL_EDUCATIONAL_TUTOR_SURVEY,
             self::REPORT_STUDENT_SURVEY,
             self::REPORT_COMPANY_SURVEY,
+            self::REPORT_ORGANIZATION_SURVEY,
             self::REPORT_MEETING,
             self::REPORT_ATTENDANCE,
             self::REPORT_GRADING
@@ -127,6 +129,7 @@ class ShiftVoter extends CachedVoter
             case self::ACCESS_MANAGER_SURVEY:
             case self::REPORT_STUDENT_SURVEY:
             case self::REPORT_COMPANY_SURVEY:
+            case self::REPORT_ORGANIZATION_SURVEY:
             case self::REPORT_MEETING:
             case self::REPORT_ATTENDANCE:
             case self::REPORT_GRADING:

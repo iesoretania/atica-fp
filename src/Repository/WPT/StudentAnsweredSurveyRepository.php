@@ -24,7 +24,7 @@ use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Person;
 use App\Entity\Survey;
-use App\Entity\WPT\Agreement;
+use App\Entity\WPT\AgreementEnrollment;
 use App\Entity\WPT\Shift;
 use App\Entity\WPT\StudentAnsweredSurvey;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -111,12 +111,12 @@ class StudentAnsweredSurveyRepository extends ServiceEntityRepository
         return $queryBuilder;
     }
 
-    public function getStatsByShiftAndAcademicYear(Shift $shift, ?AcademicYear $academicYear)
+    public function getStatsByShift(Shift $shift)
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder()
-            ->select('se, shi, a, p, g, wt, w, c')
-            ->from(Agreement::class, 'a')
-            ->distinct()
+            ->select('se, shi, a, ae, p, g, wt, w, c')
+            ->from(AgreementEnrollment::class, 'ae')
+            ->join('ae.agreement', 'a')
             ->join('a.shift', 'shi')
             ->join('ae.studentEnrollment', 'se')
             ->join('se.person', 'p')
@@ -133,18 +133,25 @@ class StudentAnsweredSurveyRepository extends ServiceEntityRepository
             ->setParameter('shift', $shift)
             ->leftJoin(StudentAnsweredSurvey::class, 'sas', 'WITH', 'sas.studentEnrollment = se AND sas.shift = shi')
             ->addSelect('COUNT(sas)')
-            ->addGroupBy('a')
+            ->addGroupBy('ae')
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName')
             ->addOrderBy('p.id')
             ->addOrderBy('shi.name');
 
-        if ($academicYear) {
-            $queryBuilder
-                ->andWhere('t.academicYear = :academic_year')
-                ->setParameter('academic_year', $academicYear);
-        }
-
         return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function findByShift(Shift $shift)
+    {
+        return $this->createQueryBuilder('sas')
+            ->join('sas.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->andWhere('sas.shift = :shift')
+            ->setParameter('shift', $shift)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->getQuery()
+            ->getResult();
     }
 }

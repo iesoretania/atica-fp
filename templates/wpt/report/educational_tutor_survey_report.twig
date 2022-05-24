@@ -1,7 +1,7 @@
-{% trans_default_domain 'wlt_report' %}
+{% trans_default_domain 'wpt_report' %}
 <html>
 <head>
-    <title>{{ 'title.educational_tutor_survey'|trans }} - {{ project }}</title>
+    <title>{{ 'title.educational_tutor_survey'|trans }} - {{ shift }}</title>
     <style>
         body {
             font-family: sans-serif;
@@ -70,16 +70,14 @@
     </style>
 </head>
 <body>
-    <h1>{{ app_name }} - {{ project.organization }} - {{ project }}</h1>
-    {% if academic_year %}<h2>{{ 'header.academic_year'|trans }} {{ academic_year }}</h2>{% endif %}
+    <h1>{{ app_name }} - {{ organization }} - {{ grade }} - {{ shift }}</h1>
     <h2>{{ 'title.educational_tutor_survey'|trans }}</h2>
     <h3>{{ 'title.educational_tutor_survey.summary'|trans }}</h3>
     <table class="survey">
         <thead>
         <tr>
-            <th width="60%">{{ 'header.educational_tutor'|trans }}</th>
-            <th width="20%">{{ 'header.academic_year'|trans }}</th>
-            <th width="20%">{{ 'header.status'|trans }}</th>
+            <th width="70%">{{ 'header.educational_tutor'|trans }}</th>
+            <th width="30%">{{ 'header.status'|trans }}</th>
         </tr>
         </thead>
         <tbody>
@@ -89,37 +87,32 @@
             {% set teacher = teacherData[0] %}
             <tr>
                 <td>{{ teacher.person }}</td>
-                <td class="center">{{ teacher.academicYear }}</td>
                 <td class="center">{{ (teacherData[1] ? 'report.status.answered' : 'report.status.unanswered')|trans }}</td>
             </tr>
             {% set total = total + 1 %}
             {% if teacherData[1] %}{% set answered = answered + 1 %}{% endif %}
         {% else %}
-            <tr colspan="3">{{ 'report.no_surveys'|trans }}</tr>
+            <tr colspan="2">{{ 'report.no_surveys'|trans }}</tr>
         {% endfor %}
         </tbody>
         {% if total %}
             <tfoot>
                 <tr>
-                    <td class="right" colspan="4"><b>{{ 'report.answered_surveys'|trans }} {{ answered }}/{{ total }} ({{ (answered*100/total)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
+                    <td class="right" colspan="2"><b>{{ 'report.answered_surveys'|trans }} {{ answered }}/{{ total }} ({{ (answered*100/total)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
                 </tr>
             </tfoot>
         {% endif %}
     </table>
 
-    {% include 'wlt/report/survey_stats_partial.html.twig' %}
+    {% include 'wpt/report/survey_stats_partial.html.twig' %}
 
     {% for teacher_data in teachers %}
         {% if teacher_data[1] %}
             <pagebreak></pagebreak>
             {% set teacher = teacher_data[0] %}
-            <h1>{{ app_name }} - {{ project.organization }}</h1>
+            <h1>{{ app_name }} - {{ organization }} - {{ grade }} - {{ shift }}</h1>
             <h2>{{ 'title.educational_tutor_survey'|trans }}</h2>
             <table class="data">
-                <tr>
-                    <td class="info">{{ 'report.academic_year'|trans }}</td>
-                    <td>{{ teacher.academicYear }}</td>
-                </tr>
                 <tr>
                     <td class="info">{{ 'report.educational_tutor'|trans }}</td>
                     <td>{{ teacher.person }}</td>
@@ -131,7 +124,7 @@
             </table>
 
             {% set answered_survey = teacher_data[1].answeredSurvey %}
-            {% include 'wlt/report/answered_survey_responses_partial.html.twig' %}
+            {% include 'wpt/report/answered_survey_responses_partial.html.twig' %}
         {% endif %}
     {% endfor %}
 </body>

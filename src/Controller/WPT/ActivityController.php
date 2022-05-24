@@ -53,7 +53,7 @@ class ActivityController extends AbstractController
         Shift $shift
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
 
         $activity = new Activity();
         $activity
@@ -79,7 +79,7 @@ class ActivityController extends AbstractController
         Activity $activity
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $activity->getShift());
 
         $em = $this->getDoctrine()->getManager();
@@ -145,7 +145,7 @@ class ActivityController extends AbstractController
         $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
 
         if ($shift->getGrade()->getTraining()->getAcademicYear()->getOrganization() !== $organization) {
@@ -215,7 +215,7 @@ class ActivityController extends AbstractController
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
 
         $items = $request->request->get('items', []);
@@ -268,7 +268,7 @@ class ActivityController extends AbstractController
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
 
         $em = $this->getDoctrine()->getManager();
@@ -332,7 +332,7 @@ class ActivityController extends AbstractController
         Shift $shift
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
 
         $shifts = $shiftRepository->findRelatedByOrganizationButOne($organization, $shift);

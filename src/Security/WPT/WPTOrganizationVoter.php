@@ -33,7 +33,7 @@ class WPTOrganizationVoter extends CachedVoter
 {
     public const WPT_ACCESS_SECTION = 'ORGANIZATION_ACCESS_WORKPLACE_TRAINING';
     public const WPT_ACCESS = 'ORGANIZATION_ACCESS_WORKPLACE_TRAINING_TRACKING';
-    public const WPT_MANAGE = 'ORGANIZATION_MANAGE_WORKPLACE_TRAINING_TRACKING';
+    public const WPT_MANAGER = 'ORGANIZATION_MANAGE_WORKPLACE_TRAINING_TRACKING';
     public const WPT_FILL_REPORT = 'ORGANIZATION_FILL_REPORT_WORKPLACE_TRAINING';
 
     public const WPT_GROUP_TUTOR = 'ORGANIZATION_WPT_GROUP_TUTOR';
@@ -76,7 +76,7 @@ class WPTOrganizationVoter extends CachedVoter
         return in_array($attribute, [
             self::WPT_ACCESS_SECTION,
             self::WPT_ACCESS,
-            self::WPT_MANAGE,
+            self::WPT_MANAGER,
             self::WPT_FILL_REPORT,
             self::WPT_WORK_TUTOR,
             self::WPT_GROUP_TUTOR,
@@ -118,7 +118,7 @@ class WPTOrganizationVoter extends CachedVoter
             return true;
         }
         switch ($attribute) {
-            case self::WPT_MANAGE:
+            case self::WPT_MANAGER:
                 // Si es jefe de algún departamento, permitir acceder
                 // Jefe de departamento
                 return $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_DEPARTMENT_HEAD], $subject);

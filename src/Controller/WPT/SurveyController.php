@@ -230,7 +230,7 @@ class SurveyController extends AbstractController
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        if (!$this->isGranted(WPTOrganizationVoter::WPT_MANAGE, $organization) // jefe de departamento/administrador
+        if (!$this->isGranted(WPTOrganizationVoter::WPT_MANAGER, $organization) // jefe de departamento/administrador
             && !$this->isGranted(WPTOrganizationVoter::WPT_WORK_TUTOR, $organization)// tutor laboral
             && !$this->isGranted(WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR, $organization)// tutor docente
             && !$this->isGranted(WPTOrganizationVoter::WPT_GROUP_TUTOR, $organization)// tutor de grupo de FCT
@@ -397,7 +397,7 @@ class SurveyController extends AbstractController
         }
 
         $this->denyAccessUnlessGranted(
-            [WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR, WPTOrganizationVoter::WPT_MANAGE],
+            [WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR, WPTOrganizationVoter::WPT_MANAGER],
             $organization
         );
 

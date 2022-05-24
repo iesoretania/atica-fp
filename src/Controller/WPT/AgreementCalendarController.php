@@ -49,7 +49,7 @@ class AgreementCalendarController extends AbstractController
         Agreement $agreement
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
         $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
 
@@ -186,7 +186,7 @@ class AgreementCalendarController extends AbstractController
         $agreement = $workDay->getAgreement();
 
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
         $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
 

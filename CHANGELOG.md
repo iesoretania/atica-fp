@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 5.x.x (xxxx-xx-xx)
 ------------------
 * feat: Implementadas encuestas de la FCT
+* feat: Se pueden generar informes de las encuestas de FCT
 
 5.1.0 (2022-05-23)
 ------------------

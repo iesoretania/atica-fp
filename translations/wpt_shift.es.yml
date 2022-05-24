@@ -49,6 +49,7 @@ table.no_items: No hay convocatorias
 table.filter: Filtrar...
 
 header.name: Convocatoria
+header.grade: Curso
 header.type: Grado
 header.hours: Horas
 header.groups: Grupos

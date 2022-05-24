@@ -1,11 +1,11 @@
-title.student_survey: Encuestas de satisfacción del alumnado con la FP dual
-title.student_survey.summary: Resumen de convenios
+title.student_survey: Encuestas de satisfacción del alumnado con la FCT
+title.student_survey.summary: Resumen de alumnado
 
-title.company_survey: Encuestas de satisfacción de las empresas con la FP dual
-title.company_survey.summary: Resumen de convenios
+title.company_survey: Encuestas de satisfacción de los tutores laborales con la FCT
+title.company_survey.summary: Resumen de tutores laborales
 
-title.organization_survey: Encuestas de satisfacción del seguimiento de la FP dual
-title.organization_survey.summary: Resumen de profesorado que realiza seguimiento
+title.educational_tutor_survey: Encuestas de satisfacción de los tutores docentes con la FCT
+title.educational_tutor_survey.summary: Resumen de tutores docentes
 
 title.meeting: Reuniones de tutorización
 title.meeting_teacher: Resumen de tutorización por docente
@@ -37,6 +37,7 @@ header.min: Mín.
 header.max: Máx.
 
 header.student: Estudiante
+header.work_tutor: Tutor/a laboral
 header.workcenter: Centro de trabajo
 header.dates: Fechas convenio
 header.status: ¿Cumplimentada?

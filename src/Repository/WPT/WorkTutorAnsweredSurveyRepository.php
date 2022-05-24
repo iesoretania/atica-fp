@@ -22,7 +22,7 @@ use App\Entity\AnsweredSurvey;
 use App\Entity\AnsweredSurveyQuestion;
 use App\Entity\Person;
 use App\Entity\Survey;
-use App\Entity\WPT\Agreement;
+use App\Entity\WPT\AgreementEnrollment;
 use App\Entity\WPT\Shift;
 use App\Entity\WPT\WorkTutorAnsweredSurvey;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -84,11 +84,11 @@ class WorkTutorAnsweredSurveyRepository extends ServiceEntityRepository
 
     public function getStatsByShift(Shift $shift)
     {$queryBuilder = $this->getEntityManager()->createQueryBuilder()
-        ->select('se, pro, a, p, g, wt, w, c, t, gr')
-        ->from(Agreement::class, 'a')
+        ->select('se, shi, a, ae, p, g, wt, w, c, t, gr')
+        ->from(AgreementEnrollment::class, 'ae')
         ->distinct()
+        ->join('ae.agreement', 'a')
         ->join('a.shift', 'shi')
-        ->join('a.agreementEnrollments', 'ae')
         ->join('ae.studentEnrollment', 'se')
         ->join('se.person', 'p')
         ->join('ae.workTutor', 'wt')
@@ -101,7 +101,7 @@ class WorkTutorAnsweredSurveyRepository extends ServiceEntityRepository
         ->join('g.grade', 'gr')
         ->join('gr.training', 't')
         ->where('shi = :shift')
-        ->setParameter('project', $shift)
+        ->setParameter('shift', $shift)
         ->leftJoin(
             WorkTutorAnsweredSurvey::class,
             'wtas',
@@ -113,7 +113,7 @@ class WorkTutorAnsweredSurveyRepository extends ServiceEntityRepository
         ->addGroupBy('ae')
         ->addOrderBy('wt.lastName')
         ->addOrderBy('wt.firstName')
-        ->addOrderBy('pro.name')
+        ->addOrderBy('shi.name')
         ->addOrderBy('p.lastName')
         ->addOrderBy('p.firstName');
 
@@ -124,7 +124,8 @@ class WorkTutorAnsweredSurveyRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('wtas')
             ->join('wtas.workTutor', 'wt')
-            ->andWhere('wtas.shift = :shift');
+            ->andWhere('wtas.shift = :shift')
+            ->setParameter('shift', $shift);
 
         return $qb
             ->orderBy('wt.lastName')

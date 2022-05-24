@@ -136,7 +136,7 @@ class WPTTeacherRepository extends TeacherRepository
         }
 
         $isManager = $this->security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWptManager = $this->security->isGranted(WPTOrganizationVoter::WPT_MANAGE, $organization);
+        $isWptManager = $this->security->isGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
 
         if (!$isManager && $isWptManager) {
             $shifts = $this->shiftRepository->findByHeadOfDepartment($teacher);
@@ -157,5 +157,35 @@ class WPTTeacherRepository extends TeacherRepository
             ->setParameter('academic_year', $academicYear);
 
         return $queryBuilder;
+    }
+
+    public function getStatsByShiftWithAnsweredSurvey(Shift $shift) {
+        $data = $this->createQueryBuilder('t')
+            ->select('t')
+            ->addSelect('etas')
+            ->join('t.person', 'p')
+            ->join(
+                AgreementEnrollment::class,
+                'ae',
+                'WITH',
+                'ae.educationalTutor = t OR ae.additionalEducationalTutor = t'
+            )
+            ->join('ae.agreement', 'a')
+            ->join(Shift::class, 's', 'WITH', 'a.shift = s')
+            ->leftJoin(
+                EducationalTutorAnsweredSurvey::class,
+                'etas',
+                'WITH',
+                'etas.teacher = t AND etas.shift = s'
+            )
+            ->where('s = :shift')
+            ->setParameter('shift', $shift)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->groupBy('t, etas, s')
+            ->getQuery()
+            ->getResult();
+
+        return array_chunk($data, 2);
     }
 }
