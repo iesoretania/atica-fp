@@ -230,15 +230,13 @@ class SurveyController extends AbstractController
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(
-            [
-                WPTOrganizationVoter::WPT_MANAGE,           // jefe de departamento/administrador
-                WPTOrganizationVoter::WPT_WORK_TUTOR,       // tutor laboral
-                WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR,// tutor docente
-                WPTOrganizationVoter::WPT_GROUP_TUTOR       // tutor de grupo
-            ],
-            $organization
-        );
+        if (!$this->isGranted(WPTOrganizationVoter::WPT_MANAGE, $organization) // jefe de departamento/administrador
+            && !$this->isGranted(WPTOrganizationVoter::WPT_WORK_TUTOR, $organization)// tutor laboral
+            && !$this->isGranted(WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR, $organization)// tutor docente
+            && !$this->isGranted(WPTOrganizationVoter::WPT_GROUP_TUTOR, $organization)// tutor de grupo de FCT
+        ) {
+            throw $this->createAccessDeniedException();
+        }
 
         $title = $translator->trans('title.survey.work_tutor.list', [], 'wpt_survey');
 
