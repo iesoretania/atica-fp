@@ -234,7 +234,8 @@ class SurveyController extends AbstractController
             [
                 WPTOrganizationVoter::WPT_MANAGE,           // jefe de departamento/administrador
                 WPTOrganizationVoter::WPT_WORK_TUTOR,       // tutor laboral
-                WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR // tutor docente
+                WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR,// tutor docente
+                WPTOrganizationVoter::WPT_GROUP_TUTOR       // tutor de grupo
             ],
             $organization
         );
