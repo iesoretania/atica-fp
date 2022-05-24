@@ -184,7 +184,7 @@ class PersonType extends AbstractType
                             'label' => 'form.new_password',
                             'constraints' => [
                                 new Length([
-                                    'min' => 7,
+                                    'min' => 8,
                                     'minMessage' => 'password.min_length',
                                     'groups' => ['password']
                                 ]),

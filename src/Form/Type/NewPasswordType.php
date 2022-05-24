@@ -44,7 +44,7 @@ class NewPasswordType extends AbstractType
                     'label' => false,
                     'constraints' => [
                         new Length([
-                            'min' => 7,
+                            'min' => 8,
                             'minMessage' => 'password.min_length'
                         ]),
                         new NotNull()
