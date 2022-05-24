@@ -157,12 +157,14 @@ var dynamicFormInit = function () {
             .on("click", ".clickable-row input[type='checkbox']", updateButton)
             .on("click", ".clickable-row a", function (ev) {
                 item = ev.target;
-                if ($(item).attr("target")) {
-                    window.open($(item).attr("href"), $(item).data("target")) || window.location.assign($(item).attr("href"));
-                } else {
-                    window.location.assign($(item).attr("href"));
+                if ($(item).attr("href")) {
+                    if ($(item).attr("target")) {
+                        window.open($(item).attr("href"), $(item).data("target")) || window.location.assign($(item).attr("href"));
+                    } else {
+                        window.location.assign($(item).attr("href"));
+                    }
+                    return false;
                 }
-                return false;
             })
             .on("click", "#select", function (item) {
                 $("input[type='checkbox'].selectable").prop('checked', item.currentTarget.checked);
