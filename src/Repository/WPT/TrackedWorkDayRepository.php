@@ -281,6 +281,10 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
             $trackedWorkDay = new TrackedWorkDay();
             $trackedWorkDay
                 ->setAgreementEnrollment($agreementEnrollment)
+                ->setStartTime1($agreementEnrollment->getAgreement()->getDefaultStartTime1())
+                ->setEndTime1($agreementEnrollment->getAgreement()->getDefaultEndTime1())
+                ->setStartTime2($agreementEnrollment->getAgreement()->getDefaultStartTime2())
+                ->setEndTime2($agreementEnrollment->getAgreement()->getDefaultEndTime2())
                 ->setWorkDay($workDay);
             $this->getEntityManager()->persist($trackedWorkDay);
         }
