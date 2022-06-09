@@ -21,7 +21,7 @@
                     {% set url = path('workplace_training_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].workTutor.id}) %}
                     <a href="{{ url }}">{{ datum.workTutor }}</a>
                     {% if datum.additionalWorkTutor %}
-                        {% set url = path('work_linked_training_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].additionalWorkTutor.id}) %}
+                        {% set url = path('workplace_training_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].additionalWorkTutor.id}) %}
                         <br/><a href="{{ url }}">{{ datum.additionalWorkTutor }}</a>
                     {% endif %}
                 </td>

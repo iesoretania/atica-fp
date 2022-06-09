@@ -9,7 +9,8 @@ en las distintas versiones de la misma.
 * feat: Implementadas encuestas de la FCT
 * feat: Se pueden generar informes de las encuestas de FCT
 * fix: Copiar las horas por defecto de entrada y salida del acuerdo en las jornadas nuevas de FCT
-* fix: Solucionado un problema que impedía acceder a usuarios relacionados solamente con la FCT
+* fix: Solucionado un problema que impedía acceder a usuarios relacionados solamente con la FP dual
+* fix: Solucionado el problema de acceso de los responsables laborales adicionales a las encuestas de FCT
 
 5.1.0 (2022-05-23)
 ------------------
