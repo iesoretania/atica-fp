@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-5.x.x (xxxx-xx-xx)
+5.2.0 (2022-06-13)
 ------------------
 * feat: Implementadas encuestas de la FCT
 * feat: Se pueden generar informes de las encuestas de FCT
