@@ -155,6 +155,7 @@ class WPTMenu implements MenuBuilderInterface
             if ($this->security->isGranted(WPTOrganizationVoter::WPT_MANAGER, $organization) ||
                 $this->security->isGranted(WPTOrganizationVoter::WPT_DEPARTMENT_HEAD, $organization) ||
                 $this->security->isGranted(WPTOrganizationVoter::WPT_GROUP_TUTOR, $organization) ||
+                $this->security->isGranted(WPTOrganizationVoter::WPT_EDUCATIONAL_TUTOR, $organization) ||
                 $this->security->isGranted(WPTOrganizationVoter::WPT_WORK_TUTOR, $organization)
             ) {
                 $menu3 = new MenuItem();

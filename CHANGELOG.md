@@ -11,6 +11,7 @@ en las distintas versiones de la misma.
 * fix: Copiar las horas por defecto de entrada y salida del acuerdo en las jornadas nuevas de FCT
 * fix: Solucionado un problema que impedía acceder a usuarios relacionados solamente con la FP dual
 * fix: Solucionado el problema de acceso de los responsables laborales adicionales a las encuestas de FCT
+* fix: Los tutores docentes también pueden cumplimentar las encuestas del tutor laboral de FCT
 
 5.1.0 (2022-05-23)
 ------------------
