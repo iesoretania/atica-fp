@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+5.x.x (2022-xx-xx)
+------------------
+* fix: Solucionado informe de actividades de la FCT si un estudiante participa en más de una convocatoria
+
 5.2.0 (2022-06-13)
 ------------------
 * feat: Implementadas encuestas de la FCT

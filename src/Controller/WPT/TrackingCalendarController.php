@@ -425,7 +425,10 @@ class TrackingCalendarController extends AbstractController
             $fileName = $title . '.pdf';
 
             $agreementEnrollments = $agreementEnrollmentRepository
-                ->findByStudentEnrollment($agreementEnrollment->getStudentEnrollment());
+                ->findByStudentEnrollmentAndShift(
+                    $agreementEnrollment->getStudentEnrollment(),
+                    $agreementEnrollment->getAgreement()->getShift()
+                );
 
             $data = [];
             foreach ($agreementEnrollments as $agreementEnrollment2) {

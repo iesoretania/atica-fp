@@ -60,6 +60,21 @@ class AgreementEnrollmentRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByStudentEnrollmentAndShift(StudentEnrollment $studentEnrollment, Shift $shift)
+    {
+        return $this->createQueryBuilder('ae')
+            ->join('ae.agreement', 'a')
+            ->where('ae.studentEnrollment = :student_enrollment')
+            ->andWhere('a.shift = :shift')
+            ->setParameter('student_enrollment', $studentEnrollment)
+            ->setParameter('shift', $shift)
+            ->orderBy('a.startDate')
+            ->addOrderBy('a.endDate')
+            ->addOrderBy('a.signDate')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByEducationalTutor(Teacher $teacher)
     {
         return $this->createQueryBuilder('ae')
