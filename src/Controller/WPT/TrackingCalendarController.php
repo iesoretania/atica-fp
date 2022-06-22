@@ -447,7 +447,7 @@ class TrackingCalendarController extends AbstractController
             );
             $educationalTutors = $wptTeacherRepository->findEducationalTutorsByStudentEnrollmentAndShift(
                 $agreementEnrollment->getStudentEnrollment(),
-                $agreementEnrollment->getAgreement()
+                $agreementEnrollment->getAgreement()->getShift()
             );
 
             $html = $engine->render('wpt/tracking/activity_report.html.twig', [
