@@ -64,7 +64,7 @@ class WPTTeacherRepository extends TeacherRepository
             ->getResult();
     }
 
-    public function findEducationalTutorsByStudentEnrollment(StudentEnrollment $studentEnrollment)
+    public function findEducationalTutorsByStudentEnrollmentAndShift(StudentEnrollment $studentEnrollment, Shift $shift)
     {
         return $this->createQueryBuilder('t')
             ->distinct(true)
@@ -72,7 +72,9 @@ class WPTTeacherRepository extends TeacherRepository
             ->join('ae.agreement', 'a')
             ->join('t.person', 'p')
             ->where('ae.studentEnrollment = :student_enrollment')
+            ->andWhere('a.shift = :shift')
             ->setParameter('student_enrollment', $studentEnrollment)
+            ->setParameter('shift', $shift)
             ->getQuery()
             ->getResult();
     }
