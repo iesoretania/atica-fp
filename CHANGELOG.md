@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * fix: Solucionado informe de actividades de la FCT si un estudiante participa en más de una convocatoria
 * fix: Solucionado otro error con el informe
+* fix: Mostrar correctamente el listado de desplazamientos de FCT
 
 5.2.0 (2022-06-13)
 ------------------

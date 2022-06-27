@@ -15,7 +15,8 @@
 {% endblock %}
 
 {% block table_body %}
-            {% for item in pager %}
+            {% for data in pager %}
+                {% set item = data[0] %}
                 {% set url = path('workplace_training_travel_expense_edit', {'id': item.id}) %}
                 {% set read_only = not is_granted('WPT_TRAVEL_EXPENSE_MANAGE', item) %}
                 <tr class="clickable-row" data-href="{{ url }}">
@@ -27,7 +28,7 @@
                         </label>
                     </td>
                     <td>
-                        {{ item.agreements.count() }}
+                        {{ data[1] }}
                     </td>
                     <td>
                         {{ item.travelRoute.distance ? item.travelRoute.distance|number_format ~ ' ' ~ 'suffix.distance'|trans({}, 'general') : '---' }}

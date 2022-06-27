@@ -172,12 +172,13 @@ class TravelExpenseController extends AbstractController
         $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
         $queryBuilder
             ->select('te')
-            ->distinct(true)
-            ->addSelect('a')
             ->addSelect('tr')
+            ->addSelect('COUNT(a)')
+            ->distinct()
             ->from(TravelExpense::class, 'te')
             ->join('te.travelRoute', 'tr')
             ->leftJoin('te.agreements', 'a')
+            ->groupBy('te')
             ->addOrderBy('te.fromDateTime', 'DESC');
 
         $q = $request->get('q');
