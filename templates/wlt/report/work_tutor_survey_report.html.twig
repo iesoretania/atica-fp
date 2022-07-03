@@ -114,7 +114,7 @@
                 {% if last_id != 0 %}{{ _self.row(data, additional) }}{% endif %}
                 {% set last_id = item[0].workTutor.id ~ '-' ~ item[0].project.id %}
                 {% set data = [item[0]] %}
-                {% set answered = answered + additional ? 1 : 0 %}
+                {% set answered = answered + (additional ? 1 : 0) %}
                 {% set additional = item[1] %}
                 {% set total = total + 1 %}
             {% else %}
@@ -128,7 +128,7 @@
         {% endfor %}
         {% if last_id != 0 %}
             {{ _self.row(data, additional) }}
-            {% set answered = answered + additional ? 1 : 0 %}
+            {% set answered = answered + (additional ? 1 : 0) %}
         {% endif %}
         </tbody>
         {% if total %}

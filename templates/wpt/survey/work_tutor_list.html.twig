@@ -41,7 +41,7 @@
             </td>
             {% if loop.first %}
                 <td rowspan="{{ data|length }}">
-                    {{ (additional ? 'table.answered.yes' : 'table.answered.no')|trans }} {{ additional > 1 ? '(x' ~ additional ~ ')' }}
+                    {{ (additional > 0 ? 'table.answered.yes' : 'table.answered.no')|trans }}
                 </td>
             {% endif %}
         </tr>

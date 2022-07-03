@@ -10,6 +10,7 @@ en las distintas versiones de la misma.
 * fix: Solucionado otro error con el informe
 * fix: Mostrar correctamente el listado de desplazamientos de FCT
 * style: Eliminada animación innecesaria al cargar las páginas
+* fix: Mostrar correctamente las estadísticas de encuestas cumplimentadas en FCT y dual
 
 5.2.0 (2022-06-13)
 ------------------

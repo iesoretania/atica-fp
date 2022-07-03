@@ -439,7 +439,8 @@ class SurveyController extends AbstractController
                 WorkTutorAnsweredSurvey::class,
                 'was',
                 'WITH',
-                'was.workTutor = wt AND was.project = pro AND was.academicYear = :academic_year'
+                '(was.workTutor = wt OR was.workTutor = awt) AND ' .
+                'was.project = pro AND was.academicYear = :academic_year'
             )
             ->addSelect('COUNT(was), awt')
             ->addGroupBy('a')

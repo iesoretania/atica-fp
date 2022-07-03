@@ -113,7 +113,7 @@
                 {% if last_id != 0 %}{{ _self.row(data, additional) }}{% endif %}
                 {% set last_id = item[0].workTutor.id ~ '-' ~ item[0].agreement.shift.id %}
                 {% set data = [item[0]] %}
-                {% set answered = answered + additional ? 1 : 0 %}
+                {% set answered = answered + (additional > 0 ? 1 : 0) %}
                 {% set additional = item[1] %}
                 {% set total = total + 1 %}
             {% else %}
@@ -127,13 +127,13 @@
         {% endfor %}
         {% if last_id != 0 %}
             {{ _self.row(data, additional) }}
-            {% set answered = answered + additional ? 1 : 0 %}
+            {% set answered = answered + (additional > 0 ? 1 : 0) %}
         {% endif %}
         </tbody>
         {% if total %}
             <tfoot>
             <tr>
-                <td class="right" colspan="4"><b>{{ 'report.answered_surveys'|trans }}  {{ answered }}/{{ total }} ({{ (answered*100/total)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
+                <td class="right" colspan="4"><b>{{ 'report.answered_surveys'|trans }} {{ answered }}/{{ total }} ({{ (answered*100/total)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
             </tr>
             </tfoot>
         {% endif %}
