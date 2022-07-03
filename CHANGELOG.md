@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-5.x.x (2022-xx-xx)
+5.2.1 (2022-07-03)
 ------------------
 * fix: Solucionado informe de actividades de la FCT si un estudiante participa en más de una convocatoria
 * fix: Solucionado otro error con el informe
