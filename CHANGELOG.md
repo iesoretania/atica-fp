@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+5.x.x (xxxx-xx-xx)
+------------------
+* fix: Modificada una consulta de encuestas de satisfacción de responsable laboral para evitar un error del ORM
+
 5.2.1 (2022-07-03)
 ------------------
 * fix: Solucionado informe de actividades de la FCT si un estudiante participa en más de una convocatoria

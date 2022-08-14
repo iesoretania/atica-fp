@@ -495,7 +495,7 @@ class AgreementRepository extends ServiceEntityRepository
         $isWltManager = $this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
 
         $queryBuilder = $this->createQueryBuilder('a')
-            ->select('se, pro, a, p, g, wt, awt, w, c')
+            ->select('a, se, pro, p, g, wt, w, c')
             ->distinct()
             ->join('a.project', 'pro')
             ->join('a.studentEnrollment', 'se')
@@ -503,12 +503,12 @@ class AgreementRepository extends ServiceEntityRepository
             ->join('a.workTutor', 'wt')
             ->join('a.workcenter', 'w')
             ->join('w.company', 'c')
-            ->leftJoin('a.additionalWorkTutor', 'awt')
             ->join('a.educationalTutor', 'et')
-            ->leftJoin('a.additionalEducationalTutor', 'aet')
             ->join('se.group', 'g')
             ->join('g.grade', 'gr')
-            ->join('gr.training', 't');
+            ->join('gr.training', 't')
+            ->leftJoin('a.additionalEducationalTutor', 'aet')
+            ->leftJoin('a.additionalWorkTutor', 'awt');
 
         if ($q) {
             $queryBuilder
