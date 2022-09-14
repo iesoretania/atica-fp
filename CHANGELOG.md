@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 5.x.x (xxxx-xx-xx)
 ------------------
 * fix: Modificada una consulta de encuestas de satisfacción de responsable laboral para evitar un error del ORM
+* fix: Solucionado un problema al trabajar con las convocatorias de la FCT
 
 5.2.1 (2022-07-03)
 ------------------

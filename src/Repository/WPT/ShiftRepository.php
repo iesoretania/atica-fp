@@ -36,7 +36,8 @@ class ShiftRepository extends ServiceEntityRepository
         AcademicYear $academicYear
     ) {
         return $this->createQueryBuilder('s')
-            ->join('s.grade', 'gr')
+            ->join('s.subject', 'su')
+            ->join('su.grade', 'gr')
             ->join('gr.training', 'tr')
             ->where('tr.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear)
@@ -51,7 +52,8 @@ class ShiftRepository extends ServiceEntityRepository
     ) {
         return $this->createQueryBuilder('s')
             ->where('s IN (:items)')
-            ->join('s.grade', 'gr')
+            ->join('s.subject', 'su')
+            ->join('su.grade', 'gr')
             ->join('gr.training', 'tr')
             ->andWhere('tr.academicYear = :academic_year')
             ->setParameter('items', $items)
