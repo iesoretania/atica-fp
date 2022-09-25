@@ -54,16 +54,18 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
     public function findOneByUniqueIdentifiers($id, $id2 = null)
     {
         $qb = $this->createQueryBuilder('p')
-            ->where('p.uniqueIdentifier = :q')
-            ->setParameter('q', $id)
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName')
-            ->setMaxResults(1);
+            ->setMaxResults(1)
+            ->setParameter('q', $id);
 
         if ($id2 !== null && $id2 !== '') {
             $qb
-                ->orWhere('p.uniqueIdentifier = :q2')
+                ->where('p.uniqueIdentifier IN (:q, :q2)')
                 ->setParameter('q2', $id2);
+        } else {
+            $qb
+                ->where('p.uniqueIdentifier = :q');
         }
 
         return $qb
