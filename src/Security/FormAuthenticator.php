@@ -133,12 +133,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
                 }
                 return true;
             }
-
-            if (!$result) {
-                return false;
-            }
-
-            // si no es ni "true" ni "false" es que no se ha podido contactar con Séneca, intentar en local
+            // intentar en local
         }
 
         // comprobación local

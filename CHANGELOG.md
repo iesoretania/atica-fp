@@ -9,6 +9,7 @@ en las distintas versiones de la misma.
 * fix: Modificada una consulta de encuestas de satisfacción de responsable laboral para evitar un error del ORM
 * fix: Solucionado un problema al trabajar con las convocatorias de la FCT
 * fix: Mejorada la lógica de detección de importación de profesorado ya existente
+* fix: Autenticar en local si no tiene éxito la autenticación por Séneca
 
 5.2.1 (2022-07-03)
 ------------------
