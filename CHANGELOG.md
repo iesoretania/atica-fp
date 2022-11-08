@@ -10,6 +10,7 @@ en las distintas versiones de la misma.
 * fix: Solucionado un problema al trabajar con las convocatorias de la FCT
 * fix: Mejorada la lógica de detección de importación de profesorado ya existente
 * fix: Autenticar en local si no tiene éxito la autenticación por Séneca
+* fix: Solucionado un fallo al intentar importar los RAs y CEs de módulos no registrados previamente
 
 5.2.1 (2022-07-03)
 ------------------

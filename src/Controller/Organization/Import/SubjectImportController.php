@@ -427,10 +427,14 @@ class SubjectImportController extends AbstractController
                     $criterionDescription = trim($matches[2]);
 
                     if (!isset($learningOutcomeCollection[$subjectName][$learningOutcomeCode])) {
-                        $learningOutcome = $learningOutcomeRepository->findOneByCodeAndSubject(
-                            $learningOutcomeCode,
-                            $subject
-                        );
+                        if ($subject->getId()) {
+                            $learningOutcome = $learningOutcomeRepository->findOneByCodeAndSubject(
+                                $learningOutcomeCode,
+                                $subject
+                            );
+                        } else {
+                            $learningOutcome = null;
+                        }
 
                         if ($learningOutcome === null) {
                             $newLearningOutcomes++;
