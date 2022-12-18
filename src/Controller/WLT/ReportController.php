@@ -303,6 +303,8 @@ class ReportController extends AbstractController
             . $project->getName() . '.pdf';
 
         $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
+
         $response = $mpdfService->generatePdfResponse($html);
         $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
 
@@ -370,6 +372,8 @@ class ReportController extends AbstractController
             . $project->getName() . '.pdf';
 
         $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
+
         $response = $mpdfService->generatePdfResponse($html);
         $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
 
@@ -415,6 +419,8 @@ class ReportController extends AbstractController
             . $project->getName() . '.pdf';
 
         $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
+
         $response = $mpdfService->generatePdfResponse($html);
         $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
 
@@ -542,6 +548,7 @@ class ReportController extends AbstractController
         $this->denyAccessUnlessGranted(ProjectVoter::REPORT_STUDENT_SURVEY, $project);
 
         $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
 
         $studentEnrollmentStats = $studentAnsweredSurveyRepository
             ->getStatsByProjectAndAcademicYear($project, $academicYear);
@@ -609,6 +616,7 @@ class ReportController extends AbstractController
         $this->denyAccessUnlessGranted(ProjectVoter::REPORT_COMPANY_SURVEY, $project);
 
         $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
 
         $workTutorStats = $workTutorAnsweredSurveyRepository
             ->getStatsByProjectAndAcademicYear($project, $academicYear);
@@ -676,6 +684,7 @@ class ReportController extends AbstractController
         $this->denyAccessUnlessGranted(ProjectVoter::REPORT_ORGANIZATION_SURVEY, $project);
 
         $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
 
         $stats = [];
 

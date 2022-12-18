@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+5.x.x (xxxx-xx-xx)
+------------------
+* fix: Solucionado el error de generación de documentos PDF muy complejos
+
 5.2.2 (2022-11-28)
 ------------------
 * fix: Modificada una consulta de encuestas de satisfacción de responsable laboral para evitar un error del ORM

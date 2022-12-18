@@ -517,6 +517,7 @@ class AgreementController extends AbstractController
 
         $mpdfService = new MpdfService();
         $mpdfService->setAddDefaultConstructorArgs(false);
+        ini_set("pcre.backtrack_limit", "5000000");
 
         /** @var Mpdf $mpdf */
         $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4-L']]);

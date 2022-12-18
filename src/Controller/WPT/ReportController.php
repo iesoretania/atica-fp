@@ -227,6 +227,7 @@ class ReportController extends AbstractController
         $this->denyAccessUnlessGranted(ShiftVoter::REPORT_STUDENT_SURVEY, $shift);
 
         $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
 
         $studentEnrollmentStats = $studentAnsweredSurveyRepository
             ->getStatsByShift($shift);
@@ -297,6 +298,7 @@ class ReportController extends AbstractController
         $this->denyAccessUnlessGranted(ShiftVoter::REPORT_COMPANY_SURVEY, $shift);
 
         $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
 
         $workTutorStats = $workTutorAnsweredSurveyRepository
             ->getStatsByShift($shift);
@@ -366,6 +368,7 @@ class ReportController extends AbstractController
         $this->denyAccessUnlessGranted(ShiftVoter::REPORT_ORGANIZATION_SURVEY, $shift);
 
         $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
 
         $stats = [];
 

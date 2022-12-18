@@ -78,6 +78,7 @@ class TeacherImportController extends AbstractController
                 $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
             } else {
                 $this->addFlash('error', $translator->trans('message.import_error' . $stats['error'], [], 'import'));
+                $stats = [];
             }
         }
         $title = $translator->trans('title.teacher.import', [], 'import');

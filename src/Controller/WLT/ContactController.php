@@ -647,6 +647,8 @@ class ContactController extends AbstractController
             . ' - ' . $teacher . '.pdf';
 
         $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
+
         $response = $mpdfService->generatePdfResponse($html);
         $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
 
@@ -846,6 +848,8 @@ class ContactController extends AbstractController
             . ' - ' . $workcenter . '.pdf';
 
         $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
+
         $response = $mpdfService->generatePdfResponse($html);
         $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
 
