@@ -135,7 +135,8 @@ class ActivityRealizationRepository extends ServiceEntityRepository
                 'aar.activityRealization = ar'
             )
             ->where('aar.agreement = :agreement')
-            ->andWhere('aar.grade IS NOT NULL')
+            ->andWhere('aar.grade IS NOT NULL OR aar.disabled = :disabled')
+            ->setParameter('disabled', true)
             ->setParameter('agreement', $agreement)
             ->getQuery()
             ->getResult();

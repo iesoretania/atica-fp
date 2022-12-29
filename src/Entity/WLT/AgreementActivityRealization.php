@@ -19,6 +19,8 @@
 namespace App\Entity\WLT;
 
 use App\Entity\Person;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -43,7 +45,7 @@ class AgreementActivityRealization
     private $agreement;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ActivityRealization")
+     * @ORM\ManyToOne(targetEntity="ActivityRealization", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      * @var ActivityRealization
      */
@@ -68,6 +70,24 @@ class AgreementActivityRealization
      * @var \DateTime
      */
     private $gradedOn;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @var bool
+     */
+    private $disabled;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AgreementActivityRealizationComment", mappedBy="agreementActivityRealization")
+     * @ORM\OrderBy({"timestamp":"ASC"})
+     * @var AgreementActivityRealizationComment[]|Collection
+     */
+    private $comments;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -164,6 +184,42 @@ class AgreementActivityRealization
     public function setGradedOn(\DateTimeInterface $gradedOn = null)
     {
         $this->gradedOn = $gradedOn;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisabled()
+    {
+        return $this->disabled;
+    }
+
+    /**
+     * @param bool $disabled
+     * @return AgreementActivityRealization
+     */
+    public function setDisabled($disabled)
+    {
+        $this->disabled = $disabled;
+        return $this;
+    }
+
+    /**
+     * @return AgreementActivityRealizationComment[]|Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param Collection $comments
+     * @return AgreementActivityRealization
+     */
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
         return $this;
     }
 }

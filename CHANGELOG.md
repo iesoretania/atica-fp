@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 5.x.x (xxxx-xx-xx)
 ------------------
 * fix: Solucionado el error de generación de documentos PDF muy complejos
+* feat: Ahora se pueden añadir comentarios a las concreciones de un convenio concreto y desactivar elementos
 
 5.2.2 (2022-11-28)
 ------------------

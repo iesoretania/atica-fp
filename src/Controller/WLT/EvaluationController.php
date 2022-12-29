@@ -21,11 +21,15 @@ namespace App\Controller\WLT;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Person;
 use App\Entity\WLT\Agreement;
+use App\Entity\WLT\AgreementActivityRealization;
+use App\Entity\WLT\AgreementActivityRealizationComment;
+use App\Form\Type\WLT\AgreementActivityRealizationNewCommentType;
 use App\Form\Type\WLT\AgreementEvaluationType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\WLT\ProjectRepository;
 use App\Repository\WLT\WLTGroupRepository;
 use App\Security\OrganizationVoter;
+use App\Security\WLT\AgreementActivityRealizationCommentVoter;
 use App\Security\WLT\AgreementVoter;
 use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
@@ -235,6 +239,142 @@ class EvaluationController extends AbstractController
             'domain' => 'wlt_agreement_activity_realization',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
+        ]);
+    }
+
+    /**
+     * @Route("/comentarios/{id}", name="work_linked_training_evaluation_comment_form",
+     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
+     */
+    public function commentAction(
+        Request $request,
+        TranslatorInterface $translator,
+        AgreementActivityRealization $agreementActivityRealization
+    ) {
+        $agreement = $agreementActivityRealization->getAgreement();
+        $this->denyAccessUnlessGranted(AgreementVoter::VIEW_GRADE, $agreement);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $readOnly = !$this->isGranted(AgreementVoter::GRADE, $agreement);
+
+        $form = $this->createForm(AgreementActivityRealizationNewCommentType::class, $agreementActivityRealization, [
+            'disabled' => $readOnly
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $newComment = null;
+                if (trim($form->get('newComment')->getData()) !== '') {
+                    $newComment = new AgreementActivityRealizationComment();
+                    $em->persist($newComment);
+                    $newComment
+                        ->setAgreementActivityRealization($agreementActivityRealization)
+                        ->setComment(trim($form->get('newComment')->getData()))
+                        ->setTimestamp(new \DateTime())
+                        ->setPerson($this->getUser());
+                }
+                $em->flush();
+                $this->addFlash('success', $translator->trans('message.saved', [],
+                    'wlt_agreement_activity_realization'));
+
+                if (!$newComment) {
+                    return $this->redirectToRoute('work_linked_training_evaluation_form', [
+                        'id' => $agreement->getId()
+                    ]);
+                } else {
+                    return $this->redirectToRoute('work_linked_training_evaluation_comment_form', [
+                        'id' => $agreementActivityRealization->getId()
+                    ]);
+                }
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.error', [],
+                    'wlt_agreement_activity_realization'));
+            }
+        }
+
+        $title = $translator->trans('title.comment', [], 'wlt_agreement_activity_realization');
+
+        $breadcrumb = [
+            [
+                'fixed' => (string) $agreement,
+                'routeName' => 'work_linked_training_evaluation_form',
+                'routeParams' => ['id' => $agreement->getId()]
+            ],
+            ['fixed' => (string) $agreementActivityRealization->getActivityRealization()]
+        ];
+
+        return $this->render('wlt/evaluation/comment_form.html.twig', [
+            'menu_path' => 'work_linked_training_evaluation_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'agreement' => $agreement,
+            'agreement_activity_realization' => $agreementActivityRealization,
+            'read_only' => $readOnly,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/comentarios/eliminar/{id}", name="work_linked_training_evaluation_comment_delete",
+     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
+     */
+    public function deleteCommentAction(
+        Request $request,
+        TranslatorInterface $translator,
+        AgreementActivityRealizationComment $agreementActivityRealizationComment
+    ) {
+        $this->denyAccessUnlessGranted(AgreementActivityRealizationCommentVoter::DELETE,
+            $agreementActivityRealizationComment);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $agreement = $agreementActivityRealizationComment->getAgreementActivityRealization()->getAgreement();
+
+        if ($request->get('confirm', '') === 'ok') {
+            try {
+                $em->remove($agreementActivityRealizationComment);
+                $em->flush();
+                $this->addFlash('success', $translator->trans('message.comment_deleted', [],
+                    'wlt_agreement_activity_realization'));
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.comment_delete_error', [],
+                    'wlt_agreement_activity_realization'));
+            }
+            return $this->redirectToRoute('work_linked_training_evaluation_comment_form', [
+                'id' => $agreementActivityRealizationComment->getAgreementActivityRealization()->getId()
+            ]);
+        }
+
+        $title = $translator->trans('title.delete_comment', [], 'wlt_agreement_activity_realization');
+
+        $breadcrumb = [
+            [
+                'fixed' => (string) $agreement,
+                'routeName' => 'work_linked_training_evaluation_form',
+                'routeParams' => ['id' => $agreement->getId()]
+            ],
+            [
+                'fixed' => (string) $agreementActivityRealizationComment
+                    ->getAgreementActivityRealization()->getActivityRealization(),
+                'routeName' => 'work_linked_training_evaluation_comment_form',
+                'routeParams' => ['id' => $agreementActivityRealizationComment
+                    ->getAgreementActivityRealization()->getId()]
+            ],
+            [
+                'fixed' => $title
+            ]
+        ];
+
+        return $this->render('wlt/evaluation/comment_delete.html.twig', [
+            'menu_path' => 'work_linked_training_evaluation_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'comment' => $agreementActivityRealizationComment,
+            'agreement' => $agreement,
+            'agreement_activity_realization' => $agreementActivityRealizationComment->getAgreementActivityRealization()
         ]);
     }
 }

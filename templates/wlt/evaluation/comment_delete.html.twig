@@ -1,0 +1,15 @@
+{% trans_default_domain 'wlt_agreement_activity_realization' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    <form method="post">
+        <input type="hidden" name="confirm" value="ok">
+        <div class="alert alert-warning">{{ 'prompt.delete_confirm'|trans|nl2br }}</div>
+        <div class="card">
+            <div class="card-body">{{ comment.comment|nl2br }}</div>
+            <div class="card-footer small"><b>{{ comment.timestamp|date('format.datetime'|trans({}, 'general')) }} - {{ comment.person }}</b></div>
+        </div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger', 'form.delete_confirm'|trans) }}
+    </form>
+{% endblock %}

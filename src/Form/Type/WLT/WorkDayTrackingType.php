@@ -75,9 +75,12 @@ class WorkDayTrackingType extends AbstractType
                         ['disabled' => 'disabled'] :
                         [];
                 },
-                'choice_label' => function (ActivityRealization $ar) use ($lockedActivityRealizations) {
+                'choice_label' => function (ActivityRealization $ar) use ($lockedActivityRealizations, $lockManager) {
                     $label = $ar->__toString();
                     if (in_array($ar, $lockedActivityRealizations, true)) {
+                        if ($lockManager) {
+                            $label = '***' . $label;
+                        }
                         $label .= $this->translator->trans('form.caption.locked', [], 'wlt_tracking');
                     }
                     return $label;

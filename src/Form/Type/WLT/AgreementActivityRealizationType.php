@@ -74,7 +74,8 @@ class AgreementActivityRealizationType extends AbstractType
                     'choice_translation_domain' => false,
                     'choices' => $this->grades,
                     'class' => ActivityRealizationGrade::class,
-                    'disabled' => !in_array($data, $this->submittedAgreementActivityRealizations, true),
+                    'disabled' => $data->isDisabled() ||
+                        !in_array($data, $this->submittedAgreementActivityRealizations, true),
                     'expanded' => true,
                     'label_attr' => ['class' => 'radio-inline'],
                     'placeholder' => $this->translator->trans(

@@ -68,7 +68,7 @@ class TrackingCalendarController extends AbstractController
             ? $workDayRepository->hoursStatsByAgreement($agreement)
             : [];
 
-        $activityRealizations = $agreementActivityRealizationRepository->findByAgreementSorted($agreement);
+        $activityRealizations = $agreementActivityRealizationRepository->findByAgreementSortedAndEnabled($agreement);
 
         $title = $translator->trans('title.calendar', [], 'wlt_tracking');
 

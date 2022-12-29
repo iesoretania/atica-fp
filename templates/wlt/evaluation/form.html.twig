@@ -22,10 +22,33 @@
                 <tbody>
         {% endif %}
         <tr>
-            <td class="w-50">{{ activity_realization.vars.data.activityRealization }}</td>
+            <td class="w-50">{{ activity_realization.vars.data.activityRealization }}
+                {%- if activity_realization.vars.data.disabled %}
+                    <i class="fa fa-lock" title="{{ 'form.disabled.hint'|trans }}"></i>
+                {% endif -%}
+                {%- if activity_realization.vars.data.comments.count() > 0 %}
+                    {% set target_id = 'id' ~ activity_realization.vars.data.id %}
+                    <a data-toggle="collapse" href="#{{ target_id }}" role="button" aria-expanded="false" aria-controls="{{ target_id }}" class="badge badge-pill badge-dark" title="{{ 'form.comments.hint'|trans }}">
+                        <i class="fa fa-comments"></i> {{ activity_realization.vars.data.comments.count() }}
+                    </a>
+                {% endif -%}
+                <a href="{{ path('work_linked_training_evaluation_comment_form', {'id': activity_realization.vars.data.id}) }}" target="_blank">
+                    <i class="fa fa-pen" title="{{ 'form.edit.hint'|trans }}"></i>
+                </a>
+            </td>
             <td class="w-50">
                 {{ form_errors(activity_realization) }}
                 {{ form_widget(activity_realization) }}
+                {% if activity_realization.vars.data.comments.count() > 0 %}
+                    <div class="collapse" id="{{ target_id }}">
+                        {% for comment in activity_realization.vars.data.comments %}
+                            <div class="card">
+                                <div class="card-body">{{ comment.comment|nl2br }}</div>
+                                <div class="card-footer small"><b>{{ comment.timestamp|date('format.datetime'|trans({}, 'general')) }} - {{ comment.person }}</b></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}

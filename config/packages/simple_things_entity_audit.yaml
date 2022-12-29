@@ -8,6 +8,7 @@ simple_things_entity_audit:
         - App\Entity\Edu\ContactMethod
         - App\Entity\WLT\ActivityRealizationGrade
         - App\Entity\WLT\AgreementActivityRealization
+        - App\Entity\WLT\AgreementActivityRealizationComment
         - App\Entity\WLT\Contact
         - App\Entity\WLT\EducationalTutorAnsweredSurvey
         - App\Entity\WLT\LearningProgram

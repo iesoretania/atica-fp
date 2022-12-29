@@ -2,14 +2,23 @@ form.description: Concreción
 form.grade: Valoración
 
 form.grade_none: Sin valorar
+form.disabled: Deshabilitar concreción
+form.disabled.false: El estudiante podrá seleccionar la concreción
+form.disabled.true: El estudiante no podrá seleccionar la concreción. Las jornadas que la tengan marcadas se mantienen
+
+form.comments: Comentarios
+form.new_comment: Añadir nuevo comentario
 
 form.grades: Configuración de la valoración
 form.save: Guardar cambios
 form.back: Volver
+form.delete_confirm: Confirmar borrado
 
 title.grade: Valoración de actividades
 title.list: Convenios evaluables
 title.report: Resumen de la evaluación
+title.comment: Comentarios de la concreción
+title.delete_comment: Eliminar comentario
 
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
 table.no_items: No hay convenios que mostrar
@@ -24,7 +33,15 @@ header.status: Concreciones evaluadas
 header.agreement_count: Número de convenios
 header.completed_activity_realization_count: Concreciones evaluadas
 
+prompt.delete_confirm: |
+    ¿Está seguro de que desea eliminar el comentario?
+
+    Esta operación no se puede deshacer.
+
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
+
+message.comment_deleted: Comentario eliminado.
+message.comment_delete_error: No se ha podido eliminar el comentario.
 
 title.summary: Resumen de evaluación
