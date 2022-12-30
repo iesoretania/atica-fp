@@ -1,6 +1,6 @@
-![Logo de ÁTICA-FP](images/ÁTICA_FP_p.png)
+# ÁTICA-FP
 
-## ¿Qué es ÁTICA-FP?
+![Logo de ÁTICA-FP](images/ÁTICA_FP_p.png)
 
 Es una **aplicación web** para ayudar en el seguimiento del alumnado de FP durante la
 **Formación en Centros de Trabajo** y durante el período de alternancia de **FP dual**.

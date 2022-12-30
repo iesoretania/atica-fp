@@ -1,4 +1,6 @@
-# Consideraciones previas
+# Instalación de una instancia
+
+## Consideraciones previas
 
 Instalar la plataforma en un servidor necesita de unos conocimientos mínimos de administración de sistemas.
 
