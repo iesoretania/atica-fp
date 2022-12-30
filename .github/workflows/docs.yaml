@@ -20,9 +20,9 @@ jobs:
                   dst: generated
                   title: Documentación ÁTICA-FP
                   language: es
-                  icon: library
+                  icon: book-open-page-variant
                   primary-color: indigo
-                  secondary-color: indigo
+                  secondary-color: teal
                   hide-repository: false
             - name: Deploy GH Pages
               uses: peaceiris/actions-gh-pages@v3
