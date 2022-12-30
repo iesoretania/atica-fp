@@ -13,7 +13,7 @@
     
     
       
-        <title>00 index - Documentación ÁTICA-FP</title>
+        <title>Instalación - Documentación ÁTICA-FP</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#atica-fp" class="md-skip">
+        <a href="#instalacion" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -109,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              00 index
+              Instalación
             
           </span>
         </div>
@@ -256,6 +256,21 @@
 
   
   
+  
+    <li class="md-nav__item">
+      <a href="intro.html" class="md-nav__link">
+        Introducción
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
     
   
   
@@ -267,40 +282,9 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          00 index
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="00-index.html" class="md-nav__link md-nav__link--active">
-        00 index
+      <a href="instalacion.html" class="md-nav__link md-nav__link--active">
+        Instalación
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Tabla de contenidos
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#requisitos" class="md-nav__link">
-    Requisitos
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -341,21 +325,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Tabla de contenidos
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#requisitos" class="md-nav__link">
-    Requisitos
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -369,29 +338,36 @@
   
                   
 
-  <a href="https://github.com/iesoretania/atica-fp/edit/docs-test2/docs/00-index.md" title="Editar esta página" class="md-content__button md-icon">
+  <a href="https://github.com/iesoretania/atica-fp/edit/docs-test2/docs/instalacion.md" title="Editar esta página" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<h1 id="atica-fp">ATICA-FP</h1>
-<p>Aplicación web para ayudar en el seguimiento del alumnado de FP durante la Formación en Centros de Trabajo y
-durante el período de alternancia de FP dual.</p>
-<p>Puedes seguir el desarrollo de esta herramienta vía Twitter siguiendo a <a href="https://twitter.com/aticaFP">@aticaFP</a>.</p>
-<p>Este proyecto está desarrollado en PHP utilizando <a href="http://symfony.com/">Symfony</a> y otros muchos componentes que se instalan usando
-<a href="http://getcomposer.org">Composer</a> y <a href="https://npmjs.com/">npmjs</a>.</p>
-<h2 id="requisitos">Requisitos</h2>
+<h1 id="instalacion">Instalación</h1>
 <ul>
-<li>PHP 7.2.24 o superior.</li>
-<li>Servidor web Apache2 (podría funcionar con nginx, pero no se ha probado aún).</li>
-<li>Servidor de base de datos MySQL 5.7 o superior, o bien algún derivado (como MariaDB, Percona, etc).<ul>
-<li>Atención: Con MySQL 8.0.20 o superior, es necesario aumentar el parámetro <code>sort_buffer_size</code> en
-  la sección <code>[mysqld]</code>. Con 1M parece funcionar bien.</li>
+<li>Ejecutar <code>composer install</code> desde la carpeta del proyecto.</li>
+<li>Hacer una copia del fichero <code>.env</code> en <code>.env.local</code><ul>
+<li>Modifica la configuración cambiando el contenido de <code>.env.local</code></li>
 </ul>
 </li>
-<li>PHP <a href="http://getcomposer.org">Composer</a>.</li>
-<li><a href="https://nodejs.org/en/">Node.js</a> ≥12.</li>
+<li>Ejecutar <code>npm install</code></li>
+<li>Ejecutar el comando <code>node_modules/.bin/encore prod</code> para generar los assets.</li>
+<li>Configurar el sitio de Apache2 para que el <code>DocumentRoot</code> sea la carpeta <code>public/</code> dentro de la carpeta de instalación.</li>
+<li>Activar en Apache2 <code>mod_rewrite</code> (en S.O. Linux prueba con el comando <code>a2enmod rewrite</code> y reiniciando el servicio)</li>
+<li>Si aún no se ha hecho, modificar el fichero <code>.env.local</code> con los datos de acceso al sistema gestor de bases de datos deseados y otros parámetros de configuración globales que considere interesantes.</li>
+<li>Para crear la base de datos: <code>php bin/console doctrine:database:create</code></li>
+<li>Para crear las tablas:<ul>
+<li><code>php bin/console doctrine:schema:create</code></li>
+<li><code>php bin/console doctrine:migrations:version --add --all</code></li>
+</ul>
+</li>
+<li>Para insertar los datos iniciales: (con la base de datos vacía)<ul>
+<li><code>bin/console app:organization "I.E.S. Test" --code=23999999 --city=Linares</code> (cambia los datos según tu centro)</li>
+<li><code>bin/console app:admin admin --firstname=Admin --lastname=ATICA --password=admin</code></li>
+<li>Esto creará un usuario <code>admin</code> con contraseña <code>admin</code>. Habrá que cambiarla la primera vez que se acceda.</li>
+</ul>
+</li>
 </ul>
 
   <hr>
@@ -399,11 +375,11 @@ durante el período de alternancia de FP dual.</p>
   <small>
     
       Última actualización:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime">December 30, 2022 12:16:50</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime">December 30, 2022 12:26:52</span>
       
         <br>
         Creado:
-        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime">December 30, 2022 12:16:50</span>
+        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime">December 30, 2022 12:26:52</span>
       
     
   </small>
@@ -437,7 +413,7 @@ durante el período de alternancia de FP dual.</p>
     <nav class="md-footer__inner md-grid" aria-label="Pie" >
       
         
-        <a href="index.html" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Documentación ÁTICA-FP" rel="prev">
+        <a href="intro.html" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Introducción" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -446,7 +422,7 @@ durante el período de alternancia de FP dual.</p>
               <span class="md-footer__direction">
                 Anterior
               </span>
-              Documentación ÁTICA-FP
+              Introducción
             </div>
           </div>
         </a>

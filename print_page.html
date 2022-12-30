@@ -264,8 +264,23 @@
   
   
     <li class="md-nav__item">
-      <a href="00-index.html" class="md-nav__link">
-        00 index
+      <a href="intro.html" class="md-nav__link">
+        Introducción
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="instalacion.html" class="md-nav__link">
+        Instalación
       </a>
     </li>
   
@@ -314,8 +329,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#00-index" class="md-nav__link">
-    2. 00 index
+  <a href="#intro" class="md-nav__link">
+    2. Introducción
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion" class="md-nav__link">
+    3. Instalación
   </a>
   
 </li>
@@ -360,8 +382,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#00-index" class="md-nav__link">
-    2. 00 index
+  <a href="#intro" class="md-nav__link">
+    2. Introducción
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion" class="md-nav__link">
+    3. Instalación
   </a>
   
 </li>
@@ -403,13 +432,13 @@
                 </nav>
             </div>
         </section>
-        <section class="print-page" id="index"><h1 id="index-documentacion-atica-fp">Documentación ÁTICA-FP</h1></section><section class="print-page" id="00-index"><h1 id="00-index-atica-fp">ATICA-FP</h1>
+        <section class="print-page" id="index"><h1 id="index-documentacion-atica-fp">Documentación ÁTICA-FP</h1></section><section class="print-page" id="intro"><h1 id="intro-atica-fp">ATICA-FP</h1>
 <p>Aplicación web para ayudar en el seguimiento del alumnado de FP durante la Formación en Centros de Trabajo y
 durante el período de alternancia de FP dual.</p>
 <p>Puedes seguir el desarrollo de esta herramienta vía Twitter siguiendo a <a href="https://twitter.com/aticaFP">@aticaFP</a>.</p>
 <p>Este proyecto está desarrollado en PHP utilizando <a href="http://symfony.com/">Symfony</a> y otros muchos componentes que se instalan usando
 <a href="http://getcomposer.org">Composer</a> y <a href="https://npmjs.com/">npmjs</a>.</p>
-<h2 id="00-index-requisitos">Requisitos</h2>
+<h2 id="intro-requisitos">Requisitos</h2>
 <ul>
 <li>PHP 7.2.24 o superior.</li>
 <li>Servidor web Apache2 (podría funcionar con nginx, pero no se ha probado aún).</li>
@@ -420,6 +449,30 @@ durante el período de alternancia de FP dual.</p>
 </li>
 <li>PHP <a href="http://getcomposer.org">Composer</a>.</li>
 <li><a href="https://nodejs.org/en/">Node.js</a> ≥12.</li>
+</ul></section><section class="print-page" id="instalacion"><h1 id="instalacion-instalacion">Instalación</h1>
+<ul>
+<li>Ejecutar <code>composer install</code> desde la carpeta del proyecto.</li>
+<li>Hacer una copia del fichero <code>.env</code> en <code>.env.local</code><ul>
+<li>Modifica la configuración cambiando el contenido de <code>.env.local</code></li>
+</ul>
+</li>
+<li>Ejecutar <code>npm install</code></li>
+<li>Ejecutar el comando <code>node_modules/.bin/encore prod</code> para generar los assets.</li>
+<li>Configurar el sitio de Apache2 para que el <code>DocumentRoot</code> sea la carpeta <code>public/</code> dentro de la carpeta de instalación.</li>
+<li>Activar en Apache2 <code>mod_rewrite</code> (en S.O. Linux prueba con el comando <code>a2enmod rewrite</code> y reiniciando el servicio)</li>
+<li>Si aún no se ha hecho, modificar el fichero <code>.env.local</code> con los datos de acceso al sistema gestor de bases de datos deseados y otros parámetros de configuración globales que considere interesantes.</li>
+<li>Para crear la base de datos: <code>php bin/console doctrine:database:create</code></li>
+<li>Para crear las tablas:<ul>
+<li><code>php bin/console doctrine:schema:create</code></li>
+<li><code>php bin/console doctrine:migrations:version --add --all</code></li>
+</ul>
+</li>
+<li>Para insertar los datos iniciales: (con la base de datos vacía)<ul>
+<li><code>bin/console app:organization "I.E.S. Test" --code=23999999 --city=Linares</code> (cambia los datos según tu centro)</li>
+<li><code>bin/console app:admin admin --firstname=Admin --lastname=ATICA --password=admin</code></li>
+<li>Esto creará un usuario <code>admin</code> con contraseña <code>admin</code>. Habrá que cambiarla la primera vez que se acceda.</li>
+</ul>
+</li>
 </ul></section></div>
 
 

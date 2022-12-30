@@ -13,7 +13,7 @@
     
     
       
-        <title>Documentación ÁTICA-FP</title>
+        <title>Introducción - Documentación ÁTICA-FP</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#documentacion-atica-fp" class="md-skip">
+        <a href="#atica-fp" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -109,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Documentación ÁTICA-FP
+              Introducción
             
           </span>
         </div>
@@ -241,6 +241,21 @@
 
   
   
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        Documentación ÁTICA-FP
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
     
   
   
@@ -252,25 +267,41 @@
         
       
       
-      <a href="index.html" class="md-nav__link md-nav__link--active">
-        Documentación ÁTICA-FP
-      </a>
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Introducción
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="intro.html" class="md-nav__link">
+      <a href="intro.html" class="md-nav__link md-nav__link--active">
         Introducción
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requisitos" class="md-nav__link">
+    Requisitos
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -325,6 +356,21 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requisitos" class="md-nav__link">
+    Requisitos
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -338,24 +384,41 @@
   
                   
 
-  <a href="https://github.com/iesoretania/atica-fp/edit/docs-test2/docs/index.md" title="Editar esta página" class="md-content__button md-icon">
+  <a href="https://github.com/iesoretania/atica-fp/edit/docs-test2/docs/intro.md" title="Editar esta página" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<h1 id="documentacion-atica-fp">Documentación ÁTICA-FP</h1>
+<h1 id="atica-fp">ATICA-FP</h1>
+<p>Aplicación web para ayudar en el seguimiento del alumnado de FP durante la Formación en Centros de Trabajo y
+durante el período de alternancia de FP dual.</p>
+<p>Puedes seguir el desarrollo de esta herramienta vía Twitter siguiendo a <a href="https://twitter.com/aticaFP">@aticaFP</a>.</p>
+<p>Este proyecto está desarrollado en PHP utilizando <a href="http://symfony.com/">Symfony</a> y otros muchos componentes que se instalan usando
+<a href="http://getcomposer.org">Composer</a> y <a href="https://npmjs.com/">npmjs</a>.</p>
+<h2 id="requisitos">Requisitos</h2>
+<ul>
+<li>PHP 7.2.24 o superior.</li>
+<li>Servidor web Apache2 (podría funcionar con nginx, pero no se ha probado aún).</li>
+<li>Servidor de base de datos MySQL 5.7 o superior, o bien algún derivado (como MariaDB, Percona, etc).<ul>
+<li>Atención: Con MySQL 8.0.20 o superior, es necesario aumentar el parámetro <code>sort_buffer_size</code> en
+  la sección <code>[mysqld]</code>. Con 1M parece funcionar bien.</li>
+</ul>
+</li>
+<li>PHP <a href="http://getcomposer.org">Composer</a>.</li>
+<li><a href="https://nodejs.org/en/">Node.js</a> ≥12.</li>
+</ul>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Última actualización:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime">December 30, 2022 12:27:52</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime">December 30, 2022 12:26:52</span>
       
         <br>
         Creado:
-        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime">December 30, 2022 12:27:52</span>
+        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime">December 30, 2022 12:16:50</span>
       
     
   </small>
@@ -370,7 +433,7 @@
   
     <div class="md-source-date">
       <small>
-          Authors: <span class='git-page-authors git-authors'></span>
+          Authors: <span class='git-page-authors git-authors'><a href='mailto:lrlopez@gmail.com'>Luis Ramón López López</a></span>
       </small>
     </div>
   
@@ -388,15 +451,30 @@
     
     <nav class="md-footer__inner md-grid" aria-label="Pie" >
       
+        
+        <a href="index.html" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Documentación ÁTICA-FP" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Anterior
+              </span>
+              Documentación ÁTICA-FP
+            </div>
+          </div>
+        </a>
+      
       
         
-        <a href="intro.html" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Introducción" rel="next">
+        <a href="instalacion.html" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Instalación" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Siguiente
               </span>
-              Introducción
+              Instalación
             </div>
           </div>
           <div class="md-footer__button md-icon">
