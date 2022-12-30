@@ -1,0 +1,31 @@
+name: Generación documentación
+on:
+    pull_request:
+    push:
+        branches:
+            - "docs-test2"
+jobs:
+    update-gh-pages:
+        name: Generate and upload new GitHub Pages
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out the repo
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+            - name: Generate HTML from Markdown
+              uses: ldeluigi/markdown-docs@latest
+              with:
+                  src: docs
+                  dst: generated
+                  title: Documentación ÁTICA-FP
+                  language: es
+                  icon: library
+                  primary-color: indigo
+                  secondary-color: indigo
+                  hide-repository: false
+            - name: Deploy GH Pages
+              uses: peaceiris/actions-gh-pages@v3
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./generated
