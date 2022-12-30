@@ -1,5 +1,6 @@
-# Instalación
+# Pasos de la instalación
 
+- Clonar el repositorio
 - Ejecutar `composer install` desde la carpeta del proyecto.
 - Hacer una copia del fichero `.env` en `.env.local`
     - Modifica la configuración cambiando el contenido de `.env.local`
