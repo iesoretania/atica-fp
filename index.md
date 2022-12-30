@@ -10,7 +10,7 @@ eficaz e instantáneo. Esto incluye registrar las actividades realizadas fuera d
 reuniones de tutorización realizados por el profesorado y la valoración del desempeño de los estudiantes.
 
 El código del proyecto es [software libre](https://www.gnu.org/philosophy/free-sw.es.html)
-bajo licencia [AGPL versión 3], con lo que puede desplegarse en tu centro educativo sin necesitar ningún tipo
+bajo licencia [AGPL versión 3] con lo que puede desplegarse en tu centro educativo sin necesitar ningún tipo
 de autorización e incluso modificarlo para adaptarlo a nuevas necesidades. Eso sí, los cambios y mejoras que
 se introduzcan deben estar disponibles para quien quiera incorporarlos. De esta manera, todos salimos ganando.
 
