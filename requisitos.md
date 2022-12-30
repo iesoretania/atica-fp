@@ -1,15 +1,4 @@
-ATICA-FP
-========
-
-Aplicación web para ayudar en el seguimiento del alumnado de FP durante la Formación en Centros de Trabajo y
-durante el período de alternancia de FP dual.
-
-Puedes seguir el desarrollo de esta herramienta vía Twitter siguiendo a [@aticaFP].
-
-Este proyecto está desarrollado en PHP utilizando [Symfony] y otros muchos componentes que se instalan usando
-[Composer] y [npmjs].
-
-## Requisitos
+# Requisitos
 
 - PHP 7.2.24 o superior.
 - Servidor web Apache2 (podría funcionar con nginx, pero no se ha probado aún).
