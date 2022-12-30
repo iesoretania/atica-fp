@@ -129,7 +129,8 @@ class TrackingCalendarController extends AbstractController
 
         $form = $this->createForm(WorkDayTrackingType::class, $workDay, [
             'work_day' => $workDay,
-            'locked_activity_realizations' => $lockedActivityRealizations
+            'locked_activity_realizations' => $lockedActivityRealizations,
+            'disabled' => $readOnly
         ]);
 
         $form->handleRequest($request);

@@ -59,12 +59,11 @@ class TeachingRepository extends ServiceEntityRepository
             return  $this->createQueryBuilder('t')
                 ->join('t.teacher', 'te')
                 ->join('t.subject', 's')
-                ->join('s.grade', 'g')
                 ->select('COUNT(t)')
                 ->andWhere('te.person = :teacher_person')
-                ->andWhere('s.grade = :grade')
+                ->andWhere('t.group = :group')
                 ->setParameter('teacher_person', $person)
-                ->setParameter('grade', $group->getGrade())
+                ->setParameter('group', $group)
                 ->getQuery()
                 ->getSingleScalarResult();
         } catch (NonUniqueResultException|NoResultException $e) {

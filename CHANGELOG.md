@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * fix: Solucionado el error de generación de documentos PDF muy complejos
 * feat: Ahora se pueden añadir comentarios a las concreciones de un convenio concreto y desactivar elementos
+* fix: Arreglado el problema de acceso al seguimiento por parte del equipo educativo del estudiante de dual
 
 5.2.2 (2022-11-28)
 ------------------

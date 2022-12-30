@@ -21,6 +21,7 @@ namespace App\Security\WLT;
 use App\Entity\Person;
 use App\Entity\WLT\WorkDay;
 use App\Security\CachedVoter;
+use App\Security\Edu\GroupVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Psr\Cache\CacheItemPoolInterface;
@@ -99,20 +100,33 @@ class WorkDayVoter extends CachedVoter
 
         $accessGranted = $this->decisionManager->decide($token, [AgreementVoter::ACCESS], $subject->getAgreement());
 
+        $isStudent = $subject->getAgreement()->getStudentEnrollment()->getPerson() === $user;
+        $isManager = $this->decisionManager->decide($token, [AgreementVoter::MANAGE], $subject->getAgreement());
+        $isTutor = $subject->getAgreement()->getEducationalTutor()->getPerson() === $user
+            || ($subject->getAgreement()->getAdditionalEducationalTutor()
+                && $subject->getAgreement()->getAdditionalEducationalTutor()->getPerson() === $user)
+            || $subject->getAgreement()->getWorkTutor() === $user
+            || ($subject->getAgreement()->getAdditionalWorkTutor() === $user);
+        $isGroupTutor = $this->decisionManager->decide($token, [GroupVoter::MANAGE],
+            $subject->getAgreement()->getStudentEnrollment()->getGroup());
+
         switch ($attribute) {
             case self::ACCESS:
-                // Si se puede acceder a el convenio, se puede visualizar la jornada
+                // Si se puede acceder al convenio, se puede visualizar la jornada
                 return $accessGranted;
             case self::FILL:
-                // Sólo si pertenece al curso académico activo
-                return $accessGranted &&
-                    $subject
+                // Sólo si pertenece al curso académico activo y es el estudiante,
+                // algún tutor (docente, laboral o de grupo) o puede administrar el
+                // convenio
+                return $accessGranted
+                    && $subject
                         ->getAgreement()
                         ->getStudentEnrollment()
                         ->getGroup()
                         ->getGrade()
                         ->getTraining()
-                        ->getAcademicYear() === $organization->getCurrentAcademicYear();
+                        ->getAcademicYear() === $organization->getCurrentAcademicYear()
+                    && ($isManager || $isStudent || $isTutor || $isGroupTutor);
         }
 
         // denegamos en cualquier otro caso
