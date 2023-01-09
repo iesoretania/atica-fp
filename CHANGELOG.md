@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-5.x.x (xxxx-xx-xx)
+5.3.0 (2023-01-09)
 ------------------
 * fix: Solucionado el error de generación de documentos PDF muy complejos
 * feat: Ahora se pueden añadir comentarios a las concreciones de un convenio concreto y desactivar elementos
