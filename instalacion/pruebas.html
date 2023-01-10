@@ -366,17 +366,25 @@
 
 <h1 id="prueba-de-la-aplicacion">Prueba de la aplicación</h1>
 <h1 id="prueba-rapida-mediante-docker-compose">Prueba rápida mediante Docker Compose</h1>
-<p><strong>ATENCIÓN: No se recomienda ejecutarlo así en entornos de producción, tan sólo se sugiere para pruebas internas.</strong>
-- Ejecutar <code>docker-compose up -d</code> desde la carpeta del proyecto
-    * El usuario será <code>admin</code> y la contraseña <code>admin</code>. Habrá que cambiarla en la primera entrada.
-    * ¿Quieres cargar unos datos de prueba en vez de que esté vacío?
-        * Si usas Linux, con el comando <code>DEMO=1 docker-compose up -d</code>
-        * Si usas Windows, abre un PowerShell y ejecuta <code>$env:DEMO=1;  docker-compose up -d</code>
-        * En estos caso, el usuario será <code>admin</code> y la contraseña <code>aticafp</code>
-- Esperar...
-- Acceder desde el navegador a la dirección http://127.0.0.1:9999
-    * Si usas Docker Toolbox usa esta dirección en su lugar: http://192.168.99.100:9999
-- ¡Listo!</p>
+<p><strong>ATENCIÓN: No se recomienda ejecutarlo así en entornos de producción, tan sólo se sugiere para pruebas internas.</strong></p>
+<ul>
+<li>Ejecutar <code>docker-compose up -d</code> desde la carpeta del proyecto<ul>
+<li>El usuario será <code>admin</code> y la contraseña <code>admin</code>. Habrá que cambiarla en la primera entrada.</li>
+<li>¿Quieres cargar unos datos de prueba en vez de que esté vacío?<ul>
+<li>Si usas Linux, con el comando <code>DEMO=1 docker-compose up -d</code></li>
+<li>Si usas Windows, abre un PowerShell y ejecuta <code>$env:DEMO=1;  docker-compose up -d</code></li>
+<li>En estos caso, el usuario será <code>admin</code> y la contraseña <code>aticafp</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Esperar...</li>
+<li>Acceder desde el navegador a la dirección http://127.0.0.1:9999<ul>
+<li>Si usas Docker Toolbox usa esta dirección en su lugar: http://192.168.99.100:9999</li>
+</ul>
+</li>
+<li>¡Listo!</li>
+</ul>
 <p><strong>NOTA: La carpeta <code>data</code> contendrá la base de datos, puedes sacar copias de seguridad de la misma si lo estimas conveniente.</strong></p>
 
   <hr>
