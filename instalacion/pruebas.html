@@ -256,12 +256,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
       
       
       
@@ -284,7 +286,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../instalacion/consideraciones_previas.html" class="md-nav__link">
+      <a href="index.html" class="md-nav__link">
         Instalación de una instancia
       </a>
     </li>
@@ -298,7 +300,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../instalacion/requisitos.html" class="md-nav__link">
+      <a href="requisitos.html" class="md-nav__link">
         Requisitos
       </a>
     </li>
@@ -312,9 +314,33 @@
   
   
     <li class="md-nav__item">
-      <a href="../instalacion/pasos.html" class="md-nav__link">
+      <a href="pasos.html" class="md-nav__link">
         Pasos
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="pruebas.html" class="md-nav__link md-nav__link--active">
+        Pruebas
+      </a>
+      
     </li>
   
 
@@ -332,52 +358,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Pruebas
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="pruebas.html" class="md-nav__link md-nav__link--active">
-        Pruebas
+    <li class="md-nav__item">
+      <a href="../configuracion/index.html" class="md-nav__link">
+        Configuración inicial
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Tabla de contenidos
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#prueba-rapida-mediante-docker-compose" class="md-nav__link">
-    Prueba rápida mediante Docker Compose
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -390,8 +375,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../pruebas.md" class="md-nav__link">
-        Configuración inicial
+      <a href="../manual_admin/index.html" class="md-nav__link">
+        Manual de administración
       </a>
     </li>
   
@@ -432,21 +417,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Tabla de contenidos
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#prueba-rapida-mediante-docker-compose" class="md-nav__link">
-    Prueba rápida mediante Docker Compose
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -460,14 +430,14 @@
   
                   
 
-  <a href="https://github.com/iesoretania/atica-fp/edit/docs-test2/docs/pruebas/pruebas.md" title="Editar esta página" class="md-content__button md-icon">
+  <a href="https://github.com/iesoretania/atica-fp/edit/docs-test2/docs/instalacion/pruebas.md" title="Editar esta página" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 <h1 id="prueba-de-la-aplicacion">Prueba de la aplicación</h1>
-<h2 id="prueba-rapida-mediante-docker-compose">Prueba rápida mediante Docker Compose</h2>
+<h1 id="prueba-rapida-mediante-docker-compose">Prueba rápida mediante Docker Compose</h1>
 <p><strong>ATENCIÓN: No se recomienda ejecutarlo así en entornos de producción, tan sólo se sugiere para pruebas internas.</strong>
 - Ejecutar <code>docker-compose up -d</code> desde la carpeta del proyecto
     * El usuario será <code>admin</code> y la contraseña <code>admin</code>. Habrá que cambiarla en la primera entrada.
@@ -486,7 +456,7 @@
   <small>
     
       Última actualización:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime">December 30, 2022 13:35:45</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime">January 10, 2023 21:38:13</span>
       
         <br>
         Creado:
@@ -524,7 +494,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Pie" >
       
         
-        <a href="../instalacion/pasos.html" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Pasos" rel="prev">
+        <a href="pasos.html" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Pasos" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -538,6 +508,21 @@
           </div>
         </a>
       
+      
+        
+        <a href="../configuracion/index.html" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Configuración inicial" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Siguiente
+              </span>
+              Configuración inicial
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
       
     </nav>
   

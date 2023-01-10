@@ -290,7 +290,7 @@
   
   
     <li class="md-nav__item">
-      <a href="instalacion/consideraciones_previas.html" class="md-nav__link">
+      <a href="instalacion/index.html" class="md-nav__link">
         Instalación de una instancia
       </a>
     </li>
@@ -326,6 +326,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="instalacion/pruebas.html" class="md-nav__link">
+        Pruebas
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -340,8 +354,8 @@
   
   
     <li class="md-nav__item">
-      <a href="pruebas/pruebas.html" class="md-nav__link">
-        Pruebas
+      <a href="configuracion/index.html" class="md-nav__link">
+        Configuración inicial
       </a>
     </li>
   
@@ -355,8 +369,8 @@
   
   
     <li class="md-nav__item">
-      <a href="pruebas.md" class="md-nav__link">
-        Configuración inicial
+      <a href="manual_admin/index.html" class="md-nav__link">
+        Manual de administración
       </a>
     </li>
   
@@ -413,7 +427,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#instalacion-consideraciones_previas" class="md-nav__link">
+  <a href="#instalacion-index" class="md-nav__link">
     2. Instalación de una instancia
   </a>
   
@@ -433,14 +447,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#instalacion-pruebas" class="md-nav__link">
+    5. Pruebas
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#pruebas-pruebas" class="md-nav__link">
-    5. Pruebas
+  <a href="#configuracion-index" class="md-nav__link">
+    6. Configuración inicial
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual_admin-index" class="md-nav__link">
+    7. Manual de administración
   </a>
   
 </li>
@@ -493,7 +521,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#instalacion-consideraciones_previas" class="md-nav__link">
+  <a href="#instalacion-index" class="md-nav__link">
     2. Instalación de una instancia
   </a>
   
@@ -513,14 +541,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#instalacion-pruebas" class="md-nav__link">
+    5. Pruebas
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#pruebas-pruebas" class="md-nav__link">
-    5. Pruebas
+  <a href="#configuracion-index" class="md-nav__link">
+    6. Configuración inicial
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual_admin-index" class="md-nav__link">
+    7. Manual de administración
   </a>
   
 </li>
@@ -585,8 +627,8 @@ nombre, eso sí) puede que el formato de exportación sea compatible.</p>
                         <h1 class='nav-section-title' id='section-instalación'>
                             Instalación <a class='headerlink' href='#section-instalación' title='Permanent link'>↵</a>
                         </h1>
-                        <section class="print-page" id="instalacion-consideraciones_previas"><h1 id="instalacion-consideraciones_previas-instalacion-de-una-instancia">Instalación de una instancia</h1>
-<h2 id="instalacion-consideraciones_previas-consideraciones-previas">Consideraciones previas</h2>
+                        <section class="print-page" id="instalacion-index"><h1 id="instalacion-index-instalacion-de-una-instancia">Instalación de una instancia</h1>
+<h2 id="instalacion-index-consideraciones-previas">Consideraciones previas</h2>
 <p>Instalar la plataforma en un servidor necesita de unos conocimientos mínimos de administración de sistemas.</p>
 <p>Es recomendable contar con personal que tenga experiencia tanto en este tema como aspectos de seguridad informática.</p></section><section class="print-page" id="instalacion-requisitos"><h1 id="instalacion-requisitos-requisitos">Requisitos</h1>
 <ul>
@@ -624,8 +666,8 @@ nombre, eso sí) puede que el formato de exportación sea compatible.</p>
 <li>Esto creará un usuario <code>admin</code> con contraseña <code>admin</code>. Habrá que cambiarla la primera vez que se acceda.</li>
 </ul>
 </li>
-</ul></section><h1 class='nav-section-title-end'>Ended: Instalación</h1><section class="print-page" id="pruebas-pruebas"><h1 id="pruebas-pruebas-prueba-de-la-aplicacion">Prueba de la aplicación</h1>
-<h2 id="pruebas-pruebas-prueba-rapida-mediante-docker-compose">Prueba rápida mediante Docker Compose</h2>
+</ul></section><section class="print-page" id="instalacion-pruebas"><h1 id="instalacion-pruebas-prueba-de-la-aplicacion">Prueba de la aplicación</h1>
+<h1 id="instalacion-pruebas-prueba-rapida-mediante-docker-compose">Prueba rápida mediante Docker Compose</h1>
 <p><strong>ATENCIÓN: No se recomienda ejecutarlo así en entornos de producción, tan sólo se sugiere para pruebas internas.</strong>
 - Ejecutar <code>docker-compose up -d</code> desde la carpeta del proyecto
     * El usuario será <code>admin</code> y la contraseña <code>admin</code>. Habrá que cambiarla en la primera entrada.
@@ -637,7 +679,9 @@ nombre, eso sí) puede que el formato de exportación sea compatible.</p>
 - Acceder desde el navegador a la dirección http://127.0.0.1:9999
     * Si usas Docker Toolbox usa esta dirección en su lugar: http://192.168.99.100:9999
 - ¡Listo!</p>
-<p><strong>NOTA: La carpeta <code>data</code> contendrá la base de datos, puedes sacar copias de seguridad de la misma si lo estimas conveniente.</strong></p></section></div>
+<p><strong>NOTA: La carpeta <code>data</code> contendrá la base de datos, puedes sacar copias de seguridad de la misma si lo estimas conveniente.</strong></p></section><h1 class='nav-section-title-end'>Ended: Instalación</h1><section class="print-page" id="configuracion-index"><h1 id="configuracion-index-configuracion-inicial">Configuración inicial</h1>
+<h2 id="configuracion-index-configuracion-de-la-plataforma">Configuración de la plataforma</h2>
+<h2 id="configuracion-index-configuracion-de-un-centro-educativo">Configuración de un centro educativo</h2></section><section class="print-page" id="manual_admin-index"><h1 id="manual_admin-index-manual-de-administracion">Manual de administración</h1></section></div>
 
 
 

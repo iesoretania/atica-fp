@@ -1,6 +1,6 @@
 # Prueba de la aplicación
 
-## Prueba rápida mediante Docker Compose
+# Prueba rápida mediante Docker Compose
 
 **ATENCIÓN: No se recomienda ejecutarlo así en entornos de producción, tan sólo se sugiere para pruebas internas.**
 - Ejecutar `docker-compose up -d` desde la carpeta del proyecto
