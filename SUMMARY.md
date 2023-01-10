@@ -1,7 +1,5 @@
 * [Introducción](index.md)
 * [Instalación](instalacion/index.md)
-    * [Requisitos](instalacion/requisitos.md)
-    * [Pasos](instalacion/pasos.md)
-    * [Pruebas](instalacion/pruebas.md)
 * [Configuración inicial](configuracion/index.md)
 * [Manual de administración](manual_admin/index.md)
+* [Manual de usuario](manual_usuario/index.md)
