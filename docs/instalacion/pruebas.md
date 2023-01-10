@@ -1,8 +1,9 @@
 # Prueba de la aplicación
 
-## Prueba rápida mediante Docker Compose
+# Prueba rápida mediante Docker Compose
 
 **ATENCIÓN: No se recomienda ejecutarlo así en entornos de producción, tan sólo se sugiere para pruebas internas.**
+
 - Ejecutar `docker-compose up -d` desde la carpeta del proyecto
     * El usuario será `admin` y la contraseña `admin`. Habrá que cambiarla en la primera entrada.
     * ¿Quieres cargar unos datos de prueba en vez de que esté vacío?

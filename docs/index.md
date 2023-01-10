@@ -1,4 +1,4 @@
-# ÁTICA-FP
+# Introducción a ÁTICA-FP
 
 ![Logo de ÁTICA-FP](images/ÁTICA_FP_p.png)
 
