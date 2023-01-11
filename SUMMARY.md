@@ -2,4 +2,6 @@
 * [Instalación](instalacion/index.md)
 * [Configuración inicial](configuracion/index.md)
 * [Manual de administración](manual_admin/index.md)
-* [Manual de usuario](manual_usuario/index.md)
+* [Manual del profesorado](manual_docente/index.md)
+* [Manual del estudiante](manual_estudiante/index.md)
+* [Manual del tutor laboral](manual_tutor_laboral/index.md)
