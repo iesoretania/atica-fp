@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+5.x.x (2023-xx-xx)
+------------------
+* fix: Solucionado problema con ciertos accesos si una enseñanza de dual no tiene asignado departamento
+
 5.3.0 (2023-01-09)
 ------------------
 * fix: Solucionado el error de generación de documentos PDF muy complejos

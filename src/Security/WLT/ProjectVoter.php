@@ -134,8 +134,9 @@ class ProjectVoter extends CachedVoter
         // El jefe de departamento de la familia profesional de proyecto también puede
         $isDepartmentHead = false;
         foreach ($subject->getGroups() as $group) {
-            if ($group->getGrade()->getTraining()->getDepartment()->getHead() &&
-                $group
+            if ($group->getGrade()->getTraining()->getDepartment()
+                && $group->getGrade()->getTraining()->getDepartment()->getHead()
+                && $group
                     ->getGrade()->getTraining()
                     ->getDepartment()->getHead()->getPerson() === $user
             ) {
