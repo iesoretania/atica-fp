@@ -108,6 +108,7 @@ class AgreementController extends AbstractController
                 foreach ($toInsert as $activityRealization) {
                     $agreementActivityRealization = new AgreementActivityRealization();
                     $agreementActivityRealization
+                        ->setDisabled(false)
                         ->setAgreement($agreement)
                         ->setActivityRealization($activityRealization);
                     $this->getDoctrine()->getManager()->persist($agreementActivityRealization);
