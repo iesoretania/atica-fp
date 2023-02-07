@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-5.x.x (2023-xx-xx)
+5.4.0 (2023-02-07)
 ------------------
 * fix: Solucionado problema con ciertos accesos si una enseñanza de dual no tiene asignado departamento
 * fix: Arreglado un problema al añadir concreciones a un convenio de FP dual
