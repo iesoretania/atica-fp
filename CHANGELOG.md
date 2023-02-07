@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * fix: Solucionado problema con ciertos accesos si una enseñanza de dual no tiene asignado departamento
 * fix: Arreglado un problema al añadir concreciones a un convenio de FP dual
+* feat: Ahora se pueden seleccionar o deseleccionar todas las concreciones en los convenios de FP dual
 
 5.3.0 (2023-01-09)
 ------------------

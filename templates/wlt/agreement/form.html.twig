@@ -2,6 +2,7 @@
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% form_theme form _self %}
+
 {% block content %}
     {{ form_start(form, {'attr': {'data-ajax': path('work_linked_training_agreement_new', {'project': agreement.project.id})}}) }}
     {{ form_widget(form) }}
@@ -40,6 +41,10 @@
 
 {% block _agreement_activityRealizations_widget %}
     <div {{ block('widget_container_attributes') }}>
+        {% if form.vars.choices %}
+            <button type="button" id="select_all" class="btn btn-sm btn-secondary" title="{{ 'form.select_all'|trans }}"><i class="fa fa-check-square"></i></button>
+            <button type="button" id="select_none" class="btn btn-sm btn-secondary" title="{{ 'form.select_none'|trans }}"><i class="fa fa-square"></i></button>
+        {% endif %}
         {% for name, choices in form.vars.choices %}
             <h5 class="checkbox-category">
                 {{ name }}
@@ -48,6 +53,10 @@
                 {{ form_widget(form[key], {translation_domain: false}) }}
                 {{ form_label(form[key]) }}
             {% endfor %}
+        {% else %}
+            <h5 class="checkbox-category">
+                {{ 'form.no_activity_realizations'|trans }}
+            </h5>
         {% endfor %}
     </div>
 {% endblock %}

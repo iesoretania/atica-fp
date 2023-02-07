@@ -29,6 +29,10 @@ form.copy_confirm: Realizar copia
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
+form.select_all: Seleccionar todas las concreciones
+form.select_none: Deseleccionar todas las concreciones
+form.no_activity_realizations: No hay concreciones asociadas a la empresa
+
 table.new: Nuevo convenio de colaboración
 table.calendar: Calendario
 

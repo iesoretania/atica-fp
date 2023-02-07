@@ -110,6 +110,13 @@ $(function ()
                     theme: "bootstrap",
                     language: 'es'
                 });
+                $("button#select_all").click(function () {
+                    $("input[name='agreement[activityRealizations][]']").prop('checked', true);
+                });
+
+                $("button#select_none").click(function () {
+                    $("input[name='agreement[activityRealizations][]']").prop('checked', false);
+                });
             },
             error: function () {
                 $('#agreement_workcenter').replaceWith('<div id="agreement_workcenter"><span class="text-danger"><i class="fa fa-times-circle fa-3x"></i></span></div>')
