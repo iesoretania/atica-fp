@@ -1,6 +1,7 @@
 {% trans_default_domain 'wpt_agreement' %}
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
+{% form_theme form _self %}
 
 {% block content %}
     {{ form_start(form, {'attr': {'data-ajax': path('workplace_training_agreement_new', {'shift': agreement.shift.id})}}) }}
@@ -36,4 +37,19 @@
             });
         });
     </script>
+{% endblock %}
+
+{% block _agreement_activities_widget %}
+    <div {{ block('widget_container_attributes') }}>
+        {% if choices %}
+            <button type="button" id="select_all" class="btn btn-sm btn-secondary" title="{{ 'form.select_all'|trans }}"><i class="fa fa-check-square"></i></button>
+            <button type="button" id="select_none" class="btn btn-sm btn-secondary" title="{{ 'form.select_none'|trans }}"><i class="fa fa-square"></i></button>
+        {% endif %}
+        {% for key, choice in choices %}
+            {{ form_widget(form[key], {translation_domain: false}) }}
+            {{ form_label(form[key]) }}
+        {% else %}
+            <h5>{{ 'form.no_activities'|trans }}</h5>
+        {% endfor %}
+    </div>
 {% endblock %}

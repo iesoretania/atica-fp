@@ -34,4 +34,12 @@ $(function () {
 
     var company = $("#agreement_company");
     company.change(companyChange);
+
+    $("button#select_all").click(function () {
+        $("input[name='agreement[activities][]']").prop('checked', true);
+    });
+
+    $("button#select_none").click(function () {
+        $("input[name='agreement[activities][]']").prop('checked', false);
+    });
 });

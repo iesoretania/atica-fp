@@ -33,6 +33,10 @@ form.copy_confirm: Realizar copia
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
+form.select_all: Seleccionar todas las actividades
+form.select_none: Deseleccionar todas las actividades
+form.no_activities: No hay actividades en el programa formativo
+
 table.new: Nuevo acuerdo de colaboración
 table.calendar: Calendario
 table.program_report: Generar programa
