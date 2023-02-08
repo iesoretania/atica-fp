@@ -133,4 +133,17 @@ class GradeRepository extends ServiceEntityRepository
             $this->subjectRepository->copyFromGrade($newGrade, $grade);
         }
     }
+
+    public function deleteFromList(array $grades)
+    {
+        $this->subjectRepository->deleteFromGradesList($grades);
+
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->delete(Grade::class, 'g')
+            ->where('g IN (:items)')
+            ->setParameter('items', $grades)
+            ->getQuery()
+            ->execute();
+    }
 }

@@ -193,12 +193,7 @@ class SubjectController extends AbstractController
 
         if ($request->get('confirm', '') === 'ok') {
             try {
-                $em->createQueryBuilder()
-                    ->delete(Subject::class, 't')
-                    ->where('t IN (:items)')
-                    ->setParameter('items', $subjects)
-                    ->getQuery()
-                    ->execute();
+                $subjectRepository->deleteFromList($subjects);
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_subject'));

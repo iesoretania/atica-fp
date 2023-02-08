@@ -61,6 +61,9 @@ class LearningOutcomeRepository extends ServiceEntityRepository
 
     public function deleteFromList($items)
     {
+        foreach ($items as $item) {
+            $this->criterionRepository->deleteFromLearningOutcome($item);
+        }
         return $this->getEntityManager()->createQueryBuilder()
             ->delete(LearningOutcome::class, 'l')
             ->where('l IN (:items)')
@@ -111,5 +114,21 @@ class LearningOutcomeRepository extends ServiceEntityRepository
 
             $this->criterionRepository->copyFromLearningOutcome($newLearningOutcome, $learningOutcome);
         }
+    }
+    public function deleteFromSubjectList($list)
+    {
+        /** @var Subject $item */
+        foreach ($list as $item) {
+            /** @var LearningOutcome $learningOutcome */
+            foreach ($item->getLearningOutcomes() as $learningOutcome) {
+                $this->criterionRepository->deleteFromLearningOutcome($learningOutcome);
+            }
+        }
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(LearningOutcome::class, 'lo')
+            ->where('lo.subject IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
     }
 }

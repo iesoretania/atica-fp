@@ -108,4 +108,14 @@ class CriterionRepository extends ServiceEntityRepository
             $this->getEntityManager()->persist($newCriterion);
         }
     }
+
+    public function deleteFromLearningOutcome(LearningOutcome $item)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(Criterion::class, 'c')
+            ->where('c.learningOutcome = :item')
+            ->setParameter('item', $item)
+            ->getQuery()
+            ->execute();
+    }
 }

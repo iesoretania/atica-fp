@@ -167,6 +167,7 @@ class SubjectRepository extends ServiceEntityRepository
     public function deleteFromList($list)
     {
         $this->teachingRepository->deleteFromSubjectList($list);
+        $this->learningOutcomeRepository->deleteFromSubjectList($list);
 
         return $this->getEntityManager()->createQueryBuilder()
             ->delete(Subject::class, 's')
@@ -208,7 +209,6 @@ class SubjectRepository extends ServiceEntityRepository
 
     public function findOneByGradeAndName(Grade $grade, string $subjectName)
     {
-
         return $this->createQueryBuilder('s')
             ->where('s.grade = :grade')
             ->andWhere('s.name = :subject')
@@ -216,5 +216,13 @@ class SubjectRepository extends ServiceEntityRepository
             ->setParameter('subject', $subjectName)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function deleteFromGradesList(array $grades)
+    {
+        /** @var Grade $grade */
+        foreach ($grades as $grade) {
+            $this->deleteFromList($grade->getSubjects());
+        }
     }
 }

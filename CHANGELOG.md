@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 5.x.x (2023-xx-xx)
 ------------------
 * feat: Mostrar concreciones deshabilitadas en las estadísticas de seguimiento y en el resumen de evaluación
+* feat: Ahora borrar algunos elementos intenta eliminar también otros datos asociados (materias, enseñanzas, etc.)
 
 5.4.1 (2023-02-08)
 ------------------
