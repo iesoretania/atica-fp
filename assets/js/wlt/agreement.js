@@ -110,6 +110,7 @@ $(function ()
                     theme: "bootstrap",
                     language: 'es'
                 });
+
                 $("button#select_all").click(function () {
                     $("input[name='agreement[activityRealizations][]']").prop('checked', true);
                 });
@@ -130,4 +131,12 @@ $(function ()
 
     company.change(companyChange);
     studentEnrollment.change(studentEnrollmentChange);
+
+    $("button#select_all").click(function () {
+        $("input[name='agreement[activityRealizations][]']").prop('checked', true);
+    });
+
+    $("button#select_none").click(function () {
+        $("input[name='agreement[activityRealizations][]']").prop('checked', false);
+    });
 });
