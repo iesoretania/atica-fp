@@ -31,7 +31,7 @@ class AgreementActivityRealizationRepository extends ServiceEntityRepository
         parent::__construct($registry, AgreementActivityRealization::class);
     }
 
-    public function findByAgreementSortedAndEnabled(Agreement $agreement)
+    public function findByAgreementSorted(Agreement $agreement)
     {
         return $this->createQueryBuilder('aar')
             ->addSelect('ar')
@@ -39,8 +39,6 @@ class AgreementActivityRealizationRepository extends ServiceEntityRepository
             ->join('aar.activityRealization', 'ar')
             ->leftJoin('aar.grade', 'gr')
             ->where('aar.agreement = :agreement')
-            ->andWhere('aar.disabled = :disabled')
-            ->setParameter('disabled', false)
             ->setParameter('agreement', $agreement)
             ->orderBy('ar.code')
             ->getQuery()

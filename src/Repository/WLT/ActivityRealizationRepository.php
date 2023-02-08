@@ -184,6 +184,8 @@ class ActivityRealizationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('ar')
             ->addSelect('AVG(gr.numericGrade)')
             ->addSelect('MAX(aar.gradedOn)')
+            ->addSelect('COUNT(aar)')
+            ->addSelect('SUM(aar.disabled)')
             ->join(AgreementActivityRealization::class, 'aar', 'WITH', 'aar.activityRealization = ar')
             ->leftJoin('ar.learningOutcomes', 'l')
             ->join('l.subject', 's')

@@ -116,6 +116,11 @@
                     {% endif %}
                     <tr>
                         <td>{{ activityRealizationData[0] }}</td>
+                        {% if activityRealizationData[4] > 0 %}
+                            {% set disabled = activityRealizationData[4] == activityRealizationData[3] %}
+                        {% else %}
+                            {% set disabled = false %}
+                        {% endif %}
                         {% if activityRealizationData[1] is not null %}
                             <td width="10%">{{ activityRealizationData[2] ? activityRealizationData[2]|date('format.date'|trans({}, 'general')) }}</td>
                             <td width="10%" class="center">{{ activityRealizationData[1] | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</td>
@@ -123,7 +128,7 @@
                             {% set activity_count = activity_count + 1 %}
                         {% else %}
                             <td width="10%"></td>
-                            <td width="10% class="center"">{{ 'report.no_grade'|trans }}</td>
+                            <td width="10%" class="center">{{ not disabled ? 'report.no_grade'|trans : 'report.disabled'|trans }}</td>
                         {% endif %}
                     </tr>
                 {% else %}

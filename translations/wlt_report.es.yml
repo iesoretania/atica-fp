@@ -34,6 +34,7 @@ report.empty_report: "No hay datos que mostrar"
 report.activity_average: "Media de la actividad"
 report.subject_average: "Media del módulo profesional"
 report.no_grade: Sin evaluar
+report.disabled: Deshabilit.
 
 header.question: Pregunta
 header.answer: Respuesta

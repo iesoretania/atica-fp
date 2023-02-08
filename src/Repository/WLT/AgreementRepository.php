@@ -19,6 +19,7 @@
 namespace App\Repository\WLT;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\Organization;
 use App\Entity\Person;
@@ -581,5 +582,15 @@ class AgreementRepository extends ServiceEntityRepository
         }
 
         return 0;
+    }
+
+    public function findByStudentEnrollment(StudentEnrollment $studentEnrollment)
+    {
+        return $this->createQueryBuilder('ar')
+            ->where('ar.studentEnrollment = :student_enrollment')
+            ->setParameter('student_enrollment', $studentEnrollment)
+            ->orderBy('ar.startDate')
+            ->getQuery()
+            ->getResult();
     }
 }

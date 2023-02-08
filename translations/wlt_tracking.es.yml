@@ -34,6 +34,7 @@ form.stats.hours.justified_absence.caption: "Ausencias justificadas"
 form.caption.locked: " (ya evaluada o desactivada)"
 table.activity_realization.graded.yes: "Evaluada"
 table.activity_realization.graded.no: "Sin evaluar"
+table.activity_realization.graded.disabled: "Deshabilitada"
 
 title.agreement.list: Convenios
 title.calendar: Calendario en alternancia
