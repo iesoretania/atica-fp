@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-5.x.x (2023-xx-xx)
+5.4.1 (2023-02-08)
 ------------------
 * fix: Solucionado un problema que impedía marcar todas las actividades de un convenio al modificarlo
 
