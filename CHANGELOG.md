@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * feat: Mostrar concreciones deshabilitadas en las estadísticas de seguimiento y en el resumen de evaluación
 * feat: Ahora borrar algunos elementos intenta eliminar también otros datos asociados (materias, enseñanzas, etc.)
+* fix: Arreglado la copia incorrecta de RAs en los programas formativos de FP dual
 
 5.4.1 (2023-02-08)
 ------------------

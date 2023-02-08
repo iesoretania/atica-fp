@@ -160,11 +160,10 @@ class ActivityRepository extends ServiceEntityRepository
                 // incluir resultados de aprendizaje de la concreción de actividad
                 foreach ($activityRealization->getLearningOutcomes() as $learningOutcome) {
                     $newSubject = null;
-                    foreach ($trainings as $training) {
-                        $subject = $this->subjectRepository->findOneByAcademicYearAndInternalCode(
-                            $training->getAcademicYear(),
-                            $learningOutcome->getSubject()->getInternalCode(),
-                            $learningOutcome->getSubject()->getGrade()->getInternalCode()
+                    foreach ($destination->getGroups() as $group) {
+                        $subject = $this->subjectRepository->findOneByGradeAndName(
+                            $group->getGrade(),
+                            $learningOutcome->getSubject()->getName()
                         );
 
                         if (null !== $subject) {

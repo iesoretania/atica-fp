@@ -252,7 +252,7 @@ class ActivityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // copiar datos del proyecto seleccionada
+            // copiar datos del proyecto seleccionado
             try {
                 $activityRepository->copyFromProject(
                     $project,
