@@ -105,7 +105,7 @@ class UserController extends AbstractController
 
         $queryBuilder
             ->select('p')
-            ->from('App:Person', 'p')
+            ->from(Person::class, 'p')
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName');
 
@@ -158,7 +158,7 @@ class UserController extends AbstractController
 
         $users = $queryBuilder
             ->select('p')
-            ->from('App:Person', 'p')
+            ->from(Person::class, 'p')
             ->where('p.id IN (:items)')
             ->andWhere('p.id != :current')
             ->setParameter('items', $items)
@@ -171,7 +171,7 @@ class UserController extends AbstractController
         if ($request->get('confirm', '') === 'ok') {
             try {
                 $em->createQueryBuilder()
-                    ->delete('App:Person', 'p')
+                    ->delete(Person::class, 'p')
                     ->where('p IN (:items)')
                     ->setParameter('items', $items)
                     ->getQuery()

@@ -18,6 +18,7 @@
 
 namespace App\Listener;
 
+use App\Entity\Organization;
 use App\Entity\Person;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -49,7 +50,7 @@ class SecurityListener implements EventSubscriberInterface
 
         // comprobar si es administrador global y, en ese caso, devolver todas las organizaciones
         if ($user->isGlobalAdministrator()) {
-            $organizationsCount = $em->getRepository('App:Organization')
+            $organizationsCount = $em->getRepository(Organization::class)
                 ->countOrganizationsByPerson($user);
 
             if ($organizationsCount > 1) {
@@ -58,7 +59,7 @@ class SecurityListener implements EventSubscriberInterface
                     $this->session->get('_security.main.target_path')
                 );
             } else {
-                $organization = $em->getRepository('App:Organization')->findFirstByUserOrNull($user);
+                $organization = $em->getRepository(Organization::class)->findFirstByUserOrNull($user);
                 $this->session->set('organization_id', $organization->getId());
             }
 
@@ -66,14 +67,14 @@ class SecurityListener implements EventSubscriberInterface
         }
 
         // no es administrador global, consultar las pertenencias activas
-        $organizationsCount = $em->getRepository('App:Organization')
+        $organizationsCount = $em->getRepository(Organization::class)
             ->countOrganizationsByPerson($user);
 
         switch ($organizationsCount) {
             case 0:
                 throw new CustomUserMessageAuthenticationException('form.login.error.no_membership');
             case 1:
-                $organization = $em->getRepository('App:Organization')->findFirstByUserOrNull($user);
+                $organization = $em->getRepository(Organization::class)->findFirstByUserOrNull($user);
                 $this->session->set('organization_id', $organization->getId());
                 break;
             default:

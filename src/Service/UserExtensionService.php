@@ -52,7 +52,7 @@ class UserExtensionService
     public function getCurrentOrganization()
     {
         if ($this->session->has('organization_id')) {
-            return $this->em->getRepository('App:Organization')->find($this->session->get('organization_id'));
+            return $this->em->getRepository(Organization::class)->find($this->session->get('organization_id'));
         }
         return null;
     }
@@ -68,15 +68,15 @@ class UserExtensionService
         }
 
         return $this->session->has('organization_id')
-            && (is_array($this->em->getRepository('App:Organization')->getMembershipByPersonQueryBuilder($user)
+            && (is_array($this->em->getRepository(Organization::class)->getMembershipByPersonQueryBuilder($user)
                 ->andWhere('o = :organization')
                 ->setParameter('organization', $this->getCurrentOrganization())
                 ->getQuery()
-                ->getResult()) || $this->em->getRepository('App:Organization')->getMembershipByPersonQueryBuilder($user)
+                ->getResult()) || $this->em->getRepository(Organization::class)->getMembershipByPersonQueryBuilder($user)
                 ->andWhere('o = :organization')
                 ->setParameter('organization', $this->getCurrentOrganization())
                 ->getQuery()
-                ->getResult() instanceof \Countable ? count($this->em->getRepository('App:Organization')->getMembershipByPersonQueryBuilder($user)
+                ->getResult() instanceof \Countable ? count($this->em->getRepository(Organization::class)->getMembershipByPersonQueryBuilder($user)
                 ->andWhere('o = :organization')
                 ->setParameter('organization', $this->getCurrentOrganization())
                 ->getQuery()

@@ -171,7 +171,7 @@ class TeacherController extends AbstractController
         $queryBuilder
             ->select('t')
             ->addSelect('p')
-            ->from('App:Edu\Teacher', 't')
+            ->from(Teacher::class, 't')
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName')
             ->innerJoin('t.person', 'p');

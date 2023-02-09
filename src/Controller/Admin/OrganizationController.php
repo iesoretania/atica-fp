@@ -100,7 +100,7 @@ class OrganizationController extends AbstractController
 
         $queryBuilder
             ->select('o')
-            ->from('App:Organization', 'o')
+            ->from(Organization::class, 'o')
             ->orderBy('o.name');
 
         $q = $request->get('q');
@@ -227,7 +227,7 @@ class OrganizationController extends AbstractController
         TranslatorInterface $translator,
         ObjectManager $em
     ): bool {
-        $organization = $em->getRepository('App:Organization')->find($request->request->get('switch', null));
+        $organization = $em->getRepository(Organization::class)->find($request->request->get('switch', null));
         if ($organization !== null) {
             $this->get('session')->set('organization_id', $organization->getId());
             $this->addFlash(
@@ -263,7 +263,7 @@ class OrganizationController extends AbstractController
 
         $organizations = [];
         if (!$redirect) {
-            $organizations = $em->getRepository('App:Organization')->
+            $organizations = $em->getRepository(Organization::class)->
             findAllInListByIdButCurrent($items, $userExtensionService->getCurrentOrganization());
             $redirect = $this->processRemoveOrganizations($request, $translator, $organizations, $em);
         }
