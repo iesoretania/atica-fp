@@ -36,15 +36,21 @@ class AgreementEnrollmentRepository extends ServiceEntityRepository
 {
     private $security;
     private $wptGroupRepository;
+    private $workDayRepository;
+    private $reportRepository;
 
     public function __construct(
         ManagerRegistry $registry,
         Security $security,
-        WPTGroupRepository $wptGroupRepository
+        WPTGroupRepository $wptGroupRepository,
+        WorkDayRepository $workDayRepository,
+        ReportRepository $reportRepository
     ) {
         parent::__construct($registry, AgreementEnrollment::class);
         $this->security = $security;
         $this->wptGroupRepository = $wptGroupRepository;
+        $this->workDayRepository = $workDayRepository;
+        $this->reportRepository = $reportRepository;
     }
 
     public function findByStudentEnrollment(StudentEnrollment $studentEnrollment)
@@ -183,5 +189,17 @@ class AgreementEnrollmentRepository extends ServiceEntityRepository
         }
 
         return 0;
+    }
+
+    public function deleteFromAgreements($list)
+    {
+        $this->workDayRepository->deleteFromAgreements($list);
+        $this->reportRepository->deleteFromAgreements($list);
+        $this->getEntityManager()->createQueryBuilder()
+            ->delete(AgreementEnrollment::class, 'ae')
+            ->where('ae.agreement IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
     }
 }

@@ -16,26 +16,24 @@
                         <th>{{ 'header.work_tutor'|trans }}</th>
                         <th>{{ 'header.educational_tutor'|trans }}</th>
                         <th>{{ 'header.dates'|trans }}</th>
-                        <th>{{ 'header.student_enrollments'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for item in items %}
-                        <tr>
-                            <td>{{ item }}</td>
-                            <td>
-                                {{ item.workTutor }}
-                            </td>
-                            <td>
-                                {{ item.educationalTutor.person }}
-                            </td>
-                            <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}
-                                {% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
-                            </td>
-                            <td>
-                                {{ item.agreementEnrollments.count() }}
-                            </td>
-                        </tr>
+                    {% for group_items in items %}
+                        {% for item in group_items.agreementEnrollments %}
+                            <tr>
+                                <td>{{ item }}</td>
+                                <td>
+                                    {{ item.workTutor }}
+                                </td>
+                                <td>
+                                    {{ item.educationalTutor.person }}
+                                </td>
+                                <td>{{ item.agreement.startDate ? item.agreement.startDate|date('format.date'|trans({}, 'general')) }}
+                                    {% if item.agreement.endDate %} - {{ item.agreement.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
                     {% endfor %}
                 </tbody>
             </table>

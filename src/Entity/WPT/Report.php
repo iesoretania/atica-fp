@@ -21,7 +21,7 @@ namespace App\Entity\WPT;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\WPT\ReportRepository")
  * @ORM\Table(name="wpt_report")
  */
 class Report

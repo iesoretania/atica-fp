@@ -19,6 +19,7 @@
 namespace App\Repository\WPT;
 
 use App\Entity\WPT\Agreement;
+use App\Entity\WPT\TrackedWorkDay;
 use App\Entity\WPT\WorkDay;
 use App\Repository\Edu\NonWorkingDayRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -30,13 +31,16 @@ use Doctrine\Persistence\ManagerRegistry;
 class WorkDayRepository extends ServiceEntityRepository
 {
     private $nonWorkingDayRepository;
+    private $activityTrackingRepository;
 
     public function __construct(
         ManagerRegistry $registry,
-        NonWorkingDayRepository $nonWorkingDayRepository
+        NonWorkingDayRepository $nonWorkingDayRepository,
+        ActivityTrackingRepository $activityTrackingRepository
     ) {
         parent::__construct($registry, WorkDay::class);
         $this->nonWorkingDayRepository = $nonWorkingDayRepository;
+        $this->activityTrackingRepository = $activityTrackingRepository;
     }
 
     public function findByAgreement(Agreement $agreement)
@@ -285,5 +289,39 @@ class WorkDayRepository extends ServiceEntityRepository
         }
 
         return $collection;
+    }
+
+    public function deleteFromAgreements($list)
+    {
+        // Primero borrar los elementos con seguimiento, tanto
+        // sus datos como sus actividades
+        //
+        // No se puede hacer desde el repositorio para evitar
+        // referencias circulares
+        $trackedWorkDaysId = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->from(TrackedWorkDay::class, 'twd')
+            ->select('twd.id')
+            ->join('twd.agreementEnrollment', 'ae')
+            ->where('ae.agreement IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->getResult();
+
+        $this->activityTrackingRepository->deleteFromTrackedWorkDays($trackedWorkDaysId);
+
+        $this->getEntityManager()->createQueryBuilder()
+            ->delete(TrackedWorkDay::class, 'twd')
+            ->where('twd IN (:list)')
+            ->setParameter('list', $trackedWorkDaysId)
+            ->getQuery()
+            ->execute();
+
+        $this->getEntityManager()->createQueryBuilder()
+            ->delete(WorkDay::class, 'wd')
+            ->where('wd.agreement IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
     }
 }

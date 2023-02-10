@@ -71,4 +71,14 @@ class ActivityTrackingRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function deleteFromTrackedWorkDays($list)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(ActivityTracking::class, 'at')
+            ->where('at.trackedWorkDay IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
+    }
+
 }

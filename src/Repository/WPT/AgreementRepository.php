@@ -35,13 +35,16 @@ use Doctrine\Persistence\ManagerRegistry;
 class AgreementRepository extends ServiceEntityRepository
 {
     private $workDayRepository;
+    private $agreementEnrollmentRepository;
 
     public function __construct(
         ManagerRegistry $registry,
-        WorkDayRepository $workDayRepository
+        WorkDayRepository $workDayRepository,
+        AgreementEnrollmentRepository $agreementEnrollmentRepository
     ) {
         parent::__construct($registry, Agreement::class);
         $this->workDayRepository = $workDayRepository;
+        $this->agreementEnrollmentRepository = $agreementEnrollmentRepository;
     }
 
     public function findByShiftQueryBuilder(
@@ -237,12 +240,7 @@ class AgreementRepository extends ServiceEntityRepository
 
     public function deleteFromList($list)
     {
-        $this->getEntityManager()->createQueryBuilder()
-            ->delete(AgreementEnrollment::class, 'ae')
-            ->where('ae.agreement IN (:list)')
-            ->setParameter('list', $list)
-            ->getQuery()
-            ->execute();
+        $this->agreementEnrollmentRepository->deleteFromAgreements($list);
 
         $this->getEntityManager()->createQueryBuilder()
             ->delete(WorkDay::class, 'wd')
