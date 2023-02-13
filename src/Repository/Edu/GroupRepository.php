@@ -91,6 +91,25 @@ class GroupRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param AcademicYear $academicYear
+     * @param string $code
+     * @return Group|null
+     */
+    public function findOneByAcademicYearAndNameOrInternalCode(AcademicYear $academicYear, $code)
+    {
+        try {
+            return $this->findByAcademicYearQueryBuilder($academicYear)
+                ->andWhere('g.internalCode = :code OR g.name = :code')
+                ->setParameter('code', $code)
+                ->getQuery()
+                ->setMaxResults(1)
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
+    }
+
+    /**
      * @param $items
      * @param AcademicYear $academicYear
      * @return Group[]

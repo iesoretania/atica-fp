@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+5.4.x (xxxx-xx-xx)
+------------------
+* feat: Cuando se importa alumnado, buscar la unidad también por nombre, no sólo por código
+
 5.4.2 (2023-02-10)
 ------------------
 * feat: Mostrar concreciones deshabilitadas en las estadísticas de seguimiento y en el resumen de evaluación

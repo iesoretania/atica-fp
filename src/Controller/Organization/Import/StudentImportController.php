@@ -136,13 +136,13 @@ class StudentImportController extends AbstractController
                         return null;
                     }
 
-                    // ignorar bajas y matriculas anuladas o trasladadas
+                    // ignorar bajas y matrículas anuladas o trasladadas
                     if ($studentData['Estado Matrícula']) {
                         continue;
                     }
 
                     $groupName = $studentData['Unidad'];
-                    $group = $groupRepository->findOneByAcademicYearAndInternalCode(
+                    $group = $groupRepository->findOneByAcademicYearAndNameOrInternalCode(
                         $academicYear,
                         $groupName
                     );
