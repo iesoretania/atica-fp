@@ -36,7 +36,7 @@ class ActivityRealizationGradeRepository extends ServiceEntityRepository
     ) {
         return $this->createQueryBuilder('arg')
             ->where('arg IN (:items)')
-            ->andWhere('arg.academicYear = :academic_year')
+            ->andWhere('arg.project = :project')
             ->setParameter('items', $items)
             ->setParameter('project', $project)
             ->orderBy('arg.numericGrade', 'DESC')

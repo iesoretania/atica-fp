@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 5.4.x (xxxx-xx-xx)
 ------------------
 * feat: Cuando se importa alumnado, buscar la unidad también por nombre, no sólo por código
+* fix: Solucionado un problema al eliminar elementos en las escalas de valoración de concreciones
 
 5.4.2 (2023-02-10)
 ------------------
