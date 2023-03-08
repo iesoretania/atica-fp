@@ -4,9 +4,9 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-5.4.x (xxxx-xx-xx)
+5.4.3 (2023-03-08)
 ------------------
-* feat: Cuando se importa alumnado, buscar la unidad también por nombre, no sólo por código
+* feat: Cuando se importa alumnado, buscar la unidad también por nombre, no solo por código
 * fix: Solucionado un problema al eliminar elementos en las escalas de valoración de concreciones
 
 5.4.2 (2023-02-10)
