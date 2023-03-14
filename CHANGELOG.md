@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-5.x.x (2023-xx-xx)
+5.4.4 (2023-03-14)
 ------------------
 * feat: Incorporada la posibilidad de ignorar los días no lectivos al añadir jornadas a un calendario
 
