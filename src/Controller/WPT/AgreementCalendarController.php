@@ -128,7 +128,8 @@ class AgreementCalendarController extends AbstractController
                     $calendarAdd->getHoursSat(),
                     $calendarAdd->getHoursSun()
                 ],
-                $calendarAdd->getOverwriteAction() === CalendarAdd::OVERWRITE_ACTION_REPLACE
+                $calendarAdd->getOverwriteAction() === CalendarAdd::OVERWRITE_ACTION_REPLACE,
+                $calendarAdd->getIgnoreNonWorkingDays()
             );
 
             if ('' === $request->get('submit', 'none')) {

@@ -32,6 +32,10 @@ form.overwrite_action: Jornadas que ya existen en calendario
 form.overwrite_action.replace: Sobreescribir el valor anterior
 form.overwrite_action.add: Sumar horas a las ya existentes
 
+form.ignore_non_working_days: Días no lectivos
+form.ignore_non_working_days.no: No incluir jornadas en días no lectivos
+form.ignore_non_working_days.yes: Ignorar si el día de la jornada es lectivo o no
+
 form.locked: Bloqueo
 form.locked.no: Se pueden realizar cambios en la jornada
 form.locked.yes: La jornada está bloqueada y no se pueden realizar cambios

@@ -157,7 +157,8 @@ class WorkDayRepository extends ServiceEntityRepository
         \DateTimeInterface $startDate,
         $hours,
         $weekHours,
-        $overwrite = false
+        $overwrite = false,
+        $ignoreNonWorkingDays = false
     ) {
         $academicYear = $agreement->getStudentEnrollment()->
             getGroup()->getGrade()->getTraining()->getAcademicYear();
@@ -181,11 +182,14 @@ class WorkDayRepository extends ServiceEntityRepository
 
         $oneMoreDay = new \DateInterval('P1D');
 
-        $nonWorkingDays = $this->nonWorkingDayRepository->findByAcademicYear($academicYear);
         $nonWorkingDaysData = [];
 
-        foreach ($nonWorkingDays as $nonWorkingDay) {
-            $nonWorkingDaysData[$nonWorkingDay->getDate()->format('Ymd')] = 1;
+        if (!$ignoreNonWorkingDays) {
+            $nonWorkingDays = $this->nonWorkingDayRepository->findByAcademicYear($academicYear);
+
+            foreach ($nonWorkingDays as $nonWorkingDay) {
+                $nonWorkingDaysData[$nonWorkingDay->getDate()->format('Ymd')] = 1;
+            }
         }
 
         while ($hours > 0) {
@@ -238,14 +242,16 @@ class WorkDayRepository extends ServiceEntityRepository
         \DateTimeInterface $startDate,
         $hours,
         $weekHours,
-        $overWrite
+        $overWrite,
+        $ignoreNonWorkingDays
     ) {
         $workDays = $this->createWorkDayCollectionByAcademicYear(
             $agreement,
             $startDate,
             $hours,
             $weekHours,
-            $overWrite
+            $overWrite,
+            $ignoreNonWorkingDays
         );
 
         return self::groupByMonthAndWeekNumber($workDays);

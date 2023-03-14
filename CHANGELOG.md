@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+5.x.x (2023-xx-xx)
+------------------
+* feat: Incorporada la posibilidad de ignorar los días no lectivos al añadir jornadas a un calendario
+
 5.4.3 (2023-03-08)
 ------------------
 * feat: Cuando se importa alumnado, buscar la unidad también por nombre, no solo por código

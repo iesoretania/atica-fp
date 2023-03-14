@@ -55,6 +55,9 @@ class CalendarAdd
     /** @var int */
     private $overwriteAction;
 
+    /** @var bool */
+    private $ignoreNonWorkingDays;
+
     public function __construct()
     {
         $this->startDate = new \DateTime();
@@ -67,6 +70,7 @@ class CalendarAdd
         $this->hoursSat = 0;
         $this->hoursSun = 0;
         $this->overwriteAction = self::OVERWRITE_ACTION_REPLACE;
+        $this->ignoreNonWorkingDays = false;
     }
 
     /**
@@ -246,6 +250,24 @@ class CalendarAdd
     public function setOverwriteAction($overwriteAction)
     {
         $this->overwriteAction = $overwriteAction;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIgnoreNonWorkingDays(): bool
+    {
+        return $this->ignoreNonWorkingDays;
+    }
+
+    /**
+     * @param bool $ignoreNonWorkingDays
+     * @return CalendarAdd
+     */
+    public function setIgnoreNonWorkingDays(bool $ignoreNonWorkingDays): CalendarAdd
+    {
+        $this->ignoreNonWorkingDays = $ignoreNonWorkingDays;
         return $this;
     }
 

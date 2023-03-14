@@ -103,6 +103,15 @@ class CalendarAddType extends AbstractType
                     'form.overwrite_action.replace' => CalendarAdd::OVERWRITE_ACTION_REPLACE,
                     'form.overwrite_action.add' => CalendarAdd::OVERWRITE_ACTION_ADD
                 ]
+            ])
+            ->add('ignoreNonWorkingDays', ChoiceType::class, [
+                'label' => 'form.ignore_non_working_days',
+                'required' => true,
+                'expanded' => true,
+                'choices' => [
+                    'form.ignore_non_working_days.no' => false,
+                    'form.ignore_non_working_days.yes' => true
+                ]
             ]);
     }
 
