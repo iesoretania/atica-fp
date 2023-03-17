@@ -118,14 +118,10 @@ class AgreementController extends AbstractController
                         $agreementEnrollment = new AgreementEnrollment();
                         $agreementEnrollment
                             ->setAgreement($agreement)
-                            ->setStudentEnrollment($studentEnrollment);
-
-                        if (null === $agreement->getId()) {
-                            $agreementEnrollment
-                                ->setEducationalTutor($form->get('educationalTutor')->getData())
-                                ->setWorkTutor($form->get('workTutor')->getData())
-                                ->setActivities($form->get('activities')->getData());
-                        }
+                            ->setStudentEnrollment($studentEnrollment)
+                            ->setEducationalTutor($form->get('educationalTutor')->getData())
+                            ->setWorkTutor($form->get('workTutor')->getData())
+                            ->setActivities($form->get('activities')->getData());
                         $em->persist($agreementEnrollment);
                     }
                 }

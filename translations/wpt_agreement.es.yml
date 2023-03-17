@@ -24,7 +24,7 @@ form.default_end_time_1: Hora de fin, primer tramo
 form.default_start_time_2: Hora de inicio, segundo tramo
 form.default_end_time_2: Hora de fin, segundo tramo
 form.activities: Programa formativo
-form.default_activities: Programa formativo inicial
+form.default_activities: Programa formativo inicial para alumnado nuevo
 
 form.save: Guardar cambios
 form.delete: Eliminar los acuerdos seleccionados

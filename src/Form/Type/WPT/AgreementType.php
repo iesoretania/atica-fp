@@ -117,29 +117,11 @@ class AgreementType extends AbstractType
                 'placeholder' => 'form.workcenter.none',
                 'required' => true
             ]);
+
         if ($new) {
-            $form
-                ->add('educationalTutor', EntityType::class, [
-                    'mapped' => false,
-                    'label' => 'form.default_educational_tutor',
-                    'class' => Teacher::class,
-                    'choices' => $teachers,
-                    'placeholder' => 'form.educational_tutor.none',
-                    'required' => true
-                ])
-                ->add('workTutor', Select2EntityType::class, [
-                    'mapped' => false,
-                    'label' => 'form.default_work_tutor',
-                    'multiple' => false,
-                    'text_property' => 'fullDisplayName',
-                    'class' => Person::class,
-                    'minimum_input_length' => 3,
-                    'remote_route' => 'api_person_query',
-                    'placeholder' => 'form.work_tutor.none',
-                    'attr' => ['class' => 'person'],
-                    'required' => true
-                ]);
+            $this->addTutors($form, $teachers, $new);
         }
+
         $form
             ->add('signDate', null, [
                 'label' => 'form.sign_date',
@@ -173,18 +155,45 @@ class AgreementType extends AbstractType
                 'required' => false
             ]);
 
-        if ($new) {
-            $form->
-                add('activities', EntityType::class, [
-                    'mapped' => false,
-                    'label' => 'form.default_activities',
-                    'class' => Activity::class,
-                    'expanded' => true,
-                    'multiple' => true,
-                    'required' => false,
-                    'choices' => $activities
-                ]);
+        if (!$new) {
+            $this->addTutors($form, $teachers, $new);
         }
+
+        $form->
+            add('activities', EntityType::class, [
+                'mapped' => false,
+                'label' => 'form.default_activities',
+                'class' => Activity::class,
+                'expanded' => true,
+                'multiple' => true,
+                'required' => false,
+                'choices' => $activities
+            ]);
+    }
+
+    public function addTutors(FormInterface $form, $teachers, $new)
+    {
+        $form
+            ->add('educationalTutor', EntityType::class, [
+                'mapped' => false,
+                'label' => 'form.default_educational_tutor',
+                'class' => Teacher::class,
+                'choices' => $teachers,
+                'placeholder' => 'form.educational_tutor.none',
+                'required' => $new
+            ])
+            ->add('workTutor', Select2EntityType::class, [
+                'mapped' => false,
+                'label' => 'form.default_work_tutor',
+                'multiple' => false,
+                'text_property' => 'fullDisplayName',
+                'class' => Person::class,
+                'minimum_input_length' => 3,
+                'remote_route' => 'api_person_query',
+                'placeholder' => 'form.work_tutor.none',
+                'attr' => ['class' => 'person'],
+                'required' => $new
+            ]);
     }
 
     /**
