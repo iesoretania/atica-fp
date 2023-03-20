@@ -18,6 +18,7 @@
 
 namespace App\Repository\WPT;
 
+use App\Entity\WLT\Project;
 use App\Entity\WPT\Activity;
 use App\Entity\WPT\AgreementEnrollment;
 use App\Entity\WPT\Shift;
@@ -159,6 +160,33 @@ class ActivityRepository extends ServiceEntityRepository
                         $newActivity->getCriteria()->add($criterion);
                     }
                 }
+            }
+        }
+    }
+
+    public function copyFromWLTProject(Shift $destination, Project $source)
+    {
+        $activities = $source->getActivities();
+
+        $count = 1;
+
+        foreach ($activities as $wltActivity) {
+            foreach ($wltActivity->getActivityRealizations() as $activityRealization) {
+                $code = $activityRealization->getCode();
+                if (empty($code)) {
+                    $code = 'A' . $count;
+                    $count++;
+                }
+                $activity = $this->findOneByCodeAndShift($code, $destination);
+
+                if ($activity === null) {
+                    $activity = new Activity();
+                    $activity
+                        ->setShift($destination)
+                        ->setCode($code);
+                    $this->getEntityManager()->persist($activity);
+                }
+                $activity->setDescription($activityRealization->getDescription());
             }
         }
     }

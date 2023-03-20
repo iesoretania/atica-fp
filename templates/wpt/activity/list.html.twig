@@ -56,6 +56,9 @@
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
     {{ m.link_button(path('workplace_training_activity_copy', {'id': shift.id}), 'copy', 'btn-primary', 'form.copy'|trans) }}
+    {% if is_granted(constant('App\\Security\\WLT\\WLTOrganizationVoter::WLT_MANAGER'), user_extension.currentOrganization) %}
+    {{ m.link_button(path('workplace_training_activity_worklinked_copy', {'id': shift.id}), 'copy', 'btn-primary', 'form.copy_wlt'|trans) }}
+    {% endif %}
 </form>
 
 <p class="clearfix"></p>

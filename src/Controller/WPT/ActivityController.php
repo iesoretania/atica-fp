@@ -21,10 +21,14 @@ namespace App\Controller\WPT;
 use App\Entity\WPT\Activity;
 use App\Entity\WPT\Shift;
 use App\Form\Model\WPT\ActivityCopy;
+use App\Form\Model\WPT\ActivityCopyFromWLT;
+use App\Form\Type\WPT\ActivityCopyFromWLTType;
 use App\Form\Type\WPT\ActivityCopyType;
 use App\Form\Type\WPT\ActivityType;
+use App\Repository\WLT\ProjectRepository;
 use App\Repository\WPT\ActivityRepository;
 use App\Repository\WPT\ShiftRepository;
+use App\Security\WLT\WLTOrganizationVoter;
 use App\Security\WPT\ShiftVoter;
 use App\Security\WPT\WPTOrganizationVoter;
 use App\Service\UserExtensionService;
@@ -376,6 +380,70 @@ class ActivityController extends AbstractController
         ];
 
         return $this->render('wpt/activity/copy.html.twig', [
+            'menu_path' => 'workplace_training_shift_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'form' => $form->createView(),
+            'shift' => $shift
+        ]);
+    }
+
+    /**
+     * @Route("/copiar/dual/{id}", name="workplace_training_activity_worklinked_copy", methods={"GET", "POST"})
+     */
+    public function copyWltAction(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        ProjectRepository $projectRepository,
+        ActivityRepository $activityRepository,
+        TranslatorInterface $translator,
+        Shift $shift
+    ) {
+        $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
+
+        $projects = $projectRepository->findByAcademicYear($shift->getGrade()->getTraining()->getAcademicYear());
+
+        $activityCopyFromWlt = new ActivityCopyFromWLT();
+        $form = $this->createForm(ActivityCopyFromWLTType::class, $activityCopyFromWlt, [
+            'projects' => $projects
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // copiar datos del proyecto seleccionado
+            try {
+                $activityRepository->copyFromWLTProject(
+                    $shift,
+                    $activityCopyFromWlt->getProject()
+                );
+
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash('success', $translator->trans('message.copied', [], 'wpt_activity'));
+
+                return $this->redirectToRoute('workplace_training_activity_list', ['id' => $shift->getId()]);
+            } catch (\Exception $e) {
+                $this->addFlash(
+                    'error',
+                    $translator->trans('message.copy_error', [], 'wpt_activity')
+                );
+            }
+        }
+
+        $title = $translator->trans('title.copy_from_wlt', [], 'wpt_activity');
+
+        $breadcrumb = [
+            [
+                'fixed' => $shift->getName(),
+                'routeName' => 'workplace_training_activity_list',
+                'routeParams' => ['id' => $shift->getId()]
+            ],
+            ['fixed' => $title]
+        ];
+
+        return $this->render('wpt/activity/copy_from_wlt.html.twig', [
             'menu_path' => 'workplace_training_shift_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,

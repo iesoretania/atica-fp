@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 5.x.x (2023-xx-xx)
 ------------------
 * fix: Ahora se pueden añadir estudiantes nuevos a un acuerdo de colaboración de FCT ya existente
+* feat: Es posible copiar un programa formativo de FCT desde las concreciones de un proyecto de FP dual
 
 5.4.4 (2023-03-14)
 ------------------
