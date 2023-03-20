@@ -121,9 +121,11 @@ class GradeController extends AbstractController
 
         $queryBuilder
             ->select('g')
+            ->addSelect('gr')
             ->from(Grade::class, 'g')
             ->orderBy('g.name')
-            ->innerJoin('g.training', 't');
+            ->innerJoin('g.training', 't')
+            ->leftJoin('g.groups', 'gr');
 
         $q = $request->get('q');
         if ($q) {

@@ -26,6 +26,7 @@ table.filter: Filtrar...
 header.name: Nombre
 header.training: Enseñanza
 header.department: Departamento
+header.groups: Grupos
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

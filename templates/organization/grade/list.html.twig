@@ -8,6 +8,7 @@
     <th><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
     <th>{{ 'header.training'|trans }}</th>
     <th>{{ 'header.department'|trans }}</th>
+    <th>{{ 'header.groups'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
@@ -23,10 +24,13 @@
                     <td>
                         {{ grade.training.department|default('') }}
                     </td>
+                    <td>
+                        {{ grade.groups|join(', ') }}
+                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}
