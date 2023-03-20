@@ -30,6 +30,7 @@ table.activities: Actividades
 
 header.name: Nombre
 header.department: Familia profesional
+header.grades: Niveles
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

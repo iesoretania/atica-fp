@@ -62,6 +62,12 @@ class Training
     private $competencies;
 
     /**
+     * @ORM\OneToMany(targetEntity="Grade", mappedBy="training")
+     * @var Grade[]
+     */
+    private $grades;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Department")
      * @var Department|null
      */
@@ -70,6 +76,7 @@ class Training
     public function __construct()
     {
         $this->competencies = new ArrayCollection();
+        $this->grades = new ArrayCollection();
     }
 
     public function __toString()
@@ -145,6 +152,14 @@ class Training
     public function getCompetencies()
     {
         return $this->competencies;
+    }
+
+    /**
+     * @return Grade[]
+     */
+    public function getGrades()
+    {
+        return $this->grades;
     }
 
     /**

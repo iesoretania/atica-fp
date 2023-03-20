@@ -5,8 +5,9 @@
 {% block path_new %}{{ path('organization_training_new') }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-50"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
-    <th class="w-40">{{ 'header.department'|trans }}</th>
+    <th class="w-30"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-20">{{ 'header.department'|trans }}</th>
+    <th class="w-40">{{ 'header.grades'|trans }}</th>
     <th class="w-10"></th>
 {% endblock %}
 
@@ -19,6 +20,9 @@
                     </td>
                     <td>
                         {{ training.department|default('') }}
+                    </td>
+                    <td>
+                        {{ training.grades|join(', ') }}
                     </td>
                     <td>
                         {{ m.link_button(path('organization_training_competency_list', {'id': training.id}), 'trophy', 'btn-info btn-block btn-sm', 'table.competences'|trans, null, 'd-md-none d-lg-inline') }}

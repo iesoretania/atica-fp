@@ -36,7 +36,7 @@ class Grade
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Training")
+     * @ORM\ManyToOne(targetEntity="Training", inversedBy="grades")
      * @ORM\JoinColumn(nullable=false)
      * @var Training
      */

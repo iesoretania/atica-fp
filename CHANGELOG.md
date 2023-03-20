@@ -9,6 +9,7 @@ en las distintas versiones de la misma.
 * fix: Ahora se pueden añadir estudiantes nuevos a un acuerdo de colaboración de FCT ya existente
 * feat: Es posible copiar un programa formativo de FCT desde las concreciones de un proyecto de FP dual
 * chore: Listar los grupos de alumnado en el listado de niveles
+* chore: Listar los niveles en el listado de enseñanzas
 
 5.4.4 (2023-03-14)
 ------------------
