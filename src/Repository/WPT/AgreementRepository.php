@@ -351,10 +351,11 @@ class AgreementRepository extends ServiceEntityRepository
             ->join('sh.subject', 'su')
             ->join('su.grade', 'gr')
             ->join('gr.training', 't')
-            ->join('t.department', 'd')
+            ->leftJoin('t.department', 'd')
             ->leftJoin('d.head', 'h')
             ->where('t.academicYear = :academic_year')
-            ->andWhere('h.person = :person OR ae.educationalTutor = :teacher OR ae.additionalEducationalTutor = :teacher')
+            ->andWhere('h.person = :person OR ae.educationalTutor = :teacher OR '
+                . 'ae.additionalEducationalTutor = :teacher')
             ->setParameter('academic_year', $academicYear)
             ->setParameter('person', $teacher->getPerson())
             ->setParameter('teacher', $teacher)

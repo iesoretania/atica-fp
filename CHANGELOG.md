@@ -10,6 +10,7 @@ en las distintas versiones de la misma.
 * feat: Es posible copiar un programa formativo de FCT desde las concreciones de un proyecto de FP dual
 * chore: Listar los grupos de alumnado en el listado de niveles
 * chore: Listar los niveles en el listado de enseñanzas
+* fix: Arreglado problema por el que ciertos acuerdos de colaboración no se listaban en las dietas de desplazamiento
 
 5.4.4 (2023-03-14)
 ------------------
