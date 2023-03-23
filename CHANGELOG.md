@@ -11,6 +11,7 @@ en las distintas versiones de la misma.
 * chore: Listar los grupos de alumnado en el listado de niveles
 * chore: Listar los niveles en el listado de enseñanzas
 * fix: Arreglado problema por el que ciertos acuerdos de colaboración no se listaban en las dietas de desplazamiento
+* fix: Solucionado un problema con la paginación de los acuerdos de la FCT de una convocatoria
 
 5.4.4 (2023-03-14)
 ------------------

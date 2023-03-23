@@ -29,6 +29,7 @@ use App\Security\WPT\WPTOrganizationVoter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Security;
 
@@ -201,5 +202,67 @@ class AgreementEnrollmentRepository extends ServiceEntityRepository
             ->setParameter('list', $list)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param Shift $shift
+     * @param string $q
+     * @return QueryBuilder
+     */
+    public function findByShiftAndFilter(Shift $shift, $q)
+    {
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $this->createQueryBuilder('ar');
+
+        $queryBuilder
+            ->select('ar')
+            ->addSelect('a')
+            ->addSelect('w')
+            ->addSelect('c')
+            ->addSelect('shi')
+            ->addSelect('ar')
+            ->addSelect('se')
+            ->addSelect('et')
+            ->addSelect('g')
+            ->addSelect('wtp')
+            ->addSelect('etp')
+            ->addSelect('sep')
+            ->join('ar.agreement', 'a')
+            ->join('a.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->join('a.shift', 'shi')
+            ->join('ar.studentEnrollment', 'se')
+            ->leftJoin('se.person', 'sep')
+            ->join('se.group', 'g')
+            ->leftJoin('ar.workTutor', 'wtp')
+            ->leftJoin('ar.educationalTutor', 'et')
+            ->leftJoin('ar.additionalEducationalTutor', 'aet')
+            ->leftJoin('et.person', 'etp')
+            ->leftJoin('aet.person', 'aetp')
+            ->orderBy('shi.name')
+            ->addOrderBy('c.name')
+            ->addOrderBy('w.name')
+            ->addOrderBy('a.name');
+
+        if ($q) {
+            $queryBuilder
+                ->where('w.name LIKE :tq')
+                ->orWhere('c.name LIKE :tq')
+                ->orWhere('a.name LIKE :tq')
+                ->orWhere('shi.name LIKE :tq')
+                ->orWhere('sep.firstName LIKE :tq')
+                ->orWhere('sep.lastName LIKE :tq')
+                ->orWhere('etp.firstName LIKE :tq')
+                ->orWhere('etp.lastName LIKE :tq')
+                ->orWhere('aetp.firstName LIKE :tq')
+                ->orWhere('aetp.lastName LIKE :tq')
+                ->orWhere('wtp.firstName LIKE :tq')
+                ->orWhere('wtp.lastName LIKE :tq')
+                ->setParameter('tq', '%'.$q.'%');
+        }
+
+        return $queryBuilder
+            ->andWhere('a.shift = :shift')
+            ->setParameter('shift', $shift);
     }
 }

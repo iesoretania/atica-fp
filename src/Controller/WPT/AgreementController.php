@@ -26,13 +26,13 @@ use App\Form\Type\WPT\AgreementEnrollmentType;
 use App\Form\Type\WPT\AgreementType;
 use App\Form\Type\WPT\CalendarCopyType;
 use App\Repository\WPT\ActivityRepository;
+use App\Repository\WPT\AgreementEnrollmentRepository;
 use App\Repository\WPT\AgreementRepository;
 use App\Security\WPT\AgreementVoter;
 use App\Security\WPT\ShiftVoter;
 use App\Security\WPT\WPTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\QueryBuilder;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
@@ -253,6 +253,7 @@ class AgreementController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        AgreementEnrollmentRepository $agreementEnrollmentRepository,
         Shift $shift,
         $page = 1
     ) {
@@ -268,60 +269,8 @@ class AgreementController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('a')
-            ->addSelect('w')
-            ->addSelect('c')
-            ->addSelect('shi')
-            ->addSelect('ar')
-            ->addSelect('se')
-            ->addSelect('et')
-            ->addSelect('g')
-            ->addSelect('wtp')
-            ->addSelect('etp')
-            ->addSelect('sep')
-            ->from(Agreement::class, 'a')
-            ->join('a.workcenter', 'w')
-            ->join('w.company', 'c')
-            ->join('a.shift', 'shi')
-            ->join('a.agreementEnrollments', 'ar')
-            ->join('ar.studentEnrollment', 'se')
-            ->leftJoin('se.person', 'sep')
-            ->join('se.group', 'g')
-            ->leftJoin('ar.workTutor', 'wtp')
-            ->leftJoin('ar.educationalTutor', 'et')
-            ->leftJoin('ar.additionalEducationalTutor', 'aet')
-            ->leftJoin('et.person', 'etp')
-            ->leftJoin('aet.person', 'aetp')
-            ->orderBy('shi.name')
-            ->addOrderBy('c.name')
-            ->addOrderBy('w.name')
-            ->addOrderBy('a.name');
-
         $q = $request->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('w.name LIKE :tq')
-                ->orWhere('c.name LIKE :tq')
-                ->orWhere('a.name LIKE :tq')
-                ->orWhere('shi.name LIKE :tq')
-                ->orWhere('sep.firstName LIKE :tq')
-                ->orWhere('sep.lastName LIKE :tq')
-                ->orWhere('etp.firstName LIKE :tq')
-                ->orWhere('etp.lastName LIKE :tq')
-                ->orWhere('aetp.firstName LIKE :tq')
-                ->orWhere('aetp.lastName LIKE :tq')
-                ->orWhere('wtp.firstName LIKE :tq')
-                ->orWhere('wtp.lastName LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('a.shift = :shift')
-            ->setParameter('shift', $shift);
+        $queryBuilder = $agreementEnrollmentRepository->findByShiftAndFilter($shift, $q);
 
         $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
