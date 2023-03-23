@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-5.x.x (2023-xx-xx)
+5.4.5 (2023-03-23)
 ------------------
 * fix: Ahora se pueden añadir estudiantes nuevos a un acuerdo de colaboración de FCT ya existente
 * feat: Es posible copiar un programa formativo de FCT desde las concreciones de un proyecto de FP dual
