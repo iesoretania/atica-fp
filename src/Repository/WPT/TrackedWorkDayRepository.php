@@ -30,13 +30,16 @@ use Doctrine\Persistence\ManagerRegistry;
 class TrackedWorkDayRepository extends ServiceEntityRepository
 {
     private $workDayRepository;
+    private $activityTrackingRepository;
 
     public function __construct(
         ManagerRegistry $registry,
-        WorkDayRepository $workDayRepository
+        WorkDayRepository $workDayRepository,
+        ActivityTrackingRepository $activityTrackingRepository
     ) {
         parent::__construct($registry, TrackedWorkDay::class);
         $this->workDayRepository = $workDayRepository;
+        $this->activityTrackingRepository = $activityTrackingRepository;
     }
 
     /**
@@ -312,5 +315,26 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
             ->setParameter('agreement_enrollment', $agreementEnrollment)
             ->getQuery()
             ->getArrayResult();
+    }
+
+    public function deleteFromWorkDays($list)
+    {
+        $trackedWorkDays = $this->findByWorkDays($list);
+        $this->activityTrackingRepository->deleteFromTrackedWorkDays($trackedWorkDays);
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(TrackedWorkDay::class, 'twd')
+            ->where('twd.workDay IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function findByWorkDays($list)
+    {
+        return $this->createQueryBuilder('twd')
+            ->where('twd.workDay IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->getResult();
     }
 }

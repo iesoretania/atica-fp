@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+5.x.x (xxxx-xx-xx)
+------------------
+* fix: Eliminar una jornada de un calendario de FCT elimina todas las actividades del estudiante
+
 5.4.5 (2023-03-23)
 ------------------
 * fix: Ahora se pueden añadir estudiantes nuevos a un acuerdo de colaboración de FCT ya existente

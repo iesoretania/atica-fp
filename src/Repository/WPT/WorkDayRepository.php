@@ -229,7 +229,7 @@ class WorkDayRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param WorkDay[]
+     * @param WorkDay[] $list
      * @return mixed
      */
     public function deleteFromList($list)

@@ -80,5 +80,4 @@ class ActivityTrackingRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
-
 }

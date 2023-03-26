@@ -24,6 +24,7 @@ use App\Form\Model\CalendarAdd;
 use App\Form\Type\WPT\CalendarAddType;
 use App\Form\Type\WPT\WorkDayType;
 use App\Repository\WPT\AgreementRepository;
+use App\Repository\WPT\TrackedWorkDayRepository;
 use App\Repository\WPT\WorkDayRepository;
 use App\Security\WPT\AgreementVoter;
 use App\Security\WPT\WPTOrganizationVoter;
@@ -247,6 +248,7 @@ class AgreementCalendarController extends AbstractController
     public function deleteAction(
         Request $request,
         WorkDayRepository $workDayRepository,
+        TrackedWorkDayRepository $trackedWorkDayRepository,
         AgreementRepository $agreementRepository,
         TranslatorInterface $translator,
         Agreement $agreement
@@ -265,6 +267,7 @@ class AgreementCalendarController extends AbstractController
 
         if ($request->get('confirm', '') === 'ok') {
             try {
+                $trackedWorkDayRepository->deleteFromWorkDays($workDays);
                 $workDayRepository->deleteFromList($workDays);
 
                 $this->getDoctrine()->getManager()->flush();
