@@ -287,22 +287,6 @@ class AgreementRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
         /** @var Agreement $agreement */
         foreach ($list as $agreement) {
-            if ($agreement->getCompanySurvey()) {
-                $answers = $agreement->getCompanySurvey()->getAnswers();
-                foreach ($answers as $answer) {
-                    $em->remove($answer);
-                }
-                $em->remove($agreement->getCompanySurvey());
-            }
-
-            if ($agreement->getStudentSurvey()) {
-                $answers = $agreement->getStudentSurvey()->getAnswers();
-                foreach ($answers as $answer) {
-                    $em->remove($answer);
-                }
-                $em->remove($agreement->getStudentSurvey());
-            }
-
             $evaluatedActivityRealizations = $agreement->getEvaluatedActivityRealizations();
             foreach ($evaluatedActivityRealizations as $evaluatedActivityRealization) {
                 $em->remove($evaluatedActivityRealization);
