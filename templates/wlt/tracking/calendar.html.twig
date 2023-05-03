@@ -3,9 +3,37 @@
 {% import 'macros.html.twig' as m %}
 {% block content %}
 <h1>
-    {{ title }}{% if work_day_today %} {{ m.link_button(path('work_linked_training_tracking_calendar_form', {'id': work_day_today.id}), 'calendar-day', 'btn-primary', 'form.today'|trans) }}{% endif %}
+    {{ title }}
+    {% if is_granted('WLT_AGREEMENT_GRADE', agreement) %}
+        <a href="#" data-toggle="collapse" data-target="#tutor_info" aria-expanded="false"><i class="fas fa-info-circle fa-sm"></i></a>
+    {% endif %}
+    {% if work_day_today %} {{ m.link_button(path('work_linked_training_tracking_calendar_form', {'id': work_day_today.id}), 'calendar-day', 'btn-primary', 'form.today'|trans) }}{% endif %}
+    {% if is_granted('WLT_AGREEMENT_GRADE', agreement) %}
+        <div class="collapse alert alert-light" id="tutor_info">
+            <b>{{ 'form.work_center'|trans }}: </b>{{ agreement.workcenter }}
+            {% if agreement.workcenter.zipCode %} - {{ agreement.workcenter.zipCode }}{% endif %}
+            {% if agreement.workcenter.city %} - {{ agreement.workcenter.city }}{% endif %}
+            {% if agreement.workcenter.address %}<br/><b>{{ 'form.work_center.address'|trans }}: </b>{{ agreement.workcenter.address }}{% endif %}
+            {% if agreement.workcenter.phoneNumber %}<br/><b>{{ 'form.work_center.phone_number'|trans }}: </b>{{ agreement.workcenter.phoneNumber }}{% endif %}
+            {% if agreement.workcenter.faxNumber %}<br/><b>{{ 'form.work_center.fax_number'|trans }}: </b>{{ agreement.workcenter.faxNumber }}{% endif %}
+            {% if agreement.workcenter.emailAddress %}<br/><b>{{ 'form.work_center.email'|trans }}: </b>{{ agreement.workcenter.emailAddress }}{% endif %}
+            <br/><b>{{ 'form.work_tutor'|trans }}: </b>{{ agreement.workTutor }}
+            {% if agreement.workTutor.emailAddress %} - {{ agreement.workTutor.emailAddress }}{% endif %}
+            {% if agreement.additionalWorkTutor %}
+                <br/><b>{{ 'form.work_tutor'|trans }}: </b>{{ agreement.additionalWorkTutor }}
+                {% if agreement.additionalWorkTutor.emailAddress %} - {{ agreement.additionalWorkTutor.emailAddress }}{% endif %}
+            {% endif %}
+            <br/><b>{{ 'form.educational_tutor'|trans }}: </b>{{ agreement.educationalTutor }}
+            {% if agreement.educationalTutor.person.emailAddress %} - {{ agreement.educationalTutor.person.emailAddress }}{% endif %}
+            {% if agreement.additionalEducationalTutor %}
+                <br/><b>{{ 'form.educational_tutor'|trans }}: </b>{{ agreement.additionalEducationalTutor }}
+                {% if agreement.additionalEducationalTutor.person.emailAddress %} - {{ agreement.additionalEducationalTutor.person.emailAddress }}{% endif %}
+            {% endif %}
+        </div>
+    {% endif %}
 </h1>
 {% include 'wlt/tracking/calendar_stats_partial.html.twig' %}
+
 <section id="exchange">
     <form action="{{ path('work_linked_training_tracking_calendar_operation', {'id': agreement.id}) }}" class="list" method="post">
     {% embed 'wlt/tracking/calendar_partial.html.twig' %}

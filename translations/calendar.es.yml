@@ -28,6 +28,14 @@ form.hours_sun: Horas domingo
 form.previous_work_day: Jornada anterior
 form.next_work_day: Siguiente jornada
 
+form.work_tutor: Tutor laboral
+form.educational_tutor: Tutor docente
+form.work_center: Centro de trabajo
+form.work_center.address: Dirección
+form.work_center.email: Correo-e
+form.work_center.phone_number: Teléfono
+form.work_center.fax_number: FAX
+
 form.source_agreement: Acuerdo origen
 form.source_agreement.none: Seleccione un acuerdo existente
 

@@ -10,6 +10,7 @@ en las distintas versiones de la misma.
 * fix: Solucionado un problema al eliminar un convenio de FP dual
 * feat: Navegación entre jornadas de seguimiento de FP dual
 * feat: Navegación entre jornadas de seguimiento de FCT
+* feat: Permitir visualizar información del convenio en el calendario de seguimiento de FP dual
 
 5.4.5 (2023-03-23)
 ------------------
