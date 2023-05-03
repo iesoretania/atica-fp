@@ -433,9 +433,10 @@ class WorkDayRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('w')
             ->where('w.agreement = :agreement')
-            ->andWhere('w.date < :date')
+            ->andWhere('w.date < :date AND w.id != :id')
             ->setParameter('agreement', $workDay->getAgreement())
             ->setParameter('date', $workDay->getDate())
+            ->setParameter('id', $workDay->getId())
             ->orderBy('w.date', 'DESC')
             ->getQuery()
             ->setMaxResults(1)
@@ -446,9 +447,10 @@ class WorkDayRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('w')
             ->where('w.agreement = :agreement')
-            ->andWhere('w.date > :date')
+            ->andWhere('w.date > :date AND w.id != :id')
             ->setParameter('agreement', $workDay->getAgreement())
             ->setParameter('date', $workDay->getDate())
+            ->setParameter('id', $workDay->getId())
             ->orderBy('w.date', 'ASC')
             ->getQuery()
             ->setMaxResults(1)

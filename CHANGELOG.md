@@ -12,6 +12,7 @@ en las distintas versiones de la misma.
 * feat: Navegación entre jornadas de seguimiento de FCT
 * feat: Permitir visualizar información del convenio en el calendario de seguimiento de FP dual
 * feat: Permitir visualizar información del acuerdo en el calendario de seguimiento de FCT
+* fix: Arreglar navegación entre jornadas cuando hay zonas horarias
 
 5.4.5 (2023-03-23)
 ------------------
