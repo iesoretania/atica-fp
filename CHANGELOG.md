@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-5.x.x (xxxx-xx-xx)
+5.5.0 (2023-05-03)
 ------------------
 * fix: Eliminar una jornada de un calendario de FCT elimina todas las actividades del estudiante
 * fix: Solucionado un problema al eliminar un convenio de FP dual
