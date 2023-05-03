@@ -3,7 +3,35 @@
 {% import 'macros.html.twig' as m %}
 {% block content %}
 <h1>
-    {{ title }}{% if work_day_today %} {{ m.link_button(path('workplace_training_tracking_calendar_form', {'agreementEnrollment': agreement_enrollment.id, 'workDay': work_day_today.id}), 'calendar-day', 'btn-primary', 'form.today'|trans) }}{% endif %}
+    {{ title }}
+    {% if is_granted('WPT_AGREEMENT_ENROLLMENT_ATTENDANCE', agreement_enrollment) %}
+        <a href="#" data-toggle="collapse" data-target="#tutor_info" aria-expanded="false"><i class="fas fa-info-circle fa-sm"></i></a>
+    {% endif %}
+    {% if work_day_today %} {{ m.link_button(path('workplace_training_tracking_calendar_form', {'agreementEnrollment': agreement_enrollment.id, 'workDay': work_day_today.id}), 'calendar-day', 'btn-primary', 'form.today'|trans) }}{% endif %}
+    {% if is_granted('WPT_AGREEMENT_ENROLLMENT_ATTENDANCE', agreement_enrollment) %}
+        <div class="collapse alert alert-light" id="tutor_info">
+            {% set agreement = agreement_enrollment.agreement %}
+            <b>{{ 'form.work_center'|trans }}: </b>{{ agreement.workcenter }}
+            {% if agreement.workcenter.zipCode %} - {{ agreement.workcenter.zipCode }}{% endif %}
+            {% if agreement.workcenter.city %} - {{ agreement.workcenter.city }}{% endif %}
+            {% if agreement.workcenter.address %}<br/><b>{{ 'form.work_center.address'|trans }}: </b>{{ agreement.workcenter.address }}{% endif %}
+            {% if agreement.workcenter.phoneNumber %}<br/><b>{{ 'form.work_center.phone_number'|trans }}: </b>{{ agreement.workcenter.phoneNumber }}{% endif %}
+            {% if agreement.workcenter.faxNumber %}<br/><b>{{ 'form.work_center.fax_number'|trans }}: </b>{{ agreement.workcenter.faxNumber }}{% endif %}
+            {% if agreement.workcenter.emailAddress %}<br/><b>{{ 'form.work_center.email'|trans }}: </b>{{ agreement.workcenter.emailAddress }}{% endif %}
+            <br/><b>{{ 'form.work_tutor'|trans }}: </b>{{ agreement_enrollment.workTutor }}
+            {% if agreement_enrollment.workTutor.emailAddress %} - {{ agreement_enrollment.workTutor.emailAddress }}{% endif %}
+            {% if agreement_enrollment.additionalWorkTutor %}
+                <br/><b>{{ 'form.work_tutor'|trans }}: </b>{{ agreement_enrollment.additionalWorkTutor }}
+                {% if agreement_enrollment.additionalWorkTutor.emailAddress %} - {{ agreement_enrollment.additionalWorkTutor.emailAddress }}{% endif %}
+            {% endif %}
+            <br/><b>{{ 'form.educational_tutor'|trans }}: </b>{{ agreement_enrollment.educationalTutor }}
+            {% if agreement_enrollment.educationalTutor.person.emailAddress %} - {{ agreement_enrollment.educationalTutor.person.emailAddress }}{% endif %}
+            {% if agreement_enrollment.additionalEducationalTutor %}
+                <br/><b>{{ 'form.educational_tutor'|trans }}: </b>{{ agreement_enrollment.additionalEducationalTutor }}
+                {% if agreement_enrollment.additionalEducationalTutor.person.emailAddress %} - {{ agreement_enrollment.additionalEducationalTutor.person.emailAddress }}{% endif %}
+            {% endif %}
+        </div>
+    {% endif %}
 </h1>
 {% include 'wpt/tracking/calendar_stats_partial.html.twig' %}
 <section id="exchange">
