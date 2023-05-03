@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * fix: Eliminar una jornada de un calendario de FCT elimina todas las actividades del estudiante
 * fix: Solucionado un problema al eliminar un convenio de FP dual
+* feat: Navegación entre jornadas de seguimiento de FP dual
 
 5.4.5 (2023-03-23)
 ------------------

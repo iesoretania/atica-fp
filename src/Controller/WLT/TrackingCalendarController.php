@@ -110,7 +110,8 @@ class TrackingCalendarController extends AbstractController
         AgreementRepository $agreementRepository,
         ActivityRealizationRepository $activityRealizationRepository,
         TranslatorInterface $translator,
-        WorkDay $workDay
+        WorkDay $workDay,
+        WorkDayRepository $workDayRepository
     ) {
         $agreement = $workDay->getAgreement();
         $this->denyAccessUnlessGranted(WorkDayVoter::ACCESS, $workDay);
@@ -121,6 +122,9 @@ class TrackingCalendarController extends AbstractController
         $title .= ' - ' . $translator->transChoice('caption.hours', $workDay->getHours(), [], 'calendar');
 
         $lockedActivityRealizations = $activityRealizationRepository->findLockedByAgreement($agreement);
+
+        $previousWorkDay = $workDayRepository->findPrevious($workDay);
+        $nextWorkDay = $workDayRepository->findNext($workDay);
 
         // precaching
         $activityRealizationRepository->findByAgreement($agreement);
@@ -190,6 +194,8 @@ class TrackingCalendarController extends AbstractController
             'form' => $form->createView(),
             'read_only' => $readOnly,
             'work_day' => $workDay,
+            'previous_work_day' => $previousWorkDay,
+            'next_work_day' => $nextWorkDay,
             'title' => $title
         ]);
     }
