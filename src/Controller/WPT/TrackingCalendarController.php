@@ -126,13 +126,14 @@ class TrackingCalendarController extends AbstractController
 
     /**
      * @Route("/jornada/{workDay}/{agreementEnrollment}", name="workplace_training_tracking_calendar_form",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
+     *     requirements={"workDay" = "\d+","agreementEnrollment" = "\d+"}, methods={"GET", "POST"})
      */
     public function editAction(
         Request $request,
         AgreementRepository $agreementRepository,
         TranslatorInterface $translator,
         TrackedWorkDayRepository $trackedWorkDayRepository,
+        WorkDayRepository $workDayRepository,
         WorkDay $workDay,
         AgreementEnrollment $agreementEnrollment
     ) {
@@ -152,6 +153,9 @@ class TrackingCalendarController extends AbstractController
         $title = $translator->trans('dow' . ($workDay->getDate()->format('N') - 1), [], 'calendar');
         $title .= ' - ' . $workDay->getDate()->format($translator->trans('format.date', [], 'general'));
         $title .= ' - ' . $translator->transChoice('caption.hours', $workDay->getHours(), [], 'calendar');
+
+        $previousWorkDay = $workDayRepository->findPrevious($workDay);
+        $nextWorkDay = $workDayRepository->findNext($workDay);
 
         $trackedActivities = $trackedWorkDay->getTrackedActivities();
         $activities = clone $agreementEnrollment->getActivities();
@@ -222,6 +226,8 @@ class TrackingCalendarController extends AbstractController
             'form' => $form->createView(),
             'read_only' => $readOnly,
             'tracked_work_day' => $trackedWorkDay,
+            'previous_work_day' => $previousWorkDay,
+            'next_work_day' => $nextWorkDay,
             'title' => $title
         ]);
     }

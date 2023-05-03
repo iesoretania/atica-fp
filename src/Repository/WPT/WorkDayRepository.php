@@ -329,4 +329,30 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function findPrevious(WorkDay $workDay)
+    {
+        return $this->createQueryBuilder('w')
+            ->where('w.agreement = :agreement')
+            ->andWhere('w.date < :date')
+            ->setParameter('agreement', $workDay->getAgreement())
+            ->setParameter('date', $workDay->getDate())
+            ->orderBy('w.date', 'DESC')
+            ->getQuery()
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
+    }
+
+    public function findNext(WorkDay $workDay)
+    {
+        return $this->createQueryBuilder('w')
+            ->where('w.agreement = :agreement')
+            ->andWhere('w.date > :date')
+            ->setParameter('agreement', $workDay->getAgreement())
+            ->setParameter('date', $workDay->getDate())
+            ->orderBy('w.date', 'ASC')
+            ->getQuery()
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
+    }
 }

@@ -17,8 +17,24 @@
     {{ m.start_button() }}
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {% if previous_work_day %}
+            {{ m.link_button(path('workplace_training_tracking_calendar_form', {'workDay': previous_work_day.id, 'agreementEnrollment': tracked_work_day.agreementEnrollment.id}), 'angle-left', 'btn-info', 'form.previous_work_day'|trans) }}
+        {% endif %}
+        {% if next_work_day %}
+            {{ m.link_button(path('workplace_training_tracking_calendar_form', {'workDay': next_work_day.id, 'agreementEnrollment': tracked_work_day.agreementEnrollment.id}), 'angle-right', 'btn-info', 'form.next_work_day'|trans) }}
+        {% endif %}
     {{ m.end_button() }}
     {{ form_end(form) }}
+{% endblock %}
+
+{% block content_title %}
+    {% if previous_work_day %}
+        <a href="{{ path('workplace_training_tracking_calendar_form', {'workDay': previous_work_day.id, 'agreementEnrollment': tracked_work_day.agreementEnrollment.id}) }}" class="btn btn-sm btn-info" title="{{ 'form.previous_work_day'|trans }}"><i class="fas fa-angle-left"></i></a>
+    {% endif %}
+    {{ parent() }}
+    {% if next_work_day %}
+        <a href="{{ path('workplace_training_tracking_calendar_form', {'workDay': next_work_day.id, 'agreementEnrollment': tracked_work_day.agreementEnrollment.id}) }}" class="btn btn-sm btn-info" title="{{ 'form.next_work_day'|trans }}"><i class="fas fa-angle-right"></i></a>
+    {% endif %}
 {% endblock %}
 
 {% block _work_day_tracking_trackedActivities_widget %}
