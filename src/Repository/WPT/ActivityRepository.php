@@ -190,4 +190,12 @@ class ActivityRepository extends ServiceEntityRepository
             }
         }
     }
+
+    public function deleteFromShifts($items)
+    {
+        /** @var Shift $shift */
+        foreach ($items as $shift) {
+            $this->deleteFromList($shift->getActivities());
+        }
+    }
 }

@@ -16,8 +16,8 @@
         </div>
         {% endblock %}
     </div>
-    {% block before_table %}{% endblock %}
     <section id="exchange">
+    {% block before_table %}{% endblock %}
     <div id="table" class="w-100 table-responsive table-responsive-sm">
         {% if pager and pager.count %}
             <h4>{{ 'table.total'|transchoice(pager.count) }}</h4>
@@ -40,8 +40,8 @@
             </div>
         {% endif %}
     </div>
-    </section>
     {% block after_table %}{% endblock %}
+    </section>
 {% endblock %}
 
 {% block javascripts %}

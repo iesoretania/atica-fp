@@ -241,7 +241,6 @@ class AgreementRepository extends ServiceEntityRepository
     public function deleteFromList($list)
     {
         $this->agreementEnrollmentRepository->deleteFromAgreements($list);
-
         $this->getEntityManager()->createQueryBuilder()
             ->delete(WorkDay::class, 'wd')
             ->where('wd.agreement IN (:list)')
@@ -361,5 +360,13 @@ class AgreementRepository extends ServiceEntityRepository
             ->setParameter('teacher', $teacher)
             ->getQuery()
             ->getResult();
+    }
+
+    public function deleteFromShifts($items)
+    {
+        /** @var Shift $shift */
+        foreach ($items as $shift) {
+            $this->deleteFromList($shift->getAgreements());
+        }
     }
 }

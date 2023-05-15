@@ -6,6 +6,33 @@ var last_value_mf = "";
 var state_f = document.getElementById("filter");
 
 var addCallBacks = function () {
+    $("section#exchange")
+        .on("click", ".clickable-row", function (ev) {
+            if (ev.target.type !== "checkbox") {
+                if ($(this).data("target")) {
+                    window.open($(this).data("href"), $(this).data("target")) || window.location.assign($(this).data("href"));
+                } else {
+                    window.location.assign($(this).data("href"));
+                }
+            }
+        })
+        .on("click", ".clickable-row input[type='checkbox']", updateButton)
+        .on("click", ".clickable-row a", function (ev) {
+            item = ev.target;
+            if ($(item).attr("href")) {
+                if ($(item).attr("target")) {
+                    window.open($(item).attr("href"), $(item).data("target")) || window.location.assign($(item).attr("href"));
+                } else {
+                    window.location.assign($(item).attr("href"));
+                }
+                return false;
+            }
+        })
+        .on("click", "#select", function (item) {
+            $("input[type='checkbox'].selectable").prop('checked', item.currentTarget.checked);
+            updateButton();
+        });
+
     var mf = document.getElementsByName("mfilter[]");
     mf.forEach(function (e) { e.addEventListener('change', reload) });
     var not_selected = document.querySelectorAll('input[name="mfilter[]"]:not(:checked)');
@@ -27,8 +54,8 @@ function updateTable(url)
         type: 'GET',
         success: function (html) {
             $('table#list').removeClass('loading');
-            $('div#table').replaceWith(
-                $(html).find('div#table')
+            $('section#exchange').replaceWith(
+                $(html).find('section#exchange')
             );
             $('div#mfilter_list').replaceWith(
                 $(html).find('div#mfilter_list')
@@ -103,6 +130,10 @@ var reload = function () {
     updateTable(url + param);
 };
 
+var updateButton = function () {
+    $(".enable-on-items").prop('disabled', $("input[type='checkbox']:checked").length === 0);
+};
+
 var dynamicFormInit = function () {
     function itemChange()
     {
@@ -140,37 +171,6 @@ var dynamicFormInit = function () {
     });
 
     jQuery(document).ready(function ($) {
-        var updateButton = function () {
-            $(".enable-on-items").prop('disabled', $("input[type='checkbox']:checked").length === 0);
-        };
-
-        $("section#exchange")
-            .on("click", ".clickable-row", function (ev) {
-                if (ev.target.type !== "checkbox") {
-                    if ($(this).data("target")) {
-                        window.open($(this).data("href"), $(this).data("target")) || window.location.assign($(this).data("href"));
-                    } else {
-                        window.location.assign($(this).data("href"));
-                    }
-                }
-            })
-            .on("click", ".clickable-row input[type='checkbox']", updateButton)
-            .on("click", ".clickable-row a", function (ev) {
-                item = ev.target;
-                if ($(item).attr("href")) {
-                    if ($(item).attr("target")) {
-                        window.open($(item).attr("href"), $(item).data("target")) || window.location.assign($(item).attr("href"));
-                    } else {
-                        window.location.assign($(item).attr("href"));
-                    }
-                    return false;
-                }
-            })
-            .on("click", "#select", function (item) {
-                $("input[type='checkbox'].selectable").prop('checked', item.currentTarget.checked);
-                updateButton();
-            });
-
         $("body").on("click", "input[type='checkbox'].selectable", updateButton);
 
         $("input[type='checkbox']#select").click(function (item) {

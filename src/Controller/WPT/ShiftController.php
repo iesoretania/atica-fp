@@ -20,9 +20,10 @@ namespace App\Controller\WPT;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\WPT\Shift;
-use App\Form\Type\WPT\ShiftStudentEnrollmentType;
 use App\Form\Type\WPT\ShiftType;
 use App\Repository\Edu\AcademicYearRepository;
+use App\Repository\WPT\ActivityRepository;
+use App\Repository\WPT\AgreementRepository;
 use App\Repository\WPT\ShiftRepository;
 use App\Security\OrganizationVoter;
 use App\Security\WPT\ShiftVoter;
@@ -203,6 +204,8 @@ class ShiftController extends AbstractController
     public function operationAction(
         Request $request,
         ShiftRepository $shiftRepository,
+        AgreementRepository $agreementRepository,
+        ActivityRepository $activityRepository,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYear $academicYear
@@ -221,6 +224,8 @@ class ShiftController extends AbstractController
 
         if ($request->get('confirm', '') === 'ok') {
             try {
+                $agreementRepository->deleteFromShifts($selectedItems);
+                $activityRepository->deleteFromShifts($selectedItems);
                 $shiftRepository->deleteFromList($selectedItems);
 
                 $em->flush();

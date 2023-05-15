@@ -29,7 +29,7 @@ form.delete_confirm: Confirmar borrado
 table.new: Nueva convocatoria
 
 prompt.delete_confirm: |
-  ¿Está seguro de que desea eliminar las siguientes convocatorias? En el caso de que alguna tenga elementos asociados, el borrado no tendrá lugar.
+  ¿Está seguro de que desea eliminar las siguientes convocatorias? Se eliminarán todos los datos asociados.
 
   Esta operación no se puede deshacer.
 
