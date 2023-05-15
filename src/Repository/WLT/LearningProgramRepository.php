@@ -119,4 +119,14 @@ class LearningProgramRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function deleteFromProjects($list)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(LearningProgram::class, 'lp')
+            ->where('lp.project IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
+    }
 }

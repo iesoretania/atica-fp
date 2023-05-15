@@ -23,7 +23,10 @@ use App\Entity\Edu\Teacher;
 use App\Entity\Organization;
 use App\Entity\Person;
 use App\Entity\WLT\Agreement;
+use App\Entity\WLT\EducationalTutorAnsweredSurvey;
 use App\Entity\WLT\Project;
+use App\Entity\WLT\StudentAnsweredSurvey;
+use App\Entity\WLT\WorkTutorAnsweredSurvey;
 use App\Entity\Workcenter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -110,12 +113,31 @@ class ProjectRepository extends ServiceEntityRepository
 
     public function deleteFromList($items)
     {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->delete(Project::class, 'p')
-            ->where('p IN (:items)')
+        $this->getEntityManager()->createQueryBuilder()
+            ->delete(StudentAnsweredSurvey::class, 's')
+            ->where('s.project IN (:items)')
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();
+        $this->getEntityManager()->createQueryBuilder()
+            ->delete(EducationalTutorAnsweredSurvey::class, 's')
+            ->where('s.project IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+        $this->getEntityManager()->createQueryBuilder()
+            ->delete(WorkTutorAnsweredSurvey::class, 's')
+            ->where('s.project IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+        return
+            $this->getEntityManager()->createQueryBuilder()
+                ->delete(Project::class, 'p')
+                ->where('p IN (:items)')
+                ->setParameter('items', $items)
+                ->getQuery()
+                ->execute();
     }
 
     public function findByOrganization(

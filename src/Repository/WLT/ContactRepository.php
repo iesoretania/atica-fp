@@ -22,6 +22,7 @@ use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\ContactMethod;
 use App\Entity\Edu\Teacher;
 use App\Entity\WLT\Contact;
+use App\Entity\WLT\Project;
 use App\Entity\Workcenter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -364,5 +365,24 @@ class ContactRepository extends ServiceEntityRepository
         return $qb
             ->getQuery()
             ->getResult();
+    }
+
+    public function deleteFromProjects($items)
+    {
+        $contacts = $this->createQueryBuilder('c')
+            ->join('c.projects', 'p')
+            ->where('p IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+        /** @var Project $item */
+        foreach ($items as $item) {
+            /** @var Contact $contact */
+            foreach ($contacts as $contact) {
+                if ($contact->getProjects()->contains($item)) {
+                    $contact->getProjects()->removeElement($item);
+                }
+            }
+        }
     }
 }

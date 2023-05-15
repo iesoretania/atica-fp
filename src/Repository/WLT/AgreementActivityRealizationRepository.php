@@ -20,6 +20,7 @@ namespace App\Repository\WLT;
 
 use App\Entity\WLT\Agreement;
 use App\Entity\WLT\AgreementActivityRealization;
+use App\Entity\WLT\AgreementActivityRealizationComment;
 use App\Entity\WLT\WorkDay;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -74,6 +75,29 @@ class AgreementActivityRealizationRepository extends ServiceEntityRepository
             ->where('a.agreement = :agreement')
             ->andWhere('a.activityRealization IN (:items)')
             ->setParameter('agreement', $agreement)
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function deleteFromAgreementList($items)
+    {
+        $realizations = $this->createQueryBuilder( 'a')
+            ->where('a.agreement IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->getResult();
+
+        $this->getEntityManager()->createQueryBuilder()
+            ->delete(AgreementActivityRealizationComment::class, 'aarc')
+            ->where('aarc.agreementActivityRealization IN (:items)')
+            ->setParameter('items', $realizations)
+            ->getQuery()
+            ->execute();
+
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(AgreementActivityRealization::class, 'a')
+            ->where('a.agreement IN (:items)')
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();

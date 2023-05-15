@@ -22,7 +22,6 @@ use App\Entity\AnsweredSurvey;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
 use App\Entity\WLT\EducationalTutorAnsweredSurvey;
-use App\Entity\WLT\ManagerAnsweredSurvey;
 use App\Entity\WLT\Project;
 use App\Entity\WLT\WorkTutorAnsweredSurvey;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

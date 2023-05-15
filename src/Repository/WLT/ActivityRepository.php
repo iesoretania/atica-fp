@@ -81,6 +81,12 @@ class ActivityRepository extends ServiceEntityRepository
 
     public function deleteFromList($items)
     {
+        $this->getEntityManager()->createQueryBuilder()
+            ->delete(ActivityRealization::class, 'ar')
+            ->where('ar.activity IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
         return $this->getEntityManager()->createQueryBuilder()
             ->delete(Activity::class, 'a')
             ->where('a IN (:items)')

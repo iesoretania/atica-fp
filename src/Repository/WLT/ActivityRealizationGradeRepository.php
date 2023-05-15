@@ -19,6 +19,7 @@
 namespace App\Repository\WLT;
 
 use App\Entity\WLT\ActivityRealizationGrade;
+use App\Entity\WLT\AgreementActivityRealization;
 use App\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -62,5 +63,21 @@ class ActivityRealizationGradeRepository extends ServiceEntityRepository
             ->orderBy('arg.numericGrade', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function deleteFromProjects($items)
+    {
+        $this->getEntityManager()->createQueryBuilder()
+            ->delete(AgreementActivityRealization::class, 'aar')
+            ->where('aar.grade IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(ActivityRealizationGrade::class, 'arg')
+            ->where('arg.project IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
     }
 }

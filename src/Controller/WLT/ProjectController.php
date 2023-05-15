@@ -24,6 +24,13 @@ use App\Entity\WLT\Project;
 use App\Form\Type\WLT\ProjectStudentEnrollmentType;
 use App\Form\Type\WLT\ProjectType;
 use App\Repository\Edu\AcademicYearRepository;
+use App\Repository\WLT\ActivityRealizationGradeRepository;
+use App\Repository\WLT\ActivityRepository;
+use App\Repository\WLT\AgreementActivityRealizationRepository;
+use App\Repository\WLT\AgreementRepository;
+use App\Repository\WLT\ContactRepository;
+use App\Repository\WLT\LearningProgramRepository;
+use App\Repository\WLT\MeetingRepository;
 use App\Repository\WLT\ProjectRepository;
 use App\Security\OrganizationVoter;
 use App\Security\WLT\ProjectVoter;
@@ -265,6 +272,13 @@ class ProjectController extends AbstractController
     public function operationAction(
         Request $request,
         ProjectRepository $projectRepository,
+        AgreementRepository $agreementRepository,
+        ActivityRepository $activityRepository,
+        LearningProgramRepository $learningProgramRepository,
+        AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
+        ActivityRealizationGradeRepository $activityRealizationGradeRepository,
+        MeetingRepository $meetingRepository,
+        ContactRepository $contactRepository,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator
     ) {
@@ -282,6 +296,20 @@ class ProjectController extends AbstractController
 
         if ($request->get('confirm', '') === 'ok') {
             try {
+                /** @var Project $selectedItem */
+                foreach ($selectedItems as $selectedItem) {
+                    $agreementActivityRealizationRepository->deleteFromAgreementList($selectedItem->getAgreements());
+                }
+                $meetingRepository->deleteFromProjects($selectedItems);
+                $contactRepository->deleteFromProjects($selectedItems);
+                $agreementRepository->deleteFromProjects($selectedItems);
+                foreach ($selectedItems as $selectedItem) {
+                    $project = $projectRepository->find($selectedItem);
+                    $project->getStudentEnrollments()->clear();
+                    $activityRepository->deleteFromList($project->getActivities());
+                }
+                $learningProgramRepository->deleteFromProjects($selectedItems);
+                $activityRealizationGradeRepository->deleteFromProjects($selectedItems);
                 $projectRepository->deleteFromList($selectedItems);
 
                 $em->flush();

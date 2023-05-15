@@ -182,14 +182,14 @@ class GradeController extends AbstractController
         $grades = $gradeRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
         if ($request->get('confirm', '') === 'ok') {
-            //try {
+            try {
                 $gradeRepository->deleteFromList($grades);
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_grade'));
-            //} catch (\Exception $e) {
+            } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_grade'));
-            //}
+            }
             return $this->redirectToRoute('organization_grade_list', ['academicYear' => $academicYear->getId()]);
         }
 

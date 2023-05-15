@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* feat: Eliminar un proyecto de FP dual elimina automáticamente toda su información
+
 5.5.0 (2023-05-03)
 ------------------
 * fix: Eliminar una jornada de un calendario de FCT elimina todas las actividades del estudiante

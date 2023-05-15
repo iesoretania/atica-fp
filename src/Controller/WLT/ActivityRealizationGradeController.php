@@ -223,7 +223,7 @@ class ActivityRealizationGradeController extends AbstractController
             [
                 'fixed' => $translator->trans('title.list', [], 'wlt_activity_realization_grade'),
                 'routeName' => 'work_linked_training_activity_realization_grade_list',
-                'routeParams' => []
+                'routeParams' => ['id' => $project->getId()]
             ],
             ['fixed' => $translator->trans('title.delete', [], 'wlt_activity_realization_grade')]
         ];

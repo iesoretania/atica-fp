@@ -155,4 +155,14 @@ class MeetingRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function deleteFromProjects($items)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(Meeting::class, 'm')
+            ->where('m.project IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
 }

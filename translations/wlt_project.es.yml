@@ -20,7 +20,7 @@ form.delete_confirm: Confirmar borrado
 table.new: Nuevo proyecto
 
 prompt.delete_confirm: |
-  ¿Está seguro de que desea eliminar los siguientes proyectos? En el caso de que alguno tenga elementos asociados, el borrado no tendrá lugar.
+  ¿Está seguro de que desea eliminar los siguientes proyectos? Se eliminará toda la información relacionada.
 
   Esta operación no se puede deshacer.
 

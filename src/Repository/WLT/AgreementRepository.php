@@ -24,6 +24,7 @@ use App\Entity\Edu\Teacher;
 use App\Entity\Organization;
 use App\Entity\Person;
 use App\Entity\WLT\Agreement;
+use App\Entity\WLT\AgreementActivityRealization;
 use App\Entity\WLT\Meeting;
 use App\Entity\WLT\Project;
 use App\Entity\WLT\WorkDay;
@@ -285,20 +286,27 @@ class AgreementRepository extends ServiceEntityRepository
     public function deleteFromList($list)
     {
         $em = $this->getEntityManager();
-        /** @var Agreement $agreement */
-        foreach ($list as $agreement) {
-            $evaluatedActivityRealizations = $agreement->getEvaluatedActivityRealizations();
-            foreach ($evaluatedActivityRealizations as $evaluatedActivityRealization) {
-                $em->remove($evaluatedActivityRealization);
-            }
 
-            $workDays = $agreement->getWorkDays();
-            foreach ($workDays as $workDay) {
-                $em->remove($workDay);
-            }
+        $em->createQueryBuilder()
+            ->delete(AgreementActivityRealization::class, 'aar')
+            ->where('aar.agreement IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
 
-            $em->remove($agreement);
-        }
+        $em->createQueryBuilder()
+            ->delete(WorkDay::class, 'wd')
+            ->where('wd.agreement IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
+
+        $em->createQueryBuilder()
+            ->delete(Agreement::class, 'a')
+            ->where('a IN (:list)')
+            ->setParameter('list', $list)
+            ->getQuery()
+            ->execute();
 
         return true;
     }
@@ -576,5 +584,16 @@ class AgreementRepository extends ServiceEntityRepository
             ->orderBy('ar.startDate')
             ->getQuery()
             ->getResult();
+    }
+
+    public function deleteFromProjects($items)
+    {
+        $agreements = $this->createQueryBuilder('a')
+            ->where('a.project IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->getResult();
+
+        return $this->deleteFromList($agreements);
     }
 }
