@@ -154,7 +154,7 @@ class OrganizationController extends AbstractController
             'menu_path' => 'admin_organization_list',
             'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'organization')]],
             'title' => $translator->trans('title.delete', [], 'organization'),
-            'organizations' => $organizations
+            'selected_organizations' => $organizations
         ]);
     }
 
@@ -264,7 +264,7 @@ class OrganizationController extends AbstractController
         $organizations = [];
         if (!$redirect) {
             $organizations = $em->getRepository(Organization::class)->
-            findAllInListByIdButCurrent($items, $userExtensionService->getCurrentOrganization());
+                findAllInListByIdButCurrent($items, $userExtensionService->getCurrentOrganization());
             $redirect = $this->processRemoveOrganizations($request, $translator, $organizations, $em);
         }
         return array($redirect, $organizations);

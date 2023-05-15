@@ -151,8 +151,7 @@ class OrganizationRepository extends ServiceEntityRepository
     public function findAllInListByIdButCurrent($items, Organization $organization)
     {
         return $this->createQueryBuilder('o')
-            ->where('o.id IN (:items)')
-            ->andWhere('o != :current')
+            ->where('o IN (:items) AND o != :current')
             ->setParameter('items', $items)
             ->setParameter('current', $organization)
             ->orderBy('o.code')

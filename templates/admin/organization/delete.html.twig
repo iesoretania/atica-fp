@@ -3,7 +3,7 @@
 {% import 'macros.html.twig' as m %}
 {% block content %}
     <form method="post">
-        {% for organization in organizations %}
+        {% for organization in selected_organizations %}
             <input type="hidden" name="organizations[]" value="{{ organization.id }}">
         {% endfor %}
         <input type="hidden" name="confirm" value="ok">
@@ -18,7 +18,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for organization in organizations %}
+                    {% for organization in selected_organizations %}
                         <tr>
                             <td>{{ organization.name }}</td>
                             <td>{{ organization.code }}</td>
