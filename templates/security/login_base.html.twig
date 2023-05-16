@@ -11,7 +11,6 @@
             <div class="panel-body">
                 <h1 class="text-center">
                     <p class="app-name">{{ app_name|upper }} </p>
-                    {% if app_version %}<span class="app-version">{{ app_version }}</span>{% endif %}
                 </h1>
                 {{ ml.flash_message('success', 'success') }}
                 {{ ml.flash_message('error', 'danger') }}
@@ -28,7 +27,10 @@
 
     <footer class="footer no-print" role="contentinfo">
         <div class="container">
-            <p class="text-muted text-center">{{ 'form.login.footer.first'|trans }} <a href="{{ app_repository }}">{{ 'form.login.footer.link.caption'|trans }}</a> {{ 'form.login.footer.second'|trans }} <a href="https://www.gnu.org/licenses/agpl-3.0.html">{{ 'form.login.footer.link.agpl_caption'|trans }}</a></p>
+            <p class="text-muted text-center">
+                {{ 'form.login.footer.first'|trans }} <a href="{{ app_repository }}">{{ 'form.login.footer.link.caption'|trans }}</a> {{ 'form.login.footer.second'|trans }} <a href="https://www.gnu.org/licenses/agpl-3.0.html">{{ 'form.login.footer.link.agpl_caption'|trans }}</a>
+                {% if app_version %} - <span title="{{ app_pub_date }}">v{{ app_version }}</span>{% endif %}
+            </p>
         </div>
     </footer>
 {% endblock %}

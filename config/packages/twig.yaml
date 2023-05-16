@@ -10,7 +10,8 @@ twig:
     globals:
         app_name:     '%env(APP_NAME)%'
         app_repository: 'https://github.com/iesoretania/atica-fp'
-        app_version:  ''
+        app_version:  '%app.version%'
+        app_pub_date:  '%app.pub_date%'
         user_extension: '@App\Service\UserExtensionService'
         menu_extension: '@App\Service\MenuBuilderChain'
         organization_extension: '@App\Service\OrganizationBuilderChain'

@@ -9,6 +9,7 @@ x.x.x (xxxx-xx-xx)
 * feat: Eliminar un proyecto de FP dual elimina automáticamente toda su información
 * feat: Eliminar una convocatoria de FCT elimina automáticamente toda su información
 * chore: Listar correctamente centros educativos a eliminar
+* chore: Mostrar el número de versión en el pie de página de la pantalla de entrada
 
 5.5.0 (2023-05-03)
 ------------------
