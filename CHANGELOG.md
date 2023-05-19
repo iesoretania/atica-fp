@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+5.6.0 (2023-05-09)
 ------------------
 * feat: Eliminar un proyecto de FP dual elimina automáticamente toda su información
 * feat: Eliminar una convocatoria de FCT elimina automáticamente toda su información
