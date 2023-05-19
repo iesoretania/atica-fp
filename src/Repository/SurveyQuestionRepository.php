@@ -71,7 +71,7 @@ class SurveyQuestionRepository extends ServiceEntityRepository
             ->setParameter('order_nr', $surveyQuestion->getOrderNr())
             ->setParameter('survey', $surveyQuestion->getSurvey())
             ->setMaxResults(1)
-            ->orderBy('sq.orderNr', 'DESC')
+            ->orderBy('sq.orderNr', 'ASC')
             ->getQuery()
             ->getOneOrNullResult();
     }
