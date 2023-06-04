@@ -5,9 +5,9 @@
 {% block path_new %}{{ path('work_linked_training_activity_realization_grade_new', {'id': project.id}) }}{% endblock %}
 
 {% block table_header %}
-    <th><label><input type="checkbox" id="select"> {{ 'header.description'|trans }}</label></th>
+    <th><label><input type="checkbox" id="select"> {{ 'header.grade'|trans }}</label></th>
     <th>{{ 'header.numeric_grade'|trans }}</th>
-    <th>{{ 'header.notes'|trans }}</th>
+    <th>{{ 'header.description'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}

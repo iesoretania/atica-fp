@@ -36,7 +36,7 @@ class ActivityRealizationGradeType extends AbstractType
     {
         $builder
             ->add('description', TextType::class, [
-                'label' => 'form.description',
+                'label' => 'form.grade',
                 'required' => true
             ])
             ->add('numericGrade', IntegerType::class, [

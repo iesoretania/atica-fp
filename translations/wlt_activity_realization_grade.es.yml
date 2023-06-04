@@ -1,4 +1,5 @@
 form.description: Descripción
+form.grade: Nivel de desempeño
 form.numeric_grade: Calificación numérica
 form.notes: Notas
 
@@ -7,7 +8,7 @@ form.edit.hint: Añadir comentarios o deshabilitar concreción
 form.comments.hint: Mostrar/ocultar comentarios
 
 form.save: Guardar cambios
-form.delete: Eliminar las calificaciones seleccionadas
+form.delete: Eliminar los niveles seleccionados
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 form.remarks: Otros comentarios sobre el estudiante
@@ -17,17 +18,18 @@ prompt.delete_confirm: |
 
   Esta operación no se puede deshacer.
 
-title.edit: Datos de la calificación
-title.new: Nueva calificación
-title.delete: Eliminar calificaciones
+title.edit: Datos del nivel de desempeño
+title.new: Nuevo nivel de desempeño
+title.delete: Eliminar niveles de desempeño
 
-table.new: Nueva calificación
+table.new: Nuevo nivel de desempeño
 title.list: Configuración de evaluación de concreciones
 table.total: "{1} Encontrado un único resultado|]1,Inf[ Encontrados %count% resultados"
-table.no_items: No hay calificaciones
+table.no_items: No hay niveles de desempeño
 table.filter: Filtrar...
 
 header.description: Descripción
+header.grade: Nivel de desempeño
 header.numeric_grade: Calificación numérica
 header.notes: Notas
 

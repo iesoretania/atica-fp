@@ -26,6 +26,7 @@ use App\Entity\WLT\AgreementActivityRealizationComment;
 use App\Form\Type\WLT\AgreementActivityRealizationNewCommentType;
 use App\Form\Type\WLT\AgreementEvaluationType;
 use App\Repository\Edu\AcademicYearRepository;
+use App\Repository\WLT\ActivityRealizationGradeRepository;
 use App\Repository\WLT\ProjectRepository;
 use App\Repository\WLT\WLTGroupRepository;
 use App\Security\OrganizationVoter;
@@ -54,6 +55,7 @@ class EvaluationController extends AbstractController
     public function indexAction(
         Request $request,
         TranslatorInterface $translator,
+        ActivityRealizationGradeRepository $activityRealizationGradeRepository,
         Agreement $agreement
     ) {
         $this->denyAccessUnlessGranted(AgreementVoter::VIEW_GRADE, $agreement);
@@ -70,6 +72,8 @@ class EvaluationController extends AbstractController
         ]);
 
         $form->handleRequest($request);
+
+        $grades = $activityRealizationGradeRepository->findByProject($agreement->getProject());
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
@@ -94,6 +98,7 @@ class EvaluationController extends AbstractController
             'menu_path' => 'work_linked_training_evaluation_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
+            'grades' => $grades,
             'agreement' => $agreement,
             'read_only' => $readOnly,
             'form' => $form->createView()
