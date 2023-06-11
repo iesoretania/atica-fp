@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+5.6.1 (2023-06-11)
 ------------------
 * feat: Listar los niveles de desempeño y su descripción en la pantalla de evaluación
 * fix: El listado de contactos con empresas de FP dual ahora pagina correctamente
