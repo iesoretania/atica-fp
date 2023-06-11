@@ -327,7 +327,7 @@ class ContactController extends AbstractController
                 ->setParameter('methods', $methodCollection);
         }
 
-        $adapter = new QueryAdapter($queryBuilder, false);
+        $adapter = new QueryAdapter($queryBuilder, true);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

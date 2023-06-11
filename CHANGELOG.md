@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * feat: Listar los niveles de desempeño y su descripción en la pantalla de evaluación
+* fix: El listado de contactos con empresas de FP dual ahora pagina correctamente
 
 5.6.0 (2023-05-09)
 ------------------
