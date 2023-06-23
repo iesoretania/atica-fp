@@ -26,7 +26,8 @@ report.out.header: Horario salida
 
 report.date_format: "d/m/Y"
 
-report.total.title: "Nº total de jornadas realizadas:"
+report.days_total.title: "Nº total de jornadas realizadas:"
+report.hours_total.title: "Nº total de horas realizadas:"
 report.signature: En %city%, a %day% de %month_string% de %year%
 
 report.work_tutor.signature: Firma del tutor/a laboral

@@ -80,9 +80,11 @@
     <tbody>
         <tr>
             {% set total = 0 %}
+            {% set hours = 0 %}
             {% for workday in agreement.workdays %}
                 {% if workday.absence == 0 and (workday.activityRealizations.count() or workday.otherActivities is not empty) %}
                     {% set total = total + 1 %}
+                    {% set hours = hours + workday.hours %}
                     <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.date|date('report.date_format'|trans) }}</td>
                     <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.startTime1|slice(0, 5)|default('report.no_data'|trans) }}</td>
                     <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.endTime1|slice(0, 5)|default('report.no_data'|trans) }}</td>
@@ -107,10 +109,20 @@
     </tbody>
 </table>
 
-
-<p style="text-align: center; font-weight: bold">
-    {{ 'report.total.title'|trans }} {{ total }}
-</p>
+<table width="100%">
+    <tr>
+        <td width="50%">
+            <p style="text-align: left; font-weight: bold">
+                {{ 'report.days_total.title'|trans }} {{ total }}
+            </p>
+        </td>
+        <td width="50%" style="text-align: right">
+            <p style="font-weight: bold">
+                {{ 'report.hours_total.title'|trans }} {{ hours | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
+            </p>
+        </td>
+    </tr>
+</table>
 
 </body>
 </html>
