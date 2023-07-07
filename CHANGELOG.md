@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-5.x.x (xxxx-xx-xx)
+5.6.3 (2023-07-07)
 ------------------
 * fix: Los informes de encuestas de tutores laborales de FCT ya se generan correctamente
 
