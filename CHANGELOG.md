@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+5.x.x (xxxx-xx-xx)
+------------------
+* fix: Los informes de encuestas de tutores laborales de FCT ya se generan correctamente
+
 5.6.2 (2023-06-23)
 ------------------
 * feat: Añadir número de horas realizadas en el informe de acreditación de asistencia

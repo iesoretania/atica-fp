@@ -42,7 +42,7 @@ class WPTAnsweredSurveyRepository extends ServiceEntityRepository
                 'WITH',
                 'wtas.shift = :shift AND asu = wtas.answeredSurvey'
             )
-            ->setParameter('proshiftject', $shift);
+            ->setParameter('shift', $shift);
 
         return $qb
             ->getQuery()

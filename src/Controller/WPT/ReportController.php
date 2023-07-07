@@ -311,9 +311,11 @@ class ReportController extends AbstractController
         if ($survey) {
             $workTutorAnswers = $workTutorAnsweredSurveyRepository->findByShift($shift);
 
-            $list = $wptAnsweredSurveyRepository->findByEducationalTutorSurveyShift(
+            $list = $wptAnsweredSurveyRepository->findByWorkTutorSurveyShift(
                 $shift
             );
+
+            dump($list);
 
             $surveyStats = $surveyQuestionRepository
                 ->answerStatsBySurveyAndAnsweredSurveyList($list);
