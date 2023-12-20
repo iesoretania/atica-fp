@@ -19,6 +19,7 @@
 namespace App\Repository;
 
 use App\Entity\Company;
+use App\Entity\Workcenter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -44,6 +45,21 @@ class CompanyRepository extends ServiceEntityRepository
 
     public function deleteFromList($items)
     {
+        $workcenters = $this->getEntityManager()->createQueryBuilder()
+            ->select(Workcenter::class, 'wc')
+            ->join('wc.company', 'c')
+            ->where('c IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+
+        $this->getEntityManager()->createQueryBuilder()
+            ->delete(Workcenter::class, 'wc')
+            ->where('wc IN (:items)')
+            ->setParameter('items', $workcenters)
+            ->getQuery()
+            ->execute();
+
         return $this->getEntityManager()->createQueryBuilder()
             ->delete(Company::class, 'c')
             ->where('c IN (:items)')

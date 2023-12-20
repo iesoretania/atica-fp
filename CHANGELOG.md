@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (2023-12-20)
+------------------
+* feat: Eliminar centros de trabajo al eliminar una empresa
+
 5.6.2 (2023-06-23)
 ------------------
 * feat: Añadir número de horas realizadas en el informe de acreditación de asistencia
