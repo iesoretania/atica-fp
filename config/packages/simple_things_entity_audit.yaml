@@ -15,13 +15,16 @@ simple_things_entity_audit:
         - App\Entity\WLT\Meeting
         - App\Entity\WLT\Project
         - App\Entity\WLT\StudentAnsweredSurvey
+        - App\Entity\WLT\TravelExpense
         - App\Entity\WLT\WorkDay
         - App\Entity\WLT\WorkTutorAnsweredSurvey
         - App\Entity\WPT\Activity
         - App\Entity\WPT\Agreement
+        - App\Entity\WPT\Contact
         - App\Entity\WPT\EducationalTutorAnsweredSurvey
         - App\Entity\WPT\Shift
         - App\Entity\WPT\StudentAnsweredSurvey
+        - App\Entity\WPT\TravelExpense
         - App\Entity\WPT\WorkDay
         - App\Entity\WPT\WorkTutorAnsweredSurvey
         - App\Entity\Survey

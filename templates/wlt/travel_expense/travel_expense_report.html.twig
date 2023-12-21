@@ -1,0 +1,151 @@
+{% trans_default_domain 'wlt_travel_expense_report' %}
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        @page {
+            margin-top: 5.5cm;
+            margin-bottom: 4.5cm;
+            margin-left: 1.5cm;
+            margin-right: 1.5cm;
+            odd-header-name: html_header;
+            even-header-name: html_header;
+            odd-footer-name: html_footer;
+            even-footer-name: html_footer;
+        }
+
+        td, th {
+            border: 1px solid;
+            padding: 0.1cm;
+        }
+
+        th {
+            background-color: #DDDDDD;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .centered {
+            text-align: center;
+        }
+
+        .no-border {
+            border: none;
+        }
+
+        table#main-data td {
+            padding-top: 0.25cm;
+            padding-bottom: 0.25cm;
+        }
+    </style>
+</head>
+
+<body style="font-family: sans-serif; font-size: 12px">
+
+<htmlpageheader name="header">
+    <p style="padding-top: 2cm;"></p>
+    <table style="border: 1px solid; border-spacing: 0; width: 100%; vertical-align: top; margin-bottom: 0.3cm;">
+        <tr>
+            <td colspan="2" style="border: 1px solid; background-color: #DDDDDD; text-align: center; font-size: 110%; font-weight: bold">{{ 'report.summary.title'|trans }}</td>
+        </tr>
+        <tr>
+            <td>
+                {{ 'report.academic_year'|trans }} {{ teacher.academicYear }}
+            </td>
+            <td class="centered" style="width: 20%;">{{ 'report.page'|trans({'%page%': '{PAGENO}', '%total%': '{nbpg}'}) }}</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                {{ 'report.educational_tutor'|trans }} {{ teacher }}
+            </td>
+        </tr>
+    </table>
+</htmlpageheader>
+<htmlpagefooter name="footer">
+    <table style="border-spacing: 0; width: 100%; vertical-align: middle; margin-bottom: 0.3cm">
+            <tr>
+                <td class="no-border" style="width: 20%;"></td>
+                <td class="centered">
+                    {{ 'report.educational_tutor.title'|trans }}<br /><br /><br /><br /><br />
+                    {{ 'report.educational_tutor.signature'|trans({'%name%': teacher}) }}
+                </td>
+                <td class="no-border" style="width: 20%;"></td>
+            </tr>
+    </table>
+    <table style="border-spacing: 0; width: 100%; vertical-align: middle; margin-bottom: 0.3cm">
+        <tr>
+
+        </tr>
+    </table>
+</htmlpagefooter>
+
+<table id="main-data" style="border: 1px solid; border-spacing: 0; width: 100%; vertical-align: middle; margin-bottom: 0.3cm">
+    <thead>
+        <tr>
+            <th style="width: 15%;">{{ 'report.start_date_time'|trans }}</th>
+            <th style="width: 15%;">{{ 'report.end_date_time'|trans }}</th>
+            <th style="width: 50%;">{{ 'report.route'|trans }}</th>
+            <th style="width: 10%;">{{ 'report.route_distance'|trans }}</th>
+            <th style="width: 10%;">{{ 'report.other_expenses'|trans }}</th>
+        </tr>
+    </thead>
+    {% set total_distance = 0 %}
+    {% set total_other_expenses = 0 %}
+    <tbody>
+        {% for travel_expense in travel_expenses %}
+            <tr>
+                {% set num_rows = 1 %}
+                {% if travel_expense.otherExpensesDescription is not empty %}{% set num_rows = num_rows + 1 %}{% endif %}
+                {% if travel_expense.description is not empty %}{% set num_rows = num_rows + 1 %}{% endif %}
+                {% set total_other_expenses = total_other_expenses + travel_expense.otherExpenses %}
+                <td class="centered" rowspan="{{ num_rows }}">{{ travel_expense.fromDateTime|date('format.datetime'|trans({}, 'general')) }}</td>
+                <td class="centered" rowspan="{{ num_rows }}">{{ travel_expense.toDateTime|date('format.datetime'|trans({}, 'general')) }}</td>
+                <td class="centered">{{ travel_expense.travelRoute }}{% if not travel_expense.travelRoute.verified %}{{ 'report.unverified_route'|trans }}{% endif %}</td>
+                <td class="centered">
+                    {% if travel_expense.travelRoute.verified %}
+                        {% set total_distance = total_distance + travel_expense.travelRoute.distance %}
+                        {{ travel_expense.travelRoute.distance | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} {{ 'suffix.distance'|trans({}, 'general') }}
+                    {% else %}
+                        ---
+                    {% endif %}
+                </td>
+                <td class="centered">{{ (travel_expense.otherExpenses / 100.0) | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} {{ 'format.currency'|trans({}, 'general') }}</td>
+            </tr>
+            {% if travel_expense.otherExpensesDescription is not empty %}
+                <tr>
+                    <td colspan="3">
+                        <b>{{ 'report.other_expenses_description'|trans }}</b> {{ travel_expense.otherExpensesDescription|nl2br }}
+                    </td>
+                </tr>
+            {% endif %}
+            {% if travel_expense.description is not empty %}
+                <tr>
+                    <td colspan="3">
+                        <b>{{ 'report.description'|trans }}</b> {{ travel_expense.description|nl2br }}
+                    </td>
+                </tr>
+            {% endif %}
+        {% else %}
+            <tr>
+                <td colspan="5">{{ 'report.no_travel_expenses'|trans }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    {% if total_distance > 0 or total_other_expenses > 0 %}
+        <tfoot>
+            <tr>
+                <th class="right" colspan="3">{{ 'report.total'|trans }}</th>
+                <td class="centered">{{ total_distance | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} {{ 'suffix.distance'|trans({}, 'general') }}</td>
+                <td class="centered">{{ (total_other_expenses / 100.0) | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} {{ 'format.currency'|trans({}, 'general') }}</td>
+            </tr>
+        </tfoot>
+    {% endif %}
+</table>
+</body>
+</html>

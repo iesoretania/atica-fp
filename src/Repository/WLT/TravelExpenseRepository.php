@@ -16,40 +16,39 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace App\Repository\WPT;
+namespace App\Repository\WLT;
 
 use App\Entity\Edu\Teacher;
-use App\Entity\WPT\Visit;
+use App\Entity\WLT\TravelExpense;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-class VisitRepository extends ServiceEntityRepository
+class TravelExpenseRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Visit::class);
+        parent::__construct($registry, TravelExpense::class);
     }
 
     public function findAllInListById($items)
     {
-        return $this->createQueryBuilder('v')
-            ->where('v IN (:items)')
-            ->join('v.workcenter', 'w')
+        return $this->createQueryBuilder('te')
+            ->where('te IN (:items)')
             ->setParameter('items', $items)
-            ->orderBy('v.dateTime', 'DESC')
+            ->orderBy('te.fromDateTime', 'DESC')
             ->getQuery()
             ->getResult();
     }
 
     /**
-     * @param Visit[]
+     * @param TravelExpense[]
      * @return mixed
      */
     public function deleteFromList($list)
     {
         return $this->getEntityManager()->createQueryBuilder()
-            ->delete(Visit::class, 'v')
-            ->where('v IN (:list)')
+            ->delete(TravelExpense::class, 'te')
+            ->where('te IN (:list)')
             ->setParameter('list', $list)
             ->getQuery()
             ->execute();
@@ -57,10 +56,11 @@ class VisitRepository extends ServiceEntityRepository
 
     public function findByTeacherOrderByDateTime(Teacher $teacher)
     {
-        return $this->createQueryBuilder('v')
-            ->where('v.teacher = :teacher')
+        return $this->createQueryBuilder('te')
+            ->where('te.teacher = :teacher')
             ->setParameter('teacher', $teacher)
-            ->orderBy('v.dateTime', 'ASC')
+            ->orderBy('te.fromDateTime', 'ASC')
+            ->addOrderBy('te.toDateTime', 'ASC')
             ->getQuery()
             ->getResult();
     }

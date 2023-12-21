@@ -16,24 +16,23 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace App\Security\WPT;
+namespace App\Security\WLT;
 
-use App\Entity\Edu\Training;
+use App\Entity\Edu\Teaching;
 use App\Entity\Person;
-use App\Entity\WPT\Agreement;
-use App\Entity\WPT\Contact;
-use App\Repository\WPT\AgreementEnrollmentRepository;
+use App\Entity\WLT\TravelExpense;
 use App\Security\CachedVoter;
+use App\Security\Edu\EduOrganizationVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
-class VisitVoter extends CachedVoter
+class TravelExpenseVoter extends CachedVoter
 {
-    public const MANAGE = 'WPT_VISIT_MANAGE';
-    public const ACCESS = 'WPT_VISIT_ACCESS';
+    public const MANAGE = 'WLT_TRAVEL_EXPENSE_MANAGE';
+    public const ACCESS = 'WLT_TRAVEL_EXPENSE_ACCESS';
 
     /** @var AccessDecisionManagerInterface */
     private $decisionManager;
@@ -41,18 +40,14 @@ class VisitVoter extends CachedVoter
     /** @var UserExtensionService */
     private $userExtensionService;
 
-    private $agreementEnrollmentRepository;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
         AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService,
-        AgreementEnrollmentRepository $agreementEnrollmentRepository
+        UserExtensionService $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
         $this->decisionManager = $decisionManager;
         $this->userExtensionService = $userExtensionService;
-        $this->agreementEnrollmentRepository = $agreementEnrollmentRepository;
     }
 
     /**
@@ -61,7 +56,7 @@ class VisitVoter extends CachedVoter
     protected function supports($attribute, $subject)
     {
 
-        if (!$subject instanceof Contact) {
+        if (!$subject instanceof TravelExpense) {
             return false;
         }
         return in_array($attribute, [
@@ -75,7 +70,7 @@ class VisitVoter extends CachedVoter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        if (!$subject instanceof Contact) {
+        if (!$subject instanceof TravelExpense) {
             return false;
         }
 
@@ -99,58 +94,31 @@ class VisitVoter extends CachedVoter
             return false;
         }
 
-        // Si es administrador de la organización, permitir siempre
-        if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
+        // Si es administrador de la organización o responsable económico, permitir siempre
+        if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization) ||
+            $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $organization)) {
             return true;
         }
 
-        $isHead = false;
-
-        // Puede acceder el jefe/a de departamento
-        // de los grupos de los proyectos
-        /** @var Agreement $agreement */
-        foreach ($subject->getAgreements() as $agreement) {
-            /** @var Training $training */
-            $grade = $agreement->getShift()->getGrade();
-            if ($grade) {
-                $training = $grade->getTraining();
-                if ($training->getDepartment() &&
-                    $training->getDepartment()->getHead() &&
-                    $training->getDepartment()->getHead()->getPerson()
-                    === $user) {
-                    $isHead = true;
-                    break;
-                }
-            }
-        }
         switch ($attribute) {
             case self::MANAGE:
                 // El propio docente puede gestionar su visita si es del curso académico actual
-                return ($subject->getTeacher()->getPerson() === $user || $isHead)
+                return $subject->getTeacher()->getPerson() === $user
                     && $subject->getTeacher()->getAcademicYear() === $organization->getCurrentAcademicYear();
             case self::ACCESS:
                 // Puede acceder a los datos de la visita el propio docente
                 if ($subject->getTeacher()->getPerson() === $user) {
                     return true;
                 }
-
-                // Puede acceder el tutor de los estudiantes visitados
-                foreach ($subject->getStudentEnrollments() as $studentEnrollment) {
-                    foreach ($studentEnrollment->getGroup()->getTutors() as $tutor) {
-                        if ($tutor->getPerson() === $user) {
-                            return true;
-                        }
-                    }
-                }
-                // Comprobar si el profesor es tutor docente de los acuerdos
-                // de colaboración del departamento dirigido por el usuario
-                $agreementEnrollments = $this->agreementEnrollmentRepository
-                    ->findByEducationalTutor($subject->getTeacher());
-                foreach ($agreementEnrollments as $agreementEnrollment) {
-                    $training = $agreementEnrollment->getAgreement()->getShift()->getGrade()->getTraining();
-                    if ($training->getDepartment()
-                        && $training->getDepartment()->getHead()
-                        && $training->getDepartment()->getHead()->getPerson() === $user) {
+                // Puede acceder el jefe/a de departamento
+                // de los grupos de los proyectos
+                /** @var Teaching $teaching */
+                foreach ($subject->getTeacher()->getTeachings() as $teaching) {
+                    $group = $teaching->getGroup();
+                    if ($group->getGrade()->getTraining()->getDepartment() &&
+                        $group->getGrade()->getTraining()->getDepartment()->getHead() &&
+                        $group->getGrade()->getTraining()->getDepartment()->getHead()->getPerson()
+                            === $user) {
                         return true;
                     }
                 }

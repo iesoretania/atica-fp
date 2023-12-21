@@ -103,6 +103,9 @@ menu.work_linked_training.meeting.detail: Registrar las reuniones de tutorizaci√
 menu.work_linked_training.contact: Contactos con empresas
 menu.work_linked_training.contact.detail: Registrar los contactos con empresas por parte de los docentes de FP dual
 
+menu.work_linked_training.travel_expense: Dietas de desplazamiento
+menu.work_linked_training.travel_expense.detail: Registrar los desplazamientos y dietas de los responsables de seguimiento
+
 menu.work_linked_training.survey: Encuestas
 menu.work_linked_training.survey.detail: Encuestas de satisfacci√≥n sobre la FP dual
 

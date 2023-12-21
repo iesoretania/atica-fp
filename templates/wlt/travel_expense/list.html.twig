@@ -1,0 +1,63 @@
+{% trans_default_domain 'wlt_travel_expense' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('work_linked_training_travel_expense_new', {'id': teacher.id}) }}{% endblock %}
+
+{% block new_action %}{% if allow_new %}{{ parent() }}{% endif %}{% endblock %}
+
+{% block table_header %}
+    <th><label><input type="checkbox" id="select"> {{ 'header.travel_route'|trans }}</label></th>
+    <th>{{ 'header.agreements'|trans }}</th>
+    <th>{{ 'header.distance'|trans }}</th>
+    <th>{{ 'header.other_expenses'|trans }}</th>
+    <th>{{ 'header.verified'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for data in pager %}
+                {% set item = data[0] %}
+                {% set url = path('work_linked_training_travel_expense_edit', {'id': item.id}) %}
+                {% set read_only = not is_granted('WLT_TRAVEL_EXPENSE_MANAGE', item) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}"{% if not read_only %} class="selectable"{% else %} disabled="disabled"{% endif %}>
+                            <a href="{{ url }}">
+                                {{ item.travelRoute }}
+                            </a>
+                        </label>
+                    </td>
+                    <td>
+                        {{ data[1] }}
+                    </td>
+                    <td>
+                        {{ item.travelRoute.distance ? item.travelRoute.distance|number_format ~ ' ' ~ 'suffix.distance'|trans({}, 'general') : '---' }}
+                    </td>
+                    <td>
+                        {{ (item.otherExpenses/100) | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} {{ 'format.currency'|trans({}, 'general') }}
+                    </td>
+                    <td>
+                        {{ (item.travelRoute.verified ? 'table.verified_yes' : 'table.verified_no')|trans }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('work_linked_training_travel_expense_operation', {'id': teacher.id}) }}" method="post">
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'id': teacher.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}

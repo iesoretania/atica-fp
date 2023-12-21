@@ -21,10 +21,10 @@ namespace App\Controller\WPT;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
 use App\Entity\Person;
-use App\Entity\WPT\Visit;
+use App\Entity\WPT\Contact;
 use App\Form\Type\WPT\VisitType;
 use App\Repository\Edu\AcademicYearRepository;
-use App\Repository\WPT\VisitRepository;
+use App\Repository\WPT\ContactRepository;
 use App\Repository\WPT\WPTGroupRepository;
 use App\Repository\WPT\WPTTeacherRepository;
 use App\Security\Edu\EduOrganizationVoter;
@@ -66,7 +66,7 @@ class VisitController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_CREATE_VISIT, $organization);
 
-        $visit = new Visit();
+        $visit = new Contact();
         $visit
             ->setTeacher($teacher)
             ->setDateTime(new \DateTime());
@@ -97,7 +97,7 @@ class VisitController extends AbstractController
         Security $security,
         WPTTeacherRepository $WPTTeacherRepository,
         WPTGroupRepository $WPTGroupRepository,
-        Visit $visit
+        Contact $visit
     ) {
         $this->denyAccessUnlessGranted(VisitVoter::ACCESS, $visit);
 
@@ -182,7 +182,7 @@ class VisitController extends AbstractController
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_VISIT, $organization);
 
         // probar si tiene acceso a las visitas de este usuario
-        $visit = new Visit();
+        $visit = new Contact();
         $visit
             ->setTeacher($teacher)
             ->setDateTime(new \DateTime());
@@ -200,7 +200,7 @@ class VisitController extends AbstractController
             ->addSelect('w')
             ->addSelect('c')
             ->addSelect('se')
-            ->from(Visit::class, 'v')
+            ->from(Contact::class, 'v')
             ->join('v.workcenter', 'w')
             ->join('w.company', 'c')
             ->leftJoin('v.agreements', 'a')
@@ -296,7 +296,7 @@ class VisitController extends AbstractController
             ->addSelect('COUNT(DISTINCT a)')
             ->from(Teacher::class, 't')
             ->join('t.person', 'p')
-            ->leftJoin(Visit::class, 'v', 'WITH', 'v.teacher = t')
+            ->leftJoin(Contact::class, 'v', 'WITH', 'v.teacher = t')
             ->leftJoin('v.agreements', 'a')
             ->groupBy('t')
             ->addOrderBy('p.lastName')
@@ -342,11 +342,11 @@ class VisitController extends AbstractController
      *     requirements={"id" = "\d+"}, methods={"POST"})
      */
     public function operationAction(
-        Request $request,
-        VisitRepository $visitRepository,
+        Request              $request,
+        ContactRepository    $visitRepository,
         UserExtensionService $userExtensionService,
-        TranslatorInterface $translator,
-        Teacher $teacher
+        TranslatorInterface  $translator,
+        Teacher              $teacher
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
@@ -395,13 +395,13 @@ class VisitController extends AbstractController
      *     requirements={"id" = "\d+"}, name="workplace_training_visit_report", methods={"GET"})
      */
     public function visitSummaryReportAction(
-        Environment $engine,
-        TranslatorInterface $translator,
+        Environment          $engine,
+        TranslatorInterface  $translator,
         WPTTeacherRepository $wptTeacherRepository,
-        VisitRepository $visitRepository,
-        Teacher $teacher
+        ContactRepository    $visitRepository,
+        Teacher              $teacher
     ) {
-        $visit = new Visit();
+        $visit = new Contact();
         $visit
             ->setTeacher($teacher);
 

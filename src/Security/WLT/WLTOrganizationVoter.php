@@ -50,6 +50,9 @@ class WLTOrganizationVoter extends CachedVoter
     public const WLT_EDUCATIONAL_TUTOR = 'ORGANIZATION_WLT_EDUCATIONAL_TUTOR';
     public const WLT_DEPARTMENT_HEAD = 'ORGANIZATION_WLT_DEPARTMENT_HEAD';
 
+    public const WLT_ACCESS_EXPENSE = 'ORGANIZATION_WLT_ACCESS_EXPENSE';
+    public const WLT_CREATE_EXPENSE = 'ORGANIZATION_WLT_CREATE_EXPENSE';
+
     private $decisionManager;
     private $agreementRepository;
     private $projectRepository;
@@ -94,7 +97,9 @@ class WLTOrganizationVoter extends CachedVoter
             self::WLT_TEACHER,
             self::WLT_MANAGER,
             self::WLT_EDUCATIONAL_TUTOR,
-            self::WLT_DEPARTMENT_HEAD
+            self::WLT_DEPARTMENT_HEAD,
+            self::WLT_ACCESS_EXPENSE,
+            self::WLT_CREATE_EXPENSE
         ], true);
     }
 
@@ -265,6 +270,19 @@ class WLTOrganizationVoter extends CachedVoter
                         $subject->getCurrentAcademicYear(),
                         $user
                     ) > 0;
+
+            case self::WLT_ACCESS_EXPENSE:
+                // 1) Todos los que pueden acceder a las visitas
+                // 2) Gestor económico del centro
+                return $this->decisionManager->decide($token, [self::WLT_ACCESS_VISIT], $subject) ||
+                    $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $subject);
+
+            case self::WLT_CREATE_EXPENSE:
+                // 1) Todos los que pueden crear visitas
+                // 2) Gestor económico del centro
+                return $this->decisionManager->decide($token, [self::WLT_CREATE_VISIT], $subject) ||
+                    $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $subject);
+
         }
 
         // denegamos en cualquier otro caso
