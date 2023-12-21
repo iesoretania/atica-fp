@@ -18,6 +18,7 @@
 
 namespace App\Entity\WPT;
 
+use App\Entity\Edu\ContactMethod;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\Workcenter;
@@ -26,10 +27,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\WPT\VisitRepository")
- * @ORM\Table(name="wpt_visit")
+ * @ORM\Entity(repositoryClass="App\Repository\WPT\ContactRepository")
+ * @ORM\Table(name="wpt_contact")
  */
-class Visit
+class Contact
 {
     /**
      * @ORM\Id
@@ -48,36 +49,43 @@ class Visit
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher")
      * @ORM\JoinColumn(nullable=false)
-     * @var Teacher
+     * @var ?Teacher
      */
     private $teacher;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Workcenter")
      * @ORM\JoinColumn(nullable=false)
-     * @var Workcenter
+     * @var ?Workcenter
      */
     private $workcenter;
 
     /**
      * @ORM\ManyToMany(targetEntity="Agreement")
-     * @ORM\JoinTable(name="wpt_visit_agreement")
+     * @ORM\JoinTable(name="wpt_contact_agreement")
      * @var Agreement[]|Collection
      */
     private $agreements;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Edu\StudentEnrollment", fetch="EAGER")
-     * @ORM\JoinTable(name="wpt_visit_student_enrollment")
+     * @ORM\JoinTable(name="wpt_contact_student_enrollment")
      * @var StudentEnrollment[]|Collection
      */
     private $studentEnrollments;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @var string
+     * @var ?string
      */
     private $detail;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\ContactMethod")
+     * @ORM\JoinColumn(nullable=true)
+     * @var ?ContactMethod
+     */
+    private $method;
 
     public function __construct()
     {
@@ -103,7 +111,7 @@ class Visit
 
     /**
      * @param \DateTime $dateTime
-     * @return Visit
+     * @return Contact
      */
     public function setDateTime(\DateTimeInterface $dateTime)
     {
@@ -121,7 +129,7 @@ class Visit
 
     /**
      * @param Teacher $teacher
-     * @return Visit
+     * @return Contact
      */
     public function setTeacher(Teacher $teacher)
     {
@@ -139,7 +147,7 @@ class Visit
 
     /**
      * @param Workcenter $workcenter
-     * @return Visit
+     * @return Contact
      */
     public function setWorkcenter(Workcenter $workcenter)
     {
@@ -157,7 +165,7 @@ class Visit
 
     /**
      * @param Agreement[]|Collection $agreements
-     * @return Visit
+     * @return Contact
      */
     public function setAgreements($agreements)
     {
@@ -175,7 +183,7 @@ class Visit
 
     /**
      * @param StudentEnrollment[]|Collection $studentEnrollments
-     * @return Visit
+     * @return Contact
      */
     public function setStudentEnrollments($studentEnrollments)
     {
@@ -193,11 +201,29 @@ class Visit
 
     /**
      * @param string $detail
-     * @return Visit
+     * @return Contact
      */
     public function setDetail($detail)
     {
         $this->detail = $detail;
+        return $this;
+    }
+
+    /**
+     * @return ContactMethod|null
+     */
+    public function getMethod(): ?ContactMethod
+    {
+        return $this->method;
+    }
+
+    /**
+     * @param ContactMethod|null $method
+     * @return Contact
+     */
+    public function setMethod(?ContactMethod $method): Contact
+    {
+        $this->method = $method;
         return $this;
     }
 }

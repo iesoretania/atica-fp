@@ -120,6 +120,12 @@ class Agreement
      */
     private $workDays;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @var bool
+     */
+    private $locked;
+
     public function __construct()
     {
         $this->agreementEnrollments = new ArrayCollection();
@@ -371,6 +377,24 @@ class Agreement
     public function setAgreementEnrollments($agreementEnrollments)
     {
         $this->agreementEnrollments = $agreementEnrollments;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * @param bool $locked
+     * @return Agreement
+     */
+    public function setLocked(bool $locked)
+    {
+        $this->locked = $locked;
         return $this;
     }
 }

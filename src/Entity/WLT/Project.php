@@ -120,6 +120,12 @@ class Project
      */
     private $activities;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @var bool
+     */
+    private $locked;
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
@@ -354,6 +360,24 @@ class Project
     public function setActivities($activities)
     {
         $this->activities = $activities;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * @param bool $locked
+     * @return Project
+     */
+    public function setLocked(bool $locked)
+    {
+        $this->locked = $locked;
         return $this;
     }
 }

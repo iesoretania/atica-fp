@@ -4,9 +4,13 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (2023-12-20)
+6.0.0 (xxxx-xx-xx)
 ------------------
+### CAMBIOS EN LA BASE DE DATOS
 * feat: Eliminar centros de trabajo al eliminar una empresa
+* chore: Renombrada entidad Visit por Contact en la FCT
+* feat: Añadido a la base de datos el seguimiento de las dietas de desplazamiento en FP dual
+* feat: Añadida a la base de datos la posibilidad de bloquear convenios y acuerdos
 
 5.6.2 (2023-06-23)
 ------------------
