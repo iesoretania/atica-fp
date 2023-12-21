@@ -133,6 +133,12 @@ class Shift
      */
     private $activities;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @var bool
+     */
+    private $locked;
+
     public function __construct()
     {
         $this->agreements = new ArrayCollection();
@@ -409,6 +415,24 @@ class Shift
     public function setActivities($activities)
     {
         $this->activities = $activities;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * @param bool $locked
+     * @return Shift
+     */
+    public function setLocked(bool $locked)
+    {
+        $this->locked = $locked;
         return $this;
     }
 }

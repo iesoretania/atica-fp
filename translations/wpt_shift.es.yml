@@ -21,6 +21,10 @@ form.student_enrollments: Estudiantes
 form.no_student_enrollments: No hay ninguno para el nivel/enseñanza seleccionado
 form.no_survey: Ninguna
 
+form.locked: Convocatoria bloqueada
+form.locked.no: Se pueden realizar cambios
+form.locked.yes: Sólo el equipo directivo puede realizar cambios
+
 form.save: Guardar cambios
 form.delete: Eliminar las convocatorias seleccionadas
 form.back: Volver

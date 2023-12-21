@@ -110,7 +110,9 @@ class TrackedWorkDayVoter extends CachedVoter
                 return $accessGranted;
             case self::FILL:
                 // Sólo si pertenece al curso académico activo
-                return $accessGranted &&
+                return !$subject->getWorkDay()->getAgreement()->isLocked() &&
+                    !$subject->getWorkDay()->getAgreement()->getShift()->isLocked() &&
+                    $accessGranted &&
                     $subject
                         ->getAgreementEnrollment()
                         ->getStudentEnrollment()

@@ -121,7 +121,7 @@ class AgreementEnrollmentVoter extends CachedVoter
         $isDepartmentHead = false;
         $isGroupTutor = false;
         $isStudent = false;
-        $academicYearIsCurrent = true;
+        $agreementIsLocked = true;
 
         // Tutor laboral y de seguimiento
         $isWorkTutor = $user === $subject->getWorkTutor() || $user === $subject->getAdditionalWorkTutor();
@@ -153,13 +153,14 @@ class AgreementEnrollmentVoter extends CachedVoter
             // Estudiante del acuerdo
             $isStudent = $user === $subject->getStudentEnrollment()->getPerson();
 
-            $academicYearIsCurrent = $organization->getCurrentAcademicYear() === $training->getAcademicYear();
+            $agreementIsLocked = $organization->getCurrentAcademicYear() !== $training->getAcademicYear();
         }
+        $agreementIsLocked = $agreementIsLocked || $subject->getAgreement()->isLocked() || $subject->getAgreement()->getShift()->isLocked();
 
         switch ($attribute) {
             case self::MANAGE:
                 if ($isDepartmentHead || $isEducationalTutor) {
-                    return $academicYearIsCurrent;
+                    return $agreementIsLocked;
                 }
                 return false;
 
@@ -178,12 +179,12 @@ class AgreementEnrollmentVoter extends CachedVoter
 
             case self::ATTENDANCE:
             case self::FILL_REPORT:
-                return $academicYearIsCurrent && ($isDepartmentHead || $isEducationalTutor
+                return !$agreementIsLocked && ($isDepartmentHead || $isEducationalTutor
                         || $isWorkTutor || $isGroupTutor);
 
             // Si es permiso para bloquear/desbloquear jornadas, el tutor de grupo
             case self::LOCK:
-                return $academicYearIsCurrent && ($isDepartmentHead || $isEducationalTutor
+                return !$agreementIsLocked && ($isDepartmentHead || $isEducationalTutor
                         || $isGroupTutor);
 
             case self::VIEW_STUDENT_SURVEY:
@@ -191,13 +192,13 @@ class AgreementEnrollmentVoter extends CachedVoter
 
             case self::FILL_STUDENT_SURVEY:
                 $studentSurvey = $subject->getAgreement()->getShift()->getStudentSurvey();
-                return $academicYearIsCurrent
+                return !$agreementIsLocked
                     && ($isDepartmentHead || $isEducationalTutor || $isStudent || $isGroupTutor)
                     && $this->checkSurvey($studentSurvey);
 
             case self::FILL_COMPANY_SURVEY:
                 $companySurvey = $subject->getAgreement()->getShift()->getCompanySurvey();
-                return $academicYearIsCurrent
+                return $agreementIsLocked
                     && ($isDepartmentHead || $isEducationalTutor || $isWorkTutor || $isGroupTutor)
                     && $this->checkSurvey($companySurvey);
 
