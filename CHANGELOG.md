@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-6.0.0 (xxxx-xx-xx)
+6.0.0 (2023-12-21)
 ------------------
 ### CAMBIOS EN LA BASE DE DATOS
 * feat: Eliminar centros de trabajo al eliminar una empresa
