@@ -174,7 +174,8 @@ class TrackingCalendarController extends AbstractController
         $trackedWorkDay->setTrackedActivities($trackedActivities);
 
         $form = $this->createForm(WorkDayTrackingType::class, $trackedWorkDay, [
-            'work_day' => $trackedWorkDay
+            'work_day' => $trackedWorkDay,
+            'disabled' => $readOnly
         ]);
 
         $form->handleRequest($request);

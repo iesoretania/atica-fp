@@ -17,7 +17,7 @@
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
-                            <a href="{{ url }}">{{ item.name }}</a>
+                            <a href="{{ url }}">{{ item.name }}{% if item.locked %} <i class="fa fa-lock"></i>{% endif %}</a>
                         </label>
                     </td>
                     <td>

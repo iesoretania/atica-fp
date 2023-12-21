@@ -100,6 +100,14 @@ class ShiftType extends AbstractType
                 'expanded' => true,
                 'required' => true
             ])
+            ->add('locked', ChoiceType::class, [
+                'label' => 'form.locked',
+                'expanded' => true,
+                'choices' => [
+                    'form.locked.no' => false,
+                    'form.locked.yes' => true
+                ]
+            ])
             ->add('attendanceReportTemplate', EntityType::class, [
                 'label' => 'form.attendance_report_template',
                 'class' => ReportTemplate::class,

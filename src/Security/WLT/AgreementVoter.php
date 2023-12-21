@@ -122,7 +122,7 @@ class AgreementVoter extends CachedVoter
         $isStudent = false;
         $isTeacher = false;
         $isWltManager = false;
-        $academicYearIsCurrent = true;
+        $agreementIsLocked = true;
 
         // Coordinador de FP dual, autorizado salvo modificar si el acuerdo es de otro curso académico
         if ($subject->getProject()->getManager() === $person) {
@@ -169,13 +169,17 @@ class AgreementVoter extends CachedVoter
                 $subject->getStudentEnrollment()->getGroup()
             );
 
-            $academicYearIsCurrent = $organization->getCurrentAcademicYear() === $training->getAcademicYear();
+            $agreementIsLocked = $organization->getCurrentAcademicYear() !== $training->getAcademicYear();
+        }
+
+        if ($subject->getProject()->isLocked()) {
+            $agreementIsLocked = true;
         }
 
         switch ($attribute) {
             case self::MANAGE:
                 if ($isDepartmentHead || $isWltManager || $isEducationalTutor) {
-                    return $academicYearIsCurrent;
+                    return $agreementIsLocked;
                 }
                 return false;
 
@@ -196,12 +200,12 @@ class AgreementVoter extends CachedVoter
                 return $isDepartmentHead || $isWltManager || $isEducationalTutor || $isWorkTutor || $isGroupTutor;
             case self::ATTENDANCE:
             case self::GRADE:
-                return $academicYearIsCurrent && ($isDepartmentHead || $isWltManager || $isEducationalTutor
+                return $agreementIsLocked && ($isDepartmentHead || $isWltManager || $isEducationalTutor
                     || $isWorkTutor || $isGroupTutor);
 
             // Si es permiso para bloquear/desbloquear jornadas, el tutor de grupo
             case self::LOCK:
-                return $academicYearIsCurrent && ($isDepartmentHead || $isWltManager || $isEducationalTutor
+                return $agreementIsLocked && ($isDepartmentHead || $isWltManager || $isEducationalTutor
                     || $isGroupTutor);
 
             case self::VIEW_STUDENT_SURVEY:
@@ -209,13 +213,13 @@ class AgreementVoter extends CachedVoter
 
             case self::FILL_STUDENT_SURVEY:
                 $wltStudentSurvey = $subject->getProject()->getStudentSurvey();
-                return $academicYearIsCurrent
+                return $agreementIsLocked
                     && ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isStudent || $isGroupTutor)
                     && $this->checkSurvey($wltStudentSurvey);
 
             case self::FILL_COMPANY_SURVEY:
                 $wltCompanySurvey = $subject->getProject()->getCompanySurvey();
-                return $academicYearIsCurrent
+                return $agreementIsLocked
                     && ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isWorkTutor || $isGroupTutor)
                     && $this->checkSurvey($wltCompanySurvey);
         }

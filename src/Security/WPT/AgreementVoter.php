@@ -100,7 +100,7 @@ class AgreementVoter extends CachedVoter
 
         $person = $user;
 
-        $academicYearIsCurrent = $subject->getShift()->getGrade()
+        $agreementIsLocked = $subject->getShift()->getGrade()
             && $subject->getShift()->getGrade()->getTraining()->getAcademicYear()
             === $organization->getCurrentAcademicYear();
 
@@ -110,10 +110,14 @@ class AgreementVoter extends CachedVoter
             && $subject->getShift()->getGrade()->getTraining()->getDepartment()->getHead()
             && $subject->getShift()->getGrade()->getTraining()->getDepartment()->getHead()->getPerson() === $person;
 
+        if ($subject->isLocked() || $subject->getShift()->isLocked()) {
+            $agreementIsLocked = true;
+        }
+
         switch ($attribute) {
             case self::MANAGE:
                 if ($isDepartmentHead) {
-                    return $academicYearIsCurrent;
+                    return $agreementIsLocked;
                 }
                 return false;
 

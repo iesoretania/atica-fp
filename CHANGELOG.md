@@ -12,6 +12,7 @@ en las distintas versiones de la misma.
 * feat: Añadido a la base de datos el seguimiento de las dietas de desplazamiento en FP dual
 * feat: Añadida a la base de datos la posibilidad de bloquear convenios y acuerdos
 * feat: Gestión de dietas de desplazamiento en la FP dual
+* feat: Implementada la lógica de bloqueo de convocatorias de FCT y proyectos de FP dual
 
 5.6.3 (2023-07-07)
 ------------------

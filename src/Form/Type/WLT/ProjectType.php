@@ -31,6 +31,7 @@ use App\Repository\SurveyRepository;
 use App\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -103,6 +104,14 @@ class ProjectType extends AbstractType
                 },
                 'multiple' => true,
                 'required' => true
+            ])
+            ->add('locked', ChoiceType::class, [
+                'label' => 'form.locked',
+                'expanded' => true,
+                'choices' => [
+                    'form.locked.no' => false,
+                    'form.locked.yes' => true
+                ]
             ])
             ->add('attendanceReportTemplate', EntityType::class, [
                 'label' => 'form.attendance_report_template',
