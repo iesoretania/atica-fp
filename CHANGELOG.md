@@ -11,6 +11,7 @@ en las distintas versiones de la misma.
 * chore: Renombrada entidad Visit por Contact en la FCT
 * feat: Añadido a la base de datos el seguimiento de las dietas de desplazamiento en FP dual
 * feat: Añadida a la base de datos la posibilidad de bloquear convenios y acuerdos
+* feat: Gestión de dietas de desplazamiento en la FP dual
 
 5.6.2 (2023-06-23)
 ------------------

@@ -23,7 +23,7 @@ use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\Workcenter;
 use App\Entity\WPT\Agreement;
-use App\Entity\WPT\Visit;
+use App\Entity\WPT\Contact;
 use App\Repository\WorkcenterRepository;
 use App\Repository\WPT\AgreementRepository;
 use App\Repository\WPT\WPTTeacherRepository;
@@ -181,7 +181,7 @@ class VisitType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
 
-            /** @var Visit $data */
+            /** @var Contact $data */
             $data = $event->getData();
 
             if ($data->getTeacher()) {
@@ -243,7 +243,7 @@ class VisitType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Visit::class,
+            'data_class' => Contact::class,
             'teachers' => [],
             'translation_domain' => 'wpt_visit'
         ]);

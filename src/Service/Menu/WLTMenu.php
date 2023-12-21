@@ -106,19 +106,6 @@ class WLTMenu implements MenuBuilderInterface
                 $menu1->addChild($menu2);
             }
 
-            if ($this->security->isGranted(WLTOrganizationVoter::WLT_ACCESS_MEETING, $organization)) {
-                $menu2 = new MenuItem();
-                $menu2
-                    ->setName('work_linked_training_meeting')
-                    ->setRouteName('work_linked_training_meeting_list')
-                    ->setCaption('menu.work_linked_training.meeting')
-                    ->setDescription('menu.work_linked_training.meeting.detail')
-                    ->setIcon('user-friends')
-                    ->setPriority(9000);
-
-                $menu1->addChild($menu2);
-            }
-
             if ($this->security->isGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
@@ -128,6 +115,19 @@ class WLTMenu implements MenuBuilderInterface
                     ->setDescription('menu.work_linked_training.contact.detail')
                     ->setIcon('broadcast-tower')
                     ->setPriority(8000);
+
+                $menu1->addChild($menu2);
+            }
+
+            if ($this->security->isGranted(WLTOrganizationVoter::WLT_ACCESS_EXPENSE, $organization)) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('work_linked_training_travel_expense')
+                    ->setRouteName('work_linked_training_travel_expense_teacher_list')
+                    ->setCaption('menu.work_linked_training.travel_expense')
+                    ->setDescription('menu.work_linked_training.travel_expense.detail')
+                    ->setIcon('road')
+                    ->setPriority(8500);
 
                 $menu1->addChild($menu2);
             }

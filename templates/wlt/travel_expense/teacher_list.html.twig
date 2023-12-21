@@ -1,0 +1,60 @@
+{% trans_default_domain 'wlt_travel_expense' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th>{{ 'header.teacher'|trans }}</th>
+    <th>{{ 'header.travel_count'|trans }}</th>
+    <th>{{ 'header.distance'|trans }}</th>
+    <th>{{ 'header.other_expenses'|trans }}</th>
+    <th>{{ 'header.verified'|trans }}</th>
+    <th></th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('work_linked_training_travel_expense_detail_list', {'id': item[0].id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">
+                            {{ item[0].person }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ item[1] }}
+                    </td>
+                    <td>
+                        {{ item[2] | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} {{ 'suffix.distance'|trans({}, 'general')}}
+                    </td>
+                    <td>
+                        {{ (item[4]/100) | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} {{ 'format.currency'|trans({}, 'general') }}
+                    </td>
+                    <td>
+                        {{ (item[3] > 0 and item[3] == item[1] ? 'table.verified_yes' : 'table.verified_no')|trans }}
+                    </td>
+                    <td>
+                        {{ m.link_button_new(path('work_linked_training_travel_expense_report', {'id': item[0].id}), 'file-alt', 'btn-primary btn-sm btn-block', 'table.travel_expense_report'|trans) }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">{{ 'table.no_teachers'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    </form>
+{% endblock %}

@@ -1,0 +1,26 @@
+title.report: Registro de dietas de desplazamiento
+
+report.page: Página %page% de %total%
+
+report.summary.title: "REGISTRO DE DIETAS DE DESPLAZAMIENTO - FP DUAL"
+report.academic_year: "CURSO ESCOLAR:"
+report.educational_tutor: "PROFESOR TUTOR/A DOCENTE:"
+
+report.start_date_time: "SALIDA"
+report.end_date_time: "LLEGADA"
+report.route: "ITINERARIO"
+report.unverified_route: " (sin verificar)"
+report.route_distance: "Kms."
+report.other_expenses: "OTROS GASTOS"
+
+report.total: Total
+
+report.signature: "FIRMA"
+
+report.other_expenses_description: "Detalle de otros gastos: "
+report.description: "Observaciones: "
+
+report.no_travel_expenses: No hay dietas de desplazamiento registradas.
+
+report.educational_tutor.title: "El tutor/a docente"
+report.educational_tutor.signature: Fdo. %name%
