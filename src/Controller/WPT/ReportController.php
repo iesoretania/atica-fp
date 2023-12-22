@@ -315,8 +315,6 @@ class ReportController extends AbstractController
                 $shift
             );
 
-            dump($list);
-
             $surveyStats = $surveyQuestionRepository
                 ->answerStatsBySurveyAndAnsweredSurveyList($list);
 

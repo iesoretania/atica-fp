@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+6.x.x (xxxx-xx-xx)
+------------------
+* fix: Solucionada generación de informe de satisfacción de tutor laboral de FCT
+
 6.0.0 (2023-12-21)
 ------------------
 ### CAMBIOS EN LA BASE DE DATOS
