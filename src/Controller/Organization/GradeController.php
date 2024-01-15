@@ -60,7 +60,9 @@ class GradeController extends AbstractController
             $em->persist($grade);
         }
 
-        $form = $this->createForm(GradeType::class, $grade);
+        $form = $this->createForm(GradeType::class, $grade, [
+            'is_admin' => $this->isGranted('ROLE_ADMIN')
+        ]);
 
         $form->handleRequest($request);
 

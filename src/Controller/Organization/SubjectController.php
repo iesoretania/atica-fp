@@ -66,7 +66,9 @@ class SubjectController extends AbstractController
             $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
         }
 
-        $form = $this->createForm(SubjectType::class, $subject);
+        $form = $this->createForm(SubjectType::class, $subject, [
+            'is_admin' => $this->isGranted('ROLE_ADMIN')
+        ]);
 
         $form->handleRequest($request);
 

@@ -66,7 +66,7 @@ class GradeType extends AbstractType
             ->add('internalCode', null, [
                 'label' => 'form.internal_code',
                 'required' => false,
-                'disabled' => true
+                'disabled' => !$options['is_admin']
             ]);
     }
 
@@ -77,6 +77,7 @@ class GradeType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Grade::class,
+            'is_admin' => false,
             'translation_domain' => 'edu_grade'
         ]);
     }

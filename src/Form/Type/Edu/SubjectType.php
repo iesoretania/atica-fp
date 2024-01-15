@@ -71,7 +71,7 @@ class SubjectType extends AbstractType
             ->add('internalCode', null, [
                 'label' => 'form.internal_code',
                 'required' => false,
-                'disabled' => true
+                'disabled' => !$options['is_admin']
             ]);
     }
 
@@ -82,6 +82,7 @@ class SubjectType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Subject::class,
+            'is_admin' => false,
             'translation_domain' => 'edu_subject'
         ]);
     }

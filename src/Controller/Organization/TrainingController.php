@@ -64,7 +64,9 @@ class TrainingController extends AbstractController
             $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $training->getAcademicYear());
         }
 
-        $form = $this->createForm(TrainingType::class, $training);
+        $form = $this->createForm(TrainingType::class, $training, [
+            'is_admin' => $this->isGranted('ROLE_ADMIN')
+        ]);
 
         $form->handleRequest($request);
 

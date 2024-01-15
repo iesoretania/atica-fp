@@ -49,6 +49,8 @@ class TeachingType extends AbstractType
         $groups = $subject->getGrade()->getGroups();
         if ($groups !== []) {
             $group = $groups[0];
+        } else {
+            $group = null;
         }
         $academicYear = $subject->getGrade()->getTraining()->getAcademicYear();
 

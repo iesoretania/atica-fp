@@ -68,7 +68,7 @@ class TrainingType extends AbstractType
             ->add('internalCode', null, [
                 'label' => 'form.internal_code',
                 'required' => false,
-                'disabled' => true
+                'disabled' => !$options['is_admin']
             ]);
     }
 
@@ -79,6 +79,7 @@ class TrainingType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Training::class,
+            'is_admin' => false,
             'translation_domain' => 'edu_training'
         ]);
     }
