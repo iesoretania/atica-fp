@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-6.x.x (xxxx-xx-xx)
+6.1.0 (2024-02-06)
 ------------------
 * fix: Solucionada generación de informe de satisfacción de tutor laboral de FCT
 * feat: El administrador global puede cambiar los códigos internos de Séneca de materias, cursos y enseñanzas
