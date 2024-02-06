@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * fix: Solucionada generación de informe de satisfacción de tutor laboral de FCT
 * feat: El administrador global puede cambiar los códigos internos de Séneca de materias, cursos y enseñanzas
+* feat: Permitir al profesorado del grupo revisar la valoración del desempeño de su alumnado de FP dual
 
 6.0.0 (2023-12-21)
 ------------------

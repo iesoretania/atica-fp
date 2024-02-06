@@ -29,6 +29,7 @@ use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\WLT\ActivityRealizationGradeRepository;
 use App\Repository\WLT\ProjectRepository;
 use App\Repository\WLT\WLTGroupRepository;
+use App\Repository\WLT\WLTTeacherRepository;
 use App\Security\OrganizationVoter;
 use App\Security\WLT\AgreementActivityRealizationCommentVoter;
 use App\Security\WLT\AgreementVoter;
@@ -116,6 +117,7 @@ class EvaluationController extends AbstractController
         WLTGroupRepository $wltGroupRepository,
         ProjectRepository $projectRepository,
         AcademicYearRepository $academicYearRepository,
+        WLTTeacherRepository $teacherRepository,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
@@ -178,6 +180,7 @@ class EvaluationController extends AbstractController
                 ->setParameter('tq', '%'.$q.'%');
         }
 
+
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
         $isWltManager = $this->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);
 
@@ -186,12 +189,22 @@ class EvaluationController extends AbstractController
 
         /** @var Person $person */
         $person = $this->getUser();
+
+        // Dar acceso a sus estudiantes si es profesor/a de algún grupo
+        $teacher =
+            $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+
         if (!$isWltManager && !$isManager) {
             // no es administrador ni coordinador de FP:
-            // puede ser jefe de departamento o tutor de grupo  -> ver los acuerdos de los
+            // puede ser jefe de departamento, docente o tutor de grupo -> ver los acuerdos de los
             // estudiantes de sus grupos
             $groups = $wltGroupRepository
                 ->findByAcademicYearAndGroupTutorOrDepartmentHeadPerson($academicYear, $person);
+
+            if ($teacher !== null) {
+                $groups = array_merge($groups->toArray(), $wltGroupRepository
+                    ->findByAcademicYearAndPerson($academicYear, $teacher->getPerson())->toArray());
+            }
         } elseif ($isWltManager) {
             $projects = $projectRepository->findByManager($person);
         }
