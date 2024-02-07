@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* fix: Ajustada migración para funcionar en MariaDB < 10.5.2
+
 6.1.0 (2024-02-06)
 ------------------
 * fix: Solucionada generación de informe de satisfacción de tutor laboral de FCT
