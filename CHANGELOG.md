@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+6.1.1 (2024-02-07)
 ------------------
 * fix: Ajustada migración para funcionar en MariaDB < 10.5.2
 
