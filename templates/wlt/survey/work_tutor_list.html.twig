@@ -27,6 +27,7 @@
                 </td>
                 <td rowspan="{{ data|length }}">
                     {{ datum.project }}
+                    {% if datum.project.locked %} <i class="fa fa-lock"></i>{% endif %}
                 </td>
             {% endif %}
             <td>

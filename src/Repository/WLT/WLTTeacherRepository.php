@@ -192,6 +192,7 @@ class WLTTeacherRepository extends TeacherRepository
             ->addSelect('p.lastName AS lastName')
             ->addSelect('pro.id AS projectId')
             ->addSelect('pro.name AS projectName')
+            ->addSelect('pro.locked AS projectLocked')
             ->addSelect('ay.id AS academicYearId')
             ->addSelect('ay.description AS academicYearDescription')
             ->addSelect('COUNT(etas)')

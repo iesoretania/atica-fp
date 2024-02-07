@@ -19,7 +19,10 @@
                     <td>
                         <a href="{{ url }}">{{ item[0].studentEnrollment }}</a>
                     </td>
-                    <td>{{ item[0].project }}</td>
+                    <td>
+                        {{ item[0].project }}
+                        {% if item[0].project.locked %} <i class="fa fa-lock"></i>{% endif %}
+                    </td>
                     <td>{{ item[0].workcenter }}</td>
                     <td>{{ item[0].startDate ? item[0].startDate|date('format.date'|trans({}, 'general')) }}{{ item[0].endDate ? ' - ' ~ (item[0].endDate|date('format.date'|trans({}, 'general'))) }}</td>
                     <td>

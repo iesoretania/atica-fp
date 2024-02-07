@@ -12,6 +12,7 @@ x.x.x (xxxx-xx-xx)
 * chore: Mostrar un candado si la convocatoria de FCT está bloqueada
 * chore: Mostrar el candado en algunos listados más
 * fix: Mostrar encuestas como bloqueadas si el proyecto de FP dual lo está
+* chore: Mostrar un candado si el proyecto de FP dual está bloqueado
 
 6.1.1 (2024-02-07)
 ------------------

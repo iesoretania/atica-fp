@@ -20,6 +20,7 @@
                     </td>
                     <td>
                         {{ item.projectName }}
+                        {% if item.projectLocked %} <i class="fa fa-lock"></i>{% endif %}
                     </td>
                     <td>
                         {{ item.academicYearDescription }}

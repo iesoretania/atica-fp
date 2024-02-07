@@ -19,6 +19,7 @@
         <tr class="clickable-row" data-href="{{ url }}">
             <td>
                 <a href="{{ url }}">{{ item[0].studentEnrollment }}</a>
+                {% if item[0].project.locked %} <i class="fa fa-lock"></i>{% endif %}
             </td>
             <td>{{ item[0].workcenter }}</td>
             <td>{{ item[0].workTutor }}</td>
