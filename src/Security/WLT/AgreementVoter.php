@@ -200,12 +200,12 @@ class AgreementVoter extends CachedVoter
                 return $isDepartmentHead || $isWltManager || $isEducationalTutor || $isWorkTutor || $isGroupTutor;
             case self::ATTENDANCE:
             case self::GRADE:
-                return $agreementIsLocked && ($isDepartmentHead || $isWltManager || $isEducationalTutor
+                return !$agreementIsLocked && ($isDepartmentHead || $isWltManager || $isEducationalTutor
                     || $isWorkTutor || $isGroupTutor);
 
             // Si es permiso para bloquear/desbloquear jornadas, el tutor de grupo
             case self::LOCK:
-                return $agreementIsLocked && ($isDepartmentHead || $isWltManager || $isEducationalTutor
+                return !$agreementIsLocked && ($isDepartmentHead || $isWltManager || $isEducationalTutor
                     || $isGroupTutor);
 
             case self::VIEW_STUDENT_SURVEY:
@@ -213,13 +213,13 @@ class AgreementVoter extends CachedVoter
 
             case self::FILL_STUDENT_SURVEY:
                 $wltStudentSurvey = $subject->getProject()->getStudentSurvey();
-                return $agreementIsLocked
+                return !$agreementIsLocked
                     && ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isStudent || $isGroupTutor)
                     && $this->checkSurvey($wltStudentSurvey);
 
             case self::FILL_COMPANY_SURVEY:
                 $wltCompanySurvey = $subject->getProject()->getCompanySurvey();
-                return $agreementIsLocked
+                return !$agreementIsLocked
                     && ($isDepartmentHead || $isWltManager || $isEducationalTutor || $isWorkTutor || $isGroupTutor)
                     && $this->checkSurvey($wltCompanySurvey);
         }
