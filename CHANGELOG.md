@@ -8,6 +8,7 @@ x.x.x (xxxx-xx-xx)
 ------------------
 * fix: Mostrar versión actualizada
 * chore: Mostrar desplegable de selección de centros si hay menos de 8 en vez de menos de 6
+* fix: Mostrar encuesta bloqueada para el tutor laboral de FCT si la convocatoria está bloqueada
 
 6.1.1 (2024-02-07)
 ------------------

@@ -198,7 +198,7 @@ class AgreementEnrollmentVoter extends CachedVoter
 
             case self::FILL_COMPANY_SURVEY:
                 $companySurvey = $subject->getAgreement()->getShift()->getCompanySurvey();
-                return $agreementIsLocked
+                return !$agreementIsLocked
                     && ($isDepartmentHead || $isEducationalTutor || $isWorkTutor || $isGroupTutor)
                     && $this->checkSurvey($companySurvey);
 
