@@ -62,7 +62,9 @@ class DepartmentController extends AbstractController
             $em->persist($department);
         }
 
-        $form = $this->createForm(DepartmentType::class, $department);
+        $form = $this->createForm(DepartmentType::class, $department, [
+            'is_admin' => $this->isGranted('ROLE_ADMIN')
+        ]);
 
         $form->handleRequest($request);
 

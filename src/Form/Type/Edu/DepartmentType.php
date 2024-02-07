@@ -74,7 +74,7 @@ class DepartmentType extends AbstractType
             ->add('internalCode', null, [
                 'label' => 'form.internal_code',
                 'required' => false,
-                'disabled' => true
+                'disabled' => !$options['is_admin']
             ]);
     }
 
@@ -85,6 +85,7 @@ class DepartmentType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Department::class,
+            'is_admin' => false,
             'translation_domain' => 'edu_department'
         ]);
     }

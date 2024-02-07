@@ -13,6 +13,7 @@ x.x.x (xxxx-xx-xx)
 * chore: Mostrar el candado en algunos listados más
 * fix: Mostrar encuestas como bloqueadas si el proyecto de FP dual lo está
 * chore: Mostrar un candado si el proyecto de FP dual está bloqueado
+* feat: El administrador global puede cambiar los códigos internos de Séneca de departamentos
 
 6.1.1 (2024-02-07)
 ------------------
