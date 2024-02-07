@@ -32,7 +32,7 @@
                         {{ user_extension.currentOrganization }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownOrganizationLink">
-                        {% if organizations | length < 6 %}
+                        {% if organizations | length < 8 %}
                             {% for organization in organizations %}
                                 <a class="dropdown-item" href="{{ path('switch_organization', { 'id': organization.id }) }}">
                                     {{ organization }}

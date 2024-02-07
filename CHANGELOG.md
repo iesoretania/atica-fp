@@ -4,6 +4,11 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* fix: Mostrar versión actualizada
+* chore: Mostrar desplegable de selección de centros si hay menos de 8 en vez de menos de 6
+
 6.1.1 (2024-02-07)
 ------------------
 * fix: Ajustada migración para funcionar en MariaDB < 10.5.2
