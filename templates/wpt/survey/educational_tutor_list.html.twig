@@ -19,6 +19,7 @@
                     </td>
                     <td>
                         {{ item.shiftName }}
+                        {% if item.shiftLocked %} <i class="fa fa-lock"></i>{% endif %}
                     </td>
                     <td>
                         {{ (item[1] ? 'table.answered.yes' : 'table.answered.no')|trans }}

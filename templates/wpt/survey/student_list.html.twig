@@ -23,6 +23,8 @@
             </td>
             <td rowspan="{{ data|length }}">
                 {{ datum.agreement.shift }}
+                {% if datum.agreement.shift.locked %} <i class="fa fa-lock"></i>{% endif %}
+            </td>
             </td>
         {% endif %}
         <td>

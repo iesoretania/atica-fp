@@ -11,7 +11,7 @@
             <div class="card-header">
                 {% if shift is defined %}
                     <h3>
-                        {{ shift }}
+                        {{ shift }}{% if shift.locked %} <i class="fa fa-lock"></i>{% endif %}
                     </h3>
                 {% endif %}
                 {% if person is defined %}

@@ -23,7 +23,10 @@
                     <td>
                         <a href="{{ url }}">{{ agreementEnrollment.studentEnrollment }}</a>
                     </td>
-                    <td>{{ agreement.shift }}</td>
+                    <td>
+                        {{ agreement.shift }}
+                        {% if agreementEnrollment.shift.locked %} <i class="fa fa-lock"></i>{% endif %}
+                    </td>
                     <td>{{ agreement.workcenter }}</td>
                     <td>{{ agreementEnrollment.workTutor }}</td>
                     <td>{{ agreementEnrollment.educationalTutor }}</td>
