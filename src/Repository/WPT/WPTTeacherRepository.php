@@ -107,7 +107,7 @@ class WPTTeacherRepository extends TeacherRepository
             ->addSelect('p.lastName AS lastName')
             ->addSelect('shi.id AS shiftId')
             ->addSelect('shi.name AS shiftName')
-            ->addSelect('shi.lock AS shiftLocked')
+            ->addSelect('shi.locked AS shiftLocked')
             ->addSelect('COUNT(etas)')
             ->from(Teacher::class, 't')
             ->join(

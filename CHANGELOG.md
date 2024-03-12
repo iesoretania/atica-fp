@@ -14,6 +14,7 @@ x.x.x (xxxx-xx-xx)
 * fix: Mostrar encuestas como bloqueadas si el proyecto de FP dual lo está
 * chore: Mostrar un candado si el proyecto de FP dual está bloqueado
 * feat: El administrador global puede cambiar los códigos internos de Séneca de departamentos
+* fix: Arreglado un problema al mostrar las encuestas del responsable de seguimiento de la FP dual
 
 6.1.1 (2024-02-07)
 ------------------
