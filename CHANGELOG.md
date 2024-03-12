@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+6.1.2 (2024-03-12)
 ------------------
 * fix: Mostrar versión actualizada
 * chore: Mostrar desplegable de selección de centros si hay menos de 8 en vez de menos de 6
