@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* fix: Solucionado un problema al registrar acuerdos de colaboración de la FCT
+
 6.1.2 (2024-03-12)
 ------------------
 * fix: Mostrar versión actualizada

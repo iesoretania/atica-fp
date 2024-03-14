@@ -66,7 +66,8 @@ class AgreementController extends AbstractController
 
         $agreement = new Agreement();
         $agreement
-            ->setShift($shift);
+            ->setShift($shift)
+            ->setLocked(false);
 
         $this->getDoctrine()->getManager()->persist($agreement);
 
