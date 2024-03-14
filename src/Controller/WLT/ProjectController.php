@@ -148,7 +148,8 @@ class ProjectController extends AbstractController
 
         $project = new Project();
         $project
-            ->setOrganization($organization);
+            ->setOrganization($organization)
+            ->setLocked(false);
 
         if (!$isManager) {
             /** @var Person $manager */

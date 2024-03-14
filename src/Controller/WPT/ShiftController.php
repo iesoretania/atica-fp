@@ -135,6 +135,7 @@ class ShiftController extends AbstractController
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
 
         $shift = new Shift();
+        $shift->setLocked(false);
 
         $this->getDoctrine()->getManager()->persist($shift);
 
