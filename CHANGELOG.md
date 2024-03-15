@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+6.1.3 (2024-03-15)
 ------------------
 * fix: Solucionado un problema al registrar acuerdos de colaboración de la FCT
 * fix: Solucionado un problema al crear proyectos nuevos de dual y convocatorias de FCT
