@@ -8,6 +8,7 @@ x.x.x (xxxx-xx-xx)
 ------------------
 * fix: Solucionado un problema al registrar acuerdos de colaboración de la FCT
 * fix: Solucionado un problema al crear proyectos nuevos de dual y convocatorias de FCT
+* chore: Actualizados componentes a la última versión
 
 6.1.2 (2024-03-12)
 ------------------
