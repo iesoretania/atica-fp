@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+6.x.x (xxxx-xx-xx)
+------------------
+* fix: Considerar los C.F.G.B. como enseñanzas de FP al importar los grupos
+
 6.1.3 (2024-03-15)
 ------------------
 * fix: Solucionado un problema al registrar acuerdos de colaboración de la FCT
