@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-6.x.x (xxxx-xx-xx)
+6.1.4 (2024-04-02)
 ------------------
 * fix: Considerar los C.F.G.B. como enseñanzas de FP al importar los grupos
 * chore: Actualizado mensaje de establecimiento de nueva contraseña
