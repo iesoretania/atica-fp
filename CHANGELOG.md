@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 6.x.x (xxxx-xx-xx)
 ------------------
 * fix: Considerar los C.F.G.B. como enseñanzas de FP al importar los grupos
+* chore: Actualizado mensaje de establecimiento de nueva contraseña
 
 6.1.3 (2024-03-15)
 ------------------
