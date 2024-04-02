@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * fix: Considerar los C.F.G.B. como enseñanzas de FP al importar los grupos
 * chore: Actualizado mensaje de establecimiento de nueva contraseña
+* chore: Actualizados componentes de frontend para evitar problemas al instalarlos
 
 6.1.3 (2024-03-15)
 ------------------

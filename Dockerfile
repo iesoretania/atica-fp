@@ -16,8 +16,9 @@ RUN apt-get update \
         php-pdo-mysql \
         php-gd \
         mysql-client \
+        build-essential \
         zip \
-    && curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - \
+    && curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash - \
     && apt -yq install nodejs \
     && rm -rf /var/lib/apt/lists/*
 
