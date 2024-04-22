@@ -8,6 +8,7 @@ x.x.x (xxxx-xx-xx)
 ------------------
 * chore: Mostrar información del estudiante en el desplegable de información del convenio
 * feat: Aportar más información sobre estado de las concreciones en la barra desplegable de seguimiento
+* fix: Solucionar un problema con las estadísticas si se ha deshabilitado una concreción valorada
 
 6.1.4 (2024-04-02)
 ------------------

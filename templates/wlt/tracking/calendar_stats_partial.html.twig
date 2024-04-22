@@ -6,7 +6,7 @@
     {% set activity_realizations_disabled_ungraded = 0 %}
     {% for activity_realization in activity_realizations %}
         {% if activity_realization.grade is not null %}{% set activity_realizations_graded = activity_realizations_graded + 1 %}{% endif %}
-        {% if activity_realization.disabled %}
+        {% if activity_realization.disabled and activity_realization.grade is null %}
             {% set activity_realizations_total = activity_realizations_total - 1 %}
             {% if activity_realization in worked_activity_realizations %}
                 {% set activity_realizations_worked = activity_realizations_worked - 1 %}
