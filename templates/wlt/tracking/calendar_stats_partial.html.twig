@@ -51,7 +51,7 @@
                     <td>{{ item.activityRealization.description }}</td>
                     <td>
                         {% if selectable and item in worked_activity_realizations %}
-                            {{ item.grade ? item.grade : (item.disabled ? 'table.activity_realization.graded.disabled' : 'table.activity_realization.graded.no')|trans) }}
+                            {{ item.grade ? item.grade : (item.disabled ? 'table.activity_realization.graded.disabled' : 'table.activity_realization.graded.no')|trans }}
                         {% elseif item in worked_activity_realizations and (not item.disabled and not item.grade) %}
                             {{ (item.grade ? 'table.activity_realization.graded.yes' : (item.disabled ? 'table.activity_realization.graded.disabled' : 'table.activity_realization.graded.no')) | trans }}
                         {% elseif item.disabled %}
