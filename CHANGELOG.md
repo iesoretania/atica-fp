@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* chore: Mostrar información del estudiante en el desplegable de información del convenio
+
 6.1.4 (2024-04-02)
 ------------------
 * fix: Considerar los C.F.G.B. como enseñanzas de FP al importar los grupos
