@@ -1,17 +1,30 @@
 {% trans_default_domain 'wlt_tracking' %}
 {% set activity_realizations_total = activity_realizations|length %}
+{% set activity_realizations_worked = worked_activity_realizations|length %}
 {% if activity_realizations_total %}
     {% set activity_realizations_graded = 0 %}
+    {% set activity_realizations_disabled_ungraded = 0 %}
     {% for activity_realization in activity_realizations %}
         {% if activity_realization.grade is not null %}{% set activity_realizations_graded = activity_realizations_graded + 1 %}{% endif %}
-        {% if activity_realization.disabled %}{% set activity_realizations_total = activity_realizations_total - 1 %}{% endif %}
+        {% if activity_realization.disabled %}
+            {% set activity_realizations_total = activity_realizations_total - 1 %}
+            {% if activity_realization in worked_activity_realizations %}
+                {% set activity_realizations_worked = activity_realizations_worked - 1 %}
+            {% endif %}
+        {% endif %}
     {% endfor %}
+    {% set activity_realizations_worked = activity_realizations_worked - activity_realizations_graded %}
     {% set percentage = 100 * activity_realizations_graded / activity_realizations_total %}
+    {% set worked_percentage = 100 * activity_realizations_worked / activity_realizations_total %}
     <div class="progress progress-stat collapse-zone" data-toggle="collapse" data-target="#activities_stats" aria-expanded="false"
          title="{{ 'form.stats.activities_hint' | trans({'%count%' : activity_realizations_graded, '%total%' : activity_realizations_total}) }}">
-        <div class="progress-bar progress-bar-{{ percentage == 100 ? 'success' : 'warning' }}" role="progressbar" aria-valuenow="{{ percentage }}"
+        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{ percentage }}"
              aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage }}%">
             {{ 'form.stats.activities_bar' | trans({'%count%' : activity_realizations_graded, '%total%' : activity_realizations_total}) }}
+        </div>
+        <div class="progress-bar" role="progressbar" aria-valuenow="{{ worked_percentage }}"
+             aria-valuemin="0" aria-valuemax="100" style="width:{{ worked_percentage }}%">
+            {{ 'form.stats.activities_bar' | trans({'%count%' : activity_realizations_worked, '%total%' : activity_realizations_total}) }}
         </div>
     </div>
     <div class="collapse" id="activities_stats">
@@ -19,14 +32,19 @@
         <table class="table table-striped table-sm">
             <tbody>
             {% for item in activity_realizations %}
-                <tr {% if item.grade %} class="bg-info"{% elseif item.disabled %}  class="bg-warning"{% endif %}>
+                <tr {% if item.grade %} class="bg-success"{% elseif item.disabled %} class="bg-warning"{% elseif item in worked_activity_realizations %} class="bg-info"{% endif %}>
                     <td>
                         {% if item.grade %}
-                            <i class="fas fa-check text-success fa-fw"></i>
-                        {% elseif item.disabled %}
-                            <i class="fas fa-lock text-dark fa-fw"></i>
+                            <i class="fas fa-award text-dark fa-fw" title="{{ 'form.stats.activity.graded_hint'|trans }}"></i>
+                        {% elseif item in worked_activity_realizations %}
+                            <i class="fas fa-check text-dark fa-fw" title="{{ 'form.stats.activity.worked_hint'|trans }}"></i>
                         {% else %}
-                            <i class="fas fa-times text-danger fa-fw"></i>
+                            <i class="fas fa-times text-dark fa-fw" title="{{ 'form.stats.activity.unworked_hint'|trans }}"></i>
+                        {% endif %}
+                        {% if item.disabled or item.grade %}
+                            <i class="fas fa-lock text-dark fa-fw" title="{{ 'form.stats.activity.locked_hint'|trans }}"></i>
+                        {% else %}
+                            <i class="fas fa-space text-dark fa-fw""></i>
                         {% endif %}
                         {{ item.activityRealization.code }}
                     </td>
@@ -34,10 +52,12 @@
                     <td>
                         {% if item.disabled %}
                             {{ 'table.activity_realization.graded.disabled'|trans }}
-                        {% elseif selectable %}
+                        {% elseif selectable and item in worked_activity_realizations %}
                             {{ item.grade ? item.grade : ('table.activity_realization.graded.no'|trans) }}
-                        {% else %}
+                        {% elseif item in worked_activity_realizations %}
                             {{ (item.grade ? 'table.activity_realization.graded.yes' : 'table.activity_realization.graded.no') | trans }}
+                        {% else %}
+                            {{ 'table.activity_realization.graded.pending'|trans }}
                         {% endif %}
                     </td>
                 </tr>

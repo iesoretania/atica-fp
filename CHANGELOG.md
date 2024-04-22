@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * chore: Mostrar información del estudiante en el desplegable de información del convenio
+* feat: Aportar más información sobre estado de las concreciones en la barra desplegable de seguimiento
 
 6.1.4 (2024-04-02)
 ------------------
