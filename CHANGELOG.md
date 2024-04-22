@@ -11,6 +11,7 @@ x.x.x (xxxx-xx-xx)
 * fix: Solucionar un problema con las estadísticas si se ha deshabilitado una concreción valorada
 * fix: Mostrar valoración de una concreción aunque haya sido deshabilitada
 * fix: En los informes de acreditación de asistencia incluir solamente las jornadas bloqueadas
+* fix: Si una concreción se ha trabajado y deshabilitado, no mostrarla como no valorada
 
 6.1.4 (2024-04-02)
 ------------------
