@@ -82,7 +82,7 @@
             {% set total = 0 %}
             {% set hours = 0 %}
             {% for workday in agreement.workdays %}
-                {% if workday.absence == 0 and (workday.activityRealizations.count() or workday.otherActivities is not empty) %}
+                {% if workday.locked == 1 and workday.absence == 0 and (workday.activityRealizations.count() or workday.otherActivities is not empty) %}
                     {% set total = total + 1 %}
                     {% set hours = hours + workday.hours %}
                     <td style="border: 1px solid; padding: 0.1cm; text-align: center">{{ workday.date|date('report.date_format'|trans) }}</td>

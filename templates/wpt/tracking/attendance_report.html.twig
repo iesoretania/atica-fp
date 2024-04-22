@@ -82,7 +82,7 @@
             {% set total = 0 %}
             {% set hours = 0 %}
             {% for data in workdays %}
-                {% if data and (data[2] > 0 or (data[1] and data[1].otherActivities is not empty)) %}
+                {% if data and data[1] and data[1].locked and (data[2] > 0 or (data[1].otherActivities is not empty)) %}
                     {% set total = total + 1 %}
                     {% set workday = data[0] %}
                     {% set trackedWorkday = data[1] %}
