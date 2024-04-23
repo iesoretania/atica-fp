@@ -13,6 +13,7 @@ x.x.x (xxxx-xx-xx)
 * fix: En los informes de acreditación de asistencia incluir solamente las jornadas bloqueadas
 * fix: Si una concreción se ha trabajado y deshabilitado, no mostrarla como no valorada
 * chore: Simplificar lógica de estado de la concreción en el listado de seguimiento
+* feat: Las concreciones ya valoradas no pueden ser deshabilitadas
 
 6.1.4 (2024-04-02)
 ------------------

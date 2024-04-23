@@ -40,7 +40,8 @@ class AgreementActivityRealizationNewCommentType extends AbstractType
                 'choices' => [
                     'form.disabled.false' => false,
                     'form.disabled.true' => true
-                ]
+                ],
+                'disabled' => !$options['can_be_disabled']
             ])
             ->add('newComment', TextareaType::class, [
                 'label' => 'form.new_comment',
@@ -59,7 +60,8 @@ class AgreementActivityRealizationNewCommentType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => AgreementActivityRealization::class,
-            'translation_domain' => 'wlt_agreement_activity_realization'
+            'translation_domain' => 'wlt_agreement_activity_realization',
+            'can_be_disabled' => true,
         ]);
     }
 }

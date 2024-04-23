@@ -2,7 +2,7 @@ form.description: Concreción
 form.grade: Valoración
 
 form.grade_none: Sin valorar
-form.disabled: Deshabilitar concreción
+form.disabled: Deshabilitar concreción no valorada
 form.disabled.false: El estudiante puede seleccionar la concreción
 form.disabled.true: El estudiante no puede seleccionar la concreción. Las jornadas que la tengan marcadas se mantienen
 

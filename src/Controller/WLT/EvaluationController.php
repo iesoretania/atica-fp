@@ -277,7 +277,8 @@ class EvaluationController extends AbstractController
         $readOnly = !$this->isGranted(AgreementVoter::GRADE, $agreement);
 
         $form = $this->createForm(AgreementActivityRealizationNewCommentType::class, $agreementActivityRealization, [
-            'disabled' => $readOnly
+            'disabled' => $readOnly,
+            'can_be_disabled' => $agreementActivityRealization->getGrade() == null
         ]);
 
         $form->handleRequest($request);
