@@ -28,6 +28,7 @@ form.hours_sun: Horas domingo
 form.previous_work_day: Jornada anterior
 form.next_work_day: Siguiente jornada
 
+form.student_email: Correo-e del estudiante
 form.work_tutor: Tutor laboral
 form.educational_tutor: Tutor docente
 form.work_center: Centro de trabajo

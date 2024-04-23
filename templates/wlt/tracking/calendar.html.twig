@@ -11,6 +11,7 @@
     {% if is_granted('WLT_AGREEMENT_GRADE', agreement) %}
         <div class="collapse alert alert-light" id="tutor_info">
             <h4>{{ agreement.studentEnrollment }}</h4>
+            {% if agreement.studentEnrollment.person.emailAddress %}<b>{{ 'form.student_email'|trans }}: </b> {{ agreement.studentEnrollment.person.emailAddress }}<br/>{% endif %}
             <b>{{ 'form.work_center'|trans }}: </b>{{ agreement.workcenter }}
             {% if agreement.workcenter.zipCode %} - {{ agreement.workcenter.zipCode }}{% endif %}
             {% if agreement.workcenter.city %} - {{ agreement.workcenter.city }}{% endif %}

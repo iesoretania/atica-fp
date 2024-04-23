@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* feat: Mostrar correo electrónico del estudiante en la sección de información del tutor
+
 6.2.0 (2024-04-23)
 ------------------
 * chore: Mostrar información del estudiante en el desplegable de información del convenio
