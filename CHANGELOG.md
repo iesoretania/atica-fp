@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+6.2.0 (2024-04-23)
 ------------------
 * chore: Mostrar información del estudiante en el desplegable de información del convenio
 * feat: Aportar más información sobre estado de las concreciones en la barra desplegable de seguimiento
