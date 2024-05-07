@@ -8,7 +8,7 @@
         <a href="#" data-toggle="collapse" data-target="#tutor_info" aria-expanded="false"><i class="fas fa-info-circle fa-sm"></i></a>
     {% endif %}
     {% if work_day_today %} {{ m.link_button(path('workplace_training_tracking_calendar_form', {'agreementEnrollment': agreement_enrollment.id, 'workDay': work_day_today.id}), 'calendar-day', 'btn-primary', 'form.today'|trans) }}{% endif %}
-    {% if is_granted('WPT_AGREEMENT_ENROLLMENT_ATTENDANCE', agreement_enrollment) %}
+    {% if is_granted('WPT_AGREEMENT_ENROLLMENT_ACCESS', agreement_enrollment) %}
         <div class="collapse alert alert-light" id="tutor_info">
             {% set agreement = agreement_enrollment.agreement %}
             <h4>{{ agreement_enrollment.studentEnrollment }}</h4>

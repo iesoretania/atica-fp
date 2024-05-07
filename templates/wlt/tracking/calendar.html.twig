@@ -8,7 +8,7 @@
         <a href="#" data-toggle="collapse" data-target="#tutor_info" aria-expanded="false"><i class="fas fa-info-circle fa-sm"></i></a>
     {% endif %}
     {% if work_day_today %} {{ m.link_button(path('work_linked_training_tracking_calendar_form', {'id': work_day_today.id}), 'calendar-day', 'btn-primary', 'form.today'|trans) }}{% endif %}
-    {% if is_granted('WLT_AGREEMENT_GRADE', agreement) %}
+    {% if is_granted('WLT_AGREEMENT_ACCESS', agreement) %}
         <div class="collapse alert alert-light" id="tutor_info">
             <h4>{{ agreement.studentEnrollment }}</h4>
             {% if agreement.studentEnrollment.person.emailAddress %}<b>{{ 'form.student_email'|trans }}: </b> {{ agreement.studentEnrollment.person.emailAddress }}<br/>{% endif %}
