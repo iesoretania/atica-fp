@@ -134,9 +134,10 @@ class GroupImportController extends AbstractController
                     $gradeName = $groupData['Curso'];
 
                     // Si se ha activado el modo restringido, sólo crear los grupos
-                    // que contengan la cadena F.P. o C.F.G. en curso
+                    // que contengan la cadena F.P., C.F.G., G.E.C.E. en curso
                     if ($restricted
                         && false === strpos($gradeName, 'F.P.')
+                        && false === strpos($gradeName, 'G.E.C.E.')
                         && false === strpos($gradeName, 'C.F.G.')) {
                         continue;
                     }

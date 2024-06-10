@@ -8,6 +8,7 @@ x.x.x (xxxx-xx-xx)
 ------------------
 * feat: Mostrar correo electrónico del estudiante en la sección de información del tutor
 * chore: Permitir a los estudiantes ver información del convenio o acuerdo de colaboración en el calendario
+* feat: Soporte para detectar como FP los cursos de especialización de la nueva legislación
 
 6.2.0 (2024-04-23)
 ------------------
