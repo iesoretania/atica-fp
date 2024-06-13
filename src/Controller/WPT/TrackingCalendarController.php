@@ -420,6 +420,8 @@ class TrackingCalendarController extends AbstractController
         $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4-L']]);
         $tmp = '';
 
+        $totalHours = 0;
+
         try {
             $template = $agreementEnrollment->getAgreement()->getShift()->getActivitySummaryReportTemplate();
             if ($template) {
@@ -446,13 +448,14 @@ class TrackingCalendarController extends AbstractController
                 $item[1] = $activityRepository->getProgramActivitiesStatsFromAgreementEnrollment($agreementEnrollment2);
                 $item[2] = $trackedWorkDayRepository->getOtherActivitiesFromAgreementEnrollment($agreementEnrollment2);
                 $data[] = $item;
+
+                $totalHours += $workDayRepository->getTotalHoursByAgreement(
+                    $agreementEnrollment2->getAgreement()
+                );
             }
             $shift = $agreementEnrollment->getAgreement()->getShift();
             $total = $activityTrackingRepository->getTrackedHoursFromStudentEnrollment(
                 $agreementEnrollment->getStudentEnrollment()
-            );
-            $totalHours = $workDayRepository->getTotalHoursByAgreement(
-                $agreementEnrollment->getAgreement()
             );
             $educationalTutors = $wptTeacherRepository->findEducationalTutorsByStudentEnrollmentAndShift(
                 $agreementEnrollment->getStudentEnrollment(),
