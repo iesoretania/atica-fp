@@ -305,6 +305,10 @@ class SurveyController extends AbstractController
         if (!$readOnly
             && !$this->isGranted(AgreementEnrollmentVoter::MANAGE, $agreementEnrollment)
             && $workTutor === $agreementEnrollment->getWorkTutor() && $person !== $agreementEnrollment->getWorkTutor()
+            && $person !== $agreementEnrollment->getEducationalTutor()->getPerson()
+            && ($agreementEnrollment->getAdditionalEducationalTutor() !== null
+                && $person !== $agreementEnrollment->getAdditionalEducationalTutor()->getPerson()
+            )
         ) {
             $readOnly = true;
         }

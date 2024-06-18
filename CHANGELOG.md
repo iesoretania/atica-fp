@@ -10,6 +10,7 @@ x.x.x (xxxx-xx-xx)
 * chore: Permitir a los estudiantes ver información del convenio o acuerdo de colaboración en el calendario
 * feat: Soporte para detectar como FP los cursos de especialización de la nueva legislación
 * fix: Solucionado un problema al mostrar la información del registro de actividades de FCT
+* fix: Arreglado el problema que impedía al tutor docente cumplimentar la encuesta de FCT del laboral
 
 6.2.0 (2024-04-23)
 ------------------
