@@ -1,6 +1,6 @@
 title.report: Registro de actividades
 
-report.page: Página %page% de %total%
+report.page: Página {page} de {total}
 
 report.academic_year: "Curso Escolar:"
 
@@ -17,7 +17,7 @@ report.group: "CURSO Y GRUPO:"
 report.activities.title: ACTIVIDADES FORMATIVAS EN EL ENTORNO PRODUCTIVO
 report.workcenter: CENTRO DE TRABAJO
 report.period: "PERÍODO:"
-report.date_range: Del %from% al %to%
+report.date_range: Del {from} al {to}
 report.date_format: d/m/Y
 
 report.activity.description: Descripción de la actividad

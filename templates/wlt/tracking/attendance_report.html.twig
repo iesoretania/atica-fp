@@ -24,10 +24,10 @@
 
     <div style="page-break-inside: avoid; text-align: center; padding-bottom: 1cm; font-weight: bold">
         <div>{{ 'report.signature'|trans({
-                '%city%': agreement.workCenter.city,
-                '%day%': agreement.endDate|date('d', false),
-                '%month_string%': ('r_month' ~ (agreement.endDate|date('m', false) - 1))|trans({}, 'calendar'),
-                '%year%': agreement.endDate|date('Y', false)
+                'city': agreement.workCenter.city,
+                'day': agreement.endDate|date('d', false),
+                'month_string': ('r_month' ~ (agreement.endDate|date('m', false) - 1))|trans({}, 'calendar'),
+                'year': agreement.endDate|date('Y', false)
             }) }}</div>
         <table style="margin-top: 0.5cm; vertical-align: top">
             <tr style="width: 100%">
@@ -40,7 +40,7 @@
             </tr>
             <tr>
                 <td>{{ 'report.signed'|trans }} {{ agreement.workTutor }}</td>
-                <td style="text-align:right">{{ 'report.page'|trans({'%page%': '{PAGENO}', '%total%': '{nbpg}'}) }}</td>
+                <td style="text-align:right">{{ 'report.page'|trans({'page': '{PAGENO}', 'total': '{nbpg}'}) }}</td>
             </tr>
         </table>
 

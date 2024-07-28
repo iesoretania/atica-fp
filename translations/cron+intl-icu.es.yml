@@ -3,7 +3,7 @@ title.cron: Tareas de mantenimiento periódicas
 title.wlt.inactivity_warning: Aviso de no cumplimentación de tareas en la FP dual
 table.wlt.inactivity_warning: Centro|Curso escolar|Estudiante|Empresa|Estado
 table.wlt.inactivity_warning.status.ok: Correcto
-table.wlt.inactivity_warning.status.warning: "Aviso: %count% jornadas"
+table.wlt.inactivity_warning.status.warning: "Aviso: {count} jornadas"
 message.wlt_inactivity_warning.done: Terminado
 
 message.sending_warnings: Enviando correos...
@@ -17,6 +17,6 @@ table.wlt.unaswered_survey_warning.company: Tutor laboral|Empresa|Curso escolar|
 table.wlt.unaswered_survey_warning.organization: Tutor docente|Curso escolar|Estado
 table.wlt.unaswered_survey_warning.status.ok: Cumplimentada
 table.wlt.unaswered_survey_warning.status.on_time: No cumplimentada, en plazo
-table.wlt.unaswered_survey_warning.status.warning: "Aviso: quedan %count% días"
+table.wlt.unaswered_survey_warning.status.warning: "Aviso: quedan {count} días"
 table.wlt.unaswered_survey_warning.status.closed: Plazo cerrado. Sin cumplimentar
 message.unaswered_survey_warning.done: Terminado

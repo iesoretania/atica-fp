@@ -17,18 +17,18 @@
     {% set percentage = 100 * activity_realizations_graded / activity_realizations_total %}
     {% set worked_percentage = 100 * activity_realizations_worked / activity_realizations_total %}
     <div class="progress progress-stat collapse-zone" data-toggle="collapse" data-target="#activities_stats" aria-expanded="false"
-         title="{{ 'form.stats.activities_hint' | trans({'%count%' : activity_realizations_graded, '%total%' : activity_realizations_total}) }}">
+         title="{{ 'form.stats.activities_hint' | trans({'count' : activity_realizations_graded, 'total' :activity_realizations_total}) }}">
         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{ percentage }}"
              aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage }}%">
-            {{ 'form.stats.activities_bar' | trans({'%count%' : activity_realizations_graded, '%total%' : activity_realizations_total}) }}
+            {{ 'form.stats.activities_bar' | trans({'count' : activity_realizations_graded, 'total' :activity_realizations_total}) }}
         </div>
         <div class="progress-bar" role="progressbar" aria-valuenow="{{ worked_percentage }}"
              aria-valuemin="0" aria-valuemax="100" style="width:{{ worked_percentage }}%">
-            {{ 'form.stats.activities_bar' | trans({'%count%' : activity_realizations_worked, '%total%' : activity_realizations_total}) }}
+            {{ 'form.stats.activities_bar' | trans({'count' : activity_realizations_worked, 'total' :activity_realizations_total}) }}
         </div>
     </div>
     <div class="collapse" id="activities_stats">
-        <h3>{{ 'form.stats.activities'|trans }}: {{ 'form.stats.activities_hint' | trans({'%count%' : activity_realizations_graded, '%total%' : activity_realizations_total}) }}</h3>
+        <h3>{{ 'form.stats.activities'|trans }}: {{ 'form.stats.activities_hint' | trans({'count' : activity_realizations_graded, 'total' :activity_realizations_total}) }}</h3>
         <table class="table table-striped table-sm">
             <tbody>
             {% for item in activity_realizations %}
@@ -75,21 +75,21 @@
     <div class="progress progress-stat collapse-zone" data-toggle="collapse" data-target="#hours_stats" aria-expanded="false">
         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{ percentage_locked }}"
              aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_locked }}%"
-             title="{{ 'form.stats.hours_locked_hint' | trans({'%count%' : work_day_stats[2]}) }}">
-            {{ 'form.stats.hours_bar' | trans({'%count%' : work_day_stats[2], '%total%' : work_day_stats[1]}) }}
+             title="{{ 'form.stats.hours_locked_hint' | trans({'count' : work_day_stats[2]}) }}">
+            {{ 'form.stats.hours_bar' | trans({'count' : work_day_stats[2], 'total' :work_day_stats[1]}) }}
         </div>
         {% if work_day_stats[4] %}
         <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="{{ percentage_justified_absence }}"
              aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_justified_absence }}%"
-             title="{{ 'form.stats.hours_justified_absence_hint' | trans({'%count%' : work_day_stats[4]}) }}">
-            {{ 'form.stats.hours_bar' | trans({'%count%' : work_day_stats[4], '%total%' : work_day_stats[1]}) }}
+             title="{{ 'form.stats.hours_justified_absence_hint' | trans({'count' : work_day_stats[4]}) }}">
+            {{ 'form.stats.hours_bar' | trans({'count' : work_day_stats[4], 'total' :work_day_stats[1]}) }}
         </div>
         {% endif %}
         {% if work_day_stats[3] %}
         <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="{{ percentage_absence }}"
              aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_absence }}%"
-             title="{{ 'form.stats.hours_absence_hint' | trans({'%count%' : work_day_stats[3]}) }}">
-            {{ 'form.stats.hours_bar' | trans({'%count%' : work_day_stats[3], '%total%' : work_day_stats[1]}) }}
+             title="{{ 'form.stats.hours_absence_hint' | trans({'count' : work_day_stats[3]}) }}">
+            {{ 'form.stats.hours_bar' | trans({'count' : work_day_stats[3], 'total' :work_day_stats[1]}) }}
         </div>
         {% endif %}
     </div>
@@ -99,28 +99,28 @@
             <tbody>
                 <tr>
                     <th>{{ 'form.stats.hours.total.caption'|trans }}</th>
-                    <th>{{ 'form.stats.hours.total.days'|transchoice(work_day_stats[6]) }}</th>
-                    <th>{{ 'form.stats.hours.total.hours'|transchoice(work_day_stats[1]) }}</th>
+                    <th>{{ 'form.stats.hours.total.days'|trans({'count': work_day_stats[6]}) }}</th>
+                    <th>{{ 'form.stats.hours.total.hours'|trans({'count': work_day_stats[1]}) }}</th>
                 </tr>
                 <tr>
                     <td>{{ 'form.stats.hours.locked.caption'|trans }}</td>
-                    <td>{{ 'form.stats.hours.locked.days'|transchoice(work_day_stats[10], {'%total%': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[10]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|transchoice(work_day_stats[5], {'%total%': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[5]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[10], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[10]/work_day_stats[6])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[5], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[5]/work_day_stats[1])|number_format }} %){% endif %}</td>
                 </tr>
                 <tr>
                     <td>{{ 'form.stats.hours.worked.caption'|trans }}</td>
-                    <td>{{ 'form.stats.hours.locked.days'|transchoice(work_day_stats[7], {'%total%': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[7]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|transchoice(work_day_stats[2], {'%total%': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[2]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[7], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[7]/work_day_stats[6])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[2], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[2]/work_day_stats[1])|number_format }} %){% endif %}</td>
                 </tr>
                 <tr>
                     <td>{{ 'form.stats.hours.absence.caption'|trans }}</td>
-                    <td>{{ 'form.stats.hours.locked.days'|transchoice(work_day_stats[8], {'%total%': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[8]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|transchoice(work_day_stats[3], {'%total%': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[3]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[8], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[8]/work_day_stats[6])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[3], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[3]/work_day_stats[1])|number_format }} %){% endif %}</td>
                 </tr>
                 <tr>
                     <td>{{ 'form.stats.hours.justified_absence.caption'|trans }}</td>
-                    <td>{{ 'form.stats.hours.locked.days'|transchoice(work_day_stats[9], {'%total%': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[9]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|transchoice(work_day_stats[4], {'%total%': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[4]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[9], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[9]/work_day_stats[6])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[4], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[4]/work_day_stats[1])|number_format }} %){% endif %}</td>
                 </tr>
             </tbody>
         </table>

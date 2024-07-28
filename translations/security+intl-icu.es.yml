@@ -26,18 +26,18 @@ form.reset.password_old: Introduzca la contraseña actual
 form.reset.password_new: Introduzca la nueva contraseña (mín. 8 caracteres)
 form.reset.password_repeat: Vuelva a introducir la nueva contraseña
 form.reset.submit_set: CONFIGURAR NUEVA CONTRASEÑA
-form.reset.sent: Se han enviado instrucciones a la dirección %email%.
+form.reset.sent: Se han enviado instrucciones a la dirección {email}.
 form.reset.error: No se han podido enviar las instrucciones a la dirección indicada.
 form.reset.external_login.error: El usuario tiene activada la autenticación en Séneca, no puede restablecerse su contraseña.
-form.reset.wait: Debe esperar al menos %expiry% minutos entre solicitudes.
+form.reset.wait: Debe esperar al menos {expiry} minutos entre solicitudes.
 form.reset.email.subject: Restablecimiento de contraseña
 form.reset.email.body: |
-    Estimado/a %name%:
+    Estimado/a {name}:
 
     Hemos recibido una solicitud de restablecimiento de contraseña. En el caso de que desee cambiar su contraseña
-    por una nueva debe hacer clic en el siguiente enlace: %link%
+    por una nueva debe hacer clic en el siguiente enlace: {link}
 
-    El enlace caducará en %expiry% minutos a contar desde la solicitud.
+    El enlace caducará en {expiry} minutos a contar desde la solicitud.
 
     Si cree que ha recibido este mensaje por error ignórelo, no es necesario que realice ninguna acción adicional.
 
@@ -49,17 +49,17 @@ form.reset.same_password.error: La contraseña nueva no puede coincidir con la a
 form.change_email.notvalid: No se ha encontrado la petición de cambio de dirección o bien ha caducado. Vuelva a solicitarla
 form.change_email.message: La nueva dirección de correo ha sido confirmada con éxito.
 form.change_email.error: No se ha podido actualizar la dirección de correo electrónico, sigue en vigor su valor anterior.
-form.change_email.email.warning: "%name%, ¿desea cambiar la dirección de correo electrónico de su perfil a '%email%'?"
+form.change_email.email.warning: "{name}, ¿desea cambiar la dirección de correo electrónico de su perfil a '{email}'?"
 form.change_email.email.warning2: "?"
 form.change_email.email.submit: Confirmar nueva dirección
 form.change_email.email.subject: Confirmación de cambio de dirección de correo
 form.change_email.email.body: |
-    Estimado/a %name%:
+    Estimado/a {name}:
 
     Hemos recibido una solicitud de cambio de la dirección de correo asociada a su cuenta. En el caso de que desee
-    confirmar la nueva dirección debe hacer clic en el siguiente enlace: %link%
+    confirmar la nueva dirección debe hacer clic en el siguiente enlace: {link}
 
-    El enlace de confirmación caducará en %expiry% minutos a contar desde la solicitud.
+    El enlace de confirmación caducará en {expiry} minutos a contar desde la solicitud.
 
     Si cree que ha recibido este mensaje por error ignórelo, no es necesario que realice ninguna acción adicional.
 

@@ -5,9 +5,9 @@
     {% if user.tokenType is not null and user.tokenType != 'password' and user.tokenExpiration > date() %}
         <div class="alert alert-warning">
             {{ 'prompt.email_change_warning'|trans({
-                '%email%': user.tokenType,
-                '%date%': user.tokenExpiration|date('format.date'|trans({}, 'general')),
-                '%time%': user.tokenExpiration|date('format.time'|trans({}, 'general'))
+                'email': user.tokenType,
+                'date': user.tokenExpiration|date('format.date'|trans({}, 'general')),
+                'time': user.tokenExpiration|date('format.time'|trans({}, 'general'))
             })
             }}
         </div>
