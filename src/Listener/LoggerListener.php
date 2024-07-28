@@ -58,7 +58,7 @@ class LoggerListener implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event)
     {
-        if ($event->isMasterRequest()) {
+        if ($event->isMainRequest()) {
             /** @var Person $user */
             $user = $this->token->getToken() !== null ? $this->token->getToken()->getUser() : null;
             $user = is_string($user) ? null : $user;

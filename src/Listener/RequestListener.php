@@ -59,7 +59,7 @@ class RequestListener implements EventSubscriberInterface
 
         $session = $event->getRequest()->getSession();
 
-        if (($session->get('organization_id', '') === '') && $event->isMasterRequest()) {
+        if (($session->get('organization_id', '') === '') && $event->isMainRequest()) {
             $route = $event->getRequest()->get('_route');
             if ($route && strpos($route, 'log') !== 0 && $route[0] !== '_') {
                 $session->set('_security.organization.target_path', $event->getRequest()->getUri());
@@ -70,7 +70,7 @@ class RequestListener implements EventSubscriberInterface
         }
 
         if (
-            $event->isMasterRequest() &&
+            $event->isMainRequest() &&
             $this->token->getToken() &&
             $this->token->getToken()->getUser() instanceof Person &&
             $this->token->getToken()->getUser()->isForcePasswordChange() &&
