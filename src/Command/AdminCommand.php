@@ -64,7 +64,7 @@ class AdminCommand extends Command
             ->addOption('password', null, InputOption::VALUE_OPTIONAL, 'Password to be asigned (if not specified, will ask for one');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new SymfonyStyle($input, $output);
         $style->title($this->translator->trans('title.admin', [], 'command'));

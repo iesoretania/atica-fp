@@ -59,7 +59,7 @@ class OrganizationVoter extends CachedVoter
     /**
      * {@inheritdoc}
      */
-    protected function supports($attribute, $subject)
+    final public function supports($attribute, $subject): bool
     {
 
         if (!$subject instanceof Organization) {
@@ -77,7 +77,7 @@ class OrganizationVoter extends CachedVoter
     /**
      * {@inheritdoc}
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    final public function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         if (!$subject instanceof Organization) {
             return false;

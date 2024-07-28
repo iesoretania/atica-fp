@@ -39,7 +39,7 @@ abstract class CachedVoter extends Voter
     /**
      * {@inheritdoc}
      */
-    public function vote(TokenInterface $token, $subject, array $attributes)
+    public function vote(TokenInterface $token, $subject, array $attributes): int
     {
         $hash = $subject ? spl_object_hash($subject) . '_' : '';
 

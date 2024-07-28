@@ -76,7 +76,7 @@ class CronCommand extends Command
             ->setDescription('Execute cron tasks');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new SymfonyStyle($input, $output);
         $style->title($this->translator->trans('title.cron', [], 'cron'));
