@@ -33,9 +33,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -172,7 +172,7 @@ class SecurityController extends AbstractController
      */
     public function oldPasswordResetAction(
         Request $request,
-        UserPasswordEncoderInterface $passwordEncoder,
+        UserPasswordHasherInterface $passwordEncoder,
         TranslatorInterface $translator,
         Session $session
     ): Response {
@@ -201,7 +201,7 @@ class SecurityController extends AbstractController
             $newPassword = $form->get('newPassword')->get('first')->getData();
             if ($newPassword !== $form->get('currentPassword')->getData()) {
                 //codificar la nueva contraseña y asignarla al usuario
-                $password = $passwordEncoder->encodePassword($user, $newPassword);
+                $password = $passwordEncoder->hashPassword($user, $newPassword);
 
                 $user
                     ->setPassword($password)
@@ -245,7 +245,7 @@ class SecurityController extends AbstractController
     public function passwordResetAction(
         Request $request,
         PersonRepository $personRepository,
-        UserPasswordEncoderInterface $passwordEncoder,
+        UserPasswordHasherInterface $passwordEncoder,
         TranslatorInterface $translator,
         $userId,
         $token
@@ -276,7 +276,7 @@ class SecurityController extends AbstractController
         $error = '';
         if ($form->isSubmitted() && $form->isValid()) {
             //codificar la nueva contraseña y asignarla al usuario
-            $password = $passwordEncoder->encodePassword($user, $form->get('newPassword')->get('first')->getData());
+            $password = $passwordEncoder->hashPassword($user, $form->get('newPassword')->get('first')->getData());
 
             $user
                 ->setPassword($password)

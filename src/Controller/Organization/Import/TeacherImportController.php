@@ -31,8 +31,8 @@ use Doctrine\ORM\Query\QueryException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TeacherImportController extends AbstractController
@@ -43,7 +43,7 @@ class TeacherImportController extends AbstractController
     public function indexAction(
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        UserPasswordEncoderInterface $passwordEncoder,
+        UserPasswordHasherInterface $passwordEncoder,
         PersonRepository $personRepository,
         Request $request
     ) {
@@ -95,7 +95,7 @@ class TeacherImportController extends AbstractController
     /**
      * @param string $file
      * @param AcademicYear $academicYear
-     * @param UserPasswordEncoderInterface $encoder
+     * @param UserPasswordHasherInterface $encoder
      * @param PersonRepository $personRepository
      * @param array $options
      * @return array|null
@@ -103,7 +103,7 @@ class TeacherImportController extends AbstractController
     private function importTeachersFromCsv(
         $file,
         AcademicYear $academicYear,
-        UserPasswordEncoderInterface $encoder,
+        UserPasswordHasherInterface $encoder,
         PersonRepository $personRepository,
         array $options = []
     ) {
@@ -158,7 +158,7 @@ class TeacherImportController extends AbstractController
 
                             if ($generatePassword) {
                                 $person
-                                    ->setPassword($encoder->encodePassword($person, $personData['Usuario IdEA']))
+                                    ->setPassword($encoder->hashPassword($person, $personData['Usuario IdEA']))
                                     ->setForcePasswordChange(true);
                             }
 

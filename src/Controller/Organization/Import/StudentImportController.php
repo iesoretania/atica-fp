@@ -37,8 +37,8 @@ use Doctrine\ORM\Query\QueryException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class StudentImportController extends AbstractController
@@ -53,7 +53,7 @@ class StudentImportController extends AbstractController
         PersonRepository $personRepository,
         TranslatorInterface $translator,
         EntityManagerInterface $entityManager,
-        UserPasswordEncoderInterface $passwordEncoder,
+        UserPasswordHasherInterface $passwordEncoder,
         Request $request
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -106,7 +106,7 @@ class StudentImportController extends AbstractController
      * @param GroupRepository $groupRepository
      * @param PersonRepository $personRepository
      * @param EntityManagerInterface $entityManager
-     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param UserPasswordHasherInterface $passwordEncoder
      * @return array|null
      */
     private function importFromCsv(
@@ -116,7 +116,7 @@ class StudentImportController extends AbstractController
         GroupRepository $groupRepository,
         PersonRepository $personRepository,
         EntityManagerInterface $entityManager,
-        UserPasswordEncoderInterface $passwordEncoder,
+        UserPasswordHasherInterface $passwordEncoder,
         $options = []
     ) {
         $newCount = 0;
@@ -128,7 +128,7 @@ class StudentImportController extends AbstractController
 
         $personCollection = [];
 
-        $porDefecto = $passwordEncoder->encodePassword(new Person(), $academicYear->getOrganization()->getCode());
+        $porDefecto = $passwordEncoder->hashPassword(new Person(), $academicYear->getOrganization()->getCode());
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $studentData) {
