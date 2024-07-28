@@ -15,3 +15,7 @@ twig:
         user_extension: '@App\Service\UserExtensionService'
         menu_extension: '@App\Service\MenuBuilderChain'
         organization_extension: '@App\Service\OrganizationBuilderChain'
+
+when@test:
+    twig:
+        strict_variables: true
