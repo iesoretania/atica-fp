@@ -168,7 +168,16 @@
         "version": "v2.3.6"
     },
     "sonata-project/entity-audit-bundle": {
-        "version": "v1.0.9"
+        "version": "1.18",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.1",
+            "ref": "15582fec4b2a012e8e9020916e567c641ea4a039"
+        },
+        "files": [
+            "config/routes/sonata_entity_audit.yaml"
+        ]
     },
     "swiftmailer/swiftmailer": {
         "version": "v6.3.0"
