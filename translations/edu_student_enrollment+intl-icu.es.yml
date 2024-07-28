@@ -1,0 +1,52 @@
+form.group: Grupo
+form.user_name: Nombre de usuario
+form.first_name: Nombre
+form.last_name: Apellidos
+form.email_address: Correo electrónico
+form.gender: Sexo
+form.gender.neutral: No especificado
+form.gender.male: Hombre
+form.gender.female: Mujer
+
+form.allow_external_check: Permitir comprobación de contraseña externa
+form.allow_external_check.yes: "El usuario puede activar la autenticación desde Séneca. NOTA: el nombre de usuario deberá ser su usuario IdEA"
+form.allow_external_check.no: El usuario solamente puede utilizar la contraseña almacenada en local
+
+form.external_check: Comprobación de contraseña
+form.external_check.yes: Se comprobará primero en Séneca y luego en local si Séneca no está disponible
+form.external_check.no: Sólo se comprobará en local
+
+form.save: Guardar cambios
+form.delete: Eliminar las matrículas seleccionadas
+form.delete_confirm: Confirmar borrado
+form.back: Volver
+
+table.new: Importar estudiantes
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los estudiantes siguientes? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos de la matrícula
+title.delete: Eliminar matrícula
+
+title.list: Listado de matrículas
+
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_users: No hay estudiantes
+table.filter: Filtrar...
+
+table.already_created.yes: Sí
+table.already_created.no: No
+
+header.name: Nombre completo
+header.unique_identifier: Identificador
+header.group: Grupo
+header.user: Usuario
+header.login_username: Nombre de usuario
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Matrículas eliminadas del centro.
+message.delete_error: Ha ocurrido un error al eliminar las matrículas del centro.

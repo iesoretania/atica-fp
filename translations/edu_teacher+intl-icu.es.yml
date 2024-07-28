@@ -1,0 +1,59 @@
+form.academic_year: Curso académico
+form.person: Usuario
+form.unique_identifier: Identificador
+form.user_name: Nombre de usuario
+form.first_name: Nombre
+form.last_name: Apellidos
+form.email_address: Correo electrónico
+form.gender: Sexo
+form.gender.neutral: No especificado
+form.gender.male: Hombre
+form.gender.female: Mujer
+form.enabled: Acceso
+form.enabled.no: El acceso a la aplicación le está denegado
+form.enabled.yes: El acceso a la aplicación le está permitido
+form.teacher.none: Seleccione el usuario a añadir como docente
+
+form.wlt_educational_tutor: Responsable de seguimiento de FP dual
+form.wlt_educational_tutor.yes: El docente realiza seguimiento al alumnado de FP dual
+form.wlt_educational_tutor.no: El docente no realiza seguimiento al alumnado de FP dual
+
+form.allow_external_check: Permitir comprobación de contraseña externa
+form.allow_external_check.yes: "El usuario puede activar la autenticación desde Séneca. NOTA: el nombre de usuario deberá ser su usuario IdEA"
+form.allow_external_check.no: El usuario solamente puede utilizar la contraseña almacenada en local
+
+form.external_check: Comprobación de contraseña
+form.external_check.yes: Se comprobará primero en Séneca y luego en local si Séneca no está disponible
+form.external_check.no: Sólo se comprobará en local
+
+form.save: Guardar cambios
+form.delete: Eliminar el profesorado seleccionado
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.import: Importar profesorado
+table.new: Incorporar docente
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar el profesorado siguiente? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos del docente
+title.new: Incorporar docente
+title.delete: Eliminar profesorado
+
+title.list: Listado de profesorado
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_users: No hay profesorado
+table.filter: Filtrar...
+
+header.username: Usuario
+header.name: Nombre completo
+header.subjects: Docencia
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.repeated_error: El docente ya existe en el curso académico indicado.
+message.deleted: Profesorado eliminado del centro.
+message.delete_error: Ha ocurrido un error al eliminar el profesorado del centro.

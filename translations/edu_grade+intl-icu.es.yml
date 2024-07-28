@@ -1,0 +1,34 @@
+form.grade: Enseñanza
+form.internal_code: Código Séneca
+form.name: Nombre
+
+form.save: Guardar cambios
+form.delete: Eliminar los niveles seleccionados
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nuevo nivel
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes niveles? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos del nivel
+title.new: Nuevo nivel
+title.delete: Eliminar niveles
+
+title.list: Listado de niveles
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay niveles
+table.filter: Filtrar...
+
+header.name: Nombre
+header.training: Enseñanza
+header.department: Departamento
+header.groups: Grupos
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Niveles eliminados del centro.
+message.delete_error: Ha ocurrido un error al eliminar los niveles del centro.

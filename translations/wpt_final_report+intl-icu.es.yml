@@ -1,0 +1,38 @@
+header.training: Ciclo formativo
+header.student: Estudiante
+header.shift: Convocatoria
+header.workcenter: Empresa
+header.work_tutor: Tutor/a laboral
+header.educational_tutor: Tutor/a docente
+header.dates: Fecha de inicio/fin
+
+table.no_report: No cumplimentado
+table.generate_report: Generar informe
+
+form.save: Guardar cambios
+form.back: Volver
+
+form.activity_report: Imprimir registro de actividades
+
+form.work_activities: Áreas y puestos de trabajo donde ha desarrollado las actividades formativas
+form.professional_competence: Valoración de la competencia profesional
+form.organizational_competence: Valoración de la competencia organizacional
+form.relational_competence: Valoración de la competencia relacional
+form.contingency_response: Valoración de la capacidad de respuesta ante contingencias
+form.proposed_changes: Modificaciones a introducir en el programa formativo (opcional)
+form.sign_date: Fecha del informe
+
+form.grade_negative: Negativo
+form.grade_positive: Positivo
+form.grade_excellent: Excelente
+
+title.agreement.list: Acuerdos de colaboración
+title.report.fill: Cumplimentación del informe del tutor/a laboral
+title.report: Informe del tutor laboral
+
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay resultados que mostrar
+table.filter: Filtrar...
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.

@@ -1,0 +1,54 @@
+form.description: Enunciado
+form.type: Tipo de respuesta
+form.items: Lista de ítems
+form.items.placeholder: Elementos separados por un punto y coma
+form.mandatory: Obligatoriedad
+form.mandatory.yes: Es de contestación obligatoria
+form.mandatory.no: No es obligatorio contestarla
+
+form.save: Guardar cambios
+form.back: Volver
+form.delete: Eliminar preguntas
+
+form.delete_confirm: Confirmar borrado
+form.prune_confirm: Confirmar borrado
+
+message.saved: Pregunta actualizada con éxito.
+message.save_error: No se ha podido actualizar la pregunta.
+
+message.deleted: Las preguntas seleccionadas han sido eliminadas con éxito.
+message.delete_error: No se han podido eliminar las preguntas seleccionadas. Compruebe que no tienen respuesta.
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes preguntas?
+
+  Esta operación no se puede deshacer.
+
+prompt.locked_warning: >
+  ¡ATENCIÓN! La encuesta ya tiene respuestas registradas. No se podrán realizar cambios en relevantes en ella.
+  Es necesario eliminar todas las respuestas antes de añadir, modificar o eliminar preguntas.
+
+title.new: Nueva pregunta
+title.edit: Modificar pregunta
+title.delete: Eliminar pregunta
+
+title.list: Listado de preguntas
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay preguntas
+table.new: Nueva pregunta
+table.filter: Filtrar...
+
+header.description: Enunciado
+header.type: Tipo de respuesta
+header.mandatory: ¿Obligatoria?
+
+table.mandatory.yes: Sí
+table.mandatory.no: No
+
+type.text: Línea de texto
+type.textarea: Texto de varias líneas
+type.range_0_5: Número del 0 al 5
+type.range_0_10: Número del 0 al 10
+type.range_1_5: Número del 1 al 5
+type.range_1_10: Número del 1 al 10
+type.fixed: Texto fijo (sin respuesta)

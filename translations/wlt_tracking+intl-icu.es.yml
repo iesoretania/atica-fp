@@ -1,0 +1,76 @@
+header.training: Ciclo formativo
+header.student: Estudiante
+header.project: Proyecto
+header.workcenter: Empresa
+header.dates: Fecha de inicio/fin
+header.status: Horas bloqueadas/totales
+
+filter.all_projects: Todos los proyectos
+
+form.calendar: Calendario
+
+form.save: Guardar cambios
+form.back: Volver
+
+form.stats.activities: Estado de las concreciones
+form.stats.activities_bar: "%count%/%total% act."
+form.stats.activities_hint: "%count% actividades evaluadas de un total de %total%"
+form.stats.activity.graded_hint: "Realizada y valorada"
+form.stats.activity.worked_hint: "Realizada"
+form.stats.activity.unworked_hint: "No realizada"
+form.stats.activity.locked_hint: "Bloqueada o deshabilitada"
+form.stats.hours: Estado de las jornadas
+form.stats.hours_bar: "%count%/%total% h."
+form.stats.hours_unlocked_hint: "%count% horas sin confirmar en alternancia"
+form.stats.hours_locked_hint: "%count% horas confirmadas en alternancia"
+form.stats.hours_absence_hint: "%count% horas de ausencia"
+form.stats.hours_justified_absence_hint: "%count% horas de ausencia justificada"
+
+form.stats.hours.total.caption: "Total del convenio"
+form.stats.hours.total.days: "%count% jornada|%count% jornadas"
+form.stats.hours.total.hours: "%count% hora|%count% horas"
+form.stats.hours.locked.days: "%count% jornada de %total%|%count% jornadas de %total%"
+form.stats.hours.locked.hours: "%count% horas de %total%|%count% horas de %total%"
+form.stats.hours.locked.caption: "Bloqueadas"
+form.stats.hours.unlocked.days: "%count% jornada de %total%|%count% jornadas de %total%"
+form.stats.hours.unlocked.hours: "%count% horas de %total%|%count% horas de %total%"
+form.stats.hours.unlocked.caption: "Presencia no confirmada"
+form.stats.hours.worked.caption: "Presencia confirmada"
+form.stats.hours.absence.caption: "Ausencias"
+form.stats.hours.justified_absence.caption: "Ausencias justificadas"
+
+form.caption.locked: " (ya evaluada o desactivada)"
+table.activity_realization.graded.yes: "Evaluada"
+table.activity_realization.graded.no: "Sin evaluar"
+table.activity_realization.graded.disabled: "Deshabilitada"
+table.activity_realization.graded.pending: "Por realizar"
+
+title.agreement.list: Convenios
+title.calendar: Calendario en alternancia
+
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay resultados que mostrar
+table.filter: Filtrar...
+
+table.hours: "%count% hora|%count% horas"
+table.absences: "%count% falta|%count% faltas"
+table.justified_absences: "%count% justificada|%count% justificadas"
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+
+notification.inactivity_warning.subject: "%organization% - Retraso en la cumplimentación de actividades"
+
+notification.inactivity_warning.body: |
+  Estimado/a %name%:
+
+  Hemos detectado un retraso en la cumplimentación de las actividades realizadas en la empresa %company% dentro de la plataforma de seguimiento de la FP dual.
+
+  Éstas son las jornadas con más de %days% días que no están correctamente rellenas:
+  %workdays%
+
+  Por favor, no olvides que no debe pasar mucho tiempo entre la asistencia al centro de trabajo y la cumplimentación de las actividades que has realizado en ella.
+
+  Si tienes cualquier problema, no dudes en ponerte en contacto con el centro educativo.
+
+  Un saludo desde %organization%

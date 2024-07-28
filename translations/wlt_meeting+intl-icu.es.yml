@@ -1,0 +1,41 @@
+form.date: Fecha
+form.created_by: Registrada por
+form.created_by.none: Seleccione docente
+form.project: Proyecto
+form.project.none: Seleccione proyecto
+form.students: Estudiantes
+form.students.none: No hay estudiantes en el proyecto
+form.teachers: Docentes
+form.detail: Detalles
+
+form.save: Guardar cambios
+form.delete: Eliminar las reuniones seleccionadas
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nueva reunión
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes reuniones?
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos de la reunión
+title.new: Nueva reunión
+title.delete: Eliminar reuniones
+
+title.list: Listado de reuniones
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay reuniones que mostrar
+table.filter: Filtrar...
+
+header.created_by: Registrada por
+header.project: Proyecto
+header.student_enrollments: Estudiantes
+header.teachers: Docentes
+header.datetime: Fecha y hora
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Reuniones eliminadas con éxito.
+message.delete_error: Ha ocurrido un error al eliminar las reuniones.

@@ -1,0 +1,81 @@
+form.shift: Convocatoria
+form.company: Empresa
+form.company.none: Seleccione empresa
+form.workcenter: Centro de trabajo
+form.workcenter.none: Seleccione un centro de trabajo
+form.student_enrollment: Estudiante
+form.student_enrollments: Estudiantes
+form.student_enrollment.none: Seleccione un estudiante
+form.work_tutor: Tutor/a laboral
+form.default_work_tutor: Tutor/a laboral por defecto
+form.work_tutor.none: Seleccione el/la tutor/a laboral
+form.additional_work_tutor: Tutor/a laboral adicional
+form.additional_work_tutor.none: Opcionalmente seleccione otro tutor/a laboral
+form.educational_tutor: Tutor/a docente
+form.default_educational_tutor: Tutor/a docente por defecto
+form.educational_tutor.none: Seleccione el/la docente
+form.additional_educational_tutor: Tutor/a docente adicional
+form.additional_educational_tutor.none: Opcionalmente seleccione otro docente
+form.sign_date: Fecha de firma del acuerdo
+form.start_date: Fecha de comienzo
+form.end_date: Fecha de finalización
+form.default_start_time_1: Hora de inicio, primer tramo
+form.default_end_time_1: Hora de fin, primer tramo
+form.default_start_time_2: Hora de inicio, segundo tramo
+form.default_end_time_2: Hora de fin, segundo tramo
+form.activities: Programa formativo
+form.default_activities: Programa formativo inicial para alumnado nuevo
+
+form.save: Guardar cambios
+form.delete: Eliminar los acuerdos seleccionados
+form.calendar_copy: Copiar un calendario a los acuerdos seleccionados
+form.copy_confirm: Realizar copia
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+form.select_all: Seleccionar todas las actividades
+form.select_none: Deseleccionar todas las actividades
+form.no_activities: No hay actividades en el programa formativo
+
+table.new: Nuevo acuerdo de colaboración
+table.calendar: Calendario
+table.program_report: Generar programa
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes acuerdos? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+prompt.copy_confirm: |
+  Este proceso copiará el calendario completo del acuerdo seleccionado en los acuerdos indicados más abajo.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos del acuerdo
+title.new: Nuevo acuerdo de colaboración
+title.delete: Eliminar acuerdos
+title.copy: Copiar calendarios
+title.calendar: Calendario del programa
+title.calendar.add: Añadir jornadas
+
+title.list: Acuerdos de colaboración
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay acuerdos que mostrar
+table.filter: Filtrar...
+
+filter.all_projects: Todos las convocatorias
+
+header.name: Nombre del convenio
+header.workcenter: Centro de trabajo
+header.work_tutor: Tutor/a laboral
+header.educational_tutor: Tutor/a docente
+header.dates: Fecha de inicio y fin
+header.work_days: Jornadas
+header.student_enrollments: Estudiantes
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.copied: Calendarios copiados con éxito.
+message.copy_error: Los calendarios no se han podido copiar debido a un error.
+message.deleted: Acuerdos eliminados con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los acuerdos de colaboración.
