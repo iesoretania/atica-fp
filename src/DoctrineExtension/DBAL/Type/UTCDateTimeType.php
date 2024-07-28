@@ -13,7 +13,7 @@ class UTCDateTimeType extends DateTimeType
 {
     private static $utc;
 
-    final public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    final public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
         if ($value === null) {
             return null;
@@ -28,7 +28,7 @@ class UTCDateTimeType extends DateTimeType
         return $value->format($platform->getDateTimeFormatString());
     }
 
-    final public function convertToPHPValue($value, AbstractPlatform $platform)
+    final public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
         if ($value === null) {
             return null;

@@ -23,6 +23,7 @@ use App\Service\SenecaAuthenticatorService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -72,7 +73,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
         $this->managerRegistry = $managerRegistry;
     }
 
-    public function supports(Request $request)
+    final public function supports(Request $request): bool
     {
         $session = $request->getSession();
 
@@ -84,7 +85,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritdoc}
      */
-    public function getCredentials(Request $request)
+    public function getCredentials(Request $request): mixed
     {
         $username = $request->request->get('_username');
         $session = $request->getSession();
@@ -100,7 +101,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritdoc}
      */
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function getUser($credentials, UserProviderInterface $userProvider): ?UserInterface
     {
         try {
             return $userProvider->loadUserByUsername($credentials['username']);
@@ -112,7 +113,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritdoc}
      */
-    public function checkCredentials($credentials, UserInterface $user)
+    public function checkCredentials($credentials, UserInterface $user): bool
     {
         if (!$user instanceof Person) {
             throw new AuthenticationServiceException();
@@ -147,7 +148,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritdoc}
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response
     {
         $targetPath = $request->getSession()->get('_security.' . $providerKey . '.target_path');
         if (!$targetPath) {
@@ -159,7 +160,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritdoc}
      */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
         $url = $this->router->generate('login');
@@ -169,7 +170,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritdoc}
      */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): Response
     {
         $url = $this->router->generate('login');
         return new RedirectResponse($url);
@@ -178,7 +179,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritdoc}
      */
-    public function supportsRememberMe()
+    public function supportsRememberMe(): bool
     {
         return false;
     }

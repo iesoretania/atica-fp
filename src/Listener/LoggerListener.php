@@ -108,7 +108,7 @@ class LoggerListener implements EventSubscriberInterface
         $this->createLogEntry($eventName, $user, $ip, $data);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => 'onKernelRequest',
