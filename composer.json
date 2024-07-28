@@ -10,6 +10,7 @@
         "ext-dom": "*",
         "ext-iconv": "*",
         "ext-libxml": "*",
+        "babdev/pagerfanta-bundle": "^2",
         "doctrine/doctrine-bundle": "^2",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.11",
@@ -28,6 +29,7 @@
         "symfony/framework-bundle": "5.4.*",
         "symfony/monolog-bundle": "^3.7",
         "symfony/proxy-manager-bridge": "5.4.*",
+        "symfony/runtime": "5.4.*",
         "symfony/security-bundle": "5.4.*",
         "symfony/swiftmailer-bundle": "^3.5",
         "symfony/translation": "5.4.*",
@@ -38,8 +40,7 @@
         "tetranz/select2entity-bundle": "^3.1",
         "tfox/mpdf-port-bundle": "^2.0",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0",
-        "babdev/pagerfanta-bundle": "^2"
+        "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
@@ -53,7 +54,8 @@
     "config": {
         "allow-plugins": {
             "composer/package-versions-deprecated": true,
-            "symfony/flex": true
+            "symfony/flex": true,
+            "symfony/runtime": true
         },
         "preferred-install": {
             "*": "dist"
