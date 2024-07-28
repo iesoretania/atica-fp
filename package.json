@@ -1,25 +1,29 @@
 {
     "devDependencies": {
+        "@babel/core": "^7.17.0",
+        "@babel/preset-env": "^7.16.0",
         "@fortawesome/fontawesome-free": "^5.15.4",
         "@hotwired/stimulus": "^3.0.0",
-        "@symfony/stimulus-bridge": "^3.0.0",
-        "@symfony/webpack-encore": "^1.7.0",
-        "autoprefixer": "^9.8.8",
+        "@symfony/stimulus-bridge": "^3.2.0",
+        "@symfony/webpack-encore": "^4.0.0",
+        "autoprefixer": "^10.4.19",
         "bootstrap": "^4.6.1",
         "bootswatch": "^4.6.1",
         "ckeditor4": "^4.18",
-        "core-js": "^3.0.0",
+        "core-js": "^3.23.0",
         "file-loader": "^6.2.0",
         "jquery": "^3.6.0",
         "lodash.debounce": "^4.0.8",
-        "node-sass": "^7.0.3",
+        "node-sass": "^9.0.0",
         "popper.js": "^1.16.1",
-        "postcss-loader": "^4.3.0",
-        "regenerator-runtime": "^0.13.2",
-        "sass-loader": "^10.2.1",
+        "postcss-loader": "^7.3.4",
+        "regenerator-runtime": "^0.13.9",
+        "sass-loader": "^14.2.1",
         "select2": "^4.0.13",
         "select2-theme-bootstrap4": "^1.0.0",
-        "webpack-notifier": "^1.6.0"
+        "webpack": "^5.74.0",
+        "webpack-cli": "^4.10.0",
+        "webpack-notifier": "^1.15.0"
     },
     "browserslist": [
         "Android 2.3",
@@ -31,7 +35,7 @@
         "Opera >= 12",
         "Safari >= 6"
     ],
-    "license": "UNLICENSED",
+    "license": "AGPL-3.0",
     "private": true,
     "scripts": {
         "dev-server": "encore dev-server",
