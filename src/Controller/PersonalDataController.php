@@ -26,9 +26,9 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PersonalDataController extends AbstractController
@@ -39,7 +39,7 @@ class PersonalDataController extends AbstractController
     public function userProfileFormAction(
         Request $request,
         TranslatorInterface $translator,
-        UserPasswordEncoderInterface $passwordEncoder,
+        UserPasswordHasherInterface $passwordEncoder,
         MailerService $mailerService
     ): Response {
         /** @var Person $user */
@@ -167,7 +167,7 @@ class PersonalDataController extends AbstractController
      * @param string $oldEmail
      * @param MailerService $mailerService
      * @param TranslatorInterface $translator
-     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param UserPasswordHasherInterface $passwordEncoder
      * @return bool
      * @throws \Exception
      */
@@ -177,7 +177,7 @@ class PersonalDataController extends AbstractController
         $oldEmail,
         MailerService $mailerService,
         TranslatorInterface $translator,
-        UserPasswordEncoderInterface $passwordEncoder
+        UserPasswordHasherInterface $passwordEncoder
     ) {
         // comprobar si ha cambiado el correo electrónico
         if ($user->getEmailAddress() !== $oldEmail) {
@@ -189,7 +189,7 @@ class PersonalDataController extends AbstractController
                 $form->get('changePassword') instanceof SubmitButton) && $form->get('changePassword')->isClicked();
         if ($passwordSubmitted) {
             $user->setPassword($passwordEncoder
-                ->encodePassword($user, $form->get('newPassword')->get('first')->getData()));
+                ->hashPassword($user, $form->get('newPassword')->get('first')->getData()));
         }
         return $passwordSubmitted;
     }

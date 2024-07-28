@@ -30,8 +30,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -47,7 +47,7 @@ class UserController extends AbstractController
     public function indexAction(
         Request $request,
         TranslatorInterface $translator,
-        UserPasswordEncoderInterface $passwordEncoder,
+        UserPasswordHasherInterface $passwordEncoder,
         Person $localUser = null
     ): Response {
         $em = $this->getDoctrine()->getManager();
@@ -197,21 +197,21 @@ class UserController extends AbstractController
      * @param Person $user
      * @param TranslatorInterface $translator
      * @param FormInterface $form
-     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param UserPasswordHasherInterface $passwordEncoder
      * @return string
      */
     private function processPasswordChange(
         Person $user,
         TranslatorInterface $translator,
         FormInterface $form,
-        UserPasswordEncoderInterface $passwordEncoder
+        UserPasswordHasherInterface $passwordEncoder
     ): string {
         // Si es solicitado, cambiar la contraseña
         $passwordSubmit = $form->get('changePassword');
         if (($passwordSubmit instanceof SubmitButton) && $passwordSubmit->isClicked()) {
             $user->setPassword(
                 $passwordEncoder
-                    ->encodePassword($user, $form->get('newPassword')->get('first')->getData())
+                    ->hashPassword($user, $form->get('newPassword')->get('first')->getData())
             );
             $message = $translator->trans('message.password_changed', [], 'user');
         } else {

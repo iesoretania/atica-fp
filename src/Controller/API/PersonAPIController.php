@@ -26,8 +26,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class PersonAPIController extends AbstractController
 {
@@ -37,7 +37,7 @@ class PersonAPIController extends AbstractController
     public function apiNewPersonAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        UserPasswordEncoderInterface $passwordEncoder
+        UserPasswordHasherInterface $passwordEncoder
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
@@ -55,7 +55,7 @@ class PersonAPIController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $uid = $form->get('uniqueIdentifier')->getData();
-            $newPerson->setPassword($passwordEncoder->encodePassword($newPerson, $uid));
+            $newPerson->setPassword($passwordEncoder->hashPassword($newPerson, $uid));
             $em->persist($newPerson);
             $em->flush();
 

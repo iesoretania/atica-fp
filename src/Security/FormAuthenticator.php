@@ -24,9 +24,9 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
@@ -39,7 +39,7 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 class FormAuthenticator extends AbstractGuardAuthenticator
 {
     /**
-     * @var UserPasswordEncoderInterface
+     * @var UserPasswordHasherInterface
      */
     private $encoder;
 
@@ -63,7 +63,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
      */
     public function __construct(
         RouterInterface $router,
-        UserPasswordEncoderInterface $encoder,
+        UserPasswordHasherInterface $encoder,
         SenecaAuthenticatorService $senecaAuthenticator,
         ManagerRegistry $managerRegistry
     ) {
@@ -128,7 +128,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
             if ($result) {
                 // contraseña correcta, actualizar en local por si perdemos la conectividad
                 if (!$this->encoder->isPasswordValid($user, $plainPassword)) {
-                    $user->setPassword($this->encoder->encodePassword($user, $plainPassword));
+                    $user->setPassword($this->encoder->hashPassword($user, $plainPassword));
                     $em = $this->managerRegistry->getManager();
                     $em->flush();
                 }

@@ -27,22 +27,26 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AdminCommand extends Command
 {
+    /** @var TranslatorInterface */
     private $translator;
 
+    /** @var UserPasswordHasherInterface */
     private $userPasswordEncoder;
 
+    /** @var EntityManagerInterface */
     private $entityManager;
 
+    /** @var PersonRepository */
     private $personRepository;
 
     public function __construct(
         TranslatorInterface $translator,
-        UserPasswordEncoderInterface $userPasswordEncoder,
+        UserPasswordHasherInterface $userPasswordEncoder,
         PersonRepository $personRepository,
         EntityManagerInterface $entityManager
     ) {
@@ -85,7 +89,7 @@ class AdminCommand extends Command
             $style->warning($this->translator->trans('message.admin.updating', [], 'command'));
         }
         $user
-            ->setPassword($this->userPasswordEncoder->encodePassword($user, $password))
+            ->setPassword($this->userPasswordEncoder->hashPassword($user, $password))
             ->setEnabled(true)
             ->setGlobalAdministrator(true)
             ->setForcePasswordChange(true)
