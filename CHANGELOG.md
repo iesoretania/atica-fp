@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.x.x (xxxx-xx-xx)
+------------------
+* chore: Actualización de los componentes internos
+
 6.2.2 (2024-10-02)
 ------------------
 * fix: Incorporados cambios de la rama 7.x.x para importar correctamente las enseñanzas nuevas de FP
