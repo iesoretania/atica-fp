@@ -32,8 +32,8 @@ form.impersonate: Acceder como el usuario
 form.delete_confirm: Confirmar borrado
 
 prompt.email_change_warning: >
-    ¡ATENCIÓN! Existe una petición pendiente de cambio de correo electrónico a %email%. Confirme en el mensaje enviado
-    el cambio de dirección haciendo clic en el enlace incluído. El enlace caducará el %date% a las %time%.
+    ¡ATENCIÓN! Existe una petición pendiente de cambio de correo electrónico a {email}. Confirme en el mensaje enviado
+    el cambio de dirección haciendo clic en el enlace incluído. El enlace caducará el {date} a las {time}.
 
 prompt.delete_confirm: |
   ¿Está seguro de que desea eliminar los siguientes usuarios? En el caso de que alguno de ellos tenga elementos asociados en algún centro, el borrado no tendrá lugar.
@@ -50,7 +50,7 @@ form.change_password: Guardar cambios y cambiar la contraseña
 
 message.saved: Datos personales actualizados con éxito.
 message.password_changed: Datos personales y contraseña actualizados con éxito.
-message.email_change.info: ¡Atención! Para que la nueva dirección de correo electrónico entre en vigor debe confirmarla mediante un mensaje que le acaba de ser enviado a '%email%'.
+message.email_change.info: ¡Atención! Para que la nueva dirección de correo electrónico entre en vigor debe confirmarla mediante un mensaje que le acaba de ser enviado a '{email}'.
 message.email_change.error: Ha ocurrido un error enviando la petición de confirmación de cambio de dirección de correo electrónico. Contacte con el administrador.
 message.error: No se han podido actualizar los datos personales.
 message.deleted: Los usuarios seleccionados han sido eliminados con éxito.

@@ -1,5 +1,5 @@
 form.visit_report: "Acreditación de asistencia"
-report.page: Página %page% de %total%
+report.page: Página {page} de {total}
 
 form.start_time1: Hora de inicio jornada normal
 form.end_time1: Hora de fin jornada normal
@@ -28,7 +28,7 @@ report.date_format: "d/m/Y"
 
 report.days_total.title: "Nº total de jornadas realizadas:"
 report.hours_total.title: "Nº total de horas realizadas:"
-report.signature: En %city%, a %day% de %month_string% de %year%
+report.signature: En {city}, a {day} de {month_string} de {year}
 
 report.work_tutor.signature: Firma del tutor/a laboral
 report.work_tutor.stamp: Sello de la empresa o entidad

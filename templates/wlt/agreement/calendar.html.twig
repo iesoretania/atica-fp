@@ -9,7 +9,7 @@
                 {% if day %}
                     {% set url = path('work_linked_training_agreement_calendar_form', {'id': day.id}) %}
                     {% if not read_only %}<label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> {% endif %}<a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a></label><br/>
-                    {{ 'caption.hours'|transchoice(day.hours, {}, 'calendar') }}
+                    {{ 'caption.hours'|trans({'count': day.hours}, 'calendar') }}
                 {% elseif n > 0 %}
                     {{ n }}
                 {% endif %}

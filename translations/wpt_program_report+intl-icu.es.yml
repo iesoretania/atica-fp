@@ -1,7 +1,7 @@
 form.training_program: Programa formativo
 
 report.council: CONSEJERÍA DE EDUCACIÓN
-report.page: (Hoja %page% de %total%)
+report.page: (Hoja {page} de {total})
 report.title: FORMACIÓN EN CENTROS DE TRABAJO. PROGRAMA FORMATIVO
 
 report.organization: CENTRO DOCENTE
@@ -24,7 +24,7 @@ report.learning_outcomes: RESULTADOS DE APRENDIZAJE
 report.activities: ACTIVIDADES FORMATIVO-PRODUCTIVAS
 report.criterium: CRITERIOS DE EVALUACIÓN
 
-report.signature: En %city%, a %day% de %month_string% de %year%
+report.signature: En {city}, a {day} de {month_string} de {year}
 report.educational_tutor.signature: EL/LA PROFESOR/A RESPONSABLE DEL SEGUIMIENTO
 report.department_head.signature: EL/LA JEFE/A DEL DEPARTAMENTO DE FAMILIA PROFESIONAL
 report.work_tutor.signature: EL/LA RESPONSABLE LABORAL

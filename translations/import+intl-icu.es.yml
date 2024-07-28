@@ -118,7 +118,7 @@ report.non_working_day.old: Fechas ya existentes
 
 instructions.non_working_day.import: |
   Puede descargar el calendario de días no lectivos de su centro escolar en formato .ICS desde
-  esta dirección: %link%
+  esta dirección: {link}
 
 link.non_working_day.import: "https://www.juntadeandalucia.es/educacion/secretariavirtual/consulta/calendario-escolar/"
 

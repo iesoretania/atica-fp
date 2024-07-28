@@ -23,10 +23,10 @@
                     <h5>
                         {{ 'title.available'|trans }}
                         {% if survey.startTimestamp %}
-                            {{ 'title.start_timestamp'|trans({'%date%': survey.startTimestamp|date('format.datetime'|trans({}, 'general'))}) }}
+                            {{ 'title.start_timestamp'|trans({'date': survey.startTimestamp|date('format.datetime'|trans({}, 'general'))}) }}
                         {% endif %}
                         {% if survey.endTimestamp %}
-                            {{ 'title.end_timestamp'|trans({'%date%': survey.endTimestamp|date('format.datetime'|trans({}, 'general'))}) }}
+                            {{ 'title.end_timestamp'|trans({'date': survey.endTimestamp|date('format.datetime'|trans({}, 'general'))}) }}
                         {% endif %}
                     </h5>
                 {% endif %}

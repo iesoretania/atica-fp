@@ -21,7 +21,7 @@
                     {% for item in items %}
                         <tr {% if item.locked %}class="bg-danger"{% endif %}>
                             <td>{{ item.date|date('format.date'|trans({}, 'general')) }}</td>
-                            <td>{{ 'caption.hours'|transchoice(item.hours) }}</td>
+                            <td>{{ 'caption.hours'|trans({'count': item.hours}) }}</td>
                             <td>{{ item.locked ? 'header.locked'|trans }}</td>
                         </tr>
                     {% endfor %}

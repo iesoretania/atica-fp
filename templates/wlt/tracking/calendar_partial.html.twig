@@ -39,7 +39,7 @@
                                 <td class="w-13{% if day %} workday{% endif %}">
                                     {% if day %}
                                         <b>{{ n }}</b><br/>
-                                        {{ 'caption.hours'|transchoice(day.hours) }}
+                                        {{ 'caption.hours'|trans({'count': day.hours}) }}
                                     {% elseif n > 0 %}
                                         {{ n }}
                                     {% endif %}

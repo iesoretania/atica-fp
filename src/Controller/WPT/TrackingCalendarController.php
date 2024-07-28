@@ -152,7 +152,7 @@ class TrackingCalendarController extends AbstractController
 
         $title = $translator->trans('dow' . ($workDay->getDate()->format('N') - 1), [], 'calendar');
         $title .= ' - ' . $workDay->getDate()->format($translator->trans('format.date', [], 'general'));
-        $title .= ' - ' . $translator->transChoice('caption.hours', $workDay->getHours(), [], 'calendar');
+        $title .= ' - ' . $translator->trans('caption.hours', ['count' => $workDay->getHours()], 'calendar');
 
         $previousWorkDay = $workDayRepository->findPrevious($workDay);
         $nextWorkDay = $workDayRepository->findNext($workDay);
@@ -558,10 +558,9 @@ class TrackingCalendarController extends AbstractController
                         $hours[$day] =
                             '<ul style="padding: 0; margin: 0; list-style: square inside;">';
                     }
-                    $hours[$day] .= '<li>' . $translator->transChoice(
+                    $hours[$day] .= '<li>' . $translator->trans(
                             'form.r_hours',
-                            $trackedActivity->getHours(),
-                            ['%hours%' => $trackedActivity->getHours() / 100.0],
+                            ['count' => $trackedActivity->getHours() / 100.0],
                             'calendar'
                         );
                 }

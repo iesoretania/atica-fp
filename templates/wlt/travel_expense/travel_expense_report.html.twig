@@ -58,7 +58,7 @@
             <td>
                 {{ 'report.academic_year'|trans }} {{ teacher.academicYear }}
             </td>
-            <td class="centered" style="width: 20%;">{{ 'report.page'|trans({'%page%': '{PAGENO}', '%total%': '{nbpg}'}) }}</td>
+            <td class="centered" style="width: 20%;">{{ 'report.page'|trans({'page': '{PAGENO}', 'total': '{nbpg}'}) }}</td>
         </tr>
         <tr>
             <td colspan="2">
@@ -73,7 +73,7 @@
                 <td class="no-border" style="width: 20%;"></td>
                 <td class="centered">
                     {{ 'report.educational_tutor.title'|trans }}<br /><br /><br /><br /><br />
-                    {{ 'report.educational_tutor.signature'|trans({'%name%': teacher}) }}
+                    {{ 'report.educational_tutor.signature'|trans({'name': teacher}) }}
                 </td>
                 <td class="no-border" style="width: 20%;"></td>
             </tr>

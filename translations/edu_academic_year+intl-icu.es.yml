@@ -18,7 +18,7 @@ form.copy_from: Copiar desde el curso seleccionado
 
 form.source_academic_year: Curso académico desde el que copiar
 form.source_academic_year.none: Seleccione un curso académico...
-form.copy_to: Los datos se copiarán al curso %academic_year%
+form.copy_to: Los datos se copiarán al curso {academic_year}
 
 table.new: Crear nuevo curso académico
 

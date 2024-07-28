@@ -5,7 +5,7 @@
     {% if not stats %}
         <div class="alert alert-info">
             {% set link = 'link.non_working_day.import'|trans %}
-            {{ 'instructions.non_working_day.import'|trans({'%link%': '<a href="' ~ link ~ '">' ~ link ~ '</a>'})|raw }}
+            {{ 'instructions.non_working_day.import'|trans({'link': '<a href="' ~ link ~ '">' ~ link ~ '</a>'})|raw }}
         </div>
         {{ form_start(form) }}
         {{ form_widget(form) }}

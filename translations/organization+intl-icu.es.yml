@@ -31,7 +31,7 @@ message.saved: Datos del centro actualizados con éxito.
 message.save_error: No se han podido actualizar los datos del centro.
 message.deleted: Los centros seleccionados han sido eliminados con éxito.
 message.delete_error: No se han podido eliminar los centros seleccionados.
-message.switched: El centro activo es ahora %name%.
+message.switched: El centro activo es ahora {name}.
 
 title.new: Nuevo centro
 title.edit: Datos del centro

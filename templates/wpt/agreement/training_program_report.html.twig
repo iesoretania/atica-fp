@@ -26,7 +26,7 @@
             <div style="float: right; text-align: right; width: 5cm;">{{ 'report.council'|trans }}</div>
             <br />
             <div style="float: right; text-align: right; width: 5cm;">
-                {{ 'report.page'|trans({'%page%': '{PAGENO}', '%total%': '{nbpg}'}) }}
+                {{ 'report.page'|trans({'page': '{PAGENO}', 'total': '{nbpg}'}) }}
             </div>
             {{ 'report.title'|trans }}
         </div>
@@ -35,10 +35,10 @@
     <htmlpagefooter name="footer">
         <div style="text-align: center; margin-top: 1cm">
             <div>{{ 'report.signature'|trans({
-                    '%city%': agreement.workcenter.city,
-                    '%day%': agreement.signDate|date('d'),
-                    '%month_string%': ('r_month' ~ (agreement.signDate|date('m') - 1))|trans({}, 'calendar'),
-                    '%year%': agreement.signDate|date('Y')
+                    'city': agreement.workcenter.city,
+                    'day': agreement.signDate|date('d'),
+                    'month_string': ('r_month' ~ (agreement.signDate|date('m') - 1))|trans({}, 'calendar'),
+                    'year': agreement.signDate|date('Y')
                 }) }}</div>
             <table style="margin-top: 0.5cm; vertical-align: top">
                 <tr style="width: 100%">

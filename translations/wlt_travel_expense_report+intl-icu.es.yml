@@ -1,6 +1,6 @@
 title.report: Registro de dietas de desplazamiento
 
-report.page: Página %page% de %total%
+report.page: Página {page} de {total}
 
 report.summary.title: "REGISTRO DE DIETAS DE DESPLAZAMIENTO - FP DUAL"
 report.academic_year: "CURSO ESCOLAR:"
@@ -23,4 +23,4 @@ report.description: "Observaciones: "
 report.no_travel_expenses: No hay dietas de desplazamiento registradas.
 
 report.educational_tutor.title: "El tutor/a docente"
-report.educational_tutor.signature: Fdo. %name%
+report.educational_tutor.signature: Fdo. {name}

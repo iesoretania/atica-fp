@@ -2,7 +2,7 @@ title.welcome: ¡Bienvenido!
 hint.close: Cerrar
 hint.toggle: Abrir/cerrar
 
-user.logged.as: "Conectado como %user%"
+user.logged.as: "Conectado como {user}"
 user.logout: Desconectar
 user.data: Ver datos personales
 user.administrate: Administrar la plataforma

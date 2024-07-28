@@ -28,8 +28,8 @@ title.survey.organization.list: Encuestas de satisfacción de centro educativo
 title.survey.organization_final.list: Encuestas finales de proyecto
 
 title.available: Encuesta disponible para cumplimentar
-title.start_timestamp: desde el %date%
-title.end_timestamp: hasta el %date%
+title.start_timestamp: desde el {date}
+title.end_timestamp: hasta el {date}
 
 title.fill: Cumplimentar encuesta
 
@@ -48,37 +48,37 @@ table.filter: Filtrar...
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 
-notification.unanswered_survey_warning.subject: "%organization% - Cumplimentación de encuesta"
+notification.unanswered_survey_warning.subject: "{organization} - Cumplimentación de encuesta"
 
 notification.unanswered_survey_warning.body.student: |
-  Estimado/a %name%:
+  Estimado/a {name}:
 
-  Hemos comprobado que aún no has cumplimentado la encuesta de satisfacción sobre tu paso por la empresa %company%.
+  Hemos comprobado que aún no has cumplimentado la encuesta de satisfacción sobre tu paso por la empresa {company}.
 
-  Queda(n) %count% día(s) antes de que se cierre. Tu opinión es muy útil para nosotros de cara a mejorar, te pedimos que dediques un momento en rellenarla, no te llevará más de un par de minutos.
+  Queda(n) {count} día(s) antes de que se cierre. Tu opinión es muy útil para nosotros de cara a mejorar, te pedimos que dediques un momento en rellenarla, no te llevará más de un par de minutos.
 
   Si tienes cualquier problema, no dudes en ponerte en contacto con el centro educativo.
 
-  Un saludo desde %organization%
+  Un saludo desde {organization}
 
 notification.unanswered_survey_warning.body.company: |
-  Estimado/a %name%:
+  Estimado/a {name}:
 
-  Hemos comprobado que aún no has cumplimentado la encuesta de satisfacción sobre el paso del estudiante %student% por tu empresa %company%.
+  Hemos comprobado que aún no has cumplimentado la encuesta de satisfacción sobre el paso del estudiante {student} por tu empresa {company}.
 
-  Queda(n) %count% día(s) antes de que se cierre. Tu opinión es muy útil para nosotros de cara a mejorar, te pedimos que dediques un momento en rellenarla, no te llevará más de un par de minutos.
+  Queda(n) {count} día(s) antes de que se cierre. Tu opinión es muy útil para nosotros de cara a mejorar, te pedimos que dediques un momento en rellenarla, no te llevará más de un par de minutos.
 
   Si tienes cualquier problema, no dudes en ponerte en contacto con el centro educativo.
 
-  Un saludo desde %organization%
+  Un saludo desde {organization}
 
 notification.unanswered_survey_warning.body.organization: |
-  Estimado/a %name%:
+  Estimado/a {name}:
 
-  Hemos comprobado que aún no has cumplimentado la encuesta de satisfacción sobre el seguimiento de la FP dual del curso %academic_year%.
+  Hemos comprobado que aún no has cumplimentado la encuesta de satisfacción sobre el seguimiento de la FP dual del curso {academic_year}.
 
-  Queda(n) %count% día(s) antes de que se cierre. Tu opinión es muy útil para nosotros de cara a mejorar, te pedimos que dediques un momento en rellenarla, no te llevará más de un par de minutos.
+  Queda(n) {count} día(s) antes de que se cierre. Tu opinión es muy útil para nosotros de cara a mejorar, te pedimos que dediques un momento en rellenarla, no te llevará más de un par de minutos.
 
   Si tienes cualquier problema, no dudes en ponerte en contacto con el centro educativo.
 
-  Un saludo desde %organization%
+  Un saludo desde {organization}

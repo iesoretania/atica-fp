@@ -121,7 +121,7 @@ class TrackingCalendarController extends AbstractController
 
         $title = $translator->trans('dow' . ($workDay->getDate()->format('N') - 1), [], 'calendar');
         $title .= ' - ' . $workDay->getDate()->format($translator->trans('format.date', [], 'general'));
-        $title .= ' - ' . $translator->transChoice('caption.hours', $workDay->getHours(), [], 'calendar');
+        $title .= ' - ' . $translator->trans('caption.hours', ['count' => $workDay->getHours()], 'calendar');
 
         $lockedActivityRealizations = $activityRealizationRepository->findLockedByAgreement($agreement);
 
@@ -409,10 +409,9 @@ class TrackingCalendarController extends AbstractController
                 }
                 $day = $workDay->getDate()->format('N');
                 $activities[$day] = '';
-                $hours[$day] = $translator->transChoice(
+                $hours[$day] = $translator->trans(
                     'form.r_hours',
-                    $workDay->getHours(),
-                    ['%hours%' => $workDay->getHours()],
+                    ['count' => $workDay->getHours()],
                     'calendar'
                 );
 

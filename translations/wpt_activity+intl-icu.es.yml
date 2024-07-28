@@ -4,7 +4,7 @@ form.criteria: Criterios de evaluación asociados
 
 form.source_shift: Convocatoria desde la que copiar
 form.source_shift.none: Seleccione una convocatoria compatible...
-form.copy_to: Los datos se copiarán a la convocatoria %shift%
+form.copy_to: Los datos se copiarán a la convocatoria {shift}
 
 form.source_wlt_project: Projecto dual desde el que copiar
 form.source_wlt_project.none: Seleccione un proyecto de FP dual...

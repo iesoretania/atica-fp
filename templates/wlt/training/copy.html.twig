@@ -2,7 +2,7 @@
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
-    <h2>{{ 'form.copy_to'|trans({'%project%': project}) }}</h2>
+    <h2>{{ 'form.copy_to'|trans({'project': project}) }}</h2>
     <div class="alert alert-info">{{ 'prompt.copy_information'|trans|nl2br }}</div>
     {{ form_start(form) }}
     {{ form_widget(form) }}
