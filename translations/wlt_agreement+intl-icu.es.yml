@@ -1,0 +1,75 @@
+form.project: Proyecto
+form.company: Empresa
+form.company.none: Seleccione empresa
+form.workcenter: Centro de trabajo
+form.workcenter.none: Seleccione un centro de trabajo
+form.student_enrollment: Estudiante
+form.student_enrollment.none: Seleccione un estudiante
+form.work_tutor: Reponsable laboral
+form.work_tutor.none: Seleccione el reponsable laboral
+form.additional_work_tutor: Responsable laboral adicional
+form.additional_work_tutor.none: Opcionalmente seleccione otro responsable laboral
+form.educational_tutor: Reponsable de seguimiento
+form.educational_tutor.none: Seleccione el reponsable de seguimiento
+form.additional_educational_tutor: Reponsable de seguimiento adicional
+form.additional_educational_tutor.none: Opcionalmente seleccione otro docente
+form.internal_code: Número de convenio
+form.start_date: Fecha de comienzo
+form.end_date: Fecha de finalización
+form.default_start_time_1: Hora de inicio, primer tramo
+form.default_end_time_1: Hora de fin, primer tramo
+form.default_start_time_2: Hora de inicio, segundo tramo
+form.default_end_time_2: Hora de fin, segundo tramo
+form.activity_realizations: Programa formativo
+
+form.save: Guardar cambios
+form.delete: Eliminar los convenios seleccionados
+form.calendar_copy: Copiar un calendario a los convenios seleccionados
+form.copy_confirm: Realizar copia
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+form.select_all: Seleccionar todas las concreciones
+form.select_none: Deseleccionar todas las concreciones
+form.no_activity_realizations: No hay concreciones asociadas a la empresa
+
+table.new: Nuevo convenio de colaboración
+table.calendar: Calendario
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes convenios? En el caso de que alguno de ellos tenga elementos asociados, también se eliminarán.
+
+  Esta operación no se puede deshacer.
+
+prompt.copy_confirm: |
+  Este proceso copiará el calendario completo del convenio seleccionado en los convenios indicados más abajo.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos del convenio
+title.new: Nuevo convenio de colaboración
+title.delete: Eliminar convenios
+title.copy: Copiar calendarios
+title.calendar: Calendario en alternancia
+title.calendar.add: Añadir jornadas
+
+title.list: Convenios de colaboración
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay convenios que mostrar
+table.filter: Filtrar...
+
+filter.all_projects: Todos los proyectos
+
+header.student_enrollment: Estudiante
+header.internal_code: Número de convenio
+header.workcenter: Centro de trabajo
+header.work_tutor: Responsable laboral
+header.educational_tutor: Responsable seguimiento
+header.dates: Fecha de inicio y fin
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.copied: Calendarios copiados con éxito.
+message.copy_error: Los calendarios no se han podido copiar debido a un error.
+message.deleted: Acuerdos eliminados con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los convenios de colaboración.

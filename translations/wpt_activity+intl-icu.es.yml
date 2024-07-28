@@ -1,0 +1,65 @@
+form.code: Código
+form.description: Descripción
+form.criteria: Criterios de evaluación asociados
+
+form.source_shift: Convocatoria desde la que copiar
+form.source_shift.none: Seleccione una convocatoria compatible...
+form.copy_to: Los datos se copiarán a la convocatoria %shift%
+
+form.source_wlt_project: Projecto dual desde el que copiar
+form.source_wlt_project.none: Seleccione un proyecto de FP dual...
+
+form.save: Guardar cambios
+form.delete: Eliminar las actividades seleccionadas
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+form.import: Importar desde el texto indicado
+form.import.placeholder: |
+    Por ejemplo: (los dos puntos separan el código de la descripción de la actividad)
+    M_01: Identifica...
+    M_02: Organiza...
+
+form.copy: Copiar desde otra convocatoria
+form.copy_from: Copiar desde la convocatoria seleccionada
+
+form.copy_wlt: Copiar desde un convenido de FP dual
+form.copy_wlt_from: Copiar desde el convenio de FP dual seleccionado
+
+table.new: Nueva actividad formativo-productiva
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes actividades formativo-productivas? En el caso de que alguna de ellas tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+prompt.copy_information: |
+  Esta operación copia las actividades formativo/productivas de otra convocatoria de la misma enseñanza y su asignación de criterios.
+
+  Para que se copie la asignación de criterios es necesario que la materia asociada a la convocatoria actual tenga ya  definidos los resultados de aprendizaje y sus criterios.
+
+prompt.copy_wlt_information: |
+  Esta operación copia las concreciones de actividades formativo/productivas de otra convocatoria de la misma enseñanza, pero no sus criterios.
+
+title.edit: Ficha de actividad
+title.new: Nueva actividad formativo-productiva
+title.delete: Eliminar actividades
+title.import: Importación masiva
+title.copy: Copiar actividades de otra convocatoria
+title.copy_from_wlt: Copiar actividades de un projecto de FP dual
+
+title.list: Actividades formativo-productivas
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay actividades
+table.filter: Filtrar...
+
+table.no_criteria: No tiene, no saldrá en el programa formativo
+header.code: Código
+header.description: Descripción de la actividad
+header.criteria: Criterios de evaluación asociados
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Actividades eliminadas del centro.
+message.delete_error: Ha ocurrido un error al eliminar las actividades.
+message.copied: Actividades copiadas correctamente.
+message.copy_error: Ha ocurrido un error al copiar las actividades.

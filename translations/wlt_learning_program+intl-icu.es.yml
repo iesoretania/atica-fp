@@ -1,0 +1,41 @@
+form.academic_year: Curso académico
+form.company: Empresa
+form.company.none: Seleccione empresa
+form.training: Enseñanza
+form.training.none: Seleccione una enseñanza
+form.activity_realizations: Actividades a realizar en la empresa
+form.no_activity_realizations: No se han definido actividades en el proyecto
+
+form.save: Guardar cambios
+form.import: Importar empresas y sus programas
+form.delete: Eliminar las empresas seleccionadas
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Incorporar una empresa
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes programas? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Programa formativo de la empresa
+title.new: Incorporar empresa al proyecto
+title.delete: Eliminar programa
+title.import: Importar empresas y programas
+
+title.list: Empresas incorporadas al proyecto
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay programas que mostrar
+table.filter: Filtrar...
+
+header.company: Empresa
+header.project: Proyecto
+header.items: Actividades a realizar
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.import: Programas importados con éxito.
+message.import_error: Los programas no se han podido copiar debido a un error.
+message.deleted: Acuerdos eliminados con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los acuerdos de colaboración.

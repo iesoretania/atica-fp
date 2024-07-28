@@ -1,0 +1,66 @@
+header.training: Ciclo formativo
+header.student: Estudiante
+header.shift: Convocatoria
+header.workcenter: Empresa
+header.work_tutor: Tutor/a laboral
+header.educational_tutor: Tutor/a docente
+header.dates: Fecha de inicio/fin
+header.status: Horas bloqueadas/totales
+
+form.calendar: Calendario
+
+form.save: Guardar cambios
+form.back: Volver
+
+form.stats.activities: Estado de las actividades
+form.stats.activities_bar: "%count%/%total% act."
+form.stats.activities_not_done_bar: "%count% pend."
+form.stats.activities_hint: "%count% actividades realizadas de un total de %total%"
+form.stats.activities_not_done_hint: "%count% actividades no realizadas de un total de %total%"
+form.stats.activities.info: "%workdays% jornada, %hours%/%total% h.|%workdays% jornadas, %hours%/%total% h."
+
+form.stats.hours: Estado de las jornadas bloqueadas
+form.stats.hours_bar: "%count%/%total% h."
+form.stats.hours_locked_hint: "%count% horas realizadas"
+form.stats.hours_absence_hint: "%count% horas de ausencia"
+form.stats.hours_justified_absence_hint: "%count% horas de ausencia justificada"
+
+form.stats.hours.total.caption: "Total del acuerdo de colaboración"
+form.stats.hours.total.days: "%count% jornada|%count% jornadas"
+form.stats.hours.total.hours: "%count% hora|%count% horas"
+form.stats.hours.locked.days: "%count% jornada de %total%|%count% jornadas de %total%"
+form.stats.hours.locked.hours: "%count% horas de %total%|%count% horas de %total%"
+form.stats.hours.locked.caption: "Bloqueadas"
+form.stats.hours.worked.caption: "Presencia confirmada"
+form.stats.hours.absence.caption: "Ausencias"
+form.stats.hours.justified_absence.caption: "Ausencias justificadas"
+
+title.agreement.list: Acuerdos de colaboración
+title.calendar: Calendario formativo
+
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay resultados que mostrar
+table.filter: Filtrar...
+
+table.hours: "{count, plural, one {1 hora} other {# horas}}"
+table.absences: "{count, plural, one {1 falta} other {# faltas}}"
+table.justified_absences: "{count, plural, one {1 justificada} other {# justificadas}}"
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+
+notification.inactivity_warning.subject: "%organization% - Retraso en la cumplimentación de actividades"
+
+notification.inactivity_warning.body: |
+  Estimado/a %name%:
+
+  Hemos detectado un retraso en la cumplimentación de las actividades realizadas en la empresa %company% dentro de la plataforma de seguimiento.
+
+  Éstas son las jornadas con más de %days% días que no están correctamente rellenas:
+  %workdays%
+
+  Por favor, no olvides que no debe pasar mucho tiempo entre la asistencia al centro de trabajo y la cumplimentación de las actividades que has realizado en ella.
+
+  Si tienes cualquier problema, no dudes en ponerte en contacto con el centro educativo.
+
+  Un saludo desde %organization%

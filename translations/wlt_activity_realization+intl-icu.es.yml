@@ -1,0 +1,34 @@
+form.activity: Actividad
+form.code: Código
+form.description: Descripción
+form.learning_outcomes: Resultados de aprendizaje asociados
+
+form.save: Guardar cambios
+form.delete: Eliminar las concreciones seleccionadas
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nueva concreción de actividad
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes concreciones de actividad? En el caso de que alguna de ellas tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos de la concreción de actividad
+title.new: Nueva concreción de actividad
+title.delete: Eliminar concreciones de actividad
+
+title.list: Concreciones de actividad
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay concreciones
+table.filter: Filtrar...
+
+header.code: Código
+header.description: Descripción de la concreción
+header.learning_outcomes: Resultados de aprendizaje asociados
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Concreciones eliminadas del centro.
+message.delete_error: Ha ocurrido un error al eliminar las concreciones.

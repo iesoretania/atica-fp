@@ -1,0 +1,40 @@
+form.subject: Materia
+form.code: Código
+form.description: Detalle
+
+form.save: Guardar cambios
+form.delete: Eliminar los resultados seleccionados
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+form.import: Importar desde el texto indicado
+form.import.placeholder: |
+  Por ejemplo: (los dos puntos separan el código del resultado)
+  RA1: Realiza...
+  RA2: Configura...
+form.export: Exportar como texto
+
+table.new: Nuevo resultado de aprendizaje
+table.criteria: Criterios de evaluación
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes resultados de aprendizaje? En el caso de que alguno de ellos tenga elementos asociados, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos del resultado de aprendizaje
+title.new: Nuevo resultado de aprendizaje
+title.delete: Eliminar resultados de aprendizaje
+title.import: Importación masiva
+
+title.list: Resultados de aprendizaje
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay resultados de aprendizaje que mostrar
+table.filter: Filtrar...
+
+header.code: Código
+header.description: Detalle
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Resultados de aprendizaje eliminados con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los resultados de aprendizaje.

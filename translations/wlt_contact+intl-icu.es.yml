@@ -1,0 +1,68 @@
+form.datetime: Fecha y hora
+form.teacher: Docente
+form.teacher.none: Seleccione un docente
+form.workcenter: Centro de trabajo
+form.workcenter.none: Seleccione uno para continuar
+form.workcenter.all: Todos los centros de trabajo
+form.method: Tipo de contacto
+form.methods: Tipos de contacto a incluir
+form.method.on-site: Presencial
+form.projects: Proyectos asociados
+form.projects.to_report: Proyectos a incluir (sin marcas = todo)
+form.projects.none: No hay proyectos asociados al centro de trabajo
+form.projects.not_specified: Contactos no asociados a un proyecto
+form.student_enrollments: Estudiantes relacionados
+form.student_enrollments.none: Ninguno disponible
+form.detail: Observaciones
+form.all_methods: Todos
+form.on-site: Presencial
+
+form.save: Guardar cambios
+form.delete: Eliminar los contactos seleccionadas
+form.back: Volver
+form.generate_report: Generar informe
+form.delete_confirm: Confirmar borrado
+
+form.workcenter_contact_report: Informe de centro de trabajo
+form.educational_tutor_contact_report: Informe de responsable de seguimiento
+
+table.new: Registrar contacto
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes contactos?
+
+  Esta operación no se puede deshacer.
+
+title.edit: Datos del contacto
+title.new: Nuevo contacto
+title.delete: Eliminar contactos
+
+title.workcenter_report: Informe de contactos del centro de trabajo
+title.educational_tutor_report: Informe de contactos del responsable de seguimiento
+title.workcenter_report.brief: Informe de centro de trabajo
+title.educational_tutor_report.brief: Informe de contactos
+title.summary: Resumen de contactos
+title.details: Detalle de contactos
+title.contact_methods: Tipos de contacto
+
+title.list: Listado de contactos
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay contactos que mostrar
+table.filter: Filtrar...
+
+header.datetime: Fecha y hora
+header.teacher: Docente
+header.workcenter: Centro de trabajo
+header.projects: Proyectos
+header.student_enrollments: Estudiantes relacionados
+header.method: Tipo
+header.on_site_count: Visitas presenciales
+header.other_count: Otros contactos
+header.details: Detalle del contacto
+header.count: Total de contactos
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.report_error: No se ha podido generar el informe.
+message.deleted: Contactos eliminados con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los contactos.

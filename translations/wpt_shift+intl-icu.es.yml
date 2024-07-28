@@ -1,0 +1,65 @@
+form.name: Nombre
+form.grade: Nivel
+form.subject: Módulo de FCT
+form.no_subject: Escoja el módulo de FCT de la enseñanza
+form.groups: Grupos asociados
+form.hours: Horas
+form.type: Grado
+form.quarter: Trimestre
+form.quarter.1Q: Primer trimestre
+form.quarter.2Q: Segundo trimestre
+form.quarter.3Q: Tercer trimestre
+form.attendance_report_template: Plantilla del informe de asistencia
+form.weekly_activity_report_template: Plantilla del informe semanal de actividades
+form.activity_summary_report_template: Plantilla del registro resumen de actividades
+form.final_report_template: Plantilla del informe del tutor/a laboral
+form.no_template: Sin plantilla
+form.student_survey: Modelo de encuesta de satisfacción de alumnado
+form.company_survey: Modelo de encuesta de satisfacción de empresa colaboradora
+form.educational_tutor_survey: Modelo de encuesta de satisfacción de tutoría docente
+form.student_enrollments: Estudiantes
+form.no_student_enrollments: No hay ninguno para el nivel/enseñanza seleccionado
+form.no_survey: Ninguna
+
+form.locked: Convocatoria bloqueada
+form.locked.no: Se pueden realizar cambios
+form.locked.yes: Sólo el equipo directivo puede realizar cambios
+
+form.save: Guardar cambios
+form.delete: Eliminar las convocatorias seleccionadas
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nueva convocatoria
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes convocatorias? Se eliminarán todos los datos asociados.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Modificar convocatoria
+title.new: Nueva convocatoria
+title.delete: Eliminar convocatoria
+
+title.list: Convocatorias de FCT
+title.student_enrollment: Alumnado
+title.agreements: Acuerdos de colaboración
+
+table.learning_program: Programa formativo
+table.learning_program_companies: Empresas
+table.agreements: Acuerdos de colaboración
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay convocatorias
+table.filter: Filtrar...
+
+header.name: Convocatoria
+header.grade: Curso
+header.type: Grado
+header.hours: Horas
+header.groups: Grupos
+header.agreements: Acuerdos registrados
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Convocatorias eliminadas con éxito.
+message.delete_error: Ha ocurrido un error al eliminar las convocatorias.

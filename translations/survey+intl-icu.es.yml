@@ -1,0 +1,50 @@
+form.title: Título
+form.copy_from: Copiar preguntas desde
+form.copy_from.none: Crear encuesta vacía
+form.start_timestamp: Fecha y hora de comienzo
+form.end_timestamp: Fecha y hora de finalización
+
+form.save: Guardar cambios
+form.back: Volver
+form.delete: Eliminar encuestas
+form.purge: Eliminar respuestas de las encuestas
+
+form.delete_confirm: Confirmar borrado
+form.prune_confirm: Confirmar borrado
+
+message.saved: Encuesta actualizada con éxito.
+message.save_error: No se ha podido actualizar la encuesta.
+
+message.deleted: Las encuestas seleccionadas han sido eliminadas con éxito.
+message.delete_error: No se han podido eliminar las encuestas seleccionadas. Compruebe que no tienen respuesta.
+
+message.purged: Se han borrado las respuestas de las encuestas seleccionadas.
+message.purge_error: No se han podido eliminar las respuestas de las encuestas seleccionadas.
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes encuestas? Sólo aparecerán aquellas que no estén respondidas.
+
+  Esta operación no se puede deshacer.
+
+prompt.purge_confirm: |
+  ¿Está seguro de que desea eliminar las respuestas de las siguientes encuestas?
+
+  Esta operación no se puede deshacer.
+
+title.new: Nueva encuesta
+title.edit: Modificar encuesta
+title.delete: Eliminar encuestas
+title.purge: Eliminar respuestas de encuestas
+
+title.list: Listado de encuestas
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay encuestas
+table.new: Nueva encuesta
+table.filter: Filtrar...
+
+table.questions: Preguntas
+
+header.title: Título
+header.start_timestamp: Inicio
+header.end_timestamp: Fin
+header.answer_count: Encuestas respondidas
