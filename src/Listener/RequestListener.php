@@ -21,7 +21,7 @@ namespace App\Listener;
 use App\Entity\Person;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -51,7 +51,7 @@ class RequestListener implements EventSubscriberInterface
         $this->accessDecisionManager = $accessDecisionManager;
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    final public function onKernelRequest(RequestEvent $event)
     {
         if (!$event->getRequest()->hasSession()) {
             return;
