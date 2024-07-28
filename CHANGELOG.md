@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+6.2.1 (2024-07-28)
 ------------------
 * feat: Mostrar correo electrónico del estudiante en la sección de información del tutor
 * chore: Permitir a los estudiantes ver información del convenio o acuerdo de colaboración en el calendario
