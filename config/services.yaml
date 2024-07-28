@@ -5,7 +5,7 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     # Versión de la aplicación
-    app.version:                "6.2.1"
+    app.version:                "7"
     app.pub_date:               "2024-07-28"
 
     # Prefijo de las notificaciones enviadas a los usuarios

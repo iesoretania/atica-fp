@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.x.x (xxxx-xx-xx)
+------------------
+* chore: Actualización de los componentes internos
+
 6.2.1 (2024-07-28)
 ------------------
 * feat: Mostrar correo electrónico del estudiante en la sección de información del tutor

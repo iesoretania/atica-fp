@@ -4,7 +4,7 @@
     "type": "project",
     "description": "Aplicación web para el seguimiento del alumnado durante el período de alternancia y en la FCT",
     "require": {
-        "php": ">=7.2",
+        "php": ">=8.2",
         "ext-ctype": "*",
         "ext-curl": "*",
         "ext-dom": "*",
