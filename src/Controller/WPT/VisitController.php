@@ -37,6 +37,7 @@ use Mpdf\Mpdf;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -61,6 +62,7 @@ class VisitController extends AbstractController
         Security $security,
         WPTTeacherRepository $WPTTeacherRepository,
         WPTGroupRepository $WPTGroupRepository,
+        ManagerRegistry $managerRegistry,
         Teacher $teacher
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -73,7 +75,7 @@ class VisitController extends AbstractController
 
         $this->denyAccessUnlessGranted(VisitVoter::ACCESS, $visit);
 
-        $this->getDoctrine()->getManager()->persist($visit);
+        $managerRegistry->getManager()->persist($visit);
 
         return $this->indexAction(
             $request,
@@ -82,6 +84,7 @@ class VisitController extends AbstractController
             $security,
             $WPTTeacherRepository,
             $WPTGroupRepository,
+            $managerRegistry,
             $visit
         );
     }
@@ -97,6 +100,7 @@ class VisitController extends AbstractController
         Security $security,
         WPTTeacherRepository $WPTTeacherRepository,
         WPTGroupRepository $WPTGroupRepository,
+        ManagerRegistry $managerRegistry,
         Contact $visit
     ) {
         $this->denyAccessUnlessGranted(VisitVoter::ACCESS, $visit);
@@ -104,7 +108,7 @@ class VisitController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $visit->getTeacher() ? $visit->getTeacher()->getAcademicYear() : $organization->getCurrentAcademicYear();
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $readOnly = !$this->isGranted(VisitVoter::MANAGE, $visit);
 
@@ -175,8 +179,9 @@ class VisitController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Teacher $teacher,
-        $page = 1
+        int $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_VISIT, $organization);
@@ -192,7 +197,7 @@ class VisitController extends AbstractController
         $allowNew = $this->isGranted(WPTOrganizationVoter::WPT_CREATE_VISIT, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
         $queryBuilder
             ->select('v')
             ->distinct(true)
@@ -264,8 +269,9 @@ class VisitController extends AbstractController
         WPTTeacherRepository $WPTTeacherRepository,
         WPTGroupRepository $WPTGroupRepository,
         AcademicYearRepository $academicYearRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
-        $page = 1
+        int $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         if (null === $academicYear) {
@@ -288,7 +294,7 @@ class VisitController extends AbstractController
         );
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
         $queryBuilder
             ->select('t')
             ->addSelect('p')
@@ -346,16 +352,17 @@ class VisitController extends AbstractController
         ContactRepository    $visitRepository,
         UserExtensionService $userExtensionService,
         TranslatorInterface  $translator,
+        ManagerRegistry      $managerRegistry,
         Teacher              $teacher
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_VISIT, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('workplace_training_visit_detail_list', ['id' => $teacher->getId()]);
         }
 

@@ -22,6 +22,7 @@ use App\Form\Type\Edu\RoleAssignType;
 use App\Repository\RoleRepository;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,6 +37,7 @@ class RoleController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         RoleRepository $roleRepository,
+        ManagerRegistry $managerRegistry,
         TranslatorInterface $translator
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -50,7 +52,7 @@ class RoleController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $roleRepository->updateOrganizationRoles($organization, $form->getData());
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'role'));
                 return $this->redirectToRoute('organization');
             } catch (\Exception $e) {

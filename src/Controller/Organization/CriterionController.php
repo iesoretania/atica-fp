@@ -12,6 +12,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +31,7 @@ class CriterionController extends AbstractController
     public function newCriterionAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         LearningOutcome $learningOutcome
     ) {
         $subject = $learningOutcome->getSubject();
@@ -39,9 +41,9 @@ class CriterionController extends AbstractController
         $criterion
             ->setLearningOutcome($learningOutcome);
 
-        $this->getDoctrine()->getManager()->persist($criterion);
+        $managerRegistry->getManager()->persist($criterion);
 
-        return $this->criterionFormAction($request, $translator, $criterion);
+        return $this->criterionFormAction($request, $translator, $managerRegistry, $criterion);
     }
 
     /**
@@ -51,6 +53,7 @@ class CriterionController extends AbstractController
     public function criterionFormAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Criterion $criterion
     ) {
         $subject = $criterion->getLearningOutcome()->getSubject();
@@ -66,7 +69,7 @@ class CriterionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'edu_criterion'));
                 return $this->redirectToRoute('organization_training_criterion_list', [
                     'id' => $criterion->getLearningOutcome()->getId()
@@ -119,14 +122,15 @@ class CriterionController extends AbstractController
     public function criterionListAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         LearningOutcome $learningOutcome,
-        $page = 1
+        int $page = 1
     ) {
         $subject = $learningOutcome->getSubject();
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $subject->getGrade()->getTraining());
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('c')
@@ -194,6 +198,7 @@ class CriterionController extends AbstractController
         Request $request,
         CriterionRepository $criterionRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         LearningOutcome $learningOutcome
     ) {
         $subject = $learningOutcome->getSubject();
@@ -201,10 +206,10 @@ class CriterionController extends AbstractController
 
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_training_criterion_list', ['id' => $learningOutcome->getId()]);
         }
 
@@ -257,6 +262,7 @@ class CriterionController extends AbstractController
         Request $request,
         CriterionRepository $criterionRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         LearningOutcome $learningOutcome
     ) {
         $subject = $learningOutcome->getSubject();
@@ -264,7 +270,7 @@ class CriterionController extends AbstractController
 
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $lines = trim($request->request->get('data', []));
         if ($lines === '') {

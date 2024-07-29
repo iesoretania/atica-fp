@@ -30,6 +30,7 @@ use App\Security\WLT\WorkDayVoter;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -112,6 +113,7 @@ class TrackingCalendarController extends AbstractController
         AgreementRepository $agreementRepository,
         ActivityRealizationRepository $activityRealizationRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         WorkDay $workDay,
         WorkDayRepository $workDayRepository
     ) {
@@ -167,7 +169,7 @@ class TrackingCalendarController extends AbstractController
                 } else {
                     $workDay->getActivityRealizations()->clear();
                 }
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
 
                 $agreementRepository->updateDates($agreement);
                 $this->addFlash('success', $translator->trans('message.workday_saved', [], 'calendar'));
@@ -211,6 +213,7 @@ class TrackingCalendarController extends AbstractController
         WorkDayRepository $workDayRepository,
         AgreementRepository $agreementRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Agreement $agreement
     ) {
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
@@ -244,7 +247,7 @@ class TrackingCalendarController extends AbstractController
         }
 
         $items = $request->request->get('items', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute(
                 'work_linked_training_tracking_calendar_list',
                 ['id' => $agreement->getId()]
@@ -259,7 +262,7 @@ class TrackingCalendarController extends AbstractController
             $this->denyAccessUnlessGranted(AgreementVoter::LOCK, $agreement);
             try {
                 $workDayRepository->updateLock($workDays, $agreement, $locked);
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $agreementRepository->updateDates($agreement);
                 $this->addFlash('success', $translator->trans('message.locked', [], 'calendar'));
             } catch (\Exception $e) {
@@ -277,7 +280,7 @@ class TrackingCalendarController extends AbstractController
         if ($request->get('confirm', '') === 'ok') {
             try {
                 $workDayRepository->updateAttendance($workDays, true);
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $agreementRepository->updateDates($agreement);
                 $this->addFlash('success', $translator->trans('message.attendance_updated', [], 'calendar'));
             } catch (\Exception $e) {

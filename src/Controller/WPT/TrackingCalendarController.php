@@ -36,6 +36,7 @@ use App\Security\WPT\TrackedWorkDayVoter;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -134,6 +135,7 @@ class TrackingCalendarController extends AbstractController
         TranslatorInterface $translator,
         TrackedWorkDayRepository $trackedWorkDayRepository,
         WorkDayRepository $workDayRepository,
+        ManagerRegistry $managerRegistry,
         WorkDay $workDay,
         AgreementEnrollment $agreementEnrollment
     ) {
@@ -190,15 +192,15 @@ class TrackingCalendarController extends AbstractController
                         if ($trackedActivity->getHours() == 0) {
                             $trackedActivities->removeElement($trackedActivity);
                             if ($trackedWorkDay->getId() !== null) {
-                                $this->getDoctrine()->getManager()->remove($trackedActivity);
+                                $managerRegistry->getManager()->remove($trackedActivity);
                             }
                         } else {
-                            $this->getDoctrine()->getManager()->persist($trackedActivity);
+                            $managerRegistry->getManager()->persist($trackedActivity);
                         }
                     }
                 }
                 $trackedWorkDay->setTrackedActivities($trackedActivities);
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
 
                 $agreementRepository->updateDates($agreement);
                 $this->addFlash('success', $translator->trans('message.workday_saved', [], 'calendar'));
@@ -241,6 +243,7 @@ class TrackingCalendarController extends AbstractController
         Request $request,
         TrackedWorkDayRepository $trackedWorkDayRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AgreementEnrollment $agreementEnrollment
     ) {
         $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::ACCESS, $agreementEnrollment);
@@ -276,7 +279,7 @@ class TrackingCalendarController extends AbstractController
         }
 
         $items = $request->request->get('items', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute(
                 'workplace_training_tracking_calendar_list',
                 ['id' => $agreementEnrollment->getId()]
@@ -292,7 +295,7 @@ class TrackingCalendarController extends AbstractController
             $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::LOCK, $agreementEnrollment);
             try {
                 $trackedWorkDayRepository->updateLock($trackedWorkDays, $agreementEnrollment, $locked);
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.locked', [], 'calendar'));
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.locked_error', [], 'calendar'));
@@ -309,7 +312,7 @@ class TrackingCalendarController extends AbstractController
         if ($request->get('confirm', '') === 'ok') {
             try {
                 $trackedWorkDayRepository->updateAttendance($trackedWorkDays, true);
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.attendance_updated', [], 'calendar'));
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.attendance_error', [], 'calendar'));
@@ -883,6 +886,7 @@ class TrackingCalendarController extends AbstractController
      */
     public function apiEditAction(
         TrackedWorkDayRepository $trackedWorkDayRepository,
+        ManagerRegistry $managerRegistry,
         WorkDay $workDay,
         AgreementEnrollment $agreementEnrollment
     ) {
@@ -892,7 +896,7 @@ class TrackingCalendarController extends AbstractController
                 $agreementEnrollment
             );
 
-            $this->getDoctrine()->getManager()->flush();
+            $managerRegistry->getManager()->flush();
         } catch (\Exception $e) {
             return new JsonResponse([
                                         'result' => 'error'
@@ -956,6 +960,7 @@ class TrackingCalendarController extends AbstractController
      *     requirements={"trackedWorkDay" = "\d+"}, methods={"POST"})
      */
     public function apiEditPostAction(
+        ManagerRegistry $managerRegistry,
         Request $request,
         TrackedWorkDay $trackedWorkDay
     ) {
@@ -981,7 +986,7 @@ class TrackingCalendarController extends AbstractController
         $trackedWorkDay->setEndTime1($request->get('end_time1'));
         $trackedWorkDay->setEndTime2($request->get('end_time2'));
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         try {
             $em->flush();
@@ -1002,6 +1007,7 @@ class TrackingCalendarController extends AbstractController
      */
     public function apiEditActivityPostAction(
         Request $request,
+        ManagerRegistry $managerRegistry,
         TrackedWorkDay $trackedWorkDay,
         Activity $activity
     ) {
@@ -1026,7 +1032,7 @@ class TrackingCalendarController extends AbstractController
             $trackedActivities->add($newTrackedActivity);
         }
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $found = false;
         foreach ($trackedActivities as $trackedActivity) {
@@ -1037,10 +1043,10 @@ class TrackingCalendarController extends AbstractController
             if ($trackedActivity->getHours() == 0) {
                 $trackedActivities->removeElement($trackedActivity);
                 if ($trackedWorkDay->getId() !== null) {
-                    $this->getDoctrine()->getManager()->remove($trackedActivity);
+                    $managerRegistry->getManager()->remove($trackedActivity);
                 }
             } else {
-                $this->getDoctrine()->getManager()->persist($trackedActivity);
+                $managerRegistry->getManager()->persist($trackedActivity);
             }
         }
 

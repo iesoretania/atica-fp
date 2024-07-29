@@ -23,6 +23,7 @@ use App\Form\Type\Edu\NewTravelRouteType;
 use App\Repository\Edu\TravelRouteRepository;
 use App\Security\Edu\EduOrganizationVoter;
 use App\Service\UserExtensionService;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,13 +37,14 @@ class TravelRouteAPIController extends AbstractController
      */
     public function apiNewTravelRouteAction(
         Request $request,
-        UserExtensionService $userExtensionService
+        UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_TEACHER, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $newTravelRoute = new TravelRoute();
         $newTravelRoute

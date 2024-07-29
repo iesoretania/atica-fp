@@ -30,6 +30,7 @@ use App\Service\UserExtensionService;
 use App\Utils\CsvImporter;
 use App\Utils\ImportParser;
 use Doctrine\ORM\Query\QueryException;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -94,14 +95,19 @@ class GroupImportController extends AbstractController
      * @param array $options
      * @return array|null
      */
-    private function importFromCsv($file, AcademicYear $academicYear, TeacherRepository $teacherRepository, $options = [])
-    {
+    private function importFromCsv(
+        $file,
+        AcademicYear $academicYear,
+        TeacherRepository $teacherRepository,
+        ManagerRegistry $managerRegistry,
+        array $options = []
+    ) {
         $newCount = 0;
         $oldCount = 0;
 
         $restricted = isset($options['restricted']) && $options['restricted'];
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $importer = new CsvImporter($file, true);
 

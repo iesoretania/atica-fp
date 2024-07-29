@@ -37,6 +37,7 @@ use Mpdf\Mpdf;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,6 +59,7 @@ class TravelExpenseController extends AbstractController
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
         AgreementRepository $agreementRepository,
+        ManagerRegistry $managerRegistry,
         Teacher $teacher
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -69,7 +71,7 @@ class TravelExpenseController extends AbstractController
             ->setFromDateTime(new \DateTime())
             ->setToDateTime(new \DateTime());
 
-        $this->getDoctrine()->getManager()->persist($travelExpense);
+        $managerRegistry->getManager()->persist($travelExpense);
 
         return $this->indexAction(
             $request,
@@ -87,13 +89,14 @@ class TravelExpenseController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
+        ManagerRegistry $managerRegistry,
         TravelExpense $travelExpense
     ) {
         $this->denyAccessUnlessGranted(TravelExpenseVoter::ACCESS, $travelExpense);
 
         $academicYear = $travelExpense->getTeacher()->getAcademicYear();
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $readOnly = !$this->isGranted(TravelExpenseVoter::MANAGE, $travelExpense);
 
@@ -159,6 +162,7 @@ class TravelExpenseController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Teacher $teacher,
         $page = 1
     ) {
@@ -169,7 +173,7 @@ class TravelExpenseController extends AbstractController
         $allowNew = $this->isGranted(WPTOrganizationVoter::WPT_CREATE_EXPENSE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
         $queryBuilder
             ->select('te')
             ->addSelect('tr')
@@ -234,6 +238,7 @@ class TravelExpenseController extends AbstractController
         TranslatorInterface $translator,
         WPTTeacherRepository $WPTTeacherRepository,
         AcademicYearRepository $academicYearRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         $page = 1
     ) {
@@ -248,7 +253,7 @@ class TravelExpenseController extends AbstractController
             $this->isGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
         $queryBuilder
             ->select('t')
             ->addSelect('p')
@@ -317,16 +322,17 @@ class TravelExpenseController extends AbstractController
         TravelExpenseRepository $travelExpenseRepository,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Teacher $teacher
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_EXPENSE, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('workplace_training_travel_expense_detail_list');
         }
 

@@ -29,6 +29,7 @@ use App\Repository\WPT\WorkDayRepository;
 use App\Security\WPT\AgreementVoter;
 use App\Security\WPT\WPTOrganizationVoter;
 use App\Service\UserExtensionService;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -94,6 +95,7 @@ class AgreementCalendarController extends AbstractController
         TranslatorInterface $translator,
         WorkDayRepository $workDayRepository,
         AgreementRepository $agreementRepository,
+        ManagerRegistry $managerRegistry,
         Agreement $agreement
     ) {
         $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
@@ -135,7 +137,7 @@ class AgreementCalendarController extends AbstractController
 
             if ('' === $request->get('submit', 'none')) {
                 try {
-                    $this->getDoctrine()->getManager()->flush();
+                    $managerRegistry->getManager()->flush();
                     $agreementRepository->updateDates($agreement);
                     $this->addFlash('success', $translator->trans('message.added', [], 'calendar'));
                     return $this->redirectToRoute('workplace_training_agreement_calendar_list', [
@@ -183,6 +185,7 @@ class AgreementCalendarController extends AbstractController
         AgreementRepository $agreementRepository,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         WorkDay $workDay
     ) {
         $agreement = $workDay->getAgreement();
@@ -203,7 +206,7 @@ class AgreementCalendarController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $agreementRepository->updateDates($agreement);
                 $this->addFlash('success', $translator->trans('message.saved', [], 'calendar'));
                 return $this->redirectToRoute('workplace_training_agreement_calendar_list', [
@@ -251,12 +254,13 @@ class AgreementCalendarController extends AbstractController
         TrackedWorkDayRepository $trackedWorkDayRepository,
         AgreementRepository $agreementRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Agreement $agreement
     ) {
         $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
 
         $items = $request->request->get('items', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute(
                 'workplace_training_agreement_calendar_list',
                 ['id' => $agreement->getId()]
@@ -270,7 +274,7 @@ class AgreementCalendarController extends AbstractController
                 $trackedWorkDayRepository->deleteFromWorkDays($workDays);
                 $workDayRepository->deleteFromList($workDays);
 
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $agreementRepository->updateDates($agreement);
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'calendar'));
             } catch (\Exception $e) {

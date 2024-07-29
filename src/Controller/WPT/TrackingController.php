@@ -30,6 +30,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -215,6 +216,7 @@ class TrackingController extends AbstractController
         AcademicYearRepository $academicYearRepository,
         WPTGroupRepository $groupRepository,
         TeacherRepository $teacherRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         $page = 1
     ) {
@@ -229,7 +231,7 @@ class TrackingController extends AbstractController
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
         $person = $this->getUser();
         $maxPerPage = $this->getParameter('page.size');
 
@@ -264,7 +266,8 @@ class TrackingController extends AbstractController
     public function apiListAction(
         UserExtensionService $userExtensionService,
         WPTGroupRepository $groupRepository,
-        TeacherRepository $teacherRepository
+        TeacherRepository $teacherRepository,
+        ManagerRegistry $managerRegistry
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
@@ -274,7 +277,7 @@ class TrackingController extends AbstractController
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
         $person = $this->getUser();
 
         $queryBuilder = self::generateAgreementQueryBuilder(

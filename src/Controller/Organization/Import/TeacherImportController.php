@@ -28,6 +28,7 @@ use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use App\Utils\CsvImporter;
 use Doctrine\ORM\Query\QueryException;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -105,6 +106,7 @@ class TeacherImportController extends AbstractController
         AcademicYear $academicYear,
         UserPasswordHasherInterface $encoder,
         PersonRepository $personRepository,
+        ManagerRegistry $managerRegistry,
         array $options = []
     ) {
         $generatePassword = isset($options['generate_password']) && $options['generate_password'];
@@ -112,7 +114,7 @@ class TeacherImportController extends AbstractController
         $newUserCount = 0;
         $existingUsers = 0;
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $importer = new CsvImporter($file, true);
 

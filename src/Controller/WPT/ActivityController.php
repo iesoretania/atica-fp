@@ -36,6 +36,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -54,6 +55,7 @@ class ActivityController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Shift $shift
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -63,12 +65,13 @@ class ActivityController extends AbstractController
         $activity
             ->setShift($shift);
 
-        $this->getDoctrine()->getManager()->persist($activity);
+        $managerRegistry->getManager()->persist($activity);
 
         return $this->indexAction(
             $request,
             $userExtensionService,
             $translator,
+            $managerRegistry,
             $activity
         );
     }
@@ -80,13 +83,14 @@ class ActivityController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Activity $activity
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $activity->getShift());
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $form = $this->createForm(ActivityType::class, $activity, [
             'shift' => $activity->getShift()
@@ -145,6 +149,7 @@ class ActivityController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Shift $shift,
         $page = 1
     ) {
@@ -157,7 +162,7 @@ class ActivityController extends AbstractController
         }
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('a')
@@ -215,6 +220,7 @@ class ActivityController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         ActivityRepository $activityRepository,
+        ManagerRegistry $managerRegistry,
         Shift $shift
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -224,7 +230,7 @@ class ActivityController extends AbstractController
 
         $items = $request->request->get('items', []);
 
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('workplace_training_activity_list', ['id' => $shift->getId()]);
         }
 
@@ -233,7 +239,7 @@ class ActivityController extends AbstractController
         if ($request->get('confirm', '') === 'ok') {
             try {
                 $activityRepository->deleteFromList($selectedItems);
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wpt_activity'));
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wpt_activity'));
@@ -268,6 +274,7 @@ class ActivityController extends AbstractController
         ActivityRepository $activityRepository,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         Shift $shift
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -275,7 +282,7 @@ class ActivityController extends AbstractController
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $lines = trim($request->request->get('data', []));
         if ($lines === '') {
@@ -333,6 +340,7 @@ class ActivityController extends AbstractController
         ShiftRepository $shiftRepository,
         ActivityRepository $activityRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Shift $shift
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -356,7 +364,7 @@ class ActivityController extends AbstractController
                     $activityCopy->getShift()
                 );
 
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.copied', [], 'wpt_activity'));
 
                 return $this->redirectToRoute('workplace_training_activity_list', ['id' => $shift->getId()]);
@@ -397,6 +405,7 @@ class ActivityController extends AbstractController
         ProjectRepository $projectRepository,
         ActivityRepository $activityRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Shift $shift
     ) {
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
@@ -420,7 +429,7 @@ class ActivityController extends AbstractController
                     $activityCopyFromWlt->getProject()
                 );
 
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.copied', [], 'wpt_activity'));
 
                 return $this->redirectToRoute('workplace_training_activity_list', ['id' => $shift->getId()]);
