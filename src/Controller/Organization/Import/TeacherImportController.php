@@ -46,6 +46,7 @@ class TeacherImportController extends AbstractController
         TranslatorInterface $translator,
         UserPasswordHasherInterface $passwordEncoder,
         PersonRepository $personRepository,
+        ManagerRegistry $managerRegistry,
         Request $request
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -68,6 +69,7 @@ class TeacherImportController extends AbstractController
                 $formData->getAcademicYear(),
                 $passwordEncoder,
                 $personRepository,
+                $managerRegistry,
                 [
                     'generate_password' => $formData->getGeneratePassword(),
                     'external_check' => $formData->isExternalPassword()

@@ -233,7 +233,7 @@ class SubjectController extends AbstractController
 
         $managerRegistry->getManager()->persist($teaching);
 
-        return $this->formTeachingAction($request, $userExtensionService, $translator, $teaching);
+        return $this->formTeachingAction($request, $userExtensionService, $translator, $managerRegistry, $teaching);
     }
 
     /**

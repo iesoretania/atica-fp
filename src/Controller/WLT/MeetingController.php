@@ -91,6 +91,7 @@ class MeetingController extends AbstractController
             $teacherRepository,
             $wltTeacherRepository,
             $groupRepository,
+            $managerRegistry,
             $meeting,
             $academicYear
         );

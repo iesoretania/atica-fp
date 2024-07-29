@@ -46,6 +46,7 @@ class GroupImportController extends AbstractController
         UserExtensionService $userExtensionService,
         TeacherRepository $teacherRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Request $request)
     {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -65,6 +66,7 @@ class GroupImportController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $stats = $this->importFromCsv($formData->getFile()->getPathname(), $formData->getAcademicYear(),
                 $teacherRepository,
+                $managerRegistry,
                 [
                     'restricted' => $formData->isRestricted(),
                     'extract_tutors' => $formData->isExtractTutors()

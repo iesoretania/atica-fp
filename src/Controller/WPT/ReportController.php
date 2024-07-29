@@ -145,18 +145,20 @@ class ReportController extends AbstractController
      *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
      */
     public function studentListAction(
-        Request $request,
-        UserExtensionService $userExtensionService,
-        TranslatorInterface $translator,
-        AcademicYearRepository $academicYearRepository,
-        AcademicYear $academicYear = null,
-        $page = 1
+        Request                                  $request,
+        UserExtensionService                     $userExtensionService,
+        TranslatorInterface                      $translator,
+        AcademicYearRepository                   $academicYearRepository,
+        \Symfony\Bridge\Doctrine\ManagerRegistry $managerRegistry,
+        AcademicYear                             $academicYear = null,
+                                                 $page = 1
     ) {
         return $this->genericListAction(
             $request,
             $userExtensionService,
             $translator,
             $academicYearRepository,
+            $managerRegistry,
             'title.student_survey',
             'workplace_training_report_student_survey_report',
             $academicYear,
