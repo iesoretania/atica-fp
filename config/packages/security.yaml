@@ -3,8 +3,7 @@ security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-        App\Entity\Person:
-            algorithm: bcrypt
+        
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         db_provider:
@@ -26,9 +25,8 @@ security:
             pattern:  ^/(entrar|restablecer|publico)
 
         main:
-            guard:
-                authenticators:
-                    - App\Security\FormAuthenticator
+            custom_authenticators:
+                - App\Security\FormAuthenticator
 
             logout:
                 path: logout
@@ -39,8 +37,6 @@ security:
                 parameter: _switch_user
             lazy: true
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
             user_checker: App\Security\UserChecker
 
     # Easy way to control access for large sections of your site

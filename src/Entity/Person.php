@@ -20,6 +20,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -29,7 +30,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @UniqueEntity("loginUsername")
  * @UniqueEntity("emailAddress")
  */
-class Person implements UserInterface
+class Person implements UserInterface, PasswordAuthenticatedUserInterface
 {
     public const GENDER_NEUTRAL = 0;
     public const GENDER_MALE = 1;
@@ -353,9 +354,9 @@ class Person implements UserInterface
     /**
      * Get password
      *
-     * @return string
+     * @return string|null
      */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -610,6 +611,11 @@ class Person implements UserInterface
     public function getUsername()
     {
         return $this->getLoginUsername() ?: $this->getEmailAddress();
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->getUsername();
     }
 
     /**

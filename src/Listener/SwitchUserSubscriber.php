@@ -20,24 +20,24 @@ namespace App\Listener;
 
 use App\Service\UserExtensionService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Http\Event\SwitchUserEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
 class SwitchUserSubscriber implements EventSubscriberInterface
 {
-    private $userExtension;
-    private $session;
+    private UserExtensionService $userExtension;
+    private RequestStack $requestStack;
 
-    public function __construct(UserExtensionService $userExtensionService, SessionInterface $session)
+    public function __construct(UserExtensionService $userExtensionService, RequestStack $requestStack)
     {
         $this->userExtension = $userExtensionService;
-        $this->session = $session;
+        $this->requestStack = $requestStack;
     }
-    public function onSwitchUser(SwitchUserEvent $event)
+    final public function onSwitchUser(SwitchUserEvent $event): void
     {
         if (false === $this->userExtension->checkCurrentOrganization($event->getTargetUser())) {
-            $this->session->remove('organization_id');
+            $this->requestStack->getSession()->remove('organization_id');
         }
     }
 

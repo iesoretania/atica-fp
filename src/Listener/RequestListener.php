@@ -51,7 +51,7 @@ class RequestListener implements EventSubscriberInterface
         $this->accessDecisionManager = $accessDecisionManager;
     }
 
-    final public function onKernelRequest(RequestEvent $event)
+    final public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->getRequest()->hasSession()) {
             return;
@@ -61,7 +61,7 @@ class RequestListener implements EventSubscriberInterface
 
         if (($session->get('organization_id', '') === '') && $event->isMainRequest()) {
             $route = $event->getRequest()->get('_route');
-            if ($route && strpos($route, 'log') !== 0 && $route[0] !== '_') {
+            if ($route && !str_starts_with($route, 'log') && $route[0] !== '_') {
                 $session->set('_security.organization.target_path', $event->getRequest()->getUri());
                 $event->setResponse(
                     new RedirectResponse($this->router->generate('login_organization'))
@@ -75,10 +75,10 @@ class RequestListener implements EventSubscriberInterface
             $this->token->getToken()->getUser() instanceof Person &&
             $this->token->getToken()->getUser()->isForcePasswordChange() &&
             !$this->token->getToken()->getUser()->getExternalCheck() &&
-            !$this->accessDecisionManager->decide($this->token->getToken(), ['ROLE_PREVIOUS_ADMIN'])
+            !$this->accessDecisionManager->decide($this->token->getToken(), ['IS_IMPERSONATOR'])
         ) {
             $route = $event->getRequest()->get('_route');
-            if ($route && strpos($route, 'log') !== 0 && strpos($route, 'force') !== 0 && $route[0] !== '_') {
+            if ($route && !str_starts_with($route, 'log') && !str_starts_with($route, 'force') && $route[0] !== '_') {
                 $session->set('_security.force_password_change.target_path', $event->getRequest()->getUri());
                 $event->setResponse(
                     new RedirectResponse($this->router->generate('force_password_reset_do'))
