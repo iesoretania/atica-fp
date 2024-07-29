@@ -116,12 +116,12 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
     }
 
     /**
-     * @param $username
+     * @param $identifier
      * @return UserInterface|null
      */
-    final public function loadUserByIdentifier($username): ?UserInterface
+    final public function loadUserByIdentifier($identifier): ?UserInterface
     {
-        return $this->loadUserByUsername($username);
+        return $this->loadUserByUsername($identifier);
     }
 
     /**
