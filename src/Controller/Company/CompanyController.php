@@ -55,7 +55,7 @@ class CompanyController extends AbstractController
 
         $managerRegistry->getManager()->persist($company);
 
-        return $this->formAction($request, $translator, $userExtensionService, $company);
+        return $this->formAction($request, $translator, $userExtensionService, $managerRegistry, $company);
     }
 
     /**

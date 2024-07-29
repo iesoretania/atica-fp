@@ -54,7 +54,7 @@ class TravelRouteController extends AbstractController
         $travelRoute
             ->setOrganization($organization);
 
-        $managerRegistry->persist($travelRoute);
+        $managerRegistry->getManager()->persist($travelRoute);
 
         return $this->indexAction(
             $request,

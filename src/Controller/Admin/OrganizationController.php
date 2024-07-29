@@ -149,9 +149,10 @@ class OrganizationController extends AbstractController
     public function operationAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         TranslatorInterface $translator
     ): Response {
-        [$redirect, $organizations] = $this->processOperations($request, $translator, $userExtensionService);
+        [$redirect, $organizations] = $this->processOperations($request, $translator, $userExtensionService, $managerRegistry);
 
         if ($redirect) {
             return $this->redirectToRoute('admin_organization_list');

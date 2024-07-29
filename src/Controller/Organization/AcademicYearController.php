@@ -177,6 +177,7 @@ class AcademicYearController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry,
+        AcademicYearRepository $academicYearRepository,
         TranslatorInterface $translator
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -186,6 +187,7 @@ class AcademicYearController extends AbstractController
             $request,
             $translator,
             $managerRegistry,
+            $academicYearRepository,
             $userExtensionService->getCurrentOrganization(),
             $organization->getCurrentAcademicYear()
         );
