@@ -36,6 +36,7 @@ use App\Security\WLT\AgreementVoter;
 use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -57,6 +58,7 @@ class EvaluationController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         ActivityRealizationGradeRepository $activityRealizationGradeRepository,
+        ManagerRegistry $managerRegistry,
         Agreement $agreement
     ) {
         $this->denyAccessUnlessGranted(AgreementVoter::VIEW_GRADE, $agreement);
@@ -64,7 +66,7 @@ class EvaluationController extends AbstractController
         $academicYear = $agreement->
             getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getAcademicYear();
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $readOnly = !$this->isGranted(AgreementVoter::GRADE, $agreement);
 
@@ -118,7 +120,8 @@ class EvaluationController extends AbstractController
         ProjectRepository $projectRepository,
         AcademicYearRepository $academicYearRepository,
         WLTTeacherRepository $teacherRepository,
-        $page = 1,
+        ManagerRegistry $managerRegistry,
+        int $page = 1,
         AcademicYear $academicYear = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -129,7 +132,7 @@ class EvaluationController extends AbstractController
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_VIEW_EVALUATION, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('a')
@@ -267,12 +270,13 @@ class EvaluationController extends AbstractController
     public function commentAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AgreementActivityRealization $agreementActivityRealization
     ) {
         $agreement = $agreementActivityRealization->getAgreement();
         $this->denyAccessUnlessGranted(AgreementVoter::VIEW_GRADE, $agreement);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $readOnly = !$this->isGranted(AgreementVoter::GRADE, $agreement);
 
@@ -303,11 +307,11 @@ class EvaluationController extends AbstractController
                     return $this->redirectToRoute('work_linked_training_evaluation_form', [
                         'id' => $agreement->getId()
                     ]);
-                } else {
-                    return $this->redirectToRoute('work_linked_training_evaluation_comment_form', [
-                        'id' => $agreementActivityRealization->getId()
-                    ]);
                 }
+
+                return $this->redirectToRoute('work_linked_training_evaluation_comment_form', [
+                    'id' => $agreementActivityRealization->getId()
+                ]);
             } catch (\Exception $e) {
                 $this->addFlash('error', $translator->trans('message.error', [],
                     'wlt_agreement_activity_realization'));
@@ -343,12 +347,13 @@ class EvaluationController extends AbstractController
     public function deleteCommentAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AgreementActivityRealizationComment $agreementActivityRealizationComment
     ) {
         $this->denyAccessUnlessGranted(AgreementActivityRealizationCommentVoter::DELETE,
             $agreementActivityRealizationComment);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $agreement = $agreementActivityRealizationComment->getAgreementActivityRealization()->getAgreement();
 

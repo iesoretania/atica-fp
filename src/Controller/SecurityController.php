@@ -27,6 +27,7 @@ use App\Repository\OrganizationRepository;
 use App\Repository\PersonRepository;
 use App\Security\OrganizationVoter;
 use App\Service\MailerService;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -119,6 +120,7 @@ class SecurityController extends AbstractController
         Request $request,
         PersonRepository $personRepositoryRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         $userId,
         $token
     ): Response {
@@ -143,7 +145,7 @@ class SecurityController extends AbstractController
                 ->setTokenType(null);
 
             try {
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
 
                 // indicar que los cambios se han realizado con éxito y volver a la página de inicio
                 $this->addFlash(
@@ -174,6 +176,7 @@ class SecurityController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $passwordEncoder,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Session $session
     ): Response {
         /** @var Person $user */
@@ -210,7 +213,7 @@ class SecurityController extends AbstractController
                     ->setTokenType(null)
                     ->setForcePasswordChange(false);
 
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
 
                 // indicar que los cambios se han realizado con éxito y volver a la página original o a la de inicio
                 $message = $translator->trans('form.reset.message', [], 'security');
@@ -247,6 +250,7 @@ class SecurityController extends AbstractController
         PersonRepository $personRepository,
         UserPasswordHasherInterface $passwordEncoder,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         $userId,
         $token
     ): Response {
@@ -285,7 +289,7 @@ class SecurityController extends AbstractController
                 ->setTokenType(null)
                 ->setForcePasswordChange(false);
 
-            $this->getDoctrine()->getManager()->flush();
+            $managerRegistry->getManager()->flush();
 
             // indicar que los cambios se han realizado con éxito y volver a la página de inicio
             $message = $translator->trans('form.reset.message', [], 'security');
@@ -313,6 +317,7 @@ class SecurityController extends AbstractController
         Request $request,
         Session $session,
         OrganizationRepository $organizationRepository,
+        ManagerRegistry $managerRegistry,
         Organization $organization = null
     ): Response {
         // si no hay usuario activo, volver
@@ -351,8 +356,10 @@ class SecurityController extends AbstractController
             $organizationId = $organization->getId();
             $session->set('organization_id', $organizationId);
             $session->set('organization_selected', true);
-            $this->getUser()->setDefaultOrganization($organization);
-            $this->getDoctrine()->getManager()->flush();
+            /** @var Person $user */
+            $user = $this->getUser();
+            $user->setDefaultOrganization($organization);
+            $managerRegistry->getManager()->flush();
 
             $url = $session->get('_security.organization.target_path', $this->generateUrl('frontpage'));
             $session->remove('_security.organization.target_path');

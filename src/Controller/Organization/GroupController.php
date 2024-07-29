@@ -27,6 +27,7 @@ use App\Security\Edu\AcademicYearVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -48,12 +49,13 @@ class GroupController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Group $group = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         if (null === $group) {
             $group = new Group();
@@ -106,6 +108,7 @@ class GroupController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
+        ManagerRegistry $managerRegistry,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
@@ -117,7 +120,7 @@ class GroupController extends AbstractController
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('g')
@@ -169,11 +172,12 @@ class GroupController extends AbstractController
         Request $request,
         GroupRepository $groupRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
     ) {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
         if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {

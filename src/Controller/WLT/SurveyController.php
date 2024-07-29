@@ -35,6 +35,7 @@ use App\Security\WLT\AgreementVoter;
 use App\Security\WLT\ProjectVoter;
 use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -94,6 +95,7 @@ class SurveyController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         StudentAnsweredSurveyRepository $studentAnsweredSurveyRepository,
+        ManagerRegistry $managerRegistry,
         Agreement $agreement
     ) {
         $readOnly = !$this->isGranted(AgreementVoter::FILL_STUDENT_SURVEY, $agreement);
@@ -124,7 +126,7 @@ class SurveyController extends AbstractController
 
             $form->handleRequest($request);
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $managerRegistry->getManager();
 
             if ($form->isSubmitted() && $form->isValid()) {
                 try {
@@ -173,6 +175,7 @@ class SurveyController extends AbstractController
         TranslatorInterface $translator,
         WorkTutorAnsweredSurveyRepository $workTutorAnsweredSurveyRepository,
         Agreement $agreement,
+        ManagerRegistry $managerRegistry,
         Person $workTutor
     ) {
         // sólo pueden rellenar la encuesta en nombre del responsable laboral titular o adicional
@@ -221,7 +224,7 @@ class SurveyController extends AbstractController
 
             $form->handleRequest($request);
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $managerRegistry->getManager();
 
             if ($form->isSubmitted() && $form->isValid()) {
                 try {
@@ -270,10 +273,11 @@ class SurveyController extends AbstractController
         TranslatorInterface $translator,
         EducationalTutorAnsweredSurveyRepository $educationalTutorAnsweredSurveyRepository,
         AgreementRepository $agreementRepository,
+        ManagerRegistry $managerRegistry,
         Project $project,
         Teacher $teacher
     ) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $this->denyAccessUnlessGranted(ProjectVoter::ACCESS_EDUCATIONAL_TUTOR_SURVEY, $project);
         $readOnly = !$this->isGranted(ProjectVoter::FILL_EDUCATIONAL_TUTOR_SURVEY, $project);

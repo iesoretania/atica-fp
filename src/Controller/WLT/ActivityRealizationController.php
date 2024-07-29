@@ -24,6 +24,7 @@ use App\Form\Type\WLT\ActivityRealizationType;
 use App\Repository\WLT\ActivityRealizationRepository;
 use App\Security\WLT\ProjectVoter;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -41,8 +42,12 @@ class ActivityRealizationController extends AbstractController
      * @Route("/programa/{id}/concrecion/nueva", name="work_linked_training_project_activity_realization_new",
      *     methods={"GET", "POST"})
      **/
-    public function newAction(Request $request, TranslatorInterface $translator, Activity $activity)
-    {
+    public function newAction(
+        Request $request,
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
+        Activity $activity
+    ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $activity->getProject());
 
         $activityRealization = new ActivityRealization();
@@ -50,9 +55,9 @@ class ActivityRealizationController extends AbstractController
             ->setActivity($activity)
             ->setCode($activity->getCode());
 
-        $this->getDoctrine()->getManager()->persist($activityRealization);
+        $managerRegistry->getManager()->persist($activityRealization);
 
-        return $this->formAction($request, $translator, $activityRealization);
+        return $this->formAction($request, $translator, $managerRegistry, $activityRealization);
     }
 
     /**
@@ -62,6 +67,7 @@ class ActivityRealizationController extends AbstractController
     public function formAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         ActivityRealization $activityRealization
     ) {
         $activity = $activityRealization->getActivity();
@@ -77,7 +83,7 @@ class ActivityRealizationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_activity_realization'));
                 return $this->redirectToRoute('work_linked_training_project_activity_realization_list', [
                     'id' => $activity->getId()
@@ -124,6 +130,7 @@ class ActivityRealizationController extends AbstractController
     public function listAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Activity $activity,
         $page = 1
     ) {
@@ -131,7 +138,7 @@ class ActivityRealizationController extends AbstractController
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('ar')
@@ -193,12 +200,13 @@ class ActivityRealizationController extends AbstractController
         Request $request,
         ActivityRealizationRepository $activityRealizationRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Activity $activity)
     {
         $project = $activity->getProject();
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
         if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {

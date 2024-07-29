@@ -21,6 +21,7 @@ namespace App\Controller;
 use App\Entity\Person;
 use App\Form\Type\PersonType;
 use App\Service\MailerService;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\SubmitButton;
@@ -40,6 +41,7 @@ class PersonalDataController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         UserPasswordHasherInterface $passwordEncoder,
+        ManagerRegistry $managerRegistry,
         MailerService $mailerService
     ): Response {
         /** @var Person $user */
@@ -71,7 +73,7 @@ class PersonalDataController extends AbstractController
             );
 
             try {
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $message);
                 return $this->redirectToRoute('frontpage');
             } catch (\Exception $e) {

@@ -28,6 +28,7 @@ use App\Security\OrganizationVoter;
 use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -52,6 +53,7 @@ class TrackingController extends AbstractController
         AcademicYearRepository $academicYearRepository,
         WLTGroupRepository $wltGroupRepository,
         ProjectRepository $projectRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         $page = 1
     ) {
@@ -63,7 +65,7 @@ class TrackingController extends AbstractController
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('a')

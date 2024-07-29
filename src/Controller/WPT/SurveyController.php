@@ -35,6 +35,7 @@ use App\Security\WPT\AgreementEnrollmentVoter;
 use App\Security\WPT\ShiftVoter;
 use App\Security\WPT\WPTOrganizationVoter;
 use App\Service\UserExtensionService;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -141,6 +142,7 @@ class SurveyController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         StudentAnsweredSurveyRepository $studentAnsweredSurveyRepository,
+        ManagerRegistry $managerRegistry,
         AgreementEnrollment $agreementEnrollment
     ) {
         $readOnly = !$this->isGranted(AgreementEnrollmentVoter::FILL_STUDENT_SURVEY, $agreementEnrollment);
@@ -173,7 +175,7 @@ class SurveyController extends AbstractController
 
             $form->handleRequest($request);
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $managerRegistry->getManager();
 
             if ($form->isSubmitted() && $form->isValid()) {
                 try {
@@ -290,6 +292,7 @@ class SurveyController extends AbstractController
         TranslatorInterface $translator,
         WorkTutorAnsweredSurveyRepository $workTutorAnsweredSurveyRepository,
         AgreementEnrollment $agreementEnrollment,
+        ManagerRegistry $managerRegistry,
         Person $workTutor
     ) {
         // sólo pueden rellenar la encuesta en nombre del responsable laboral titular o adicional
@@ -343,7 +346,7 @@ class SurveyController extends AbstractController
 
             $form->handleRequest($request);
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $managerRegistry->getManager();
 
             if ($form->isSubmitted() && $form->isValid()) {
                 try {
@@ -442,10 +445,11 @@ class SurveyController extends AbstractController
         TranslatorInterface $translator,
         EducationalTutorAnsweredSurveyRepository $educationalTutorAnsweredSurveyRepository,
         AgreementEnrollmentRepository $agreementEnrollmentRepository,
+        ManagerRegistry $managerRegistry,
         Shift $shift,
         Teacher $teacher
     ) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $this->denyAccessUnlessGranted(ShiftVoter::ACCESS_EDUCATIONAL_TUTOR_SURVEY, $shift);
         $readOnly = !$this->isGranted(ShiftVoter::FILL_EDUCATIONAL_TUTOR_SURVEY, $shift);

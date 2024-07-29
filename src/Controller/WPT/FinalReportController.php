@@ -31,6 +31,7 @@ use App\Security\WPT\AgreementEnrollmentVoter;
 use App\Security\WPT\WPTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -56,6 +57,7 @@ class FinalReportController extends AbstractController
         AcademicYearRepository $academicYearRepository,
         WPTGroupRepository $groupRepository,
         TeacherRepository $teacherRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         $page = 1
     ) {
@@ -70,7 +72,7 @@ class FinalReportController extends AbstractController
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
         $person = $this->getUser();
         $maxPerPage = $this->getParameter('page.size');
 
@@ -105,13 +107,14 @@ class FinalReportController extends AbstractController
     public function editAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AgreementEnrollment $agreementEnrollment
     ) {
         $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::VIEW_REPORT, $agreementEnrollment);
 
         $readOnly = !$this->isGranted(AgreementEnrollmentVoter::FILL_REPORT, $agreementEnrollment);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $report = $agreementEnrollment->getReport();
 

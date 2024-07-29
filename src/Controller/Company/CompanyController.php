@@ -26,6 +26,7 @@ use App\Repository\PersonRepository;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -47,11 +48,12 @@ class CompanyController extends AbstractController
     public function newAction(
         Request $request,
         TranslatorInterface $translator,
-        UserExtensionService $userExtensionService
+        UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry
     ): Response {
         $company = new Company();
 
-        $this->getDoctrine()->getManager()->persist($company);
+        $managerRegistry->getManager()->persist($company);
 
         return $this->formAction($request, $translator, $userExtensionService, $company);
     }
@@ -64,6 +66,7 @@ class CompanyController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         Company $company
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -81,10 +84,10 @@ class CompanyController extends AbstractController
                         ->initFromCompany($company)
                         ->setName($translator->trans('title.main_workcenter', [], 'workcenter'));
 
-                    $this->getDoctrine()->getManager()->persist($workcenter);
+                    $managerRegistry->getManager()->persist($workcenter);
                 }
 
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'company'));
                 return $this->redirectToRoute('company');
             } catch (\Exception $e) {
@@ -121,14 +124,15 @@ class CompanyController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        $page = 1
+        ManagerRegistry $managerRegistry,
+        int $page = 1
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('c')
@@ -173,13 +177,14 @@ class CompanyController extends AbstractController
         Request $request,
         CompanyRepository $companyRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         UserExtensionService $userExtensionService
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
         if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
