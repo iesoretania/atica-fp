@@ -31,14 +31,13 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
 class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuthenticatorInterface
@@ -83,74 +82,9 @@ class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuth
 
     final public function supports(Request $request): bool
     {
-        $session = $request->getSession();
-
         return !(
-            $request->attributes->get('_route') !== 'login_check' || !$request->isMethod('POST') || !$session
+            $request->attributes->get('_route') !== 'login_check' || !$request->isMethod('POST')
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCredentials(Request $request): mixed
-    {
-        $username = $request->request->get('_username');
-        $session = $request->getSession();
-
-        $session->set(Security::LAST_USERNAME, $username);
-
-        return array(
-            'username' => $username,
-            'password' => $request->request->get('_password'),
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUser($credentials, UserProviderInterface $userProvider): ?UserInterface
-    {
-        try {
-            return $userProvider->loadUserByUsername($credentials['username']);
-        } catch (UsernameNotFoundException $e) {
-            throw new BadCredentialsException();
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function checkCredentials($credentials, UserInterface $user): bool
-    {
-        if (!$user instanceof Person) {
-            throw new AuthenticationServiceException();
-        }
-
-        $plainPassword = $credentials['password'];
-
-        // ¿Comprobación de contraseña desde Séneca?
-        if ($user->getExternalCheck()) {
-            $result = $this->senecaAuthenticator->checkUserCredentials($user->getLoginUsername(), $plainPassword);
-
-            if ($result) {
-                // contraseña correcta, actualizar en local por si perdemos la conectividad
-                if (!$this->encoder->isPasswordValid($user, $plainPassword)) {
-                    $user->setPassword($this->encoder->hashPassword($user, $plainPassword));
-                    $em = $this->managerRegistry->getManager();
-                    $em->flush();
-                }
-                return true;
-            }
-            // intentar en local
-        }
-
-        // comprobación local
-        if (!$this->encoder->isPasswordValid($user, $plainPassword)) {
-            throw new BadCredentialsException();
-        }
-
-        return true;
     }
 
     /**
@@ -185,14 +119,6 @@ class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuth
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function supportsRememberMe(): bool
-    {
-        return false;
-    }
-
-    /**
      * @inheritDoc
      */
     public function authenticate(Request $request)
@@ -216,7 +142,7 @@ class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuth
 
             if ($result) {
                 // contraseña correcta, actualizar en local por si perdemos la conectividad
-                if (!$this->encoder->isPasswordValid($user, $plainPassword)) {
+                if (!$this->encoder->isPasswordValid($user, $plainPassword) || $this->encoder->needsRehash($user)) {
                     $user->setPassword($this->encoder->hashPassword($user, $plainPassword));
                     $em = $this->managerRegistry->getManager();
                     $em->flush();
@@ -231,13 +157,22 @@ class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuth
             throw new BadCredentialsException();
         }
 
-        return new SelfValidatingPassport(new UserBadge($user->getUserIdentifier()));
+        if ($this->encoder->needsRehash($user)) {
+            $user->setPassword($this->encoder->hashPassword($user, $plainPassword));
+            $em = $this->managerRegistry->getManager();
+            $em->flush();
+        }
+
+        return new Passport(
+            new UserBadge($username, [$this->personRepository, 'findOneByUniqueIdentifierOrUsernameOrEmailAddress']),
+            new PasswordCredentials($plainPassword)
+        );
     }
 
     /**
      * @inheritDoc
      */
-    public function isInteractive(): bool
+    final public function isInteractive(): bool
     {
         return true;
     }

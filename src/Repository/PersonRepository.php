@@ -32,7 +32,7 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
         parent::__construct($registry, Person::class);
     }
 
-    public function findByPartialNameOrUniqueIdentifier($id, $pageLimit = 0)
+    final public function findByPartialNameOrUniqueIdentifier($id, $pageLimit = 0)
     {
         $qb = $this->createQueryBuilder('p')
             ->where('p.firstName LIKE :tq')
@@ -51,7 +51,7 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
             ->getResult();
     }
 
-    public function findOneByUniqueIdentifiers($id, $id2 = null)
+    final public function findOneByUniqueIdentifiers($id, $id2 = null): ?Person
     {
         $qb = $this->createQueryBuilder('p')
             ->orderBy('p.lastName')
@@ -73,7 +73,7 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
             ->getOneOrNullResult();
     }
 
-    public function findOneByUniqueIdentifierOrUsernameOrEmailAddress($id)
+    final public function findOneByUniqueIdentifierOrUsernameOrEmailAddress($id): ?Person
     {
         return $this->createQueryBuilder('p')
             ->where('p.uniqueIdentifier = :q OR p.emailAddress = :q OR p.loginUsername = :q')
@@ -94,7 +94,7 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
      *
      * @return UserInterface|null
      */
-    public function loadUserByUsername($username)
+   final public function loadUserByUsername($username): ?UserInterface
     {
         if ($username === '' || $username === null) {
             return null;
@@ -116,20 +116,25 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
     }
 
     /**
+     * @param $username
+     * @return UserInterface|null
+     */
+    final public function loadUserByIdentifier($username): ?UserInterface
+    {
+        return $this->loadUserByUsername($username);
+    }
+
+    /**
      * @param UserInterface $user
      * @return null|UserInterface
      */
-    public function refreshUser(UserInterface $user)
+    final public function refreshUser(UserInterface $user): ?UserInterface
     {
         return $this->loadUserByUsername($user->getUsername());
     }
 
-    /**
-     * @param $class
-     * @return bool
-     */
-    public function supportsClass($class)
+    final public function supportsClass($class): bool
     {
-        return $class === Person::class;
+        return is_a($class, Person::class);
     }
 }
