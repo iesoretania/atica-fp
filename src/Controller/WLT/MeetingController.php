@@ -37,6 +37,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -60,6 +61,7 @@ class MeetingController extends AbstractController
         TeacherRepository $teacherRepository,
         WLTTeacherRepository $wltTeacherRepository,
         WLTGroupRepository $groupRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -79,7 +81,7 @@ class MeetingController extends AbstractController
             ->setCreatedBy($teacher)
             ->setDateTime(new \DateTime());
 
-        $this->getDoctrine()->getManager()->persist($meeting);
+        $managerRegistry->getManager()->persist($meeting);
 
         return $this->indexAction(
             $request,
@@ -106,6 +108,7 @@ class MeetingController extends AbstractController
         TeacherRepository $teacherRepository,
         WLTTeacherRepository $wltTeacherRepository,
         WLTGroupRepository $wltGroupRepository,
+        ManagerRegistry $managerRegistry,
         Meeting $meeting,
         AcademicYear $academicYear = null
     ) {
@@ -116,7 +119,7 @@ class MeetingController extends AbstractController
 
         $this->denyAccessUnlessGranted(MeetingVoter::ACCESS, $meeting);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $readOnly = !$this->isGranted(MeetingVoter::MANAGE, $meeting);
 
@@ -205,6 +208,7 @@ class MeetingController extends AbstractController
         AcademicYearRepository $academicYearRepository,
         Security $security,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         $page = 1
     ) {
@@ -217,7 +221,7 @@ class MeetingController extends AbstractController
         $allowNew = $this->isGranted(WLTOrganizationVoter::WLT_CREATE_MEETING, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
         $queryBuilder
             ->select('m')
             ->distinct(true)
@@ -326,16 +330,17 @@ class MeetingController extends AbstractController
         Request $request,
         MeetingRepository $meetingRepository,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         TranslatorInterface $translator
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_TEACHER, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('work_linked_training_meeting_list');
         }
 

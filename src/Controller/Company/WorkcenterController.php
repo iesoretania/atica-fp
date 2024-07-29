@@ -29,6 +29,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,6 +48,7 @@ class WorkcenterController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         Company $company
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -57,9 +59,9 @@ class WorkcenterController extends AbstractController
         $workcenter
             ->setCompany($company);
 
-        $this->getDoctrine()->getManager()->persist($workcenter);
+        $managerRegistry->getManager()->persist($workcenter);
 
-        return $this->formAction($request, $translator, $workcenter);
+        return $this->formAction($request, $translator, $managerRegistry, $workcenter);
     }
 
     /**
@@ -69,6 +71,7 @@ class WorkcenterController extends AbstractController
     public function formAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Workcenter $workcenter
     ): Response {
         $this->denyAccessUnlessGranted(WorkcenterVoter::MANAGE, $workcenter);
@@ -79,7 +82,7 @@ class WorkcenterController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'workcenter'));
                 return $this->redirectToRoute('company_workcenter_list', ['id' => $workcenter->getCompany()->getId()]);
             } catch (\Exception $e) {
@@ -125,15 +128,16 @@ class WorkcenterController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Company $company,
-        $page = 1
+        int $page = 1
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('w')
@@ -196,16 +200,17 @@ class WorkcenterController extends AbstractController
         WorkcenterRepository $workcenterRepository,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         Company $company
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('company_workcenter_list', ['id' => $company->getId()]);
         }
 

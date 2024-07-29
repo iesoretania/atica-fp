@@ -33,6 +33,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -52,8 +53,9 @@ class ShiftController extends AbstractController
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
-        $page = 1
+        int $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         if ($academicYear === null) {
@@ -65,7 +67,7 @@ class ShiftController extends AbstractController
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('s')
@@ -129,6 +131,7 @@ class ShiftController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -137,9 +140,9 @@ class ShiftController extends AbstractController
         $shift = new Shift();
         $shift->setLocked(false);
 
-        $this->getDoctrine()->getManager()->persist($shift);
+        $managerRegistry->getManager()->persist($shift);
 
-        return $this->editAction($request, $userExtensionService, $translator, $shift, $academicYear);
+        return $this->editAction($request, $userExtensionService, $translator, $managerRegistry, $shift, $academicYear);
     }
 
     /**
@@ -150,6 +153,7 @@ class ShiftController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Shift $shift,
         AcademicYear $academicYear = null
     ) {
@@ -159,7 +163,7 @@ class ShiftController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $form = $this->createForm(ShiftType::class, $shift, [
             'lock_manager' => !$isManager,
@@ -209,16 +213,17 @@ class ShiftController extends AbstractController
         ActivityRepository $activityRepository,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('workplace_training_shift_list');
         }
         $selectedItems = $shiftRepository->findAllInListByIdAndAcademicYear($items, $academicYear);

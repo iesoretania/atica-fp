@@ -25,6 +25,7 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\SubmitButton;
@@ -48,9 +49,10 @@ class UserController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         UserPasswordHasherInterface $passwordEncoder,
+        ManagerRegistry $managerRegistry,
         Person $localUser = null
     ): Response {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         if (null === $localUser) {
             $localUser = new Person();
@@ -98,10 +100,15 @@ class UserController extends AbstractController
      * @Route("/listar/{page}", name="admin_user_list", requirements={"page" = "\d+"},
      *     methods={"GET"})
      */
-    public function listAction(Request $request, TranslatorInterface $translator, $page = 1): Response
+    public function listAction(
+        Request $request,
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
+        int $page = 1
+    ): Response
     {
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('p')
@@ -144,15 +151,19 @@ class UserController extends AbstractController
     /**
      * @Route("/eliminar", name="admin_user_delete", methods={"POST"})
      */
-    public function deleteAction(Request $request, TranslatorInterface $translator): Response
+    public function deleteAction(
+        Request $request,
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry)
+    : Response
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $em->createQueryBuilder();
 
         $items = $request->request->get('users', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('admin_user_list');
         }
 

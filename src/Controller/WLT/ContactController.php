@@ -45,6 +45,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -68,7 +69,8 @@ class ContactController extends AbstractController
         Security $security,
         TeacherRepository $teacherRepository,
         WLTGroupRepository $wltGroupRepository,
-        WLTTeacherRepository $wltTeacherRepository
+        WLTTeacherRepository $wltTeacherRepository,
+        ManagerRegistry $managerRegistry
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_CREATE_VISIT, $organization);
@@ -86,7 +88,7 @@ class ContactController extends AbstractController
             $visit->setTeacher($teacher);
         }
 
-        $this->getDoctrine()->getManager()->persist($visit);
+        $managerRegistry->getManager()->persist($visit);
 
         return $this->indexAction(
             $request,
@@ -96,6 +98,7 @@ class ContactController extends AbstractController
             $teacherRepository,
             $wltGroupRepository,
             $wltTeacherRepository,
+            $managerRegistry,
             $visit
         );
     }
@@ -112,6 +115,7 @@ class ContactController extends AbstractController
         TeacherRepository $teacherRepository,
         WLTGroupRepository $wltGroupRepository,
         WLTTeacherRepository $wltTeacherRepository,
+        ManagerRegistry $managerRegistry,
         Contact $visit
     ) {
         $this->denyAccessUnlessGranted(ContactVoter::ACCESS, $visit);
@@ -121,7 +125,7 @@ class ContactController extends AbstractController
             ? $visit->getTeacher()->getAcademicYear()
             : $organization->getCurrentAcademicYear();
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $readOnly = !$this->isGranted(ContactVoter::MANAGE, $visit);
 
@@ -209,6 +213,7 @@ class ContactController extends AbstractController
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         ContactMethodRepository $contactMethodRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         $page = 1
     ) {
@@ -235,7 +240,7 @@ class ContactController extends AbstractController
         }
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
         $queryBuilder
             ->select('v')
             ->distinct(true)
@@ -365,16 +370,17 @@ class ContactController extends AbstractController
         Request $request,
         ContactRepository $visitRepository,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         TranslatorInterface $translator
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('work_linked_training_contact_list');
         }
 

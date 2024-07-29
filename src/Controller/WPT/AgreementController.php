@@ -38,6 +38,7 @@ use Mpdf\Output\Destination;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,6 +60,7 @@ class AgreementController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Shift $shift
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -69,12 +71,13 @@ class AgreementController extends AbstractController
             ->setShift($shift)
             ->setLocked(false);
 
-        $this->getDoctrine()->getManager()->persist($agreement);
+        $managerRegistry->getManager()->persist($agreement);
 
         return $this->indexAction(
             $request,
             $userExtensionService,
             $translator,
+            $managerRegistry,
             $agreement
         );
     }
@@ -86,6 +89,7 @@ class AgreementController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Agreement $agreement
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -95,7 +99,7 @@ class AgreementController extends AbstractController
 
         $academicYear = $organization->getCurrentAcademicYear();
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $currentStudentEnrollments = new ArrayCollection();
         foreach ($agreement->getAgreementEnrollments() as $agreementEnrollment) {
@@ -183,6 +187,7 @@ class AgreementController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AgreementEnrollment $agreementEnrollment
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -193,7 +198,7 @@ class AgreementController extends AbstractController
 
         $academicYear = $organization->getCurrentAcademicYear();
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $form = $this->createForm(AgreementEnrollmentType::class, $agreementEnrollment, [
             'disabled' => $readOnly,
@@ -338,10 +343,11 @@ class AgreementController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
+        ManagerRegistry $managerRegistry,
         Shift $shift
     ) {
         $agreement = null;
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $agreements = $agreementRepository->findAllInListByIdAndShift($items, $shift);
 
@@ -387,9 +393,10 @@ class AgreementController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
+        ManagerRegistry $managerRegistry,
         Shift $shift
     ) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $academicYear = $shift->getGrade()->getTraining()->getAcademicYear();
         $selectedAgreements = $agreementRepository->findAllInListByIdAndAcademicYear($items, $academicYear);

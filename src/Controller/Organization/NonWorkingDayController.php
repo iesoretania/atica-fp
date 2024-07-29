@@ -190,7 +190,7 @@ class NonWorkingDayController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $items = $request->request->get('items', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_non_working_day_list', ['academicYear' => $academicYear->getId()]);
         }
 

@@ -29,6 +29,7 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,9 +50,10 @@ class OrganizationController extends AbstractController
         Request $request,
         OrganizationRepository $organizationRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Organization $organization = null
     ): Response {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         if (null === $organization) {
             $organization = $organizationRepository->createEducationalOrganization();
@@ -93,10 +95,15 @@ class OrganizationController extends AbstractController
      * @Route("/listar/{page}", name="admin_organization_list", requirements={"page" = "\d+"},
      *     defaults={"page" = "1"}, methods={"GET"})
      */
-    public function listAction(TranslatorInterface $translator, $page, Request $request): Response
+    public function listAction(
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
+        Request $request,
+        int $page = 1
+    ): Response
     {
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('o')
@@ -163,10 +170,8 @@ class OrganizationController extends AbstractController
      *
      * @param Organization[] $organizations
      */
-    private function deleteOrganizations($organizations)
+    private function deleteOrganizations($organizations, ObjectManager $em)
     {
-        $em = $this->getDoctrine()->getManager();
-
         /* Borrar los cursos académicos */
         $em->createQueryBuilder()
             ->update(Organization::class, 'o')
@@ -205,7 +210,7 @@ class OrganizationController extends AbstractController
         $redirect = false;
         if ($request->get('confirm', '') === 'ok') {
             try {
-                $this->deleteOrganizations($organizations);
+                $this->deleteOrganizations($organizations, $em);
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'organization'));
             } catch (\Exception $e) {
@@ -247,9 +252,10 @@ class OrganizationController extends AbstractController
     private function processOperations(
         Request $request,
         TranslatorInterface $translator,
-        UserExtensionService $userExtensionService
+        UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry
     ): array {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $redirect = false;
         if ($request->request->has('switch')) {
@@ -257,7 +263,7 @@ class OrganizationController extends AbstractController
         }
 
         $items = $request->request->get('organizations', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             $redirect = true;
         }
 

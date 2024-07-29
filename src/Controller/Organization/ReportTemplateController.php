@@ -28,6 +28,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -45,14 +46,15 @@ class ReportTemplateController extends AbstractController
     public function newAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         TranslatorInterface $translator
     ) {
         $template = new ReportTemplate();
         $template
             ->setOrganization($userExtensionService->getCurrentOrganization());
-        $this->getDoctrine()->getManager()->persist($template);
+        $managerRegistry->getManager()->persist($template);
 
-        return $this->editAction($request, $translator, $template);
+        return $this->editAction($request, $translator, $managerRegistry, $template);
     }
 
     /**
@@ -61,6 +63,7 @@ class ReportTemplateController extends AbstractController
     public function editAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         ReportTemplate $template
     ) {
         $this->denyAccessUnlessGranted(ReportTemplateVoter::EDU_REPORT_TEMPLATE_VIEW, $template);
@@ -75,7 +78,7 @@ class ReportTemplateController extends AbstractController
 
         if (!$readOnly && $form->isSubmitted() && $form->isValid()) {
             try {
-                $em = $this->getDoctrine()->getManager();
+                $em = $managerRegistry->getManager();
                 $file = $form->get('newData')->getData();
                 $template->setData(fopen($file, 'rb'));
                 $em->flush();
@@ -133,13 +136,14 @@ class ReportTemplateController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        $page = 1
+        ManagerRegistry $managerRegistry,
+        int $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('rt')
@@ -184,15 +188,16 @@ class ReportTemplateController extends AbstractController
         Request $request,
         ReportTemplateRepository $reportTemplateRepository,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         TranslatorInterface $translator
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_report_template_list');
         }
 
