@@ -82,6 +82,7 @@ class ReportController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         int $page = 1
     ) {
@@ -90,6 +91,7 @@ class ReportController extends AbstractController
             $userExtensionService,
             $translator,
             $academicYearRepository,
+            $managerRegistry,
             'title.meeting',
             'work_linked_training_report_meeting_report',
             $academicYear,
@@ -476,14 +478,16 @@ class ReportController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
-        $page = 1
+        int $page = 1
     ) {
         return $this->genericListAction(
             $request,
             $userExtensionService,
             $translator,
             $academicYearRepository,
+            $managerRegistry,
             'title.student_survey',
             'work_linked_training_report_student_survey_report',
             $academicYear,
@@ -500,14 +504,16 @@ class ReportController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
-        $page = 1
+        int $page = 1
     ) {
         return $this->genericListAction(
             $request,
             $userExtensionService,
             $translator,
             $academicYearRepository,
+            $managerRegistry,
             'title.company_survey',
             'work_linked_training_report_work_tutor_survey_report',
             $academicYear,
@@ -525,14 +531,16 @@ class ReportController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
-        $page = 1
+        int $page = 1
     ) {
         return $this->genericListAction(
             $request,
             $userExtensionService,
             $translator,
             $academicYearRepository,
+            $managerRegistry,
             'title.educational_tutor_survey',
             'work_linked_training_report_educational_tutor_survey_report',
             $academicYear,

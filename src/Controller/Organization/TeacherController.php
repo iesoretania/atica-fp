@@ -30,6 +30,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,9 +44,13 @@ class TeacherController extends AbstractController
     /**
      * @Route("/{id}", name="organization_teacher_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
      */
-    public function indexAction(Request $request, TranslatorInterface $translator, Teacher $teacher)
-    {
-        $em = $this->getDoctrine()->getManager();
+    public function indexAction(
+        Request $request,
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
+        Teacher $teacher
+    ) {
+        $em = $managerRegistry->getManager();
 
         if (null === $teacher->getPerson()) {
             return $this->redirectToRoute(
@@ -96,10 +101,11 @@ class TeacherController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         TeacherRepository $teacherRepository
     )
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $academicYear = $userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
 
@@ -156,7 +162,8 @@ class TeacherController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
-        $page = 1,
+        ManagerRegistry $managerRegistry,
+        int $page = 1,
         AcademicYear $academicYear = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -166,7 +173,7 @@ class TeacherController extends AbstractController
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('t')
@@ -221,11 +228,12 @@ class TeacherController extends AbstractController
         Request $request,
         TeacherRepository $teacherRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
     ) {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('users', []);
         if ((is_countable($items) ? count($items) : 0) === 0) {

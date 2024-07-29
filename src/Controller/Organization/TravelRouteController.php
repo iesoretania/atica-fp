@@ -27,6 +27,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,7 +44,8 @@ class TravelRouteController extends AbstractController
     public function newAction(
         Request $request,
         TranslatorInterface $translator,
-        UserExtensionService $userExtensionService
+        UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
@@ -52,12 +54,13 @@ class TravelRouteController extends AbstractController
         $travelRoute
             ->setOrganization($organization);
 
-        $this->getDoctrine()->getManager()->persist($travelRoute);
+        $managerRegistry->persist($travelRoute);
 
         return $this->indexAction(
             $request,
             $translator,
             $userExtensionService,
+            $managerRegistry,
             $travelRoute
         );
     }
@@ -70,12 +73,13 @@ class TravelRouteController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         TravelRoute $travelRoute
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $form = $this->createForm(TravelRouteType::class, $travelRoute);
 
@@ -117,14 +121,15 @@ class TravelRouteController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        $page = 1
+        ManagerRegistry $managerRegistry,
+        int $page = 1
     ) {
 
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
         $queryBuilder
             ->select('tr')
             ->from(TravelRoute::class, 'tr')
@@ -169,13 +174,14 @@ class TravelRouteController extends AbstractController
         Request $request,
         TravelRouteRepository $travelRouteRepository,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         TranslatorInterface $translator
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
         if ((is_countable($items) ? count($items) : 0) === 0) {

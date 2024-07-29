@@ -29,6 +29,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,6 +49,7 @@ class SurveyQuestionController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         SurveyQuestionRepository $surveyQuestionRepository,
+        ManagerRegistry $managerRegistry,
         Survey $survey
     ) {
         $this->denyAccessUnlessGranted(SurveyVoter::MANAGE, $survey);
@@ -62,9 +64,9 @@ class SurveyQuestionController extends AbstractController
             ->setSurvey($survey)
             ->setOrderNr($lastOrderNr + 1);
 
-        $this->getDoctrine()->getManager()->persist($surveyQuestion);
+        $managerRegistry->getManager()->persist($surveyQuestion);
 
-        return $this->indexAction($request, $translator, $surveyQuestion);
+        return $this->indexAction($request, $translator, $managerRegistry, $surveyQuestion);
     }
     /**
      * @Route("/{id}", name="organization_survey_question_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
@@ -72,9 +74,10 @@ class SurveyQuestionController extends AbstractController
     public function indexAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         SurveyQuestion $surveyQuestion
     ) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $survey = $surveyQuestion->getSurvey();
         $this->denyAccessUnlessGranted(SurveyVoter::MANAGE, $survey);
@@ -130,13 +133,14 @@ class SurveyQuestionController extends AbstractController
     public function listAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Survey $survey,
-        $page = 1
+        int $page = 1
     ) {
         $this->denyAccessUnlessGranted(SurveyVoter::MANAGE, $survey);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('sq')
@@ -192,46 +196,40 @@ class SurveyQuestionController extends AbstractController
         SurveyQuestionRepository $surveyQuestionRepository,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Survey $survey
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(SurveyVoter::MANAGE, $survey);
 
         if ($request->request->has('up')) {
-            return $this->processUp($request, $surveyQuestionRepository, $survey);
+            return $this->processUp($request, $surveyQuestionRepository, $managerRegistry, $survey);
         }
 
         if ($request->request->has('down')) {
-            return $this->processDown($request, $surveyQuestionRepository, $survey);
+            return $this->processDown($request, $surveyQuestionRepository, $managerRegistry, $survey);
         }
 
         $items = $request->request->get('items', []);
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0 || $survey->getAnswers()->count() > 0) {
+        if ((is_countable($items) ? count($items) : 0) === 0 || $survey->getAnswers()->count() > 0) {
             return $this->redirectToRoute('organization_survey_question_list', ['id' => $survey->getId()]);
         }
 
         // borrar preguntas
-        return $this->processDelete($request, $surveyQuestionRepository, $translator, $items, $organization, $survey);
+        return $this->processDelete($request, $surveyQuestionRepository, $translator, $managerRegistry, $items, $organization, $survey);
     }
 
-    /**
-     * @param Request $request
-     * @param SurveyQuestionRepository $surveyQuestionRepository
-     * @param TranslatorInterface $translator,
-     * @param $items
-     * @param Organization $organization
-     * @param Survey $survey
-     * @return Response
-     */
     private function processDelete(
         Request $request,
         SurveyQuestionRepository $surveyQuestionRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         $items,
         Organization $organization,
         Survey $survey
-    ) {
-        $em = $this->getDoctrine()->getManager();
+    ): Response
+    {
+        $em = $managerRegistry->getManager();
 
         $surveys = $surveyQuestionRepository->findAllInListByIdAndOrganization($items, $organization);
         if ($surveys === []) {
@@ -258,8 +256,12 @@ class SurveyQuestionController extends AbstractController
         ]);
     }
 
-    private function processUp(Request $request, SurveyQuestionRepository $surveyQuestionRepository, Survey $survey)
-    {
+    private function processUp(
+        Request $request,
+        SurveyQuestionRepository $surveyQuestionRepository,
+        ManagerRegistry $managerRegistry,
+        Survey $survey
+    ) {
         /** @var SurveyQuestion $surveyQuestion */
         $surveyQuestion = $surveyQuestionRepository->find($request->request->get('up'));
         if ($surveyQuestion && $surveyQuestion->getSurvey() === $survey) {
@@ -269,7 +271,7 @@ class SurveyQuestionController extends AbstractController
                 $previousSurveyQuestion->setOrderNr($surveyQuestion->getOrderNr());
                 $surveyQuestion->setOrderNr($temp);
                 try {
-                    $this->getDoctrine()->getManager()->flush();
+                    $managerRegistry->getManager()->flush();
                 } catch (\Exception $e) {
                 }
             }
@@ -277,8 +279,12 @@ class SurveyQuestionController extends AbstractController
         return $this->redirectToRoute('organization_survey_question_list', ['id' => $survey->getId()]);
     }
 
-    private function processDown(Request $request, SurveyQuestionRepository $surveyQuestionRepository, Survey $survey)
-    {
+    private function processDown(
+        Request $request,
+        SurveyQuestionRepository $surveyQuestionRepository,
+        ManagerRegistry $managerRegistry,
+        Survey $survey
+    ) {
         $surveyQuestion = $surveyQuestionRepository->find($request->request->get('down'));
         if ($surveyQuestion && $surveyQuestion->getSurvey() === $survey) {
             $nextSurveyQuestion = $surveyQuestionRepository->getNextQuestion($surveyQuestion);
@@ -287,7 +293,7 @@ class SurveyQuestionController extends AbstractController
                 $nextSurveyQuestion->setOrderNr($surveyQuestion->getOrderNr());
                 $surveyQuestion->setOrderNr($temp);
                 try {
-                    $this->getDoctrine()->getManager()->flush();
+                    $managerRegistry->getManager()->flush();
                 } catch (\Exception $e) {
                 }
             }

@@ -299,6 +299,7 @@ class AgreementController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
+        ManagerRegistry $managerRegistry,
         Project $project
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -307,12 +308,12 @@ class AgreementController extends AbstractController
 
         $items = $request->request->get('items', []);
 
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) !== 0) {
+        if ((is_countable($items) ? count($items) : 0) !== 0) {
             if ('' === $request->get('delete')) {
-                return $this->deleteAction($items, $request, $translator, $agreementRepository, $project);
+                return $this->deleteAction($items, $request, $translator, $agreementRepository, $managerRegistry, $project);
             }
             if ('' === $request->get('copy')) {
-                return $this->copyAction($items, $request, $translator, $agreementRepository, $project);
+                return $this->copyAction($items, $request, $translator, $agreementRepository, $managerRegistry, $project);
             }
         }
 

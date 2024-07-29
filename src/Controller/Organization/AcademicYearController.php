@@ -29,6 +29,8 @@ use App\Security\Edu\AcademicYearVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -50,12 +52,13 @@ class AcademicYearController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         if (null === $academicYear) {
             $academicYear = new AcademicYear();
@@ -113,13 +116,14 @@ class AcademicYearController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        $page = 1
+        ManagerRegistry $managerRegistry,
+        int $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('ay')
@@ -172,6 +176,7 @@ class AcademicYearController extends AbstractController
     public function operationAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         TranslatorInterface $translator
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -180,6 +185,7 @@ class AcademicYearController extends AbstractController
         [$redirect, $academicYears] = $this->processOperations(
             $request,
             $translator,
+            $managerRegistry,
             $userExtensionService->getCurrentOrganization(),
             $organization->getCurrentAcademicYear()
         );
@@ -205,14 +211,16 @@ class AcademicYearController extends AbstractController
     private function processOperations(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
+        AcademicYearRepository $academicYearRepository,
         Organization $organization,
         AcademicYear $current
     ) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $redirect = false;
         if ($request->request->has('switch')) {
-            $redirect = $this->processSwitchAcademicYear($request, $translator, $organization, $em);
+            $redirect = $this->processSwitchAcademicYear($request, $translator, $academicYearRepository, $organization, $em);
         }
 
         $items = $request->request->get('items', []);
@@ -222,7 +230,7 @@ class AcademicYearController extends AbstractController
 
         $academicYears = [];
         if (!$redirect) {
-            $academicYears = $em->getRepository(AcademicYear::class)->
+            $academicYears = $academicYearRepository->
                 findAllInListByIdAndOrganizationButCurrent($items, $organization, $current);
             $redirect = $this->processRemoveAcademicYear($request, $academicYears, $em, $translator);
         }
@@ -241,7 +249,7 @@ class AcademicYearController extends AbstractController
         $redirect = false;
         if ($request->get('confirm', '') === 'ok') {
             try {
-                $this->deleteAcademicYears($academicYears);
+                $this->deleteAcademicYears($academicYears, $em);
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_academic_year'));
             } catch (\Exception $e) {
@@ -264,10 +272,11 @@ class AcademicYearController extends AbstractController
     private function processSwitchAcademicYear(
         Request $request,
         TranslatorInterface $translator,
+        AcademicYearRepository $academicYearRepository,
         Organization $organization,
         $em
     ) {
-        $academicYear = $em->getRepository(AcademicYear::class)->findOneBy(
+        $academicYear = $academicYearRepository->findOneBy(
             [
                 'id' => $request->request->get('switch'),
                 'organization' => $organization
@@ -289,10 +298,8 @@ class AcademicYearController extends AbstractController
      *
      * @param AcademicYear[] $academicYears
      */
-    private function deleteAcademicYears($academicYears)
+    private function deleteAcademicYears($academicYears, ObjectManager $em)
     {
-        $em = $this->getDoctrine()->getManager();
-
         /* Borrar cursos académicos */
         $em->createQueryBuilder()
             ->delete(AcademicYear::class, 'ay')
@@ -311,6 +318,7 @@ class AcademicYearController extends AbstractController
         AcademicYearRepository $academicYearRepository,
         TrainingRepository $trainingRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -334,7 +342,7 @@ class AcademicYearController extends AbstractController
                     $academicYearCopy->getAcademicYear()
                 );
 
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.copied', [], 'edu_academic_year'));
 
                 return $this->redirectToRoute('organization_academic_year_list');

@@ -28,6 +28,7 @@ use App\Security\OrganizationVoter;
 use App\Security\SurveyVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -51,6 +52,7 @@ class SurveyController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         SurveyRepository $surveyRepository,
+        ManagerRegistry $managerRegistry,
         Survey $survey = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -59,7 +61,7 @@ class SurveyController extends AbstractController
             $this->denyAccessUnlessGranted(SurveyVoter::MANAGE, $survey);
         }
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         if (null === $survey) {
             $survey = new Survey();
@@ -131,13 +133,14 @@ class SurveyController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        $page = 1
+        ManagerRegistry $managerRegistry,
+        int $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('s')
@@ -183,6 +186,7 @@ class SurveyController extends AbstractController
         SurveyRepository $surveyRepository,
         TranslatorInterface $translator,
         SurveyQuestionRepository $surveyQuestionRepository,
+        ManagerRegistry $managerRegistry,
         UserExtensionService $userExtensionService
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -194,7 +198,7 @@ class SurveyController extends AbstractController
         }
 
         if ($request->request->has('purge')) {
-            return $this->processPurge($request, $surveyRepository, $translator, $items, $organization);
+            return $this->processPurge($request, $surveyRepository, $translator, $managerRegistry, $items, $organization);
         }
 
         // borrar encuestas
@@ -203,6 +207,7 @@ class SurveyController extends AbstractController
             $surveyRepository,
             $surveyQuestionRepository,
             $translator,
+            $managerRegistry,
             $items,
             $organization
         );
@@ -220,10 +225,11 @@ class SurveyController extends AbstractController
         Request $request,
         SurveyRepository $surveyRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         $items,
         Organization $organization
     ) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $surveys = $surveyRepository->findAllInListByIdAndOrganization($items, $organization);
         if ($surveys === []) {
@@ -263,10 +269,11 @@ class SurveyController extends AbstractController
         SurveyRepository $surveyRepository,
         SurveyQuestionRepository $surveyQuestionRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         $items,
         Organization $organization
     ) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $surveys = $surveyRepository->findAllInListByIdAndOrganizationAndNoAnswers($items, $organization);
         if ($surveys === []) {

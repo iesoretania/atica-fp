@@ -78,7 +78,7 @@ class ProjectController extends AbstractController
 
         $queryBuilder
             ->select('p')
-            ->distinct(true)
+            ->distinct()
             ->from(Project::class, 'p')
             ->leftJoin('p.manager', 'm')
             ->join('p.groups', 'g')
@@ -163,7 +163,7 @@ class ProjectController extends AbstractController
 
         $managerRegistry->getManager()->persist($project);
 
-        return $this->editAction($request, $userExtensionService, $translator, $project);
+        return $this->editAction($request, $userExtensionService, $translator, $managerRegistry,  $project);
     }
 
     /**
