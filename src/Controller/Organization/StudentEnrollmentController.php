@@ -30,6 +30,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -47,9 +48,10 @@ class StudentEnrollmentController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         StudentEnrollment $studentEnrollment
     ) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(
@@ -98,7 +100,8 @@ class StudentEnrollmentController extends AbstractController
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
         TranslatorInterface $translator,
-        $page = 1,
+        ManagerRegistry $managerRegistry,
+        int $page = 1,
         AcademicYear $academicYear = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -109,7 +112,7 @@ class StudentEnrollmentController extends AbstractController
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('se')
@@ -171,13 +174,14 @@ class StudentEnrollmentController extends AbstractController
         StudentEnrollmentRepository $studentEnrollmentRepository,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
     ) {
         $this->denyAccessUnlessGranted(
             OrganizationVoter::MANAGE,
             $userExtensionService->getCurrentOrganization()
         );
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
         if ((is_countable($items) ? count($items) : 0) === 0) {

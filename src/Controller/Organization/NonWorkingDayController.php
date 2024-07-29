@@ -29,6 +29,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,6 +47,7 @@ class NonWorkingDayController extends AbstractController
     public function newAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
     ) {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
@@ -55,9 +57,9 @@ class NonWorkingDayController extends AbstractController
         $nonWorkingDay
             ->setAcademicYear($academicYear);
 
-        $this->getDoctrine()->getManager()->persist($nonWorkingDay);
+        $managerRegistry->getManager()->persist($nonWorkingDay);
 
-        return $this->indexAction($request, $translator, $nonWorkingDay);
+        return $this->indexAction($request, $translator, $managerRegistry, $nonWorkingDay);
     }
 
     /**
@@ -66,11 +68,12 @@ class NonWorkingDayController extends AbstractController
     public function indexAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         NonWorkingDay $nonWorkingDay
     ) {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $nonWorkingDay->getAcademicYear());
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $form = $this->createForm(NonWorkingDayType::class, $nonWorkingDay);
 
@@ -118,7 +121,8 @@ class NonWorkingDayController extends AbstractController
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
         TranslatorInterface $translator,
-        $page = 1,
+        ManagerRegistry $managerRegistry,
+        int $page = 1,
         AcademicYear $academicYear = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -130,7 +134,7 @@ class NonWorkingDayController extends AbstractController
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('n')
@@ -179,6 +183,7 @@ class NonWorkingDayController extends AbstractController
         UserExtensionService $userExtensionService,
         NonWorkingDayRepository $nonWorkingDayRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
     ) {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
@@ -187,7 +192,7 @@ class NonWorkingDayController extends AbstractController
             return $this->createNotFoundException();
         }
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
         if ((is_countable($items) ? count($items) : 0) === 0) {

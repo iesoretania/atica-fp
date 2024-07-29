@@ -29,6 +29,7 @@ use App\Security\Edu\AcademicYearVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -50,12 +51,13 @@ class SubjectController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Subject $subject = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         if (null === $subject) {
             $subject = new Subject();
@@ -113,7 +115,8 @@ class SubjectController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
-        $page = 1,
+        ManagerRegistry $managerRegistry,
+        int $page = 1,
         AcademicYear $academicYear = null
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -125,7 +128,7 @@ class SubjectController extends AbstractController
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('s')
@@ -176,6 +179,7 @@ class SubjectController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         SubjectRepository $subjectRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
     ) {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
@@ -184,7 +188,7 @@ class SubjectController extends AbstractController
             return $this->createNotFoundException();
         }
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
         if ((is_countable($items) ? count($items) : 0) === 0) {
@@ -220,13 +224,14 @@ class SubjectController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Subject $subject
     ) {
         $teaching = new Teaching();
         $teaching
             ->setSubject($subject);
 
-        $this->getDoctrine()->getManager()->persist($teaching);
+        $managerRegistry->getManager()->persist($teaching);
 
         return $this->formTeachingAction($request, $userExtensionService, $translator, $teaching);
     }
@@ -239,12 +244,13 @@ class SubjectController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Teaching $teaching
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $academicYear = $teaching->getSubject()->getGrade()->getTraining()->getAcademicYear();
 
@@ -300,6 +306,7 @@ class SubjectController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Teaching $teaching
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -307,7 +314,7 @@ class SubjectController extends AbstractController
 
         $academicYear = $teaching->getGroup()->getGrade()->getTraining()->getAcademicYear();
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         if ($request->get('confirm', '') === 'ok') {
             try {

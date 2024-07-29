@@ -64,7 +64,7 @@ class LearningProgramController extends AbstractController
         $learningProgram->setProject($project);
         $managerRegistry->getManager()->persist($learningProgram);
 
-        return $this->indexAction($request, $translator, $learningProgram);
+        return $this->indexAction($request, $translator, $managerRegistry, $learningProgram);
     }
 
     /**
@@ -401,7 +401,7 @@ class LearningProgramController extends AbstractController
                             } else {
                                 $lastCode = $activity->getCode();
                             }
-                        } elseif ($activity && strpos($lineData[0], $lastCode) === 0 &&
+                        } elseif ($activity && str_starts_with($lineData[0], $lastCode) &&
                             (strlen($lineData[2]) === 2 || strlen($lineData[2]) === 1)) {
                             // Procesar concreción
                             $activityRealization = $activityRealizationRepository->findOneByProjectAndCode(
@@ -423,11 +423,11 @@ class LearningProgramController extends AbstractController
                             foreach ($learningPrograms as $n => $learningProgram) {
                                 if (isset($lineData[$n])) {
                                     $activityRealizations = $learningProgram->getActivityRealizations();
-                                    if ((strpos($lineData[$n], 'S') === 0) &&
+                                    if ((str_starts_with($lineData[$n], 'S')) &&
                                         !$activityRealizations->contains($activityRealization)
                                     ) {
                                         $activityRealizations->add($activityRealization);
-                                    } elseif ((strpos($lineData[$n], 'N') === 0) &&
+                                    } elseif ((str_starts_with($lineData[$n], 'N')) &&
                                         $activityRealizations->contains($activityRealization)
                                     ) {
                                         $activityRealizations->removeElement($activityRealization);

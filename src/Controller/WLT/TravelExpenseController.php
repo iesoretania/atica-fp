@@ -77,6 +77,7 @@ class TravelExpenseController extends AbstractController
             $request,
             $translator,
             $agreementRepository,
+            $managerRegistry,
             $travelExpense
         );
     }
