@@ -22,6 +22,7 @@ use App\Entity\Person;
 use App\Form\Type\NewPersonType;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,13 +38,14 @@ class PersonAPIController extends AbstractController
     public function apiNewPersonAction(
         Request $request,
         UserExtensionService $userExtensionService,
+        ManagerRegistry $managerRegistry,
         UserPasswordHasherInterface $passwordEncoder
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $newPerson = new Person();
 

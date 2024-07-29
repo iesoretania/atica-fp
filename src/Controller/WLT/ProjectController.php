@@ -37,6 +37,7 @@ use App\Security\WLT\ProjectVoter;
 use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -59,8 +60,9 @@ class ProjectController extends AbstractController
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
-        $page = 1
+        int $page = 1
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         if ($academicYear === null) {
@@ -72,7 +74,7 @@ class ProjectController extends AbstractController
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('p')
@@ -139,7 +141,8 @@ class ProjectController extends AbstractController
     public function newAction(
         Request $request,
         UserExtensionService $userExtensionService,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
@@ -158,7 +161,7 @@ class ProjectController extends AbstractController
                 ->setManager($manager);
         }
 
-        $this->getDoctrine()->getManager()->persist($project);
+        $managerRegistry->getManager()->persist($project);
 
         return $this->editAction($request, $userExtensionService, $translator, $project);
     }
@@ -171,6 +174,7 @@ class ProjectController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Project $project
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
@@ -178,7 +182,7 @@ class ProjectController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $form = $this->createForm(ProjectType::class, $project, [
             'lock_manager' => !$isManager
@@ -224,12 +228,13 @@ class ProjectController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Project $project
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $form = $this->createForm(ProjectStudentEnrollmentType::class, $project, [
             'groups' => $project->getGroups()
@@ -281,13 +286,14 @@ class ProjectController extends AbstractController
         MeetingRepository $meetingRepository,
         ContactRepository $contactRepository,
         UserExtensionService $userExtensionService,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
         if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {

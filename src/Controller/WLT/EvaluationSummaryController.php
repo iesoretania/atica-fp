@@ -32,6 +32,7 @@ use App\Security\Edu\GroupVoter;
 use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -56,6 +57,7 @@ class EvaluationSummaryController extends AbstractController
         TeacherRepository $teacherRepository,
         WLTGroupRepository $wltGroupRepository,
         AcademicYearRepository $academicYearRepository,
+        ManagerRegistry $managerRegistry,
         $page = 1,
         AcademicYear $academicYear = null
     ) {
@@ -67,7 +69,7 @@ class EvaluationSummaryController extends AbstractController
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_VIEW_GRADE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->addSelect('se')

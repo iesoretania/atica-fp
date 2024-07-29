@@ -40,6 +40,7 @@ use App\Security\WLT\ProjectVoter;
 use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -105,6 +106,7 @@ class ReportController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         int $page = 1
     ) {
@@ -113,6 +115,7 @@ class ReportController extends AbstractController
             $userExtensionService,
             $translator,
             $academicYearRepository,
+            $managerRegistry,
             'title.attendance',
             'work_linked_training_report_attendance_report',
             $academicYear,
@@ -129,6 +132,7 @@ class ReportController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         int $page = 1
     ) {
@@ -137,6 +141,7 @@ class ReportController extends AbstractController
             $userExtensionService,
             $translator,
             $academicYearRepository,
+            $managerRegistry,
             'title.grading',
             'work_linked_training_report_grading_report',
             $academicYear,
@@ -153,6 +158,7 @@ class ReportController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         int $page = 1
     ) {
@@ -161,6 +167,7 @@ class ReportController extends AbstractController
             $userExtensionService,
             $translator,
             $academicYearRepository,
+            $managerRegistry,
             'title.learning_program',
             'work_linked_training_report_learning_program_report',
             $academicYear,
@@ -173,6 +180,7 @@ class ReportController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
+        ManagerRegistry $managerRegistry,
         $title,
         $routeName,
         AcademicYear $academicYear = null,
@@ -188,7 +196,7 @@ class ReportController extends AbstractController
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('p')

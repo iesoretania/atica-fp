@@ -24,6 +24,7 @@ use App\Form\Type\WLT\ActivityRealizationGradeType;
 use App\Repository\WLT\ActivityRealizationGradeRepository;
 use App\Security\WLT\ProjectVoter;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -44,6 +45,7 @@ class ActivityRealizationGradeController extends AbstractController
     public function newAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Project $project
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
@@ -52,9 +54,9 @@ class ActivityRealizationGradeController extends AbstractController
         $activityRealizationGrade
             ->setProject($project);
 
-        $this->getDoctrine()->getManager()->persist($activityRealizationGrade);
+        $managerRegistry->getManager()->persist($activityRealizationGrade);
 
-        return $this->formAction($request, $translator, $activityRealizationGrade);
+        return $this->formAction($request, $translator, $managerRegistry, $activityRealizationGrade);
     }
 
     /**
@@ -64,6 +66,7 @@ class ActivityRealizationGradeController extends AbstractController
     public function formAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         ActivityRealizationGrade $activityRealizationGrade
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $activityRealizationGrade->getProject());
@@ -74,7 +77,7 @@ class ActivityRealizationGradeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_activity_realization_grade'));
                 return $this->redirectToRoute('work_linked_training_activity_realization_grade_list', [
                     'id' => $activityRealizationGrade->getProject()->getId()
@@ -121,13 +124,14 @@ class ActivityRealizationGradeController extends AbstractController
     public function listAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Project $project,
-        $page = 1
+        int $page = 1
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('arg')
@@ -187,11 +191,12 @@ class ActivityRealizationGradeController extends AbstractController
         Request $request,
         ActivityRealizationGradeRepository $activityRealizationGradeRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Project $project
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
         if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {

@@ -35,6 +35,7 @@ use App\Security\WLT\ProjectVoter;
 use App\Utils\CsvImporter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -54,13 +55,14 @@ class LearningProgramController extends AbstractController
     public function newAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Project $project
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $learningProgram = new LearningProgram();
         $learningProgram->setProject($project);
-        $this->getDoctrine()->getManager()->persist($learningProgram);
+        $managerRegistry->getManager()->persist($learningProgram);
 
         return $this->indexAction($request, $translator, $learningProgram);
     }
@@ -72,12 +74,13 @@ class LearningProgramController extends AbstractController
     public function indexAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         LearningProgram $learningProgram
     ) {
         $project = $learningProgram->getProject();
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $form = $this->createForm(LearningProgramType::class, $learningProgram, [
             'project' => $project
@@ -130,13 +133,14 @@ class LearningProgramController extends AbstractController
     public function listAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Project $project,
         $page = 1
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('cp')
@@ -197,14 +201,15 @@ class LearningProgramController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         LearningProgramRepository $learningProgramRepository,
+        ManagerRegistry $managerRegistry,
         Project $project
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $items = $request->request->get('items', []);
 
-        if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) !== 0 && '' === $request->get('delete')) {
-            return $this->deleteAction($items, $request, $translator, $learningProgramRepository, $project);
+        if ((is_countable($items) ? count($items) : 0) !== 0 && '' === $request->get('delete')) {
+            return $this->deleteAction($items, $request, $translator, $learningProgramRepository, $managerRegistry, $project);
         }
 
         return $this->redirectToRoute(
@@ -218,9 +223,10 @@ class LearningProgramController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         LearningProgramRepository $learningProgramRepository,
+        ManagerRegistry $managerRegistry,
         Project $project
     ) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $learningPrograms = $learningProgramRepository->findAllInListByIdAndProject($items, $project);
 

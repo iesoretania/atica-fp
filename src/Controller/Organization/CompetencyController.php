@@ -25,6 +25,7 @@ use App\Repository\Edu\CompetencyRepository;
 use App\Security\Edu\TrainingVoter;
 use App\Security\OrganizationVoter;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -42,17 +43,21 @@ class CompetencyController extends AbstractController
     /**
      * @Route("/{id}/competencia/nueva", name="organization_training_competency_new", methods={"GET", "POST"})
      **/
-    public function newAction(Request $request, TranslatorInterface $translator, Training $training)
-    {
+    public function newAction(
+        Request $request,
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
+        Training $training
+    ) {
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
 
         $competency = new Competency();
         $competency
             ->setTraining($training);
 
-        $this->getDoctrine()->getManager()->persist($competency);
+        $managerRegistry->getManager()->persist($competency);
 
-        return $this->formAction($request, $translator, $competency);
+        return $this->formAction($request, $translator, $managerRegistry, $competency);
     }
 
     /**
@@ -62,6 +67,7 @@ class CompetencyController extends AbstractController
     public function formAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Competency $competency
     ) {
         $training = $competency->getTraining();
@@ -76,7 +82,7 @@ class CompetencyController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'edu_competency'));
                 return $this->redirectToRoute('organization_training_competency_list', [
                     'id' => $training->getId()
@@ -124,13 +130,14 @@ class CompetencyController extends AbstractController
     public function listAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Training $training,
         $page = 1
     ) {
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('c')
@@ -187,11 +194,12 @@ class CompetencyController extends AbstractController
         Request $request,
         CompetencyRepository $competencyRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Training $training
     ) {
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
         if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
@@ -237,11 +245,12 @@ class CompetencyController extends AbstractController
         Request $request,
         CompetencyRepository $competencyRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Training $training
     ) {
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $lines = trim($request->request->get('data', []));
         if ($lines === '') {

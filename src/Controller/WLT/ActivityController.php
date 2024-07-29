@@ -28,6 +28,7 @@ use App\Repository\WLT\LearningProgramRepository;
 use App\Repository\WLT\ProjectRepository;
 use App\Security\WLT\ProjectVoter;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -45,17 +46,21 @@ class ActivityController extends AbstractController
      * @Route("/programa/{id}/actividad/nueva",
      *     name="work_linked_training_training_activity_new", methods={"GET", "POST"})
      **/
-    public function newAction(Request $request, TranslatorInterface $translator, Project $project)
-    {
+    public function newAction(
+        Request $request,
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
+        Project $project
+    ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $activity = new Activity();
         $activity
             ->setProject($project);
 
-        $this->getDoctrine()->getManager()->persist($activity);
+        $managerRegistry->getManager()->persist($activity);
 
-        return $this->formAction($request, $translator, $activity);
+        return $this->formAction($request, $translator, $managerRegistry, $activity);
     }
 
     /**
@@ -65,6 +70,7 @@ class ActivityController extends AbstractController
     public function formAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Activity $activity
     ) {
         $project = $activity->getProject();
@@ -79,7 +85,7 @@ class ActivityController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_activity'));
                 return $this->redirectToRoute('work_linked_training_project_activity_list', [
                     'id' => $project->getId()
@@ -124,13 +130,14 @@ class ActivityController extends AbstractController
     public function listAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Project $project,
         $page = 1
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('a')
@@ -184,12 +191,13 @@ class ActivityController extends AbstractController
     public function deleteAction(
         Request $request,
         ActivityRepository $activityRepository,
+        ManagerRegistry $managerRegistry,
         TranslatorInterface $translator,
         Project $project
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
         if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
@@ -238,6 +246,7 @@ class ActivityController extends AbstractController
         ActivityRepository $activityRepository,
         LearningProgramRepository $learningProgramRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Project $project
     ) {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
@@ -258,7 +267,7 @@ class ActivityController extends AbstractController
                     $project,
                     $activityCopy->getProject()
                 );
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 if ($activityCopy->getCopyLearningProgram()) {
                     $learningProgramRepository->copyFromProject(
                         $project,
@@ -266,7 +275,7 @@ class ActivityController extends AbstractController
                     );
                 }
 
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.copied', [], 'wlt_activity'));
 
                 return $this->redirectToRoute(

@@ -32,6 +32,7 @@ use App\Security\WLT\ProjectVoter;
 use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -54,6 +55,7 @@ class AgreementController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
+        ManagerRegistry $managerRegistry,
         Project $project
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -63,13 +65,14 @@ class AgreementController extends AbstractController
         $agreement
             ->setProject($project);
 
-        $this->getDoctrine()->getManager()->persist($agreement);
+        $managerRegistry->getManager()->persist($agreement);
 
         return $this->indexAction(
             $request,
             $userExtensionService,
             $translator,
             $agreementActivityRealizationRepository,
+            $managerRegistry,
             $agreement
         );
     }
@@ -82,6 +85,7 @@ class AgreementController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
+        ManagerRegistry $managerRegistry,
         Agreement $agreement
     ) {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -89,7 +93,7 @@ class AgreementController extends AbstractController
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
         $readOnly = !$this->isGranted(AgreementVoter::MANAGE, $agreement);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $form = $this->createForm(AgreementType::class, $agreement, [
             'disabled' => $readOnly
@@ -111,7 +115,7 @@ class AgreementController extends AbstractController
                         ->setDisabled(false)
                         ->setAgreement($agreement)
                         ->setActivityRealization($activityRealization);
-                    $this->getDoctrine()->getManager()->persist($agreementActivityRealization);
+                    $managerRegistry->getManager()->persist($agreementActivityRealization);
                 }
 
                 if ($agreement->getId() !== null) {
@@ -173,6 +177,7 @@ class AgreementController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
+        ManagerRegistry $managerRegistry,
         Project $project,
         $page = 1
     ) {
@@ -189,7 +194,7 @@ class AgreementController extends AbstractController
         }
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('a')
@@ -322,9 +327,10 @@ class AgreementController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
+        ManagerRegistry $managerRegistry,
         Project $project
     ) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $agreements = $agreementRepository->findAllInListByIdAndProject($items, $project);
 
@@ -368,10 +374,11 @@ class AgreementController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
+        ManagerRegistry $managerRegistry,
         Project $project
     ) {
         $agreement = null;
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $selectedAgreements = $agreementRepository->findAllInListByIdAndProject($items, $project);
         // comprobar individualmente que tenemos acceso

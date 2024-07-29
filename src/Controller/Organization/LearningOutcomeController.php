@@ -24,6 +24,7 @@ use App\Form\Type\Edu\LearningOutcomeType;
 use App\Repository\Edu\LearningOutcomeRepository;
 use App\Security\Edu\TrainingVoter;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -42,17 +43,21 @@ class LearningOutcomeController extends AbstractController
      * @Route("/materia/{id}/resultado/nuevo", name="organization_training_learning_outcome_new",
      *     methods={"GET", "POST"})
      **/
-    public function newAction(Request $request, TranslatorInterface $translator, Subject $subject)
-    {
+    public function newAction(
+        Request $request,
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
+        Subject $subject
+    ) {
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $subject->getGrade()->getTraining());
 
         $learningOutcome = new LearningOutcome();
         $learningOutcome
             ->setSubject($subject);
 
-        $this->getDoctrine()->getManager()->persist($learningOutcome);
+        $managerRegistry->getManager()->persist($learningOutcome);
 
-        return $this->formAction($request, $translator, $learningOutcome);
+        return $this->formAction($request, $translator, $managerRegistry, $learningOutcome);
     }
 
     /**
@@ -62,6 +67,7 @@ class LearningOutcomeController extends AbstractController
     public function formAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         LearningOutcome $learningOutcome
     ) {
         $subject = $learningOutcome->getSubject();
@@ -77,7 +83,7 @@ class LearningOutcomeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->getDoctrine()->getManager()->flush();
+                $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'edu_learning_outcome'));
                 return $this->redirectToRoute('organization_training_learning_outcome_list', [
                     'id' => $subject->getId()
@@ -125,13 +131,14 @@ class LearningOutcomeController extends AbstractController
     public function listAction(
         Request $request,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Subject $subject,
         $page = 1
     ) {
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $subject->getGrade()->getTraining());
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
             ->select('l')
@@ -189,13 +196,14 @@ class LearningOutcomeController extends AbstractController
         Request $request,
         LearningOutcomeRepository $learningOutcomeRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Subject $subject
     ) {
         $training = $subject->getGrade()->getTraining();
 
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $items = $request->request->get('items', []);
         if ((is_array($items) || $items instanceof \Countable ? count($items) : 0) === 0) {
@@ -246,13 +254,14 @@ class LearningOutcomeController extends AbstractController
         Request $request,
         LearningOutcomeRepository $learningOutcomeRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         Subject $subject
     ) {
         $training = $subject->getGrade()->getTraining();
 
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
 
         $lines = trim($request->request->get('data', []));
         if ($lines === '') {
