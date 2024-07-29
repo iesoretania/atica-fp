@@ -19,6 +19,7 @@
 namespace App\Security;
 
 use App\Entity\Person;
+use App\Repository\PersonRepository;
 use App\Service\SenecaAuthenticatorService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -31,12 +32,16 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
-class FormAuthenticator extends AbstractGuardAuthenticator
+class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuthenticatorInterface
 {
     /**
      * @var UserPasswordHasherInterface
@@ -57,6 +62,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
      * @var ManagerRegistry
      */
     private $managerRegistry;
+    private PersonRepository $personRepository;
 
     /**
      * Constructor
@@ -65,11 +71,13 @@ class FormAuthenticator extends AbstractGuardAuthenticator
         RouterInterface $router,
         UserPasswordHasherInterface $encoder,
         SenecaAuthenticatorService $senecaAuthenticator,
+        PersonRepository $personRepository,
         ManagerRegistry $managerRegistry
     ) {
         $this->router = $router;
         $this->encoder = $encoder;
         $this->senecaAuthenticator = $senecaAuthenticator;
+        $this->personRepository = $personRepository;
         $this->managerRegistry = $managerRegistry;
     }
 
@@ -148,9 +156,9 @@ class FormAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritdoc}
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response
+    final public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        $targetPath = $request->getSession()->get('_security.' . $providerKey . '.target_path');
+        $targetPath = $request->getSession()->get('_security.' . $firewallName . '.target_path');
         if (!$targetPath) {
             $targetPath = $this->router->generate('frontpage');
         }
@@ -160,7 +168,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritdoc}
      */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    final public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
         $url = $this->router->generate('login');
@@ -182,5 +190,55 @@ class FormAuthenticator extends AbstractGuardAuthenticator
     public function supportsRememberMe(): bool
     {
         return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function authenticate(Request $request)
+    {
+        $username = $request->request->get('_username');
+        $plainPassword = $request->request->get('_password');
+
+        $user = $this->personRepository->findOneByUniqueIdentifierOrUsernameOrEmailAddress($username);
+
+        if ($user === null) {
+            throw new UserNotFoundException();
+        }
+
+        if (!$user instanceof Person) {
+            throw new AuthenticationServiceException();
+        }
+
+        // ¿Comprobación de contraseña desde Séneca?
+        if ($user->getExternalCheck()) {
+            $result = $this->senecaAuthenticator->checkUserCredentials($user->getLoginUsername(), $plainPassword);
+
+            if ($result) {
+                // contraseña correcta, actualizar en local por si perdemos la conectividad
+                if (!$this->encoder->isPasswordValid($user, $plainPassword)) {
+                    $user->setPassword($this->encoder->hashPassword($user, $plainPassword));
+                    $em = $this->managerRegistry->getManager();
+                    $em->flush();
+                }
+                return new SelfValidatingPassport(new UserBadge($user->getUserIdentifier()));
+            }
+            // intentar en local
+        }
+
+        // comprobación local
+        if (!$this->encoder->isPasswordValid($user, $plainPassword)) {
+            throw new BadCredentialsException();
+        }
+
+        return new SelfValidatingPassport(new UserBadge($user->getUserIdentifier()));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isInteractive(): bool
+    {
+        return true;
     }
 }

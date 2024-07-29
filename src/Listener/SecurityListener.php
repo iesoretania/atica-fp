@@ -18,28 +18,37 @@
 
 namespace App\Listener;
 
-use App\Entity\Organization;
 use App\Entity\Person;
+use App\Repository\OrganizationRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
 class SecurityListener implements EventSubscriberInterface
 {
-    private $session;
-    private $doctrine;
+    private RequestStack $requestStack;
 
-    public function __construct(SessionInterface $session, ManagerRegistry $doctrine)
-    {
-        $this->session = $session;
+    private ManagerRegistry $doctrine;
+
+    private OrganizationRepository $organizationRepository;
+
+
+    public function __construct(
+        RequestStack $requestStack,
+        ManagerRegistry $doctrine,
+        OrganizationRepository $organizationRepository
+    ) {
+        $this->requestStack = $requestStack;
         $this->doctrine = $doctrine;
+        $this->organizationRepository = $organizationRepository;
     }
 
-    public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
+    final public function onSecurityInteractiveLogin(InteractiveLoginEvent $event): void
     {
+        dump("onSecurityInteractiveLogin");
         /** @var Person $user */
         $user = $event->getAuthenticationToken()->getUser();
 
@@ -50,37 +59,35 @@ class SecurityListener implements EventSubscriberInterface
 
         // comprobar si es administrador global y, en ese caso, devolver todas las organizaciones
         if ($user->isGlobalAdministrator()) {
-            $organizationsCount = $em->getRepository(Organization::class)
-                ->countOrganizationsByPerson($user);
+            $organizationsCount = $this->organizationRepository->countOrganizationsByPerson($user);
 
             if ($organizationsCount > 1) {
-                $this->session->set(
+                $this->requestStack->getSession()->set(
                     '_security.organization.target_path',
-                    $this->session->get('_security.main.target_path')
+                    $this->requestStack->getSession()->get('_security.main.target_path')
                 );
             } else {
-                $organization = $em->getRepository(Organization::class)->findFirstByUserOrNull($user);
-                $this->session->set('organization_id', $organization->getId());
+                $organization = $this->organizationRepository->findFirstByUserOrNull($user);
+                $this->requestStack->getSession()->set('organization_id', $organization->getId());
             }
 
             return;
         }
 
         // no es administrador global, consultar las pertenencias activas
-        $organizationsCount = $em->getRepository(Organization::class)
-            ->countOrganizationsByPerson($user);
+        $organizationsCount = $this->organizationRepository->countOrganizationsByPerson($user);
 
         switch ($organizationsCount) {
             case 0:
                 throw new CustomUserMessageAuthenticationException('form.login.error.no_membership');
             case 1:
-                $organization = $em->getRepository(Organization::class)->findFirstByUserOrNull($user);
-                $this->session->set('organization_id', $organization->getId());
+                $organization = $this->organizationRepository->findFirstByUserOrNull($user);
+                $this->requestStack->getSession()->set('organization_id', $organization->getId());
                 break;
             default:
-                $this->session->set(
+                $this->requestStack->getSession()->set(
                     '_security.organization.target_path',
-                    $this->session->get('_security.main.target_path')
+                    $this->requestStack->getSession()->get('_security.main.target_path')
                 );
         }
     }

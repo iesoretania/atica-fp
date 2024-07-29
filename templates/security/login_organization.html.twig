@@ -17,7 +17,7 @@
         <div class="form-group">
             <button type="submit" name="login" class="btn btn-info btn-block" tabindex="5">{{ 'form.login.organization.submit'|trans }}</button>
         </div>
-        {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+        {% if is_granted('IS_IMPERSONATOR') %}
             <a href="{{ path('frontpage', {'_switch_user': '_exit'}) }}" class="btn btn-primary btn-block"><i class="fas fa-arrow-left"></i> {{ 'form.user.impersonate.exit'|trans }}</a>
         {% endif %}
         {{ form_end(form) }}
@@ -27,8 +27,8 @@
     </form>
     {% else %}
         <div class="alert alert-warning">{{ 'form.login.error.no_membership'|trans }}</div>
-        {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
-            <a href="{{ path('frontpage', {'_switch_user': '_exit'}) }}" class="btn btn-primary btn-block"><i class="fas fa-arrow-left"></i> {{ 'form.user.impersonate.exit'|trans }}</a>
+        {% if is_granted('IS_IMPERSONATOR') %}
+            <a href="{{ impersonation_exit_path(path('frontpage')) }}" class="btn btn-primary btn-block"><i class="fas fa-arrow-left"></i> {{ 'form.user.impersonate.exit'|trans }}</a>
         {% endif %}
         <a href="{{ path('logout') }}" class="btn btn-primary btn-block"><i class="fas fa-power-off"></i> {{ 'form.login.error.no_membership.exit'|trans }}</a>
     {% endif %}

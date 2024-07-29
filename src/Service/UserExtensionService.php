@@ -22,42 +22,38 @@ use App\Entity\Organization;
 use App\Entity\Person;
 use App\Repository\OrganizationRepository;
 use App\Security\OrganizationVoter;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserExtensionService
 {
-    private $em;
-    private $session;
+    private $requestStack;
     private $authorizationChecker;
     private $organizationRepository;
 
     public function __construct(
-        EntityManagerInterface $em,
-        SessionInterface $session,
+        RequestStack                  $requestStack,
         AuthorizationCheckerInterface $authorizationChecker,
-        OrganizationRepository $organizationRepository
+        OrganizationRepository        $organizationRepository
     ) {
-        $this->em = $em;
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->authorizationChecker = $authorizationChecker;
         $this->organizationRepository = $organizationRepository;
     }
 
     /**
-     * @return Organization|null|object
+     * @return Organization|null
      */
-    public function getCurrentOrganization()
+    final public function getCurrentOrganization(): ?Organization
     {
-        if ($this->session->has('organization_id')) {
-            return $this->organizationRepository->find($this->session->get('organization_id'));
+        if ($this->requestStack->getSession()->has('organization_id')) {
+            return $this->organizationRepository->find($this->requestStack->getSession()->get('organization_id'));
         }
         return null;
     }
 
-    public function checkCurrentOrganization(UserInterface $user)
+    final public function checkCurrentOrganization(UserInterface $user): bool
     {
         if (!$user instanceof Person) {
             return false;
@@ -67,8 +63,8 @@ class UserExtensionService
             return true;
         }
 
-        return $this->session->has('organization_id')
-            && (is_array($this->organizationRepository->getMembershipByPersonQueryBuilder($user)
+        return $this->requestStack->getSession()->has('organization_id')
+            && (is_countable($this->organizationRepository->getMembershipByPersonQueryBuilder($user)
                 ->andWhere('o = :organization')
                 ->setParameter('organization', $this->getCurrentOrganization())
                 ->getQuery()
@@ -76,25 +72,21 @@ class UserExtensionService
                 ->andWhere('o = :organization')
                 ->setParameter('organization', $this->getCurrentOrganization())
                 ->getQuery()
-                ->getResult() instanceof \Countable ? count($this->organizationRepository->getMembershipByPersonQueryBuilder($user)
-                ->andWhere('o = :organization')
-                ->setParameter('organization', $this->getCurrentOrganization())
-                ->getQuery()
-                ->getResult()) : 0) > 0;
+                ->getResult());
     }
 
-    public function isUserGlobalAdministrator()
+    final public function isUserGlobalAdministrator(): bool
     {
         return $this->authorizationChecker->isGranted('ROLE_ADMIN');
     }
 
-    public function isUserLocalAdministrator()
+    final public function isUserLocalAdministrator(): bool
     {
         return $this->authorizationChecker->isGranted('ROLE_ADMIN')
             || $this->authorizationChecker->isGranted(OrganizationVoter::MANAGE, $this->getCurrentOrganization());
     }
 
-    public function getOrganizations(Person $user)
+    final public function getOrganizations(Person $user)
     {
         return $this->organizationRepository->getMembershipByPerson($user);
     }
