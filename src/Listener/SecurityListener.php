@@ -48,7 +48,6 @@ class SecurityListener implements EventSubscriberInterface
 
     final public function onSecurityInteractiveLogin(InteractiveLoginEvent $event): void
     {
-        dump("onSecurityInteractiveLogin");
         /** @var Person $user */
         $user = $event->getAuthenticationToken()->getUser();
 
