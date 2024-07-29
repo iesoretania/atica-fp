@@ -29,7 +29,7 @@ use App\Repository\WPT\WorkDayRepository;
 use App\Security\WPT\AgreementVoter;
 use App\Security\WPT\WPTOrganizationVoter;
 use App\Service\UserExtensionService;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
