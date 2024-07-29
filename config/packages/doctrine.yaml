@@ -22,7 +22,7 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
-        enable_lazy_ghost_objects: false
+        enable_lazy_ghost_objects: true
 
 when@test:
     doctrine:
