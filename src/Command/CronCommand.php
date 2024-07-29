@@ -83,6 +83,8 @@ class CronCommand extends Command
 
         $this->wltSendTrackingWarnings($output, $style);
         $this->wltSendSurveyWarnings($output, $style);
+
+        return 0;
     }
 
     /**
