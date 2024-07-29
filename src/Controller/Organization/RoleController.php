@@ -22,7 +22,7 @@ use App\Form\Type\Edu\RoleAssignType;
 use App\Repository\RoleRepository;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;

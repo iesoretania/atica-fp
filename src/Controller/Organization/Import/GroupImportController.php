@@ -30,7 +30,7 @@ use App\Service\UserExtensionService;
 use App\Utils\CsvImporter;
 use App\Utils\ImportParser;
 use Doctrine\ORM\Query\QueryException;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;

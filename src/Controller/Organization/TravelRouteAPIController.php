@@ -23,7 +23,7 @@ use App\Form\Type\Edu\NewTravelRouteType;
 use App\Repository\Edu\TravelRouteRepository;
 use App\Security\Edu\EduOrganizationVoter;
 use App\Service\UserExtensionService;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

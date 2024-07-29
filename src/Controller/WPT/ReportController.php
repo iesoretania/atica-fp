@@ -149,7 +149,7 @@ class ReportController extends AbstractController
         UserExtensionService                     $userExtensionService,
         TranslatorInterface                      $translator,
         AcademicYearRepository                   $academicYearRepository,
-        \Symfony\Bridge\Doctrine\ManagerRegistry $managerRegistry,
+        \Doctrine\Persistence\ManagerRegistry $managerRegistry,
         AcademicYear                             $academicYear = null,
                                                  $page = 1
     ) {
