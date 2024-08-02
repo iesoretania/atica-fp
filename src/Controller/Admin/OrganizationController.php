@@ -235,7 +235,7 @@ class OrganizationController extends AbstractController
     ): bool {
         $organization = $em->getRepository(Organization::class)->find($request->request->get('switch', null));
         if ($organization !== null) {
-            $this->get('session')->set('organization_id', $organization->getId());
+            $request->getSession()->set('organization_id', $organization->getId());
             $this->addFlash(
                 'success',
                 $translator->
