@@ -96,7 +96,7 @@ class SecurityController extends AbstractController
 
         // ¿se ha enviado una dirección?
         if ($form->isSubmitted() && $form->isValid()) {
-            $error = $this->passwordResetRequest($email, $mailerService, $translator, $personRepository);
+            $error = $this->passwordResetRequest($email, $mailerService, $translator, $request->getSession(), $personRepository);
 
             if (!is_string($error)) {
                 return $error;
@@ -387,6 +387,7 @@ class SecurityController extends AbstractController
         $email,
         MailerService $mailerService,
         TranslatorInterface $translator,
+        Session $session,
         PersonRepository $personRepository
     ) {
         /** @var Person $user */
@@ -399,7 +400,7 @@ class SecurityController extends AbstractController
             $error = $translator->trans('form.reset.notfound', [], 'security');
         } else {
             // almacenar como último correo electrónico el indicado
-            $this->get('session')->set('_security.last_username', $user->getEmailAddress());
+            $session->set('_security.last_username', $user->getEmailAddress());
 
             // obtener tiempo de expiración del token
             $expire = (int) $this->getParameter('password_reset.expire');
