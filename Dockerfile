@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 
 # Instalar Apache2+PHP y el resto de dependencias
 ENV DEBIAN_FRONTEND noninteractive
@@ -18,7 +18,7 @@ RUN apt-get update \
         mysql-client \
         build-essential \
         zip \
-    && curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash - \
+    && curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash - \
     && apt -yq install nodejs \
     && rm -rf /var/lib/apt/lists/*
 
@@ -26,8 +26,8 @@ RUN apt-get update \
 RUN curl --insecure https://getcomposer.org/composer.phar -o /usr/bin/composer && chmod +x /usr/bin/composer
 
 # Añadir configuración de zona horaria a PHP
-ADD ./docker/symfony.ini /etc/php/7.4/apache2/conf.d/
-ADD ./docker/symfony.ini /etc/php/7.4/cli/conf.d/
+ADD ./docker/symfony.ini /etc/php/8.3/apache2/conf.d/
+ADD ./docker/symfony.ini /etc/php/8.3/cli/conf.d/
 
 # Activar mod_rewrite para URL amigables
 RUN a2enmod rewrite
