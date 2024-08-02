@@ -44,7 +44,7 @@
 {% endblock %}
 
 {% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4_translated', {'css_disabled_class': 'hidden', 'routeParams': {'id': shift.id }}) }}
+    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'css_disabled_class': 'd-none', 'routeParams': {'id': shift.id }}) }}
 {% endblock %}
 
 {% block before_table %}
