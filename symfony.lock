@@ -179,9 +179,6 @@
             "config/routes/sonata_entity_audit.yaml"
         ]
     },
-    "swiftmailer/swiftmailer": {
-        "version": "v6.3.0"
-    },
     "symfony/apache-pack": {
         "version": "1.0",
         "recipe": {
@@ -294,11 +291,32 @@
             "src/Kernel.php"
         ]
     },
+    "symfony/google-mailer": {
+        "version": "5.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.4",
+            "ref": "f8fd4ddb9b477510f8f4bce2b9c054ab428c0120"
+        }
+    },
     "symfony/http-foundation": {
         "version": "v4.4.36"
     },
     "symfony/http-kernel": {
         "version": "v4.4.36"
+    },
+    "symfony/mailer": {
+        "version": "5.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.3",
+            "ref": "df66ee1f226c46f01e85c29c2f7acce0596ba35a"
+        },
+        "files": [
+            "config/packages/mailer.yaml"
+        ]
     },
     "symfony/monolog-bridge": {
         "version": "v4.4.27"
@@ -390,20 +408,6 @@
     },
     "symfony/stopwatch": {
         "version": "v4.4.27"
-    },
-    "symfony/swiftmailer-bundle": {
-        "version": "3.5",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "2.5",
-            "ref": "f0b2fccdca2dfd97dc2fd5ad216d5e27c4f895ac"
-        },
-        "files": [
-            "config/packages/dev/swiftmailer.yaml",
-            "config/packages/swiftmailer.yaml",
-            "config/packages/test/swiftmailer.yaml"
-        ]
     },
     "symfony/translation": {
         "version": "5.4",

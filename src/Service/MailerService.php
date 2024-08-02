@@ -19,14 +19,15 @@
 namespace App\Service;
 
 use App\Entity\Person;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MailerService
 {
-    /**
-     * @var \Swift_Mailer
-     */
-    private $mailer;
+    private MailerInterface $mailer;
 
     private $prefix;
     private $from;
@@ -36,7 +37,7 @@ class MailerService
      */
     private $translator;
 
-    public function __construct($prefix, $from, \Swift_Mailer $mailer, TranslatorInterface $translator)
+    public function __construct($prefix, $from, MailerInterface $mailer, TranslatorInterface $translator)
     {
         $this->mailer = $mailer;
         $this->translator = $translator;
@@ -57,19 +58,26 @@ class MailerService
         // convertir array de usuarios en lista de correos
         $to = [];
         foreach ($users as $user) {
-            $to[$user->getEmailAddress()] = (string) $user;
+            $to[$user->getEmailAddress()] = $user->__toString();
         }
 
-        /**
-         * @var \Swift_Message
-         */
-        $msg = $this->mailer->createMessage()
-            ->setSubject($this->prefix . $this->translator->
+        /** @var Email $msg */
+        $msg = (new Email())
+            ->subject($this->prefix . $this->translator->
                 trans($subject['id'], $subject['parameters'], $translationDomain))
-            ->setFrom($this->from)
-            ->setTo($to)
-            ->setBody($this->translator->trans($body['id'], $body['parameters'], $translationDomain));
+            ->from($this->from)
+            ->text($this->translator->trans($body['id'], $body['parameters'], $translationDomain));
 
-        return $this->mailer->send($msg);
+        foreach ($to as $email => $name) {
+            $msg->addTo(new Address($email, $name));
+        }
+
+        try {
+            $this->mailer->send($msg);
+        } catch (TransportExceptionInterface $e) {
+            return 0;
+        }
+
+        return count($to);
     }
 }

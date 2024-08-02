@@ -121,7 +121,7 @@ class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuth
     /**
      * @inheritDoc
      */
-    public function authenticate(Request $request)
+    public function authenticate(Request $request): Passport
     {
         $username = $request->request->get('_username');
         $plainPassword = $request->request->get('_password');
