@@ -24,6 +24,15 @@
         <env name="APP_ENV" value="dev"/>
         <env name="APP_SECRET" value="b8e82922f9e24ba055aa5ef1369c961a"/>
         <!-- ###- symfony/framework-bundle ### -->
+
+        <!-- ###+ symfony/mailer ### -->
+        <!-- MAILER_DSN=null://null -->
+        <!-- ###- symfony/mailer ### -->
+
+        <!-- ###+ symfony/google-mailer ### -->
+        <!-- Gmail SHOULD NOT be used on production, use it in development only. -->
+        <!-- MAILER_DSN=gmail://USERNAME:PASSWORD@default -->
+        <!-- ###- symfony/google-mailer ### -->
     </php>
 
     <testsuites>
