@@ -20,22 +20,31 @@ sudo -u www-data composer install
 sudo npm install -g npm
 sudo -u www-data npm install
 
-# Compilar assets de CSS y JS
-sudo -u www-data node_modules/.bin/encore prod
+# Si se ha solicitado incluir datos de prueba, volcarlos
+if [ "$DEMO" == "1" ]; then
+    # Datos de demostración
+    MYSQL_PWD=atica mysql -h db --user=atica -e "DROP DATABASE aticafp"
+    MYSQL_PWD=atica mysql -h db --user=atica -e "CREATE DATABASE aticafp"
+    echo "Incorporando datos de prueba..."
+    MYSQL_PWD=atica mysql -h db --user=atica aticafp < /demo.sql
+fi
 
 # Ejecutar migración
 sudo -u www-data php bin/console --no-interaction d:m:m
 
+# Compilar assets de CSS y JS
+sudo -u www-data node_modules/.bin/encore prod
+
 # Comprobar si hay usuarios en la base de datos
 RESULT=`MYSQL_PWD=atica mysql -h db --user=atica aticafp -N -s -r -e "SELECT COUNT(*) FROM person"`
 if [ "$RESULT" == "0" ]; then
+    echo "Configurando instancia..."
     # Si no es así, generar un secreto nuevo
     SECRET="`hexdump -n 16 -e '4/4 "%08X" 1 "\n"' /dev/random`" && sudo -u www-data sed -i -e "s/APP_SECRET=:.*/APP_SECRET=$SECRET/" /var/www/symfony/.env.local
-    if [ "$DEMO" == "1" ]; then
-        # Datos de demostración
-        echo "Incorporando datos de prueba..."
-        MYSQL_PWD=atica mysql -h db --user=atica aticafp < /demo.sql
-    else
+
+    # Si no se ha solicitado incluir datos de prueba, crear un centro y un usuario administrador por defecto
+    if [ "$DEMO" != "1" ]; then
+        echo "Creando centro inicial y usuario administrador inicial..."
         # Crear un centro inicial y un usuario "admin" con contraseña "admin"
         sudo -u www-data php bin/console app:organization "I.E.S. Test" --code=23999999 --city=Linares
         sudo -u www-data php bin/console app:admin admin --firstname=Admin --lastname=ATICA --password=admin
