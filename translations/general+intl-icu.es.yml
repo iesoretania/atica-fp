@@ -8,6 +8,9 @@ format.currency: €
 format.decimal_separator: ","
 format.thousand_separator: "."
 
+paginator.prev: "← Anterior"
+paginator.next: "Siguiente →"
+
 suffix.distance: "km. "
 
 form.lose_changes: Si sale de la página perderá todos los cambios no guardados. ¿Desea continuar?
