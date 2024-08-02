@@ -32,7 +32,7 @@
 {% endblock %}
 
 {% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'css_disabled_class': 'd-none', 'routeParams': {'project': project.id }}) }}
+    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'project': project.id }}) }}
 {% endblock %}
 
 {% block after_table %}

@@ -35,7 +35,7 @@
         {% if pager and pager.haveToPaginate %}
             <div class="pagerfanta">
                 {% block pagerfanta %}
-                {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'css_disabled_class': 'd-none'}) }}
+                {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general')}) }}
                 {% endblock %}
             </div>
         {% endif %}
