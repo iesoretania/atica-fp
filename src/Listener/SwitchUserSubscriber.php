@@ -26,13 +26,8 @@ use Symfony\Component\Security\Http\SecurityEvents;
 
 class SwitchUserSubscriber implements EventSubscriberInterface
 {
-    private UserExtensionService $userExtension;
-    private RequestStack $requestStack;
-
-    public function __construct(UserExtensionService $userExtensionService, RequestStack $requestStack)
+    public function __construct(private readonly UserExtensionService $userExtension, private readonly RequestStack $requestStack)
     {
-        $this->userExtension = $userExtensionService;
-        $this->requestStack = $requestStack;
     }
     final public function onSwitchUser(SwitchUserEvent $event): void
     {

@@ -29,21 +29,8 @@ use Symfony\Component\Security\Http\SecurityEvents;
 
 class SecurityListener implements EventSubscriberInterface
 {
-    private RequestStack $requestStack;
-
-    private ManagerRegistry $doctrine;
-
-    private OrganizationRepository $organizationRepository;
-
-
-    public function __construct(
-        RequestStack $requestStack,
-        ManagerRegistry $doctrine,
-        OrganizationRepository $organizationRepository
-    ) {
-        $this->requestStack = $requestStack;
-        $this->doctrine = $doctrine;
-        $this->organizationRepository = $organizationRepository;
+    public function __construct(private readonly RequestStack $requestStack, private readonly ManagerRegistry $doctrine, private readonly OrganizationRepository $organizationRepository)
+    {
     }
 
     final public function onSecurityInteractiveLogin(InteractiveLoginEvent $event): void
