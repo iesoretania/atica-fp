@@ -27,18 +27,18 @@ class ImportParser
      */
     public static function parseGradeName($gradeName)
     {
-        if (false === strpos($gradeName, 'F.P.')) {
+        if (!str_contains($gradeName, 'F.P.')) {
             // Si no lleva la cadena F.P., eliminar el texto entre paréntesis y quitar 'de '
             // '2º de Bachillerato (Ciencias)' -> '2º de Bachillerato'
-            $calculatedGradeName = trim(preg_replace('/(\(.*\))/', '', $gradeName));
-            $calculatedGradeName = trim(preg_replace('/de /', '', $calculatedGradeName));
+            $calculatedGradeName = trim((string) preg_replace('/(\(.*\))/', '', $gradeName));
+            $calculatedGradeName = trim((string) preg_replace('/de /', '', $calculatedGradeName));
 
             $matches = [];
             // Enseñanza: Si el texto lleva 'º ' quedarse con el texto que le sigue
             // '2º de Bachillerato (Ciencias)' -> 'Bachillerato'
             //
             // Si no, dejarlo tal cual
-            if (false !== strpos($gradeName, 'º ')) {
+            if (str_contains($gradeName, 'º ')) {
                 preg_match('/º (.*)/u', $calculatedGradeName, $matches);
                 $trainingName = $matches[1];
             } else {
