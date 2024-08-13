@@ -29,17 +29,12 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class TrackedWorkDayRepository extends ServiceEntityRepository
 {
-    private $workDayRepository;
-    private $activityTrackingRepository;
-
     public function __construct(
         ManagerRegistry $registry,
-        WorkDayRepository $workDayRepository,
-        ActivityTrackingRepository $activityTrackingRepository
+        private readonly WorkDayRepository $workDayRepository,
+        private readonly ActivityTrackingRepository $activityTrackingRepository
     ) {
         parent::__construct($registry, TrackedWorkDay::class);
-        $this->workDayRepository = $workDayRepository;
-        $this->activityTrackingRepository = $activityTrackingRepository;
     }
 
     /**
@@ -220,7 +215,7 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
                 ->groupBy('a')
                 ->getQuery()
                 ->getSingleResult();
-        } catch (NoResultException $e) {
+        } catch (NoResultException) {
             return [];
         }
     }

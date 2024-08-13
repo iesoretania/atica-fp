@@ -85,7 +85,7 @@ class TeacherRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return null;
         }
     }
@@ -128,7 +128,7 @@ class TeacherRepository extends ServiceEntityRepository
                 ->setParameter('academic_year', $academicYear)
                 ->getQuery()
                 ->getOneOrNullResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return null;
         }
     }

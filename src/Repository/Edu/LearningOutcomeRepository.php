@@ -26,12 +26,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class LearningOutcomeRepository extends ServiceEntityRepository
 {
-    private $criterionRepository;
-
-    public function __construct(ManagerRegistry $registry, CriterionRepository $criterionRepository)
+    public function __construct(ManagerRegistry $registry, private readonly CriterionRepository $criterionRepository)
     {
         parent::__construct($registry, LearningOutcome::class);
-        $this->criterionRepository = $criterionRepository;
     }
 
     public function findAllInListByIdAndSubject(

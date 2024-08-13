@@ -31,13 +31,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class WorkDayRepository extends ServiceEntityRepository
 {
-    /** @var NonWorkingDayRepository $nonWorkingDayRepository */
-    private $nonWorkingDayRepository;
-
-    public function __construct(ManagerRegistry $registry, NonWorkingDayRepository $nonWorkingDayRepository)
+    public function __construct(ManagerRegistry $registry, private readonly NonWorkingDayRepository $nonWorkingDayRepository)
     {
         parent::__construct($registry, WorkDay::class);
-        $this->nonWorkingDayRepository = $nonWorkingDayRepository;
     }
 
     public function findByAgreement(Agreement $agreement)
@@ -83,7 +79,7 @@ class WorkDayRepository extends ServiceEntityRepository
                 ->groupBy('a')
                 ->getQuery()
                 ->getSingleResult();
-        } catch (NoResultException $e) {
+        } catch (NoResultException) {
             return [];
         }
     }
@@ -133,7 +129,7 @@ class WorkDayRepository extends ServiceEntityRepository
                 ->setParameter('agreement', $agreement)
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
         }
         return 0;
     }

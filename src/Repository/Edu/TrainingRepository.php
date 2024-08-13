@@ -28,12 +28,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class TrainingRepository extends ServiceEntityRepository
 {
-    private $gradeRepository;
-
-    public function __construct(ManagerRegistry $registry, GradeRepository $gradeRepository)
+    public function __construct(ManagerRegistry $registry, private readonly GradeRepository $gradeRepository)
     {
         parent::__construct($registry, Training::class);
-        $this->gradeRepository = $gradeRepository;
     }
 
     /**

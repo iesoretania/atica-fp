@@ -33,17 +33,12 @@ use Symfony\Component\Security\Core\Security;
 
 class WPTTeacherRepository extends TeacherRepository
 {
-    private $security;
-    private $shiftRepository;
-
     public function __construct(
         ManagerRegistry $registry,
-        Security $security,
-        ShiftRepository $shiftRepository
+        private readonly Security $security,
+        private readonly ShiftRepository $shiftRepository
     ) {
         parent::__construct($registry);
-        $this->security = $security;
-        $this->shiftRepository = $shiftRepository;
     }
 
     public function findByAcademicYear(AcademicYear $academicYear)

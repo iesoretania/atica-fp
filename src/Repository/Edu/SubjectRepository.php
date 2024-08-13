@@ -31,18 +31,12 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class SubjectRepository extends ServiceEntityRepository
 {
-    private $teachingRepository;
-    private $learningOutcomeRepository;
-
     public function __construct(
         ManagerRegistry $registry,
-        TeachingRepository $teachingRepository,
-        LearningOutcomeRepository $learningOutcomeRepository
+        private readonly TeachingRepository $teachingRepository,
+        private readonly LearningOutcomeRepository $learningOutcomeRepository
     ) {
         parent::__construct($registry, Subject::class);
-
-        $this->teachingRepository = $teachingRepository;
-        $this->learningOutcomeRepository = $learningOutcomeRepository;
     }
 
     /**
@@ -90,7 +84,7 @@ class SubjectRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return null;
         }
     }

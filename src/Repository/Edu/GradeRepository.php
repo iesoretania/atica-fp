@@ -29,12 +29,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class GradeRepository extends ServiceEntityRepository
 {
-    private $subjectRepository;
-
-    public function __construct(ManagerRegistry $registry, SubjectRepository $subjectRepository)
+    public function __construct(ManagerRegistry $registry, private readonly SubjectRepository $subjectRepository)
     {
         parent::__construct($registry, Grade::class);
-        $this->subjectRepository = $subjectRepository;
     }
 
     /**
@@ -77,7 +74,7 @@ class GradeRepository extends ServiceEntityRepository
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
         }
-        catch(NonUniqueResultException $e) {
+        catch(NonUniqueResultException) {
             return null;
         }
     }

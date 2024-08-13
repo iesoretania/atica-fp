@@ -27,12 +27,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class LearningProgramRepository extends ServiceEntityRepository
 {
-    private $activityRealizationRepository;
-
-    public function __construct(ManagerRegistry $registry, ActivityRealizationRepository $activityRealizationRepository)
+    public function __construct(ManagerRegistry $registry, private readonly ActivityRealizationRepository $activityRealizationRepository)
     {
         parent::__construct($registry, LearningProgram::class);
-        $this->activityRealizationRepository = $activityRealizationRepository;
     }
 
     private function findByProjectQueryBuilder(Project $project)

@@ -29,17 +29,12 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class ActivityRepository extends ServiceEntityRepository
 {
-    private $criterionRepository;
-    private $learningOutcomeRepository;
-
     public function __construct(
         ManagerRegistry $registry,
-        CriterionRepository $criterionRepository,
-        LearningOutcomeRepository $learningOutcomeRepository
+        private readonly CriterionRepository $criterionRepository,
+        private readonly LearningOutcomeRepository $learningOutcomeRepository
     ) {
         parent::__construct($registry, Activity::class);
-        $this->criterionRepository = $criterionRepository;
-        $this->learningOutcomeRepository = $learningOutcomeRepository;
     }
 
     public function findOneByCodeAndShift($code, Shift $shift)

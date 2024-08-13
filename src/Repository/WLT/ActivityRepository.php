@@ -31,23 +31,14 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class ActivityRepository extends ServiceEntityRepository
 {
-    private $competencyRepository;
-    private $activityRealizationRepository;
-    private $learningOutcomeRepository;
-    private $subjectRepository;
-
     public function __construct(
         ManagerRegistry $registry,
-        CompetencyRepository $competencyRepository,
-        ActivityRealizationRepository $activityRealizationRepository,
-        LearningOutcomeRepository $learningOutcomeRepository,
-        SubjectRepository $subjectRepository
+        private readonly CompetencyRepository $competencyRepository,
+        private readonly ActivityRealizationRepository $activityRealizationRepository,
+        private readonly LearningOutcomeRepository $learningOutcomeRepository,
+        private readonly SubjectRepository $subjectRepository
     ) {
         parent::__construct($registry, Activity::class);
-        $this->competencyRepository = $competencyRepository;
-        $this->activityRealizationRepository = $activityRealizationRepository;
-        $this->learningOutcomeRepository = $learningOutcomeRepository;
-        $this->subjectRepository = $subjectRepository;
     }
 
     public function findOneByProjectAndCode(Project $project, $code)
@@ -60,7 +51,7 @@ class ActivityRepository extends ServiceEntityRepository
                 ->setParameter('code', $code)
                 ->getQuery()
                 ->getOneOrNullResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return null;
         }
     }

@@ -37,18 +37,12 @@ use Symfony\Component\Security\Core\Security;
 
 class WLTTeacherRepository extends TeacherRepository
 {
-    private $security;
-
-    private $projectRepository;
-
     public function __construct(
         ManagerRegistry $registry,
-        Security $security,
-        ProjectRepository $shiftRepository
+        private readonly Security $security,
+        private readonly ProjectRepository $projectRepository
     ) {
         parent::__construct($registry);
-        $this->security = $security;
-        $this->projectRepository = $shiftRepository;
     }
 
     public function findByAcademicYear(AcademicYear $academicYear)

@@ -35,23 +35,14 @@ use Symfony\Component\Security\Core\Security;
 
 class AgreementEnrollmentRepository extends ServiceEntityRepository
 {
-    private $security;
-    private $wptGroupRepository;
-    private $workDayRepository;
-    private $reportRepository;
-
     public function __construct(
         ManagerRegistry $registry,
-        Security $security,
-        WPTGroupRepository $wptGroupRepository,
-        WorkDayRepository $workDayRepository,
-        ReportRepository $reportRepository
+        private readonly Security $security,
+        private readonly WPTGroupRepository $wptGroupRepository,
+        private readonly WorkDayRepository $workDayRepository,
+        private readonly ReportRepository $reportRepository
     ) {
         parent::__construct($registry, AgreementEnrollment::class);
-        $this->security = $security;
-        $this->wptGroupRepository = $wptGroupRepository;
-        $this->workDayRepository = $workDayRepository;
-        $this->reportRepository = $reportRepository;
     }
 
     public function findByStudentEnrollment(StudentEnrollment $studentEnrollment)
@@ -186,7 +177,7 @@ class AgreementEnrollmentRepository extends ServiceEntityRepository
             return $this->countTeacherAndShiftQueryBuilder($teacher, $shift)
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
         }
 
         return 0;

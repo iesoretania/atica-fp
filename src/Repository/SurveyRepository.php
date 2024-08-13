@@ -26,18 +26,12 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class SurveyRepository extends ServiceEntityRepository
 {
-    private $answeredSurveyRepository;
-
-    private $answeredSurveyQuestionRepository;
-
     public function __construct(
         ManagerRegistry $registry,
-        AnsweredSurveyRepository $answeredSurveyRepository,
-        AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository
+        private readonly AnsweredSurveyRepository $answeredSurveyRepository,
+        private readonly AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository
     ) {
         parent::__construct($registry, Survey::class);
-        $this->answeredSurveyRepository = $answeredSurveyRepository;
-        $this->answeredSurveyQuestionRepository = $answeredSurveyQuestionRepository;
     }
 
     public function findByOrganization(Organization $organization)
