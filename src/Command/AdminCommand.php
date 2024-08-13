@@ -32,29 +32,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AdminCommand extends Command
 {
-    /** @var TranslatorInterface */
-    private $translator;
-
-    /** @var UserPasswordHasherInterface */
-    private $userPasswordEncoder;
-
-    /** @var EntityManagerInterface */
-    private $entityManager;
-
-    /** @var PersonRepository */
-    private $personRepository;
-
     public function __construct(
-        TranslatorInterface $translator,
-        UserPasswordHasherInterface $userPasswordEncoder,
-        PersonRepository $personRepository,
-        EntityManagerInterface $entityManager
+        private readonly TranslatorInterface $translator,
+        private readonly UserPasswordHasherInterface $userPasswordEncoder,
+        private readonly PersonRepository $personRepository,
+        private readonly EntityManagerInterface $entityManager
     ) {
         parent::__construct();
-        $this->translator = $translator;
-        $this->userPasswordEncoder = $userPasswordEncoder;
-        $this->entityManager = $entityManager;
-        $this->personRepository = $personRepository;
     }
 
     protected function configure()
@@ -75,15 +59,15 @@ class AdminCommand extends Command
         $username = $input->getArgument('username');
         $style->text($this->translator->trans('message.admin.creating', ['%user%' => $username], 'command'));
         $password = $input->getOption('password')
-            ?: $style->askHidden($this->translator->trans('input.admin.password', [], 'command'), [$this, 'notEmpty']);
+            ?: $style->askHidden($this->translator->trans('input.admin.password', [], 'command'), $this->notEmpty(...));
 
         $user = $this->personRepository->findOneBy(['loginUsername' => $username]);
         if (null === $user) {
             $user = new Person();
             $user
                 ->setLoginUsername($username)
-                ->setFirstName($input->getOption('firstname') ?: ucwords($username))
-                ->setLastName($input->getOption('lastname') ?: ucwords($username));
+                ->setFirstName($input->getOption('firstname') ?: ucwords((string) $username))
+                ->setLastName($input->getOption('lastname') ?: ucwords((string) $username));
             $this->entityManager->persist($user);
         } else {
             $style->warning($this->translator->trans('message.admin.updating', [], 'command'));
@@ -99,7 +83,7 @@ class AdminCommand extends Command
             $this->entityManager->flush();
             $style->success($this->translator->trans('message.success', [], 'command'));
             return 0;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $style->error($this->translator->trans('message.error', [], 'command'));
             return 1;
         }

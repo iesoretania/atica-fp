@@ -30,21 +30,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class OrganizationCommand extends Command
 {
-    private $translator;
-
-    private $entityManager;
-
-    private $organizationRepository;
-
     public function __construct(
-        TranslatorInterface $translator,
-        OrganizationRepository $organizationRepository,
-        EntityManagerInterface $entityManager
+        private readonly TranslatorInterface $translator,
+        private readonly OrganizationRepository $organizationRepository,
+        private readonly EntityManagerInterface $entityManager
     ) {
         parent::__construct();
-        $this->translator = $translator;
-        $this->entityManager = $entityManager;
-        $this->organizationRepository = $organizationRepository;
     }
 
     protected function configure()
@@ -80,7 +71,7 @@ class OrganizationCommand extends Command
                     ?: $style->ask(
                         $this->translator->trans('input.organization.code', [], 'command'),
                         null,
-                        [$this, 'notEmpty']
+                        $this->notEmpty(...)
                     )
                 )
                 ->setCity(
@@ -88,7 +79,7 @@ class OrganizationCommand extends Command
                     ?: $style->ask(
                         $this->translator->trans('input.organization.city', [], 'command'),
                         null,
-                        [$this, 'notEmpty']
+                        $this->notEmpty(...)
                     )
                 );
             $this->entityManager->persist($organization);
@@ -101,7 +92,7 @@ class OrganizationCommand extends Command
             $this->entityManager->flush();
             $style->success($this->translator->trans('message.success', [], 'command'));
             return 0;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $style->error($this->translator->trans('message.error', [], 'command'));
             return 1;
         }

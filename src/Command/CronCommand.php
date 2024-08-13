@@ -39,34 +39,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CronCommand extends Command
 {
-    private $translator;
-    private $mailerService;
-    private $workDayRepository;
-    private $academicYearRepository;
-    private $agreementRepository;
-    private $wltTeacherRepository;
-    private $projectRepository;
-    private $educationalTutorAnsweredSurveyRepository;
-
     public function __construct(
-        TranslatorInterface $translator,
-        MailerService $mailerService,
-        WorkDayRepository $workDayRepository,
-        AgreementRepository $agreementRepository,
-        AcademicYearRepository $academicYearRepository,
-        ProjectRepository $projectRepository,
-        WLTTeacherRepository $wltTeacherRepository,
-        EducationalTutorAnsweredSurveyRepository $educationalTutorAnsweredSurveyRepository
+        private readonly TranslatorInterface $translator,
+        private readonly MailerService $mailerService,
+        private readonly WorkDayRepository $workDayRepository,
+        private readonly AgreementRepository $agreementRepository,
+        private readonly AcademicYearRepository $academicYearRepository,
+        private readonly ProjectRepository $projectRepository,
+        private readonly WLTTeacherRepository $wltTeacherRepository,
+        private readonly EducationalTutorAnsweredSurveyRepository $educationalTutorAnsweredSurveyRepository
     ) {
         parent::__construct();
-        $this->translator = $translator;
-        $this->mailerService = $mailerService;
-        $this->workDayRepository = $workDayRepository;
-        $this->academicYearRepository = $academicYearRepository;
-        $this->agreementRepository = $agreementRepository;
-        $this->wltTeacherRepository = $wltTeacherRepository;
-        $this->projectRepository = $projectRepository;
-        $this->educationalTutorAnsweredSurveyRepository = $educationalTutorAnsweredSurveyRepository;
     }
 
     protected function configure()
@@ -117,7 +100,7 @@ class CronCommand extends Command
             /** @var Agreement $agreement */
             foreach ($agreements as $agreement) {
                 $workDays = $this->workDayRepository->findUnfilledWorkDaysBeforeDateByAgreement($agreement, $limit);
-                $count = is_array($workDays) || $workDays instanceof \Countable ? count($workDays) : 0;
+                $count = is_countable($workDays) ? count($workDays) : 0;
                 $table
                     ->addRow([
                         $academicYear->getOrganization()->getName(),
