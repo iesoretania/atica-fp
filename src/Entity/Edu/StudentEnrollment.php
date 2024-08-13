@@ -19,83 +19,56 @@
 namespace App\Entity\Edu;
 
 use App\Entity\Person;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="edu_student_enrollment",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"person_id", "group_id"})})))
- */
-class StudentEnrollment
+#[ORM\Entity]
+#[ORM\Table(name: 'edu_student_enrollment')]
+#[ORM\UniqueConstraint(columns: ['person_id', 'group_id'])]
+class StudentEnrollment implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Person
-     */
-    private $person;
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Person $person = null;
 
+    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'enrollments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Group $group = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Group", inversedBy="enrollments")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Group
-     */
-    private $group;
-
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->getPerson() . ' (' . $this->getGroup() . ')';
+        return ($this->getPerson() === null || $this->getGroup() === null)
+            ? ''
+            : $this->getPerson()->__toString() . ' (' . $this->getGroup()->__toString() . ')';
     }
 
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Person
-     */
-    public function getPerson()
+    public function getPerson(): ?Person
     {
         return $this->person;
     }
 
-    /**
-     * @param Person $person
-     * @return StudentEnrollment
-     */
-    public function setPerson($person)
+    public function setPerson(Person $person): static
     {
         $this->person = $person;
         return $this;
     }
 
-    /**
-     * @return Group
-     */
-    public function getGroup()
+    public function getGroup(): ?Group
     {
         return $this->group;
     }
 
-    /**
-     * @param Group $group
-     * @return StudentEnrollment
-     */
-    public function setGroup($group)
+    public function setGroup(Group $group): static
     {
         $this->group = $group;
         return $this;

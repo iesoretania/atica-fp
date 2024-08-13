@@ -18,124 +18,78 @@
 
 namespace App\Entity;
 
+use App\Repository\AnsweredSurveyQuestionRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\AnsweredSurveyQuestionRepository")
- * @ORM\Table(name="answered_survey_question",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"survey_question_id", "answered_survey_id"})}))))
- */
+#[ORM\Entity(repositoryClass: AnsweredSurveyQuestionRepository::class)]
+#[ORM\Table(name: 'answered_survey_question')]
+#[ORM\UniqueConstraint(columns: ['survey_question_id', 'answered_survey_id'])]
 class AnsweredSurveyQuestion
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="AnsweredSurvey", inversedBy="answers")
-     * @ORM\JoinColumn(nullable=false)
-     * @var AnsweredSurvey
-     */
-    private $answeredSurvey;
+    #[ORM\ManyToOne(targetEntity: AnsweredSurvey::class, inversedBy: 'answers')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?AnsweredSurvey $answeredSurvey = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="SurveyQuestion")
-     * @ORM\JoinColumn(nullable=false)
-     * @var SurveyQuestion
-     */
-    private $surveyQuestion;
+    #[ORM\ManyToOne(targetEntity: SurveyQuestion::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?SurveyQuestion $surveyQuestion = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    private $textValue;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $textValue = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @var int
-     */
-    private $numericValue;
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $numericValue = null;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return AnsweredSurvey
-     */
-    public function getAnsweredSurvey()
+    public function getAnsweredSurvey(): ?AnsweredSurvey
     {
         return $this->answeredSurvey;
     }
 
-    /**
-     * @param AnsweredSurvey $answeredSurvey
-     * @return AnsweredSurveyQuestion
-     */
-    public function setAnsweredSurvey(AnsweredSurvey $answeredSurvey)
+    public function setAnsweredSurvey(AnsweredSurvey $answeredSurvey): static
     {
         $this->answeredSurvey = $answeredSurvey;
         return $this;
     }
 
-    /**
-     * @return SurveyQuestion
-     */
-    public function getSurveyQuestion()
+    public function getSurveyQuestion(): ?SurveyQuestion
     {
         return $this->surveyQuestion;
     }
 
-    /**
-     * @param SurveyQuestion $surveyQuestion
-     * @return AnsweredSurveyQuestion
-     */
-    public function setSurveyQuestion(SurveyQuestion $surveyQuestion)
+    public function setSurveyQuestion(SurveyQuestion $surveyQuestion): static
     {
         $this->surveyQuestion = $surveyQuestion;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTextValue()
+    public function getTextValue(): ?string
     {
         return $this->textValue;
     }
 
-    /**
-     * @param string $textValue
-     * @return AnsweredSurveyQuestion
-     */
-    public function setTextValue($textValue)
+    public function setTextValue(?string $textValue): static
     {
         $this->textValue = $textValue;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getNumericValue()
+    public function getNumericValue(): ?int
     {
         return $this->numericValue;
     }
 
-    /**
-     * @param int $numericValue
-     * @return AnsweredSurveyQuestion
-     */
-    public function setNumericValue($numericValue)
+    public function setNumericValue(?int $numericValue): static
     {
         $this->numericValue = $numericValue;
         return $this;

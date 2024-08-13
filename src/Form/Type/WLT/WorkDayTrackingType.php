@@ -105,12 +105,12 @@ class WorkDayTrackingType extends AbstractType
                     'required' => true,
                     'expanded' => true,
                     'choices' => $lockManager ? [
-                        'form.work_day.attendance.no_absence' => 0,
-                        'form.work_day.attendance.unjustified_absence' => 1,
-                        'form.work_day.attendance.justified_absence' => 2
+                        'form.work_day.attendance.no_absence' => WorkDay::NO_ABSENCE,
+                        'form.work_day.attendance.unjustified_absence' => WorkDay::UNJUSTIFIED_ABSENCE,
+                        'form.work_day.attendance.justified_absence' => WorkDay::JUSTIFIED_ABSENCE
                     ] : [
-                        'form.work_day.attendance.no_absence' => 0,
-                        'form.work_day.attendance.unjustified_absence' => 1
+                        'form.work_day.attendance.no_absence' => WorkDay::NO_ABSENCE,
+                        'form.work_day.attendance.unjustified_absence' => WorkDay::UNJUSTIFIED_ABSENCE
                     ],
                     'disabled' => $locked
                 ]);

@@ -19,137 +19,94 @@
 namespace App\Entity\WPT;
 
 use App\Entity\Edu\Criterion;
+use App\Repository\WPT\ActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WPT\ActivityRepository")
- * @ORM\Table(name="wpt_activity",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"shift_id", "code"})}))))
- */
-class Activity
+#[ORM\Entity(repositoryClass: ActivityRepository::class)]
+#[ORM\Table(name: 'wpt_activity')]
+#[ORM\UniqueConstraint(columns: ['shift_id', 'code'])]
+class Activity implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Shift", inversedBy="activities")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Shift
-     */
-    private $shift;
+    #[ORM\ManyToOne(targetEntity: Shift::class, inversedBy: 'activities')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Shift $shift = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $code;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $code = null;
 
-    /**
-     * @ORM\Column(type="text")
-     * @var string
-     */
-    private $description;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Edu\Criterion")
-     * @ORM\JoinTable(name="wpt_activity_criterion")
-     * @ORM\OrderBy({"code"="ASC"})
-     * @var Criterion[]|Collection
-     */
-    protected $criteria;
+    #[ORM\ManyToMany(targetEntity: Criterion::class)]
+    #[ORM\JoinTable(name: 'wpt_activity_criterion')]
+    #[ORM\OrderBy(['code' => 'ASC'])]
+    private Collection $criteria;
 
     public function __construct()
     {
         $this->criteria = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getCode() . ': ' . $this->getDescription();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Shift
-     */
-    public function getShift()
+    public function getShift(): ?Shift
     {
         return $this->shift;
     }
 
-    /**
-     * @param Shift $shift
-     * @return Activity
-     */
-    public function setShift($shift)
+    public function setShift(Shift $shift): static
     {
         $this->shift = $shift;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * @param string $code
-     * @return Activity
-     */
-    public function setCode($code)
+    public function setCode(string $code): static
     {
         $this->code = $code;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return Activity
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): static
     {
         $this->description = $description;
         return $this;
     }
 
     /**
-     * @return Criterion[]|Collection
+     * @return Collection<int, Criterion>
      */
-    public function getCriteria()
+    public function getCriteria(): Collection
     {
         return $this->criteria;
     }
 
-    /**
-     * @param Criterion[]|Collection $criteria
-     * @return Activity
-     */
-    public function setCriteria($criteria)
+    public function setCriteria(Collection $criteria): static
     {
         $this->criteria = $criteria;
         return $this;

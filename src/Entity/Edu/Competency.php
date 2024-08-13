@@ -18,105 +18,67 @@
 
 namespace App\Entity\Edu;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="edu_competency",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"training_id", "code"})}))))
- */
-class Competency
+#[ORM\Entity]
+#[ORM\Table(name: 'edu_competency')]
+#[ORM\UniqueConstraint(columns: ['training_id', 'code'])]
+class Competency implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Training", inversedBy="competencies")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Training
-     */
-    private $training;
+    #[ORM\ManyToOne(targetEntity: Training::class, inversedBy: 'competencies')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Training $training = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     * @var string
-     */
-    private $code;
+    #[ORM\Column(type: Types::STRING, nullable: false)]
+    private ?string $code = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=false)
-     * @var string
-     */
-    private $description;
+    #[ORM\Column(type: Types::TEXT, nullable: false)]
+    private ?string $description = null;
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getCode() . ': ' . $this->getDescription();
     }
 
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Training
-     */
-    public function getTraining()
+    public function getTraining(): ?Training
     {
         return $this->training;
     }
 
-    /**
-     * @param Training $training
-     * @return Competency
-     */
-    public function setTraining(Training $training)
+    public function setTraining(Training $training): static
     {
         $this->training = $training;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * @param string $code
-     * @return Competency
-     */
-    public function setCode($code)
+    public function setCode(string $code): static
     {
         $this->code = $code;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return Competency
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): static
     {
         $this->description = $description;
         return $this;

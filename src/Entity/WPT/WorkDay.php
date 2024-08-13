@@ -18,99 +18,68 @@
 
 namespace App\Entity\WPT;
 
+use App\Repository\WPT\WorkDayRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WPT\WorkDayRepository")
- * @ORM\Table(name="wpt_work_day",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"agreement_id", "date"})}))))
- */
+#[ORM\Entity(repositoryClass: WorkDayRepository::class)]
+#[ORM\Table(name: 'wpt_work_day')]
+#[ORM\UniqueConstraint(columns: ['agreement_id', 'date'])]
 class WorkDay
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Agreement", inversedBy="workDays")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Agreement
-     */
-    private $agreement;
+    #[ORM\ManyToOne(targetEntity: Agreement::class, inversedBy: 'workDays')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Agreement $agreement = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $hours;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $hours;
 
-    /**
-     * @ORM\Column(type="date")
-     * @var \DateTime
-     */
-    private $date;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function __construct()
+    {
+        $this->hours = 0;
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Agreement
-     */
-    public function getAgreement()
+    public function getAgreement(): ?Agreement
     {
         return $this->agreement;
     }
 
-    /**
-     * @param Agreement $agreement
-     * @return WorkDay
-     */
-    public function setAgreement(Agreement $agreement)
+    public function setAgreement(Agreement $agreement): static
     {
         $this->agreement = $agreement;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getHours()
+    public function getHours(): ?int
     {
         return $this->hours;
     }
 
-    /**
-     * @param int $hours
-     * @return WorkDay
-     */
-    public function setHours($hours)
+    public function setHours(int $hours): static
     {
         $this->hours = $hours;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDate()
+    public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
 
-    /**
-     * @param \DateTime $date
-     * @return WorkDay
-     */
-    public function setDate(\DateTimeInterface $date)
+    public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
         return $this;

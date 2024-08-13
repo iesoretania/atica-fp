@@ -18,99 +18,63 @@
 
 namespace App\Entity\Edu;
 
+use App\Repository\Edu\NonWorkingDayRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Edu\NonWorkingDayRepository")
- * @ORM\Table(name="edu_non_working_day",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"academic_year_id", "date"})}))))
- */
+#[ORM\Entity(repositoryClass: NonWorkingDayRepository::class)]
+#[ORM\Table(name: 'edu_non_working_day')]
+#[ORM\UniqueConstraint(columns: ['academic_year_id', 'date'])]
 class NonWorkingDay
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="AcademicYear")
-     * @ORM\JoinColumn(nullable=false)
-     * @var AcademicYear
-     */
-    private $academicYear;
+    #[ORM\ManyToOne(targetEntity: AcademicYear::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?AcademicYear $academicYear = null;
 
-    /**
-     * @ORM\Column(type="date", nullable=false)
-     * @var \DateTime
-     */
-    private $date;
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: false)]
+    private ?\DateTimeInterface $date = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $description;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $description = null;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return AcademicYear
-     */
-    public function getAcademicYear()
+    public function getAcademicYear(): ?AcademicYear
     {
         return $this->academicYear;
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @return NonWorkingDay
-     */
-    public function setAcademicYear($academicYear)
+    public function setAcademicYear(AcademicYear $academicYear): static
     {
         $this->academicYear = $academicYear;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDate()
+    public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
 
-    /**
-     * @param \DateTime $date
-     * @return NonWorkingDay
-     */
-    public function setDate(\DateTimeInterface $date)
+    public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return NonWorkingDay
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;

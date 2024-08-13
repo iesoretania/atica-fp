@@ -18,12 +18,12 @@
 
 namespace App\Entity;
 
+use App\Repository\SurveyQuestionRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\SurveyQuestionRepository")
- * @ORM\Table(name="survey_question")
- */
+#[ORM\Entity(repositoryClass: SurveyQuestionRepository::class)]
+#[ORM\Table(name: 'survey_question')]
 class SurveyQuestion
 {
     public const FIXED = 'fixed';
@@ -44,50 +44,29 @@ class SurveyQuestion
         self::FIXED
     ];
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Survey", inversedBy="questions")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Survey
-     */
-    private $survey;
+    #[ORM\ManyToOne(targetEntity: Survey::class, inversedBy: 'questions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Survey $survey = null;
 
-    /**
-     * @ORM\Column(type="text")
-     * @var string
-     */
-    private $description;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $type;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $type = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    private $items;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $items = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $mandatory;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $mandatory;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $orderNr;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $orderNr;
 
     public function __construct()
     {
@@ -95,117 +74,72 @@ class SurveyQuestion
         $this->mandatory = false;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Survey
-     */
-    public function getSurvey()
+    public function getSurvey(): ?Survey
     {
         return $this->survey;
     }
 
-    /**
-     * @param Survey $survey
-     * @return SurveyQuestion
-     */
-    public function setSurvey(Survey $survey)
+    public function setSurvey(Survey $survey): static
     {
         $this->survey = $survey;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return SurveyQuestion
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): static
     {
         $this->description = $description;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    /**
-     * @param string $type
-     * @return SurveyQuestion
-     */
-    public function setType($type)
+    public function setType(string $type): static
     {
         $this->type = $type;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getItems()
+    public function getItems(): ?string
     {
         return $this->items;
     }
 
-    /**
-     * @param string $items
-     * @return SurveyQuestion
-     */
-    public function setItems($items)
+    public function setItems(?string $items): static
     {
         $this->items = $items;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isMandatory()
+    public function isMandatory(): ?bool
     {
         return $this->mandatory;
     }
 
-    /**
-     * @param bool $mandatory
-     * @return SurveyQuestion
-     */
-    public function setMandatory($mandatory)
+    public function setMandatory(bool $mandatory): static
     {
         $this->mandatory = $mandatory;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getOrderNr()
+    public function getOrderNr(): ?int
     {
         return $this->orderNr;
     }
 
-    /**
-     * @param int $orderNr
-     * @return SurveyQuestion
-     */
-    public function setOrderNr($orderNr)
+    public function setOrderNr(int $orderNr): static
     {
         $this->orderNr = $orderNr;
         return $this;

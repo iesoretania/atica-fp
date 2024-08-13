@@ -19,80 +19,51 @@
 namespace App\Entity\Edu;
 
 use App\Entity\Organization;
+use App\Repository\Edu\ReportTemplateRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Edu\ReportTemplateRepository")
- * @ORM\Table(name="edu_report_template")
- */
+#[ORM\Entity(repositoryClass: ReportTemplateRepository::class)]
+#[ORM\Table(name: 'edu_report_template')]
 class ReportTemplate
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Organization")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Organization
-     */
-    private $organization;
+    #[ORM\ManyToOne(targetEntity: Organization::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Organization $organization = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $description;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\Column(type="blob")
-     * @var resource
-     */
+    #[ORM\Column(type: Types::BLOB)]
     private $data;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Organization
-     */
-    public function getOrganization()
+    public function getOrganization(): ?Organization
     {
         return $this->organization;
     }
 
-    /**
-     * @param Organization $organization
-     * @return ReportTemplate
-     */
-    public function setOrganization($organization)
+    public function setOrganization(Organization $organization): static
     {
         $this->organization = $organization;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return ReportTemplate
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): static
     {
         $this->description = $description;
         return $this;
@@ -101,16 +72,15 @@ class ReportTemplate
     /**
      * @return resource
      */
-    public function getData()
+    public function getData(): mixed
     {
         return $this->data;
     }
 
     /**
      * @param resource $data
-     * @return ReportTemplate
      */
-    public function setData($data)
+    public function setData(mixed $data): static
     {
         $this->data = $data;
         return $this;

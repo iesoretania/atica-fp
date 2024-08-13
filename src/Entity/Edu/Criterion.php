@@ -18,130 +18,80 @@
 
 namespace App\Entity\Edu;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="edu_criterion")
- */
-class Criterion
+#[ORM\Entity]
+#[ORM\Table(name: 'edu_criterion')]
+class Criterion implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     * @var int
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    protected $code;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $code = null;
 
-    /**
-     * @ORM\Column(type="text")
-     * @var string
-     */
-    protected $name;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    protected $description;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="LearningOutcome", inversedBy="criteria")
-     * @ORM\JoinColumn(nullable=false)
-     * @var LearningOutcome
-     */
-    protected $learningOutcome;
+    #[ORM\ManyToOne(targetEntity: LearningOutcome::class, inversedBy: 'criteria')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?LearningOutcome $learningOutcome = null;
 
-    /**
-     * @return integer
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getCode() . ') ' . $this->getName();
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * @param string $code
-     * @return Criterion
-     */
-    public function setCode($code)
+    public function setCode(string $code): static
     {
         $this->code = $code;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Criterion
-     */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return Criterion
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;
     }
 
-    /**
-     * @return LearningOutcome
-     */
-    public function getLearningOutcome()
+    public function getLearningOutcome(): ?LearningOutcome
     {
         return $this->learningOutcome;
     }
 
-    /**
-     * @param LearningOutcome $learningOutcome
-     * @return Criterion
-     */
-    public function setLearningOutcome($learningOutcome)
+    public function setLearningOutcome(LearningOutcome $learningOutcome): static
     {
         $this->learningOutcome = $learningOutcome;
         return $this;

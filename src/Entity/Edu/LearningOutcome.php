@@ -20,62 +20,48 @@ namespace App\Entity\Edu;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="edu_learning_outcome",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"subject_id", "code"})}))))
- */
-class LearningOutcome
+#[ORM\Entity]
+#[ORM\Table(name: 'edu_learning_outcome')]
+#[ORM\UniqueConstraint(columns: ['subject_id', 'code'])]
+class LearningOutcome implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Subject", inversedBy="learningOutcomes")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Subject
-     */
-    private $subject;
+    #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'learningOutcomes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Subject $subject = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     * @var string
-     */
-    private $code;
+    #[ORM\Column(type: Types::STRING, nullable: false)]
+    private ?string $code = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=false)
-     * @var string
-     */
-    private $description;
+    #[ORM\Column(type: Types::TEXT, nullable: false)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Criterion", mappedBy="learningOutcome")
-     * @var Criterion[]|Collection
-     */
-    private $criteria;
+    #[ORM\OneToMany(targetEntity: Criterion::class, mappedBy: 'learningOutcome')]
+    private Collection $criteria;
 
     public function __construct()
     {
         $this->criteria = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return ($this->getSubject()->getCode() ?: $this->getSubject()->getName()) . ' - '. $this->getCode();
+        return ($this->getSubject() === null)
+            ? ''
+            : ($this->getSubject()->getCode() ?: $this->getSubject()->getName()) . ' - '. $this->getCode();
     }
 
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -83,72 +69,44 @@ class LearningOutcome
     /**
      * @return Subject
      */
-    public function getSubject()
+    public function getSubject(): ?Subject
     {
         return $this->subject;
     }
 
-    /**
-     * @param Subject $subject
-     * @return LearningOutcome
-     */
-    public function setSubject(Subject $subject)
+    public function setSubject(Subject $subject): static
     {
         $this->subject = $subject;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * @param string $code
-     * @return LearningOutcome
-     */
-    public function setCode($code)
+    public function setCode(string $code): static
     {
         $this->code = $code;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return LearningOutcome
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): static
     {
         $this->description = $description;
         return $this;
     }
 
     /**
-     * @return Criterion[]|Collection
+     * @return Collection<int, Criterion>
      */
-    public function getCriteria()
+    public function getCriteria(): Collection
     {
         return $this->criteria;
-    }
-
-    /**
-     * @param Criterion[]|Collection $criteria
-     * @return LearningOutcome
-     */
-    public function setCriteria($criteria)
-    {
-        $this->criteria = $criteria;
-        return $this;
     }
 }

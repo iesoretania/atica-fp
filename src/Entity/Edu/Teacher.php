@@ -21,131 +21,86 @@ namespace App\Entity\Edu;
 use App\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="edu_teacher",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"person_id", "academic_year_id"})}))
- */
-class Teacher
+#[ORM\Entity]
+#[ORM\Table(name: 'edu_teacher')]
+#[ORM\UniqueConstraint(columns: ['person_id', 'academic_year_id'])]
+class Teacher implements \Stringable
 {
-    /**
-     * @var bool
-     */
-    public $wltEducationalTutor;
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Person
-     */
-    private $person;
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Person $person = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="AcademicYear")
-     * @ORM\JoinColumn(nullable=false)
-     * @var AcademicYear
-     */
-    private $academicYear;
+    #[ORM\ManyToOne(targetEntity: AcademicYear::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?AcademicYear $academicYear = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Department")
-     * @ORM\JoinColumn(nullable=true)
-     * @var Department
-     */
-    private $department;
+    #[ORM\ManyToOne(targetEntity: Department::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Department $department = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Teaching", mappedBy="teacher")
-     * @var Teaching[]
-     */
-    private $teachings;
+    #[ORM\OneToMany(targetEntity: Teaching::class, mappedBy: 'teacher')]
+    private Collection $teachings;
 
     public function __construct()
     {
         $this->teachings = new ArrayCollection();
-        $this->wltEducationalTutor = false;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return (string) $this->getPerson();
+        return ($this->getPerson() === null) ? '' : $this->getPerson()->__toString();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Person
-     */
-    public function getPerson()
+    public function getPerson(): ?Person
     {
         return $this->person;
     }
 
-    /**
-     * @param Person $person
-     * @return Teacher
-     */
-    public function setPerson(Person $person)
+    public function setPerson(Person $person): static
     {
         $this->person = $person;
         return $this;
     }
 
-    /**
-     * @return AcademicYear
-     */
-    public function getAcademicYear()
+    public function getAcademicYear(): ?AcademicYear
     {
         return $this->academicYear;
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @return Teacher
-     */
-    public function setAcademicYear(AcademicYear $academicYear)
+    public function setAcademicYear(AcademicYear $academicYear): static
     {
         $this->academicYear = $academicYear;
         return $this;
     }
 
-    /**
-     * @return Department
-     */
-    public function getDepartment()
+    public function getDepartment(): ?Department
     {
         return $this->department;
     }
 
-    /**
-     * @param Department $department
-     * @return Teacher
-     */
-    public function setDepartment(Department $department = null)
+    public function setDepartment(?Department $department = null): static
     {
         $this->department = $department;
         return $this;
     }
 
     /**
-     * @return Teaching[]|Collection
+     * @return Collection<int, Teaching>
      */
-    public function getTeachings()
+    public function getTeachings(): Collection
     {
         return $this->teachings;
     }

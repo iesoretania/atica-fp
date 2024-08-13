@@ -19,123 +19,77 @@
 namespace App\Entity\WLT;
 
 use App\Entity\Person;
+use App\Repository\WLT\AgreementActivityRealizationCommentRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WLT\AgreementActivityRealizationCommentRepository")
- * @ORM\Table(name="wlt_agreement_activity_realization_comment")
- */
+#[ORM\Entity(repositoryClass: AgreementActivityRealizationCommentRepository::class)]
+#[ORM\Table(name: 'wlt_agreement_activity_realization_comment')]
 class AgreementActivityRealizationComment
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="AgreementActivityRealization", inversedBy="comments")
-     * @ORM\JoinColumn(nullable=false)
-     * @var AgreementActivityRealization
-     */
-    private $agreementActivityRealization;
+    #[ORM\ManyToOne(targetEntity: AgreementActivityRealization::class, inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?AgreementActivityRealization $agreementActivityRealization = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person")
-     * @ORM\JoinColumn(nullable=true)
-     * @var Person
-     */
-    private $person;
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Person $person = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=false)
-     * @var string
-     */
-    private $comment;
+    #[ORM\Column(type: Types::TEXT, nullable: false)]
+    private ?string $comment = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @var \DateTime
-     */
-    private $timestamp;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $timestamp = null;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return AgreementActivityRealization
-     */
-    public function getAgreementActivityRealization()
+    public function getAgreementActivityRealization(): ?AgreementActivityRealization
     {
         return $this->agreementActivityRealization;
     }
 
-    /**
-     * @param AgreementActivityRealization $agreementActivityRealization
-     * @return AgreementActivityRealizationComment
-     */
-    public function setAgreementActivityRealization(AgreementActivityRealization $agreementActivityRealization)
+    public function setAgreementActivityRealization(AgreementActivityRealization $agreementActivityRealization): static
     {
         $this->agreementActivityRealization = $agreementActivityRealization;
         return $this;
     }
 
-    /**
-     * @return Person
-     */
-    public function getPerson()
+    public function getPerson(): ?Person
     {
         return $this->person;
     }
 
-    /**
-     * @param Person $person
-     * @return AgreementActivityRealizationComment
-     */
-    public function setPerson(Person $person)
+    public function setPerson(Person $person): static
     {
         $this->person = $person;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getComment(): string
+    public function getComment(): ?string
     {
         return $this->comment;
     }
 
-    /**
-     * @param string $comment
-     * @return AgreementActivityRealizationComment
-     */
-    public function setComment($comment)
+    public function setComment(string $comment): static
     {
         $this->comment = $comment;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getTimestamp(): \DateTime
+    public function getTimestamp(): ?\DateTimeInterface
     {
         return $this->timestamp;
     }
 
-    /**
-     * @param \DateTime $timestamp
-     * @return AgreementActivityRealizationComment
-     */
-    public function setTimestamp(\DateTime $timestamp)
+    public function setTimestamp(\DateTimeInterface $timestamp): static
     {
         $this->timestamp = $timestamp;
         return $this;

@@ -20,172 +20,121 @@ namespace App\Entity\WLT;
 
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
+use App\Repository\WLT\MeetingRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WLT\MeetingRepository")
- * @ORM\Table(name="wlt_meeting")
- */
+#[ORM\Entity(repositoryClass: MeetingRepository::class)]
+#[ORM\Table(name: 'wlt_meeting')]
 class Meeting
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Project")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Project
-     */
-    private $project;
+    #[ORM\ManyToOne(targetEntity: Project::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Project $project = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @var \DateTime
-     */
-    private $dateTime;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateTime = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Edu\StudentEnrollment", fetch="EAGER")
-     * @ORM\JoinTable(name="wlt_meeting_student_enrollment")
-     * @var StudentEnrollment[]
-     */
-    private $studentEnrollments;
+    #[ORM\ManyToMany(targetEntity: StudentEnrollment::class, fetch: 'EAGER')]
+    #[ORM\JoinTable(name: 'wlt_meeting_student_enrollment')]
+    private Collection $studentEnrollments;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Teacher
-     */
-    private $createdBy;
+    #[ORM\ManyToOne(targetEntity: Teacher::class, fetch: 'EAGER')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Teacher $createdBy = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Edu\Teacher", fetch="EAGER")
-     * @ORM\JoinTable(name="wlt_meeting_teacher")
-     * @var Teacher[]
-     */
-    private $teachers;
+    #[ORM\ManyToMany(targetEntity: Teacher::class, fetch: 'EAGER')]
+    #[ORM\JoinTable(name: 'wlt_meeting_teacher')]
+    private Collection $teachers;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    private $detail;
-    /**
-     * @return int
-     */
-    public function getId()
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $detail = null;
+
+    public function __construct()
+    {
+        $this->studentEnrollments = new ArrayCollection();
+        $this->teachers = new ArrayCollection();
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Project
-     */
-    public function getProject()
+    public function getProject(): ?Project
     {
         return $this->project;
     }
 
-    /**
-     * @param Project $project
-     * @return Meeting
-     */
-    public function setProject($project)
+    public function setProject(Project $project): static
     {
         $this->project = $project;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDateTime()
+    public function getDateTime(): ?\DateTimeInterface
     {
         return $this->dateTime;
     }
 
-    /**
-     * @param \DateTime $dateTime
-     * @return Meeting
-     */
-    public function setDateTime(\DateTimeInterface $dateTime)
+    public function setDateTime(\DateTimeInterface $dateTime): static
     {
         $this->dateTime = $dateTime;
         return $this;
     }
 
     /**
-     * @return StudentEnrollment[]
+     * @return Collection<int, StudentEnrollment>
      */
-    public function getStudentEnrollments()
+    public function getStudentEnrollments(): Collection
     {
         return $this->studentEnrollments;
     }
 
-    /**
-     * @param StudentEnrollment[] $studentEnrollments
-     * @return Meeting
-     */
-    public function setStudentEnrollments($studentEnrollments)
+    public function setStudentEnrollments(Collection $studentEnrollments): static
     {
         $this->studentEnrollments = $studentEnrollments;
         return $this;
     }
 
-    /**
-     * @return Teacher
-     */
-    public function getCreatedBy()
+    public function getCreatedBy(): ?Teacher
     {
         return $this->createdBy;
     }
 
-    /**
-     * @param Teacher $createdBy
-     * @return Meeting
-     */
-    public function setCreatedBy($createdBy)
+    public function setCreatedBy(Teacher $createdBy): static
     {
         $this->createdBy = $createdBy;
         return $this;
     }
 
     /**
-     * @return Teacher[]
+     * @return Collection<int, Teacher>
      */
-    public function getTeachers()
+    public function getTeachers(): Collection
     {
         return $this->teachers;
     }
 
-    /**
-     * @param Teacher[] $teachers
-     * @return Meeting
-     */
-    public function setTeachers($teachers)
+    public function setTeachers(Collection $teachers): static
     {
         $this->teachers = $teachers;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDetail()
+    public function getDetail(): ?string
     {
         return $this->detail;
     }
 
-    /**
-     * @param string $detail
-     * @return Meeting
-     */
-    public function setDetail($detail)
+    public function setDetail(?string $detail): static
     {
         $this->detail = $detail;
         return $this;

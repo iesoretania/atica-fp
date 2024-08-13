@@ -18,103 +18,67 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="role",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"person_id", "organization_id", "role"})})))
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'role')]
+#[ORM\UniqueConstraint(columns: ['person_id', 'organization_id', 'role'])]
 class Role
 {
     public const ROLE_LOCAL_ADMIN = 'LOCAL_ADMIN';
-    public const ROLE_WLT_MANAGER = 'WLT_MANAGER';
 
     public const ROLES = [self::ROLE_LOCAL_ADMIN];
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=20)
-     * @var string
-     */
-    private $role;
+    #[ORM\Column(type: Types::STRING, length: 20)]
+    private ?string $role = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Person")
-     * @var Person
-     */
-    private $person;
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Person $person = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Organization")
-     * @var Organization
-     */
-    private $organization;
+    #[ORM\ManyToOne(targetEntity: Organization::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Organization $organization = null;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getRole()
+    public function getRole(): ?string
     {
         return $this->role;
     }
 
-    /**
-     * @param string $role
-     * @return Role
-     */
-    public function setRole($role)
+    public function setRole(string $role): static
     {
         $this->role = $role;
         return $this;
     }
 
-    /**
-     * @return Person
-     */
-    public function getPerson()
+    public function getPerson(): ?Person
     {
         return $this->person;
     }
 
-    /**
-     * @param Person $person
-     * @return Role
-     */
-    public function setPerson($person)
+    public function setPerson(Person $person): static
     {
         $this->person = $person;
         return $this;
     }
 
-    /**
-     * @return Organization
-     */
-    public function getOrganization()
+    public function getOrganization(): ?Organization
     {
         return $this->organization;
     }
 
-    /**
-     * @param Organization $organization
-     * @return Role
-     */
-    public function setOrganization($organization)
+    public function setOrganization(Organization $organization): static
     {
         $this->organization = $organization;
         return $this;

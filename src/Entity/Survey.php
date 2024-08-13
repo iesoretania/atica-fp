@@ -18,60 +18,39 @@
 
 namespace App\Entity;
 
+use App\Repository\SurveyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\SurveyRepository")
- * @ORM\Table(name="survey")
- */
+#[ORM\Entity(repositoryClass: SurveyRepository::class)]
+#[ORM\Table(name: 'survey')]
 class Survey
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Organization")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Organization
-     */
-    private $organization;
+    #[ORM\ManyToOne(targetEntity: Organization::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Organization $organization = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     * @var string
-     */
-    private $title;
+    #[ORM\Column(type: Types::STRING, nullable: false)]
+    private ?string $title = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @var \DateTime
-     */
-    private $startTimestamp;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $startTimestamp = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @var \DateTime
-     */
-    private $endTimestamp;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $endTimestamp = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="SurveyQuestion", mappedBy="survey")
-     * @var SurveyQuestion[]|Collection
-     */
-    private $questions;
+    #[ORM\OneToMany(targetEntity: SurveyQuestion::class, mappedBy: 'survey')]
+    private Collection $questions;
 
-    /**
-     * @ORM\OneToMany(targetEntity="AnsweredSurvey", mappedBy="survey", fetch="EXTRA_LAZY")
-     * @var AnsweredSurvey[]|Collection
-     */
-    private $answers;
+    #[ORM\OneToMany(targetEntity: AnsweredSurvey::class, mappedBy: 'survey', fetch: 'EXTRA_LAZY')]
+    private Collection $answers;
 
     public function __construct()
     {
@@ -79,120 +58,68 @@ class Survey
         $this->answers = new ArrayCollection();
     }
 
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Organization
-     */
-    public function getOrganization()
+    public function getOrganization(): ?Organization
     {
         return $this->organization;
     }
 
-    /**
-     * @param Organization $organization
-     * @return Survey
-     */
-    public function setOrganization(Organization $organization)
+    public function setOrganization(Organization $organization): static
     {
         $this->organization = $organization;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     * @return Survey
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): static
     {
         $this->title = $title;
         return $this;
     }
 
-    /**
-     * @return ?\DateTimeInterface
-     */
-    public function getStartTimestamp()
+    public function getStartTimestamp(): ?\DateTimeInterface
     {
         return $this->startTimestamp;
     }
 
-    /**
-     * @param ?\DateTimeInterface $startTimestamp
-     * @return Survey
-     */
-    public function setStartTimestamp(?\DateTimeInterface $startTimestamp)
+    public function setStartTimestamp(?\DateTimeInterface $startTimestamp): static
     {
         $this->startTimestamp = $startTimestamp;
         return $this;
     }
 
-    /**
-     * @return ?\DateTimeInterface
-     */
-    public function getEndTimestamp()
+    public function getEndTimestamp(): ?\DateTimeInterface
     {
         return $this->endTimestamp;
     }
 
-    /**
-     * @param ?\DateTimeInterface $endTimestamp
-     * @return Survey
-     */
-    public function setEndTimestamp(?\DateTimeInterface $endTimestamp)
+    public function setEndTimestamp(?\DateTimeInterface $endTimestamp): static
     {
         $this->endTimestamp = $endTimestamp;
         return $this;
     }
 
     /**
-     * @return SurveyQuestion[]|Collection
+     * @return Collection<int, SurveyQuestion>
      */
-    public function getQuestions()
+    public function getQuestions(): Collection
     {
         return $this->questions;
     }
 
     /**
-     * @param SurveyQuestion[]|Collection $questions
-     * @return Survey
+     * @return Collection<int, AnsweredSurvey>
      */
-    public function setQuestions($questions)
-    {
-        $this->questions = $questions;
-        return $this;
-    }
-
-    /**
-     * @return AnsweredSurvey[]|Collection
-     */
-    public function getAnswers()
+    public function getAnswers(): Collection
     {
         return $this->answers;
-    }
-
-    /**
-     * @param AnsweredSurvey[]|Collection $answers
-     * @return Survey
-     */
-    public function setAnswers($answers)
-    {
-        $this->answers = $answers;
-        return $this;
     }
 }

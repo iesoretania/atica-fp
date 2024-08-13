@@ -20,100 +20,63 @@ namespace App\Entity\WLT;
 
 use App\Entity\AnsweredSurvey;
 use App\Entity\Edu\StudentEnrollment;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="wlt_student_answered_survey")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'wlt_student_answered_survey')]
 class StudentAnsweredSurvey
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Project")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Project
-     */
-    private $project;
+    #[ORM\ManyToOne(targetEntity: Project::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Project $project = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\StudentEnrollment")
-     * @ORM\JoinColumn(nullable=false)
-     * @var StudentEnrollment
-     */
-    private $studentEnrollment;
+    #[ORM\ManyToOne(targetEntity: StudentEnrollment::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?StudentEnrollment $studentEnrollment = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AnsweredSurvey")
-     * @ORM\JoinColumn(nullable=false)
-     * @var AnsweredSurvey
-     */
-    private $answeredSurvey;
+    #[ORM\ManyToOne(targetEntity: AnsweredSurvey::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?AnsweredSurvey $answeredSurvey = null;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Project
-     */
-    public function getProject()
+    public function getProject(): ?Project
     {
         return $this->project;
     }
 
-    /**
-     * @param Project $project
-     * @return self
-     */
-    public function setProject($project)
+    public function setProject(Project $project): static
     {
         $this->project = $project;
         return $this;
     }
 
-    /**
-     * @return StudentEnrollment
-     */
-    public function getStudentEnrollment()
+    public function getStudentEnrollment(): ?StudentEnrollment
     {
         return $this->studentEnrollment;
     }
 
-    /**
-     * @param StudentEnrollment $studentEnrollment
-     * @return self
-     */
-    public function setStudentEnrollment($studentEnrollment)
+    public function setStudentEnrollment(StudentEnrollment $studentEnrollment): static
     {
         $this->studentEnrollment = $studentEnrollment;
         return $this;
     }
 
-    /**
-     * @return AnsweredSurvey
-     */
-    public function getAnsweredSurvey()
+    public function getAnsweredSurvey(): ?AnsweredSurvey
     {
         return $this->answeredSurvey;
     }
 
-    /**
-     * @param AnsweredSurvey $answeredSurvey
-     * @return self
-     */
-    public function setAnsweredSurvey($answeredSurvey)
+    public function setAnsweredSurvey(AnsweredSurvey $answeredSurvey): static
     {
         $this->answeredSurvey = $answeredSurvey;
         return $this;

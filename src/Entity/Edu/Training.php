@@ -18,60 +18,40 @@
 
 namespace App\Entity\Edu;
 
+use App\Repository\Edu\TrainingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Edu\TrainingRepository")
- * @ORM\Table(name="edu_training")
- */
-class Training
+#[ORM\Entity(repositoryClass: TrainingRepository::class)]
+#[ORM\Table(name: 'edu_training')]
+class Training implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="AcademicYear")
-     * @ORM\JoinColumn(nullable=false)
-     * @var AcademicYear
-     */
-    private $academicYear;
+    #[ORM\ManyToOne(targetEntity: AcademicYear::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?AcademicYear $academicYear = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $internalCode;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $internalCode = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $name;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Competency", mappedBy="training")
-     * @ORM\OrderBy({"code": "ASC"})
-     * @var Competency[]
-     */
-    private $competencies;
+    #[ORM\OneToMany(targetEntity: Competency::class, mappedBy: 'training')]
+    #[ORM\OrderBy(['code' => 'ASC'])]
+    private Collection $competencies;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Grade", mappedBy="training")
-     * @var Grade[]
-     */
-    private $grades;
+    #[ORM\OneToMany(targetEntity: Grade::class, mappedBy: 'training')]
+    private Collection $grades;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Department")
-     * @var Department|null
-     */
-    private $department;
+    #[ORM\ManyToOne(targetEntity: Department::class)]
+    private ?Department $department = null;
 
     public function __construct()
     {
@@ -79,102 +59,71 @@ class Training
         $this->grades = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getInternalCode()
+    public function getInternalCode(): ?string
     {
         return $this->internalCode;
     }
 
-    /**
-     * @param string $internalCode
-     * @return Training
-     */
-    public function setInternalCode($internalCode)
+    public function setInternalCode(?string $internalCode): static
     {
         $this->internalCode = $internalCode;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Training
-     */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return AcademicYear
-     */
-    public function getAcademicYear()
+    public function getAcademicYear(): ?AcademicYear
     {
         return $this->academicYear;
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @return Training
-     */
-    public function setAcademicYear(AcademicYear $academicYear)
+    public function setAcademicYear(AcademicYear $academicYear): static
     {
         $this->academicYear = $academicYear;
         return $this;
     }
 
     /**
-     * @return Competency[]
+     * @return Collection<int, Competency>
      */
-    public function getCompetencies()
+    public function getCompetencies(): Collection
     {
         return $this->competencies;
     }
 
     /**
-     * @return Grade[]
+     * @return Collection<int, Grade>
      */
-    public function getGrades()
+    public function getGrades(): Collection
     {
         return $this->grades;
     }
 
-    /**
-     * @return Department|null
-     */
-    public function getDepartment()
+    public function getDepartment(): ?Department
     {
         return $this->department;
     }
 
-    /**
-     * @param Department|null $department
-     * @return Training
-     */
-    public function setDepartment($department = null)
+    public function setDepartment(?Department $department): static
     {
         $this->department = $department;
         return $this;

@@ -22,122 +22,74 @@ use App\Entity\Edu\Grade;
 use App\Entity\Edu\ReportTemplate;
 use App\Entity\Edu\Subject;
 use App\Entity\Survey;
+use App\Repository\WPT\ShiftRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WPT\ShiftRepository")
- * @ORM\Table(name="wpt_shift")
- */
-class Shift
+#[ORM\Entity(repositoryClass: ShiftRepository::class)]
+#[ORM\Table(name: 'wpt_shift')]
+class Shift implements \Stringable
 {
     public const QUARTER_FIRST = 1;
     public const QUARTER_SECOND = 2;
     public const QUARTER_THIRD = 3;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $name;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $hours;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $hours = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $type;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $type = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $quarter;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $quarter = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Subject")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Subject
-     */
-    private $subject;
+    #[ORM\ManyToOne(targetEntity: Subject::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Subject $subject = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Survey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var ?Survey
-     */
-    private $studentSurvey;
+    #[ORM\ManyToOne(targetEntity: Survey::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Survey $studentSurvey = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Survey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var ?Survey
-     */
-    private $companySurvey;
+    #[ORM\ManyToOne(targetEntity: Survey::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Survey $companySurvey = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Survey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var ?Survey
-     */
-    private $educationalTutorSurvey;
+    #[ORM\ManyToOne(targetEntity: Survey::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Survey $educationalTutorSurvey = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\ReportTemplate")
-     * @var ReportTemplate
-     */
-    private $attendanceReportTemplate;
+    #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
+    private ?ReportTemplate $attendanceReportTemplate = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\ReportTemplate")
-     * @var ReportTemplate
-     */
-    private $finalReportTemplate;
+    #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
+    private ?ReportTemplate $finalReportTemplate = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\ReportTemplate")
-     * @var ReportTemplate
-     */
-    private $weeklyActivityReportTemplate;
+    #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
+    private ?ReportTemplate $weeklyActivityReportTemplate = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\ReportTemplate")
-     * @var ReportTemplate
-     */
-    private $activitySummaryReportTemplate;
+    #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
+    private ?ReportTemplate $activitySummaryReportTemplate = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Agreement", mappedBy="shift")
-     * @var Agreement[]|Collection
-     */
-    private $agreements;
+    #[ORM\OneToMany(targetEntity: Agreement::class, mappedBy: 'shift')]
+    private Collection $agreements;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Activity", mappedBy="shift")
-     * @ORM\OrderBy({"code": "ASC", "description": "ASC"})
-     * @var Activity[]|Collection
-     */
-    private $activities;
+    #[ORM\OneToMany(targetEntity: Activity::class, mappedBy: 'shift')]
+    #[ORM\OrderBy(['code' => 'ASC', 'description' => 'ASC'])]
+    private Collection $activities;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $locked;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $locked = null;
 
     public function __construct()
     {
@@ -145,292 +97,175 @@ class Shift
         $this->activities = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Shift
-     */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getHours()
+    public function getHours(): ?int
     {
         return $this->hours;
     }
 
-    /**
-     * @param int $hours
-     * @return Shift
-     */
-    public function setHours($hours)
+    public function setHours(int $hours): static
     {
         $this->hours = $hours;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    /**
-     * @param string $type
-     * @return Shift
-     */
-    public function setType($type)
+    public function setType(string $type): static
     {
         $this->type = $type;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getQuarter()
+    public function getQuarter(): ?int
     {
         return $this->quarter;
     }
 
-    /**
-     * @param int $quarter
-     * @return Shift
-     */
-    public function setQuarter($quarter)
+    public function setQuarter(int $quarter): static
     {
         $this->quarter = $quarter;
         return $this;
     }
 
-    /**
-     * @return Subject
-     */
-    public function getSubject()
+    public function getSubject(): ?Subject
     {
         return $this->subject;
     }
 
-    /**
-     * @param Subject $subject
-     * @return Shift
-     */
-    public function setSubject($subject)
+    public function setSubject(Subject $subject): static
     {
         $this->subject = $subject;
         return $this;
     }
 
-    /**
-     * @return ?Grade
-     */
-    public function getGrade()
+    public function getGrade(): ?Grade
     {
-        return $this->subject ? $this->subject->getGrade() : null;
+        return $this->subject instanceof Subject ? $this->subject->getGrade() : null;
     }
 
-    /**
-     * @return ?Survey
-     */
-    public function getStudentSurvey()
+    public function getStudentSurvey(): ?Survey
     {
         return $this->studentSurvey;
     }
 
-    /**
-     * @param Survey $studentSurvey
-     * @return Shift
-     */
-    public function setStudentSurvey($studentSurvey)
+    public function setStudentSurvey(?Survey $studentSurvey): static
     {
         $this->studentSurvey = $studentSurvey;
         return $this;
     }
 
-    /**
-     * @return ?Survey
-     */
-    public function getCompanySurvey()
+    public function getCompanySurvey(): ?Survey
     {
         return $this->companySurvey;
     }
 
-    /**
-     * @param Survey $companySurvey
-     * @return Shift
-     */
-    public function setCompanySurvey($companySurvey)
+    public function setCompanySurvey(?Survey $companySurvey): static
     {
         $this->companySurvey = $companySurvey;
         return $this;
     }
 
-    /**
-     * @return ?Survey
-     */
-    public function getEducationalTutorSurvey()
+    public function getEducationalTutorSurvey(): ?Survey
     {
         return $this->educationalTutorSurvey;
     }
 
-    /**
-     * @param Survey $educationalTutorSurvey
-     * @return Shift
-     */
-    public function setEducationalTutorSurvey($educationalTutorSurvey)
+    public function setEducationalTutorSurvey(?Survey $educationalTutorSurvey): static
     {
         $this->educationalTutorSurvey = $educationalTutorSurvey;
         return $this;
     }
 
-    /**
-     * @return ReportTemplate
-     */
-    public function getAttendanceReportTemplate()
+    public function getAttendanceReportTemplate(): ?ReportTemplate
     {
         return $this->attendanceReportTemplate;
     }
 
-    /**
-     * @param ReportTemplate $attendanceReportTemplate
-     * @return Shift
-     */
-    public function setAttendanceReportTemplate($attendanceReportTemplate)
+    public function setAttendanceReportTemplate(?ReportTemplate $attendanceReportTemplate): static
     {
         $this->attendanceReportTemplate = $attendanceReportTemplate;
         return $this;
     }
 
-    /**
-     * @return ReportTemplate
-     */
-    public function getWeeklyActivityReportTemplate()
+    public function getWeeklyActivityReportTemplate(): ?ReportTemplate
     {
         return $this->weeklyActivityReportTemplate;
     }
 
-    /**
-     * @param ReportTemplate $weeklyActivityReportTemplate
-     * @return Shift
-     */
-    public function setWeeklyActivityReportTemplate($weeklyActivityReportTemplate)
+    public function setWeeklyActivityReportTemplate(?ReportTemplate $weeklyActivityReportTemplate): static
     {
         $this->weeklyActivityReportTemplate = $weeklyActivityReportTemplate;
         return $this;
     }
 
-    /**
-     * @return ReportTemplate
-     */
-    public function getFinalReportTemplate()
+    public function getFinalReportTemplate(): ?ReportTemplate
     {
         return $this->finalReportTemplate;
     }
 
-    /**
-     * @param ReportTemplate $finalReportTemplate
-     * @return Shift
-     */
-    public function setFinalReportTemplate($finalReportTemplate)
+    public function setFinalReportTemplate(?ReportTemplate $finalReportTemplate): static
     {
         $this->finalReportTemplate = $finalReportTemplate;
         return $this;
     }
 
-    /**
-     * @return ReportTemplate
-     */
-    public function getActivitySummaryReportTemplate()
+    public function getActivitySummaryReportTemplate(): ?ReportTemplate
     {
         return $this->activitySummaryReportTemplate;
     }
 
-    /**
-     * @param ReportTemplate $activitySummaryReportTemplate
-     * @return Shift
-     */
-    public function setActivitySummaryReportTemplate($activitySummaryReportTemplate)
+    public function setActivitySummaryReportTemplate(?ReportTemplate $activitySummaryReportTemplate): static
     {
         $this->activitySummaryReportTemplate = $activitySummaryReportTemplate;
         return $this;
     }
 
     /**
-     * @return Agreement[]|Collection
+     * @return Collection<int, Agreement>
      */
-    public function getAgreements()
+    public function getAgreements(): Collection
     {
         return $this->agreements;
     }
 
     /**
-     * @param Agreement[]|Collection $agreements
-     * @return Shift
+     * @return Collection<int, Activity>
      */
-    public function setAgreements($agreements)
-    {
-        $this->agreements = $agreements;
-        return $this;
-    }
-
-    /**
-     * @return Activity[]|Collection
-     */
-    public function getActivities()
+    public function getActivities(): Collection
     {
         return $this->activities;
     }
 
-    /**
-     * @param Activity[]|Collection $activities
-     * @return Shift
-     */
-    public function setActivities($activities)
-    {
-        $this->activities = $activities;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isLocked()
+    public function isLocked(): ?bool
     {
         return $this->locked;
     }
 
-    /**
-     * @param bool $locked
-     * @return Shift
-     */
-    public function setLocked(bool $locked)
+    public function setLocked(bool $locked): static
     {
         $this->locked = $locked;
         return $this;

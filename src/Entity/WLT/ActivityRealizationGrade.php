@@ -18,128 +18,82 @@
 
 namespace App\Entity\WLT;
 
+use App\Repository\WLT\ActivityRealizationGradeRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WLT\ActivityRealizationGradeRepository")
- * @ORM\Table(name="wlt_activity_realization_grade")
- */
-class ActivityRealizationGrade
+#[ORM\Entity(repositoryClass: ActivityRealizationGradeRepository::class)]
+#[ORM\Table(name: 'wlt_activity_realization_grade')]
+class ActivityRealizationGrade implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\WLT\Project")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Project
-     */
-    private $project;
+    #[ORM\ManyToOne(targetEntity: Project::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Project $project = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $description;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $numericGrade;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $numericGrade = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    private $notes;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $notes = null;
 
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->getDescription();
+        return (string) $this->getDescription();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Project
-     */
-    public function getProject()
+    public function getProject(): ?Project
     {
         return $this->project;
     }
 
-    /**
-     * @param Project $project
-     * @return ActivityRealizationGrade
-     */
-    public function setProject(Project $project)
+    public function setProject(Project $project): static
     {
         $this->project = $project;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return ActivityRealizationGrade
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): static
     {
         $this->description = $description;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getNumericGrade()
+    public function getNumericGrade(): ?int
     {
         return $this->numericGrade;
     }
 
-    /**
-     * @param int $numericGrade
-     * @return ActivityRealizationGrade
-     */
-    public function setNumericGrade($numericGrade)
+    public function setNumericGrade(int $numericGrade): static
     {
         $this->numericGrade = $numericGrade;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getNotes()
+    public function getNotes(): ?string
     {
         return $this->notes;
     }
 
-    /**
-     * @param string $notes
-     * @return ActivityRealizationGrade
-     */
-    public function setNotes($notes)
+    public function setNotes(?string $notes): static
     {
         $this->notes = $notes;
         return $this;

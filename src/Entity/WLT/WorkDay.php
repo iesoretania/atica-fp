@@ -20,332 +20,208 @@ namespace App\Entity\WLT;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="wlt_work_day",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"agreement_id", "date"})}))))
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'wlt_work_day')]
+#[ORM\UniqueConstraint(columns: ['agreement_id', 'date'])]
 class WorkDay
 {
     public const NO_ABSENCE = 0;
     public const UNJUSTIFIED_ABSENCE = 1;
     public const JUSTIFIED_ABSENCE = 2;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Agreement", inversedBy="workDays")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Agreement
-     */
-    private $agreement;
+    #[ORM\ManyToOne(targetEntity: Agreement::class, inversedBy: 'workDays')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Agreement $agreement = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $hours;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $hours = null;
 
-    /**
-     * @ORM\Column(type="date")
-     * @var \DateTime
-     */
-    private $date;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    private $notes;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $notes = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    private $otherActivities;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $otherActivities = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $locked;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $locked;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $absence;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $absence;
 
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("/^\d\d:\d\d$/")
-     * @var string
-     */
-    private $startTime1;
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    #[Assert\Regex('/^\d\d:\d\d$/')]
+    private ?string $startTime1 = null;
 
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("/^\d\d:\d\d$/")
-     * @var string
-     */
-    private $endTime1;
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    #[Assert\Regex('/^\d\d:\d\d$/')]
+    private ?string $endTime1 = null;
 
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("/^\d\d:\d\d$/")
-     * @var string
-     */
-    private $startTime2;
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    #[Assert\Regex('/^\d\d:\d\d$/')]
+    private ?string $startTime2 = null;
 
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("/^\d\d:\d\d$/")
-     * @var string
-     */
-    private $endTime2;
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    #[Assert\Regex('/^\d\d:\d\d$/')]
+    private ?string $endTime2 = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="ActivityRealization")
-     * @ORM\JoinTable("wlt_tracking")
-     * @var ActivityRealization[]
-     */
-    private $activityRealizations;
+    #[ORM\ManyToMany(targetEntity: ActivityRealization::class)]
+    #[ORM\JoinTable('wlt_tracking')]
+    private Collection $activityRealizations;
 
     public function __construct()
     {
-        $this->locked = false;
-        $this->absence = false;
         $this->activityRealizations = new ArrayCollection();
+        $this->absence = self::NO_ABSENCE;
+        $this->locked = false;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Agreement
-     */
-    public function getAgreement()
+    public function getAgreement(): ?Agreement
     {
         return $this->agreement;
     }
 
-    /**
-     * @param Agreement $agreement
-     * @return WorkDay
-     */
-    public function setAgreement(Agreement $agreement)
+    public function setAgreement(Agreement $agreement): static
     {
         $this->agreement = $agreement;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getHours()
+    public function getHours(): ?int
     {
         return $this->hours;
     }
 
-    /**
-     * @param int $hours
-     * @return WorkDay
-     */
-    public function setHours($hours)
+    public function setHours(int $hours): static
     {
         $this->hours = $hours;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDate()
+    public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
 
-    /**
-     * @param \DateTime $date
-     * @return WorkDay
-     */
-    public function setDate(\DateTimeInterface $date)
+    public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getNotes()
+    public function getNotes(): ?string
     {
         return $this->notes;
     }
 
-    /**
-     * @param string $notes
-     * @return WorkDay
-     */
-    public function setNotes($notes)
+    public function setNotes(?string $notes): static
     {
         $this->notes = $notes;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getOtherActivities()
+    public function getOtherActivities(): ?string
     {
         return $this->otherActivities;
     }
 
-    /**
-     * @param string $otherActivities
-     * @return WorkDay
-     */
-    public function setOtherActivities($otherActivities)
+    public function setOtherActivities(?string $otherActivities): static
     {
         $this->otherActivities = $otherActivities;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isLocked()
+    public function isLocked(): ?bool
     {
         return $this->locked;
     }
 
-    /**
-     * @param bool $locked
-     * @return WorkDay
-     */
-    public function setLocked($locked)
+    public function setLocked(bool $locked): static
     {
         $this->locked = $locked;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getAbsence()
+    public function getAbsence(): ?int
     {
         return $this->absence;
     }
 
-    /**
-     * @param int $absence
-     * @return WorkDay
-     */
-    public function setAbsence($absence)
+    public function setAbsence(int $absence): static
     {
         $this->absence = $absence;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getStartTime1()
+    public function getStartTime1(): ?string
     {
         return $this->startTime1;
     }
 
-    /**
-     * @param string $startTime1
-     * @return WorkDay
-     */
-    public function setStartTime1($startTime1)
+    public function setStartTime1(?string $startTime1): static
     {
         $this->startTime1 = $startTime1;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getEndTime1()
+    public function getEndTime1(): ?string
     {
         return $this->endTime1;
     }
 
-    /**
-     * @param string $endTime1
-     * @return WorkDay
-     */
-    public function setEndTime1($endTime1)
+    public function setEndTime1(?string $endTime1): static
     {
         $this->endTime1 = $endTime1;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getStartTime2()
+    public function getStartTime2(): ?string
     {
         return $this->startTime2;
     }
 
-    /**
-     * @param string $startTime2
-     * @return WorkDay
-     */
-    public function setStartTime2($startTime2)
+    public function setStartTime2(?string $startTime2): static
     {
         $this->startTime2 = $startTime2;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getEndTime2()
+    public function getEndTime2(): ?string
     {
         return $this->endTime2;
     }
 
-    /**
-     * @param string $endTime2
-     * @return WorkDay
-     */
-    public function setEndTime2($endTime2)
+    public function setEndTime2(?string $endTime2): static
     {
         $this->endTime2 = $endTime2;
         return $this;
     }
 
     /**
-     * @return ActivityRealization[]|Collection
+     * @return Collection<int, ActivityRealization>
      */
-    public function getActivityRealizations()
+    public function getActivityRealizations(): Collection
     {
         return $this->activityRealizations;
     }
 
-    /**
-     * @param ActivityRealization[] $activityRealizations
-     * @return WorkDay
-     */
-    public function setActivityRealizations($activityRealizations)
+    public function setActivityRealizations(Collection $activityRealizations): static
     {
         $this->activityRealizations = $activityRealizations;
         return $this;

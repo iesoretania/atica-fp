@@ -18,312 +18,191 @@
 
 namespace App\Entity\WPT;
 
+use App\Repository\WPT\TrackedWorkDayRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WPT\TrackedWorkDayRepository")
- * @ORM\Table(name="wpt_tracked_work_day",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"agreement_enrollment_id", "work_day_id"})}))))
- */
+#[ORM\Entity(repositoryClass: TrackedWorkDayRepository::class)]
+#[ORM\Table(name: 'wpt_tracked_work_day')]
+#[ORM\UniqueConstraint(columns: ['agreement_enrollment_id', 'work_day_id'])]
 class TrackedWorkDay
 {
     public const NO_ABSENCE = 0;
     public const UNJUSTIFIED_ABSENCE = 1;
     public const JUSTIFIED_ABSENCE = 2;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="WorkDay")
-     * @ORM\JoinColumn(nullable=false)
-     * @var WorkDay
-     */
-    private $workDay;
+    #[ORM\ManyToOne(targetEntity: WorkDay::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?WorkDay $workDay = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="AgreementEnrollment", inversedBy="trackedWorkDays")
-     * @ORM\JoinColumn(nullable=false)
-     * @var AgreementEnrollment
-     */
-    private $agreementEnrollment;
+    #[ORM\ManyToOne(targetEntity: AgreementEnrollment::class, inversedBy: 'trackedWorkDays')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?AgreementEnrollment $agreementEnrollment = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    private $notes;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $notes = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    private $otherActivities;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $otherActivities = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $locked;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $locked = false;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $absence;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $absence = self::NO_ABSENCE;
 
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("/^\d\d:\d\d$/")
-     * @var string
-     */
-    private $startTime1;
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    #[Assert\Regex('/^\d\d:\d\d$/')]
+    private ?string $startTime1 = null;
 
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("/^\d\d:\d\d$/")
-     * @var string
-     */
-    private $endTime1;
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    #[Assert\Regex('/^\d\d:\d\d$/')]
+    private ?string $endTime1 = null;
 
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("/^\d\d:\d\d$/")
-     * @var string
-     */
-    private $startTime2;
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    #[Assert\Regex('/^\d\d:\d\d$/')]
+    private ?string $startTime2 = null;
 
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("/^\d\d:\d\d$/")
-     * @var string
-     */
-    private $endTime2;
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    #[Assert\Regex('/^\d\d:\d\d$/')]
+    private ?string $endTime2 = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="ActivityTracking", mappedBy="trackedWorkDay")
-     * @var ActivityTracking[]|Collection
-     */
-    private $trackedActivities;
+    #[ORM\OneToMany(targetEntity: ActivityTracking::class, mappedBy: 'trackedWorkDay')]
+    private Collection $trackedActivities;
 
     public function __construct()
     {
-        $this->locked = false;
-        $this->absence = self::NO_ABSENCE;
         $this->trackedActivities = new ArrayCollection();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return WorkDay
-     */
-    public function getWorkDay()
+    public function getWorkDay(): ?WorkDay
     {
         return $this->workDay;
     }
 
-    /**
-     * @param WorkDay $workDay
-     * @return TrackedWorkDay
-     */
-    public function setWorkDay($workDay)
+    public function setWorkDay(WorkDay $workDay): static
     {
         $this->workDay = $workDay;
         return $this;
     }
 
-    /**
-     * @return AgreementEnrollment
-     */
-    public function getAgreementEnrollment()
+    public function getAgreementEnrollment(): ?AgreementEnrollment
     {
         return $this->agreementEnrollment;
     }
 
-    /**
-     * @param AgreementEnrollment $agreementEnrollment
-     * @return TrackedWorkDay
-     */
-    public function setAgreementEnrollment($agreementEnrollment)
+    public function setAgreementEnrollment(AgreementEnrollment $agreementEnrollment): static
     {
         $this->agreementEnrollment = $agreementEnrollment;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getNotes()
+    public function getNotes(): ?string
     {
         return $this->notes;
     }
 
-    /**
-     * @param string $notes
-     * @return TrackedWorkDay
-     */
-    public function setNotes($notes)
+    public function setNotes(?string $notes): static
     {
         $this->notes = $notes;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getOtherActivities()
+    public function getOtherActivities(): ?string
     {
         return $this->otherActivities;
     }
 
-    /**
-     * @param string $otherActivities
-     * @return TrackedWorkDay
-     */
-    public function setOtherActivities($otherActivities)
+    public function setOtherActivities(?string $otherActivities): static
     {
         $this->otherActivities = $otherActivities;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isLocked()
+    public function isLocked(): ?bool
     {
         return $this->locked;
     }
 
-    /**
-     * @param bool $locked
-     * @return TrackedWorkDay
-     */
-    public function setLocked($locked)
+    public function setLocked(bool $locked): static
     {
         $this->locked = $locked;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getAbsence()
+    public function getAbsence(): ?int
     {
         return $this->absence;
     }
 
-    /**
-     * @param int $absence
-     * @return TrackedWorkDay
-     */
-    public function setAbsence($absence)
+    public function setAbsence(int $absence): static
     {
         $this->absence = $absence;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getStartTime1()
+    public function getStartTime1(): ?string
     {
         return $this->startTime1;
     }
 
-    /**
-     * @param string $startTime1
-     * @return TrackedWorkDay
-     */
-    public function setStartTime1($startTime1)
+    public function setStartTime1(?string $startTime1): static
     {
         $this->startTime1 = $startTime1;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getEndTime1()
+    public function getEndTime1(): ?string
     {
         return $this->endTime1;
     }
 
-    /**
-     * @param string $endTime1
-     * @return TrackedWorkDay
-     */
-    public function setEndTime1($endTime1)
+    public function setEndTime1(?string $endTime1): static
     {
         $this->endTime1 = $endTime1;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getStartTime2()
+    public function getStartTime2(): ?string
     {
         return $this->startTime2;
     }
 
-    /**
-     * @param string $startTime2
-     * @return TrackedWorkDay
-     */
-    public function setStartTime2($startTime2)
+    public function setStartTime2(?string $startTime2): static
     {
         $this->startTime2 = $startTime2;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getEndTime2()
+    public function getEndTime2(): ?string
     {
         return $this->endTime2;
     }
 
-    /**
-     * @param string $endTime2
-     * @return TrackedWorkDay
-     */
-    public function setEndTime2($endTime2)
+    public function setEndTime2(?string $endTime2): static
     {
         $this->endTime2 = $endTime2;
         return $this;
     }
 
     /**
-     * @return ActivityTracking[]|Collection
+     * @return Collection<int, ActivityTracking>
      */
-    public function getTrackedActivities()
+    public function getTrackedActivities(): Collection
     {
         return $this->trackedActivities;
-    }
-
-    /**
-     * @param ActivityTracking[]|Collection $trackedActivities
-     * @return TrackedWorkDay
-     */
-    public function setTrackedActivities($trackedActivities)
-    {
-        $this->trackedActivities = $trackedActivities;
-        return $this;
     }
 }

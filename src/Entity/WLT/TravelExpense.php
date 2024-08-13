@@ -22,225 +22,142 @@ use App\Entity\Edu\Teacher;
 use App\Entity\Edu\TravelRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="wlt_travel_expense")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'wlt_travel_expense')]
 class TravelExpense
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @var \DateTime
-     */
-    private $fromDateTime;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $fromDateTime = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @var \DateTime
-     */
-    private $toDateTime;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $toDateTime = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Teacher
-     */
-    private $teacher;
+    #[ORM\ManyToOne(targetEntity: Teacher::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Teacher $teacher = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\TravelRoute")
-     * @ORM\JoinColumn(nullable=true)
-     * @var TravelRoute
-     */
-    private $travelRoute;
+    #[ORM\ManyToOne(targetEntity: TravelRoute::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?TravelRoute $travelRoute = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Agreement")
-     * @ORM\JoinTable(name="wlt_travel_expense_agreement")
-     * @var Agreement[]|Collection
-     */
-    private $agreements;
+    #[ORM\ManyToMany(targetEntity: Agreement::class)]
+    #[ORM\JoinTable(name: 'wlt_travel_expense_agreement')]
+    private Collection $agreements;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    private $otherExpensesDescription;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $otherExpensesDescription = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @var int
-     */
-    private $otherExpenses;
+    #[ORM\Column(type: Types::INTEGER, nullable: false, options: ['default' => 0])]
+    private ?int $otherExpenses;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $description;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $description = null;
 
     public function __construct()
     {
         $this->agreements = new ArrayCollection();
+        $this->otherExpenses = 0;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getFromDateTime()
+    public function getFromDateTime(): ?\DateTimeInterface
     {
         return $this->fromDateTime;
     }
 
-    /**
-     * @param \DateTime $fromDateTime
-     * @return TravelExpense
-     */
-    public function setFromDateTime(\DateTimeInterface $fromDateTime)
+    public function setFromDateTime(\DateTimeInterface $fromDateTime): static
     {
         $this->fromDateTime = $fromDateTime;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getToDateTime()
+    public function getToDateTime(): ?\DateTimeInterface
     {
         return $this->toDateTime;
     }
 
-    /**
-     * @param \DateTime $toDateTime
-     * @return TravelExpense
-     */
-    public function setToDateTime(\DateTimeInterface $toDateTime)
+    public function setToDateTime(\DateTimeInterface $toDateTime): static
     {
         $this->toDateTime = $toDateTime;
         return $this;
     }
 
-    /**
-     * @return Teacher
-     */
-    public function getTeacher()
+    public function getTeacher(): ?Teacher
     {
         return $this->teacher;
     }
 
-    /**
-     * @param Teacher $teacher
-     * @return TravelExpense
-     */
-    public function setTeacher($teacher)
+    public function setTeacher(Teacher $teacher): static
     {
         $this->teacher = $teacher;
         return $this;
     }
 
-    /**
-     * @return TravelRoute
-     */
-    public function getTravelRoute()
+    public function getTravelRoute(): ?TravelRoute
     {
         return $this->travelRoute;
     }
 
-    /**
-     * @param TravelRoute $travelRoute
-     * @return TravelExpense
-     */
-    public function setTravelRoute($travelRoute)
+    public function setTravelRoute(TravelRoute $travelRoute): static
     {
         $this->travelRoute = $travelRoute;
         return $this;
     }
 
     /**
-     * @return Agreement[]|Collection
+     * @return Collection<int, Agreement>
      */
-    public function getAgreements()
+    public function getAgreements(): Collection
     {
         return $this->agreements;
     }
 
-    /**
-     * @param Agreement[]|Collection $agreements
-     * @return TravelExpense
-     */
-    public function setAgreements($agreements)
+    public function setAgreements(Collection $agreements): static
     {
         $this->agreements = $agreements;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getOtherExpensesDescription()
+    public function getOtherExpensesDescription(): ?string
     {
         return $this->otherExpensesDescription;
     }
 
-    /**
-     * @param string $otherExpensesDescription
-     * @return TravelExpense
-     */
-    public function setOtherExpensesDescription($otherExpensesDescription)
+    public function setOtherExpensesDescription(?string $otherExpensesDescription): static
     {
         $this->otherExpensesDescription = $otherExpensesDescription;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getOtherExpenses()
+    public function getOtherExpenses(): ?int
     {
         return $this->otherExpenses;
     }
 
-    /**
-     * @param int $otherExpenses
-     * @return TravelExpense
-     */
-    public function setOtherExpenses($otherExpenses)
+    public function setOtherExpenses(?int $otherExpenses): static
     {
         $this->otherExpenses = $otherExpenses;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return TravelExpense
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;

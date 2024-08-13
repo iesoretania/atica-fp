@@ -18,60 +18,40 @@
 
 namespace App\Entity\Edu;
 
+use App\Repository\Edu\SubjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Edu\SubjectRepository")
- * @ORM\Table(name="edu_subject")
- */
-class Subject
+#[ORM\Entity(repositoryClass: SubjectRepository::class)]
+#[ORM\Table(name: 'edu_subject')]
+class Subject implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Grade", inversedBy="subjects")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Grade
-     */
-    private $grade;
+    #[ORM\ManyToOne(targetEntity: Grade::class, inversedBy: 'subjects')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Grade $grade = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $code;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $code = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $internalCode;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $internalCode = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     * @var string
-     */
-    private $name;
+    #[ORM\Column(type: Types::STRING, nullable: false)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="LearningOutcome", mappedBy="subject")
-     * @ORM\OrderBy({"code": "ASC"})
-     * @var LearningOutcome[]
-     */
-    private $learningOutcomes;
+    #[ORM\OneToMany(targetEntity: LearningOutcome::class, mappedBy: 'subject')]
+    #[ORM\OrderBy(['code' => 'ASC'])]
+    private Collection $learningOutcomes;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Teaching", mappedBy="subject")
-     * @var Teaching[]
-     */
-    private $teachings;
+    #[ORM\OneToMany(targetEntity: Teaching::class, mappedBy: 'subject')]
+    private Collection $teachings;
 
     public function __construct()
     {
@@ -79,125 +59,73 @@ class Subject
         $this->teachings = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName();
     }
 
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Grade
-     */
-    public function getGrade()
+    public function getGrade(): ?Grade
     {
         return $this->grade;
     }
 
-    /**
-     * @param Grade $grade
-     * @return Subject
-     */
-    public function setGrade($grade)
+    public function setGrade(Grade $grade): static
     {
         $this->grade = $grade;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * @param string $code
-     * @return Subject
-     */
-    public function setCode($code)
+    public function setCode(?string $code): static
     {
         $this->code = $code;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getInternalCode()
+    public function getInternalCode(): ?string
     {
         return $this->internalCode;
     }
 
-    /**
-     * @param string $internalCode
-     * @return Subject
-     */
-    public function setInternalCode($internalCode)
+    public function setInternalCode(?string $internalCode): static
     {
         $this->internalCode = $internalCode;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Subject
-     */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
     }
 
     /**
-     * @return LearningOutcome[]
+     * @return Collection<int, LearningOutcome>
      */
-    public function getLearningOutcomes()
+    public function getLearningOutcomes(): Collection
     {
         return $this->learningOutcomes;
     }
 
     /**
-     * @param LearningOutcome[] $learningOutcomes
-     * @return Subject
+     * @return Collection<int, Teaching>
      */
-    public function setLearningOutcomes($learningOutcomes)
-    {
-        $this->learningOutcomes = $learningOutcomes;
-        return $this;
-    }
-
-    /**
-     * @return Teaching[]
-     */
-    public function getTeachings()
+    public function getTeachings(): Collection
     {
         return $this->teachings;
-    }
-
-    /**
-     * @param Teaching[] $teachings
-     * @return Subject
-     */
-    public function setTeachings($teachings)
-    {
-        $this->teachings = $teachings;
-        return $this;
     }
 }

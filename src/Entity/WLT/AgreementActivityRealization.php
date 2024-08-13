@@ -19,207 +19,129 @@
 namespace App\Entity\WLT;
 
 use App\Entity\Person;
+use App\Repository\WLT\AgreementActivityRealizationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WLT\AgreementActivityRealizationRepository")
- * @ORM\Table(name="wlt_agreement_activity_realization")
- */
+#[ORM\Entity(repositoryClass: AgreementActivityRealizationRepository::class)]
+#[ORM\Table(name: 'wlt_agreement_activity_realization')]
 class AgreementActivityRealization
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Agreement", inversedBy="evaluatedActivityRealizations")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Agreement
-     */
-    private $agreement;
+    #[ORM\ManyToOne(targetEntity: Agreement::class, inversedBy: 'evaluatedActivityRealizations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Agreement $agreement = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="ActivityRealization", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=false)
-     * @var ActivityRealization
-     */
-    private $activityRealization;
+    #[ORM\ManyToOne(targetEntity: ActivityRealization::class, fetch: 'EAGER')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ActivityRealization $activityRealization = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="ActivityRealizationGrade")
-     * @ORM\JoinColumn(nullable=true)
-     * @var ActivityRealizationGrade
-     */
-    private $grade;
+    #[ORM\ManyToOne(targetEntity: ActivityRealizationGrade::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?ActivityRealizationGrade $grade = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person")
-     * @ORM\JoinColumn(nullable=true)
-     * @var Person
-     */
-    private $gradedBy;
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Person $gradedBy = null;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     * @var \DateTime
-     */
-    private $gradedOn;
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $gradedOn = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $disabled;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $disabled;
 
-    /**
-     * @ORM\OneToMany(targetEntity="AgreementActivityRealizationComment", mappedBy="agreementActivityRealization")
-     * @ORM\OrderBy({"timestamp":"ASC"})
-     * @var AgreementActivityRealizationComment[]|Collection
-     */
-    private $comments;
+    #[ORM\OneToMany(targetEntity: AgreementActivityRealizationComment::class, mappedBy: 'agreementActivityRealization')]
+    #[ORM\OrderBy(['timestamp' => 'ASC'])]
+    private Collection $comments;
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->disabled = false;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Agreement
-     */
-    public function getAgreement()
+    public function getAgreement(): ?Agreement
     {
         return $this->agreement;
     }
 
-    /**
-     * @param Agreement $agreement
-     * @return AgreementActivityRealization
-     */
-    public function setAgreement($agreement)
+    public function setAgreement(Agreement $agreement): static
     {
         $this->agreement = $agreement;
         return $this;
     }
 
-    /**
-     * @return ActivityRealization
-     */
-    public function getActivityRealization()
+    public function getActivityRealization(): ?ActivityRealization
     {
         return $this->activityRealization;
     }
 
-    /**
-     * @param ActivityRealization $activityRealization
-     * @return AgreementActivityRealization
-     */
-    public function setActivityRealization($activityRealization)
+    public function setActivityRealization(ActivityRealization $activityRealization): static
     {
         $this->activityRealization = $activityRealization;
         return $this;
     }
 
-    /**
-     * @return ActivityRealizationGrade
-     */
-    public function getGrade()
+    public function getGrade(): ?ActivityRealizationGrade
     {
         return $this->grade;
     }
 
-    /**
-     * @param ActivityRealizationGrade $grade
-     * @return AgreementActivityRealization
-     */
-    public function setGrade(ActivityRealizationGrade $grade = null)
+    public function setGrade(?ActivityRealizationGrade $grade): static
     {
         $this->grade = $grade;
         return $this;
     }
 
-    /**
-     * @return Person
-     */
-    public function getGradedBy()
+    public function getGradedBy(): ?Person
     {
         return $this->gradedBy;
     }
 
-    /**
-     * @param Person $gradedBy
-     * @return AgreementActivityRealization
-     */
-    public function setGradedBy(Person $gradedBy = null)
+    public function setGradedBy(?Person $gradedBy): static
     {
         $this->gradedBy = $gradedBy;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getGradedOn()
+    public function getGradedOn(): ?\DateTimeInterface
     {
         return $this->gradedOn;
     }
 
-    /**
-     * @param \DateTime $gradedOn
-     * @return AgreementActivityRealization
-     */
-    public function setGradedOn(\DateTimeInterface $gradedOn = null)
+    public function setGradedOn(?\DateTimeInterface $gradedOn): static
     {
         $this->gradedOn = $gradedOn;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isDisabled()
+    public function isDisabled(): ?bool
     {
         return $this->disabled;
     }
 
-    /**
-     * @param bool $disabled
-     * @return AgreementActivityRealization
-     */
-    public function setDisabled($disabled)
+    public function setDisabled(bool $disabled): static
     {
         $this->disabled = $disabled;
         return $this;
     }
 
     /**
-     * @return AgreementActivityRealizationComment[]|Collection
+     * @return Collection<int, AgreementActivityRealizationComment>
      */
-    public function getComments()
+    public function getComments(): Collection
     {
         return $this->comments;
-    }
-
-    /**
-     * @param Collection $comments
-     * @return AgreementActivityRealization
-     */
-    public function setComments($comments)
-    {
-        $this->comments = $comments;
-        return $this;
     }
 }
