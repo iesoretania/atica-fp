@@ -29,18 +29,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SubjectType extends AbstractType
 {
-    /** @var GradeRepository */
-    private $gradeRepository;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
-    public function __construct(
-        GradeRepository $gradeRepository,
-        UserExtensionService $userExtensionService
-    ) {
-        $this->gradeRepository = $gradeRepository;
-        $this->userExtensionService = $userExtensionService;
+    public function __construct(private readonly GradeRepository $gradeRepository, private readonly UserExtensionService $userExtensionService)
+    {
     }
 
     /**

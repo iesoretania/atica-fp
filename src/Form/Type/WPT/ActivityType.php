@@ -31,11 +31,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ActivityType extends AbstractType
 {
-    private $criterionRepository;
-
-    public function __construct(CriterionRepository $criterionRepository)
+    public function __construct(private readonly CriterionRepository $criterionRepository)
     {
-        $this->criterionRepository = $criterionRepository;
     }
 
     /**

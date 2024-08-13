@@ -32,22 +32,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SubjectDataImportType extends AbstractType
 {
-    /** @var GradeRepository */
-    private $gradeRepository;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
     /**
      * @param GradeRepository $gradeRepository
      * @param UserExtensionService $userExtensionService
      */
-    public function __construct(
-        GradeRepository $gradeRepository,
-        UserExtensionService $userExtensionService
-    ) {
-        $this->gradeRepository = $gradeRepository;
-        $this->userExtensionService = $userExtensionService;
+    public function __construct(private readonly GradeRepository $gradeRepository, private readonly UserExtensionService $userExtensionService)
+    {
     }
 
     /**

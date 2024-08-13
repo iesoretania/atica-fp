@@ -29,12 +29,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ActivityRealizationType extends AbstractType
 {
-    /** @var LearningOutcomeRepository */
-    private $learningOutcomeRepository;
-
-    public function __construct(LearningOutcomeRepository $learningOutcomeRepository)
+    public function __construct(private readonly LearningOutcomeRepository $learningOutcomeRepository)
     {
-        $this->learningOutcomeRepository = $learningOutcomeRepository;
     }
 
     /**

@@ -31,23 +31,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RoleAssignType extends AbstractType
 {
-    /** @var RoleRepository */
-    private $roleRepository;
-
-    /** @var TeacherRepository */
-    private $teacherRepository;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
-    public function __construct(
-        RoleRepository $roleRepository,
-        TeacherRepository $teacherRepository,
-        UserExtensionService $userExtensionService
-    ) {
-        $this->roleRepository = $roleRepository;
-        $this->teacherRepository = $teacherRepository;
-        $this->userExtensionService = $userExtensionService;
+    public function __construct(private readonly RoleRepository $roleRepository, private readonly TeacherRepository $teacherRepository, private readonly UserExtensionService $userExtensionService)
+    {
     }
 
     /**
@@ -59,15 +44,11 @@ class RoleAssignType extends AbstractType
         $academicYear = $organization->getCurrentAcademicYear();
 
         $teachers = $this->teacherRepository->findByAcademicYear($academicYear);
-        $persons = array_map(function (Teacher $teacher) {
-           return $teacher->getPerson();
-        }, $teachers);
+        $persons = array_map(fn(Teacher $teacher) => $teacher->getPerson(), $teachers);
 
         foreach (Role::ROLES as $roleName) {
             $assignedRole = $this->roleRepository->findByOrganizationAndRole($organization, $roleName);
-            $currentPersons = array_map(function (Role $role) {
-                return $role->getPerson();
-            }, $assignedRole);
+            $currentPersons = array_map(fn(Role $role) => $role->getPerson(), $assignedRole);
 
             $builder
                 ->add($roleName, EntityType::class, [

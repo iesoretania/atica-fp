@@ -36,18 +36,8 @@ class AgreementActivityRealizationType extends AbstractType
     private $grades;
     private $submittedAgreementActivityRealizations;
 
-    private $translator;
-    private $activityRealizationGradeRepository;
-    private $agreementActivityRealizationRepository;
-
-    public function __construct(
-        TranslatorInterface $translator,
-        ActivityRealizationGradeRepository $activityRealizationGradeRepository,
-        AgreementActivityRealizationRepository $agreementActivityRealizationRepository
-    ) {
-        $this->translator = $translator;
-        $this->activityRealizationGradeRepository = $activityRealizationGradeRepository;
-        $this->agreementActivityRealizationRepository = $agreementActivityRealizationRepository;
+    public function __construct(private readonly TranslatorInterface $translator, private readonly ActivityRealizationGradeRepository $activityRealizationGradeRepository, private readonly AgreementActivityRealizationRepository $agreementActivityRealizationRepository)
+    {
     }
 
     /**

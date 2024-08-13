@@ -30,9 +30,9 @@ class LearningProgramImport
     private $project;
 
     /**
-     * @Assert\File
      * @var UploadedFile
      */
+    #[Assert\File]
     private $file;
 
     /**

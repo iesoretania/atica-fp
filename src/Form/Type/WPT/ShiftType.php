@@ -36,18 +36,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ShiftType extends AbstractType
 {
-    private $subjectRepository;
-    private $surveyRepository;
-    private $reportTemplateRepository;
-
-    public function __construct(
-        SubjectRepository $subjectRepository,
-        SurveyRepository $surveyRepository,
-        ReportTemplateRepository $reportTemplateRepository
-    ) {
-        $this->subjectRepository = $subjectRepository;
-        $this->surveyRepository = $surveyRepository;
-        $this->reportTemplateRepository = $reportTemplateRepository;
+    public function __construct(private readonly SubjectRepository $subjectRepository, private readonly SurveyRepository $surveyRepository, private readonly ReportTemplateRepository $reportTemplateRepository)
+    {
     }
 
     /**
@@ -74,10 +64,8 @@ class ShiftType extends AbstractType
                 'label' => 'form.subject',
                 'class' => Subject::class,
                 'choice_translation_domain' => false,
-                'choice_label' => function (Subject $subject) {
-                    return $subject->getName() . ' - ' . $subject->getGrade() . ' - ' .
-                        $subject->getGrade()->getTraining()->getAcademicYear();
-                },
+                'choice_label' => fn(Subject $subject) => $subject->getName() . ' - ' . $subject->getGrade() . ' - ' .
+                    $subject->getGrade()->getTraining()->getAcademicYear(),
                 'choices' => $subjects,
                 'placeholder' => 'form.no_subject',
                 'required' => true

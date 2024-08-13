@@ -30,23 +30,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DepartmentType extends AbstractType
 {
-    /** @var AcademicYearRepository */
-    private $academicYearRepository;
-
-    /** @var TeacherRepository */
-    private $teacherRepository;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
-    public function __construct(
-        AcademicYearRepository $academicYearRepository,
-        TeacherRepository $teacherRepository,
-        UserExtensionService $userExtensionService
-    ) {
-        $this->academicYearRepository = $academicYearRepository;
-        $this->teacherRepository = $teacherRepository;
-        $this->userExtensionService = $userExtensionService;
+    public function __construct(private readonly AcademicYearRepository $academicYearRepository, private readonly TeacherRepository $teacherRepository, private readonly UserExtensionService $userExtensionService)
+    {
     }
 
     /**

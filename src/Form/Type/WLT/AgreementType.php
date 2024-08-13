@@ -44,24 +44,8 @@ use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class AgreementType extends AbstractType
 {
-    private $studentEnrollmentRepository;
-    private $workcenterRepository;
-    private $wltCompanyRepository;
-    private $activityRealizationRepository;
-    private $teacherRepository;
-
-    public function __construct(
-        StudentEnrollmentRepository $studentEnrollmentRepository,
-        WorkcenterRepository $workcenterRepository,
-        WLTCompanyRepository $wltCompanyRepository,
-        ActivityRealizationRepository $activityRealizationRepository,
-        TeacherRepository $teacherRepository
-    ) {
-        $this->studentEnrollmentRepository = $studentEnrollmentRepository;
-        $this->workcenterRepository = $workcenterRepository;
-        $this->wltCompanyRepository = $wltCompanyRepository;
-        $this->activityRealizationRepository = $activityRealizationRepository;
-        $this->teacherRepository = $teacherRepository;
+    public function __construct(private readonly StudentEnrollmentRepository $studentEnrollmentRepository, private readonly WorkcenterRepository $workcenterRepository, private readonly WLTCompanyRepository $wltCompanyRepository, private readonly ActivityRealizationRepository $activityRealizationRepository, private readonly TeacherRepository $teacherRepository)
+    {
     }
 
     public function addElements(
@@ -130,10 +114,8 @@ class AgreementType extends AbstractType
                 'choice_translation_domain' => false,
                 'choices' => $companies,
                 'data' => $company,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('c')
-                        ->orderBy('c.name');
-                },
+                'query_builder' => fn(EntityRepository $er) => $er->createQueryBuilder('c')
+                    ->orderBy('c.name'),
                 'placeholder' => 'form.company.none',
                 'required' => true
             ])
@@ -200,9 +182,7 @@ class AgreementType extends AbstractType
                 'class' => ActivityRealization::class,
                 'data' => $currentActivityRealizations,
                 'expanded' => true,
-                'group_by' => function (ActivityRealization $ar) {
-                    return (string) $ar->getActivity();
-                },
+                'group_by' => fn(ActivityRealization $ar) => (string) $ar->getActivity(),
                 'multiple' => true,
                 'required' => false,
                 'choices' => $activityRealizations

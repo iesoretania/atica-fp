@@ -40,21 +40,8 @@ use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class AgreementEnrollmentType extends AbstractType
 {
-    private $workcenterRepository;
-    private $companyRepository;
-    private $teacherRepository;
-    private $WPTStudentEnrollmentRepository;
-
-    public function __construct(
-        WorkcenterRepository $workcenterRepository,
-        CompanyRepository $companyRepository,
-        TeacherRepository $teacherRepository,
-        WPTStudentEnrollmentRepository $WPTStudentEnrollmentRepository
-    ) {
-        $this->workcenterRepository = $workcenterRepository;
-        $this->companyRepository = $companyRepository;
-        $this->teacherRepository = $teacherRepository;
-        $this->WPTStudentEnrollmentRepository = $WPTStudentEnrollmentRepository;
+    public function __construct(private readonly WorkcenterRepository $workcenterRepository, private readonly CompanyRepository $companyRepository, private readonly TeacherRepository $teacherRepository, private readonly WPTStudentEnrollmentRepository $WPTStudentEnrollmentRepository)
+    {
     }
 
     public function addElements(

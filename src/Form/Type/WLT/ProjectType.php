@@ -37,24 +37,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProjectType extends AbstractType
 {
-    private $teacherRepository;
-    private $groupRepository;
-    private $userExtensionService;
-    private $surveyRepository;
-    private $reportTemplateRepository;
-
-    public function __construct(
-        TeacherRepository $teacherRepository,
-        GroupRepository $groupRepository,
-        SurveyRepository $surveyRepository,
-        ReportTemplateRepository $reportTemplateRepository,
-        UserExtensionService $userExtensionService
-    ) {
-        $this->teacherRepository = $teacherRepository;
-        $this->groupRepository = $groupRepository;
-        $this->userExtensionService = $userExtensionService;
-        $this->surveyRepository = $surveyRepository;
-        $this->reportTemplateRepository = $reportTemplateRepository;
+    public function __construct(private readonly TeacherRepository $teacherRepository, private readonly GroupRepository $groupRepository, private readonly SurveyRepository $surveyRepository, private readonly ReportTemplateRepository $reportTemplateRepository, private readonly UserExtensionService $userExtensionService)
+    {
     }
 
     /**
@@ -65,9 +49,7 @@ class ProjectType extends AbstractType
         $organization = $this->userExtensionService->getCurrentOrganization();
 
         $teachers = $this->teacherRepository->findByOrganization($organization);
-        $teacherPersons = array_map(static function(Teacher $teacher) {
-            return $teacher->getPerson();
-        }, $teachers);
+        $teacherPersons = array_map(static fn(Teacher $teacher) => $teacher->getPerson(), $teachers);
 
         $groups = $this->groupRepository->findByOrganization($organization);
 
@@ -95,13 +77,11 @@ class ProjectType extends AbstractType
                 'class' => Group::class,
                 'choice_translation_domain' => false,
                 'choices' => $groups,
-                'choice_label' => function (Group $group) {
-                    return $group
-                            ->getGrade()
-                            ->getTraining()
-                            ->getAcademicYear()
-                            ->getDescription() . ' - ' . $group->getName();
-                },
+                'choice_label' => fn(Group $group) => $group
+                        ->getGrade()
+                        ->getTraining()
+                        ->getAcademicYear()
+                        ->getDescription() . ' - ' . $group->getName(),
                 'multiple' => true,
                 'required' => true
             ])

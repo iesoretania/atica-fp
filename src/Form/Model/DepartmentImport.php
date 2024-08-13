@@ -30,9 +30,9 @@ class DepartmentImport
     private $academicYear;
 
     /**
-     * @Assert\File
      * @var UploadedFile
      */
+    #[Assert\File]
     private $file;
 
     /**

@@ -30,9 +30,9 @@ class SubjectDataImport
     private $grade;
 
     /**
-     * @Assert\File
      * @var UploadedFile
      */
+    #[Assert\File]
     private $file;
 
     public function __construct()

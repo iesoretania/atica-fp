@@ -34,18 +34,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ContactWorkcenterReportType extends AbstractType
 {
-    private $projectRepository;
-    private $contactMethodRepository;
-    private $translator;
-
-    public function __construct(
-        ProjectRepository $projectRepository,
-        ContactMethodRepository $contactMethodRepository,
-        TranslatorInterface $translator
-    ) {
-        $this->projectRepository = $projectRepository;
-        $this->contactMethodRepository = $contactMethodRepository;
-        $this->translator = $translator;
+    public function __construct(private readonly ProjectRepository $projectRepository, private readonly ContactMethodRepository $contactMethodRepository, private readonly TranslatorInterface $translator)
+    {
     }
 
     private function addElements(

@@ -43,9 +43,7 @@ class SurveyQuestionType extends AbstractType
                 'label' => 'form.type',
                 'disabled' => $options['locked'],
                 'choices' => SurveyQuestion::TYPES,
-                'choice_label' => function ($item) {
-                    return 'type.' . $item;
-                },
+                'choice_label' => fn($item) => 'type.' . $item,
                 'choice_translation_domain' => 'survey_question',
                 'required' => true
             ])

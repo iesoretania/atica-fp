@@ -41,24 +41,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class VisitType extends AbstractType
 {
-    private $workcenterRepository;
-    private $userExtensionService;
-    private $WPTTeacherRepository;
-    private $agreementRepository;
-    private $WPTWorkcenterRepository;
-
-    public function __construct(
-        WorkcenterRepository $workcenterRepository,
-        UserExtensionService $userExtensionService,
-        WPTTeacherRepository $WPTTeacherRepository,
-        AgreementRepository $agreementRepository,
-        WPTWorkcenterRepository $WPTWorkcenterRepository
-    ) {
-        $this->workcenterRepository = $workcenterRepository;
-        $this->userExtensionService = $userExtensionService;
-        $this->WPTTeacherRepository = $WPTTeacherRepository;
-        $this->agreementRepository = $agreementRepository;
-        $this->WPTWorkcenterRepository = $WPTWorkcenterRepository;
+    public function __construct(private readonly WorkcenterRepository $workcenterRepository, private readonly UserExtensionService $userExtensionService, private readonly WPTTeacherRepository $WPTTeacherRepository, private readonly AgreementRepository $agreementRepository, private readonly WPTWorkcenterRepository $WPTWorkcenterRepository)
+    {
     }
 
     /**
@@ -115,7 +99,7 @@ class VisitType extends AbstractType
 
         $canSelectAgreements =
             (
-                is_array($agreements) || $agreements instanceof \Countable
+                is_countable($agreements)
                 ? count($agreements)
                 : 0
             ) > 0;

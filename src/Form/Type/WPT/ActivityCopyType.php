@@ -37,10 +37,8 @@ class ActivityCopyType extends AbstractType
                 'label' => 'form.source_shift',
                 'class' => Shift::class,
                 'choices' => $options['shifts'],
-                'choice_label' => static function (Shift $shift) {
-                    return $shift->getSubject()->getGrade()
-                            ->getTraining()->getAcademicYear() . ' - ' . $shift->getName();
-                },
+                'choice_label' => static fn(Shift $shift) => $shift->getSubject()->getGrade()
+                        ->getTraining()->getAcademicYear() . ' - ' . $shift->getName(),
                 'choice_translation_domain' => false,
                 'placeholder' => 'form.source_shift.none',
                 'required' => true

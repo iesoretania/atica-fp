@@ -42,12 +42,10 @@ class GroupImportType extends AbstractType
             ->add('academicYear', EntityType::class, [
                 'label' => 'form.group.academic_year',
                 'class' => AcademicYear::class,
-                'query_builder' => function (EntityRepository $er) use ($options) {
-                    return $er->createQueryBuilder('a')
-                        ->andWhere('a.organization = :organization')
-                        ->orderBy('a.description', 'DESC')
-                        ->setParameter('organization', $options['organization']);
-                },
+                'query_builder' => fn(EntityRepository $er) => $er->createQueryBuilder('a')
+                    ->andWhere('a.organization = :organization')
+                    ->orderBy('a.description', 'DESC')
+                    ->setParameter('organization', $options['organization']),
                 'required' => true
             ])
             ->add('file', FileType::class, [

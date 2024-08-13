@@ -35,20 +35,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WorkDayTrackingType extends AbstractType
 {
-    /** @var Security */
-    private $security;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct(
-        Security $security,
-        TranslatorInterface $translator
-    ) {
-        $this->security = $security;
-        $this->translator = $translator;
+    public function __construct(private readonly Security $security, private readonly TranslatorInterface $translator)
+    {
     }
 
     public function addElements(
@@ -70,11 +58,9 @@ class WorkDayTrackingType extends AbstractType
             ->add('activityRealizations', EntityType::class, [
                 'label' => 'form.activity_realizations',
                 'class' => ActivityRealization::class,
-                'choice_attr' => function (ActivityRealization $ar) use ($lockedActivityRealizations, $lockManager) {
-                    return (!$lockManager && in_array($ar, $lockedActivityRealizations, true)) ?
-                        ['disabled' => 'disabled'] :
-                        [];
-                },
+                'choice_attr' => fn(ActivityRealization $ar) => (!$lockManager && in_array($ar, $lockedActivityRealizations, true)) ?
+                    ['disabled' => 'disabled'] :
+                    [],
                 'choice_label' => function (ActivityRealization $ar) use ($lockedActivityRealizations, $lockManager) {
                     $label = $ar->__toString();
                     if (in_array($ar, $lockedActivityRealizations, true)) {

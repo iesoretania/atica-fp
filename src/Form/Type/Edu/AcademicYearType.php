@@ -31,16 +31,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AcademicYearType extends AbstractType
 {
-    private $teacherRepository;
-    private $reportTemplateRepository;
-
-    public function __construct(
-        TeacherRepository $teacherRepository,
-        SurveyRepository $surveyRepository,
-        ReportTemplateRepository $reportTemplateRepository
-    ) {
-        $this->teacherRepository = $teacherRepository;
-        $this->reportTemplateRepository = $reportTemplateRepository;
+    public function __construct(private readonly TeacherRepository $teacherRepository, SurveyRepository $surveyRepository, private readonly ReportTemplateRepository $reportTemplateRepository)
+    {
     }
 
     /**

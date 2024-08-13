@@ -30,23 +30,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class GroupType extends AbstractType
 {
-    /** @var GradeRepository */
-    private $gradeRepository;
-
-    /** @var TeacherRepository */
-    private $teacherRepository;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
-    public function __construct(
-        GradeRepository $gradeRepository,
-        TeacherRepository $teacherRepository,
-        UserExtensionService $userExtensionService
-    ) {
-        $this->gradeRepository = $gradeRepository;
-        $this->teacherRepository = $teacherRepository;
-        $this->userExtensionService = $userExtensionService;
+    public function __construct(private readonly GradeRepository $gradeRepository, private readonly TeacherRepository $teacherRepository, private readonly UserExtensionService $userExtensionService)
+    {
     }
 
     /**
