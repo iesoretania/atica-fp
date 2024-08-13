@@ -28,18 +28,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserExtensionService
 {
-    private $requestStack;
-    private $authorizationChecker;
-    private $organizationRepository;
-
-    public function __construct(
-        RequestStack                  $requestStack,
-        AuthorizationCheckerInterface $authorizationChecker,
-        OrganizationRepository        $organizationRepository
-    ) {
-        $this->requestStack = $requestStack;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->organizationRepository = $organizationRepository;
+    public function __construct(private readonly RequestStack                  $requestStack, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly OrganizationRepository        $organizationRepository)
+    {
     }
 
     /**
