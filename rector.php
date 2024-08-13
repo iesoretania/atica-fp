@@ -1,26 +1,25 @@
 <?php
 
-declare(strict_types=1);
+use Rector\Config\RectorConfig;
+use Rector\Symfony\Set\SymfonySetList;
 
-use Rector\Core\Configuration\Option;
-use Rector\Set\ValueObject\LevelSetList;
-use Rector\Set\ValueObject\SetList;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-
-return static function (ContainerConfigurator $containerConfigurator): void {
-    // get parameters
-    $parameters = $containerConfigurator->parameters();
-    $parameters->set(Option::PATHS, [
-        __DIR__ . '/src'
-    ]);
-
-    // Define what rule sets will be applied
-    $containerConfigurator->import(LevelSetList::UP_TO_PHP_72);
-    $containerConfigurator->import(SetList::CODE_QUALITY);
-
-    // get services (needed for register a single rule)
-    // $services = $containerConfigurator->services();
-
-    // register a single rule
-    // $services->set(TypedPropertyRector::class);
-};
+return RectorConfig::configure()
+    // register single rule
+    ->withPaths([
+        __DIR__ . '/src',
+    ])
+    /*->withRules([
+        TypedPropertyFromStrictConstructorRector::class,
+    ])*/
+    // here we can define, what prepared sets of rules will be applied
+    ->withPhpSets(php82: true)
+    ->withAttributesSets(symfony: true, doctrine: true)
+    ->withSets([
+        SymfonySetList::SYMFONY_54
+    ])
+    ->withPreparedSets(
+        //deadCode: true,
+        //codeQuality: true,
+        doctrineCodeQuality: true,
+        symfonyCodeQuality: true
+    );
