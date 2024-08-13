@@ -35,15 +35,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/plantilla")
- */
+#[Route(path: '/centro/plantilla')]
 class ReportTemplateController extends AbstractController
 {
-    /**
-     * @Route("/nueva", name="organization_report_template_new", methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nueva', name: 'organization_report_template_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry,
@@ -57,10 +53,8 @@ class ReportTemplateController extends AbstractController
         return $this->editAction($request, $translator, $managerRegistry, $template);
     }
 
-    /**
-     * @Route("/{id}", name="organization_report_template_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function editAction(
+    #[Route(path: '/{id}', name: 'organization_report_template_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function edit(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -84,7 +78,7 @@ class ReportTemplateController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'edu_report_template'));
                 return $this->redirectToRoute('organization_report_template_list');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_report_template'));
             }
         }
@@ -109,11 +103,8 @@ class ReportTemplateController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/descarga/{id}", name="organization_report_template_download",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
-     */
-    public function downloadAction(
+    #[Route(path: '/descarga/{id}', name: 'organization_report_template_download', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function download(
         ReportTemplate $template
     ) {
         $this->denyAccessUnlessGranted(ReportTemplateVoter::EDU_REPORT_TEMPLATE_VIEW, $template);
@@ -122,17 +113,14 @@ class ReportTemplateController extends AbstractController
             fpassthru($template->getData());
             exit();
         },
-        200,
+        \Symfony\Component\HttpFoundation\Response::HTTP_OK,
         [
             'Content-Type' => 'application/pdf'
         ]);
     }
 
-    /**
-     * @Route("/listar/{page}", name="organization_report_template_list", requirements={"page" = "\d+"},
-     *     methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{page}', name: 'organization_report_template_list', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -167,7 +155,7 @@ class ReportTemplateController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -181,10 +169,8 @@ class ReportTemplateController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar", name="organization_report_template_delete", methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/eliminar', name: 'organization_report_template_delete', methods: ['POST'])]
+    public function delete(
         Request $request,
         ReportTemplateRepository $reportTemplateRepository,
         UserExtensionService $userExtensionService,
@@ -209,7 +195,7 @@ class ReportTemplateController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_report_template'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_report_template'));
             }
             return $this->redirectToRoute('organization_report_template_list');

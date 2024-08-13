@@ -37,16 +37,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @Route("/admin/organizaciones")
  * @Security("is_granted('ROLE_ADMIN')")
  */
+#[Route(path: '/admin/organizaciones')]
 class OrganizationController extends AbstractController
 {
-    /**
-     * @Route("/nueva", name="admin_organization_form_new", methods={"GET", "POST"})
-     * @Route("/{id}", name="admin_organization_form_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/nueva', name: 'admin_organization_form_new', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}', name: 'admin_organization_form_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         OrganizationRepository $organizationRepository,
         TranslatorInterface $translator,
@@ -70,7 +68,7 @@ class OrganizationController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'organization'));
                 return $this->redirectToRoute('admin_organization_list');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.save_error', [], 'organization'));
             }
         }
@@ -91,11 +89,8 @@ class OrganizationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{page}", name="admin_organization_list", requirements={"page" = "\d+"},
-     *     defaults={"page" = "1"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{page}', name: 'admin_organization_list', requirements: ['page' => '\d+'], defaults: ['page' => '1'], methods: ['GET'])]
+    public function list(
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Request $request,
@@ -129,7 +124,7 @@ class OrganizationController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -143,10 +138,8 @@ class OrganizationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/operacion", name="admin_organization_operation", methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/operacion', name: 'admin_organization_operation', methods: ['POST'])]
+    public function operation(
         Request $request,
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry,
@@ -214,7 +207,7 @@ class OrganizationController extends AbstractController
                 $this->deleteOrganizations($organizations, $em);
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'organization'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'organization'));
             }
             $redirect = true;
@@ -274,6 +267,6 @@ class OrganizationController extends AbstractController
                 findAllInListByIdButCurrent($items, $userExtensionService->getCurrentOrganization());
             $redirect = $this->processRemoveOrganizations($request, $translator, $organizations, $em);
         }
-        return array($redirect, $organizations);
+        return [$redirect, $organizations];
     }
 }

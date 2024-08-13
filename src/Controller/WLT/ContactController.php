@@ -54,15 +54,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
 use Twig\Environment;
 
-/**
- * @Route("/dual/contacto")
- */
+#[Route(path: '/dual/contacto')]
 class ContactController extends AbstractController
 {
-    /**
-     * @Route("/nuevo", name="work_linked_training_contact_new", methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nuevo', name: 'work_linked_training_contact_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -103,11 +99,8 @@ class ContactController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/{id}", name="work_linked_training_contact_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'work_linked_training_contact_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -174,7 +167,7 @@ class ContactController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_contact'));
                 return $this->redirectToRoute('work_linked_training_contact_list');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_contact'));
             }
         }
@@ -199,11 +192,8 @@ class ContactController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{academicYear}/{page}", name="work_linked_training_contact_list",
-     *     requirements={"page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'work_linked_training_contact_list', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TeacherRepository $teacherRepository,
@@ -229,7 +219,7 @@ class ContactController extends AbstractController
 
         $methodCollection = [];
         if (null !== $mf) {
-            $methodIdsCollection = explode(',', $mf);
+            $methodIdsCollection = explode(',', (string) $mf);
             if (is_array($methodIdsCollection)) {
                 $methodCollection = $contactMethodRepository
                     ->findAllInListByIdAndAcademicYear($methodIdsCollection, $academicYear);
@@ -338,7 +328,7 @@ class ContactController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -362,11 +352,8 @@ class ContactController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar", name="work_linked_training_contact_operation",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/eliminar', name: 'work_linked_training_contact_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function operation(
         Request $request,
         ContactRepository $visitRepository,
         UserExtensionService $userExtensionService,
@@ -396,7 +383,7 @@ class ContactController extends AbstractController
                 }
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_contact'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_contact'));
             }
             return $this->redirectToRoute('work_linked_training_contact_list');
@@ -467,11 +454,8 @@ class ContactController extends AbstractController
         return $teachers;
     }
 
-    /**
-     * @Route("/informe/seguimiento/{academicYear}/{page}", name="work_linked_training_contact_educational_tutor_report_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function educationTutorReportListAction(
+    #[Route(path: '/informe/seguimiento/{academicYear}/{page}', name: 'work_linked_training_contact_educational_tutor_report_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function educationTutorReportList(
         Request $request,
         UserExtensionService $userExtensionService,
         Security $security,
@@ -511,7 +495,7 @@ class ContactController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -537,11 +521,8 @@ class ContactController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/informe/seguimiento/datos/{teacher}", name="work_linked_training_contact_educational_tutor_report_form",
-     *     requirements={"teacher" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function educationTutorReportFormAction(
+    #[Route(path: '/informe/seguimiento/datos/{teacher}', name: 'work_linked_training_contact_educational_tutor_report_form', requirements: ['teacher' => '\d+'], methods: ['GET', 'POST'])]
+    public function educationTutorReportForm(
         Request $request,
         UserExtensionService $userExtensionService,
         Security $security,
@@ -597,7 +578,7 @@ class ContactController extends AbstractController
                     $contactRepository,
                     $contactEducationalTutorReport
                 );
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.report_error', [], 'wlt_contact'));
             }
         }
@@ -621,7 +602,7 @@ class ContactController extends AbstractController
         ]);
     }
 
-    public function educationalTutorReportAction(
+    public function educationalTutorReport(
         TranslatorInterface $translator,
         Environment $engine,
         ContactRepository $contactRepository,
@@ -661,11 +642,8 @@ class ContactController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/informe/centros/{academicYear}/{page}", name="work_linked_training_contact_workcenter_report_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function workCenterReportListAction(
+    #[Route(path: '/informe/centros/{academicYear}/{page}', name: 'work_linked_training_contact_workcenter_report_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function workCenterReportList(
         Request $request,
         UserExtensionService $userExtensionService,
         Security $security,
@@ -707,7 +685,7 @@ class ContactController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -733,11 +711,8 @@ class ContactController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/informe/centros/datos/{workcenter}/{academicYear}", name="work_linked_training_contact_workcenter_report_form",
-     *     requirements={"workcenter" = "\d+", "academicYear" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function workcenterReportFormAction(
+    #[Route(path: '/informe/centros/datos/{workcenter}/{academicYear}', name: 'work_linked_training_contact_workcenter_report_form', requirements: ['workcenter' => '\d+', 'academicYear' => '\d+'], methods: ['GET', 'POST'])]
+    public function workcenterReportForm(
         Request $request,
         UserExtensionService $userExtensionService,
         Security $security,
@@ -796,7 +771,7 @@ class ContactController extends AbstractController
                     $workcenter,
                     $academicYear
                 );
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.report_error', [], 'wlt_contact'));
             }
         }
@@ -821,7 +796,7 @@ class ContactController extends AbstractController
     }
 
 
-    public function workcenterReportAction(
+    public function workcenterReport(
         TranslatorInterface $translator,
         Environment $engine,
         ContactRepository $contactRepository,

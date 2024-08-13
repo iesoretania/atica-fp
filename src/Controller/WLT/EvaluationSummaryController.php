@@ -41,16 +41,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/dual/resultado/estudiante")
- */
+#[Route(path: '/dual/resultado/estudiante')]
 class EvaluationSummaryController extends AbstractController
 {
-    /**
-     * @Route("/listar/{academicYear}/{page}", name="work_linked_training_evaluation_summary_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'work_linked_training_evaluation_summary_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -145,7 +140,7 @@ class EvaluationSummaryController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -160,11 +155,8 @@ class EvaluationSummaryController extends AbstractController
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
-    /**
-     * @Route("/{id}", name="work_linked_training_evaluation_summary_report",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
-     */
-    public function reportAction(
+    #[Route(path: '/{id}', name: 'work_linked_training_evaluation_summary_report', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function report(
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         SubjectRepository $subjectRepository,

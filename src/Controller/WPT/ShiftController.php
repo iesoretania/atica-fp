@@ -39,16 +39,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/fct/convocatoria")
- */
+#[Route(path: '/fct/convocatoria')]
 class ShiftController extends AbstractController
 {
-    /**
-     * @Route("/listar/{academicYear}/{page}", name="workplace_training_shift_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'workplace_training_shift_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
@@ -107,7 +102,7 @@ class ShiftController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -123,11 +118,8 @@ class ShiftController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/nueva/{academicYear}", name="workplace_training_shift_new",
-     *     requirements={"academicYear" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nueva/{academicYear}', name: 'workplace_training_shift_new', requirements: ['academicYear' => '\d+'], methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -145,11 +137,8 @@ class ShiftController extends AbstractController
         return $this->editAction($request, $userExtensionService, $translator, $managerRegistry, $shift, $academicYear);
     }
 
-    /**
-     * @Route("/{id}", name="workplace_training_shift_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function editAction(
+    #[Route(path: '/{id}', name: 'workplace_training_shift_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function edit(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -177,7 +166,7 @@ class ShiftController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wpt_shift'));
                 return $this->redirectToRoute('workplace_training_shift_list');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wpt_shift'));
             }
         }
@@ -202,11 +191,8 @@ class ShiftController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar/{academicYear}", name="workplace_training_shift_operation",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/eliminar/{academicYear}', name: 'workplace_training_shift_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function operation(
         Request $request,
         ShiftRepository $shiftRepository,
         AgreementRepository $agreementRepository,
@@ -236,7 +222,7 @@ class ShiftController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wpt_shift'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wpt_shift'));
             }
             return $this->redirectToRoute('workplace_training_shift_list', ['academicYear' => $academicYear->getId()]);

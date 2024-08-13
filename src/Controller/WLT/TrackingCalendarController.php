@@ -40,16 +40,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
 use Twig\Environment;
 
-/**
- * @Route("/dual/seguimiento/calendario")
- */
+#[Route(path: '/dual/seguimiento/calendario')]
 class TrackingCalendarController extends AbstractController
 {
-    /**
-     * @Route("/{id}", name="work_linked_training_tracking_calendar_list",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'work_linked_training_tracking_calendar_list', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function index(
         WorkDayRepository $workDayRepository,
         AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
         TranslatorInterface $translator,
@@ -104,11 +99,8 @@ class TrackingCalendarController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/jornada/{id}", name="work_linked_training_tracking_calendar_form",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function editAction(
+    #[Route(path: '/jornada/{id}', name: 'work_linked_training_tracking_calendar_form', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function edit(
         Request $request,
         AgreementRepository $agreementRepository,
         ActivityRealizationRepository $activityRealizationRepository,
@@ -178,7 +170,7 @@ class TrackingCalendarController extends AbstractController
                 ]);
             } catch (AccessDeniedException $e) {
                 throw $e;
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.workday_save_error', [], 'calendar'));
             }
         }
@@ -204,11 +196,8 @@ class TrackingCalendarController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/operacion", name="work_linked_training_tracking_calendar_operation",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/{id}/operacion', name: 'work_linked_training_tracking_calendar_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function operation(
         Request $request,
         WorkDayRepository $workDayRepository,
         AgreementRepository $agreementRepository,
@@ -265,7 +254,7 @@ class TrackingCalendarController extends AbstractController
                 $managerRegistry->getManager()->flush();
                 $agreementRepository->updateDates($agreement);
                 $this->addFlash('success', $translator->trans('message.locked', [], 'calendar'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.locked_error', [], 'calendar'));
             }
             return $this->redirectToRoute(
@@ -283,7 +272,7 @@ class TrackingCalendarController extends AbstractController
                 $managerRegistry->getManager()->flush();
                 $agreementRepository->updateDates($agreement);
                 $this->addFlash('success', $translator->trans('message.attendance_updated', [], 'calendar'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.attendance_error', [], 'calendar'));
             }
             return $this->redirectToRoute(
@@ -313,10 +302,10 @@ class TrackingCalendarController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/asistencia", name="work_linked_training_tracking_calendar_attendance_report", methods={"GET"})
      * @Security("is_granted('WLT_AGREEMENT_ACCESS', agreement)")
      */
-    public function attendanceReportAction(
+    #[Route(path: '/{id}/asistencia', name: 'work_linked_training_tracking_calendar_attendance_report', methods: ['GET'])]
+    public function attendanceReport(
         Environment $engine,
         TranslatorInterface $translator,
         Agreement $agreement
@@ -362,11 +351,10 @@ class TrackingCalendarController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/informe/descargar/{year}/{week}", name="work_linked_training_tracking_calendar_activity_report",
-     *     methods={"GET"})
      * @Security("is_granted('WLT_AGREEMENT_ACCESS', agreement)")
      */
-    public function activityReportAction(
+    #[Route(path: '/{id}/informe/descargar/{year}/{week}', name: 'work_linked_training_tracking_calendar_activity_report', methods: ['GET'])]
+    public function activityReport(
         TranslatorInterface $translator,
         Agreement $agreement,
         WorkDayRepository $workDayRepository,
@@ -375,7 +363,7 @@ class TrackingCalendarController extends AbstractController
     ) {
         $weekDays = $workDayRepository->findByYearWeekAndAgreement($year, $week, $agreement);
 
-        if ((is_array($weekDays) || $weekDays instanceof \Countable ? count($weekDays) : 0) === 0) {
+        if ((is_countable($weekDays) ? count($weekDays) : 0) === 0) {
             // no hay jornadas, volver al listado
             return $this->redirectToRoute('work_linked_training_tracking_calendar_list', ['id' => $agreement->getId()]);
         }
@@ -420,13 +408,13 @@ class TrackingCalendarController extends AbstractController
 
                 foreach ($workDay->getActivityRealizations() as $activityRealization) {
                     if ($activityRealization->getCode() !== '' && $activityRealization->getCode() !== null) {
-                        $activities[$day] .= '<b>' . htmlentities($activityRealization->getCode()) . ': </b>';
+                        $activities[$day] .= '<b>' . htmlentities((string) $activityRealization->getCode()) . ': </b>';
                     }
-                    $activities[$day] .= htmlentities($activityRealization->getDescription()) . '<br/>';
+                    $activities[$day] .= htmlentities((string) $activityRealization->getDescription()) . '<br/>';
                 }
 
                 if ($workDay->getOtherActivities() !== '' && $workDay->getOtherActivities() !== null) {
-                    $activities[$day] .= htmlentities($workDay->getOtherActivities()) . '<br/>';
+                    $activities[$day] .= htmlentities((string) $workDay->getOtherActivities()) . '<br/>';
                 }
 
                 if ('' === $activities[$day]) {
@@ -558,7 +546,7 @@ class TrackingCalendarController extends AbstractController
         $escape = true
     ) {
         if ($escape) {
-            $text = nl2br(htmlentities($text));
+            $text = nl2br(htmlentities((string) $text));
         }
         $mpdf->WriteFixedPosHTML(
             '<div style="font-family: sans-serif; font-size: 12px; text-align: ' . $align . ';">' . $text . '</div>',

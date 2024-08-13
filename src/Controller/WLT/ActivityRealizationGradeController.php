@@ -33,16 +33,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/dual/acuerdo/calificacion")
- */
+#[Route(path: '/dual/acuerdo/calificacion')]
 class ActivityRealizationGradeController extends AbstractController
 {
-    /**
-     * @Route("/nueva/{id}",
-     *     name="work_linked_training_activity_realization_grade_new", methods={"GET", "POST"})
-     **/
-    public function newAction(
+    #[Route(path: '/nueva/{id}', name: 'work_linked_training_activity_realization_grade_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -59,11 +54,8 @@ class ActivityRealizationGradeController extends AbstractController
         return $this->formAction($request, $translator, $managerRegistry, $activityRealizationGrade);
     }
 
-    /**
-     * @Route("/{id}", name="work_linked_training_activity_realization_grade_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function formAction(
+    #[Route(path: '/{id}', name: 'work_linked_training_activity_realization_grade_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function form(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -82,7 +74,7 @@ class ActivityRealizationGradeController extends AbstractController
                 return $this->redirectToRoute('work_linked_training_activity_realization_grade_list', [
                     'id' => $activityRealizationGrade->getProject()->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_activity_realization_grade'));
             }
         }
@@ -117,11 +109,8 @@ class ActivityRealizationGradeController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/listar/{page}/", name="work_linked_training_activity_realization_grade_list",
-     *     requirements={"page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/{id}/listar/{page}/', name: 'work_linked_training_activity_realization_grade_list', requirements: ['page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -158,7 +147,7 @@ class ActivityRealizationGradeController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -183,11 +172,8 @@ class ActivityRealizationGradeController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/eliminar", name="work_linked_training_activity_realization_grade_operation",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/{id}/eliminar', name: 'work_linked_training_activity_realization_grade_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function delete(
         Request $request,
         ActivityRealizationGradeRepository $activityRealizationGradeRepository,
         TranslatorInterface $translator,
@@ -213,7 +199,7 @@ class ActivityRealizationGradeController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_activity_realization_grade'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash(
                     'error',
                     $translator->trans('message.delete_error', [], 'wlt_activity_realization_grade')

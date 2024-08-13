@@ -35,16 +35,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/dia_no_lectivo")
- */
+#[Route(path: '/centro/dia_no_lectivo')]
 class NonWorkingDayController extends AbstractController
 {
-    /**
-     * @Route("/nuevo/{academicYear}", name="organization_non_working_day_new",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nuevo/{academicYear}', name: 'organization_non_working_day_new', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -62,10 +57,8 @@ class NonWorkingDayController extends AbstractController
         return $this->indexAction($request, $translator, $managerRegistry, $nonWorkingDay);
     }
 
-    /**
-     * @Route("/{id}", name="organization_non_working_day_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'organization_non_working_day_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -86,7 +79,7 @@ class NonWorkingDayController extends AbstractController
                 return $this->redirectToRoute('organization_non_working_day_list', [
                     'academicYear' => $nonWorkingDay->getAcademicYear()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_non_working_day'));
             }
         }
@@ -112,11 +105,8 @@ class NonWorkingDayController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{academicYear}/{page}", name="organization_non_working_day_list", requirements={"page" = "\d+"},
-     *     defaults={"academicYear" = null, "page" = 1},   methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'organization_non_working_day_list', requirements: ['page' => '\d+'], defaults: ['academicYear' => null, 'page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
@@ -159,7 +149,7 @@ class NonWorkingDayController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -175,10 +165,8 @@ class NonWorkingDayController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar/{academicYear}", name="organization_non_working_day_delete", methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/eliminar/{academicYear}', name: 'organization_non_working_day_delete', methods: ['POST'])]
+    public function delete(
         Request $request,
         UserExtensionService $userExtensionService,
         NonWorkingDayRepository $nonWorkingDayRepository,
@@ -207,7 +195,7 @@ class NonWorkingDayController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_non_working_day'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_non_working_day'));
             }
             return $this->redirectToRoute('organization_non_working_day_list', ['academicYear' => $academicYear->getId()]);

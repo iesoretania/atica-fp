@@ -39,10 +39,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GroupImportController extends AbstractController
 {
-    /**
-     * @Route("/centro/importar/grupo", name="organization_import_group_form", methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/centro/importar/grupo', name: 'organization_import_group_form', methods: ['GET', 'POST'])]
+    public function index(
         UserExtensionService $userExtensionService,
         TeacherRepository $teacherRepository,
         TranslatorInterface $translator,
@@ -141,12 +139,12 @@ class GroupImportController extends AbstractController
                     $groupName = $groupData['Unidad'];
                     $gradeName = $groupData['Curso'];
 
-                    // Si se ha activado el modo restringido, sólo crear los grupos
+                    // Si se ha activado el modo restringido, solo crear los grupos
                     // que contengan la cadena F.P., C.F.G., G.E.C.E. en curso
                     if ($restricted
-                        && false === strpos($gradeName, 'F.P.')
-                        && false === strpos($gradeName, 'G.E.C.E.')
-                        && false === strpos($gradeName, 'C.F.G.')) {
+                        && !str_contains((string) $gradeName, 'F.P.')
+                        && !str_contains((string) $gradeName, 'G.E.C.E.')
+                        && !str_contains((string) $gradeName, 'C.F.G.')) {
                         continue;
                     }
 
@@ -154,7 +152,7 @@ class GroupImportController extends AbstractController
                         $grade = $gradeCollection[$gradeName];
                     } else {
                         // Quedarnos con el primer elemento
-                        $trainings = explode(',', $gradeName);
+                        $trainings = explode(',', (string) $gradeName);
                         $gradeName = $trainings[0];
 
                         [$calculatedGradeName, $trainingName] = ImportParser::parseGradeName($gradeName);
@@ -233,11 +231,9 @@ class GroupImportController extends AbstractController
                     // tutores
                     if ($options['extract_tutors']) {
                         $matches = [];
-                        preg_match_all('/\b(.*) \(.*\)/U', $groupData['Tutor/a'], $matches, PREG_SET_ORDER, 0);
+                        preg_match_all('/\b(.*) \(.*\)/U', (string) $groupData['Tutor/a'], $matches, PREG_SET_ORDER, 0);
 
-                        $matches = array_map(function($element) {
-                            return $element[1];
-                        }, $matches);
+                        $matches = array_map(fn($element) => $element[1], $matches);
                         $matches = array_unique($matches);
 
                         if (null !== $matches) {
@@ -255,16 +251,14 @@ class GroupImportController extends AbstractController
                 }
             }
             $em->flush();
-        } catch (QueryException $e) {
+        } catch (QueryException) {
             return ['error' => '_query'];
-        } catch (Exception $e) {
+        } catch (Exception) {
             return ['error' => ''];
         }
 
         // ordenar por nombre antes de devolverlo
-        usort($collection, function (Group $a, Group $b) {
-            return $a->getName() <=> $b->getName();
-        });
+        usort($collection, fn(Group $a, Group $b) => $a->getName() <=> $b->getName());
 
         return [
             'new_items' => $newCount,

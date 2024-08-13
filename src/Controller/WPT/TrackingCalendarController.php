@@ -47,16 +47,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
 use Twig\Environment;
 
-/**
- * @Route("/fct/seguimiento/calendario")
- */
+#[Route(path: '/fct/seguimiento/calendario')]
 class TrackingCalendarController extends AbstractController
 {
-    /**
-     * @Route("/{id}", name="workplace_training_tracking_calendar_list",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'workplace_training_tracking_calendar_list', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function index(
         TrackedWorkDayRepository $trackedWorkDayRepository,
         WorkDayRepository $workDayRepository,
         TranslatorInterface $translator,
@@ -125,11 +120,8 @@ class TrackingCalendarController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/jornada/{workDay}/{agreementEnrollment}", name="workplace_training_tracking_calendar_form",
-     *     requirements={"workDay" = "\d+","agreementEnrollment" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function editAction(
+    #[Route(path: '/jornada/{workDay}/{agreementEnrollment}', name: 'workplace_training_tracking_calendar_form', requirements: ['workDay' => '\d+', 'agreementEnrollment' => '\d+'], methods: ['GET', 'POST'])]
+    public function edit(
         Request $request,
         AgreementRepository $agreementRepository,
         TranslatorInterface $translator,
@@ -209,7 +201,7 @@ class TrackingCalendarController extends AbstractController
                 ]);
             } catch (AccessDeniedException $e) {
                 throw $e;
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.workday_save_error', [], 'calendar'));
             }
         }
@@ -235,11 +227,8 @@ class TrackingCalendarController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/operacion", name="workplace_training_tracking_calendar_operation",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/{id}/operacion', name: 'workplace_training_tracking_calendar_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function operation(
         Request $request,
         TrackedWorkDayRepository $trackedWorkDayRepository,
         TranslatorInterface $translator,
@@ -297,7 +286,7 @@ class TrackingCalendarController extends AbstractController
                 $trackedWorkDayRepository->updateLock($trackedWorkDays, $agreementEnrollment, $locked);
                 $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.locked', [], 'calendar'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.locked_error', [], 'calendar'));
             }
             return $this->redirectToRoute(
@@ -314,7 +303,7 @@ class TrackingCalendarController extends AbstractController
                 $trackedWorkDayRepository->updateAttendance($trackedWorkDays, true);
                 $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.attendance_updated', [], 'calendar'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.attendance_error', [], 'calendar'));
             }
             return $this->redirectToRoute(
@@ -344,11 +333,10 @@ class TrackingCalendarController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/asistencia/descargar",
-     *     name="workplace_training_tracking_calendar_attendance_report", methods={"GET"})
      * @Security("is_granted('WPT_AGREEMENT_ENROLLMENT_ACCESS', agreementEnrollment)")
      */
-    public function attendanceReportAction(
+    #[Route(path: '/{id}/asistencia/descargar', name: 'workplace_training_tracking_calendar_attendance_report', methods: ['GET'])]
+    public function attendanceReport(
         Environment $engine,
         TranslatorInterface $translator,
         TrackedWorkDayRepository $trackedWorkDayRepository,
@@ -400,11 +388,10 @@ class TrackingCalendarController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/actividades/descargar",
-     *     name="workplace_training_tracking_calendar_activity_summary_report", methods={"GET"})
      * @Security("is_granted('WPT_AGREEMENT_ENROLLMENT_VIEW_ACTIVITY_REPORT', agreementEnrollment)")
      */
-    public function activitySummaryReportAction(
+    #[Route(path: '/{id}/actividades/descargar', name: 'workplace_training_tracking_calendar_activity_summary_report', methods: ['GET'])]
+    public function activitySummaryReport(
         Environment $engine,
         TranslatorInterface $translator,
         AgreementEnrollmentRepository $agreementEnrollmentRepository,
@@ -492,11 +479,10 @@ class TrackingCalendarController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/informe/{year}/{week}", name="workplace_training_tracking_calendar_activity_report",
-     *     methods={"GET"})
      * @Security("is_granted('WPT_AGREEMENT_ENROLLMENT_ACCESS', agreementEnrollment)")
      */
-    public function activityReportAction(
+    #[Route(path: '/{id}/informe/{year}/{week}', name: 'workplace_training_tracking_calendar_activity_report', methods: ['GET'])]
+    public function activityReport(
         TranslatorInterface $translator,
         AgreementEnrollment $agreementEnrollment,
         TrackedWorkDayRepository $trackedWorkDayRepository,
@@ -505,7 +491,7 @@ class TrackingCalendarController extends AbstractController
     ) {
         $weekDays = $trackedWorkDayRepository->findByYearWeekAndAgreementEnrollment($year, $week, $agreementEnrollment);
 
-        if ((is_array($weekDays) || $weekDays instanceof \Countable ? count($weekDays) : 0) === 0) {
+        if ((is_countable($weekDays) ? count($weekDays) : 0) === 0) {
             // no hay jornadas, volver al listado
             return $this->redirectToRoute(
                 'workplace_training_tracking_calendar_list',
@@ -554,9 +540,9 @@ class TrackingCalendarController extends AbstractController
                     if ($trackedActivity->getActivity()->getCode() !== '' && $trackedActivity->getActivity()->getCode(
                         ) !== null) {
                         $activities[$day] .= '<b>' .
-                            htmlentities($trackedActivity->getActivity()->getCode()) . ': </b>';
+                            htmlentities((string) $trackedActivity->getActivity()->getCode()) . ': </b>';
                     }
-                    $activities[$day] .= htmlentities($trackedActivity->getActivity()->getDescription()) . '<br/>';
+                    $activities[$day] .= htmlentities((string) $trackedActivity->getActivity()->getDescription()) . '<br/>';
                     if ($hours[$day] === '') {
                         $hours[$day] =
                             '<ul style="padding: 0; margin: 0; list-style: square inside;">';
@@ -572,7 +558,7 @@ class TrackingCalendarController extends AbstractController
                 }
 
                 if ($trackedWorkDay->getOtherActivities() !== '' && $trackedWorkDay->getOtherActivities() !== null) {
-                    $activities[$day] .= htmlentities($trackedWorkDay->getOtherActivities()) . '<br/>';
+                    $activities[$day] .= htmlentities((string) $trackedWorkDay->getOtherActivities()) . '<br/>';
                 }
 
                 if ('' === $activities[$day]) {
@@ -786,7 +772,7 @@ class TrackingCalendarController extends AbstractController
         $escape = true
     ) {
         if ($escape) {
-            $text = nl2br(htmlentities($text));
+            $text = nl2br(htmlentities((string) $text));
         }
         $mpdf->WriteFixedPosHTML(
             '<div style="font-family: sans-serif; font-size: 12px; text-align: ' . $align . ';">' . $text . '</div>',
@@ -798,11 +784,8 @@ class TrackingCalendarController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/api/v2/{id}", name="api_workplace_training_tracking_calendar_list",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
-     */
-    public function apiIndexAction(
+    #[Route(path: '/api/v2/{id}', name: 'api_workplace_training_tracking_calendar_list', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function apiIndex(
         TrackedWorkDayRepository $trackedWorkDayRepository,
         ActivityRepository $activityRepository,
         ActivityTrackingRepository $activityTrackingRepository,
@@ -880,11 +863,8 @@ class TrackingCalendarController extends AbstractController
                                 ]);
     }
 
-    /**
-     * @Route("/api/v2/jornada/{workDay}/{agreementEnrollment}", name="api_workplace_training_tracking_calendar_form",
-     *     requirements={"id" = "\d+", "agreementEnrollment" = "\d+"}, methods={"GET"})
-     */
-    public function apiEditAction(
+    #[Route(path: '/api/v2/jornada/{workDay}/{agreementEnrollment}', name: 'api_workplace_training_tracking_calendar_form', requirements: ['id' => '\d+', 'agreementEnrollment' => '\d+'], methods: ['GET'])]
+    public function apiEdit(
         TrackedWorkDayRepository $trackedWorkDayRepository,
         ManagerRegistry $managerRegistry,
         WorkDay $workDay,
@@ -897,10 +877,10 @@ class TrackingCalendarController extends AbstractController
             );
 
             $managerRegistry->getManager()->flush();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return new JsonResponse([
                                         'result' => 'error'
-                                    ], 500);
+                                    ], \Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         if (!$trackedWorkDay instanceof TrackedWorkDay) {
@@ -954,12 +934,8 @@ class TrackingCalendarController extends AbstractController
                                 ]);
     }
 
-    /**
-     * @Route("/api/v2/jornada/modificar/{trackedWorkDay}",
-     *     name="api_workplace_training_tracking_calendar_edit",
-     *     requirements={"trackedWorkDay" = "\d+"}, methods={"POST"})
-     */
-    public function apiEditPostAction(
+    #[Route(path: '/api/v2/jornada/modificar/{trackedWorkDay}', name: 'api_workplace_training_tracking_calendar_edit', requirements: ['trackedWorkDay' => '\d+'], methods: ['POST'])]
+    public function apiEditPost(
         ManagerRegistry $managerRegistry,
         Request $request,
         TrackedWorkDay $trackedWorkDay
@@ -993,19 +969,15 @@ class TrackingCalendarController extends AbstractController
             return new JsonResponse([
                                         'result' => 'ok'
                                     ]);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return new JsonResponse([
                                         'result' => 'error'
-                                    ], 500);
+                                    ], \Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    /**
-     * @Route("/api/v2/jornada/actividad/{trackedWorkDay}/{activity}",
-     *     name="api_workplace_training_tracking_calendar_edit_activity",
-     *     requirements={"trackedWorkDay" = "\d+", "activity" = "\d+"}, methods={"POST"})
-     */
-    public function apiEditActivityPostAction(
+    #[Route(path: '/api/v2/jornada/actividad/{trackedWorkDay}/{activity}', name: 'api_workplace_training_tracking_calendar_edit_activity', requirements: ['trackedWorkDay' => '\d+', 'activity' => '\d+'], methods: ['POST'])]
+    public function apiEditActivityPost(
         Request $request,
         ManagerRegistry $managerRegistry,
         TrackedWorkDay $trackedWorkDay,
@@ -1053,7 +1025,7 @@ class TrackingCalendarController extends AbstractController
         if (!$found) {
             return new JsonResponse([
                                         'result' => 'not found'
-                                    ], 404);
+                                    ], \Symfony\Component\HttpFoundation\Response::HTTP_NOT_FOUND);
         }
 
         try {
@@ -1062,10 +1034,10 @@ class TrackingCalendarController extends AbstractController
             return new JsonResponse([
                                         'result' => 'ok'
                                     ]);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return new JsonResponse([
                                         'result' => 'error'
-                                    ], 500);
+                                    ], \Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

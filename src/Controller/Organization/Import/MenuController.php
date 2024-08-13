@@ -25,10 +25,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MenuController extends AbstractController
 {
-    /**
-     * @Route("/centro/importar", name="organization_import", methods={"GET"})
-     */
-    public function indexAction(UserExtensionService $userExtensionService)
+    #[Route(path: '/centro/importar', name: 'organization_import', methods: ['GET'])]
+    public function index(UserExtensionService $userExtensionService)
     {
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $userExtensionService->getCurrentOrganization());
         return $this->render(

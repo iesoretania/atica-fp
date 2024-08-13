@@ -34,16 +34,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/ensenanza")
- */
+#[Route(path: '/centro/ensenanza')]
 class LearningOutcomeController extends AbstractController
 {
-    /**
-     * @Route("/materia/{id}/resultado/nuevo", name="organization_training_learning_outcome_new",
-     *     methods={"GET", "POST"})
-     **/
-    public function newAction(
+    #[Route(path: '/materia/{id}/resultado/nuevo', name: 'organization_training_learning_outcome_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -60,11 +55,8 @@ class LearningOutcomeController extends AbstractController
         return $this->formAction($request, $translator, $managerRegistry, $learningOutcome);
     }
 
-    /**
-     * @Route("/materia/resultado/{id}", name="organization_training_learning_outcome_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function formAction(
+    #[Route(path: '/materia/resultado/{id}', name: 'organization_training_learning_outcome_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function form(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -88,7 +80,7 @@ class LearningOutcomeController extends AbstractController
                 return $this->redirectToRoute('organization_training_learning_outcome_list', [
                     'id' => $subject->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_learning_outcome'));
             }
         }
@@ -124,11 +116,8 @@ class LearningOutcomeController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/materia/{id}/resultado/{page}/", name="organization_training_learning_outcome_list",
-     *     requirements={"id" = "\d+", "page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/materia/{id}/resultado/{page}/', name: 'organization_training_learning_outcome_list', requirements: ['id' => '\d+', 'page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -163,7 +152,7 @@ class LearningOutcomeController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -188,11 +177,8 @@ class LearningOutcomeController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/materia/resultado/eliminar/{id}", name="organization_training_learning_outcome_delete",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/materia/resultado/eliminar/{id}', name: 'organization_training_learning_outcome_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function delete(
         Request $request,
         LearningOutcomeRepository $learningOutcomeRepository,
         TranslatorInterface $translator,
@@ -218,7 +204,7 @@ class LearningOutcomeController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_learning_outcome'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_learning_outcome'));
             }
             return $this->redirectToRoute('organization_training_learning_outcome_list', ['id' => $subject->getId()]);
@@ -246,11 +232,8 @@ class LearningOutcomeController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/materia/resultado/importar/{id}", name="organization_training_learning_outcome_import",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function importAction(
+    #[Route(path: '/materia/resultado/importar/{id}', name: 'organization_training_learning_outcome_import', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function import(
         Request $request,
         LearningOutcomeRepository $learningOutcomeRepository,
         TranslatorInterface $translator,
@@ -282,17 +265,14 @@ class LearningOutcomeController extends AbstractController
         try {
             $em->flush();
             $this->addFlash('success', $translator->trans('message.saved', [], 'edu_learning_outcome'));
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->addFlash('error', $translator->trans('message.error', [], 'edu_learning_outcome'));
         }
         return $this->redirectToRoute('organization_training_learning_outcome_list', ['id' => $subject->getId()]);
     }
 
-    /**
-     * @Route("/materia/resultado/exportar/{id}", name="organization_training_learning_outcome_export",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
-     */
-    public function exportAction(
+    #[Route(path: '/materia/resultado/exportar/{id}', name: 'organization_training_learning_outcome_export', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function export(
         Subject $subject
     ) {
         $training = $subject->getGrade()->getTraining();
@@ -311,7 +291,7 @@ class LearningOutcomeController extends AbstractController
         return new Response(
             $data,
             Response::HTTP_OK,
-            array('content-type' => 'text/plain')
+            ['content-type' => 'text/plain']
         );
     }
 
@@ -322,7 +302,7 @@ class LearningOutcomeController extends AbstractController
      */
     private function parseImport($lines)
     {
-        $items = explode("\n", $lines);
+        $items = explode("\n", (string) $lines);
         $output = [];
         $matches = [];
 

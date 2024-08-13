@@ -38,16 +38,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/encuesta")
- */
+#[Route(path: '/centro/encuesta')]
 class SurveyController extends AbstractController
 {
-    /**
-     * @Route("/nueva", name="organization_survey_new", methods={"GET", "POST"})
-     * @Route("/{id}", name="organization_survey_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/nueva', name: 'organization_survey_new', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}', name: 'organization_survey_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -100,7 +96,7 @@ class SurveyController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'survey'));
                 return $this->redirectToRoute('organization_survey_list');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.save_error', [], 'survey'));
             }
         }
@@ -125,11 +121,8 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{page}", name="organization_survey_list", requirements={"page" = "\d+"},
-     *     defaults={"page" = 1},  methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{page}', name: 'organization_survey_list', requirements: ['page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -164,7 +157,7 @@ class SurveyController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -178,10 +171,8 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/operacion", name="organization_survey_operation", methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/operacion', name: 'organization_survey_operation', methods: ['POST'])]
+    public function operation(
         Request $request,
         SurveyRepository $surveyRepository,
         TranslatorInterface $translator,
@@ -241,7 +232,7 @@ class SurveyController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.purged', [], 'survey'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.purge_error', [], 'survey'));
             }
             return $this->redirectToRoute('organization_survey_list');
@@ -289,7 +280,7 @@ class SurveyController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'survey'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'survey'));
             }
             return $this->redirectToRoute('organization_survey_list');

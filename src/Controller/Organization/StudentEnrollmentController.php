@@ -36,15 +36,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/matricula")
- */
+#[Route(path: '/centro/matricula')]
 class StudentEnrollmentController extends AbstractController
 {
-    /**
-     * @Route("/{id}", name="organization_student_enrollment_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'organization_student_enrollment_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -72,7 +68,7 @@ class StudentEnrollmentController extends AbstractController
                 return $this->redirectToRoute('organization_teacher_list', [
                     'academicYear' => $studentEnrollment->getGroup()->getGrade()->getTraining()->getAcademicYear()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_student_enrollment'));
             }
         }
@@ -91,11 +87,8 @@ class StudentEnrollmentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{academicYear}/{page}", name="organization_student_enrollment_list",
-     *     requirements={"page" = "\d+"}, defaults={"academicYear" = null, "page" = 1},   methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'organization_student_enrollment_list', requirements: ['page' => '\d+'], defaults: ['academicYear' => null, 'page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
@@ -150,7 +143,7 @@ class StudentEnrollmentController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -166,10 +159,8 @@ class StudentEnrollmentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/operacion/{academicYear}", name="organization_student_enrollment_operation", methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/operacion/{academicYear}', name: 'organization_student_enrollment_operation', methods: ['POST'])]
+    public function delete(
         Request $request,
         StudentEnrollmentRepository $studentEnrollmentRepository,
         UserExtensionService $userExtensionService,
@@ -201,7 +192,7 @@ class StudentEnrollmentController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_student_enrollment'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_student_enrollment'));
             }
             return $this->redirectToRoute(

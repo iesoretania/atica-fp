@@ -44,16 +44,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/dual/reunion")
- */
+#[Route(path: '/dual/reunion')]
 class MeetingController extends AbstractController
 {
-    /**
-     * @Route("/nueva/{academicYear}", name="work_linked_training_meeting_new",
-     *      requirements={"academicYear" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nueva/{academicYear}', name: 'work_linked_training_meeting_new', requirements: ['academicYear' => '\d+'], methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -97,11 +92,8 @@ class MeetingController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/{id}", name="work_linked_training_meeting_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'work_linked_training_meeting_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -171,7 +163,7 @@ class MeetingController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_meeting'));
                 return $this->redirectToRoute('work_linked_training_meeting_list');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_meeting'));
             }
         }
@@ -196,11 +188,8 @@ class MeetingController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{academicYear}/{page}", name="work_linked_training_meeting_list",
-     *     requirements={"academic_year" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'work_linked_training_meeting_list', requirements: ['academic_year' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TeacherRepository $teacherRepository,
@@ -305,7 +294,7 @@ class MeetingController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -323,11 +312,8 @@ class MeetingController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar", name="work_linked_training_meeting_operation",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/eliminar', name: 'work_linked_training_meeting_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function operation(
         Request $request,
         MeetingRepository $meetingRepository,
         UserExtensionService $userExtensionService,
@@ -356,7 +342,7 @@ class MeetingController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_meeting'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_meeting'));
             }
             return $this->redirectToRoute('work_linked_training_meeting_list');

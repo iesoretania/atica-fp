@@ -45,16 +45,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
 use Twig\Environment;
 
-/**
- * @Route("/fct/desplazamiento")
- */
+#[Route(path: '/fct/desplazamiento')]
 class TravelExpenseController extends AbstractController
 {
-    /**
-     * @Route("/nuevo/{id}", name="workplace_training_travel_expense_new",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nuevo/{id}', name: 'workplace_training_travel_expense_new', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -82,11 +77,8 @@ class TravelExpenseController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/detalle/{id}", name="workplace_training_travel_expense_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/detalle/{id}', name: 'workplace_training_travel_expense_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         TranslatorInterface $translator,
         AgreementRepository $agreementRepository,
@@ -107,7 +99,7 @@ class TravelExpenseController extends AbstractController
             $teacher
         );
 
-        if ((is_array($agreements) || $agreements instanceof \Countable ? count($agreements) : 0) === 0) {
+        if ((is_countable($agreements) ? count($agreements) : 0) === 0) {
             throw $this->createAccessDeniedException();
         }
 
@@ -125,7 +117,7 @@ class TravelExpenseController extends AbstractController
                 return $this->redirectToRoute('workplace_training_travel_expense_detail_list', [
                     'id' => $teacher->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wpt_visit'));
             }
         }
@@ -155,11 +147,8 @@ class TravelExpenseController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/listar/{page}", name="workplace_training_travel_expense_detail_list",
-     *     requirements={"page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/{id}/listar/{page}', name: 'workplace_training_travel_expense_detail_list', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -205,7 +194,7 @@ class TravelExpenseController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -229,11 +218,8 @@ class TravelExpenseController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/resumen/{academicYear}/{page}", name="workplace_training_travel_expense_teacher_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function teacherListAction(
+    #[Route(path: '/resumen/{academicYear}/{page}', name: 'workplace_training_travel_expense_teacher_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function teacherList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -298,7 +284,7 @@ class TravelExpenseController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -314,11 +300,8 @@ class TravelExpenseController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar/{id}", name="workplace_training_travel_expense_operation",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/eliminar/{id}', name: 'workplace_training_travel_expense_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function operation(
         Request $request,
         TravelExpenseRepository $travelExpenseRepository,
         UserExtensionService $userExtensionService,
@@ -350,7 +333,7 @@ class TravelExpenseController extends AbstractController
                 }
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wpt_travel_expense'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wpt_travel_expense'));
             }
             return $this->redirectToRoute('workplace_training_travel_expense_detail_list', ['id' => $teacher->getId()]);
@@ -369,11 +352,8 @@ class TravelExpenseController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/descargar",
-     *     requirements={"id" = "\d+"}, name="workplace_training_travel_expense_report", methods={"GET"})
-     */
-    public function travelExpensesSummaryReportAction(
+    #[Route(path: '/{id}/descargar', requirements: ['id' => '\d+'], name: 'workplace_training_travel_expense_report', methods: ['GET'])]
+    public function travelExpensesSummaryReport(
         Environment $engine,
         TranslatorInterface $translator,
         TravelExpenseRepository $travelExpenseRepository,

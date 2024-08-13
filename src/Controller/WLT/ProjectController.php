@@ -46,16 +46,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/dual/proyecto")
- */
+#[Route(path: '/dual/proyecto')]
 class ProjectController extends AbstractController
 {
-    /**
-     * @Route("/listar/{academicYear}/{page}", name="work_linked_training_project_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'work_linked_training_project_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
@@ -119,7 +114,7 @@ class ProjectController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -135,10 +130,8 @@ class ProjectController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/nuevo", name="work_linked_training_project_new", methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nuevo', name: 'work_linked_training_project_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -166,11 +159,8 @@ class ProjectController extends AbstractController
         return $this->editAction($request, $userExtensionService, $translator, $managerRegistry,  $project);
     }
 
-    /**
-     * @Route("/{id}", name="work_linked_training_project_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function editAction(
+    #[Route(path: '/{id}', name: 'work_linked_training_project_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function edit(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -195,7 +185,7 @@ class ProjectController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_project'));
                 return $this->redirectToRoute('work_linked_training_project_list');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_project'));
             }
         }
@@ -220,11 +210,8 @@ class ProjectController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/estudiantes/{id}", name="work_linked_training_project_student_enrollment",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function studentEnrollmentsAction(
+    #[Route(path: '/estudiantes/{id}', name: 'work_linked_training_project_student_enrollment', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function studentEnrollments(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -247,7 +234,7 @@ class ProjectController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_project'));
                 return $this->redirectToRoute('work_linked_training_project_list');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_project'));
             }
         }
@@ -271,11 +258,8 @@ class ProjectController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar", name="work_linked_training_project_operation",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/eliminar', name: 'work_linked_training_project_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function operation(
         Request $request,
         ProjectRepository $projectRepository,
         AgreementRepository $agreementRepository,
@@ -321,7 +305,7 @@ class ProjectController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_project'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_project'));
             }
             return $this->redirectToRoute('work_linked_training_project_list');

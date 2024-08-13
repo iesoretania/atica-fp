@@ -41,16 +41,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/dual/acuerdo")
- */
+#[Route(path: '/dual/acuerdo')]
 class AgreementController extends AbstractController
 {
-    /**
-     * @Route("/nuevo/{project}", name="work_linked_training_agreement_new",
-     *     requirements={"project": "\d+"}, methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nuevo/{project}', name: 'work_linked_training_agreement_new', requirements: ['project' => '\d+'], methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -77,10 +72,8 @@ class AgreementController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/{id}", name="work_linked_training_agreement_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'work_linked_training_agreement_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -131,7 +124,7 @@ class AgreementController extends AbstractController
                 return $this->redirectToRoute('work_linked_training_agreement_list', [
                     'id' => $agreement->getProject()->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_agreement'));
             }
         }
@@ -168,11 +161,8 @@ class AgreementController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/listar/{page}", name="work_linked_training_agreement_list",
-     *     requirements={"page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/{id}/listar/{page}', name: 'work_linked_training_agreement_list', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -267,7 +257,7 @@ class AgreementController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -290,11 +280,8 @@ class AgreementController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/operacion/{project}", name="work_linked_training_agreement_operation",
-     *     requirements={"project": "\d+"}, methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/operacion/{project}', name: 'work_linked_training_agreement_operation', requirements: ['project' => '\d+'], methods: ['POST'])]
+    public function operation(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -346,7 +333,7 @@ class AgreementController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_agreement'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_agreement'));
             }
             return $this->redirectToRoute(
@@ -412,7 +399,7 @@ class AgreementController extends AbstractController
                 return $this->redirectToRoute('work_linked_training_agreement_list', [
                     'id' => $project->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.copy_error', [], 'wlt_agreement'));
             }
         }

@@ -37,16 +37,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/dual/seguimiento")
- */
+#[Route(path: '/dual/seguimiento')]
 class TrackingController extends AbstractController
 {
-    /**
-     * @Route("/acuerdo/listar/{academicYear}/{page}", name="work_linked_training_tracking_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/acuerdo/listar/{academicYear}/{page}', name: 'work_linked_training_tracking_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -180,7 +175,7 @@ class TrackingController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 

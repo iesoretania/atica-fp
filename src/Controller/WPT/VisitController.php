@@ -46,16 +46,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
 use Twig\Environment;
 
-/**
- * @Route("/fct/visita")
- */
+#[Route(path: '/fct/visita')]
 class VisitController extends AbstractController
 {
-    /**
-     * @Route("/nueva/{id}",  requirements={"id" = "\d+"},
-     *     name="workplace_training_visit_new", methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nueva/{id}', requirements: ['id' => '\d+'], name: 'workplace_training_visit_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -89,11 +84,8 @@ class VisitController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/{id}", name="workplace_training_visit_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'workplace_training_visit_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -141,7 +133,7 @@ class VisitController extends AbstractController
                     'workplace_training_visit_detail_list',
                     ['id' => $visit->getTeacher()->getId()]
                 );
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wpt_visit'));
             }
         }
@@ -171,11 +163,8 @@ class VisitController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/listar/{page}", name="workplace_training_visit_detail_list",
-     *     requirements={"page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/{id}/listar/{page}', name: 'workplace_training_visit_detail_list', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -234,7 +223,7 @@ class VisitController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -258,11 +247,8 @@ class VisitController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/resumen/{academicYear}/{page}", name="workplace_training_visit_teacher_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function teacherListAction(
+    #[Route(path: '/resumen/{academicYear}/{page}', name: 'workplace_training_visit_teacher_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function teacherList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -327,7 +313,7 @@ class VisitController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -343,11 +329,8 @@ class VisitController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar/{id}", name="workplace_training_visit_operation",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/eliminar/{id}', name: 'workplace_training_visit_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function operation(
         Request              $request,
         ContactRepository    $visitRepository,
         UserExtensionService $userExtensionService,
@@ -378,7 +361,7 @@ class VisitController extends AbstractController
                 }
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wpt_visit'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wpt_visit'));
             }
             return $this->redirectToRoute('workplace_training_visit_detail_list', ['id' => $teacher->getId()]);
@@ -397,11 +380,8 @@ class VisitController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/descargar",
-     *     requirements={"id" = "\d+"}, name="workplace_training_visit_report", methods={"GET"})
-     */
-    public function visitSummaryReportAction(
+    #[Route(path: '/{id}/descargar', requirements: ['id' => '\d+'], name: 'workplace_training_visit_report', methods: ['GET'])]
+    public function visitSummaryReport(
         Environment          $engine,
         TranslatorInterface  $translator,
         WPTTeacherRepository $wptTeacherRepository,

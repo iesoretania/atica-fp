@@ -32,10 +32,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TravelRouteAPIController extends AbstractController
 {
-    /**
-     * @Route("/api/travel_route/new", name="api_travel_route_new", methods={"GET", "POST"})
-     */
-    public function apiNewTravelRouteAction(
+    #[Route(path: '/api/travel_route/new', name: 'api_travel_route_new', methods: ['GET', 'POST'])]
+    public function apiNewTravelRoute(
         Request $request,
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry
@@ -72,9 +70,7 @@ class TravelRouteAPIController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/api/travel_route/query", name="api_travel_route_query", methods={"GET"})
-     */
+    #[Route(path: '/api/travel_route/query', name: 'api_travel_route_query', methods: ['GET'])]
     public function apiTravelRouteQuery(
         Request $request,
         UserExtensionService $userExtensionService,

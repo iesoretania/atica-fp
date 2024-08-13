@@ -37,9 +37,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/fct/seguimiento")
- */
+#[Route(path: '/fct/seguimiento')]
 class TrackingController extends AbstractController
 {
     /**
@@ -199,17 +197,14 @@ class TrackingController extends AbstractController
             $pager
                 ->setMaxPerPage($maxPerPage)
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
         return $pager;
     }
 
-    /**
-     * @Route("/acuerdo/listar/{academicYear}/{page}", name="workplace_training_tracking_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/acuerdo/listar/{academicYear}/{page}', name: 'workplace_training_tracking_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -259,11 +254,8 @@ class TrackingController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/api/v2/acuerdo/listar", name="api_workplace_training_agreement_list",
-     *     methods={"GET"})
-     */
-    public function apiListAction(
+    #[Route(path: '/api/v2/acuerdo/listar', name: 'api_workplace_training_agreement_list', methods: ['GET'])]
+    public function apiList(
         UserExtensionService $userExtensionService,
         WPTGroupRepository $groupRepository,
         TeacherRepository $teacherRepository,

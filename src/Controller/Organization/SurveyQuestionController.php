@@ -36,16 +36,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/encuesta/pregunta")
- */
+#[Route(path: '/centro/encuesta/pregunta')]
 class SurveyQuestionController extends AbstractController
 {
-    /**
-     * @Route("/nueva/{id}", name="organization_survey_question_new",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nueva/{id}', name: 'organization_survey_question_new', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         SurveyQuestionRepository $surveyQuestionRepository,
@@ -68,10 +63,8 @@ class SurveyQuestionController extends AbstractController
 
         return $this->indexAction($request, $translator, $managerRegistry, $surveyQuestion);
     }
-    /**
-     * @Route("/{id}", name="organization_survey_question_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'organization_survey_question_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -94,7 +87,7 @@ class SurveyQuestionController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'survey_question'));
                 return $this->redirectToRoute('organization_survey_question_list', ['id' => $survey->getId()]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.save_error', [], 'survey_question'));
             }
         }
@@ -126,11 +119,8 @@ class SurveyQuestionController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{id}/resultado/{page}", name="organization_survey_question_list", requirements={"page" = "\d+"},
-     *     defaults={"page" = 1},  methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{id}/resultado/{page}', name: 'organization_survey_question_list', requirements: ['page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -164,7 +154,7 @@ class SurveyQuestionController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -188,10 +178,8 @@ class SurveyQuestionController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/operacion/{id}", name="organization_survey_question_operation", methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/operacion/{id}', name: 'organization_survey_question_operation', methods: ['POST'])]
+    public function operation(
         Request $request,
         SurveyQuestionRepository $surveyQuestionRepository,
         UserExtensionService $userExtensionService,
@@ -242,7 +230,7 @@ class SurveyQuestionController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'survey_question'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'survey_question'));
             }
             return $this->redirectToRoute('organization_survey_question_list', ['id' => $survey->getId()]);
@@ -272,7 +260,7 @@ class SurveyQuestionController extends AbstractController
                 $surveyQuestion->setOrderNr($temp);
                 try {
                     $managerRegistry->getManager()->flush();
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                 }
             }
         }
@@ -294,7 +282,7 @@ class SurveyQuestionController extends AbstractController
                 $surveyQuestion->setOrderNr($temp);
                 try {
                     $managerRegistry->getManager()->flush();
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                 }
             }
         }
