@@ -38,10 +38,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TeacherImportController extends AbstractController
 {
-    /**
-     * @Route("/centro/importar/profesorado", name="organization_import_teacher_form", methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/centro/importar/profesorado', name: 'organization_import_teacher_form', methods: ['GET', 'POST'])]
+    public function index(
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         UserPasswordHasherInterface $passwordEncoder,
@@ -146,7 +144,7 @@ class TeacherImportController extends AbstractController
                         if (null === $person) {
                             $person = new Person();
 
-                            $fullName = explode(', ', $personData['Empleado/a']);
+                            $fullName = explode(', ', (string) $personData['Empleado/a']);
 
                             $person
                                 ->setFirstName($fullName[1])
@@ -193,9 +191,9 @@ class TeacherImportController extends AbstractController
                 }
             }
             $em->flush();
-        } catch (QueryException $e) {
+        } catch (QueryException) {
             return ['error' => '_query'];
-        } catch (Exception $e) {
+        } catch (Exception) {
             return ['error' => ''];
         }
 

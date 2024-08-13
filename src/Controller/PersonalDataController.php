@@ -34,10 +34,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PersonalDataController extends AbstractController
 {
-    /**
-     * @Route("/datos", name="personal_data", methods={"GET", "POST"})
-     */
-    public function userProfileFormAction(
+    #[Route(path: '/datos', name: 'personal_data', methods: ['GET', 'POST'])]
+    public function userProfileForm(
         Request $request,
         TranslatorInterface $translator,
         UserPasswordHasherInterface $passwordEncoder,
@@ -76,7 +74,7 @@ class PersonalDataController extends AbstractController
                 $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $message);
                 return $this->redirectToRoute('frontpage');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'user'));
             }
         }

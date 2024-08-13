@@ -37,15 +37,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/empresa")
- */
+#[Route(path: '/empresa')]
 class CompanyController extends AbstractController
 {
-    /**
-     * @Route("/nueva", name="company_new", methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nueva', name: 'company_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -58,11 +54,8 @@ class CompanyController extends AbstractController
         return $this->formAction($request, $translator, $userExtensionService, $managerRegistry, $company);
     }
 
-    /**
-     * @Route("/{id}", name="company_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function formAction(
+    #[Route(path: '/{id}', name: 'company_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function form(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -90,7 +83,7 @@ class CompanyController extends AbstractController
                 $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'company'));
                 return $this->redirectToRoute('company');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'company'));
             }
         }
@@ -116,11 +109,8 @@ class CompanyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{page}", name="company", requirements={"page" = "\d+"},
-     *     defaults={"page" = 1},   methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{page}', name: 'company', requirements: ['page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -156,7 +146,7 @@ class CompanyController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -170,10 +160,8 @@ class CompanyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar", name="company_delete", methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/eliminar', name: 'company_delete', methods: ['POST'])]
+    public function delete(
         Request $request,
         CompanyRepository $companyRepository,
         TranslatorInterface $translator,
@@ -199,7 +187,7 @@ class CompanyController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'company'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'company'));
             }
             return $this->redirectToRoute('company');
@@ -217,9 +205,7 @@ class CompanyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/api/person/query", name="api_person_query", methods={"GET"})
-     */
+    #[Route(path: '/api/person/query', name: 'api_person_query', methods: ['GET'])]
     public function apiPersonQuery(
         Request $request,
         UserExtensionService $userExtensionService,

@@ -25,10 +25,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MenuController extends AbstractController
 {
-    /**
-     * @Route("/dual", name="work_linked_training", methods={"GET"})
-     */
-    public function indexAction(UserExtensionService $userExtensionService)
+    #[Route(path: '/dual', name: 'work_linked_training', methods: ['GET'])]
+    public function index(UserExtensionService $userExtensionService)
     {
         $this->denyAccessUnlessGranted(
             WLTOrganizationVoter::WLT_ACCESS,

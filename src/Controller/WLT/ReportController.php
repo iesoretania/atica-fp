@@ -51,15 +51,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
 use Twig\Environment;
 
-/**
- * @Route("/dual/informe")
- */
+#[Route(path: '/dual/informe')]
 class ReportController extends AbstractController
 {
-    /**
-     * @Route("/", name="work_linked_training_report", methods={"GET"})
-     */
-    public function indexAction(UserExtensionService $userExtensionService)
+    #[Route(path: '/', name: 'work_linked_training_report', methods: ['GET'])]
+    public function index(UserExtensionService $userExtensionService)
     {
         $this->denyAccessUnlessGranted(
             WLTOrganizationVoter::WLT_MANAGER,
@@ -73,11 +69,8 @@ class ReportController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/reuniones/listar/{academicYear}/{page}", name="work_linked_training_report_meeting_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function meetingListAction(
+    #[Route(path: '/reuniones/listar/{academicYear}/{page}', name: 'work_linked_training_report_meeting_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function meetingList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -99,11 +92,8 @@ class ReportController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/asistencia/listar/{academicYear}/{page}", name="work_linked_training_report_attendance_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function attendanceListAction(
+    #[Route(path: '/asistencia/listar/{academicYear}/{page}', name: 'work_linked_training_report_attendance_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function attendanceList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -125,11 +115,8 @@ class ReportController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/evaluacion/listar/{academicYear}/{page}", name="work_linked_training_report_grading_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function gradingListAction(
+    #[Route(path: '/evaluacion/listar/{academicYear}/{page}', name: 'work_linked_training_report_grading_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function gradingList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -151,11 +138,8 @@ class ReportController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/programa_formativo/listar/{academicYear}/{page}", name="work_linked_training_report_learning_program_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function learningProgramListAction(
+    #[Route(path: '/programa_formativo/listar/{academicYear}/{page}', name: 'work_linked_training_report_learning_program_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function learningProgramList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -243,7 +227,7 @@ class ReportController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -260,11 +244,8 @@ class ReportController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/reuniones/{project}/{academicYear}", name="work_linked_training_report_meeting_report",
-     *     requirements={"project" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
-     */
-    public function meetingReportAction(
+    #[Route(path: '/reuniones/{project}/{academicYear}', name: 'work_linked_training_report_meeting_report', requirements: ['project' => '\d+', 'academicYear' => '\d+'], methods: ['GET'])]
+    public function meetingReport(
         TranslatorInterface $translator,
         Environment $engine,
         WLTTeacherRepository $wltTeacherRepository,
@@ -321,11 +302,8 @@ class ReportController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/evaluacion/{project}/{academicYear}", name="work_linked_training_report_grading_report",
-     *     requirements={"project" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
-     */
-    public function gradingReportAction(
+    #[Route(path: '/evaluacion/{project}/{academicYear}', name: 'work_linked_training_report_grading_report', requirements: ['project' => '\d+', 'academicYear' => '\d+'], methods: ['GET'])]
+    public function gradingReport(
         TranslatorInterface $translator,
         Environment $engine,
         SubjectRepository $subjectRepository,
@@ -390,11 +368,8 @@ class ReportController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/asistencia/{project}/{academicYear}", name="work_linked_training_report_attendance_report",
-     *     requirements={"project" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
-     */
-    public function attendanceReportAction(
+    #[Route(path: '/asistencia/{project}/{academicYear}', name: 'work_linked_training_report_attendance_report', requirements: ['project' => '\d+', 'academicYear' => '\d+'], methods: ['GET'])]
+    public function attendanceReport(
         TranslatorInterface $translator,
         Environment $engine,
         WorkDayRepository $workDayRepository,
@@ -437,11 +412,8 @@ class ReportController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/programa_formativo/{project}/{academicYear}", name="work_linked_training_report_learning_program_report",
-     *     requirements={"project" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
-     */
-    public function learningProgramReportAction(
+    #[Route(path: '/programa_formativo/{project}/{academicYear}', name: 'work_linked_training_report_learning_program_report', requirements: ['project' => '\d+', 'academicYear' => '\d+'], methods: ['GET'])]
+    public function learningProgramReport(
         TranslatorInterface $translator,
         Environment $engine,
         LearningProgramRepository $wltLearningProgramRepository,
@@ -469,11 +441,8 @@ class ReportController extends AbstractController
 
         return $response;
     }
-    /**
-     * @Route("/encuesta/estudiantes/listar/{academicYear}/{page}", name="work_linked_training_report_student_survey_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function studentListAction(
+    #[Route(path: '/encuesta/estudiantes/listar/{academicYear}/{page}', name: 'work_linked_training_report_student_survey_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function studentList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -495,11 +464,8 @@ class ReportController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/encuesta/empresas/listar/{academicYear}/{page}", name="work_linked_training_report_work_tutor_survey_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function companyListAction(
+    #[Route(path: '/encuesta/empresas/listar/{academicYear}/{page}', name: 'work_linked_training_report_work_tutor_survey_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function companyList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -521,12 +487,8 @@ class ReportController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/encuesta/centro/listar/{academicYear}/{page}",
-     *     name="work_linked_training_report_educational_tutor_survey_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function educationalTutorListAction(
+    #[Route(path: '/encuesta/centro/listar/{academicYear}/{page}', name: 'work_linked_training_report_educational_tutor_survey_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function educationalTutorList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -548,11 +510,8 @@ class ReportController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/encuesta/estudiantes/{project}/{academicYear}", name="work_linked_training_report_student_survey_report",
-     *     requirements={"id" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
-     */
-    public function studentsReportAction(
+    #[Route(path: '/encuesta/estudiantes/{project}/{academicYear}', name: 'work_linked_training_report_student_survey_report', requirements: ['id' => '\d+', 'academicYear' => '\d+'], methods: ['GET'])]
+    public function studentsReport(
         TranslatorInterface $translator,
         Environment $engine,
         StudentAnsweredSurveyRepository $studentAnsweredSurveyRepository,
@@ -615,11 +574,8 @@ class ReportController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/encuesta/empresas/{project}/{academicYear}", name="work_linked_training_report_work_tutor_survey_report",
-     *     requirements={"id" = "\d+", "academicYear" = "\d+"}, methods={"GET"})
-     */
-    public function workTutorReportAction(
+    #[Route(path: '/encuesta/empresas/{project}/{academicYear}', name: 'work_linked_training_report_work_tutor_survey_report', requirements: ['id' => '\d+', 'academicYear' => '\d+'], methods: ['GET'])]
+    public function workTutorReport(
         TranslatorInterface $translator,
         Environment $engine,
         WLTAnsweredSurveyRepository $wltAnsweredSurveyRepository,
@@ -683,11 +639,8 @@ class ReportController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/encuesta/centro/{project}/{academicYear}", name="work_linked_training_report_educational_tutor_survey_report",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
-     */
-    public function educationalTutorReportAction(
+    #[Route(path: '/encuesta/centro/{project}/{academicYear}', name: 'work_linked_training_report_educational_tutor_survey_report', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function educationalTutorReport(
         TranslatorInterface $translator,
         Environment $engine,
         WLTAnsweredSurveyRepository $wltAnsweredSurveyRepository,

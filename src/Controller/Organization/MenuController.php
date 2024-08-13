@@ -25,10 +25,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MenuController extends AbstractController
 {
-    /**
-     * @Route("/centro", name="organization", methods={"GET"})
-     */
-    public function indexAction(UserExtensionService $userExtensionService)
+    #[Route(path: '/centro', name: 'organization', methods: ['GET'])]
+    public function index(UserExtensionService $userExtensionService)
     {
         $this->denyAccessUnlessGranted(
             OrganizationVoter::ACCESS_SECTION,

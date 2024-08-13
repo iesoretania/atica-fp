@@ -45,9 +45,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/dual/encuesta")
- */
+#[Route(path: '/dual/encuesta')]
 class SurveyController extends AbstractController
 {
     /**
@@ -64,16 +62,14 @@ class SurveyController extends AbstractController
             $pager
                 ->setMaxPerPage($pageSize)
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
         return $pager;
     }
 
-    /**
-     * @Route("/", name="work_linked_training_survey", methods={"GET"})
-     */
-    public function indexAction(UserExtensionService $userExtensionService)
+    #[Route(path: '/', name: 'work_linked_training_survey', methods: ['GET'])]
+    public function index(UserExtensionService $userExtensionService)
     {
         $this->denyAccessUnlessGranted(
             WLTOrganizationVoter::WLT_ACCESS,
@@ -88,10 +84,10 @@ class SurveyController extends AbstractController
     }
 
     /**
-     * @Route("/estudiante/cumplimentar/{id}", name="work_linked_training_survey_student_form", methods={"GET", "POST"})
      * @Security("is_granted('WLT_AGREEMENT_VIEW_STUDENT_SURVEY', agreement)")
      */
-    public function studentFillAction(
+    #[Route(path: '/estudiante/cumplimentar/{id}', name: 'work_linked_training_survey_student_form', methods: ['GET', 'POST'])]
+    public function studentFill(
         Request $request,
         TranslatorInterface $translator,
         StudentAnsweredSurveyRepository $studentAnsweredSurveyRepository,
@@ -136,7 +132,7 @@ class SurveyController extends AbstractController
                     return $this->redirectToRoute('work_linked_training_survey_student_list', [
                         'academicYear' => $academicYear->getId()
                     ]);
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
                 }
             }
@@ -167,10 +163,10 @@ class SurveyController extends AbstractController
     }
 
     /**
-     * @Route("/empresa/cumplimentar/{id}/{workTutor}", name="work_linked_training_survey_work_tutor_form")
      * @Security("is_granted('WLT_AGREEMENT_VIEW_WORK_TUTOR_SURVEY', agreement)")
      */
-    public function workTutorFillAction(
+    #[Route(path: '/empresa/cumplimentar/{id}/{workTutor}', name: 'work_linked_training_survey_work_tutor_form')]
+    public function workTutorFill(
         Request $request,
         TranslatorInterface $translator,
         WorkTutorAnsweredSurveyRepository $workTutorAnsweredSurveyRepository,
@@ -234,7 +230,7 @@ class SurveyController extends AbstractController
                     return $this->redirectToRoute('work_linked_training_survey_work_tutor_list', [
                         'academicYear' => $academicYear->getId()
                     ]);
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
                 }
             }
@@ -263,12 +259,8 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/centro/cumplimentar/{id}/{teacher}",
-     *     name="work_linked_training_survey_educational_tutor_form",
-     *     requirements={"project" : "\d+", "id" : "\d+"}, methods={"GET", "POST"})
-     */
-    public function educationalTutorFillAction(
+    #[Route(path: '/centro/cumplimentar/{id}/{teacher}', name: 'work_linked_training_survey_educational_tutor_form', requirements: ['project' => '\d+', 'id' => '\d+'], methods: ['GET', 'POST'])]
+    public function educationalTutorFill(
         Request $request,
         TranslatorInterface $translator,
         EducationalTutorAnsweredSurveyRepository $educationalTutorAnsweredSurveyRepository,
@@ -326,7 +318,7 @@ class SurveyController extends AbstractController
                     return $this->redirectToRoute('work_linked_training_survey_educational_tutor_list', [
                         'academicYear' => $teacher->getAcademicYear()->getId()
                     ]);
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     $this->addFlash('error', $translator->trans('message.error', [], 'wlt_survey'));
                 }
             }
@@ -359,11 +351,8 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/estudiante/{academicYear}/{page}", name="work_linked_training_survey_student_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function studentListAction(
+    #[Route(path: '/estudiante/{academicYear}/{page}', name: 'work_linked_training_survey_student_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function studentList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -406,11 +395,8 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/empresa/{academicYear}/{page}", name="work_linked_training_survey_work_tutor_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function workTutorListAction(
+    #[Route(path: '/empresa/{academicYear}/{page}', name: 'work_linked_training_survey_work_tutor_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function workTutorList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -469,11 +455,8 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/centro/{academicYear}/{page}", name="work_linked_training_survey_educational_tutor_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function educationalTutorListAction(
+    #[Route(path: '/centro/{academicYear}/{page}', name: 'work_linked_training_survey_educational_tutor_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function educationalTutorList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,

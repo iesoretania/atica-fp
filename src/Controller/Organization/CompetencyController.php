@@ -35,15 +35,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/ensenanza")
- */
+#[Route(path: '/centro/ensenanza')]
 class CompetencyController extends AbstractController
 {
-    /**
-     * @Route("/{id}/competencia/nueva", name="organization_training_competency_new", methods={"GET", "POST"})
-     **/
-    public function newAction(
+    #[Route(path: '/{id}/competencia/nueva', name: 'organization_training_competency_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -60,11 +56,8 @@ class CompetencyController extends AbstractController
         return $this->formAction($request, $translator, $managerRegistry, $competency);
     }
 
-    /**
-     * @Route("/competencia/{id}", name="organization_training_competency_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function formAction(
+    #[Route(path: '/competencia/{id}', name: 'organization_training_competency_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function form(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -87,7 +80,7 @@ class CompetencyController extends AbstractController
                 return $this->redirectToRoute('organization_training_competency_list', [
                     'id' => $training->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_competency'));
             }
         }
@@ -123,11 +116,8 @@ class CompetencyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/competencial/{page}/", name="organization_training_competency_list",
-     *     requirements={"id" = "\d+", "page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/{id}/competencial/{page}/', name: 'organization_training_competency_list', requirements: ['id' => '\d+', 'page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -162,7 +152,7 @@ class CompetencyController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -186,11 +176,8 @@ class CompetencyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/competencia/eliminar/{id}", name="organization_training_competency_delete",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/competencia/eliminar/{id}', name: 'organization_training_competency_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function delete(
         Request $request,
         CompetencyRepository $competencyRepository,
         TranslatorInterface $translator,
@@ -214,7 +201,7 @@ class CompetencyController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_competency'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_competency'));
             }
             return $this->redirectToRoute('organization_training_competency_list', ['id' => $training->getId()]);
@@ -237,11 +224,8 @@ class CompetencyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/competencia/importar/{id}", name="organization_training_competency_import",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function importAction(
+    #[Route(path: '/competencia/importar/{id}', name: 'organization_training_competency_import', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function import(
         Request $request,
         CompetencyRepository $competencyRepository,
         TranslatorInterface $translator,
@@ -271,18 +255,15 @@ class CompetencyController extends AbstractController
         try {
             $em->flush();
             $this->addFlash('success', $translator->trans('message.saved', [], 'edu_competency'));
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->addFlash('error', $translator->trans('message.error', [], 'edu_competency'));
         }
         return $this->redirectToRoute('organization_training_competency_list', ['id' => $training->getId()]);
     }
 
 
-    /**
-     * @Route("/competencia/exportar/{id}", name="organization_training_competency_export",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
-     */
-    public function exportAction(
+    #[Route(path: '/competencia/exportar/{id}', name: 'organization_training_competency_export', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function export(
         Training $training
     ) {
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
@@ -300,7 +281,7 @@ class CompetencyController extends AbstractController
         return new Response(
             $data,
             Response::HTTP_OK,
-            array('content-type' => 'text/plain')
+            ['content-type' => 'text/plain']
         );
     }
 
@@ -311,7 +292,7 @@ class CompetencyController extends AbstractController
      */
     private function parseImport($lines)
     {
-        $items = explode("\n", $lines);
+        $items = explode("\n", (string) $lines);
         $output = [];
         $matches = [];
 

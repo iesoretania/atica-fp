@@ -35,11 +35,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class NonWorkingDayImportController extends AbstractController
 {
-    /**
-     * @Route("/centro/importar/dia_no_lectivo", name="organization_import_non_working_day_form",
-     *     methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/centro/importar/dia_no_lectivo', name: 'organization_import_non_working_day_form', methods: ['GET', 'POST'])]
+    public function index(
         UserExtensionService $userExtensionService,
         EntityManagerInterface $entityManager,
         NonWorkingDayRepository $nonWorkingDayRepository,

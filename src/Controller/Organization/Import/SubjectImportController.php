@@ -49,10 +49,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SubjectImportController extends AbstractController
 {
-    /**
-     * @Route("/centro/importar/materia", name="organization_import_subject_form", methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/centro/importar/materia', name: 'organization_import_subject_form', methods: ['GET', 'POST'])]
+    public function index(
         UserExtensionService $userExtensionService,
         TeacherRepository $teacherRepository,
         SubjectRepository $subjectRepository,
@@ -149,7 +147,7 @@ class SubjectImportController extends AbstractController
                         || !isset($subjectData['Profesor/a'])) {
                         return ['error' => '_missing_columns'];
                     }
-                    $subjectName = trim($subjectData['Materia']);
+                    $subjectName = trim((string) $subjectData['Materia']);
                     $subjectName = preg_replace('/\ +/', ' ', $subjectName, -1);
                     $groupName = $subjectData['Unidad'];
 
@@ -277,9 +275,9 @@ class SubjectImportController extends AbstractController
 
                 $entityManager->flush();
             }
-        } catch (QueryException $e) {
+        } catch (QueryException) {
             return ['error' => '_query'];
-        } catch (Exception $e) {
+        } catch (Exception) {
             return ['error' => ''];
         }
 
@@ -298,10 +296,8 @@ class SubjectImportController extends AbstractController
         ];
     }
 
-    /**
-     * @Route("/centro/importar/criterios", name="organization_import_criteria_form", methods={"GET", "POST"})
-     */
-    public function dataAction(
+    #[Route(path: '/centro/importar/criterios', name: 'organization_import_criteria_form', methods: ['GET', 'POST'])]
+    public function data(
         UserExtensionService $userExtensionService,
         SubjectRepository $subjectRepository,
         LearningOutcomeRepository $learningOutcomeRepository,
@@ -386,7 +382,7 @@ class SubjectImportController extends AbstractController
                         $criteriaData['Criterios de Evaluación'])) {
                         return null;
                     }
-                    $subjectName = trim($criteriaData['Módulo Profesional']);
+                    $subjectName = trim((string) $criteriaData['Módulo Profesional']);
 
                     if (!isset($subjectCollection[$subjectName])) {
                         $subject = $subjectRepository->findOneByGradeAndName($grade, $subjectName);
@@ -417,12 +413,12 @@ class SubjectImportController extends AbstractController
                     }
 
                     $learningOutcomeDescription = $criteriaData['Resultado de Aprendizaje'];
-                    preg_match('/^(\d*). (.*)/u', $learningOutcomeDescription, $matches);
+                    preg_match('/^(\d*). (.*)/u', (string) $learningOutcomeDescription, $matches);
                     $learningOutcomeCode = 'RA' . $matches[1];
                     $learningOutcomeDescription = trim($matches[2]);
 
                     $criterionDescription = $criteriaData['Criterios de Evaluación'];
-                    preg_match('/^(.*)\) (.*)/u', $criterionDescription, $matches);
+                    preg_match('/^(.*)\) (.*)/u', (string) $criterionDescription, $matches);
                     $criterionCode = $matches[1];
                     $criterionDescription = trim($matches[2]);
 
@@ -477,7 +473,7 @@ class SubjectImportController extends AbstractController
                 }
             }
             $entityManager->flush();
-        } catch (Exception $e) {
+        } catch (Exception) {
             return null;
         }
 

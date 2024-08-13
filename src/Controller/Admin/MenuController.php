@@ -28,10 +28,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class MenuController extends AbstractController
 {
-    /**
-     * @Route("/admin", name="admin", methods={"GET"})
-     */
-    public function indexAction(): Response
+    #[Route(path: '/admin', name: 'admin', methods: ['GET'])]
+    public function index(): Response
     {
         return $this->render(
             'default/index.html.twig',

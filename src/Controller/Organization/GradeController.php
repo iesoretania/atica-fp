@@ -36,16 +36,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/nivel")
- */
+#[Route(path: '/centro/nivel')]
 class GradeController extends AbstractController
 {
-    /**
-     * @Route("/nuevo", name="organization_grade_new", methods={"GET", "POST"})
-     * @Route("/{id}", name="organization_grade_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/nuevo', name: 'organization_grade_new', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}', name: 'organization_grade_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -75,7 +71,7 @@ class GradeController extends AbstractController
                 return $this->redirectToRoute('organization_grade_list', [
                     'academicYear' => $grade->getTraining()->getAcademicYear()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_grade'));
             }
         }
@@ -100,11 +96,8 @@ class GradeController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{academicYear}/{page}", name="organization_grade_list", requirements={"page" = "\d+"},
-     *     defaults={"academicYear" = null, "page" = 1},   methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'organization_grade_list', requirements: ['page' => '\d+'], defaults: ['academicYear' => null, 'page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -150,7 +143,7 @@ class GradeController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -166,10 +159,8 @@ class GradeController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar/{academicYear}", name="organization_grade_delete", methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/eliminar/{academicYear}', name: 'organization_grade_delete', methods: ['POST'])]
+    public function delete(
         Request $request,
         GradeRepository $gradeRepository,
         TranslatorInterface $translator,
@@ -193,7 +184,7 @@ class GradeController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_grade'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_grade'));
             }
             return $this->redirectToRoute('organization_grade_list', ['academicYear' => $academicYear->getId()]);

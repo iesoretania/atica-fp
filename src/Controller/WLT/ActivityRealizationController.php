@@ -33,16 +33,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/dual/proyecto")
- */
+#[Route(path: '/dual/proyecto')]
 class ActivityRealizationController extends AbstractController
 {
-    /**
-     * @Route("/programa/{id}/concrecion/nueva", name="work_linked_training_project_activity_realization_new",
-     *     methods={"GET", "POST"})
-     **/
-    public function newAction(
+    #[Route(path: '/programa/{id}/concrecion/nueva', name: 'work_linked_training_project_activity_realization_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -60,11 +55,8 @@ class ActivityRealizationController extends AbstractController
         return $this->formAction($request, $translator, $managerRegistry, $activityRealization);
     }
 
-    /**
-     * @Route("/programa/{id}/detalles/concrecion", name="work_linked_training_project_activity_realization_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function formAction(
+    #[Route(path: '/programa/{id}/detalles/concrecion', name: 'work_linked_training_project_activity_realization_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function form(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -88,7 +80,7 @@ class ActivityRealizationController extends AbstractController
                 return $this->redirectToRoute('work_linked_training_project_activity_realization_list', [
                     'id' => $activity->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_activity_realization'));
             }
         }
@@ -123,11 +115,8 @@ class ActivityRealizationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/programa/{id}/concrecion/{page}", name="work_linked_training_project_activity_realization_list",
-     *     requirements={"id" = "\d+", "page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/programa/{id}/concrecion/{page}', name: 'work_linked_training_project_activity_realization_list', requirements: ['id' => '\d+', 'page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -163,7 +152,7 @@ class ActivityRealizationController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -192,11 +181,8 @@ class ActivityRealizationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/programa/{id}/eliminar/concrecion", name="work_linked_training_project_activity_realization_delete",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/programa/{id}/eliminar/concrecion', name: 'work_linked_training_project_activity_realization_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function delete(
         Request $request,
         ActivityRealizationRepository $activityRealizationRepository,
         TranslatorInterface $translator,
@@ -224,7 +210,7 @@ class ActivityRealizationController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_activity_realization'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_activity_realization'));
             }
             return $this->redirectToRoute('work_linked_training_project_activity_realization_list', ['id' => $activity->getId()]);

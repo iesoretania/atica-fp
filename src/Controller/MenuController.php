@@ -24,10 +24,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MenuController extends AbstractController
 {
-    /**
-     * @Route("/", name="frontpage", methods={"GET"})
-     */
-    public function indexAction(): Response
+    #[Route(path: '/', name: 'frontpage', methods: ['GET'])]
+    public function index(): Response
     {
         return $this->render(
             'default/index.html.twig',

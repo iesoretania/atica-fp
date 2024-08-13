@@ -37,16 +37,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/dual/proyecto")
- */
+#[Route(path: '/dual/proyecto')]
 class ActivityController extends AbstractController
 {
-    /**
-     * @Route("/programa/{id}/actividad/nueva",
-     *     name="work_linked_training_training_activity_new", methods={"GET", "POST"})
-     **/
-    public function newAction(
+    #[Route(path: '/programa/{id}/actividad/nueva', name: 'work_linked_training_training_activity_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -63,11 +58,8 @@ class ActivityController extends AbstractController
         return $this->formAction($request, $translator, $managerRegistry, $activity);
     }
 
-    /**
-     * @Route("/programa/actividad/{id}", name="work_linked_training_training_activity_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function formAction(
+    #[Route(path: '/programa/actividad/{id}', name: 'work_linked_training_training_activity_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function form(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -90,7 +82,7 @@ class ActivityController extends AbstractController
                 return $this->redirectToRoute('work_linked_training_project_activity_list', [
                     'id' => $project->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_activity'));
             }
         }
@@ -123,11 +115,8 @@ class ActivityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/programa/{id}/actividad/{page}", name="work_linked_training_project_activity_list",
-     *     requirements={"id" = "\d+", "page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/programa/{id}/actividad/{page}', name: 'work_linked_training_project_activity_list', requirements: ['id' => '\d+', 'page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -162,7 +151,7 @@ class ActivityController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -184,11 +173,8 @@ class ActivityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/programa/{id}/actividad/eliminar", name="work_linked_training_training_activity_delete",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/programa/{id}/actividad/eliminar', name: 'work_linked_training_training_activity_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function delete(
         Request $request,
         ActivityRepository $activityRepository,
         ManagerRegistry $managerRegistry,
@@ -212,7 +198,7 @@ class ActivityController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_activity'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_activity'));
             }
             return $this->redirectToRoute('work_linked_training_project_activity_list', ['id' => $project->getId()]);
@@ -237,10 +223,8 @@ class ActivityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/copiar/{id}", name="work_linked_training_training_activity_copy", methods={"GET", "POST"})
-     */
-    public function copyAction(
+    #[Route(path: '/copiar/{id}', name: 'work_linked_training_training_activity_copy', methods: ['GET', 'POST'])]
+    public function copy(
         Request $request,
         ProjectRepository $projectRepository,
         ActivityRepository $activityRepository,
@@ -282,7 +266,7 @@ class ActivityController extends AbstractController
                     'work_linked_training_project_activity_list',
                     ['id' => $project->getId()]
                 );
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash(
                     'error',
                     $translator->trans('message.copy_error', [], 'wlt_activity')

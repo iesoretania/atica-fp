@@ -36,16 +36,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/ensenanza")
- */
+#[Route(path: '/centro/ensenanza')]
 class TrainingController extends AbstractController
 {
-    /**
-     * @Route("/nuevo", name="organization_training_new", methods={"GET", "POST"})
-     * @Route("/{id}", name="organization_training_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/nuevo', name: 'organization_training_new', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}', name: 'organization_training_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -79,7 +75,7 @@ class TrainingController extends AbstractController
                 return $this->redirectToRoute('organization_training_list', [
                     'academicYear' => $training->getAcademicYear()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_training'));
             }
         }
@@ -104,11 +100,8 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{academicYear}/{page}", name="organization_training_list", requirements={"page" = "\d+"},
-     *     defaults={"academicYear" = null, "page" = 1},   methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'organization_training_list', requirements: ['page' => '\d+'], defaults: ['academicYear' => null, 'page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -153,7 +146,7 @@ class TrainingController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -169,10 +162,8 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar/{academicYear}", name="organization_training_delete", methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/eliminar/{academicYear}', name: 'organization_training_delete', methods: ['POST'])]
+    public function delete(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -206,7 +197,7 @@ class TrainingController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_training'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_training'));
             }
             return $this->redirectToRoute('organization_training_list', ['academicYear' => $academicYear->getId()]);

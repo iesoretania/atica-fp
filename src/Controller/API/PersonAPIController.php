@@ -32,10 +32,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PersonAPIController extends AbstractController
 {
-    /**
-     * @Route("/api/persona/crear", name="api_person_new", methods={"GET", "POST"})
-     */
-    public function apiNewPersonAction(
+    #[Route(path: '/api/persona/crear', name: 'api_person_new', methods: ['GET', 'POST'])]
+    public function apiNewPerson(
         Request $request,
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry,

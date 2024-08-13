@@ -36,15 +36,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/empresa")
- */
+#[Route(path: '/empresa')]
 class WorkcenterController extends AbstractController
 {
-    /**
-     * @Route("/{id}/sede/nueva", name="company_workcenter_new", methods={"GET", "POST"})
-     **/
-    public function newAction(
+    #[Route(path: '/{id}/sede/nueva', name: 'company_workcenter_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -64,11 +60,8 @@ class WorkcenterController extends AbstractController
         return $this->formAction($request, $translator, $managerRegistry, $workcenter);
     }
 
-    /**
-     * @Route("/sede/{id}", name="company_workcenter_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function formAction(
+    #[Route(path: '/sede/{id}', name: 'company_workcenter_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function form(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -85,7 +78,7 @@ class WorkcenterController extends AbstractController
                 $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'workcenter'));
                 return $this->redirectToRoute('company_workcenter_list', ['id' => $workcenter->getCompany()->getId()]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'workcenter'));
             }
         }
@@ -120,11 +113,8 @@ class WorkcenterController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/sede/listar/{page}", name="company_workcenter_list", requirements={"page" = "\d+"},
-     *     defaults={"page" = 1},   methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/{id}/sede/listar/{page}', name: 'company_workcenter_list', requirements: ['page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -164,7 +154,7 @@ class WorkcenterController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -192,10 +182,8 @@ class WorkcenterController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/sede/eliminar", name="company_workcenter_delete", methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/{id}/sede/eliminar', name: 'company_workcenter_delete', methods: ['POST'])]
+    public function delete(
         Request $request,
         WorkcenterRepository $workcenterRepository,
         TranslatorInterface $translator,
@@ -222,7 +210,7 @@ class WorkcenterController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'workcenter'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'workcenter'));
             }
             return $this->redirectToRoute('company_workcenter_list', ['id' => $company->getId()]);

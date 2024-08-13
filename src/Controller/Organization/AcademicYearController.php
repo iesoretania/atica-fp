@@ -39,16 +39,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/cursoacademico")
- */
+#[Route(path: '/centro/cursoacademico')]
 class AcademicYearController extends AbstractController
 {
-    /**
-     * @Route("/nuevo", name="organization_academic_year_new", methods={"GET", "POST"})
-     * @Route("/{id}", name="organization_academic_year_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/nuevo', name: 'organization_academic_year_new', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}', name: 'organization_academic_year_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -83,7 +79,7 @@ class AcademicYearController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'edu_academic_year'));
                 return $this->redirectToRoute('organization_academic_year_list');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_academic_year'));
             }
         }
@@ -108,11 +104,8 @@ class AcademicYearController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{page}", name="organization_academic_year_list", requirements={"page" = "\d+"},
-     *     defaults={"page" = 1},   methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{page}', name: 'organization_academic_year_list', requirements: ['page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -155,7 +148,7 @@ class AcademicYearController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -170,10 +163,8 @@ class AcademicYearController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/operacion", name="organization_academic_year_operation", methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/operacion', name: 'organization_academic_year_operation', methods: ['POST'])]
+    public function operation(
         Request $request,
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry,
@@ -236,7 +227,7 @@ class AcademicYearController extends AbstractController
                 findAllInListByIdAndOrganizationButCurrent($items, $organization, $current);
             $redirect = $this->processRemoveAcademicYear($request, $academicYears, $em, $translator);
         }
-        return array($redirect, $academicYears);
+        return [$redirect, $academicYears];
     }
 
 
@@ -254,7 +245,7 @@ class AcademicYearController extends AbstractController
                 $this->deleteAcademicYears($academicYears, $em);
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_academic_year'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash(
                     'error',
                     $translator->trans('message.delete_error', [], 'edu_academic_year')
@@ -311,10 +302,8 @@ class AcademicYearController extends AbstractController
             ->execute();
     }
 
-    /**
-     * @Route("/copiar/{id}", name="organization_academic_year_copy", methods={"GET", "POST"})
-     */
-    public function copyAction(
+    #[Route(path: '/copiar/{id}', name: 'organization_academic_year_copy', methods: ['GET', 'POST'])]
+    public function copy(
         Request $request,
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
@@ -348,7 +337,7 @@ class AcademicYearController extends AbstractController
                 $this->addFlash('success', $translator->trans('message.copied', [], 'edu_academic_year'));
 
                 return $this->redirectToRoute('organization_academic_year_list');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash(
                     'error',
                     $translator->trans('message.copy_error', [], 'edu_academic_year')

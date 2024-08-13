@@ -42,16 +42,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/fct/actividad")
- */
+#[Route(path: '/fct/actividad')]
 class ActivityController extends AbstractController
 {
-    /**
-     * @Route("/nueva/{shift}", name="workplace_training_activity_new",
-     *     requirements={"shift": "\d+"}, methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nueva/{shift}', name: 'workplace_training_activity_new', requirements: ['shift' => '\d+'], methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -76,10 +71,8 @@ class ActivityController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/{id}", name="workplace_training_activity_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'workplace_training_activity_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -105,7 +98,7 @@ class ActivityController extends AbstractController
                 return $this->redirectToRoute('workplace_training_activity_list', [
                     'id' => $activity->getShift()->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wpt_activity'));
             }
         }
@@ -141,11 +134,8 @@ class ActivityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/listar/{page}", name="workplace_training_activity_list",
-     *     requirements={"page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/{id}/listar/{page}', name: 'workplace_training_activity_list', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -187,7 +177,7 @@ class ActivityController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -211,11 +201,8 @@ class ActivityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/operacion/{shift}", name="workplace_training_activity_operation",
-     *     requirements={"shift": "\d+"}, methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/operacion/{shift}', name: 'workplace_training_activity_operation', requirements: ['shift' => '\d+'], methods: ['POST'])]
+    public function operation(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -241,7 +228,7 @@ class ActivityController extends AbstractController
                 $activityRepository->deleteFromList($selectedItems);
                 $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wpt_activity'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wpt_activity'));
             }
             return $this->redirectToRoute('workplace_training_activity_list', ['id' => $shift->getId()]);
@@ -265,11 +252,8 @@ class ActivityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/importar/{id}", name="workplace_training_activity_import",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function importAction(
+    #[Route(path: '/importar/{id}', name: 'workplace_training_activity_import', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function import(
         Request $request,
         ActivityRepository $activityRepository,
         TranslatorInterface $translator,
@@ -304,7 +288,7 @@ class ActivityController extends AbstractController
         try {
             $em->flush();
             $this->addFlash('success', $translator->trans('message.saved', [], 'wpt_activity'));
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->addFlash('error', $translator->trans('message.error', [], 'wpt_activity'));
         }
         return $this->redirectToRoute('workplace_training_activity_list', ['id' => $shift->getId()]);
@@ -317,7 +301,7 @@ class ActivityController extends AbstractController
      */
     private function parseImport($lines)
     {
-        $items = explode("\n", $lines);
+        $items = explode("\n", (string) $lines);
         $output = [];
         $matches = [];
 
@@ -331,10 +315,8 @@ class ActivityController extends AbstractController
         return $output;
     }
 
-    /**
-     * @Route("/copiar/{id}", name="workplace_training_activity_copy", methods={"GET", "POST"})
-     */
-    public function copyAction(
+    #[Route(path: '/copiar/{id}', name: 'workplace_training_activity_copy', methods: ['GET', 'POST'])]
+    public function copy(
         Request $request,
         UserExtensionService $userExtensionService,
         ShiftRepository $shiftRepository,
@@ -368,7 +350,7 @@ class ActivityController extends AbstractController
                 $this->addFlash('success', $translator->trans('message.copied', [], 'wpt_activity'));
 
                 return $this->redirectToRoute('workplace_training_activity_list', ['id' => $shift->getId()]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash(
                     'error',
                     $translator->trans('message.copy_error', [], 'wpt_activity')
@@ -396,10 +378,8 @@ class ActivityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/copiar/dual/{id}", name="workplace_training_activity_worklinked_copy", methods={"GET", "POST"})
-     */
-    public function copyWltAction(
+    #[Route(path: '/copiar/dual/{id}', name: 'workplace_training_activity_worklinked_copy', methods: ['GET', 'POST'])]
+    public function copyWlt(
         Request $request,
         UserExtensionService $userExtensionService,
         ProjectRepository $projectRepository,
@@ -433,7 +413,7 @@ class ActivityController extends AbstractController
                 $this->addFlash('success', $translator->trans('message.copied', [], 'wpt_activity'));
 
                 return $this->redirectToRoute('workplace_training_activity_list', ['id' => $shift->getId()]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash(
                     'error',
                     $translator->trans('message.copy_error', [], 'wpt_activity')

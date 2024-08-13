@@ -33,15 +33,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/itinerario")
- */
+#[Route(path: '/centro/itinerario')]
 class TravelRouteController extends AbstractController
 {
-    /**
-     * @Route("/nuevo", name="organization_travel_route_new", methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nuevo', name: 'organization_travel_route_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -65,11 +61,8 @@ class TravelRouteController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/detalle/{id}", name="organization_travel_route_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/detalle/{id}', name: 'organization_travel_route_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -90,7 +83,7 @@ class TravelRouteController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'edu_travel_route'));
                 return $this->redirectToRoute('organization_travel_route_list');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_travel_route'));
             }
         }
@@ -113,11 +106,8 @@ class TravelRouteController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{page}", name="organization_travel_route_list",
-     *     requirements={"page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{page}', name: 'organization_travel_route_list', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -153,7 +143,7 @@ class TravelRouteController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -167,10 +157,8 @@ class TravelRouteController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar", name="organization_travel_route_operation", methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/eliminar', name: 'organization_travel_route_operation', methods: ['POST'])]
+    public function operation(
         Request $request,
         TravelRouteRepository $travelRouteRepository,
         UserExtensionService $userExtensionService,
@@ -195,7 +183,7 @@ class TravelRouteController extends AbstractController
                 $travelRouteRepository->deleteFromList($travelRoutes);
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_travel_route'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_travel_route'));
             }
             return $this->redirectToRoute('organization_travel_route_list');

@@ -37,10 +37,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DepartmentImportController extends AbstractController
 {
-    /**
-     * @Route("/centro/importar/departamento", name="organization_import_department_form", methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/centro/importar/departamento', name: 'organization_import_department_form', methods: ['GET', 'POST'])]
+    public function index(
         UserExtensionService $userExtensionService,
         TeacherRepository $teacherRepository,
         DepartmentRepository $departmentRepository,
@@ -152,16 +150,14 @@ class DepartmentImportController extends AbstractController
                 }
             }
             $entityManager->flush();
-        } catch (QueryException $e) {
+        } catch (QueryException) {
             return ['error' => '_query'];
-        } catch (Exception $e) {
+        } catch (Exception) {
             return ['error' => ''];
         }
 
         // ordenar por nombre antes de devolverlo
-        usort($collection, function (Department $a, Department $b) {
-            return $a->getName() <=> $b->getName();
-        });
+        usort($collection, fn(Department $a, Department $b) => $a->getName() <=> $b->getName());
 
         return [
             'new_items' => $newCount,

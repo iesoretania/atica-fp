@@ -42,10 +42,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SecurityController extends AbstractController
 {
-    /**
-     * @Route("/entrar", name="login", methods={"GET"})
-     */
-    public function loginAction(AuthenticationUtils $authenticationUtils): Response
+    #[Route(path: '/entrar', name: 'login', methods: ['GET'])]
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // obtener el error de entrada, si existe alguno
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -55,26 +53,19 @@ class SecurityController extends AbstractController
 
         return $this->render(
             'security/login.html.twig',
-            array(
-                'last_username' => $lastUsername,
-                'login_error' => $error,
-            )
+            ['last_username' => $lastUsername, 'login_error' => $error]
         );
     }
 
-    /**
-     * @Route("/comprobar", name="login_check", methods={"POST", "GET"})
-     * @Route("/salir", name="logout", methods={"GET"})
-     */
-    public function logInOutCheckAction(): Response
+    #[Route(path: '/comprobar', name: 'login_check', methods: ['POST', 'GET'])]
+    #[Route(path: '/salir', name: 'logout', methods: ['GET'])]
+    public function logInOutCheck(): Response
     {
         return $this->redirectToRoute('login');
     }
 
-    /**
-     * @Route("/restablecer", name="login_password_reset", methods={"GET", "POST"})
-     */
-    public function passwordResetRequestAction(
+    #[Route(path: '/restablecer', name: 'login_password_reset', methods: ['GET', 'POST'])]
+    public function passwordResetRequest(
         Request $request,
         MailerService $mailerService,
         Session $session,
@@ -96,7 +87,7 @@ class SecurityController extends AbstractController
 
         // ¿se ha enviado una dirección?
         if ($form->isSubmitted() && $form->isValid()) {
-            $error = $this->passwordResetRequest($email, $mailerService, $translator, $request->getSession(), $personRepository);
+            $error = $this->doPasswordResetRequest((string) $email, $mailerService, $translator, $request->getSession(), $personRepository);
 
             if (!is_string($error)) {
                 return $error;
@@ -113,10 +104,8 @@ class SecurityController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/restablecer/correo/{userId}/{token}", name="email_reset_do", methods={"GET", "POST"})
-     */
-    public function emailResetAction(
+    #[Route(path: '/restablecer/correo/{userId}/{token}', name: 'email_reset_do', methods: ['GET', 'POST'])]
+    public function emailReset(
         Request $request,
         PersonRepository $personRepositoryRepository,
         TranslatorInterface $translator,
@@ -152,7 +141,7 @@ class SecurityController extends AbstractController
                     'success',
                     $translator->trans('form.change_email.message', [], 'security')
                 );
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 // indicar que no se ha podido cambiar
                 $this->addFlash('error', $translator->trans('form.change_email.error', [], 'security'));
             }
@@ -169,10 +158,8 @@ class SecurityController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/forzar/reestablecer", name="force_password_reset_do", methods={"GET", "POST"})
-     */
-    public function oldPasswordResetAction(
+    #[Route(path: '/forzar/reestablecer', name: 'force_password_reset_do', methods: ['GET', 'POST'])]
+    public function oldPasswordReset(
         Request $request,
         UserPasswordHasherInterface $passwordEncoder,
         TranslatorInterface $translator,
@@ -242,10 +229,8 @@ class SecurityController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/restablecer/{userId}/{token}", name="login_password_reset_do", methods={"GET", "POST"})
-     */
-    public function passwordResetAction(
+    #[Route(path: '/restablecer/{userId}/{token}', name: 'login_password_reset_do', methods: ['GET', 'POST'])]
+    public function passwordReset(
         Request $request,
         PersonRepository $personRepository,
         UserPasswordHasherInterface $passwordEncoder,
@@ -309,11 +294,9 @@ class SecurityController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/organizacion", name="login_organization", methods={"GET", "POST"})
-     * @Route("/organizacion/{id}", name="switch_organization", methods={"GET"})
-     */
-    public function organizationAction(
+    #[Route(path: '/organizacion', name: 'login_organization', methods: ['GET', 'POST'])]
+    #[Route(path: '/organizacion/{id}', name: 'switch_organization', methods: ['GET'])]
+    public function organization(
         Request $request,
         Session $session,
         OrganizationRepository $organizationRepository,
@@ -336,9 +319,7 @@ class SecurityController extends AbstractController
                 ->add('organization', EntityType::class, [
                     'expanded' => $count < 5,
                     'class' => Organization::class,
-                    'query_builder' => function (OrganizationRepository $er) use ($user) {
-                        return $er->getMembershipByPersonQueryBuilder($user);
-                    },
+                    'query_builder' => fn(OrganizationRepository $er) => $er->getMembershipByPersonQueryBuilder($user),
                     'required' => true
                 ])
                 ->getForm();
@@ -383,14 +364,14 @@ class SecurityController extends AbstractController
      * @return string|RedirectResponse
      * @throws \Exception
      */
-    private function passwordResetRequest(
-        $email,
+    private function doPasswordResetRequest(
+        string $email,
         MailerService $mailerService,
         TranslatorInterface $translator,
         Session $session,
         PersonRepository $personRepository
     ) {
-        /** @var Person $user */
+        /** @var Person|null $user */
         // comprobar que está asociada a un usuario
         $user = $personRepository->findOneBy(['emailAddress' => $email]);
 

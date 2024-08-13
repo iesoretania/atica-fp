@@ -45,16 +45,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/dual/convenio/evaluar")
- */
+#[Route(path: '/dual/convenio/evaluar')]
 class EvaluationController extends AbstractController
 {
-    /**
-     * @Route("/{id}", name="work_linked_training_evaluation_form",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'work_linked_training_evaluation_form', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         TranslatorInterface $translator,
         ActivityRealizationGradeRepository $activityRealizationGradeRepository,
@@ -85,7 +80,7 @@ class EvaluationController extends AbstractController
                 return $this->redirectToRoute('work_linked_training_evaluation_list', [
                     'academicYear' => $academicYear->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_agreement'));
             }
         }
@@ -108,11 +103,8 @@ class EvaluationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{academicYear}/{page}", name="work_linked_training_evaluation_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'work_linked_training_evaluation_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -247,7 +239,7 @@ class EvaluationController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -263,11 +255,8 @@ class EvaluationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/comentarios/{id}", name="work_linked_training_evaluation_comment_form",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function commentAction(
+    #[Route(path: '/comentarios/{id}', name: 'work_linked_training_evaluation_comment_form', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function comment(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -290,12 +279,12 @@ class EvaluationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $newComment = null;
-                if (trim($form->get('newComment')->getData()) !== '') {
+                if (trim((string) $form->get('newComment')->getData()) !== '') {
                     $newComment = new AgreementActivityRealizationComment();
                     $em->persist($newComment);
                     $newComment
                         ->setAgreementActivityRealization($agreementActivityRealization)
-                        ->setComment(trim($form->get('newComment')->getData()))
+                        ->setComment(trim((string) $form->get('newComment')->getData()))
                         ->setTimestamp(new \DateTime())
                         ->setPerson($this->getUser());
                 }
@@ -312,7 +301,7 @@ class EvaluationController extends AbstractController
                 return $this->redirectToRoute('work_linked_training_evaluation_comment_form', [
                     'id' => $agreementActivityRealization->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [],
                     'wlt_agreement_activity_realization'));
             }
@@ -340,11 +329,8 @@ class EvaluationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/comentarios/eliminar/{id}", name="work_linked_training_evaluation_comment_delete",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function deleteCommentAction(
+    #[Route(path: '/comentarios/eliminar/{id}', name: 'work_linked_training_evaluation_comment_delete', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function deleteComment(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -363,7 +349,7 @@ class EvaluationController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.comment_deleted', [],
                     'wlt_agreement_activity_realization'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.comment_delete_error', [],
                     'wlt_agreement_activity_realization'));
             }

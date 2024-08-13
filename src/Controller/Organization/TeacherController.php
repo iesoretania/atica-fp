@@ -36,15 +36,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/profesorado")
- */
+#[Route(path: '/centro/profesorado')]
 class TeacherController extends AbstractController
 {
-    /**
-     * @Route("/{id}", name="organization_teacher_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'organization_teacher_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -74,7 +70,7 @@ class TeacherController extends AbstractController
                 return $this->redirectToRoute('organization_teacher_list', [
                     'academicYear' => $teacher->getAcademicYear()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_teacher'));
             }
         }
@@ -94,10 +90,8 @@ class TeacherController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/nuevo", name="organization_teacher_new", methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nuevo', name: 'organization_teacher_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -133,7 +127,7 @@ class TeacherController extends AbstractController
                 } else {
                     $this->addFlash('error', $translator->trans('message.repeated_error', [], 'edu_teacher'));
                 }
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_teacher'));
             }
         }
@@ -153,11 +147,8 @@ class TeacherController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{academicYear}/{page}", name="organization_teacher_list", requirements={"page" = "\d+"},
-     *     defaults={"academicYear" = null, "page" = 1},   methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'organization_teacher_list', requirements: ['page' => '\d+'], defaults: ['academicYear' => null, 'page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -205,7 +196,7 @@ class TeacherController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -221,10 +212,8 @@ class TeacherController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar/{academicYear}", name="organization_teacher_delete", methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/eliminar/{academicYear}', name: 'organization_teacher_delete', methods: ['POST'])]
+    public function delete(
         Request $request,
         TeacherRepository $teacherRepository,
         TranslatorInterface $translator,
@@ -253,7 +242,7 @@ class TeacherController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_teacher'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_teacher'));
             }
             return $this->redirectToRoute('organization_teacher_list', ['academicYear' => $academicYear->getId()]);

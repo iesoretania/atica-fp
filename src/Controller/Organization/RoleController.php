@@ -30,10 +30,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RoleController extends AbstractController
 {
-    /**
-     * @Route("/centro/rol", name="organization_role", methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/centro/rol', name: 'organization_role', methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         UserExtensionService $userExtensionService,
         RoleRepository $roleRepository,
@@ -55,7 +53,7 @@ class RoleController extends AbstractController
                 $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'role'));
                 return $this->redirectToRoute('organization');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error',$translator->trans('message.save_error', [], 'role'));
             }
         }

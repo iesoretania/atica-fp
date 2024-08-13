@@ -38,16 +38,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/materia")
- */
+#[Route(path: '/centro/materia')]
 class SubjectController extends AbstractController
 {
-    /**
-     * @Route("/nuevo", name="organization_subject_new", methods={"GET", "POST"})
-     * @Route("/{id}", name="organization_subject_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/nuevo', name: 'organization_subject_new', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}', name: 'organization_subject_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -81,7 +77,7 @@ class SubjectController extends AbstractController
                 return $this->redirectToRoute('organization_subject_list', [
                     'academicYear' => $academicYear->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_subject'));
             }
         }
@@ -106,11 +102,8 @@ class SubjectController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{academicYear}/{page}", name="organization_subject_list", requirements={"page" = "\d+"},
-     *     defaults={"academicYear" = null, "page" = 1},   methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'organization_subject_list', requirements: ['page' => '\d+'], defaults: ['academicYear' => null, 'page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -155,7 +148,7 @@ class SubjectController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -171,10 +164,8 @@ class SubjectController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar/{academicYear}", name="organization_subject_delete", methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/eliminar/{academicYear}', name: 'organization_subject_delete', methods: ['POST'])]
+    public function delete(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -203,7 +194,7 @@ class SubjectController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_subject'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_subject'));
             }
             return $this->redirectToRoute('organization_subject_list', ['academicYear' => $academicYear->getId()]);
@@ -217,10 +208,8 @@ class SubjectController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/asignacion/nueva/{id}", name="organization_teaching_new", methods={"GET", "POST"})
-     */
-    public function formNewTeachingAction(
+    #[Route(path: '/asignacion/nueva/{id}', name: 'organization_teaching_new', methods: ['GET', 'POST'])]
+    public function formNewTeaching(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -236,11 +225,8 @@ class SubjectController extends AbstractController
         return $this->formTeachingAction($request, $userExtensionService, $translator, $managerRegistry, $teaching);
     }
 
-    /**
-     * @Route("/asignacion/{id}", name="organization_teaching_edit", requirements={"id" = "\d+"},
-     *     methods={"GET", "POST"})
-     */
-    public function formTeachingAction(
+    #[Route(path: '/asignacion/{id}', name: 'organization_teaching_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function formTeaching(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -265,7 +251,7 @@ class SubjectController extends AbstractController
                 return $this->redirectToRoute('organization_subject_list', [
                     'academicYear' => $academicYear->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_teaching'));
             }
         }
@@ -298,11 +284,8 @@ class SubjectController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/asignacion/eliminar/{id}", name="organization_teaching_delete", requirements={"id" = "\d+"},
-     *     methods={"GET", "POST"})
-     */
-    public function deleteTeachingAction(
+    #[Route(path: '/asignacion/eliminar/{id}', name: 'organization_teaching_delete', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function deleteTeaching(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -321,7 +304,7 @@ class SubjectController extends AbstractController
                 $em->remove($teaching);
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_teaching'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_teaching'));
             }
             return $this->redirectToRoute('organization_subject_list', [

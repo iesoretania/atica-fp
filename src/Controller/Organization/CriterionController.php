@@ -19,16 +19,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/ensenanza/materia/resultado")
- */
+#[Route(path: '/centro/ensenanza/materia/resultado')]
 class CriterionController extends AbstractController
 {
-    /**
-     * @Route("/{id}/criterio/nuevo", name="organization_training_criterion_new",
-     *     methods={"GET", "POST"})
-     **/
-    public function newCriterionAction(
+    #[Route(path: '/{id}/criterio/nuevo', name: 'organization_training_criterion_new', methods: ['GET', 'POST'])]
+    public function newCriterion(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -46,11 +41,8 @@ class CriterionController extends AbstractController
         return $this->criterionFormAction($request, $translator, $managerRegistry, $criterion);
     }
 
-    /**
-     * @Route("/criterio/{id}", name="organization_training_criterion_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function criterionFormAction(
+    #[Route(path: '/criterio/{id}', name: 'organization_training_criterion_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function criterionForm(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -74,7 +66,7 @@ class CriterionController extends AbstractController
                 return $this->redirectToRoute('organization_training_criterion_list', [
                     'id' => $criterion->getLearningOutcome()->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_criterion'));
             }
         }
@@ -115,11 +107,8 @@ class CriterionController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/criterio/{page}/", name="organization_training_criterion_list",
-     *     requirements={"id" = "\d+", "page" = "\d+"}, defaults={"page" = 1}, methods={"GET"})
-     */
-    public function criterionListAction(
+    #[Route(path: '/{id}/criterio/{page}/', name: 'organization_training_criterion_list', requirements: ['id' => '\d+', 'page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
+    public function criterionList(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -156,7 +145,7 @@ class CriterionController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -190,11 +179,8 @@ class CriterionController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/criterio/eliminar/{id}", name="organization_training_criterion_delete",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/criterio/eliminar/{id}', name: 'organization_training_criterion_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function delete(
         Request $request,
         CriterionRepository $criterionRepository,
         TranslatorInterface $translator,
@@ -221,7 +207,7 @@ class CriterionController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_criterion'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_criterion'));
             }
             return $this->redirectToRoute('organization_training_criterion_list', ['id' => $learningOutcome->getId()]);
@@ -254,11 +240,8 @@ class CriterionController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/criterio/importar/{id}", name="organization_training_criterion_import",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function importAction(
+    #[Route(path: '/criterio/importar/{id}', name: 'organization_training_criterion_import', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function import(
         Request $request,
         CriterionRepository $criterionRepository,
         TranslatorInterface $translator,
@@ -292,18 +275,15 @@ class CriterionController extends AbstractController
         try {
             $em->flush();
             $this->addFlash('success', $translator->trans('message.saved', [], 'edu_criterion'));
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->addFlash('error', $translator->trans('message.error', [], 'edu_criterion'));
         }
         return $this->redirectToRoute('organization_training_criterion_list', ['id' => $learningOutcome->getId()]);
     }
 
 
-    /**
-     * @Route("/criterio/exportar/{id}", name="organization_training_criterion_export",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
-     */
-    public function exportAction(
+    #[Route(path: '/criterio/exportar/{id}', name: 'organization_training_criterion_export', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function export(
         LearningOutcome $learningOutcome
     ) {
         $subject = $learningOutcome->getSubject();
@@ -324,7 +304,7 @@ class CriterionController extends AbstractController
         return new Response(
             $data,
             Response::HTTP_OK,
-            array('content-type' => 'text/plain')
+            ['content-type' => 'text/plain']
         );
     }
 
@@ -335,7 +315,7 @@ class CriterionController extends AbstractController
      */
     private function parseImport($lines)
     {
-        $items = explode("\n", $lines);
+        $items = explode("\n", (string) $lines);
         $output = [];
         $matches = [];
 

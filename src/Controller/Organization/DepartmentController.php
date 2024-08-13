@@ -36,16 +36,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/centro/departamento")
- */
+#[Route(path: '/centro/departamento')]
 class DepartmentController extends AbstractController
 {
-    /**
-     * @Route("/nuevo", name="organization_department_new", methods={"GET", "POST"})
-     * @Route("/{id}", name="organization_department_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/nuevo', name: 'organization_department_new', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}', name: 'organization_department_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -77,7 +73,7 @@ class DepartmentController extends AbstractController
                 return $this->redirectToRoute('organization_department_list', [
                     'academicYear' => $department->getAcademicYear()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'edu_department'));
             }
         }
@@ -102,11 +98,8 @@ class DepartmentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{academicYear}/{page}", name="organization_department_list", requirements={"page" = "\d+"},
-     *     defaults={"academicYear" = null, "page" = 1},   methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'organization_department_list', requirements: ['page' => '\d+'], defaults: ['academicYear' => null, 'page' => 1], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -148,7 +141,7 @@ class DepartmentController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -164,10 +157,8 @@ class DepartmentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar/{academicYear}", name="organization_department_delete", methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/eliminar/{academicYear}', name: 'organization_department_delete', methods: ['POST'])]
+    public function delete(
         Request $request,
         TranslatorInterface $translator,
         DepartmentRepository $departmentRepository,
@@ -196,7 +187,7 @@ class DepartmentController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_department'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_department'));
             }
             return $this->redirectToRoute('organization_department_list', ['academicYear' => $academicYear->getId()]);

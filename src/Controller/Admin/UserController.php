@@ -36,16 +36,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @Route("/admin/usuarios")
  * @Security("is_granted('ROLE_ADMIN')")
  */
+#[Route(path: '/admin/usuarios')]
 class UserController extends AbstractController
 {
-    /**
-     * @Route("/nuevo", name="admin_user_form_new", methods={"GET", "POST"})
-     * @Route("/{id}", name="admin_user_form_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/nuevo', name: 'admin_user_form_new', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}', name: 'admin_user_form_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         TranslatorInterface $translator,
         UserPasswordHasherInterface $passwordEncoder,
@@ -74,7 +72,7 @@ class UserController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $message);
                 return $this->redirectToRoute('admin_user_list');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'user'));
             }
         }
@@ -96,11 +94,8 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listar/{page}", name="admin_user_list", requirements={"page" = "\d+"},
-     *     methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/listar/{page}', name: 'admin_user_list', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -134,7 +129,7 @@ class UserController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -148,10 +143,8 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/eliminar", name="admin_user_delete", methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/eliminar', name: 'admin_user_delete', methods: ['POST'])]
+    public function delete(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry)
@@ -190,7 +183,7 @@ class UserController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'user'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'user'));
             }
             return $this->redirectToRoute('admin_user_list');

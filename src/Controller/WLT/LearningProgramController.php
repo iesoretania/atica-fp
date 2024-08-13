@@ -44,15 +44,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/dual/programa")
- */
+#[Route(path: '/dual/programa')]
 class LearningProgramController extends AbstractController
 {
-    /**
-     * @Route("/nuevo/{project}", name="work_linked_training_learning_program_new", methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nuevo/{project}', name: 'work_linked_training_learning_program_new', methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -67,11 +63,8 @@ class LearningProgramController extends AbstractController
         return $this->indexAction($request, $translator, $managerRegistry, $learningProgram);
     }
 
-    /**
-     * @Route("/{id}", name="work_linked_training_learning_program_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'work_linked_training_learning_program_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -96,7 +89,7 @@ class LearningProgramController extends AbstractController
                     'project' => $project->getId(),
                     'page' => 1
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wlt_learning_program'));
             }
         }
@@ -126,11 +119,8 @@ class LearningProgramController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{project}/listar/{page}", name="work_linked_training_learning_program_list",
-     *     requirements={"page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/{project}/listar/{page}', name: 'work_linked_training_learning_program_list', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -169,7 +159,7 @@ class LearningProgramController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -194,10 +184,8 @@ class LearningProgramController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/operacion/{project}", name="work_linked_training_learning_program_operation", methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/operacion/{project}', name: 'work_linked_training_learning_program_operation', methods: ['POST'])]
+    public function operation(
         Request $request,
         TranslatorInterface $translator,
         LearningProgramRepository $learningProgramRepository,
@@ -236,7 +224,7 @@ class LearningProgramController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wlt_learning_program'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wlt_learning_program'));
             }
             return $this->redirectToRoute(
@@ -253,10 +241,8 @@ class LearningProgramController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/importar/{project}", name="work_linked_training_learning_program_import", methods={"GET", "POST"})
-     */
-    public function importAction(
+    #[Route(path: '/importar/{project}', name: 'work_linked_training_learning_program_import', methods: ['GET', 'POST'])]
+    public function import(
         TranslatorInterface $translator,
         ActivityRepository $activityRepository,
         ActivityRealizationRepository $activityRealizationRepository,
@@ -353,7 +339,7 @@ class LearningProgramController extends AbstractController
                     }
 
                     if (!$companiesParsed && '' === $lineData[0]) {
-                        $count = is_array($lineData) || $lineData instanceof \Countable ? count($lineData) : 0;
+                        $count = is_countable($lineData) ? count($lineData) : 0;
                         for ($i = 3; $i <= $count - 1; $i++) {
                             if ($lineData[$i]) {
                                 /** @var Company $company */
@@ -390,7 +376,7 @@ class LearningProgramController extends AbstractController
                             $activity = $activityRepository->findOneByProjectAndCode($project, $lineData[0]);
                             if (null === $activity) {
                                 // obtener código de la asignatura y buscarla
-                                preg_match('/^([A-Za-z]*)/', $lineData[0], $output);
+                                preg_match('/^([A-Za-z]*)/', (string) $lineData[0], $output);
                                 $lastCode = $output[0];
                                 $activity = new Activity();
                                 $activity
@@ -401,8 +387,8 @@ class LearningProgramController extends AbstractController
                             } else {
                                 $lastCode = $activity->getCode();
                             }
-                        } elseif ($activity && str_starts_with($lineData[0], $lastCode) &&
-                            (strlen($lineData[2]) === 2 || strlen($lineData[2]) === 1)) {
+                        } elseif ($activity && str_starts_with((string) $lineData[0], (string) $lastCode) &&
+                            (strlen((string) $lineData[2]) === 2 || strlen((string) $lineData[2]) === 1)) {
                             // Procesar concreción
                             $activityRealization = $activityRealizationRepository->findOneByProjectAndCode(
                                 $project,
@@ -423,11 +409,11 @@ class LearningProgramController extends AbstractController
                             foreach ($learningPrograms as $n => $learningProgram) {
                                 if (isset($lineData[$n])) {
                                     $activityRealizations = $learningProgram->getActivityRealizations();
-                                    if ((str_starts_with($lineData[$n], 'S')) &&
+                                    if ((str_starts_with((string) $lineData[$n], 'S')) &&
                                         !$activityRealizations->contains($activityRealization)
                                     ) {
                                         $activityRealizations->add($activityRealization);
-                                    } elseif ((str_starts_with($lineData[$n], 'N')) &&
+                                    } elseif ((str_starts_with((string) $lineData[$n], 'N')) &&
                                         $activityRealizations->contains($activityRealization)
                                     ) {
                                         $activityRealizations->removeElement($activityRealization);
@@ -440,7 +426,7 @@ class LearningProgramController extends AbstractController
             }
 
             $entityManager->flush();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return null;
         }
 

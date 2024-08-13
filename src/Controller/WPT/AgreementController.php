@@ -47,16 +47,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
 use Twig\Environment;
 
-/**
- * @Route("/fct/acuerdo")
- */
+#[Route(path: '/fct/acuerdo')]
 class AgreementController extends AbstractController
 {
-    /**
-     * @Route("/nuevo/{shift}", name="workplace_training_agreement_new",
-     *     requirements={"shift": "\d+"}, methods={"GET", "POST"})
-     */
-    public function newAction(
+    #[Route(path: '/nuevo/{shift}', name: 'workplace_training_agreement_new', requirements: ['shift' => '\d+'], methods: ['GET', 'POST'])]
+    public function new(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -82,10 +77,8 @@ class AgreementController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/{id}", name="workplace_training_agreement_edit", requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'workplace_training_agreement_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -142,7 +135,7 @@ class AgreementController extends AbstractController
                 return $this->redirectToRoute('workplace_training_agreement_list', [
                     'id' => $agreement->getShift()->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wpt_agreement'));
             }
         }
@@ -179,11 +172,8 @@ class AgreementController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/estudiante/{id}", name="workplace_training_agreement_enrollment_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function enrollmentEditAction(
+    #[Route(path: '/estudiante/{id}', name: 'workplace_training_agreement_enrollment_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function enrollmentEdit(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -214,7 +204,7 @@ class AgreementController extends AbstractController
                 return $this->redirectToRoute('workplace_training_agreement_list', [
                     'id' => $agreement->getShift()->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wpt_agreement'));
             }
         }
@@ -251,11 +241,8 @@ class AgreementController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/listar/{page}", name="workplace_training_agreement_list",
-     *     requirements={"page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/{id}/listar/{page}', name: 'workplace_training_agreement_list', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -284,7 +271,7 @@ class AgreementController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -306,11 +293,8 @@ class AgreementController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/operacion/{shift}", name="workplace_training_agreement_operation",
-     *     requirements={"shift": "\d+"}, methods={"POST"})
-     */
-    public function operationAction(
+    #[Route(path: '/operacion/{shift}', name: 'workplace_training_agreement_operation', requirements: ['shift' => '\d+'], methods: ['POST'])]
+    public function operation(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -431,7 +415,7 @@ class AgreementController extends AbstractController
                 return $this->redirectToRoute('workplace_training_agreement_list', [
                     'id' => $shift->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.copy_error', [], 'wpt_agreement'));
             }
         }
@@ -454,10 +438,8 @@ class AgreementController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/programa/descargar/{id}", name="workplace_training_agreement_program_report", methods={"GET"})
-     */
-    public function downloadTeachingProgramReportAction(
+    #[Route(path: '/programa/descargar/{id}', name: 'workplace_training_agreement_program_report', methods: ['GET'])]
+    public function downloadTeachingProgramReport(
         TranslatorInterface $translator,
         ActivityRepository $activityRepository,
         Environment $twig,

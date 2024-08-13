@@ -43,15 +43,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
 use Twig\Environment;
 
-/**
- * @Route("/fct/informe")
- */
+#[Route(path: '/fct/informe')]
 class ReportController extends AbstractController
 {
-    /**
-     * @Route("/", name="workplace_training_report", methods={"GET"})
-     */
-    public function indexAction(UserExtensionService $userExtensionService)
+    #[Route(path: '/', name: 'workplace_training_report', methods: ['GET'])]
+    public function index(UserExtensionService $userExtensionService)
     {
         $this->denyAccessUnlessGranted(
             WPTOrganizationVoter::WPT_MANAGER,
@@ -123,7 +119,7 @@ class ReportController extends AbstractController
             $pager
                 ->setMaxPerPage($this->getParameter('page.size'))
                 ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException $e) {
+        } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
         }
 
@@ -140,11 +136,8 @@ class ReportController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/encuesta/estudiantes/listar/{academicYear}/{page}", name="workplace_training_report_student_survey_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function studentListAction(
+    #[Route(path: '/encuesta/estudiantes/listar/{academicYear}/{page}', name: 'workplace_training_report_student_survey_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function studentList(
         Request                                  $request,
         UserExtensionService                     $userExtensionService,
         TranslatorInterface                      $translator,
@@ -166,11 +159,8 @@ class ReportController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/encuesta/empresas/listar/{academicYear}/{page}", name="workplace_training_report_work_tutor_survey_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function companyListAction(
+    #[Route(path: '/encuesta/empresas/listar/{academicYear}/{page}', name: 'workplace_training_report_work_tutor_survey_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function companyList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -190,12 +180,8 @@ class ReportController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/encuesta/centro/listar/{academicYear}/{page}",
-     *     name="workplace_training_report_educational_tutor_survey_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function educationalTutorListAction(
+    #[Route(path: '/encuesta/centro/listar/{academicYear}/{page}', name: 'workplace_training_report_educational_tutor_survey_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function educationalTutorList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -215,11 +201,8 @@ class ReportController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/encuesta/estudiantes/{shift}", name="workplace_training_report_student_survey_report",
-     *     requirements={"shift" = "\d+"}, methods={"GET"})
-     */
-    public function studentsReportAction(
+    #[Route(path: '/encuesta/estudiantes/{shift}', name: 'workplace_training_report_student_survey_report', requirements: ['shift' => '\d+'], methods: ['GET'])]
+    public function studentsReport(
         TranslatorInterface $translator,
         Environment $engine,
         StudentAnsweredSurveyRepository $studentAnsweredSurveyRepository,
@@ -285,11 +268,8 @@ class ReportController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/encuesta/empresas/{shift}", name="workplace_training_report_work_tutor_survey_report",
-     *     requirements={"shift" = "\d+"}, methods={"GET"})
-     */
-    public function workTutorReportAction(
+    #[Route(path: '/encuesta/empresas/{shift}', name: 'workplace_training_report_work_tutor_survey_report', requirements: ['shift' => '\d+'], methods: ['GET'])]
+    public function workTutorReport(
         TranslatorInterface $translator,
         Environment $engine,
         WPTAnsweredSurveyRepository $wptAnsweredSurveyRepository,
@@ -356,11 +336,8 @@ class ReportController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/encuesta/centro/{shift}", name="workplace_training_report_educational_tutor_survey_report",
-     *     requirements={"shift" = "\d+"}, methods={"GET"})
-     */
-    public function educationalTutorReportAction(
+    #[Route(path: '/encuesta/centro/{shift}', name: 'workplace_training_report_educational_tutor_survey_report', requirements: ['shift' => '\d+'], methods: ['GET'])]
+    public function educationalTutorReport(
         TranslatorInterface $translator,
         Environment $engine,
         WPTAnsweredSurveyRepository $wptAnsweredSurveyRepository,

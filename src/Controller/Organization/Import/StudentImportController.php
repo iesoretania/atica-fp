@@ -43,10 +43,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class StudentImportController extends AbstractController
 {
-    /**
-     * @Route("/centro/importar/estudiante", name="organization_import_student_form", methods={"GET", "POST"})
-     */
-    public function indexAction(
+    #[Route(path: '/centro/importar/estudiante', name: 'organization_import_student_form', methods: ['GET', 'POST'])]
+    public function index(
         UserExtensionService $userExtensionService,
         StudentEnrollmentRepository $studentEnrollmentRepository,
         GroupRepository $groupRepository,
@@ -162,16 +160,11 @@ class StudentImportController extends AbstractController
                     }
                     if (null === $person) {
                         $gender = $studentData['Sexo'];
-                        switch ($gender) {
-                            case 'H':
-                                $gender = Person::GENDER_MALE;
-                                break;
-                            case 'M':
-                                $gender = Person::GENDER_FEMALE;
-                                break;
-                            default:
-                                $gender = Person::GENDER_NEUTRAL;
-                        }
+                        $gender = match ($gender) {
+                            'H' => Person::GENDER_MALE,
+                            'M' => Person::GENDER_FEMALE,
+                            default => Person::GENDER_NEUTRAL,
+                        };
 
                         $person = new Person();
                         $person
@@ -216,7 +209,7 @@ class StudentImportController extends AbstractController
                 }
             }
             $entityManager->flush();
-        } catch (Exception $e) {
+        } catch (Exception) {
             return null;
         }
 
@@ -227,10 +220,8 @@ class StudentImportController extends AbstractController
         ];
     }
 
-    /**
-     * @Route("/centro/importar/estudiante/login", name="organization_import_student_login_form", methods={"GET", "POST"})
-     */
-    public function loginAction(
+    #[Route(path: '/centro/importar/estudiante/login', name: 'organization_import_student_login_form', methods: ['GET', 'POST'])]
+    public function login(
         UserExtensionService $userExtensionService,
         StudentEnrollmentRepository $studentEnrollmentRepository,
         TranslatorInterface $translator,
@@ -336,7 +327,7 @@ class StudentImportController extends AbstractController
                     $lastName = $name;
                     $lastUsername = $username;
 
-                    $pieces = preg_split('/\,\ /', $name, 2);
+                    $pieces = preg_split('/\,\ /', (string) $name, 2);
 
                     $studentEnrollments = $studentEnrollmentRepository->findByAcademicYearNameAndSurname(
                         $academicYear,
@@ -373,9 +364,9 @@ class StudentImportController extends AbstractController
                 }
             }
             $entityManager->flush();
-        } catch (QueryException $e) {
+        } catch (QueryException) {
             return ['error' => '_query'];
-        } catch (Exception $e) {
+        } catch (Exception) {
             return ['error' => ''];
         }
 

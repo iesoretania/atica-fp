@@ -35,16 +35,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/fct/convenio/calendario")
- */
+#[Route(path: '/fct/convenio/calendario')]
 class AgreementCalendarController extends AbstractController
 {
-    /**
-     * @Route("/{id}", name="workplace_training_agreement_calendar_list",
-     *     requirements={"id" = "\d+"}, methods={"GET"})
-     */
-    public function indexAction(
+    #[Route(path: '/{id}', name: 'workplace_training_agreement_calendar_list', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function index(
         WorkDayRepository $workDayRepository,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -86,11 +81,8 @@ class AgreementCalendarController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/incorporar", name="workplace_training_agreement_calendar_add",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function addAction(
+    #[Route(path: '/{id}/incorporar', name: 'workplace_training_agreement_calendar_add', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function add(
         Request $request,
         TranslatorInterface $translator,
         WorkDayRepository $workDayRepository,
@@ -143,7 +135,7 @@ class AgreementCalendarController extends AbstractController
                     return $this->redirectToRoute('workplace_training_agreement_calendar_list', [
                         'id' => $agreement->getId()
                     ]);
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     $this->addFlash('error', $translator->trans('message.save_error', [], 'calendar'));
                 }
             }
@@ -176,11 +168,8 @@ class AgreementCalendarController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/jornada/{id}", name="workplace_training_agreement_calendar_form",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function editAction(
+    #[Route(path: '/jornada/{id}', name: 'workplace_training_agreement_calendar_form', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function edit(
         Request $request,
         AgreementRepository $agreementRepository,
         TranslatorInterface $translator,
@@ -212,7 +201,7 @@ class AgreementCalendarController extends AbstractController
                 return $this->redirectToRoute('workplace_training_agreement_calendar_list', [
                     'id' => $agreement->getId()
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.save_error', [], 'calendar'));
             }
         }
@@ -244,11 +233,8 @@ class AgreementCalendarController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/eliminar", name="workplace_training_agreement_calendar_delete",
-     *     requirements={"id" = "\d+"}, methods={"POST"})
-     */
-    public function deleteAction(
+    #[Route(path: '/{id}/eliminar', name: 'workplace_training_agreement_calendar_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function delete(
         Request $request,
         WorkDayRepository $workDayRepository,
         TrackedWorkDayRepository $trackedWorkDayRepository,
@@ -277,7 +263,7 @@ class AgreementCalendarController extends AbstractController
                 $managerRegistry->getManager()->flush();
                 $agreementRepository->updateDates($agreement);
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'calendar'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'calendar'));
             }
             return $this->redirectToRoute(

@@ -41,16 +41,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
 
-/**
- * @Route("/fct/informe")
- */
+#[Route(path: '/fct/informe')]
 class FinalReportController extends AbstractController
 {
-    /**
-     * @Route("/acuerdo/{academicYear}/{page}", name="workplace_training_final_report_list",
-     *     requirements={"academicYear" = "\d+", "page" = "\d+"}, methods={"GET"})
-     */
-    public function listAction(
+    #[Route(path: '/acuerdo/{academicYear}/{page}', name: 'workplace_training_final_report_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function list(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -100,11 +95,8 @@ class FinalReportController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/cumplimentar/{id}", name="workplace_training_final_report_edit",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function editAction(
+    #[Route(path: '/cumplimentar/{id}', name: 'workplace_training_final_report_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function edit(
         Request $request,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
@@ -137,7 +129,7 @@ class FinalReportController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'wpt_final_report'));
                 return $this->redirectToRoute('workplace_training_final_report_list');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.error', [], 'wpt_final_report'));
             }
         }
@@ -160,11 +152,8 @@ class FinalReportController extends AbstractController
             'form' => $form->createView()
         ]);
     }
-    /**
-     * @Route("/descargar/{id}", name="workplace_training_final_report_report",
-     *     requirements={"id" = "\d+"}, methods={"GET", "POST"})
-     */
-    public function generateAction(
+    #[Route(path: '/descargar/{id}', name: 'workplace_training_final_report_report', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function generate(
         TranslatorInterface $translator,
         WorkDayRepository $workDayRepository,
         AgreementEnrollment $agreementEnrollment
