@@ -34,20 +34,13 @@ class EduOrganizationVoter extends CachedVoter
     public const EDU_TEACHER = 'ORGANIZATION_TEACHER';
     public const EDU_FINANCIAL_MANAGER = 'ORGANIZATION_FINANCIAL_MANAGER';
 
-    private $decisionManager;
-    private $trainingRepository;
-    private $teacherRepository;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        TrainingRepository $trainingRepository,
-        TeacherRepository $teacherRepository
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly TrainingRepository $trainingRepository,
+        private readonly TeacherRepository $teacherRepository
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->trainingRepository = $trainingRepository;
-        $this->teacherRepository = $teacherRepository;
     }
 
     /**

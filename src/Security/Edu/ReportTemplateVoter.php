@@ -32,17 +32,12 @@ class ReportTemplateVoter extends CachedVoter
     public const EDU_REPORT_TEMPLATE_VIEW = 'EDU_REPORT_TEMPLATE_VIEW';
     public const EDU_REPORT_TEMPLATE_MANAGE = 'EDU_REPORT_TEMPLATE_MANAGE';
 
-    private $decisionManager;
-    private $userExtensionService;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly UserExtensionService $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->userExtensionService = $userExtensionService;
     }
 
     /**

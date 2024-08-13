@@ -34,26 +34,13 @@ class TrainingVoter extends CachedVoter
     public const MANAGE = 'TRAINING_MANAGE';
     public const ACCESS = 'TRAINING_ACCESS';
 
-    /** @var UserExtensionService $userExtensionService */
-    private $userExtensionService;
-
-    /** @var TeacherRepository */
-    private $teacherRepository;
-    /**
-     * @var Security
-     */
-    private $security;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        UserExtensionService $userExtensionService,
-        TeacherRepository $teacherRepository,
-        Security $security
+        private readonly UserExtensionService $userExtensionService,
+        private readonly TeacherRepository $teacherRepository,
+        private readonly Security $security
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->userExtensionService = $userExtensionService;
-        $this->teacherRepository = $teacherRepository;
-        $this->security = $security;
     }
 
     /**

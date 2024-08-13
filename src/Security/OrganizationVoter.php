@@ -37,23 +37,13 @@ class OrganizationVoter extends CachedVoter
     public const LOCAL_MANAGE = 'ORGANIZATION_LOCAL_MANAGE';
     public const MANAGE_COMPANIES = 'ORGANIZATION_MANAGE_COMPANIES';
 
-    private $decisionManager;
-    private $roleRepository;
-    /**
-     * @var OrganizationRepository
-     */
-    private $organizationRepository;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        OrganizationRepository $organizationRepository,
-        RoleRepository $roleRepository
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly OrganizationRepository $organizationRepository,
+        private readonly RoleRepository $roleRepository
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->roleRepository = $roleRepository;
-        $this->organizationRepository = $organizationRepository;
     }
 
     /**

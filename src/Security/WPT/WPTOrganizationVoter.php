@@ -48,20 +48,13 @@ class WPTOrganizationVoter extends CachedVoter
     public const WPT_ACCESS_EXPENSE = 'ORGANIZATION_WPT_ACCESS_EXPENSE';
     public const WPT_CREATE_EXPENSE = 'ORGANIZATION_WPT_CREATE_EXPENSE';
 
-    private $decisionManager;
-    private $wptGroupRepository;
-    private $agreementRepository;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        WPTGroupRepository $wptGroupRepository,
-        AgreementRepository $agreementRepository,
-        AccessDecisionManagerInterface $decisionManager
+        private readonly WPTGroupRepository $wptGroupRepository,
+        private readonly AgreementRepository $agreementRepository,
+        private readonly AccessDecisionManagerInterface $decisionManager
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->wptGroupRepository = $wptGroupRepository;
-        $this->agreementRepository = $agreementRepository;
     }
 
     /**

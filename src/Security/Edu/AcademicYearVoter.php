@@ -33,25 +33,13 @@ class AcademicYearVoter extends CachedVoter
     public const MANAGE = 'ACADEMIC_YEAR_MANAGE';
     public const ACCESS = 'ACADEMIC_YEAR_ACCESS';
 
-    /** @var AccessDecisionManagerInterface */
-    private $decisionManager;
-
-    /** @var UserExtensionService $userExtensionService */
-    private $userExtensionService;
-
-    /** @var TeacherRepository */
-    private $teacherRepository;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService,
-        TeacherRepository $teacherRepository
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly UserExtensionService $userExtensionService,
+        private readonly TeacherRepository $teacherRepository
     ) {
         parent::__construct($cacheItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->userExtensionService = $userExtensionService;
-        $this->teacherRepository = $teacherRepository;
     }
 
     /**

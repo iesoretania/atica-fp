@@ -26,14 +26,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 abstract class CachedVoter extends Voter
 {
 
-    /**
-     * @var CacheItemPoolInterface
-     */
-    private $cacheItemPool;
-
-    public function __construct(CacheItemPoolInterface $cacheItemPool)
+    public function __construct(private readonly CacheItemPoolInterface $cacheItemPool)
     {
-        $this->cacheItemPool = $cacheItemPool;
     }
 
     /**
@@ -55,7 +49,7 @@ abstract class CachedVoter extends Voter
             $key = 'voter_' . $hash . $attribute;
             try {
                 $cachedItem = $this->cacheItemPool->getItem($key);
-            } catch (InvalidArgumentException $e) {
+            } catch (InvalidArgumentException) {
                 $cachedItem = null;
             }
             if ($cachedItem->isHit()) {

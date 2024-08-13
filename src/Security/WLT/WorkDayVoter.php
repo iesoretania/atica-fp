@@ -33,20 +33,12 @@ class WorkDayVoter extends CachedVoter
     public const FILL = 'WLT_WORK_DAY_MANAGE';
     public const ACCESS = 'WLT_WORK_DAY_ACCESS';
 
-    /** @var AccessDecisionManagerInterface */
-    private $decisionManager;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly UserExtensionService $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->userExtensionService = $userExtensionService;
     }
 
     /**
@@ -109,27 +101,23 @@ class WorkDayVoter extends CachedVoter
             || ($subject->getAgreement()->getAdditionalWorkTutor() === $user);
         $isGroupTutor = $this->decisionManager->decide($token, [GroupVoter::MANAGE],
             $subject->getAgreement()->getStudentEnrollment()->getGroup());
-
-        switch ($attribute) {
-            case self::ACCESS:
-                // Si se puede acceder al convenio, se puede visualizar la jornada
-                return $accessGranted;
-            case self::FILL:
-                // Sólo si pertenece al curso académico activo y es el estudiante,
-                // algún tutor (docente, laboral o de grupo) o puede administrar el
-                // convenio
-                return $accessGranted
-                    && $subject
-                        ->getAgreement()
-                        ->getStudentEnrollment()
-                        ->getGroup()
-                        ->getGrade()
-                        ->getTraining()
-                        ->getAcademicYear() === $organization->getCurrentAcademicYear()
-                    && ($isManager || $isStudent || $isTutor || $isGroupTutor);
-        }
-
-        // denegamos en cualquier otro caso
-        return false;
+        return match ($attribute) {
+            // Si se puede acceder al convenio, se puede visualizar la jornada
+            self::ACCESS => $accessGranted,
+            // Solo si pertenece al curso académico activo y es el estudiante,
+            // algún tutor (docente, laboral o de grupo) o puede administrar el
+            // convenio
+            self::FILL => $accessGranted
+                && $subject
+                    ->getAgreement()
+                    ->getStudentEnrollment()
+                    ->getGroup()
+                    ->getGrade()
+                    ->getTraining()
+                    ->getAcademicYear() === $organization->getCurrentAcademicYear()
+                && ($isManager || $isStudent || $isTutor || $isGroupTutor),
+            // denegamos en cualquier otro caso
+            default => false,
+        };
     }
 }

@@ -30,20 +30,12 @@ class SurveyVoter extends CachedVoter
 {
     public const MANAGE = 'SURVEY_MANAGE';
 
-    /** @var AccessDecisionManagerInterface */
-    private $decisionManager;
-
-    /** @var RoleRepository */
-    private $roleRepository;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        RoleRepository $roleRepository
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly RoleRepository $roleRepository
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->roleRepository = $roleRepository;
     }
 
     /**

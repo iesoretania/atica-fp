@@ -32,20 +32,12 @@ class TrackedWorkDayVoter extends CachedVoter
     public const FILL = 'WPT_TRACKED_WORK_DAY_MANAGE';
     public const ACCESS = 'WPT_TRACKED_WORK_DAY_ACCESS';
 
-    /** @var AccessDecisionManagerInterface */
-    private $decisionManager;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly UserExtensionService $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->userExtensionService = $userExtensionService;
     }
 
     /**
@@ -103,26 +95,22 @@ class TrackedWorkDayVoter extends CachedVoter
             [AgreementEnrollmentVoter::ACCESS],
             $subject->getAgreementEnrollment()
         );
-
-        switch ($attribute) {
-            case self::ACCESS:
-                // Si se puede acceder a el convenio, se puede visualizar la jornada
-                return $accessGranted;
-            case self::FILL:
-                // Sólo si pertenece al curso académico activo
-                return !$subject->getWorkDay()->getAgreement()->isLocked() &&
-                    !$subject->getWorkDay()->getAgreement()->getShift()->isLocked() &&
-                    $accessGranted &&
-                    $subject
-                        ->getAgreementEnrollment()
-                        ->getStudentEnrollment()
-                        ->getGroup()
-                        ->getGrade()
-                        ->getTraining()
-                        ->getAcademicYear() === $organization->getCurrentAcademicYear();
-        }
-
-        // denegamos en cualquier otro caso
-        return false;
+        return match ($attribute) {
+            // Si se puede acceder al convenio, se puede visualizar la jornada
+            self::ACCESS => $accessGranted,
+            // Solo si pertenece al curso académico activo
+            self::FILL => !$subject->getWorkDay()->getAgreement()->isLocked() &&
+                !$subject->getWorkDay()->getAgreement()->getShift()->isLocked() &&
+                $accessGranted &&
+                $subject
+                    ->getAgreementEnrollment()
+                    ->getStudentEnrollment()
+                    ->getGroup()
+                    ->getGrade()
+                    ->getTraining()
+                    ->getAcademicYear() === $organization->getCurrentAcademicYear(),
+            // denegamos en cualquier otro caso
+            default => false,
+        };
     }
 }

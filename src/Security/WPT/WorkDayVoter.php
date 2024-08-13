@@ -32,20 +32,12 @@ class WorkDayVoter extends CachedVoter
     public const FILL = 'WPT_WORK_DAY_MANAGE';
     public const ACCESS = 'WPT_WORK_DAY_ACCESS';
 
-    /** @var AccessDecisionManagerInterface */
-    private $decisionManager;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly UserExtensionService $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->userExtensionService = $userExtensionService;
     }
 
     /**
@@ -99,23 +91,19 @@ class WorkDayVoter extends CachedVoter
         }
 
         $accessGranted = $this->decisionManager->decide($token, [AgreementVoter::ACCESS], $subject->getAgreement());
-
-        switch ($attribute) {
-            case self::ACCESS:
-                // Si se puede acceder a el convenio, se puede visualizar la jornada
-                return $accessGranted;
-            case self::FILL:
-                // Sólo si pertenece al curso académico activo
-                return $accessGranted &&
-                    $subject
-                        ->getAgreement()
-                        ->getShift()
-                        ->getGrade()
-                        ->getTraining()
-                        ->getAcademicYear() === $organization->getCurrentAcademicYear();
-        }
-
-        // denegamos en cualquier otro caso
-        return false;
+        return match ($attribute) {
+            // Si se puede acceder al convenio, se puede visualizar la jornada
+            self::ACCESS => $accessGranted,
+            // Solo si pertenece al curso académico activo
+            self::FILL => $accessGranted &&
+                $subject
+                    ->getAgreement()
+                    ->getShift()
+                    ->getGrade()
+                    ->getTraining()
+                    ->getAcademicYear() === $organization->getCurrentAcademicYear(),
+            // denegamos en cualquier otro caso
+            default => false,
+        };
     }
 }
