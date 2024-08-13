@@ -24,11 +24,8 @@ use App\Service\UserExtensionService;
 
 class CoreMenu implements MenuBuilderInterface
 {
-    private $userExtension;
-
-    public function __construct(UserExtensionService $userExtension)
+    public function __construct(private readonly UserExtensionService $userExtension)
     {
-        $this->userExtension = $userExtension;
     }
 
     /**

@@ -26,15 +26,8 @@ use Symfony\Component\Security\Core\Security;
 
 class WLTMenu implements MenuBuilderInterface
 {
-    private $userExtension;
-
-    /** @var Security */
-    private $security;
-
-    public function __construct(UserExtensionService $userExtension, Security $security)
+    public function __construct(private readonly UserExtensionService $userExtension, private readonly Security $security)
     {
-        $this->userExtension = $userExtension;
-        $this->security = $security;
     }
 
     /**
