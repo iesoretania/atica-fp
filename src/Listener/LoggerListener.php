@@ -26,8 +26,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\AuthenticationEvents;
 use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\Event\SwitchUserEvent;
@@ -35,32 +35,16 @@ use Symfony\Component\Security\Http\SecurityEvents;
 
 class LoggerListener implements EventSubscriberInterface
 {
-    private $managerRegistry;
-
-    private $token;
-
-    private $authenticationUtils;
-
-    private $requestStack;
-
-    public function __construct(
-        ManagerRegistry $managerRegistry,
-        TokenStorageInterface $token,
-        AuthenticationUtils $authenticationUtils,
-        RequestStack $requestStack
-    ) {
-        $this->managerRegistry = $managerRegistry;
-        $this->token = $token;
-        $this->authenticationUtils = $authenticationUtils;
-        $this->requestStack = $requestStack;
+    public function __construct(private readonly ManagerRegistry $managerRegistry, private readonly TokenStorageInterface $token, private readonly AuthenticationUtils $authenticationUtils, private readonly RequestStack $requestStack)
+    {
     }
 
     public function onKernelRequest(RequestEvent $event)
     {
         if ($event->isMainRequest()) {
-            /** @var Person $user */
+            /** @var Person|null $user */
             $user = $this->token->getToken() !== null ? $this->token->getToken()->getUser() : null;
-            $user = is_string($user) ? null : $user;
+            $user = $user instanceof UserInterface ? $user : null;
 
             $ip = $event->getRequest()->getClientIp();
             $eventName = EventLog::ACCESS;
@@ -89,7 +73,7 @@ class LoggerListener implements EventSubscriberInterface
 
         $ip = $event->getRequest()->getClientIp();
         $eventName = EventLog::SWITCH_USER;
-        $data = $event->getTargetUser()->getLoginUsername();
+        $data = $event->getTargetUser()->getUserIdentifier();
 
         $this->createLogEntry($eventName, $user, $ip, $data);
     }
@@ -113,7 +97,7 @@ class LoggerListener implements EventSubscriberInterface
             KernelEvents::REQUEST => 'onKernelRequest',
             SecurityEvents::INTERACTIVE_LOGIN => 'onSecurityInteractiveLogin',
             SecurityEvents::SWITCH_USER => 'onSecuritySwitchUser',
-            AuthenticationEvents::AUTHENTICATION_FAILURE => 'onAuthenticationFailure'
+            \Symfony\Component\Security\Core\Event\AuthenticationFailureEvent::class => 'onAuthenticationFailure'
         ];
     }
 
@@ -122,7 +106,6 @@ class LoggerListener implements EventSubscriberInterface
      * @param Person $user
      * @param $ip
      * @param $data
-     * @throws \Exception
      */
     private function createLogEntry($eventName, Person $user = null, $ip = null, $data = null)
     {

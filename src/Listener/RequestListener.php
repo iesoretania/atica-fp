@@ -29,26 +29,8 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 
 class RequestListener implements EventSubscriberInterface
 {
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    private $token;
-
-    /**
-     * @var AccessDecisionManagerInterface
-     */
-    private $accessDecisionManager;
-
-    public function __construct(RouterInterface $router, TokenStorageInterface $token, AccessDecisionManagerInterface $accessDecisionManager)
+    public function __construct(private readonly RouterInterface $router, private readonly TokenStorageInterface $token, private readonly AccessDecisionManagerInterface $accessDecisionManager)
     {
-        $this->router = $router;
-        $this->token = $token;
-        $this->accessDecisionManager = $accessDecisionManager;
     }
 
     final public function onKernelRequest(RequestEvent $event): void
@@ -61,7 +43,7 @@ class RequestListener implements EventSubscriberInterface
 
         if (($session->get('organization_id', '') === '') && $event->isMainRequest()) {
             $route = $event->getRequest()->get('_route');
-            if ($route && !str_starts_with($route, 'log') && $route[0] !== '_') {
+            if ($route && !str_starts_with((string) $route, 'log') && $route[0] !== '_') {
                 $session->set('_security.organization.target_path', $event->getRequest()->getUri());
                 $event->setResponse(
                     new RedirectResponse($this->router->generate('login_organization'))
@@ -78,7 +60,7 @@ class RequestListener implements EventSubscriberInterface
             !$this->accessDecisionManager->decide($this->token->getToken(), ['IS_IMPERSONATOR'])
         ) {
             $route = $event->getRequest()->get('_route');
-            if ($route && !str_starts_with($route, 'log') && !str_starts_with($route, 'force') && $route[0] !== '_') {
+            if ($route && !str_starts_with((string) $route, 'log') && !str_starts_with((string) $route, 'force') && $route[0] !== '_') {
                 $session->set('_security.force_password_change.target_path', $event->getRequest()->getUri());
                 $event->setResponse(
                     new RedirectResponse($this->router->generate('force_password_reset_do'))
