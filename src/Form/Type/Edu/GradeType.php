@@ -29,18 +29,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class GradeType extends AbstractType
 {
-    /** @var TrainingRepository */
-    private $trainingRepository;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
-    public function __construct(
-        TrainingRepository $trainingRepository,
-        UserExtensionService $userExtensionService
-    ) {
-        $this->trainingRepository = $trainingRepository;
-        $this->userExtensionService = $userExtensionService;
+    public function __construct(private readonly TrainingRepository $trainingRepository, private readonly UserExtensionService $userExtensionService)
+    {
     }
 
     /**

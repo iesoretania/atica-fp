@@ -43,27 +43,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContactType extends AbstractType
 {
-    private $workcenterRepository;
-    private $wltTeacherRepository;
-    private $userExtensionService;
-    private $projectRepository;
-    private $wltStudentEnrollmentRepository;
-    private $contactMethodRepository;
-
-    public function __construct(
-        WorkcenterRepository $workcenterRepository,
-        WLTTeacherRepository $wltTeacherRepository,
-        ProjectRepository $projectRepository,
-        WLTStudentEnrollmentRepository $wltStudentEnrollmentRepository,
-        ContactMethodRepository $contactMethodRepository,
-        UserExtensionService $userExtensionService
-    ) {
-        $this->workcenterRepository = $workcenterRepository;
-        $this->wltTeacherRepository = $wltTeacherRepository;
-        $this->projectRepository = $projectRepository;
-        $this->userExtensionService = $userExtensionService;
-        $this->wltStudentEnrollmentRepository = $wltStudentEnrollmentRepository;
-        $this->contactMethodRepository = $contactMethodRepository;
+    public function __construct(private readonly WorkcenterRepository $workcenterRepository, private readonly WLTTeacherRepository $wltTeacherRepository, private readonly ProjectRepository $projectRepository, private readonly WLTStudentEnrollmentRepository $wltStudentEnrollmentRepository, private readonly ContactMethodRepository $contactMethodRepository, private readonly UserExtensionService $userExtensionService)
+    {
     }
 
     /**
@@ -93,7 +74,7 @@ class ContactType extends AbstractType
         $studentEnrollments = [];
         if ($workcenter !== null) {
             $projects = $this->projectRepository->findByAcademicYearAndWorkcenter($academicYear, $workcenter);
-            if ((is_array($projects) || $projects instanceof \Countable ? count($projects) : 0) > 0) {
+            if ((is_countable($projects) ? count($projects) : 0) > 0) {
                 $studentEnrollments =
                     $this
                         ->wltStudentEnrollmentRepository
@@ -102,10 +83,10 @@ class ContactType extends AbstractType
         } else {
             $projects = [];
         }
-        $canSelectProjects = (is_array($projects) || $projects instanceof \Countable ? count($projects) : 0) > 0;
+        $canSelectProjects = (is_countable($projects) ? count($projects) : 0) > 0;
         $canSelectStudentEnrollments =
             (
-                is_array($studentEnrollments) || $studentEnrollments instanceof \Countable
+                is_countable($studentEnrollments)
                     ? count($studentEnrollments) : 0
             ) > 0;
 

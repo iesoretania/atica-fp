@@ -30,13 +30,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TeachingType extends AbstractType
 {
-    /** @var TeacherRepository */
-    private $teacherRepository;
-
-    public function __construct(
-        TeacherRepository $teacherRepository
-    ) {
-        $this->teacherRepository = $teacherRepository;
+    public function __construct(private readonly TeacherRepository $teacherRepository)
+    {
     }
 
     /**

@@ -29,11 +29,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ActivityType extends AbstractType
 {
-    private $WLTCompetencyRepository;
-
-    public function __construct(WLTCompetencyRepository $WLTCompetencyRepository)
+    public function __construct(private readonly WLTCompetencyRepository $WLTCompetencyRepository)
     {
-        $this->WLTCompetencyRepository = $WLTCompetencyRepository;
     }
 
     /**

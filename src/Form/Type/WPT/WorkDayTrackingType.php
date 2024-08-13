@@ -33,12 +33,8 @@ use Symfony\Component\Security\Core\Security;
 
 class WorkDayTrackingType extends AbstractType
 {
-    private $security;
-
-    public function __construct(
-        Security $security
-    ) {
-        $this->security = $security;
+    public function __construct(private readonly Security $security)
+    {
     }
 
     public function addElements(

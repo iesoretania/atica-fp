@@ -37,9 +37,7 @@ class ActivityCopyFromWLTType extends AbstractType
                 'label' => 'form.source_wlt_project',
                 'class' => Project::class,
                 'choices' => $options['projects'],
-                'choice_label' => static function (Project $project) {
-                    return $project->getName();
-                },
+                'choice_label' => static fn(Project $project) => $project->getName(),
                 'choice_translation_domain' => false,
                 'placeholder' => 'form.source_wlt_project.none',
                 'required' => true

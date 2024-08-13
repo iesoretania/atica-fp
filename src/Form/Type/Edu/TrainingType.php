@@ -29,18 +29,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TrainingType extends AbstractType
 {
-    /** @var DepartmentRepository */
-    private $departmentRepository;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
-    public function __construct(
-        DepartmentRepository $departmentRepository,
-        UserExtensionService $userExtensionService
-    ) {
-        $this->departmentRepository = $departmentRepository;
-        $this->userExtensionService = $userExtensionService;
+    public function __construct(private readonly DepartmentRepository $departmentRepository, private readonly UserExtensionService $userExtensionService)
+    {
     }
 
     /**

@@ -29,12 +29,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProjectStudentEnrollmentType extends AbstractType
 {
-    private $studentEnrollmentRepository;
-
-    public function __construct(
-        StudentEnrollmentRepository $studentEnrollmentRepository
-    ) {
-        $this->studentEnrollmentRepository = $studentEnrollmentRepository;
+    public function __construct(private readonly StudentEnrollmentRepository $studentEnrollmentRepository)
+    {
     }
 
     /**
@@ -51,13 +47,11 @@ class ProjectStudentEnrollmentType extends AbstractType
                 'class' => Group::class,
                 'choice_translation_domain' => false,
                 'choices' => $groups,
-                'choice_label' => function (Group $group) {
-                    return $group
-                            ->getGrade()
-                            ->getTraining()
-                            ->getAcademicYear()
-                            ->getDescription() . ' - ' . $group->getName();
-                },
+                'choice_label' => fn(Group $group) => $group
+                        ->getGrade()
+                        ->getTraining()
+                        ->getAcademicYear()
+                        ->getDescription() . ' - ' . $group->getName(),
                 'multiple' => true,
                 'disabled' => true,
                 'required' => false
@@ -67,16 +61,12 @@ class ProjectStudentEnrollmentType extends AbstractType
                 'class' => StudentEnrollment::class,
                 'choice_translation_domain' => false,
                 'choices' => $studentEnrollments,
-                'choice_label' => function (StudentEnrollment $studentEnrollment) {
-                    return $studentEnrollment->getPerson()->getLastName() . ', '
-                        . $studentEnrollment->getPerson()->getFirstName() . ' ('
-                        . $studentEnrollment->getPerson()->getUniqueIdentifier() . ')';
-                },
-                'group_by' => function (StudentEnrollment $studentEnrollment) {
-                    return $studentEnrollment
-                            ->getGroup()->getGrade()->getTraining()->getAcademicYear()->getDescription() . ' - '
-                        . $studentEnrollment->getGroup()->getName();
-                },
+                'choice_label' => fn(StudentEnrollment $studentEnrollment) => $studentEnrollment->getPerson()->getLastName() . ', '
+                    . $studentEnrollment->getPerson()->getFirstName() . ' ('
+                    . $studentEnrollment->getPerson()->getUniqueIdentifier() . ')',
+                'group_by' => fn(StudentEnrollment $studentEnrollment) => $studentEnrollment
+                        ->getGroup()->getGrade()->getTraining()->getAcademicYear()->getDescription() . ' - '
+                    . $studentEnrollment->getGroup()->getName(),
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false

@@ -39,33 +39,8 @@ use Symfony\Component\Validator\Constraints\Count;
 
 class MeetingType extends AbstractType
 {
-    /**
-     * @var ProjectRepository
-     */
-    private $projectRepository;
-    /**
-     * @var WLTStudentEnrollmentRepository
-     */
-    private $wltStudentEnrollmentRepository;
-    /**
-     * @var WLTTeacherRepository
-     */
-    private $wltTeacherRepository;
-    /**
-     * @var UserExtensionService
-     */
-    private $userExtensionService;
-
-    public function __construct(
-        ProjectRepository $projectRepository,
-        WLTStudentEnrollmentRepository $wltStudentEnrollmentRepository,
-        WLTTeacherRepository $wltTeacherRepository,
-        UserExtensionService $userExtensionService
-    ) {
-        $this->projectRepository = $projectRepository;
-        $this->wltStudentEnrollmentRepository = $wltStudentEnrollmentRepository;
-        $this->wltTeacherRepository = $wltTeacherRepository;
-        $this->userExtensionService = $userExtensionService;
+    public function __construct(private readonly ProjectRepository $projectRepository, private readonly WLTStudentEnrollmentRepository $wltStudentEnrollmentRepository, private readonly WLTTeacherRepository $wltTeacherRepository, private readonly UserExtensionService $userExtensionService)
+    {
     }
 
     /**
@@ -90,7 +65,7 @@ class MeetingType extends AbstractType
             $teachers = [];
         }
 
-        $canSelectStudentEnrollments = (is_array($studentEnrollments) || $studentEnrollments instanceof \Countable ? count($studentEnrollments) : 0) > 0;
+        $canSelectStudentEnrollments = (is_countable($studentEnrollments) ? count($studentEnrollments) : 0) > 0;
 
         $form
             ->add('dateTime', DateTimeType::class, [

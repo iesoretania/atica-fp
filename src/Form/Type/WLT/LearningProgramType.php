@@ -30,11 +30,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LearningProgramType extends AbstractType
 {
-    private $activityRealizationRepository;
-
-    public function __construct(ActivityRealizationRepository $activityRealizationRepository)
+    public function __construct(private readonly ActivityRealizationRepository $activityRealizationRepository)
     {
-        $this->activityRealizationRepository = $activityRealizationRepository;
     }
 
     /**
@@ -51,10 +48,8 @@ class LearningProgramType extends AbstractType
                 'class' => Company::class,
                 'choice_label' => 'fullName',
                 'choice_translation_domain' => false,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('c')
-                        ->orderBy('c.name');
-                },
+                'query_builder' => fn(EntityRepository $er) => $er->createQueryBuilder('c')
+                    ->orderBy('c.name'),
                 'placeholder' => 'form.company.none',
                 'required' => true
             ])
@@ -62,9 +57,7 @@ class LearningProgramType extends AbstractType
                 'label' => 'form.activity_realizations',
                 'class' => ActivityRealization::class,
                 'expanded' => true,
-                'group_by' => function (ActivityRealization $ar) {
-                    return (string) $ar->getActivity();
-                },
+                'group_by' => fn(ActivityRealization $ar) => (string) $ar->getActivity(),
                 'multiple' => true,
                 'required' => false,
                 'choices' => $activityRealizations

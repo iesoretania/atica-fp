@@ -36,21 +36,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ContactEducationalTutorReportType extends AbstractType
 {
-    private $projectRepository;
-    private $contactMethodRepository;
-    private $contactRepository;
-    private $translator;
-
-    public function __construct(
-        ProjectRepository $projectRepository,
-        ContactRepository $contactRepository,
-        ContactMethodRepository $contactMethodRepository,
-        TranslatorInterface $translator
-    ) {
-        $this->projectRepository = $projectRepository;
-        $this->contactRepository = $contactRepository;
-        $this->contactMethodRepository = $contactMethodRepository;
-        $this->translator = $translator;
+    public function __construct(private readonly ProjectRepository $projectRepository, private readonly ContactRepository $contactRepository, private readonly ContactMethodRepository $contactMethodRepository, private readonly TranslatorInterface $translator)
+    {
     }
 
     private function addElements(

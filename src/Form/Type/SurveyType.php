@@ -46,9 +46,7 @@ class SurveyType extends AbstractType
                     'class' => Survey::class,
                     'mapped' => false,
                     'choices' => $options['surveys'],
-                    'choice_label' => function (Survey $s) {
-                        return $s->getTitle();
-                    },
+                    'choice_label' => fn(Survey $s) => $s->getTitle(),
                     'placeholder' => 'form.copy_from.none',
                     'required' => false
                 ]);

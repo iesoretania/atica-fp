@@ -33,11 +33,8 @@ use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class TravelExpenseType extends AbstractType
 {
-    private $translator;
-
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private readonly TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     /**

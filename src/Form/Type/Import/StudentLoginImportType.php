@@ -32,23 +32,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class StudentLoginImportType extends AbstractType
 {
-    /** @var AcademicYearRepository */
-    private $academicYearRepository;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
     /**
      * DepartmentImportType constructor.
      * @param AcademicYearRepository $academicYearRepository
      * @param UserExtensionService $userExtensionService
      */
-    public function __construct(
-        AcademicYearRepository $academicYearRepository,
-        UserExtensionService $userExtensionService
-    ) {
-        $this->academicYearRepository = $academicYearRepository;
-        $this->userExtensionService = $userExtensionService;
+    public function __construct(private readonly AcademicYearRepository $academicYearRepository, private readonly UserExtensionService $userExtensionService)
+    {
     }
 
     /**

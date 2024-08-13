@@ -31,12 +31,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class StudentEnrollmentType extends AbstractType
 {
-    private $groupRepository;
-
-    public function __construct(
-        GroupRepository $groupRepository
-    ) {
-        $this->groupRepository = $groupRepository;
+    public function __construct(private readonly GroupRepository $groupRepository)
+    {
     }
 
     /**
