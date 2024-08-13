@@ -19,380 +19,219 @@
 namespace App\Entity\WPT;
 
 use App\Entity\Workcenter;
+use App\Repository\WPT\AgreementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WPT\AgreementRepository")
- * @ORM\Table(name="wpt_agreement")
- */
-class Agreement
+#[ORM\Entity(repositoryClass: AgreementRepository::class)]
+#[ORM\Table(name: 'wpt_agreement')]
+class Agreement implements \Stringable
 {
-    /**
-     * @var ArrayCollection|Collection|Activity[]|mixed
-     */
-    public $activities;
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $name;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\WPT\Shift", inversedBy="agreements")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Shift
-     */
-    private $shift;
+    #[ORM\ManyToOne(targetEntity: Shift::class, inversedBy: 'agreements')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Shift $shift = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Workcenter")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Workcenter
-     */
-    private $workcenter;
+    #[ORM\ManyToOne(targetEntity: Workcenter::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Workcenter $workcenter = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="AgreementEnrollment", mappedBy="agreement")
-     * @var AgreementEnrollment[]|Collection
-     */
-    private $agreementEnrollments;
+    #[ORM\OneToMany(targetEntity: AgreementEnrollment::class, mappedBy: 'agreement')]
+    private Collection $agreementEnrollments;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     * @var \DateTime
-     */
-    private $startDate;
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $startDate = null;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     * @var \DateTime
-     */
-    private $endDate;
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $endDate = null;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     * @var \DateTime
-     */
-    private $signDate;
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $signDate = null;
 
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("/^\d\d:\d\d$/")
-     * @var string
-     */
-    private $defaultStartTime1;
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    #[Assert\Regex('/^\d\d:\d\d$/')]
+    private ?string $defaultStartTime1 = null;
 
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("/^\d\d:\d\d$/")
-     * @var string
-     */
-    private $defaultEndTime1;
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    #[Assert\Regex('/^\d\d:\d\d$/')]
+    private ?string $defaultEndTime1 = null;
 
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("/^\d\d:\d\d$/")
-     * @var string
-     */
-    private $defaultStartTime2;
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    #[Assert\Regex('/^\d\d:\d\d$/')]
+    private ?string $defaultStartTime2 = null;
 
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\Regex("/^\d\d:\d\d$/")
-     * @var string
-     */
-    private $defaultEndTime2;
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    #[Assert\Regex('/^\d\d:\d\d$/')]
+    private ?string $defaultEndTime2 = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="WorkDay", mappedBy="agreement")
-     * @var WorkDay[]|Collection
-     */
-    private $workDays;
+    #[ORM\OneToMany(targetEntity: WorkDay::class, mappedBy: 'agreement')]
+    private Collection $workDays;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $locked;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $locked = null;
 
     public function __construct()
     {
         $this->agreementEnrollments = new ArrayCollection();
         $this->workDays = new ArrayCollection();
-        $this->activities = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->getShift() . ' - ' . $this->getWorkcenter() . ($this->getName() !== '' && $this->getName() !== null ? ' - ' . $this->getName() : '');
+        return ($this->getShift() === null || $this->getWorkcenter() === null) ? ''
+            : $this->getShift()->__toString()
+            . ' - '
+            . $this->getWorkcenter()->__toString()
+            . ($this->getName() !== '' && $this->getName() !== null ? ' - ' . $this->getName() : '');
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Agreement
-     */
-    public function setName($name)
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return Shift
-     */
-    public function getShift()
+    public function getShift(): ?Shift
     {
         return $this->shift;
     }
 
-    /**
-     * @param Shift $shift
-     * @return Agreement
-     */
-    public function setShift($shift)
+    public function setShift(Shift $shift): static
     {
         $this->shift = $shift;
         return $this;
     }
 
-    /**
-     * @return Workcenter
-     */
-    public function getWorkcenter()
+    public function getWorkcenter(): ?Workcenter
     {
         return $this->workcenter;
     }
 
-    /**
-     * @param Workcenter $workcenter
-     * @return Agreement
-     */
-    public function setWorkcenter($workcenter)
+    public function setWorkcenter(Workcenter $workcenter): static
     {
         $this->workcenter = $workcenter;
         return $this;
     }
 
-    /**
-     * @return ?\DateTimeInterface
-     */
-    public function getStartDate()
+    public function getStartDate(): ?\DateTimeInterface
     {
         return $this->startDate;
     }
 
-    /**
-     * @param ?\DateTimeInterface $startDate
-     * @return Agreement
-     */
-    public function setStartDate(?\DateTimeInterface $startDate)
+    public function setStartDate(?\DateTimeInterface $startDate): static
     {
         $this->startDate = $startDate;
         return $this;
     }
 
-    /**
-     * @return ?\DateTime
-     */
-    public function getEndDate()
+    public function getEndDate(): ?\DateTimeInterface
     {
         return $this->endDate;
     }
 
-    /**
-     * @param ?\DateTimeInterface $endDate
-     * @return Agreement
-     */
-    public function setEndDate(?\DateTimeInterface $endDate)
+    public function setEndDate(?\DateTimeInterface $endDate): static
     {
         $this->endDate = $endDate;
         return $this;
     }
 
-    /**
-     * @return ?\DateTimeInterface
-     */
-    public function getSignDate()
+    public function getSignDate(): ?\DateTimeInterface
     {
         return $this->signDate;
     }
 
-    /**
-     * @param ?\DateTimeInterface $signDate
-     * @return Agreement
-     */
-    public function setSignDate(?\DateTimeInterface $signDate)
+    public function setSignDate(?\DateTimeInterface $signDate): static
     {
         $this->signDate = $signDate;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDefaultStartTime1()
+    public function getDefaultStartTime1(): ?string
     {
         return $this->defaultStartTime1;
     }
 
-    /**
-     * @param string $defaultStartTime1
-     * @return Agreement
-     */
-    public function setDefaultStartTime1($defaultStartTime1)
+    public function setDefaultStartTime1(?string $defaultStartTime1): static
     {
         $this->defaultStartTime1 = $defaultStartTime1;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDefaultEndTime1()
+    public function getDefaultEndTime1(): ?string
     {
         return $this->defaultEndTime1;
     }
 
-    /**
-     * @param string $defaultEndTime1
-     * @return Agreement
-     */
-    public function setDefaultEndTime1($defaultEndTime1)
+    public function setDefaultEndTime1(?string $defaultEndTime1): static
     {
         $this->defaultEndTime1 = $defaultEndTime1;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDefaultStartTime2()
+    public function getDefaultStartTime2(): ?string
     {
         return $this->defaultStartTime2;
     }
 
-    /**
-     * @param string $defaultStartTime2
-     * @return Agreement
-     */
-    public function setDefaultStartTime2($defaultStartTime2)
+    public function setDefaultStartTime2(?string $defaultStartTime2): static
     {
         $this->defaultStartTime2 = $defaultStartTime2;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDefaultEndTime2()
+    public function getDefaultEndTime2(): ?string
     {
         return $this->defaultEndTime2;
     }
 
-    /**
-     * @param string $defaultEndTime2
-     * @return Agreement
-     */
-    public function setDefaultEndTime2($defaultEndTime2)
+    public function setDefaultEndTime2(?string $defaultEndTime2): static
     {
         $this->defaultEndTime2 = $defaultEndTime2;
         return $this;
     }
 
     /**
-     * @return WorkDay[]|Collection
+     * @return Collection<int, WorkDay>
      */
-    public function getWorkDays()
+    public function getWorkDays(): Collection
     {
         return $this->workDays;
     }
 
     /**
-     * @param WorkDay[]|Collection $workDays
-     * @return Agreement
+     * @return Collection<int, AgreementEnrollment>
      */
-    public function setWorkDays($workDays)
-    {
-        $this->workDays = $workDays;
-        return $this;
-    }
-
-    /**
-     * @return Activity[]|Collection
-     */
-    public function getActivities()
-    {
-        return $this->activities;
-    }
-
-    /**
-     * @param Activity[]|Collection $activities
-     * @return Agreement
-     */
-    public function setActivities($activities)
-    {
-        $this->activities = $activities;
-        return $this;
-    }
-
-    /**
-     * @return AgreementEnrollment[]|Collection
-     */
-    public function getAgreementEnrollments()
+    public function getAgreementEnrollments(): Collection
     {
         return $this->agreementEnrollments;
     }
 
-    /**
-     * @param AgreementEnrollment[]|Collection $agreementEnrollments
-     * @return Agreement
-     */
-    public function setAgreementEnrollments($agreementEnrollments)
-    {
-        $this->agreementEnrollments = $agreementEnrollments;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isLocked()
+    public function isLocked(): ?bool
     {
         return $this->locked;
     }
 
-    /**
-     * @param bool $locked
-     * @return Agreement
-     */
-    public function setLocked(bool $locked)
+    public function setLocked(bool $locked): static
     {
         $this->locked = $locked;
         return $this;

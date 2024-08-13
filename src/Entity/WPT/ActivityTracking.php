@@ -18,108 +18,75 @@
 
 namespace App\Entity\WPT;
 
+use App\Repository\WPT\ActivityTrackingRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WPT\ActivityTrackingRepository")
- * @ORM\Table(name="wpt_activity_tracking")
- */
+#[ORM\Entity(repositoryClass: ActivityTrackingRepository::class)]
+#[ORM\Table(name: 'wpt_activity_tracking')]
 class ActivityTracking
 {
-    /**
-     * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="TrackedWorkDay", inversedBy="trackedActivities")
-     * @ORM\JoinColumn(nullable=false)
-     * @var WorkDay
-     */
-    private $trackedWorkDay;
+    #[ORM\Id]
+    #[ORM\ManyToOne(targetEntity: TrackedWorkDay::class, inversedBy: 'trackedActivities')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?TrackedWorkDay $trackedWorkDay = null;
 
-    /**
-     * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Activity")
-     * @var Activity
-     */
-    protected $activity;
+    #[ORM\Id]
+    #[ORM\ManyToOne(targetEntity: Activity::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Activity $activity = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    protected $notes;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $notes = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    protected $hours;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $hours;
 
-    /**
-     * @return WorkDay
-     */
-    public function getTrackedWorkDay()
+    public function __construct()
+    {
+        $this->hours = 0;
+    }
+
+
+    public function getTrackedWorkDay(): ?TrackedWorkDay
     {
         return $this->trackedWorkDay;
     }
 
-    /**
-     * @param TrackedWorkDay $trackedWorkDay
-     * @return ActivityTracking
-     */
-    public function setTrackedWorkDay($trackedWorkDay)
+    public function setTrackedWorkDay(TrackedWorkDay $trackedWorkDay): static
     {
         $this->trackedWorkDay = $trackedWorkDay;
         return $this;
     }
 
-    /**
-     * @return Activity
-     */
-    public function getActivity()
+    public function getActivity(): ?Activity
     {
         return $this->activity;
     }
 
-    /**
-     * @param Activity $activity
-     * @return ActivityTracking
-     */
-    public function setActivity($activity)
+    public function setActivity(Activity $activity): static
     {
         $this->activity = $activity;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getNotes()
+    public function getNotes(): ?string
     {
         return $this->notes;
     }
 
-    /**
-     * @param string $notes
-     * @return ActivityTracking
-     */
-    public function setNotes($notes)
+    public function setNotes(?string $notes): static
     {
         $this->notes = $notes;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getHours()
+    public function getHours(): ?int
     {
         return $this->hours;
     }
 
-    /**
-     * @param int $hours
-     * @return ActivityTracking
-     */
-    public function setHours($hours)
+    public function setHours(int $hours): static
     {
         $this->hours = $hours;
         return $this;

@@ -18,282 +18,183 @@
 
 namespace App\Entity;
 
+use App\Repository\CompanyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\CompanyRepository")
- * @ORM\Table(name="company")
- */
-class Company
+#[ORM\Entity(repositoryClass: CompanyRepository::class)]
+#[ORM\Table(name: 'company')]
+class Company implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $name;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="string", unique=true)
-     * @var string
-     */
-    private $code;
+    #[ORM\Column(type: Types::STRING, unique: true)]
+    private ?string $code = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $address;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $address = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $city;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $city = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $zipCode;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $zipCode = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $phoneNumber;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $phoneNumber = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $faxNumber;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $faxNumber = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @Assert\Email
-     * @var string
-     */
-    private $emailAddress;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Assert\Email]
+    private ?string $emailAddress = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $webSite;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $webSite = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Person")
-     * @ORM\JoinColumn(nullable=true)
-     * @var Person
-     */
-    private $manager;
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Person $manager = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Workcenter", mappedBy="company")
-     * @ORM\OrderBy({"name": "ASC"})
-     * @var Workcenter[]
-     */
-    private $workcenters;
+    #[ORM\OneToMany(targetEntity: Workcenter::class, mappedBy: 'company')]
+    #[ORM\OrderBy(['name' => 'ASC'])]
+    private Collection $workcenters;
 
     public function __construct()
     {
         $this->workcenters = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName();
     }
 
-    public function getFullName()
+    public function getFullName(): string
     {
         return $this->getCode() . ' - ' . $this->getName();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * @param string $code
-     */
-    public function setCode($code)
+    public function setCode(?string $code): void
     {
         $this->code = $code;
     }
 
-    /**
-     * @return string
-     */
-    public function getAddress()
+    public function getAddress(): ?string
     {
         return $this->address;
     }
 
-    /**
-     * @param string $address
-     */
-    public function setAddress($address)
+    public function setAddress(?string $address): void
     {
         $this->address = $address;
     }
 
-    /**
-     * @return string
-     */
-    public function getCity()
+    public function getCity(): ?string
     {
         return $this->city;
     }
 
-    /**
-     * @param string $city
-     */
-    public function setCity($city)
+    public function setCity(?string $city): void
     {
         $this->city = $city;
     }
 
-    /**
-     * @return string
-     */
-    public function getZipCode()
+    public function getZipCode(): ?string
     {
         return $this->zipCode;
     }
 
-    /**
-     * @param string $zipCode
-     */
-    public function setZipCode($zipCode)
+    public function setZipCode(?string $zipCode): void
     {
         $this->zipCode = $zipCode;
     }
 
-    /**
-     * @return string
-     */
-    public function getPhoneNumber()
+    public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
     }
 
-    /**
-     * @param string $phoneNumber
-     */
-    public function setPhoneNumber($phoneNumber)
+    public function setPhoneNumber(?string $phoneNumber): void
     {
         $this->phoneNumber = $phoneNumber;
     }
 
-    /**
-     * @return string
-     */
-    public function getFaxNumber()
+    public function getFaxNumber(): ?string
     {
         return $this->faxNumber;
     }
 
-    /**
-     * @param string $faxNumber
-     */
-    public function setFaxNumber($faxNumber)
+    public function setFaxNumber(?string $faxNumber): void
     {
         $this->faxNumber = $faxNumber;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAddress()
+    public function getEmailAddress(): ?string
     {
         return $this->emailAddress;
     }
 
-    /**
-     * @param string $emailAddress
-     */
-    public function setEmailAddress($emailAddress)
+    public function setEmailAddress(?string $emailAddress): void
     {
         $this->emailAddress = $emailAddress;
     }
 
-    /**
-     * @return string
-     */
-    public function getWebSite()
+    public function getWebSite(): ?string
     {
         return $this->webSite;
     }
 
-    /**
-     * @param string $webSite
-     */
-    public function setWebSite($webSite)
+    public function setWebSite(?string $webSite): void
     {
         $this->webSite = $webSite;
     }
 
-    /**
-     * @return Person|null
-     */
-    public function getManager()
+    public function getManager(): ?Person
     {
         return $this->manager;
     }
 
-    /**
-     * @param Person|null $manager
-     * @return Company
-     */
-    public function setManager(Person $manager = null)
+    public function setManager(Person $manager = null): static
     {
         $this->manager = $manager;
         return $this;
     }
 
     /**
-     * @return Workcenter[]
+     * @return Collection<int, Workcenter>
      */
-    public function getWorkcenters()
+    public function getWorkcenters(): Collection
     {
         return $this->workcenters;
     }

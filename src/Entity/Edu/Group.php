@@ -18,68 +18,45 @@
 
 namespace App\Entity\Edu;
 
-use App\Entity\Person;
+use App\Repository\Edu\GroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Edu\GroupRepository")
- * @ORM\Table(name="edu_group")
- */
-class Group
+#[ORM\Entity(repositoryClass: GroupRepository::class)]
+#[ORM\Table(name: 'edu_group')]
+class Group implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Grade", inversedBy="groups")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Grade
-     */
-    private $grade;
+    #[ORM\ManyToOne(targetEntity: Grade::class, inversedBy: 'groups')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Grade $grade = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $internalCode;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $internalCode = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $name;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Teaching", mappedBy="group")
-     * @var Teaching[]
-     */
-    private $teachings;
+    #[ORM\OneToMany(targetEntity: Teaching::class, mappedBy: 'group')]
+    private Collection $teachings;
 
-    /**
-     * @ORM\OneToMany(targetEntity="StudentEnrollment", mappedBy="group")
-     * @var StudentEnrollment[]
-     */
-    private $enrollments;
+    #[ORM\OneToMany(targetEntity: StudentEnrollment::class, mappedBy: 'group')]
+    private Collection $enrollments;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Teacher")
-     * @ORM\JoinTable(name="edu_group_tutor")
-     * @var Teacher[]
-     */
-    private $tutors;
+    #[ORM\ManyToMany(targetEntity: Teacher::class)]
+    #[ORM\JoinTable(name: 'edu_group_tutor')]
+    private Collection $tutors;
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName();
     }
-
 
     public function __construct()
     {
@@ -88,105 +65,74 @@ class Group
         $this->tutors = new ArrayCollection();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Grade
-     */
-    public function getGrade()
+    public function getGrade(): ?Grade
     {
         return $this->grade;
     }
 
-    /**
-     * @param Grade $grade
-     * @return Group
-     */
-    public function setGrade(Grade $grade)
+    public function setGrade(Grade $grade): static
     {
         $this->grade = $grade;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getInternalCode()
+    public function getInternalCode(): ?string
     {
         return $this->internalCode;
     }
 
-    /**
-     * @param string $internalCode
-     * @return Group
-     */
-    public function setInternalCode($internalCode)
+    public function setInternalCode(?string $internalCode): static
     {
         $this->internalCode = $internalCode;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Group
-     */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
     }
 
     /**
-     * @return Teaching[]
+     * @return Collection<int, Teaching>
      */
-    public function getTeachings()
+    public function getTeachings(): Collection
     {
         return $this->teachings;
     }
 
     /**
-     * @return StudentEnrollment[]
+     * @return Collection<int, StudentEnrollment>
      */
-    public function getEnrollments()
+    public function getEnrollments(): Collection
     {
         return $this->enrollments;
     }
 
     /**
-     * @return Teacher[]|Collection
+     * @return Collection<int, Teacher>
      */
-    public function getTutors()
+    public function getTutors(): Collection
     {
         return $this->tutors;
     }
 
-    /**
-     * @param Teacher[] $tutors
-     * @return Group
-     */
-    public function setTutors($tutors)
+    public function setTutors(Collection $tutors): static
     {
         $this->tutors = $tutors;
         return $this;
     }
 
-    /**
-     * @return Person[]
-     */
     public function getStudents()
     {
         $students = [];

@@ -18,55 +18,38 @@
 
 namespace App\Entity\Edu;
 
+use App\Repository\Edu\GradeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Edu\GradeRepository")
- * @ORM\Table(name="edu_grade")
- */
-class Grade
+#[ORM\Entity(repositoryClass: GradeRepository::class)]
+#[ORM\Table(name: 'edu_grade')]
+class Grade implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Training", inversedBy="grades")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Training
-     */
-    private $training;
+    #[ORM\ManyToOne(targetEntity: Training::class, inversedBy: 'grades')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Training $training = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $internalCode;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $internalCode = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $name;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Group", mappedBy="grade")
-     * @ORM\OrderBy({"name": "ASC"})
-     * @var Group[]
-     */
-    private $groups;
+    #[ORM\OneToMany(targetEntity: Group::class, mappedBy: 'grade')]
+    #[ORM\OrderBy(['name' => 'ASC'])]
+    private Collection $groups;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Subject", mappedBy="grade")
-     * @ORM\OrderBy({"name": "ASC"})
-     * @var Subject[]
-     */
-    private $subjects;
+    #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: 'grade')]
+    #[ORM\OrderBy(['name' => 'ASC'])]
+    private Collection $subjects;
 
     public function __construct()
     {
@@ -74,85 +57,61 @@ class Grade
         $this->subjects = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Training
-     */
-    public function getTraining()
+    public function getTraining(): ?Training
     {
         return $this->training;
     }
 
-    /**
-     * @param Training $training
-     * @return Grade
-     */
-    public function setTraining(Training $training)
+    public function setTraining(Training $training): static
     {
         $this->training = $training;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getInternalCode()
+    public function getInternalCode(): ?string
     {
         return $this->internalCode;
     }
 
-    /**
-     * @param string $internalCode
-     * @return Grade
-     */
-    public function setInternalCode($internalCode)
+    public function setInternalCode(?string $internalCode): static
     {
         $this->internalCode = $internalCode;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Grade
-     */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
     }
 
     /**
-     * @return Group[]
+     * @return Collection<int, Group>
      */
-    public function getGroups()
+    public function getGroups(): Collection
     {
         return $this->groups;
     }
 
     /**
-     * @return Subject[]
+     * @return Collection<int, Subject>
      */
-    public function getSubjects()
+    public function getSubjects(): Collection
     {
         return $this->subjects;
     }

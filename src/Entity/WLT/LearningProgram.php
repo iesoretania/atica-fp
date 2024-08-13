@@ -19,115 +19,81 @@
 namespace App\Entity\WLT;
 
 use App\Entity\Company;
+use App\Repository\WLT\LearningProgramRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WLT\LearningProgramRepository")
- * @ORM\Table(name="wlt_learning_program"),
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"company_id", "project_id"})}))))
- * @UniqueEntity(fields={"company", "project"}, message="company_program.company_training.unique")
- */
-class LearningProgram
+#[ORM\Entity(repositoryClass: LearningProgramRepository::class)]
+#[ORM\Table(name: 'wlt_learning_program')]
+class LearningProgram implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Company")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Company
-     */
-    private $company;
+    #[ORM\ManyToOne(targetEntity: Company::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Company $company = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Project")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Project
-     */
-    private $project;
+    #[ORM\ManyToOne(targetEntity: Project::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Project $project = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="ActivityRealization")
-     * @ORM\JoinTable("wlt_learning_program_activity_realization")
-     * @var ActivityRealization[]
-     */
-    private $activityRealizations;
+    #[ORM\ManyToMany(targetEntity: ActivityRealization::class)]
+    #[ORM\JoinTable('wlt_learning_program_activity_realization')]
+    private Collection $activityRealizations;
 
     public function __construct()
     {
         $this->activityRealizations = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->getCompany() . ' - ' . $this->getProject();
+        return ($this->getCompany() === null || $this->getProject() === null)
+            ? ''
+            : $this->getCompany()->__toString() . ' - ' . $this->getProject()->__toString();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Company
-     */
-    public function getCompany()
+    public function getCompany(): ?Company
     {
         return $this->company;
     }
 
-    /**
-     * @param Company $company
-     * @return LearningProgram
-     */
-    public function setCompany(Company $company)
+    public function setCompany(Company $company): static
     {
         $this->company = $company;
         return $this;
     }
 
-    /**
-     * @return Project
-     */
-    public function getProject()
+    public function getProject(): ?Project
     {
         return $this->project;
     }
 
-    /**
-     * @param Project $project
-     * @return LearningProgram
-     */
-    public function setProject(Project $project)
+    public function setProject(Project $project): static
     {
         $this->project = $project;
         return $this;
     }
 
     /**
-     * @return ActivityRealization[]|Collection
+     * @return Collection<int, ActivityRealization>
      */
-    public function getActivityRealizations()
+    public function getActivityRealizations(): Collection
     {
         return $this->activityRealizations;
     }
 
-    /**
-     * @param ActivityRealization[] $activityRealizations
-     * @return LearningProgram
-     */
-    public function setActivityRealizations($activityRealizations)
+    public function setActivityRealizations(Collection $activityRealizations): static
     {
         $this->activityRealizations = $activityRealizations;
         return $this;

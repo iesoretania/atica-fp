@@ -18,129 +18,81 @@
 
 namespace App\Entity\Edu;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="edu_department")
- */
-class Department
+#[ORM\Entity]
+#[ORM\Table(name: 'edu_department')]
+class Department implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $name;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $internalCode;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $internalCode = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="AcademicYear")
-     * @ORM\JoinColumn(nullable=false)
-     * @var AcademicYear
-     */
-    private $academicYear;
+    #[ORM\ManyToOne(targetEntity: AcademicYear::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?AcademicYear $academicYear = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Teacher")
-     * @ORM\JoinColumn(nullable=true)
-     * @var Teacher
-     */
-    private $head;
+    #[ORM\ManyToOne(targetEntity: Teacher::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Teacher $head = null;
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName();
     }
 
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Department
-     */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getInternalCode()
+    public function getInternalCode(): ?string
     {
         return $this->internalCode;
     }
 
-    /**
-     * @param string $internalCode
-     * @return Department
-     */
-    public function setInternalCode($internalCode)
+    public function setInternalCode(?string $internalCode): static
     {
         $this->internalCode = $internalCode;
         return $this;
     }
 
-    /**
-     * @return ?Teacher
-     */
-    public function getHead()
+    public function getHead(): ?Teacher
     {
         return $this->head;
     }
 
-    /**
-     * @param Teacher $head
-     * @return Department
-     */
-    public function setHead(Teacher $head = null)
+    public function setHead(?Teacher $head = null): static
     {
         $this->head = $head;
         return $this;
     }
 
-    /**
-     * @return AcademicYear
-     */
-    public function getAcademicYear()
+    public function getAcademicYear(): ?AcademicYear
     {
         return $this->academicYear;
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @return Department
-     */
-    public function setAcademicYear(AcademicYear $academicYear)
+    public function setAcademicYear(AcademicYear $academicYear): static
     {
         $this->academicYear = $academicYear;
         return $this;

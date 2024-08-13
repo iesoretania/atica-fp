@@ -18,106 +18,67 @@
 
 namespace App\Entity;
 
+use App\Repository\AnsweredSurveyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\AnsweredSurveyRepository")
- * @ORM\Table(name="answered_survey")
- */
+#[ORM\Entity(repositoryClass: AnsweredSurveyRepository::class)]
+#[ORM\Table(name: 'answered_survey')]
 class AnsweredSurvey
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Survey", inversedBy="answers")
-     * @var Survey
-     */
-    private $survey;
+    #[ORM\ManyToOne(targetEntity: Survey::class, inversedBy: 'answers')]
+    private ?Survey $survey = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @var \DateTime
-     */
-    private $timestamp;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $timestamp = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="AnsweredSurveyQuestion", mappedBy="answeredSurvey")
-     * @var AnsweredSurveyQuestion[]|Collection
-     */
-    private $answers;
+    #[ORM\OneToMany(targetEntity: AnsweredSurveyQuestion::class, mappedBy: 'answeredSurvey')]
+    private Collection $answers;
 
     public function __construct()
     {
         $this->answers = new ArrayCollection();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Survey
-     */
-    public function getSurvey()
+    public function getSurvey(): ?Survey
     {
         return $this->survey;
     }
 
-    /**
-     * @param Survey $survey
-     * @return AnsweredSurvey
-     */
-    public function setSurvey(Survey $survey)
+    public function setSurvey(Survey $survey): static
     {
         $this->survey = $survey;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getTimestamp()
+    public function getTimestamp(): ?\DateTimeInterface
     {
         return $this->timestamp;
     }
 
-    /**
-     * @param \DateTime $timestamp
-     * @return AnsweredSurvey
-     */
-    public function setTimestamp(\DateTimeInterface $timestamp)
+    public function setTimestamp(\DateTimeInterface $timestamp): static
     {
         $this->timestamp = $timestamp;
         return $this;
     }
 
     /**
-     * @return AnsweredSurveyQuestion[]|Collection
+     * @return Collection<int, AnsweredSurveyQuestion>
      */
-    public function getAnswers()
+    public function getAnswers(): Collection
     {
         return $this->answers;
-    }
-
-    /**
-     * @param AnsweredSurveyQuestion[]|Collection $answers
-     * @return AnsweredSurvey
-     */
-    public function setAnswers($answers)
-    {
-        $this->answers = $answers;
-        return $this;
     }
 }

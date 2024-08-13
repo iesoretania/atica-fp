@@ -18,302 +18,182 @@
 
 namespace App\Entity\WPT;
 
+use App\Repository\WPT\ReportRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WPT\ReportRepository")
- * @ORM\Table(name="wpt_report")
- */
+#[ORM\Entity(repositoryClass: ReportRepository::class)]
+#[ORM\Table(name: 'wpt_report')]
 class Report
 {
     public const GRADE_NEGATIVE = 0;
     public const GRADE_POSITIVE = 1;
     public const GRADE_EXCELLENT = 2;
 
-    /**
-     * @ORM\Id
-     * @ORM\OneToOne(targetEntity="AgreementEnrollment", inversedBy="report")
-     * @var AgreementEnrollment
-     */
-    protected $agreementEnrollment;
+    #[ORM\Id]
+    #[ORM\OneToOne(targetEntity: AgreementEnrollment::class, inversedBy: 'report')]
+    private ?AgreementEnrollment $agreementEnrollment = null;
 
-    /**
-     * @ORM\Column(type="text")
-     * @var string
-     */
-    protected $workActivities;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $workActivities = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    protected $professionalCompetence;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $professionalCompetence = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    protected $organizationalCompetence;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $organizationalCompetence = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    protected $relationalCompetence;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $relationalCompetence = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    protected $contingencyResponse;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $contingencyResponse = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    protected $otherDescription1;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $otherDescription1 = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @var int
-     */
-    protected $other1;
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $other1 = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    protected $otherDescription2;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $otherDescription2 = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @var int
-     */
-    protected $other2;
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $other2 = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    protected $proposedChanges;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $proposedChanges = null;
 
-    /**
-     * @ORM\Column(type="date")
-     * @var \DateTime
-     */
-    protected $signDate;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $signDate = null;
 
-    /**
-     * @return AgreementEnrollment
-     */
-    public function getAgreementEnrollment()
+    public function getAgreementEnrollment(): ?AgreementEnrollment
     {
         return $this->agreementEnrollment;
     }
 
-    /**
-     * @param AgreementEnrollment $agreementEnrollment
-     * @return Report
-     */
-    public function setAgreementEnrollment($agreementEnrollment)
+    public function setAgreementEnrollment(AgreementEnrollment $agreementEnrollment): static
     {
         $this->agreementEnrollment = $agreementEnrollment;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getWorkActivities()
+    public function getWorkActivities(): ?string
     {
         return $this->workActivities;
     }
 
-    /**
-     * @param string $workActivities
-     * @return Report
-     */
-    public function setWorkActivities($workActivities)
+    public function setWorkActivities(?string $workActivities): static
     {
         $this->workActivities = $workActivities;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getProfessionalCompetence()
+    public function getProfessionalCompetence(): ?int
     {
         return $this->professionalCompetence;
     }
 
-    /**
-     * @param int $professionalCompetence
-     * @return Report
-     */
-    public function setProfessionalCompetence($professionalCompetence)
+    public function setProfessionalCompetence(?int $professionalCompetence): static
     {
         $this->professionalCompetence = $professionalCompetence;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getOrganizationalCompetence()
+    public function getOrganizationalCompetence(): ?int
     {
         return $this->organizationalCompetence;
     }
 
-    /**
-     * @param int $organizationalCompetence
-     * @return Report
-     */
-    public function setOrganizationalCompetence($organizationalCompetence)
+    public function setOrganizationalCompetence(?int $organizationalCompetence): static
     {
         $this->organizationalCompetence = $organizationalCompetence;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getRelationalCompetence()
+    public function getRelationalCompetence(): ?int
     {
         return $this->relationalCompetence;
     }
 
-    /**
-     * @param int $relationalCompetence
-     * @return Report
-     */
-    public function setRelationalCompetence($relationalCompetence)
+    public function setRelationalCompetence(?int $relationalCompetence): static
     {
         $this->relationalCompetence = $relationalCompetence;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getContingencyResponse()
+    public function getContingencyResponse(): ?int
     {
         return $this->contingencyResponse;
     }
 
-    /**
-     * @param int $contingencyResponse
-     * @return Report
-     */
-    public function setContingencyResponse($contingencyResponse)
+    public function setContingencyResponse(?int $contingencyResponse): static
     {
         $this->contingencyResponse = $contingencyResponse;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getOtherDescription1()
+    public function getOtherDescription1(): ?string
     {
         return $this->otherDescription1;
     }
 
-    /**
-     * @param string $otherDescription1
-     * @return Report
-     */
-    public function setOtherDescription1($otherDescription1)
+    public function setOtherDescription1(?string $otherDescription1): static
     {
         $this->otherDescription1 = $otherDescription1;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getOther1()
+    public function getOther1(): ?int
     {
         return $this->other1;
     }
 
-    /**
-     * @param int $other1
-     * @return Report
-     */
-    public function setOther1($other1)
+    public function setOther1(?int $other1): static
     {
         $this->other1 = $other1;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getOtherDescription2()
+    public function getOtherDescription2(): ?string
     {
         return $this->otherDescription2;
     }
 
-    /**
-     * @param string $otherDescription2
-     * @return Report
-     */
-    public function setOtherDescription2($otherDescription2)
+    public function setOtherDescription2(?string $otherDescription2): static
     {
         $this->otherDescription2 = $otherDescription2;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getOther2()
+    public function getOther2(): ?int
     {
         return $this->other2;
     }
 
-    /**
-     * @param int $other2
-     * @return Report
-     */
-    public function setOther2($other2)
+    public function setOther2(?int $other2): static
     {
         $this->other2 = $other2;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getProposedChanges()
+    public function getProposedChanges(): ?string
     {
         return $this->proposedChanges;
     }
 
-    /**
-     * @param string $proposedChanges
-     * @return Report
-     */
-    public function setProposedChanges($proposedChanges)
+    public function setProposedChanges(?string $proposedChanges): static
     {
         $this->proposedChanges = $proposedChanges;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getSignDate()
+    public function getSignDate(): ?\DateTimeInterface
     {
         return $this->signDate;
     }
 
-    /**
-     * @param \DateTime $signDate
-     * @return Report
-     */
-    public function setSignDate(\DateTimeInterface $signDate)
+    public function setSignDate(\DateTimeInterface $signDate): static
     {
         $this->signDate = $signDate;
         return $this;

@@ -22,320 +22,201 @@ use App\Entity\AnsweredSurvey;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\Person;
+use App\Repository\WPT\AgreementEnrollmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WPT\AgreementEnrollmentRepository")
- * @ORM\Table(name="wpt_agreement_enrollment",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"agreement_id", "student_enrollment_id"})}))))
- * @UniqueEntity(fields={"agreement", "studentEnrollment"}, message="agreement.student_agreement.unique")
- */
-class AgreementEnrollment
+#[ORM\Entity(repositoryClass: AgreementEnrollmentRepository::class)]
+#[ORM\Table(name: 'wpt_agreement_enrollment')]
+#[ORM\UniqueConstraint(columns: ['agreement_id', 'student_enrollment_id'])]
+class AgreementEnrollment implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Agreement", inversedBy="agreementEnrollments")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Agreement
-     */
-    private $agreement;
+    #[ORM\ManyToOne(targetEntity: Agreement::class, inversedBy: 'agreementEnrollments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Agreement $agreement = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\StudentEnrollment")
-     * @ORM\JoinColumn(nullable=false)
-     * @var StudentEnrollment
-     */
-    private $studentEnrollment;
+    #[ORM\ManyToOne(targetEntity: StudentEnrollment::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?StudentEnrollment $studentEnrollment = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Person
-     */
-    private $workTutor;
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Person $workTutor = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person")
-     * @ORM\JoinColumn(nullable=true)
-     * @var Person
-     */
-    private $additionalWorkTutor;
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Person $additionalWorkTutor = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Teacher
-     */
-    private $educationalTutor;
+    #[ORM\ManyToOne(targetEntity: Teacher::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Teacher $educationalTutor = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher")
-     * @ORM\JoinColumn(nullable=true)
-     * @var Teacher
-     */
-    private $additionalEducationalTutor;
+    #[ORM\ManyToOne(targetEntity: Teacher::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Teacher $additionalEducationalTutor = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AnsweredSurvey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var AnsweredSurvey
-     */
-    private $studentSurvey;
+    #[ORM\ManyToOne(targetEntity: AnsweredSurvey::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?AnsweredSurvey $studentSurvey = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AnsweredSurvey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var AnsweredSurvey
-     */
-    private $companySurvey;
+    #[ORM\ManyToOne(targetEntity: AnsweredSurvey::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?AnsweredSurvey $companySurvey = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity="Report", mappedBy="agreementEnrollment")
-     * @var Report
-     */
-    private $report;
+    #[ORM\OneToOne(targetEntity: Report::class, mappedBy: 'agreementEnrollment')]
+    private ?Report $report = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Activity")
-     * @ORM\JoinTable(name="wpt_agreement_activity")
-     * @ORM\OrderBy({"code"="ASC", "description"="ASC"})
-     * @var Activity[]|Collection
-     */
-    private $activities;
+    #[ORM\ManyToMany(targetEntity: Activity::class)]
+    #[ORM\JoinTable(name: 'wpt_agreement_activity')]
+    #[ORM\OrderBy(['code' => 'ASC', 'description' => 'ASC'])]
+    private Collection $activities;
 
-    /**
-     * @ORM\OneToMany(targetEntity="TrackedWorkDay", mappedBy="agreementEnrollment")
-     * @var TrackedWorkDay[]|Collection
-     */
-    private $trackedWorkDays;
+    #[ORM\OneToMany(targetEntity: TrackedWorkDay::class, mappedBy: 'agreementEnrollment')]
+    private Collection $trackedWorkDays;
 
-    /**
-     * AgreementEnrollment constructor.
-     */
     public function __construct()
     {
         $this->activities = new ArrayCollection();
         $this->trackedWorkDays = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->getAgreement() . ' - ' . $this->getStudentEnrollment();
+        return ($this->getAgreement() === null || $this->getStudentEnrollment() === null)
+            ? ''
+            : $this->getAgreement()->__toString() . ' - ' . $this->getStudentEnrollment()->__toString();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Agreement
-     */
-    public function getAgreement()
+    public function getAgreement(): ?Agreement
     {
         return $this->agreement;
     }
 
-    /**
-     * @param Agreement $agreement
-     * @return AgreementEnrollment
-     */
-    public function setAgreement($agreement)
+    public function setAgreement(Agreement $agreement): static
     {
         $this->agreement = $agreement;
         return $this;
     }
 
-    /**
-     * @return StudentEnrollment
-     */
-    public function getStudentEnrollment()
+    public function getStudentEnrollment(): ?StudentEnrollment
     {
         return $this->studentEnrollment;
     }
 
-    /**
-     * @param StudentEnrollment $studentEnrollment
-     * @return AgreementEnrollment
-     */
-    public function setStudentEnrollment($studentEnrollment)
+    public function setStudentEnrollment(StudentEnrollment $studentEnrollment): static
     {
         $this->studentEnrollment = $studentEnrollment;
         return $this;
     }
 
-    /**
-     * @return Person
-     */
-    public function getWorkTutor()
+    public function getWorkTutor(): ?Person
     {
         return $this->workTutor;
     }
 
-    /**
-     * @param Person $workTutor
-     * @return AgreementEnrollment
-     */
-    public function setWorkTutor($workTutor)
+    public function setWorkTutor(Person $workTutor): static
     {
         $this->workTutor = $workTutor;
         return $this;
     }
 
-    /**
-     * @return Person
-     */
-    public function getAdditionalWorkTutor()
+    public function getAdditionalWorkTutor(): ?Person
     {
         return $this->additionalWorkTutor;
     }
 
-    /**
-     * @param Person $workTutor
-     * @return AgreementEnrollment
-     */
-    public function setAdditionalWorkTutor($workTutor)
+    public function setAdditionalWorkTutor(?Person $workTutor): static
     {
         $this->additionalWorkTutor = $workTutor;
         return $this;
     }
 
-    /**
-     * @return Teacher
-     */
-    public function getEducationalTutor()
+    public function getEducationalTutor(): ?Teacher
     {
         return $this->educationalTutor;
     }
 
-    /**
-     * @param Teacher $educationalTutor
-     * @return AgreementEnrollment
-     */
-    public function setEducationalTutor($educationalTutor)
+    public function setEducationalTutor(Teacher $educationalTutor): static
     {
         $this->educationalTutor = $educationalTutor;
         return $this;
     }
 
-    /**
-     * @return ?Teacher
-     */
-    public function getAdditionalEducationalTutor()
+    public function getAdditionalEducationalTutor(): ?Teacher
     {
         return $this->additionalEducationalTutor;
     }
 
-    /**
-     * @param Teacher $educationalTutor
-     * @return AgreementEnrollment
-     */
-    public function setAdditionalEducationalTutor($educationalTutor)
+    public function setAdditionalEducationalTutor(?Teacher $educationalTutor): static
     {
         $this->additionalEducationalTutor = $educationalTutor;
         return $this;
     }
 
-    /**
-     * @return AnsweredSurvey
-     */
-    public function getStudentSurvey()
+    public function getStudentSurvey(): ?AnsweredSurvey
     {
         return $this->studentSurvey;
     }
 
-    /**
-     * @param AnsweredSurvey $studentSurvey
-     * @return AgreementEnrollment
-     */
-    public function setStudentSurvey($studentSurvey)
+    public function setStudentSurvey(?AnsweredSurvey $studentSurvey): static
     {
         $this->studentSurvey = $studentSurvey;
         return $this;
     }
 
-    /**
-     * @return AnsweredSurvey
-     */
-    public function getCompanySurvey()
+    public function getCompanySurvey(): ?AnsweredSurvey
     {
         return $this->companySurvey;
     }
 
-    /**
-     * @param AnsweredSurvey $companySurvey
-     * @return AgreementEnrollment
-     */
-    public function setCompanySurvey($companySurvey)
+    public function setCompanySurvey(?AnsweredSurvey $companySurvey): static
     {
         $this->companySurvey = $companySurvey;
         return $this;
     }
 
-    /**
-     * @return Report
-     */
-    public function getReport()
+    public function getReport(): ?Report
     {
         return $this->report;
     }
 
-    /**
-     * @param Report $report
-     * @return AgreementEnrollment
-     */
-    public function setReport($report)
+    public function setReport(?Report $report): static
     {
         $this->report = $report;
         return $this;
     }
 
     /**
-     * @return Activity[]|Collection
+     * @return Collection<int, Activity>
      */
-    public function getActivities()
+    public function getActivities(): Collection
     {
         return $this->activities;
     }
 
-    /**
-     * @param Activity[]|Collection $activities
-     * @return AgreementEnrollment
-     */
-    public function setActivities($activities)
+    public function setActivities(Collection $activities): static
     {
         $this->activities = $activities;
         return $this;
     }
 
     /**
-     * @return TrackedWorkDay[]|Collection
+     * @return Collection<int, TrackedWorkDay>
      */
-    public function getTrackedWorkDays()
+    public function getTrackedWorkDays(): Collection
     {
         return $this->trackedWorkDays;
-    }
-
-    /**
-     * @param TrackedWorkDay[]|Collection $trackedWorkDays
-     * @return AgreementEnrollment
-     */
-    public function setTrackedWorkDays($trackedWorkDays)
-    {
-        $this->trackedWorkDays = $trackedWorkDays;
-        return $this;
     }
 }

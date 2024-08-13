@@ -18,110 +18,71 @@
 
 namespace App\Entity\Edu;
 
+use App\Repository\Edu\ContactMethodRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Edu\ContactMethodRepository")
- * @ORM\Table(name="edu_contact_method"),
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"academic_year_id", "description"})}))))
- * @UniqueEntity(fields={"academicYear", "description"}, message="contact_method.unique")
- */
-class ContactMethod
+#[ORM\Entity(repositoryClass: ContactMethodRepository::class)]
+#[ORM\Table(name: 'edu_contact_method')]
+class ContactMethod implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\AcademicYear")
-     * @ORM\JoinColumn(nullable=false)
-     * @var ?AcademicYear
-     */
-    private $academicYear;
+    #[ORM\ManyToOne(targetEntity: AcademicYear::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?AcademicYear $academicYear = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var ?string
-     */
-    private $description;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $enabled;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $enabled;
 
     public function __construct()
     {
         $this->enabled = true;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->description ?? '';
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return AcademicYear
-     */
-    public function getAcademicYear()
+    public function getAcademicYear(): ?AcademicYear
     {
         return $this->academicYear;
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @return self
-     */
-    public function setAcademicYear(AcademicYear $academicYear)
+    public function setAcademicYear(AcademicYear $academicYear): static
     {
         $this->academicYear = $academicYear;
         return $this;
     }
 
-    /**
-     * @return ?string
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return self
-     */
     public function setDescription(string $description): self
     {
         $this->description = $description;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function getEnabled(): bool
+    public function getEnabled(): ?bool
     {
         return $this->enabled;
     }
 
-    /**
-     * @param bool $enabled
-     * @return self
-     */
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;

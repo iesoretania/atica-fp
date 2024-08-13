@@ -19,225 +19,139 @@
 namespace App\Entity\Edu;
 
 use App\Entity\Organization;
+use App\Repository\Edu\AcademicYearRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Edu\AcademicYearRepository")
- * @ORM\Table(name="edu_academic_year")
- */
-class AcademicYear
+#[ORM\Entity(repositoryClass: AcademicYearRepository::class)]
+#[ORM\Table(name: 'edu_academic_year')]
+class AcademicYear implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Organization")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Organization
-     */
-    private $organization;
+    #[ORM\ManyToOne(targetEntity: Organization::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Organization $organization = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $description;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Teacher")
-     * @ORM\JoinColumn(nullable=true)
-     * @var Teacher
-     */
-    private $principal;
+    #[ORM\ManyToOne(targetEntity: Teacher::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Teacher $principal = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Teacher")
-     * @ORM\JoinColumn(nullable=true)
-     * @var Teacher
-     */
-    private $financialManager;
+    #[ORM\ManyToOne(targetEntity: Teacher::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Teacher $financialManager = null;
 
-    /**
-     * @ORM\Column(type="date")
-     * @var \DateTime
-     */
-    private $startDate;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $startDate = null;
 
-    /**
-     * @ORM\Column(type="date")
-     * @var \DateTime
-     */
-    private $endDate;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $endDate = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\ReportTemplate")
-     * @var ReportTemplate
-     */
-    private $defaultPortraitTemplate;
+    #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
+    private ?ReportTemplate $defaultPortraitTemplate = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\ReportTemplate")
-     * @var ReportTemplate
-     */
-    private $defaultLandscapeTemplate;
+    #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
+    private ?ReportTemplate $defaultLandscapeTemplate = null;
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getDescription();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Organization
-     */
-    public function getOrganization()
+    public function getOrganization(): ?Organization
     {
         return $this->organization;
     }
 
-    /**
-     * @param Organization $organization
-     * @return AcademicYear
-     */
-    public function setOrganization(Organization $organization)
+    public function setOrganization(Organization $organization): static
     {
         $this->organization = $organization;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return AcademicYear
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): static
     {
         $this->description = $description;
         return $this;
     }
 
-    /**
-     * @return Teacher|null
-     */
-    public function getPrincipal()
+    public function getPrincipal(): ?Teacher
     {
         return $this->principal;
     }
 
-    /**
-     * @param Teacher|null $principal
-     * @return AcademicYear
-     */
-    public function setPrincipal(Teacher $principal = null)
+    public function setPrincipal(?Teacher $principal): static
     {
         $this->principal = $principal;
         return $this;
     }
 
-    /**
-     * @return Teacher|null
-     */
-    public function getFinancialManager()
+    public function getFinancialManager(): ?Teacher
     {
         return $this->financialManager;
     }
 
-    /**
-     * @param Teacher|null $financialManager
-     * @return AcademicYear
-     */
-    public function setFinancialManager(Teacher $financialManager = null)
+    public function setFinancialManager(?Teacher $financialManager): static
     {
         $this->financialManager = $financialManager;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getStartDate()
+    public function getStartDate(): ?\DateTimeInterface
     {
         return $this->startDate;
     }
 
-    /**
-     * @param \DateTime $startDate
-     * @return AcademicYear
-     */
-    public function setStartDate(\DateTimeInterface $startDate)
+    public function setStartDate(\DateTimeInterface $startDate): static
     {
         $this->startDate = $startDate;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getEndDate()
+    public function getEndDate(): ?\DateTimeInterface
     {
         return $this->endDate;
     }
 
-    /**
-     * @param \DateTime $endDate
-     * @return AcademicYear
-     */
-    public function setEndDate(\DateTimeInterface $endDate)
+    public function setEndDate(\DateTimeInterface $endDate): static
     {
         $this->endDate = $endDate;
         return $this;
     }
 
-    /**
-     * @return ReportTemplate
-     */
-    public function getDefaultPortraitTemplate()
+    public function getDefaultPortraitTemplate(): ?ReportTemplate
     {
         return $this->defaultPortraitTemplate;
     }
 
-    /**
-     * @param ReportTemplate $defaultPortraitTemplate
-     * @return AcademicYear
-     */
-    public function setDefaultPortraitTemplate($defaultPortraitTemplate)
+    public function setDefaultPortraitTemplate(?ReportTemplate $defaultPortraitTemplate): static
     {
         $this->defaultPortraitTemplate = $defaultPortraitTemplate;
         return $this;
     }
 
-    /**
-     * @return ReportTemplate
-     */
-    public function getDefaultLandscapeTemplate()
+    public function getDefaultLandscapeTemplate(): ?ReportTemplate
     {
         return $this->defaultLandscapeTemplate;
     }
 
-    /**
-     * @param ReportTemplate $defaultLandscapeTemplate
-     * @return AcademicYear
-     */
-    public function setDefaultLandscapeTemplate($defaultLandscapeTemplate)
+    public function setDefaultLandscapeTemplate(?ReportTemplate $defaultLandscapeTemplate): static
     {
         $this->defaultLandscapeTemplate = $defaultLandscapeTemplate;
         return $this;

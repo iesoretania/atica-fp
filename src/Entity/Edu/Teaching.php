@@ -19,111 +19,65 @@
 
 namespace App\Entity\Edu;
 
+use App\Repository\Edu\TeachingRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Edu\TeachingRepository")
- * @ORM\Table(name="edu_teaching",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"teacher_id", "group_id", "subject_id"})}))
- */
+#[ORM\Entity(repositoryClass: TeachingRepository::class)]
+#[ORM\Table(name: 'edu_teaching')]
+#[ORM\UniqueConstraint(columns: ['teacher_id', 'group_id', 'subject_id'])]
 class Teaching
 {
-    /**
-     * @var bool
-     */
-    public $workLinked;
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Teacher", inversedBy="teachings")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Teacher
-     */
-    private $teacher;
+    #[ORM\ManyToOne(targetEntity: Teacher::class, inversedBy: 'teachings')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Teacher $teacher = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Group", inversedBy="teachings")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Group
-     */
-    private $group;
+    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'teachings')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Group $group = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Subject", inversedBy="teachings")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Subject
-     */
-    private $subject;
+    #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'teachings')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Subject $subject = null;
 
-    public function __construct()
-    {
-        $this->workLinked = false;
-    }
-
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Teacher
-     */
-    public function getTeacher()
+    public function getTeacher(): ?Teacher
     {
         return $this->teacher;
     }
 
-    /**
-     * @param Teacher $teacher
-     * @return Teaching
-     */
-    public function setTeacher($teacher)
+    public function setTeacher(Teacher $teacher): static
     {
         $this->teacher = $teacher;
         return $this;
     }
 
-    /**
-     * @return Group
-     */
-    public function getGroup()
+    public function getGroup(): ?Group
     {
         return $this->group;
     }
 
-    /**
-     * @param Group $group
-     * @return Teaching
-     */
-    public function setGroup($group)
+    public function setGroup(Group $group): static
     {
         $this->group = $group;
         return $this;
     }
 
-    /**
-     * @return Subject
-     */
-    public function getSubject()
+    public function getSubject(): ?Subject
     {
         return $this->subject;
     }
 
-    /**
-     * @param Subject $subject
-     * @return Teaching
-     */
-    public function setSubject($subject)
+    public function setSubject(Subject $subject): static
     {
         $this->subject = $subject;
         return $this;

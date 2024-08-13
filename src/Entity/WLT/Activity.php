@@ -19,63 +19,42 @@
 namespace App\Entity\WLT;
 
 use App\Entity\Edu\Competency;
+use App\Repository\WLT\ActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WLT\ActivityRepository")
- * @ORM\Table(name="wlt_activity",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"project_id", "code"})}))))
- */
-class Activity
+#[ORM\Entity(repositoryClass: ActivityRepository::class)]
+#[ORM\Table(name: 'wlt_activity')]
+#[ORM\UniqueConstraint(columns: ['project_id', 'code'])]
+class Activity implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Project", inversedBy="activities")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Project
-     */
-    private $project;
+    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'activities')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Project $project = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $code;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $code = null;
 
-    /**
-     * @ORM\Column(type="text")
-     * @var string
-     */
-    private $description;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    private $priorLearning;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $priorLearning = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Edu\Competency")
-     * @ORM\JoinTable(name="wlt_activity_competency")
-     * @ORM\OrderBy({"code": "ASC"})
-     * @var Competency[]
-     */
-    private $competencies;
+    #[ORM\ManyToMany(targetEntity: Competency::class)]
+    #[ORM\JoinTable(name: 'wlt_activity_competency')]
+    #[ORM\OrderBy(['code' => 'ASC'])]
+    private Collection $competencies;
 
-    /**
-     * @ORM\OneToMany(targetEntity="ActivityRealization", mappedBy="activity")
-     * @var ActivityRealization[]
-     */
-    private $activityRealizations;
+    #[ORM\OneToMany(targetEntity: ActivityRealization::class, mappedBy: 'activity')]
+    private Collection $activityRealizations;
 
     public function __construct()
     {
@@ -83,124 +62,79 @@ class Activity
         $this->activityRealizations = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getCode() . ': ' . $this->getDescription();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Project
-     */
-    public function getProject()
+    public function getProject(): ?Project
     {
         return $this->project;
     }
 
-    /**
-     * @param Project $project
-     * @return Activity
-     */
-    public function setProject(Project $project)
+    public function setProject(Project $project): static
     {
         $this->project = $project;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * @param string $code
-     * @return Activity
-     */
-    public function setCode($code)
+    public function setCode(string $code): static
     {
         $this->code = $code;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return Activity
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): static
     {
         $this->description = $description;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getPriorLearning()
+    public function getPriorLearning(): ?string
     {
         return $this->priorLearning;
     }
 
-    /**
-     * @param string $priorLearning
-     * @return Activity
-     */
-    public function setPriorLearning($priorLearning)
+    public function setPriorLearning(?string $priorLearning): static
     {
         $this->priorLearning = $priorLearning;
         return $this;
     }
 
     /**
-     * @return Competency[]|Collection
+     * @return Collection<int, Competency>
      */
-    public function getCompetencies()
+    public function getCompetencies(): Collection
     {
         return $this->competencies;
     }
 
-    /**
-     * @param Competency[] $competencies
-     * @return Activity
-     */
-    public function setCompetencies($competencies)
+    public function setCompetencies(Collection $competencies): static
     {
         $this->competencies = $competencies;
         return $this;
     }
 
     /**
-     * @return ActivityRealization[]
+     * @return Collection<int, ActivityRealization>
      */
-    public function getActivityRealizations()
+    public function getActivityRealizations(): Collection
     {
         return $this->activityRealizations;
-    }
-
-    /**
-     * @param ActivityRealization[] $activityRealizations
-     * @return Activity
-     */
-    public function setActivityRealizations($activityRealizations)
-    {
-        $this->activityRealizations = $activityRealizations;
-        return $this;
     }
 }

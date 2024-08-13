@@ -20,100 +20,63 @@ namespace App\Entity\WPT;
 
 use App\Entity\AnsweredSurvey;
 use App\Entity\Edu\Teacher;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="wpt_educational_tutor_answered_survey")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'wpt_educational_tutor_answered_survey')]
 class EducationalTutorAnsweredSurvey
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Shift")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Shift
-     */
-    private $shift;
+    #[ORM\ManyToOne(targetEntity: Shift::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Shift $shift = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Teacher
-     */
-    private $teacher;
+    #[ORM\ManyToOne(targetEntity: Teacher::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Teacher $teacher = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AnsweredSurvey")
-     * @ORM\JoinColumn(nullable=false)
-     * @var AnsweredSurvey
-     */
-    private $answeredSurvey;
+    #[ORM\ManyToOne(targetEntity: AnsweredSurvey::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?AnsweredSurvey $answeredSurvey = null;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Shift
-     */
-    public function getShift()
+    public function getShift(): ?Shift
     {
         return $this->shift;
     }
 
-    /**
-     * @param Shift $shift
-     * @return self
-     */
-    public function setShift($shift)
+    public function setShift(Shift $shift): static
     {
         $this->shift = $shift;
         return $this;
     }
 
-    /**
-     * @return Teacher
-     */
-    public function getTeacher()
+    public function getTeacher(): ?Teacher
     {
         return $this->teacher;
     }
 
-    /**
-     * @param Teacher $teacher
-     * @return self
-     */
-    public function setTeacher($teacher)
+    public function setTeacher(Teacher $teacher): static
     {
         $this->teacher = $teacher;
         return $this;
     }
 
-    /**
-     * @return AnsweredSurvey
-     */
-    public function getAnsweredSurvey()
+    public function getAnsweredSurvey(): ?AnsweredSurvey
     {
         return $this->answeredSurvey;
     }
 
-    /**
-     * @param AnsweredSurvey $answeredSurvey
-     * @return self
-     */
-    public function setAnsweredSurvey($answeredSurvey)
+    public function setAnsweredSurvey(AnsweredSurvey $answeredSurvey): static
     {
         $this->answeredSurvey = $answeredSurvey;
         return $this;

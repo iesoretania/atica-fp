@@ -22,69 +22,46 @@ use App\Entity\Edu\ContactMethod;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\Workcenter;
+use App\Repository\WLT\ContactRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WLT\ContactRepository")
- * @ORM\Table(name="wlt_contact")
- */
+#[ORM\Entity(repositoryClass: ContactRepository::class)]
+#[ORM\Table(name: 'wlt_contact')]
 class Contact
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @var \DateTime
-     */
-    private $dateTime;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateTime = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\Teacher")
-     * @ORM\JoinColumn(nullable=false)
-     * @var ?Teacher
-     */
-    private $teacher;
+    #[ORM\ManyToOne(targetEntity: Teacher::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Teacher $teacher = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Workcenter")
-     * @ORM\JoinColumn(nullable=false)
-     * @var ?Workcenter
-     */
-    private $workcenter;
+    #[ORM\ManyToOne(targetEntity: Workcenter::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Workcenter $workcenter = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Project")
-     * @ORM\JoinTable(name="wlt_contact_project")
-     * @var Project[]
-     */
-    private $projects;
+    #[ORM\ManyToMany(targetEntity: Project::class)]
+    #[ORM\JoinTable(name: 'wlt_contact_project')]
+    private Collection $projects;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Edu\StudentEnrollment", fetch="EAGER")
-     * @ORM\JoinTable(name="wlt_contact_student_enrollment")
-     * @var StudentEnrollment[]
-     */
-    private $studentEnrollments;
+    #[ORM\ManyToMany(targetEntity: StudentEnrollment::class, fetch: 'EAGER')]
+    #[ORM\JoinTable(name: 'wlt_contact_student_enrollment')]
+    private Collection $studentEnrollments;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var ?string
-     */
-    private $detail;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $detail = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\ContactMethod")
-     * @ORM\JoinColumn(nullable=true)
-     * @var ?ContactMethod
-     */
-    private $method;
+    #[ORM\ManyToOne(targetEntity: ContactMethod::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?ContactMethod $method = null;
 
     public function __construct()
     {
@@ -92,99 +69,67 @@ class Contact
         $this->studentEnrollments = new ArrayCollection();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDateTime()
+    public function getDateTime(): ?\DateTimeInterface
     {
         return $this->dateTime;
     }
 
-    /**
-     * @param \DateTime $dateTime
-     * @return Contact
-     */
-    public function setDateTime(\DateTimeInterface $dateTime)
+    public function setDateTime(\DateTimeInterface $dateTime): static
     {
         $this->dateTime = $dateTime;
         return $this;
     }
 
-    /**
-     * @return ?Teacher
-     */
-    public function getTeacher()
+    public function getTeacher(): ?Teacher
     {
         return $this->teacher;
     }
 
-    /**
-     * @param Teacher $teacher
-     * @return Contact
-     */
-    public function setTeacher(Teacher $teacher)
+    public function setTeacher(Teacher $teacher): static
     {
         $this->teacher = $teacher;
         return $this;
     }
 
-    /**
-     * @return ?Workcenter
-     */
-    public function getWorkcenter()
+    public function getWorkcenter(): ?Workcenter
     {
         return $this->workcenter;
     }
 
-    /**
-     * @param Workcenter $workcenter
-     * @return Contact
-     */
-    public function setWorkcenter(Workcenter $workcenter)
+    public function setWorkcenter(Workcenter $workcenter): static
     {
         $this->workcenter = $workcenter;
         return $this;
     }
 
     /**
-     * @return Project[]
+     * @return Collection<int, Project>
      */
-    public function getProjects()
+    public function getProjects(): Collection
     {
         return $this->projects;
     }
 
-    /**
-     * @param Project[] $projects
-     * @return Contact
-     */
-    public function setProjects($projects)
+    public function setProjects(Collection $projects): static
     {
         $this->projects = $projects;
         return $this;
     }
 
     /**
-     * @return StudentEnrollment[]
+     * @return Collection<int, StudentEnrollment>
      */
-    public function getStudentEnrollments()
+    public function getStudentEnrollments(): Collection
     {
         return $this->studentEnrollments;
     }
 
-    /**
-     * @param StudentEnrollment[] $studentEnrollments
-     * @return Contact
-     */
-    public function setStudentEnrollments($studentEnrollments)
+    public function setStudentEnrollments(Collection $studentEnrollments): static
     {
         $this->studentEnrollments = $studentEnrollments;
         return $this;
@@ -193,33 +138,25 @@ class Contact
     /**
      * @return string
      */
-    public function getDetail()
+    public function getDetail(): ?string
     {
         return $this->detail;
     }
 
     /**
      * @param string $detail
-     * @return Contact
      */
-    public function setDetail($detail)
+    public function setDetail(?string $detail): static
     {
         $this->detail = $detail;
         return $this;
     }
 
-    /**
-     * @return ContactMethod|null
-     */
     public function getMethod(): ?ContactMethod
     {
         return $this->method;
     }
 
-    /**
-     * @param ContactMethod|null $method
-     * @return Contact
-     */
     public function setMethod(?ContactMethod $method): Contact
     {
         $this->method = $method;

@@ -18,12 +18,11 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="event_log")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'event_log')]
 class EventLog
 {
     public const ACCESS = 'access';
@@ -32,161 +31,95 @@ class EventLog
     public const SWITCH_USER = 'switch_user';
     public const LOGOUT = 'logout';
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @var \DateTime
-     */
-    private $dateTime;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateTime = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $ip;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $ip = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $event;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $event = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true, length=255)
-     * @var string
-     */
-    private $data;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $data = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    private $dataAttachment;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $dataAttachment = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Person")
-     * @var Person
-     */
-    private $user;
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    private ?Person $user = null;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDateTime()
+    public function getDateTime(): ?\DateTimeInterface
     {
         return $this->dateTime;
     }
 
-    /**
-     * @param \DateTime $dateTime
-     * @return EventLog
-     */
-    public function setDateTime(\DateTimeInterface $dateTime)
+    public function setDateTime(\DateTimeInterface $dateTime): static
     {
         $this->dateTime = $dateTime;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getIp()
+    public function getIp(): ?string
     {
         return $this->ip;
     }
 
-    /**
-     * @param string $ip
-     * @return EventLog
-     */
-    public function setIp($ip)
+    public function setIp(?string $ip): static
     {
         $this->ip = $ip;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getEvent()
+    public function getEvent(): ?string
     {
         return $this->event;
     }
 
-    /**
-     * @param string $event
-     * @return EventLog
-     */
-    public function setEvent($event)
+    public function setEvent(string $event): static
     {
         $this->event = $event;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getData()
+    public function getData(): ?string
     {
         return $this->data;
     }
 
-    /**
-     * @param string $data
-     * @return EventLog
-     */
-    public function setData($data)
+    public function setData($data): static
     {
         $this->data = substr($data, 0, 255);
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDataAttachment()
+    public function getDataAttachment(): ?string
     {
         return $this->dataAttachment;
     }
 
-    /**
-     * @param string $dataAttachment
-     * @return EventLog
-     */
-    public function setDataAttachment($dataAttachment)
+    public function setDataAttachment(?string $dataAttachment): static
     {
         $this->dataAttachment = $dataAttachment;
         return $this;
     }
 
-    /**
-     * @return Person
-     */
-    public function getUser()
+    public function getUser(): ?Person
     {
         return $this->user;
     }
 
-    /**
-     * @param Person|null $user
-     * @return EventLog
-     */
-    public function setUser(Person $user = null)
+    public function setUser(?Person $user): static
     {
         $this->user = $user;
         return $this;

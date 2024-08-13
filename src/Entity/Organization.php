@@ -19,371 +19,191 @@
 namespace App\Entity;
 
 use App\Entity\Edu\AcademicYear;
+use App\Repository\OrganizationRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\OrganizationRepository")
- * @UniqueEntity("code")
- */
-class Organization
+#[ORM\Entity(repositoryClass: OrganizationRepository::class)]
+#[UniqueEntity('code')]
+class Organization implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id = 0;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = 0;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $name;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="string", unique=true)
-     * @var string
-     */
-    private $code;
+    #[ORM\Column(type: Types::STRING, unique: true)]
+    private ?string $code = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $address;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $address = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $city;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $city = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $zipCode;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $zipCode = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $phoneNumber;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $phoneNumber = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $faxNumber;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $faxNumber = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @Assert\Email
-     * @var string
-     */
-    private $emailAddress;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Assert\Email]
+    private ?string $emailAddress = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $webSite;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $webSite = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
-    private $description;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Edu\AcademicYear")
-     * @var AcademicYear
-     */
-    private $currentAcademicYear;
+    #[ORM\OneToOne(targetEntity: AcademicYear::class)]
+    private ?AcademicYear $currentAcademicYear = null;
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-    }
-
-    /**
-     * Returns the organization name
-     *
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName();
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Organization
-     */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * Set code
-     *
-     * @param string $code
-     *
-     * @return Organization
-     */
-    public function setCode($code)
+    public function setCode(string $code): static
     {
         $this->code = $code;
 
         return $this;
     }
 
-    /**
-     * Get code
-     *
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * Set address
-     *
-     * @param string $address
-     *
-     * @return Organization
-     */
-    public function setAddress($address)
+    public function setAddress(?string $address): static
     {
         $this->address = $address;
 
         return $this;
     }
 
-    /**
-     * Get address
-     *
-     * @return string
-     */
-    public function getAddress()
+    public function getAddress(): ?string
     {
         return $this->address;
     }
 
-    /**
-     * Set city
-     *
-     * @param string $city
-     *
-     * @return Organization
-     */
-    public function setCity($city)
+    public function setCity(string $city): static
     {
         $this->city = $city;
 
         return $this;
     }
 
-    /**
-     * Get city
-     *
-     * @return string
-     */
-    public function getCity()
+    public function getCity(): ?string
     {
         return $this->city;
     }
 
-    /**
-     * Set zipCode
-     *
-     * @param string $zipCode
-     *
-     * @return Organization
-     */
-    public function setZipCode($zipCode)
+    public function setZipCode(?string $zipCode): static
     {
         $this->zipCode = $zipCode;
 
         return $this;
     }
 
-    /**
-     * Get zipCode
-     *
-     * @return string
-     */
-    public function getZipCode()
+    public function getZipCode(): ?string
     {
         return $this->zipCode;
     }
 
-    /**
-     * Set phoneNumber
-     *
-     * @param string $phoneNumber
-     *
-     * @return Organization
-     */
-    public function setPhoneNumber($phoneNumber)
+    public function setPhoneNumber(?string $phoneNumber): static
     {
         $this->phoneNumber = $phoneNumber;
 
         return $this;
     }
 
-    /**
-     * Get phoneNumber
-     *
-     * @return string
-     */
-    public function getPhoneNumber()
+    public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
     }
 
-    /**
-     * Set faxNumber
-     *
-     * @param string $faxNumber
-     *
-     * @return Organization
-     */
-    public function setFaxNumber($faxNumber)
+    public function setFaxNumber(?string $faxNumber): static
     {
         $this->faxNumber = $faxNumber;
 
         return $this;
     }
 
-    /**
-     * Get faxNumber
-     *
-     * @return string
-     */
-    public function getFaxNumber()
+    public function getFaxNumber(): ?string
     {
         return $this->faxNumber;
     }
 
-    /**
-     * Set emailAddress
-     *
-     * @param string $emailAddress
-     *
-     * @return Organization
-     */
-    public function setEmailAddress($emailAddress)
+    public function setEmailAddress(?string $emailAddress): static
     {
         $this->emailAddress = $emailAddress;
 
         return $this;
     }
 
-    /**
-     * Get emailAddress
-     *
-     * @return string
-     */
-    public function getEmailAddress()
+    public function getEmailAddress(): ?string
     {
         return $this->emailAddress;
     }
 
-    /**
-     * Set webSite
-     *
-     * @param string $webSite
-     *
-     * @return Organization
-     */
-    public function setWebSite($webSite)
+    public function setWebSite(?string $webSite): static
     {
         $this->webSite = $webSite;
 
         return $this;
     }
 
-    /**
-     * Get webSite
-     *
-     * @return string
-     */
-    public function getWebSite()
+    public function getWebSite(): ?string
     {
         return $this->webSite;
     }
 
-    /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return Organization
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @return AcademicYear
-     */
-    public function getCurrentAcademicYear()
+    public function getCurrentAcademicYear(): ?AcademicYear
     {
         return $this->currentAcademicYear;
     }
 
-    /**
-     * @param AcademicYear $currentAcademicYear
-     * @return Organization
-     */
-    public function setCurrentAcademicYear($currentAcademicYear)
+    public function setCurrentAcademicYear(AcademicYear $currentAcademicYear): static
     {
         $this->currentAcademicYear = $currentAcademicYear;
         return $this;

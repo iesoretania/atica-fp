@@ -18,6 +18,8 @@
 
 namespace App\Entity;
 
+use App\Repository\PersonRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -25,590 +27,352 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\PersonRepository")
- * @UniqueEntity("loginUsername")
- * @UniqueEntity("emailAddress")
- */
-class Person implements UserInterface, PasswordAuthenticatedUserInterface
+#[ORM\Entity(repositoryClass: PersonRepository::class)]
+#[UniqueEntity('loginUsername')]
+#[UniqueEntity('emailAddress')]
+class Person implements UserInterface, PasswordAuthenticatedUserInterface, \Stringable
 {
     public const GENDER_NEUTRAL = 0;
     public const GENDER_MALE = 1;
     public const GENDER_FEMALE = 2;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank
-     * @var string
-     */
-    private $firstName;
+    #[ORM\Column(type: Types::STRING)]
+    #[Assert\NotBlank]
+    private ?string $firstName = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank
-     * @var string
-     */
-    private $lastName;
+    #[ORM\Column(type: Types::STRING)]
+    #[Assert\NotBlank]
+    private ?string $lastName = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $internalCode;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $internalCode = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true, unique=true)
-     * @var string
-     */
-    private $uniqueIdentifier;
+    #[ORM\Column(type: Types::STRING, unique: true, nullable: true)]
+    private ?string $uniqueIdentifier = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $gender;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $gender;
 
-    /**
-     * @ORM\Column(type="string", unique=true, nullable=true)
-     * @Assert\Regex(pattern="/[@ ]{1,}/", match=false, message="login_username.invalid_chars", htmlPattern=false)
-     * @var string
-     */
-    private $loginUsername;
+    #[ORM\Column(type: Types::STRING, unique: true, nullable: true)]
+    #[Assert\Regex(pattern: '/[@ ]{1,}/', message: 'login_username.invalid_chars', htmlPattern: false, match: false)]
+    private ?string $loginUsername = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $password;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $password = null;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=false)
-     * @var bool
-     */
-    private $forcePasswordChange;
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $enabled;
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false)]
+    private bool $forcePasswordChange;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $enabled;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $globalAdministrator;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $globalAdministrator;
 
-    /**
-     * @ORM\Column(type="string", unique=true, nullable=true)
-     * @Assert\Email
-     * @var string
-     */
-    private $emailAddress;
+    #[ORM\Column(type: Types::STRING, unique: true, nullable: true)]
+    #[Assert\Email]
+    private ?string $emailAddress = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $token;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $token = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string
-     */
-    private $tokenType;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $tokenType = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @var \DateTime
-     */
-    private $tokenExpiration;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $tokenExpiration = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @var \DateTime
-     */
-    private $lastAccess;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $lastAccess = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @var \DateTime
-     */
-    private $blockedUntil;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $blockedUntil = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Organization")
-     * @ORM\JoinColumn(nullable=true)
-     * @var Organization|null
-     */
-    protected $defaultOrganization;
+    #[ORM\ManyToOne(targetEntity: Organization::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    protected ?Organization $defaultOrganization = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $externalCheck;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $externalCheck;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    protected $allowExternalCheck;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    protected ?bool $allowExternalCheck;
 
-    /**
-     * Convertir usuario en cadena
-     *
-     * @return string
-     */
-    public function __toString()
+    public function __construct()
+    {
+        $this->allowExternalCheck = false;
+        $this->enabled = true;
+        $this->externalCheck = false;
+        $this->forcePasswordChange = false;
+        $this->gender = self::GENDER_NEUTRAL;
+        $this->globalAdministrator = false;
+    }
+
+    public function __toString(): string
     {
         return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
     /**
      * Convertir usuario en cadena extendida
-     *
-     * @return string
      */
-    public function getFullDisplayName()
+    public function getFullDisplayName(): string
     {
         $prefix = $this->getFirstName() . ' ' . $this->getLastName();
-        return $this->getUniqueIdentifier() !== '' && $this->getUniqueIdentifier() !== null ? $prefix . ' - ' . $this->getUniqueIdentifier() : $prefix;
+        return $this->getUniqueIdentifier() !== '' && $this->getUniqueIdentifier() !== null
+            ? $prefix . ' - ' . $this->getUniqueIdentifier() : $prefix;
     }
 
     /**
      * Convertir usuario en cadena con nombre de usuario
-     *
-     * @return string
      */
-    public function getFullName()
+    public function getFullName(): string
     {
         return $this.' ('.$this->getUsernameAndEmailAddress().')';
     }
 
-    /**
-     * @return string
-     */
-    public function getUsernameAndEmailAddress()
+    public function getUsernameAndEmailAddress(): string
     {
         return $this->loginUsername.(($this->loginUsername && $this->emailAddress) ? ' - ' : '').$this->emailAddress;
     }
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->gender = self::GENDER_NEUTRAL;
-
-        $this->externalCheck = false;
-        $this->allowExternalCheck = false;
-        $this->enabled = true;
-        $this->globalAdministrator = false;
-        $this->forcePasswordChange = false;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getFirstName()
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    /**
-     * @param string $firstName
-     * @return Person
-     */
-    public function setFirstName($firstName)
+    public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getLastName()
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    /**
-     * @param string $lastName
-     * @return Person
-     */
-    public function setLastName($lastName)
+    public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getInternalCode()
+    public function getInternalCode(): ?string
     {
         return $this->internalCode;
     }
 
-    /**
-     * @param string $internalCode
-     * @return Person
-     */
-    public function setInternalCode($internalCode)
+    public function setInternalCode(?string $internalCode): static
     {
         $this->internalCode = $internalCode;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getUniqueIdentifier()
+    public function getUniqueIdentifier(): ?string
     {
         return $this->uniqueIdentifier;
     }
 
-    /**
-     * @param string $uniqueIdentifier
-     * @return Person
-     */
-    public function setUniqueIdentifier($uniqueIdentifier)
+    public function setUniqueIdentifier(?string $uniqueIdentifier): static
     {
         $this->uniqueIdentifier = $uniqueIdentifier;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getGender()
+    public function getGender(): ?int
     {
         return $this->gender;
     }
 
-    /**
-     * @param int $gender
-     * @return Person
-     */
-    public function setGender($gender)
+    public function setGender(int $gender): static
     {
         $this->gender = $gender;
         return $this;
     }
 
-    /**
-     * Set userName
-     *
-     * @param string $loginUsername
-     *
-     * @return Person
-     */
-    public function setLoginUsername($loginUsername)
+    public function getLoginUsername(): ?string
+    {
+        return $this->loginUsername;
+    }
+
+    public function setLoginUsername(?string $loginUsername): static
     {
         $this->loginUsername = $loginUsername;
 
         return $this;
     }
 
-    /**
-     * Get userName
-     *
-     * @return string
-     */
-    public function getLoginUsername()
+    public function getPassword(): ?string
     {
-        return $this->loginUsername;
+        return $this->password;
     }
 
-    /**
-     * Set password
-     *
-     * @param string $password
-     *
-     * @return Person
-     */
-    public function setPassword($password)
+    public function setPassword(?string $password): static
     {
         $this->password = $password;
 
         return $this;
     }
 
-    /**
-     * Get password
-     *
-     * @return string|null
-     */
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isForcePasswordChange()
+    public function isForcePasswordChange(): bool
     {
         return $this->forcePasswordChange;
     }
 
-    /**
-     * @param bool $forcePasswordChange
-     * @return Person
-     */
-    public function setForcePasswordChange($forcePasswordChange)
+    public function setForcePasswordChange(bool $forcePasswordChange): static
     {
         $this->forcePasswordChange = $forcePasswordChange;
         return $this;
     }
 
+    public function isEnabled(): ?bool
+    {
+        return $this->enabled;
+    }
 
-    /**
-     * Set enabled
-     *
-     * @param boolean $enabled
-     *
-     * @return Person
-     */
-    public function setEnabled($enabled)
+    public function setEnabled(bool $enabled): static
     {
         $this->enabled = $enabled;
 
         return $this;
     }
 
+    public function isGlobalAdministrator(): ?bool
+    {
+        return $this->globalAdministrator;
+    }
 
-    /**
-     * Set globalAdmin
-     *
-     * @param boolean $globalAdministrator
-     *
-     * @return Person
-     */
-    public function setGlobalAdministrator($globalAdministrator)
+    public function setGlobalAdministrator(bool $globalAdministrator): static
     {
         $this->globalAdministrator = $globalAdministrator;
 
         return $this;
     }
 
-    /**
-     * Get globalAdmin
-     *
-     * @return boolean
-     */
-    public function isGlobalAdministrator()
+    public function getEmailAddress(): ?string
     {
-        return $this->globalAdministrator;
+        return $this->emailAddress;
     }
 
-    /**
-     * Set emailAddress
-     *
-     * @param string $emailAddress
-     *
-     * @return Person
-     */
-    public function setEmailAddress($emailAddress)
+    public function setEmailAddress(?string $emailAddress): static
     {
         $this->emailAddress = $emailAddress;
 
         return $this;
     }
 
-    /**
-     * Get emailAddress
-     *
-     * @return string
-     */
-    public function getEmailAddress()
+    public function getToken(): ?string
     {
-        return $this->emailAddress;
+        return $this->token;
     }
 
-    /**
-     * Set token
-     *
-     * @param string $token
-     *
-     * @return Person
-     */
-    public function setToken($token)
+    public function setToken(?string $token): static
     {
         $this->token = $token;
 
         return $this;
     }
 
-    /**
-     * Get token
-     *
-     * @return string
-     */
-    public function getToken()
+    public function getTokenType(): ?string
     {
-        return $this->token;
+        return $this->tokenType;
     }
 
-    /**
-     * Set tokenType
-     *
-     * @param string $tokenType
-     *
-     * @return Person
-     */
-    public function setTokenType($tokenType)
+    public function setTokenType(?string $tokenType): static
     {
         $this->tokenType = $tokenType;
 
         return $this;
     }
 
-    /**
-     * Get tokenType
-     *
-     * @return string
-     */
-    public function getTokenType()
+    public function getTokenExpiration(): ?\DateTimeInterface
     {
-        return $this->tokenType;
+        return $this->tokenExpiration;
     }
 
-    /**
-     * Set tokenExpiration
-     *
-     * @param ?\DateTime $tokenExpiration
-     *
-     * @return Person
-     */
-    public function setTokenExpiration(?\DateTimeInterface $tokenExpiration)
+    public function setTokenExpiration(?\DateTimeInterface $tokenExpiration): static
     {
         $this->tokenExpiration = $tokenExpiration;
 
         return $this;
     }
 
-    /**
-     * Get tokenExpiration
-     *
-     * @return \DateTime
-     */
-    public function getTokenExpiration()
+    public function getLastAccess(): ?\DateTimeInterface
     {
-        return $this->tokenExpiration;
+        return $this->lastAccess;
     }
 
-    /**
-     * Set lastAccess
-     *
-     * @param \DateTime $lastAccess
-     *
-     * @return Person
-     */
-    public function setLastAccess(\DateTimeInterface $lastAccess)
+    public function setLastAccess(\DateTimeInterface $lastAccess): static
     {
         $this->lastAccess = $lastAccess;
 
         return $this;
     }
 
-    /**
-     * Get lastAccess
-     *
-     * @return \DateTime
-     */
-    public function getLastAccess()
+    public function getBlockedUntil(): ?\DateTimeInterface
     {
-        return $this->lastAccess;
+        return $this->blockedUntil;
     }
 
-    /**
-     * Set blockedUntil
-     *
-     * @param \DateTime $blockedUntil
-     *
-     * @return Person
-     */
-    public function setBlockedUntil(\DateTimeInterface $blockedUntil)
+    public function setBlockedUntil(\DateTimeInterface $blockedUntil): static
     {
         $this->blockedUntil = $blockedUntil;
 
         return $this;
     }
 
-    /**
-     * Get blockedUntil
-     *
-     * @return \DateTime
-     */
-    public function getBlockedUntil()
+    public function getDefaultOrganization(): ?Organization
     {
-        return $this->blockedUntil;
+        return $this->defaultOrganization;
     }
 
-    /**
-     * Set defaultOrganization
-     *
-     * @param Organization $defaultOrganization
-     *
-     * @return Person
-     */
-    public function setDefaultOrganization(Organization $defaultOrganization = null)
+    public function setDefaultOrganization(Organization $defaultOrganization): static
     {
         $this->defaultOrganization = $defaultOrganization;
 
         return $this;
     }
 
-    /**
-     * Get defaultOrganization
-     *
-     * @return Organization|null
-     */
-    public function getDefaultOrganization()
+
+
+    public function getExternalCheck(): ?bool
     {
-        return $this->defaultOrganization;
+        return $this->externalCheck;
     }
 
-    /**
-     * @Assert\Callback
-     */
-    public function validate(ExecutionContextInterface $context)
+    public function setExternalCheck(bool $externalCheck): static
     {
-        // comprobar si se ha especificado al menos el nombre de usuario o el correo electrónico
-        if (!$this->getLoginUsername() && !$this->getEmailAddress()) {
-            $context->buildViolation('user.id.not_found')
-                ->atPath('loginUsername')
-                ->addViolation();
-            $context->buildViolation('user.id.not_found')
-                ->atPath('emailAddress')
-                ->addViolation();
+        $this->externalCheck = $this->allowExternalCheck && $externalCheck;
+
+        return $this;
+    }
+
+    public function getAllowExternalCheck(): ?bool
+    {
+        return $this->allowExternalCheck;
+    }
+
+    public function setAllowExternalCheck(bool $allowExternalCheck): static
+    {
+        $this->allowExternalCheck = $allowExternalCheck;
+
+        if (!$allowExternalCheck) {
+            $this->externalCheck = false;
         }
-    }
 
-    /**
-     * Returns the username used to authenticate the user.
-     *
-     * @return string The username
-     */
-    public function getUsername()
+        return $this;
+    }
+    public function getUsername(): string
     {
         return $this->getLoginUsername() ?: $this->getEmailAddress();
     }
@@ -619,37 +383,9 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * Checks whether the user is enabled.
-     *
-     * Internally, if this method returns false, the authentication system
-     * will throw a DisabledException and prevent login.
-     *
-     * @return bool true if the user is enabled, false otherwise
-     *
-     * @see DisabledException
+     * @return string[]
      */
-    public function isEnabled()
-    {
-        return $this->enabled;
-    }
-
-    /**
-     * Returns the roles granted to the user.
-     *
-     * <code>
-     * public function getRoles()
-     * {
-     *     return array('ROLE_USER');
-     * }
-     * </code>
-     *
-     * Alternatively, the roles might be stored on a ``roles`` property,
-     * and populated in any number of different ways when the user object
-     * is created.
-     *
-     * @return string[] The user roles
-     */
-    public function getRoles()
+    public function getRoles(): array
     {
         $roles = ['ROLE_USER'];
         if ($this->isGlobalAdministrator()) {
@@ -658,77 +394,26 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
         return $roles;
     }
 
-    /**
-     * Returns the salt that was originally used to encode the password.
-     *
-     * This can return null if the password was not encoded using a salt.
-     *
-     * @return string|null The salt
-     */
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return null;
     }
 
-    /**
-     * Removes sensitive data from the user.
-     *
-     * This is important if, at any given point, sensitive information like
-     * the plain-text password is stored on this object.
-     */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
     }
 
-    /**
-     * Set externalCheck
-     *
-     * @param boolean $externalCheck
-     *
-     * @return Person
-     */
-    public function setExternalCheck($externalCheck)
+    #[Assert\Callback]
+    public function validate(ExecutionContextInterface $context): void
     {
-        $this->externalCheck = $this->allowExternalCheck && $externalCheck;
-
-        return $this;
-    }
-
-    /**
-     * Get externalCheck
-     *
-     * @return boolean
-     */
-    public function getExternalCheck()
-    {
-        return $this->externalCheck;
-    }
-
-    /**
-     * Set allowExternalCheck
-     *
-     * @param boolean $allowExternalCheck
-     *
-     * @return Person
-     */
-    public function setAllowExternalCheck($allowExternalCheck)
-    {
-        $this->allowExternalCheck = $allowExternalCheck;
-
-        if (!$allowExternalCheck) {
-            $this->externalCheck = false;
+        // comprobar si se ha especificado al menos el nombre de usuario o el correo electrónico
+        if (!$this->getLoginUsername() && !$this->getEmailAddress()) {
+            $context->buildViolation('user.id.not_found')
+                ->atPath('loginUsername')
+                ->addViolation();
+            $context->buildViolation('user.id.not_found')
+                ->atPath('emailAddress')
+                ->addViolation();
         }
-
-        return $this;
-    }
-
-    /**
-     * Get allowExternalCheck
-     *
-     * @return boolean
-     */
-    public function getAllowExternalCheck()
-    {
-        return $this->allowExternalCheck;
     }
 }

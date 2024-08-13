@@ -19,144 +19,99 @@
 namespace App\Entity\WLT;
 
 use App\Entity\Edu\LearningOutcome;
+use App\Repository\WLT\ActivityRealizationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WLT\ActivityRealizationRepository")
- * @ORM\Table(name="wlt_activity_realization",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"activity_id", "code"})}))))
- */
-class ActivityRealization
+#[ORM\Entity(repositoryClass: ActivityRealizationRepository::class)]
+#[ORM\Table(name: 'wlt_activity_realization')]
+#[ORM\UniqueConstraint(columns: ['activity_id', 'code'])]
+class ActivityRealization implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Activity", inversedBy="activityRealizations")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Activity
-     */
-    private $activity;
+    #[ORM\ManyToOne(targetEntity: Activity::class, inversedBy: 'activityRealizations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Activity $activity = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $code;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $code = null;
 
-    /**
-     * @ORM\Column(type="text")
-     * @var string
-     */
-    private $description;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Edu\LearningOutcome")
-     * @ORM\JoinTable(name="wlt_activity_realization_learning_outcome")
-     * @var LearningOutcome[]
-     */
-    private $learningOutcomes;
+    #[ORM\ManyToMany(targetEntity: LearningOutcome::class)]
+    #[ORM\JoinTable(name: 'wlt_activity_realization_learning_outcome')]
+    private Collection $learningOutcomes;
 
     public function __construct()
     {
         $this->learningOutcomes = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getCode() . ': ' . $this->getDescription();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Activity
-     */
-    public function getActivity()
+    public function getActivity(): ?Activity
     {
         return $this->activity;
     }
 
-    /**
-     * @param Activity $activity
-     * @return ActivityRealization
-     */
-    public function setActivity(Activity $activity)
+    public function setActivity(Activity $activity): static
     {
         $this->activity = $activity;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * @param string $code
-     * @return ActivityRealization
-     */
-    public function setCode($code)
+    public function setCode(string $code): static
     {
         $this->code = $code;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return ActivityRealization
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): static
     {
         $this->description = $description;
         return $this;
     }
 
     /**
-     * @return LearningOutcome[]
+     * @return Collection<int, LearningOutcome>
      */
-    public function getLearningOutcomes()
+    public function getLearningOutcomes(): Collection
     {
         return $this->learningOutcomes;
     }
 
-    /**
-     * @param LearningOutcome[] $learningOutcomes
-     * @return ActivityRealization
-     */
-    public function setLearningOutcomes($learningOutcomes)
+    public function setLearningOutcomes(Collection $learningOutcomes): static
     {
         $this->learningOutcomes = $learningOutcomes;
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getSubjectLearningOutcomes()
+    public function getSubjectLearningOutcomes(): array
     {
         $data = [];
 

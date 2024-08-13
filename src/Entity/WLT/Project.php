@@ -24,107 +24,66 @@ use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Organization;
 use App\Entity\Person;
 use App\Entity\Survey;
+use App\Repository\WLT\ProjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WLT\ProjectRepository")
- * @ORM\Table(name="wlt_project")
- */
-class Project
+#[ORM\Entity(repositoryClass: ProjectRepository::class)]
+#[ORM\Table(name: 'wlt_project')]
+class Project implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var int
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    private $name;
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Organization")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Organization
-     */
-    private $organization;
+    #[ORM\ManyToOne(targetEntity: Organization::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Organization $organization = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person")
-     * @ORM\JoinColumn(nullable=false)
-     * @var Person
-     */
-    private $manager;
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Person $manager = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Edu\Group")
-     * @ORM\JoinTable(name="wlt_project_group")
-     * @var Group[]
-     */
-    private $groups;
+    #[ORM\ManyToMany(targetEntity: Group::class)]
+    #[ORM\JoinTable(name: 'wlt_project_group')]
+    private Collection $groups;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Edu\StudentEnrollment")
-     * @ORM\JoinTable(name="wlt_project_student_enrollment")
-     * @var StudentEnrollment[]
-     */
-    private $studentEnrollments;
+    #[ORM\ManyToMany(targetEntity: StudentEnrollment::class)]
+    #[ORM\JoinTable(name: 'wlt_project_student_enrollment')]
+    private Collection $studentEnrollments;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Survey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var ?Survey
-     */
-    private $studentSurvey;
+    #[ORM\ManyToOne(targetEntity: Survey::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Survey $studentSurvey = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Survey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var ?Survey
-     */
-    private $companySurvey;
+    #[ORM\ManyToOne(targetEntity: Survey::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Survey $companySurvey = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Survey")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @var ?Survey
-     */
-    private $educationalTutorSurvey;
+    #[ORM\ManyToOne(targetEntity: Survey::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Survey $educationalTutorSurvey = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\ReportTemplate")
-     * @var ReportTemplate
-     */
-    private $attendanceReportTemplate;
+    #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
+    private ?ReportTemplate $attendanceReportTemplate = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edu\ReportTemplate")
-     * @var ReportTemplate
-     */
-    private $weeklyActivityReportTemplate;
+    #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
+    private ?ReportTemplate $weeklyActivityReportTemplate = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Agreement", mappedBy="project")
-     * @var Agreement[]
-     */
-    private $agreements;
+    #[ORM\OneToMany(targetEntity: Agreement::class, mappedBy: 'project')]
+    private Collection $agreements;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Activity", mappedBy="project")
-     * @var Activity[]
-     */
-    private $activities;
+    #[ORM\OneToMany(targetEntity: Activity::class, mappedBy: 'project')]
+    private Collection $activities;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    private $locked;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $locked;
 
     public function __construct()
     {
@@ -132,250 +91,157 @@ class Project
         $this->studentEnrollments = new ArrayCollection();
         $this->agreements = new ArrayCollection();
         $this->activities = new ArrayCollection();
+        $this->locked = false;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->getName();
+        return (string) $this->getName();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Project
-     */
-    public function setName($name)
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return Organization
-     */
-    public function getOrganization()
+    public function getOrganization(): ?Organization
     {
         return $this->organization;
     }
 
-    /**
-     * @param Organization $organization
-     * @return Project
-     */
-    public function setOrganization($organization)
+    public function setOrganization(Organization $organization): static
     {
         $this->organization = $organization;
         return $this;
     }
 
-    /**
-     * @return Person
-     */
-    public function getManager()
+    public function getManager(): ?Person
     {
         return $this->manager;
     }
 
-    /**
-     * @param Person $manager
-     * @return Project
-     */
-    public function setManager($manager)
+    public function setManager(Person $manager): static
     {
         $this->manager = $manager;
         return $this;
     }
 
     /**
-     * @return Group[]
+     * @return Collection<int, Group>
      */
-    public function getGroups()
+    public function getGroups(): Collection
     {
         return $this->groups;
     }
 
-    /**
-     * @param Group[] $groups
-     * @return Project
-     */
-    public function setGroups($groups)
+    public function setGroups(Collection $groups): static
     {
         $this->groups = $groups;
         return $this;
     }
 
     /**
-     * @return StudentEnrollment[]
+     * @return Collection<int, StudentEnrollment>
      */
-    public function getStudentEnrollments()
+    public function getStudentEnrollments(): Collection
     {
         return $this->studentEnrollments;
     }
 
-    /**
-     * @param StudentEnrollment[] $studentEnrollments
-     * @return Project
-     */
-    public function setStudentEnrollments($studentEnrollments)
+    public function setStudentEnrollments(Collection $studentEnrollments): static
     {
         $this->studentEnrollments = $studentEnrollments;
         return $this;
     }
 
-    /**
-     * @return ?Survey
-     */
-    public function getStudentSurvey()
+    public function getStudentSurvey(): ?Survey
     {
         return $this->studentSurvey;
     }
 
-    /**
-     * @param ?Survey $studentSurvey
-     * @return Project
-     */
-    public function setStudentSurvey(?Survey $studentSurvey = null)
+    public function setStudentSurvey(?Survey $studentSurvey): static
     {
         $this->studentSurvey = $studentSurvey;
         return $this;
     }
 
-    /**
-     * @return ?Survey
-     */
-    public function getCompanySurvey()
+    public function getCompanySurvey(): ?Survey
     {
         return $this->companySurvey;
     }
 
-    /**
-     * @param ?Survey $companySurvey
-     * @return Project
-     */
-    public function setCompanySurvey(?Survey $companySurvey = null)
+    public function setCompanySurvey(?Survey $companySurvey): static
     {
         $this->companySurvey = $companySurvey;
         return $this;
     }
 
-    /**
-     * @return ?Survey
-     */
-    public function getEducationalTutorSurvey()
+    public function getEducationalTutorSurvey(): ?Survey
     {
         return $this->educationalTutorSurvey;
     }
 
-    /**
-     * @param ?Survey $educationalTutorSurvey
-     * @return Project
-     */
-    public function setEducationalTutorSurvey(?Survey $educationalTutorSurvey = null)
+    public function setEducationalTutorSurvey(?Survey $educationalTutorSurvey): static
     {
         $this->educationalTutorSurvey = $educationalTutorSurvey;
         return $this;
     }
 
-    /**
-     * @return ReportTemplate
-     */
-    public function getAttendanceReportTemplate()
+    public function getAttendanceReportTemplate(): ?ReportTemplate
     {
         return $this->attendanceReportTemplate;
     }
 
-    /**
-     * @param ReportTemplate $attendanceReportTemplate
-     * @return Project
-     */
-    public function setAttendanceReportTemplate($attendanceReportTemplate)
+    public function setAttendanceReportTemplate(?ReportTemplate $attendanceReportTemplate): static
     {
         $this->attendanceReportTemplate = $attendanceReportTemplate;
         return $this;
     }
 
-    /**
-     * @return ReportTemplate
-     */
-    public function getWeeklyActivityReportTemplate()
+    public function getWeeklyActivityReportTemplate(): ?ReportTemplate
     {
         return $this->weeklyActivityReportTemplate;
     }
 
-    /**
-     * @param ReportTemplate $weeklyActivityReportTemplate
-     * @return Project
-     */
-    public function setWeeklyActivityReportTemplate($weeklyActivityReportTemplate)
+    public function setWeeklyActivityReportTemplate(?ReportTemplate $weeklyActivityReportTemplate): static
     {
         $this->weeklyActivityReportTemplate = $weeklyActivityReportTemplate;
         return $this;
     }
 
     /**
-     * @return Agreement[]
+     * @return Collection<int, Agreement>
      */
-    public function getAgreements()
+    public function getAgreements(): Collection
     {
         return $this->agreements;
     }
 
     /**
-     * @param Agreement[] $agreements
-     * @return Project
+     * @return Collection<int, Activity>
      */
-    public function setAgreements($agreements)
-    {
-        $this->agreements = $agreements;
-        return $this;
-    }
-
-    /**
-     * @return Activity[]
-     */
-    public function getActivities()
+    public function getActivities(): Collection
     {
         return $this->activities;
     }
 
-    /**
-     * @param Activity[] $activities
-     * @return Project
-     */
-    public function setActivities($activities)
-    {
-        $this->activities = $activities;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isLocked()
+    public function isLocked(): ?bool
     {
         return $this->locked;
     }
 
-    /**
-     * @param bool $locked
-     * @return Project
-     */
-    public function setLocked(bool $locked)
+    public function setLocked(bool $locked): static
     {
         $this->locked = $locked;
         return $this;
