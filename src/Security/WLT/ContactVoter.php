@@ -32,20 +32,12 @@ class ContactVoter extends CachedVoter
     public const MANAGE = 'WLT_CONTACT_MANAGE';
     public const ACCESS = 'WLT_CONTACT_ACCESS';
 
-    /** @var AccessDecisionManagerInterface */
-    private $decisionManager;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly UserExtensionService $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->userExtensionService = $userExtensionService;
     }
 
     /**

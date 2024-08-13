@@ -43,41 +43,10 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuthenticatorInterface
 {
     /**
-     * @var UserPasswordHasherInterface
-     */
-    private $encoder;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var SenecaAuthenticatorService
-     */
-    private $senecaAuthenticator;
-
-    /**
-     * @var ManagerRegistry
-     */
-    private $managerRegistry;
-    private PersonRepository $personRepository;
-
-    /**
      * Constructor
      */
-    public function __construct(
-        RouterInterface $router,
-        UserPasswordHasherInterface $encoder,
-        SenecaAuthenticatorService $senecaAuthenticator,
-        PersonRepository $personRepository,
-        ManagerRegistry $managerRegistry
-    ) {
-        $this->router = $router;
-        $this->encoder = $encoder;
-        $this->senecaAuthenticator = $senecaAuthenticator;
-        $this->personRepository = $personRepository;
-        $this->managerRegistry = $managerRegistry;
+    public function __construct(private readonly RouterInterface $router, private readonly UserPasswordHasherInterface $encoder, private readonly SenecaAuthenticatorService $senecaAuthenticator, private readonly PersonRepository $personRepository, private readonly ManagerRegistry $managerRegistry)
+    {
     }
 
     final public function supports(Request $request): bool
@@ -164,7 +133,7 @@ class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuth
         }
 
         return new Passport(
-            new UserBadge($username, [$this->personRepository, 'findOneByUniqueIdentifierOrUsernameOrEmailAddress']),
+            new UserBadge($username, $this->personRepository->findOneByUniqueIdentifierOrUsernameOrEmailAddress(...)),
             new PasswordCredentials($plainPassword)
         );
     }

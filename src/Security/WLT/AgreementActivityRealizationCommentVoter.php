@@ -33,20 +33,12 @@ class AgreementActivityRealizationCommentVoter extends CachedVoter
     public const DELETE = 'WLT_AGREEMENT_ACTIVITY_REALIZATION_COMMENT_DELETE';
     public const ACCESS = 'WLT_AGREEMENT_ACTIVITY_REALIZATION_COMMENT_ACCESS';
 
-    /** @var AccessDecisionManagerInterface */
-    private $decisionManager;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly UserExtensionService $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->userExtensionService = $userExtensionService;
     }
 
     /**

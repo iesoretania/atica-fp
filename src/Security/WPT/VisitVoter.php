@@ -35,24 +35,13 @@ class VisitVoter extends CachedVoter
     public const MANAGE = 'WPT_VISIT_MANAGE';
     public const ACCESS = 'WPT_VISIT_ACCESS';
 
-    /** @var AccessDecisionManagerInterface */
-    private $decisionManager;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
-    private $agreementEnrollmentRepository;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService,
-        AgreementEnrollmentRepository $agreementEnrollmentRepository
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly UserExtensionService $userExtensionService,
+        private readonly AgreementEnrollmentRepository $agreementEnrollmentRepository
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->userExtensionService = $userExtensionService;
-        $this->agreementEnrollmentRepository = $agreementEnrollmentRepository;
     }
 
     /**

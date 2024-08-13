@@ -33,30 +33,14 @@ class WorkcenterVoter extends CachedVoter
     public const MANAGE = 'WORKCENTER_MANAGE';
     public const ACCESS = 'WORKCENTER_ACCESS';
 
-    /** @var AccessDecisionManagerInterface */
-    private $decisionManager;
-
-    /** @var UserExtensionService $userExtensionService */
-    private $userExtensionService;
-
-    /** @var TeacherRepository */
-    private $teacherRepository;
-
-    /** @var TrainingRepository */
-    private $trainingRepository;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService,
-        TeacherRepository $teacherRepository,
-        TrainingRepository $trainingRepository
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly UserExtensionService $userExtensionService,
+        private readonly TeacherRepository $teacherRepository,
+        private readonly TrainingRepository $trainingRepository
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->userExtensionService = $userExtensionService;
-        $this->teacherRepository = $teacherRepository;
-        $this->trainingRepository = $trainingRepository;
     }
 
     /**

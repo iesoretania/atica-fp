@@ -34,25 +34,13 @@ class GroupVoter extends CachedVoter
     public const ACCESS = 'EDU_GROUP_ACCESS';
     public const TEACH = 'EDU_GROUP_TEACH';
 
-    /** @var AccessDecisionManagerInterface */
-    private $decisionManager;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
-    /** @var TeachingRepository */
-    private $teachingRepository;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        TeachingRepository $teachingRepository,
-        UserExtensionService $userExtensionService
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly TeachingRepository $teachingRepository,
+        private readonly UserExtensionService $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->teachingRepository = $teachingRepository;
-        $this->userExtensionService = $userExtensionService;
     }
 
     /**
@@ -125,22 +113,15 @@ class GroupVoter extends CachedVoter
             $subject,
             $user
         ) > 0;
-
-        switch ($attribute) {
+        return match ($attribute) {
             // Si es permiso de gestión, el tutor de grupo
-            case self::MANAGE:
-                return $isGroupTutor;
-
+            self::MANAGE => $isGroupTutor,
             // Si es permiso de acceso, el tutor de grupo o un docente
-            case self::ACCESS:
-                return $isTeacher || $isGroupTutor;
-
+            self::ACCESS => $isTeacher || $isGroupTutor,
             // Si es permiso para enseñar, un docente
-            case self::TEACH:
-                return $isTeacher;
-        }
-
-        // denegamos en cualquier otro caso
-        return false;
+            self::TEACH => $isTeacher,
+            // denegamos en cualquier otro caso
+            default => false,
+        };
     }
 }

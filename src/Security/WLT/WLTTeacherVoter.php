@@ -35,27 +35,14 @@ class WLTTeacherVoter extends CachedVoter
     public const ACCESS_EDUCATIONAL_TUTOR_SURVEY = 'WLT_TEACHER_EDUCATIONAL_TUTOR_SURVEY_ACCESS';
     public const FILL_EDUCATIONAL_TUTOR_SURVEY = 'WLT_TEACHER_EDUCATIONAL_TUTOR_SURVEY_FILL';
 
-    /** @var AccessDecisionManagerInterface */
-    private $decisionManager;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-    /**
-     * @var ProjectRepository
-     */
-    private $projectRepository;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        ProjectRepository $projectRepository,
-        UserExtensionService $userExtensionService
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly ProjectRepository $projectRepository,
+        private readonly UserExtensionService $userExtensionService
     )
     {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->userExtensionService = $userExtensionService;
-        $this->projectRepository = $projectRepository;
     }
 
     /**
@@ -106,19 +93,15 @@ class WLTTeacherVoter extends CachedVoter
         if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
             return true;
         }
-
-        switch ($attribute) {
-            case self::ACCESS_EDUCATIONAL_TUTOR_SURVEY:
-                return $this->checkAccessPermission($subject, $user);
-            case self::FILL_EDUCATIONAL_TUTOR_SURVEY:
-                // El permiso de rellenar la encuesta es el mismo que el de acceso salvo por el hecho
-                // de que se deshabilita en los cursos académicos no activos
-                return $this->checkAccessPermission($subject, $user)
-                    && $subject->getAcademicYear() === $organization->getCurrentAcademicYear();
-        }
-
-        // denegamos en cualquier otro caso
-        return false;
+        return match ($attribute) {
+            self::ACCESS_EDUCATIONAL_TUTOR_SURVEY => $this->checkAccessPermission($subject, $user),
+            // El permiso de rellenar la encuesta es el mismo que el de acceso salvo por el hecho
+            // de que se deshabilita en los cursos académicos no activos
+            self::FILL_EDUCATIONAL_TUTOR_SURVEY => $this->checkAccessPermission($subject, $user)
+                && $subject->getAcademicYear() === $organization->getCurrentAcademicYear(),
+            // denegamos en cualquier otro caso
+            default => false,
+        };
     }
 
     private function checkAccessPermission(Teacher $subject, Person $user)

@@ -40,20 +40,12 @@ class ProjectVoter extends CachedVoter
     public const REPORT_GRADING = 'WLT_GRADING_REPORT';
     public const REPORT_LEARNING_PROGRAM = 'WLT_LEARNING_PROGRAM';
 
-    /** @var AccessDecisionManagerInterface */
-    private $decisionManager;
-
-    /** @var UserExtensionService */
-    private $userExtensionService;
-
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
-        AccessDecisionManagerInterface $decisionManager,
-        UserExtensionService $userExtensionService
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly UserExtensionService $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
-        $this->decisionManager = $decisionManager;
-        $this->userExtensionService = $userExtensionService;
     }
 
     /**
