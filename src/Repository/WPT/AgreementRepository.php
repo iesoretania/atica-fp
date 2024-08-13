@@ -34,17 +34,12 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class AgreementRepository extends ServiceEntityRepository
 {
-    private $workDayRepository;
-    private $agreementEnrollmentRepository;
-
     public function __construct(
         ManagerRegistry $registry,
-        WorkDayRepository $workDayRepository,
-        AgreementEnrollmentRepository $agreementEnrollmentRepository
+        private readonly WorkDayRepository $workDayRepository,
+        private readonly AgreementEnrollmentRepository $agreementEnrollmentRepository
     ) {
         parent::__construct($registry, Agreement::class);
-        $this->workDayRepository = $workDayRepository;
-        $this->agreementEnrollmentRepository = $agreementEnrollmentRepository;
     }
 
     public function findByShiftQueryBuilder(
@@ -166,7 +161,7 @@ class AgreementRepository extends ServiceEntityRepository
                 ->select('COUNT(a)')
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
         }
 
         return 0;
@@ -199,7 +194,7 @@ class AgreementRepository extends ServiceEntityRepository
                 ->setParameter('academic_year', $academicYear)
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
         }
 
         return 0;
@@ -232,7 +227,7 @@ class AgreementRepository extends ServiceEntityRepository
                 ->setParameter('academic_year', $academicYear)
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
         }
 
         return 0;
@@ -259,13 +254,13 @@ class AgreementRepository extends ServiceEntityRepository
     public function updateDates(Agreement $agreement)
     {
         $workDays = $this->workDayRepository->findByAgreement($agreement);
-        if ((is_array($workDays) || $workDays instanceof \Countable ? count($workDays) : 0) === 0) {
+        if ((is_countable($workDays) ? count($workDays) : 0) === 0) {
             return;
         }
         /** @var WorkDay $first */
         $first = $workDays[0];
         /** @var WorkDay $last */
-        $last = $workDays[(is_array($workDays) || $workDays instanceof \Countable ? count($workDays) : 0) - 1];
+        $last = $workDays[(is_countable($workDays) ? count($workDays) : 0) - 1];
         $agreement
             ->setStartDate($first->getDate())
             ->setEndDate($last->getDate());
@@ -276,7 +271,7 @@ class AgreementRepository extends ServiceEntityRepository
     public function cloneCalendarFromAgreement(Agreement $destination, Agreement $source, $overwrite = false)
     {
         $workDays = $this->workDayRepository->findByAgreement($source);
-        if ((is_array($workDays) || $workDays instanceof \Countable ? count($workDays) : 0) === 0) {
+        if ((is_countable($workDays) ? count($workDays) : 0) === 0) {
             return;
         }
 

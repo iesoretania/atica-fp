@@ -28,13 +28,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class OrganizationRepository extends ServiceEntityRepository
 {
-    /** @var OrganizationBuilderChain */
-    private $builderChain;
-
-    public function __construct(ManagerRegistry $registry, OrganizationBuilderChain $builderChain)
+    public function __construct(ManagerRegistry $registry, private readonly OrganizationBuilderChain $builderChain)
     {
         parent::__construct($registry, Organization::class);
-        $this->builderChain = $builderChain;
     }
 
     public function createEducationalOrganization()

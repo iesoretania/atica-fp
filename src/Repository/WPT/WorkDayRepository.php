@@ -30,17 +30,12 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class WorkDayRepository extends ServiceEntityRepository
 {
-    private $nonWorkingDayRepository;
-    private $activityTrackingRepository;
-
     public function __construct(
         ManagerRegistry $registry,
-        NonWorkingDayRepository $nonWorkingDayRepository,
-        ActivityTrackingRepository $activityTrackingRepository
+        private readonly NonWorkingDayRepository $nonWorkingDayRepository,
+        private readonly ActivityTrackingRepository $activityTrackingRepository
     ) {
         parent::__construct($registry, WorkDay::class);
-        $this->nonWorkingDayRepository = $nonWorkingDayRepository;
-        $this->activityTrackingRepository = $activityTrackingRepository;
     }
 
     public function findByAgreement(Agreement $agreement)
@@ -62,7 +57,7 @@ class WorkDayRepository extends ServiceEntityRepository
                 ->setParameter('agreement', $agreement)
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
         }
         return 0;
     }
@@ -108,7 +103,7 @@ class WorkDayRepository extends ServiceEntityRepository
                 ->setParameter('agreement', $agreement)
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
         }
         return 0;
     }
@@ -122,7 +117,7 @@ class WorkDayRepository extends ServiceEntityRepository
                 ->setParameter('agreement', $agreement)
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
         }
         return 0;
     }

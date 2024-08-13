@@ -110,7 +110,7 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
         }
-        catch(NonUniqueResultException $e) {
+        catch(NonUniqueResultException) {
             return null;
         }
     }

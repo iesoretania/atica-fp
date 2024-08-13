@@ -32,12 +32,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class StudentAnsweredSurveyRepository extends ServiceEntityRepository
 {
-    private $agreementRepository;
-
-    public function __construct(ManagerRegistry $registry, AgreementRepository $agreementRepository)
+    public function __construct(ManagerRegistry $registry, private readonly AgreementRepository $agreementRepository)
     {
         parent::__construct($registry, StudentAnsweredSurvey::class);
-        $this->agreementRepository = $agreementRepository;
     }
 
     public function findOneByProjectAndStudentEnrollment(
