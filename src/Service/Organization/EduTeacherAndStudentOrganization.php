@@ -24,14 +24,8 @@ use App\Service\OrganizationBuilderInterface;
 
 class EduTeacherAndStudentOrganization implements OrganizationBuilderInterface
 {
-    /**
-     * @var EduOrganizationRepository
-     */
-    private $eduOrganizationRepository;
-
-    public function __construct(EduOrganizationRepository $eduOrganizationRepository)
+    public function __construct(private readonly EduOrganizationRepository $eduOrganizationRepository)
     {
-        $this->eduOrganizationRepository = $eduOrganizationRepository;
     }
 
     public function getOrganizations(Person $person): array

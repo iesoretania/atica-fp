@@ -22,20 +22,13 @@ use phpseclib3\Math\BigInteger;
 
 class SenecaAuthenticatorService
 {
-    /** @var string */
-    private $url;
-
-    /** @var boolean */
-    private $forceSecurity;
-
-    /** @var boolean */
-    private $enabled;
-
-    public function __construct($url, $forceSecurity, $enabled)
+    /**
+     * @param string $url
+     * @param bool $forceSecurity
+     * @param bool $enabled
+     */
+    public function __construct(private $url, private $forceSecurity, private $enabled)
     {
-        $this->url = $url;
-        $this->forceSecurity = $forceSecurity;
-        $this->enabled = $enabled;
     }
 
     /**
@@ -63,17 +56,7 @@ class SenecaAuthenticatorService
             new BigInteger('356056806984207294102423357623243547284021', 10)
         )->toString();
 
-        $fields = array(
-            'USUARIO' => $user,
-            'rndval' => random_int(10000000, 99999999),
-            'CLAVECIFRADA' => $passwordCifrada,
-            'CON_PRUEBA' => 'N',
-            'N_V_' => 'NV_' . random_int(1, 9999),
-            'NAV_WEB_NOMBRE' => 'Chrome',
-            'NAV_WEB_VERSION' => '99',
-            'C_INTERFAZ' => 'PASEN'
-
-        );
+        $fields = ['USUARIO' => $user, 'rndval' => random_int(10000000, 99999999), 'CLAVECIFRADA' => $passwordCifrada, 'CON_PRUEBA' => 'N', 'N_V_' => 'NV_' . random_int(1, 9999), 'NAV_WEB_NOMBRE' => 'Chrome', 'NAV_WEB_VERSION' => '99', 'C_INTERFAZ' => 'PASEN'];
 
         $str = $this->postToUrl($fields, $this->url, $this->url, $this->forceSecurity);
 
@@ -120,7 +103,7 @@ class SenecaAuthenticatorService
     {
         $fieldsString = '';
         foreach ($fields as $key => $value) {
-            $fieldsString .= $key.'='.rawurlencode($value).'&';
+            $fieldsString .= $key.'='.rawurlencode((string) $value).'&';
         }
         $fieldsString = rtrim($fieldsString, '&');
 

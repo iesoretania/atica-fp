@@ -23,16 +23,10 @@ use App\Entity\Person;
 class OrganizationBuilderChain
 {
     /**
-     * @var OrganizationBuilderInterface[]
-     */
-    private $organizationBuilders;
-
-    /**
      * @param OrganizationBuilderInterface[] $organizationBuilders
      */
-    public function __construct($organizationBuilders)
+    public function __construct(private $organizationBuilders)
     {
-        $this->organizationBuilders = $organizationBuilders;
     }
 
     final public function getOrganizations(Person $person) : array

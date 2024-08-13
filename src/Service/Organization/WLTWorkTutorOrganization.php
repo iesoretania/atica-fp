@@ -24,14 +24,8 @@ use App\Service\OrganizationBuilderInterface;
 
 class WLTWorkTutorOrganization implements OrganizationBuilderInterface
 {
-    /**
-     * @var WLTOrganizationRepository
-     */
-    private $wltOrganizationRepository;
-
-    public function __construct(WLTOrganizationRepository $wltOrganizationRepository)
+    public function __construct(private readonly WLTOrganizationRepository $wltOrganizationRepository)
     {
-        $this->wltOrganizationRepository = $wltOrganizationRepository;
     }
 
     public function getOrganizations(Person $person): array

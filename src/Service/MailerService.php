@@ -27,22 +27,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MailerService
 {
-    private MailerInterface $mailer;
-
-    private $prefix;
-    private $from;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct($prefix, $from, MailerInterface $mailer, TranslatorInterface $translator)
+    public function __construct(private $prefix, private $from, private readonly MailerInterface $mailer, private readonly TranslatorInterface $translator)
     {
-        $this->mailer = $mailer;
-        $this->translator = $translator;
-        $this->prefix = $prefix;
-        $this->from = $from;
     }
 
     /**
@@ -74,7 +60,7 @@ class MailerService
 
         try {
             $this->mailer->send($msg);
-        } catch (TransportExceptionInterface $e) {
+        } catch (TransportExceptionInterface) {
             return 0;
         }
 
