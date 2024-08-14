@@ -124,9 +124,7 @@ class TrainingController extends AbstractController
 
         $queryBuilder
             ->select('t')
-            ->addSelect('gr')
             ->from(Training::class, 't')
-            ->leftJoin('t.grades', 'gr')
             ->orderBy('t.name');
 
         $q = $request->get('q');
