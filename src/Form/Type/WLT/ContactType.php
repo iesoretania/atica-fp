@@ -52,17 +52,16 @@ class ContactType extends AbstractType
      */
     private function addElements(
         FormInterface $form,
-        AcademicYear $academicYear = null,
-        Workcenter $workcenter = null,
-        $selectedProjects = [],
-        $teachers = [],
-        \DateTimeInterface $dateTime = null
+        AcademicYear $academicYear,
+        Workcenter $workcenter,
+        $selectedProjects,
+        $teachers,
+        \DateTimeInterface $dateTime
     ): void {
         $workcenters = $this->workcenterRepository->findAllSorted();
         $methods = [];
 
-        if ($academicYear &&
-            $academicYear->getOrganization() === $this->userExtensionService->getCurrentOrganization()
+        if ($academicYear->getOrganization() === $this->userExtensionService->getCurrentOrganization()
         ) {
             if (!$teachers) {
                 $teachers = $this->wltTeacherRepository->findByAcademicYear($academicYear);

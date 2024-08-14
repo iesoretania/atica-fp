@@ -50,12 +50,12 @@ class VisitType extends AbstractType
      */
     private function addElements(
         FormInterface $form,
-        AcademicYear $academicYear = null,
-        Workcenter $workcenter = null,
-        Teacher $teacher = null,
-        $selectedAgreements = [],
-        $teachers = [],
-        \DateTimeInterface $dateTime = null
+        ?AcademicYear $academicYear,
+        ?Workcenter $workcenter,
+        ?Teacher $teacher,
+        $selectedAgreements,
+        $teachers,
+        \DateTimeInterface $dateTime
     ): void {
         $workcenters = [];
 
