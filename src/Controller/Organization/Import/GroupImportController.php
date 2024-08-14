@@ -137,10 +137,10 @@ class GroupImportController extends AbstractController
                     $gradeName = $groupData['Curso'];
 
                     // Si se ha activado el modo restringido, solo crear los grupos
-                    // que contengan la cadena F.P., C.F.G., G.E.G. en curso
+                    // que contengan la cadena F.P., C.F.G., C.E.G. en curso
                     if ($restricted
                         && !str_contains((string) $gradeName, 'F.P.')
-                        && !str_contains((string) $gradeName, 'G.E.G.')
+                        && !str_contains((string) $gradeName, 'C.E.G.')
                         && !str_contains((string) $gradeName, 'C.F.G.')) {
                         continue;
                     }
@@ -187,7 +187,6 @@ class GroupImportController extends AbstractController
                             $grade = $gradeCollection[$calculatedGradeName];
                         }
 
-
                         if (null === $grade) {
                             $grade = new Grade();
                             $grade
@@ -197,7 +196,7 @@ class GroupImportController extends AbstractController
                             $em->persist($grade);
                         }
 
-                        $gradeCollection[$gradeName] = $grade;
+                        $gradeCollection[$calculatedGradeName] = $grade;
                     }
 
                     $group = null;
