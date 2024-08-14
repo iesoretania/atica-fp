@@ -69,7 +69,8 @@ class ContactController extends AbstractController
         WLTGroupRepository $wltGroupRepository,
         WLTTeacherRepository $wltTeacherRepository,
         ManagerRegistry $managerRegistry
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_CREATE_VISIT, $organization);
 

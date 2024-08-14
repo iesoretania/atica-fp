@@ -43,7 +43,8 @@ class TravelRouteController extends AbstractController
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 

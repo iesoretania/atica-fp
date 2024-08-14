@@ -112,9 +112,6 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    /**
-     * @return int
-     */
     public function countByAgreement(Agreement $agreement): int
     {
         try {
@@ -129,7 +126,7 @@ class WorkDayRepository extends ServiceEntityRepository
         return 0;
     }
 
-    public function findByAgreementGroupByMonthAndWeekNumber(Agreement $agreement)
+    public function findByAgreementGroupByMonthAndWeekNumber(Agreement $agreement): array
     {
         return self::groupByMonthAndWeekNumber($this->findAndCountByAgreement($agreement));
     }
@@ -190,7 +187,7 @@ class WorkDayRepository extends ServiceEntityRepository
                 } else {
                     $workDay = null;
                 }
-                if (null === $workDay) {
+                if (!$workDay instanceof WorkDay) {
                     $workDay = new WorkDay();
                     $workDay
                         ->setAgreement($agreement)
@@ -228,10 +225,10 @@ class WorkDayRepository extends ServiceEntityRepository
         Agreement $agreement,
         \DateTimeInterface $startDate,
         $hours,
-        $weekHours,
+        array $weekHours,
         $overWrite,
         $ignoreNonWorkingDays
-    ) {
+    ): array {
         $workDays = $this->createWorkDayCollectionByAcademicYear(
             $agreement,
             $startDate,
@@ -369,7 +366,7 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function updateWeekLock($year, $week, Agreement $agreement, $value)
+    public function updateWeekLock(string $year, $week, Agreement $agreement, $value)
     {
         $items = $this->findByYearWeekAndAgreement($year, $week, $agreement);
         return $this->updateLock($items, $agreement, $value);

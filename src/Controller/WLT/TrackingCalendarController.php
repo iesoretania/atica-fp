@@ -62,9 +62,9 @@ class TrackingCalendarController extends AbstractController
         $today->setTime(0, 0);
         $workDayToday = $workDayRepository->findOneByAgreementAndDate($agreement, $today);
 
-        $workDayStats = !$agreement->getWorkDays()->isEmpty()
-            ? $workDayRepository->hoursStatsByAgreement($agreement)
-            : [];
+        $workDayStats = $agreement->getWorkDays()->isEmpty()
+            ? []
+            : $workDayRepository->hoursStatsByAgreement($agreement);
 
         $activityRealizations = $agreementActivityRealizationRepository->findByAgreementSorted($agreement);
         $workedActivityRealizations = $agreementActivityRealizationRepository->findSubmittedByAgreement($agreement);

@@ -19,7 +19,9 @@ return RectorConfig::configure()
     ->withPhpSets(php82: true)
     ->withAttributesSets(symfony: true, doctrine: true)
     ->withSets([
-        SymfonySetList::SYMFONY_54
+        SymfonySetList::SYMFONY_60,
+        SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES,
+        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION
     ])
     ->withRules([
         ReturnTypeFromStrictNativeCallRector::class,

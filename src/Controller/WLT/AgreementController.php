@@ -37,6 +37,7 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,7 +54,8 @@ class AgreementController extends AbstractController
         AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
         ManagerRegistry $managerRegistry,
         Project $project
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
@@ -289,7 +291,7 @@ class AgreementController extends AbstractController
         AgreementRepository $agreementRepository,
         ManagerRegistry $managerRegistry,
         Project $project
-    ) {
+    ): Response|RedirectResponse {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);

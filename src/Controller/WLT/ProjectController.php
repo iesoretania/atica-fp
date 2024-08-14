@@ -137,7 +137,8 @@ class ProjectController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 

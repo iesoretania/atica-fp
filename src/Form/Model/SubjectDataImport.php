@@ -29,10 +29,7 @@ class SubjectDataImport
     #[Assert\File]
     private ?UploadedFile $file = null;
 
-    /**
-     * @return ?Grade
-     */
-    public function getGrade()
+    public function getGrade(): ?Grade
     {
         return $this->grade;
     }

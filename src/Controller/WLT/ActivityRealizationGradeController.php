@@ -43,7 +43,8 @@ class ActivityRealizationGradeController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Project $project
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $activityRealizationGrade = new ActivityRealizationGrade();

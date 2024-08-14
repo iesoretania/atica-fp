@@ -53,7 +53,8 @@ class ActivityController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Shift $shift
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
 

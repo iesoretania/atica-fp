@@ -43,7 +43,8 @@ class LearningOutcomeController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Subject $subject
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $subject->getGrade()->getTraining());
 
         $learningOutcome = new LearningOutcome();

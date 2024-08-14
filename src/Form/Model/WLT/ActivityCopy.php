@@ -22,7 +22,7 @@ use App\Entity\WLT\Project;
 
 class ActivityCopy
 {
-    private ?Project $project;
+    private ?Project $project = null;
 
     private bool $copyLearningProgram = true;
 

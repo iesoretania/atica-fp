@@ -44,7 +44,8 @@ class CompetencyController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Training $training
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
 
         $competency = new Competency();

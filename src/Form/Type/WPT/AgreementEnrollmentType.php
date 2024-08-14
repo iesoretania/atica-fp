@@ -50,11 +50,7 @@ class AgreementEnrollmentType extends AbstractType
         $studentEnrollments = $shift ? $this->WPTStudentEnrollmentRepository->findByShift($shift) : [];
         $teachers = $this->teacherRepository->findByAcademicYear($academicYear);
 
-        if ($shift) {
-            $activities = $shift->getActivities();
-        } else {
-            $activities = [];
-        }
+        $activities = $shift ? $shift->getActivities() : [];
 
         $form
             ->add('studentEnrollment', EntityType::class, [

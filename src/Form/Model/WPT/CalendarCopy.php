@@ -25,7 +25,7 @@ class CalendarCopy
     public const OVERWRITE_ACTION_REPLACE = 1;
     public const OVERWRITE_ACTION_ADD = 2;
 
-    private ?Agreement $agreement;
+    private ?Agreement $agreement = null;
 
     private int $overwriteAction = self::OVERWRITE_ACTION_REPLACE;
 

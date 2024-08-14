@@ -61,7 +61,8 @@ class VisitController extends AbstractController
         WPTGroupRepository $WPTGroupRepository,
         ManagerRegistry $managerRegistry,
         Teacher $teacher
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_CREATE_VISIT, $organization);
 

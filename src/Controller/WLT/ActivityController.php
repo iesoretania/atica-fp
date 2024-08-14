@@ -47,7 +47,8 @@ class ActivityController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Project $project
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $activity = new Activity();
