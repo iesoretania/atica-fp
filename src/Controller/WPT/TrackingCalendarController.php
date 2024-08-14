@@ -18,6 +18,7 @@
 
 namespace App\Controller\WPT;
 
+use App\Entity\Edu\ReportTemplate;
 use App\Entity\WPT\Activity;
 use App\Entity\WPT\ActivityTracking;
 use App\Entity\WPT\AgreementEnrollment;
@@ -39,6 +40,7 @@ use Mpdf\Output\Destination;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,7 +60,8 @@ class TrackingCalendarController extends AbstractController
         ActivityRepository $activityRepository,
         ActivityTrackingRepository $activityTrackingRepository,
         AgreementEnrollment $agreementEnrollment
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::ACCESS, $agreementEnrollment);
 
         $readOnly = !$this->isGranted(AgreementEnrollmentVoter::LOCK, $agreementEnrollment);
@@ -130,7 +133,8 @@ class TrackingCalendarController extends AbstractController
         ManagerRegistry $managerRegistry,
         WorkDay $workDay,
         AgreementEnrollment $agreementEnrollment
-    ) {
+    ): Response
+    {
         $trackedWorkDay = $trackedWorkDayRepository->findOneOrNewByWorkDayAndAgreementEnrollment(
             $workDay,
             $agreementEnrollment
@@ -234,7 +238,8 @@ class TrackingCalendarController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         AgreementEnrollment $agreementEnrollment
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::ACCESS, $agreementEnrollment);
         if ($request->get('week_report')) {
             $year = floor($request->get('week_report') / 100);
@@ -352,7 +357,7 @@ class TrackingCalendarController extends AbstractController
 
         try {
             $template = $agreementEnrollment->getAgreement()->getShift()->getAttendanceReportTemplate();
-            if ($template) {
+            if ($template instanceof ReportTemplate) {
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $template->getData());
                 $mpdf->SetDocTemplate($tmp, true);
@@ -414,7 +419,7 @@ class TrackingCalendarController extends AbstractController
 
         try {
             $template = $agreementEnrollment->getAgreement()->getShift()->getActivitySummaryReportTemplate();
-            if ($template) {
+            if ($template instanceof ReportTemplate) {
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $template->getData());
                 $mpdf->SetDocTemplate($tmp, true);
@@ -488,7 +493,8 @@ class TrackingCalendarController extends AbstractController
         TrackedWorkDayRepository $trackedWorkDayRepository,
         $year,
         $week
-    ) {
+    ): Response
+    {
         $weekDays = $trackedWorkDayRepository->findByYearWeekAndAgreementEnrollment($year, $week, $agreementEnrollment);
 
         if ((is_countable($weekDays) ? count($weekDays) : 0) === 0) {
@@ -508,7 +514,7 @@ class TrackingCalendarController extends AbstractController
         $tmp = '';
 
         try {
-            if ($agreementEnrollment->getAgreement()->getShift()->getWeeklyActivityReportTemplate()) {
+            if ($agreementEnrollment->getAgreement()->getShift()->getWeeklyActivityReportTemplate() instanceof ReportTemplate) {
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents(
                     $tmp,
@@ -768,9 +774,9 @@ class TrackingCalendarController extends AbstractController
         $w,
         $h,
         $overflow = 'auto',
-        $align = 'left',
+        string $align = 'left',
         $escape = true
-    ) {
+    ): void {
         if ($escape) {
             $text = nl2br(htmlentities((string) $text));
         }
@@ -790,7 +796,8 @@ class TrackingCalendarController extends AbstractController
         ActivityRepository $activityRepository,
         ActivityTrackingRepository $activityTrackingRepository,
         AgreementEnrollment $agreementEnrollment
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::ACCESS, $agreementEnrollment);
 
         $readOnly = !$this->isGranted(AgreementEnrollmentVoter::LOCK, $agreementEnrollment);
@@ -869,7 +876,8 @@ class TrackingCalendarController extends AbstractController
         ManagerRegistry $managerRegistry,
         WorkDay $workDay,
         AgreementEnrollment $agreementEnrollment
-    ) {
+    ): Response
+    {
         try {
             $trackedWorkDay = $trackedWorkDayRepository->findOneOrNewByWorkDayAndAgreementEnrollment(
                 $workDay,
@@ -880,7 +888,7 @@ class TrackingCalendarController extends AbstractController
         } catch (\Exception) {
             return new JsonResponse([
                                         'result' => 'error'
-                                    ], \Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
+                                    ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         if (!$trackedWorkDay instanceof TrackedWorkDay) {
@@ -939,7 +947,8 @@ class TrackingCalendarController extends AbstractController
         ManagerRegistry $managerRegistry,
         Request $request,
         TrackedWorkDay $trackedWorkDay
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(TrackedWorkDayVoter::FILL, $trackedWorkDay);
 
         if ($request->get('absence', null) !== null) {
@@ -951,7 +960,7 @@ class TrackingCalendarController extends AbstractController
             if ($absence !== TrackedWorkDay::NO_ABSENCE
                 && $absence !== TrackedWorkDay::JUSTIFIED_ABSENCE
                 && $absence !== TrackedWorkDay::UNJUSTIFIED_ABSENCE) {
-                return $this->createAccessDeniedException();
+                throw $this->createAccessDeniedException();
             }
             $trackedWorkDay->setAbsence($absence);
         }
@@ -972,7 +981,7 @@ class TrackingCalendarController extends AbstractController
         } catch (\Exception) {
             return new JsonResponse([
                                         'result' => 'error'
-                                    ], \Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
+                                    ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -982,11 +991,12 @@ class TrackingCalendarController extends AbstractController
         ManagerRegistry $managerRegistry,
         TrackedWorkDay $trackedWorkDay,
         Activity $activity
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(TrackedWorkDayVoter::FILL, $trackedWorkDay);
 
         if ($request->get('hours', null) === null) {
-            return $this->createAccessDeniedException();
+            throw $this->createAccessDeniedException();
         }
 
         $trackedActivities = $trackedWorkDay->getTrackedActivities();
@@ -1025,11 +1035,20 @@ class TrackingCalendarController extends AbstractController
         if (!$found) {
             return new JsonResponse([
                                         'result' => 'not found'
-                                    ], \Symfony\Component\HttpFoundation\Response::HTTP_NOT_FOUND);
+                                    ], Response::HTTP_NOT_FOUND);
         }
 
         try {
-            $trackedWorkDay->setTrackedActivities($trackedActivities);
+            $oldTrackedActivities = $trackedWorkDay->getTrackedActivities();
+            foreach ($oldTrackedActivities as $oldTrackedActivity) {
+                if (!$trackedActivities->contains($oldTrackedActivity)) {
+                    $em->remove($oldTrackedActivity);
+                }
+            }
+            foreach ($trackedActivities as $trackedActivity) {
+                $trackedActivity->setTrackedWorkDay($trackedWorkDay);
+            }
+
             $em->flush();
             return new JsonResponse([
                                         'result' => 'ok'
@@ -1037,7 +1056,7 @@ class TrackingCalendarController extends AbstractController
         } catch (\Exception) {
             return new JsonResponse([
                                         'result' => 'error'
-                                    ], \Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
+                                    ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

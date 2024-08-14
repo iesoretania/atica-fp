@@ -40,21 +40,15 @@ class TravelRoute implements \Stringable
     private ?string $description = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $verified;
+    private ?bool $verified = false;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $distance;
-
-    public function __construct()
-    {
-        $this->verified = false;
-        $this->distance = 0;
-    }
+    private ?int $distance = 0;
 
 
     public function __toString(): string
     {
-        return $this->getDescription();
+        return (string) $this->getDescription();
     }
 
     public function getId(): ?int

@@ -22,47 +22,27 @@ use App\Entity\WLT\Project;
 
 class ActivityCopy
 {
-    /** @var Project */
-    private $project;
+    private ?Project $project;
 
-    /** @var bool */
-    private $copyLearningProgram = true;
+    private bool $copyLearningProgram = true;
 
-    public function __construct()
-    {
-    }
-
-    /**
-     * @return Project
-     */
-    public function getProject()
+    public function getProject(): ?Project
     {
         return $this->project;
     }
 
-    /**
-     * @param Project $project
-     * @return ActivityCopy
-     */
-    public function setProject($project)
+    public function setProject(Project $project): static
     {
         $this->project = $project;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function getCopyLearningProgram()
+    public function getCopyLearningProgram(): bool
     {
         return $this->copyLearningProgram;
     }
 
-    /**
-     * @param bool $copyLearningProgram
-     * @return ActivityCopy
-     */
-    public function setCopyLearningProgram($copyLearningProgram)
+    public function setCopyLearningProgram(bool $copyLearningProgram): static
     {
         $this->copyLearningProgram = $copyLearningProgram;
         return $this;

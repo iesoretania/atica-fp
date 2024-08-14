@@ -31,7 +31,9 @@ use App\Security\WPT\WPTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -44,7 +46,7 @@ class AgreementCalendarController extends AbstractController
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
         Agreement $agreement
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
@@ -89,7 +91,7 @@ class AgreementCalendarController extends AbstractController
         AgreementRepository $agreementRepository,
         ManagerRegistry $managerRegistry,
         Agreement $agreement
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
 
         $title = $translator->trans('title.calendar.add', [], 'wpt_agreement');
@@ -176,7 +178,7 @@ class AgreementCalendarController extends AbstractController
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry,
         WorkDay $workDay
-    ) {
+    ): Response {
         $agreement = $workDay->getAgreement();
 
         $organization = $userExtensionService->getCurrentOrganization();
@@ -242,7 +244,7 @@ class AgreementCalendarController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Agreement $agreement
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
 
         $items = $request->request->get('items', []);

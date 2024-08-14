@@ -25,22 +25,18 @@ class MenuBuilderChain
     /**
      * @var MenuBuilderInterface[]
      */
-    private $menuBuilders;
+    private array $menuBuilders = [];
 
-    /**
-     * @var MenuItem|null
-     */
-    private $menuCache;
+    private ?MenuItem $menuCache = null;
 
     public function __construct($menus)
     {
-        $this->menuBuilders = [];
         foreach ($menus as $menu) {
             $this->addMenuBuilder($menu);
         }
     }
 
-    public function addMenuBuilder($menuBuilder)
+    public function addMenuBuilder($menuBuilder): void
     {
         $this->menuBuilders[] = $menuBuilder;
     }
@@ -78,7 +74,7 @@ class MenuBuilderChain
         return $root;
     }
 
-    public function clearCache()
+    public function clearCache(): void
     {
         $this->menuCache = null;
     }

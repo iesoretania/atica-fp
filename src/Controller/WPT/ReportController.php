@@ -19,6 +19,7 @@
 namespace App\Controller\WPT;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Survey;
 use App\Entity\WPT\Shift;
 use App\Repository\AnsweredSurveyQuestionRepository;
 use App\Repository\Edu\AcademicYearRepository;
@@ -38,6 +39,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
@@ -47,7 +49,7 @@ use Twig\Environment;
 class ReportController extends AbstractController
 {
     #[Route(path: '/', name: 'workplace_training_report', methods: ['GET'])]
-    public function index(UserExtensionService $userExtensionService)
+    public function index(UserExtensionService $userExtensionService): Response
     {
         $this->denyAccessUnlessGranted(
             WPTOrganizationVoter::WPT_MANAGER,
@@ -62,18 +64,18 @@ class ReportController extends AbstractController
     }
 
     private function genericListAction(
-        Request $request,
-        UserExtensionService $userExtensionService,
-        TranslatorInterface $translator,
-        AcademicYearRepository $academicYearRepository,
-        ManagerRegistry $managerRegistry,
-        $title,
-        $routeName,
-        AcademicYear $academicYear = null,
-        int $page = 1
-    ) {
+        Request                  $request,
+        UserExtensionService     $userExtensionService,
+        TranslatorInterface      $translator,
+        AcademicYearRepository   $academicYearRepository,
+        ManagerRegistry          $managerRegistry,
+        string                   $title,
+        string                   $routeName,
+        AcademicYear             $academicYear = null,
+        int                      $page = 1
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if ($academicYear === null) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -138,13 +140,13 @@ class ReportController extends AbstractController
 
     #[Route(path: '/encuesta/estudiantes/listar/{academicYear}/{page}', name: 'workplace_training_report_student_survey_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
     public function studentList(
-        Request                                  $request,
-        UserExtensionService                     $userExtensionService,
-        TranslatorInterface                      $translator,
-        AcademicYearRepository                   $academicYearRepository,
-        \Doctrine\Persistence\ManagerRegistry $managerRegistry,
-        AcademicYear                             $academicYear = null,
-                                                 $page = 1
+        Request                $request,
+        UserExtensionService   $userExtensionService,
+        TranslatorInterface    $translator,
+        AcademicYearRepository $academicYearRepository,
+        ManagerRegistry        $managerRegistry,
+        AcademicYear           $academicYear = null,
+        int                    $page = 1
     ) {
         return $this->genericListAction(
             $request,
@@ -165,14 +167,16 @@ class ReportController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
-        $page = 1
+        int $page = 1
     ) {
         return $this->genericListAction(
             $request,
             $userExtensionService,
             $translator,
             $academicYearRepository,
+            $managerRegistry,
             'title.company_survey',
             'workplace_training_report_work_tutor_survey_report',
             $academicYear,
@@ -187,7 +191,7 @@ class ReportController extends AbstractController
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         AcademicYear $academicYear = null,
-        $page = 1
+        int $page = 1
     ) {
         return $this->genericListAction(
             $request,
@@ -224,7 +228,7 @@ class ReportController extends AbstractController
 
         $survey = $shift->getStudentSurvey();
 
-        if ($survey) {
+        if ($survey instanceof Survey) {
             $studentAnswers = $studentAnsweredSurveyRepository->findByShift($shift);
 
             $list = [];
@@ -241,7 +245,7 @@ class ReportController extends AbstractController
             $stats = [$surveyStats, $answers];
         }
 
-        if (empty($stats)) {
+        if ($stats === []) {
             return $this->render('wpt/report/no_survey.html.twig', [
                 'menu_path' => 'workplace_training_report_student_survey_list'
             ]);
@@ -292,7 +296,7 @@ class ReportController extends AbstractController
 
         $survey = $shift->getStudentSurvey();
 
-        if ($survey) {
+        if ($survey instanceof Survey) {
             $workTutorAnswers = $workTutorAnsweredSurveyRepository->findByShift($shift);
 
             $list = $wptAnsweredSurveyRepository->findByWorkTutorSurveyShift(
@@ -308,7 +312,7 @@ class ReportController extends AbstractController
             $stats = [$surveyStats, $answers];
         }
 
-        if (empty($stats)) {
+        if ($stats === []) {
             return $this->render('wpt/report/no_survey.html.twig', [
                 'menu_path' => 'workplace_training_report_work_tutor_survey_list'
             ]);
@@ -355,7 +359,7 @@ class ReportController extends AbstractController
 
         $survey = $shift->getEducationalTutorSurvey();
 
-        if ($survey) {
+        if ($survey instanceof Survey) {
             $list = $wptAnsweredSurveyRepository
                 ->findByEducationalTutorSurveyShift($shift);
 
@@ -371,7 +375,7 @@ class ReportController extends AbstractController
         $teachers = $wptTeacherRepository
             ->getStatsByShiftWithAnsweredSurvey($shift);
 
-        if (empty($stats)) {
+        if ($stats === []) {
             return $this->render('wpt/report/no_survey.html.twig', [
                 'menu_path' => 'workplace_training_report_educational_tutor_survey_list'
             ]);

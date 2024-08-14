@@ -33,6 +33,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -47,13 +48,13 @@ class GroupController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Group $group = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $em = $managerRegistry->getManager();
 
-        if (null === $group) {
+        if (!$group instanceof Group) {
             $group = new Group();
             $em->persist($group);
         }
@@ -102,11 +103,11 @@ class GroupController extends AbstractController
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         ManagerRegistry $managerRegistry,
-        $page = 1,
+        int $page = 1,
         AcademicYear $academicYear = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -165,7 +166,7 @@ class GroupController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
         $em = $managerRegistry->getManager();

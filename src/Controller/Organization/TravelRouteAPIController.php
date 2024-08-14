@@ -27,6 +27,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -37,7 +38,7 @@ class TravelRouteAPIController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_TEACHER, $organization);
@@ -76,7 +77,8 @@ class TravelRouteAPIController extends AbstractController
         UserExtensionService $userExtensionService,
         TravelRouteRepository $travelRouteRepository,
         TranslatorInterface $translator
-    ) {
+    ): Response
+    {
         $term = $request->get('q');
 
         $organization = $userExtensionService->getCurrentOrganization();

@@ -52,7 +52,7 @@ class StudentAnsweredSurveyRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function createNewAnsweredSurvey(Survey $survey, Project $project, StudentEnrollment $studentEnrollment)
+    public function createNewAnsweredSurvey(Survey $survey, Project $project, StudentEnrollment $studentEnrollment): StudentAnsweredSurvey
     {
         $studentSurvey = new AnsweredSurvey();
         $studentSurvey->setSurvey($survey);
@@ -89,7 +89,7 @@ class StudentAnsweredSurveyRepository extends ServiceEntityRepository
             ->andWhere('sas.project = :project')
             ->setParameter('project', $project);
 
-        if ($academicYear) {
+        if ($academicYear instanceof AcademicYear) {
             $qb
                 ->join('se.group', 'g')
                 ->join('g.grade', 'gr')
@@ -156,7 +156,7 @@ class StudentAnsweredSurveyRepository extends ServiceEntityRepository
             ->addOrderBy('p.id')
             ->addOrderBy('pro.name');
 
-        if ($academicYear) {
+        if ($academicYear instanceof AcademicYear) {
             $queryBuilder
                 ->andWhere('t.academicYear = :academic_year')
                 ->setParameter('academic_year', $academicYear);

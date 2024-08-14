@@ -62,7 +62,8 @@ class CompetencyController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Competency $competency
-    ) {
+    ): Response
+    {
         $training = $competency->getTraining();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
@@ -122,8 +123,9 @@ class CompetencyController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Training $training,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response
+    {
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
 
         /** @var QueryBuilder $queryBuilder */
@@ -183,7 +185,8 @@ class CompetencyController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Training $training
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
 
         $em = $managerRegistry->getManager();
@@ -231,7 +234,7 @@ class CompetencyController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Training $training
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
 
         $em = $managerRegistry->getManager();
@@ -265,13 +268,14 @@ class CompetencyController extends AbstractController
     #[Route(path: '/competencia/exportar/{id}', name: 'organization_training_competency_export', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function export(
         Training $training
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
 
         $data = '';
 
         foreach ($training->getCompetencies() as $competency) {
-            $lines = explode("\n", $competency->getDescription());
+            $lines = explode("\n", (string) $competency->getDescription());
             foreach ($lines as &$line) {
                 $line = trim($line);
             }
@@ -287,12 +291,10 @@ class CompetencyController extends AbstractController
 
     /**
      * @param $lines
-     *
-     * @return array
      */
-    private function parseImport($lines)
+    private function parseImport(string $lines): array
     {
-        $items = explode("\n", (string) $lines);
+        $items = explode("\n", $lines);
         $output = [];
         $matches = [];
 

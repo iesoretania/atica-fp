@@ -41,7 +41,7 @@ class WorkDayTrackingType extends AbstractType
         FormInterface $form,
         AgreementEnrollment $agreementEnrollment,
         TrackedWorkDay $workDay
-    ) {
+    ): void {
         $locked = $workDay->isLocked();
         $absence = $workDay->getAbsence() !== TrackedWorkDay::NO_ABSENCE;
 
@@ -130,16 +130,16 @@ class WorkDayTrackingType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $data = $event->getData();
 
             $this->addElements($form, $data->getAgreementEnrollment(), $data);
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $this->addElements(
                 $form,
@@ -151,7 +151,7 @@ class WorkDayTrackingType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => TrackedWorkDay::class,

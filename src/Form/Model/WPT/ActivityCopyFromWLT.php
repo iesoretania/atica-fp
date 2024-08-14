@@ -22,26 +22,14 @@ use App\Entity\WLT\Project;
 
 class ActivityCopyFromWLT
 {
-    /** @var Project */
-    private $project;
+    private ?Project $project;
 
-    public function __construct()
-    {
-    }
-
-    /**
-     * @return Project
-     */
-    public function getProject()
+    public function getProject(): ?Project
     {
         return $this->project;
     }
 
-    /**
-     * @param Project $project
-     * @return ActivityCopyFromWLT
-     */
-    public function setProject($project)
+    public function setProject(Project $project): static
     {
         $this->project = $project;
         return $this;

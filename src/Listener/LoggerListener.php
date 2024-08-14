@@ -30,6 +30,7 @@ use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\Event\LoginFailureEvent;
 use Symfony\Component\Security\Http\Event\SwitchUserEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
@@ -39,7 +40,7 @@ class LoggerListener implements EventSubscriberInterface
     {
     }
 
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
         if ($event->isMainRequest()) {
             /** @var Person|null $user */
@@ -54,7 +55,7 @@ class LoggerListener implements EventSubscriberInterface
         }
     }
 
-    public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
+    public function onSecurityInteractiveLogin(InteractiveLoginEvent $event): void
     {
         /** @var Person $user */
         $user = $event->getAuthenticationToken()->getUser();
@@ -66,7 +67,7 @@ class LoggerListener implements EventSubscriberInterface
         $this->createLogEntry($eventName, $user, $ip, $data);
     }
 
-    public function onSecuritySwitchUser(SwitchUserEvent $event)
+    public function onSecuritySwitchUser(SwitchUserEvent $event): void
     {
         /** @var Person $user */
         $user = $event->getTargetUser();
@@ -79,7 +80,7 @@ class LoggerListener implements EventSubscriberInterface
     }
 
 
-    public function onAuthenticationFailure(AuthenticationFailureEvent $event)
+    public function onAuthenticationFailure(AuthenticationFailureEvent $event): void
     {
         /** @var Person $user */
         $user = $event->getAuthenticationToken()->getUser();
@@ -97,17 +98,16 @@ class LoggerListener implements EventSubscriberInterface
             KernelEvents::REQUEST => 'onKernelRequest',
             SecurityEvents::INTERACTIVE_LOGIN => 'onSecurityInteractiveLogin',
             SecurityEvents::SWITCH_USER => 'onSecuritySwitchUser',
-            \Symfony\Component\Security\Core\Event\AuthenticationFailureEvent::class => 'onAuthenticationFailure'
+            LoginFailureEvent::class => 'onAuthenticationFailure'
         ];
     }
 
     /**
      * @param $eventName
-     * @param Person $user
      * @param $ip
      * @param $data
      */
-    private function createLogEntry($eventName, Person $user = null, $ip = null, $data = null)
+    private function createLogEntry(string $eventName, Person $user = null, ?string $ip = null, $data = null): void
     {
         $em = $this->managerRegistry->getManager();
         $logEntry = new EventLog();

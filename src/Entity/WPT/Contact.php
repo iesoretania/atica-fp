@@ -48,10 +48,16 @@ class Contact
     #[ORM\JoinColumn(nullable: false)]
     private ?Workcenter $workcenter = null;
 
+    /**
+     * @var Collection<int, Agreement>
+     */
     #[ORM\ManyToMany(targetEntity: Agreement::class)]
     #[ORM\JoinTable(name: 'wpt_contact_agreement')]
     private Collection $agreements;
 
+    /**
+     * @var Collection<int, StudentEnrollment>
+     */
     #[ORM\ManyToMany(targetEntity: StudentEnrollment::class, fetch: 'EAGER')]
     #[ORM\JoinTable(name: 'wpt_contact_student_enrollment')]
     private Collection $studentEnrollments;

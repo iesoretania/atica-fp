@@ -32,7 +32,7 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
         parent::__construct($registry, Person::class);
     }
 
-    final public function findByPartialNameOrUniqueIdentifier($id, $pageLimit = 0)
+    final public function findByPartialNameOrUniqueIdentifier(string $id, $pageLimit = 0)
     {
         $qb = $this->createQueryBuilder('p')
             ->where('p.firstName LIKE :tq')
@@ -86,14 +86,12 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
     }
 
     /**
-     * Loads the user for the given username.
-     *
-     * This method must return null if the user is not found.
-     *
-     * @param string $username The username
-     *
-     * @return UserInterface|null
-     */
+    * Loads the user for the given username.
+    *
+    * This method must return null if the user is not found.
+    *
+    * @param string $username The username
+    */
    final public function loadUserByUsername($username): ?UserInterface
     {
         if ($username === '' || $username === null) {
@@ -117,17 +115,12 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
 
     /**
      * @param $identifier
-     * @return UserInterface|null
      */
     final public function loadUserByIdentifier($identifier): ?UserInterface
     {
         return $this->loadUserByUsername($identifier);
     }
 
-    /**
-     * @param UserInterface $user
-     * @return null|UserInterface
-     */
     final public function refreshUser(UserInterface $user): ?UserInterface
     {
         return $this->loadUserByUsername($user->getUsername());

@@ -308,7 +308,7 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('login');
         }
 
-        if ($organization === null) {
+        if (!$organization instanceof Organization) {
             $data = ['organization' => $this->getUser()->getDefaultOrganization()];
 
             /** @var Person $user */
@@ -358,9 +358,6 @@ class SecurityController extends AbstractController
 
     /**
      * @param $email
-     * @param MailerService $mailerService
-     * @param TranslatorInterface $translator
-     * @param PersonRepository $personRepository
      * @return string|RedirectResponse
      * @throws \Exception
      */

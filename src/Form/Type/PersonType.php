@@ -37,10 +37,8 @@ class PersonType extends AbstractType
 {
     /**
      * Formulario base
-     *
-     * @param FormBuilderInterface $builder
      */
-    private function buildBaseForm(FormBuilderInterface $builder, array $options)
+    private function buildBaseForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('uniqueIdentifier', null, [
@@ -83,7 +81,7 @@ class PersonType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $this->buildBaseForm($builder, $options);
 
@@ -115,7 +113,7 @@ class PersonType extends AbstractType
                 ]);
         }
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $builder = $event->getForm();
             /** @var Person $data */
             $data = $event->getData();
@@ -210,7 +208,7 @@ class PersonType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Person::class,

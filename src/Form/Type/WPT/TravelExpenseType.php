@@ -33,14 +33,14 @@ use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class TravelExpenseType extends AbstractType
 {
-    public function __construct(private readonly TranslatorInterface $translator)
+    public function __construct()
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('fromDateTime', DateTimeType::class, [
@@ -98,7 +98,7 @@ class TravelExpenseType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => TravelExpense::class,

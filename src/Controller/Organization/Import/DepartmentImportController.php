@@ -32,6 +32,7 @@ use Doctrine\ORM\Query\QueryException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -45,7 +46,7 @@ class DepartmentImportController extends AbstractController
         TranslatorInterface $translator,
         EntityManagerInterface $entityManager,
         Request $request
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -89,12 +90,6 @@ class DepartmentImportController extends AbstractController
 
     /**
      * @param string $file
-     * @param AcademicYear $academicYear
-     * @param TeacherRepository $teacherRepository
-     * @param DepartmentRepository $departmentRepository
-     * @param EntityManagerInterface $entityManager
-     * @param array $options
-     * @return array|null
      */
     private function importFromCsv(
         $file,
@@ -102,8 +97,8 @@ class DepartmentImportController extends AbstractController
         TeacherRepository $teacherRepository,
         DepartmentRepository $departmentRepository,
         EntityManagerInterface $entityManager,
-        $options = []
-    ) {
+        array $options = []
+    ): array {
         $newCount = 0;
         $oldCount = 0;
 
@@ -157,7 +152,7 @@ class DepartmentImportController extends AbstractController
         }
 
         // ordenar por nombre antes de devolverlo
-        usort($collection, fn(Department $a, Department $b) => $a->getName() <=> $b->getName());
+        usort($collection, fn(Department $a, Department $b): int => $a->getName() <=> $b->getName());
 
         return [
             'new_items' => $newCount,

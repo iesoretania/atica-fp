@@ -21,12 +21,13 @@ namespace App\Controller\Organization\Import;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MenuController extends AbstractController
 {
     #[Route(path: '/centro/importar', name: 'organization_import', methods: ['GET'])]
-    public function index(UserExtensionService $userExtensionService)
+    public function index(UserExtensionService $userExtensionService): Response
     {
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $userExtensionService->getCurrentOrganization());
         return $this->render(

@@ -22,26 +22,14 @@ use App\Entity\WPT\Shift;
 
 class ActivityCopy
 {
-    /** @var Shift */
-    private $shift;
+    private ?Shift $shift;
 
-    public function __construct()
-    {
-    }
-
-    /**
-     * @return Shift
-     */
-    public function getShift()
+    public function getShift(): ?Shift
     {
         return $this->shift;
     }
 
-    /**
-     * @param Shift $shift
-     * @return ActivityCopy
-     */
-    public function setShift($shift)
+    public function setShift(Shift $shift): static
     {
         $this->shift = $shift;
         return $this;

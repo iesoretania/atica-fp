@@ -40,12 +40,7 @@ class ActivityTracking
     private ?string $notes = null;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $hours;
-
-    public function __construct()
-    {
-        $this->hours = 0;
-    }
+    private ?int $hours = 0;
 
 
     public function getTrackedWorkDay(): ?TrackedWorkDay

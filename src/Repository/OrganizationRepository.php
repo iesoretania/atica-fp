@@ -33,7 +33,7 @@ class OrganizationRepository extends ServiceEntityRepository
         parent::__construct($registry, Organization::class);
     }
 
-    public function createEducationalOrganization()
+    public function createEducationalOrganization(): Organization
     {
         $organization = new Organization();
 
@@ -60,7 +60,6 @@ class OrganizationRepository extends ServiceEntityRepository
     /**
      * Devuelve las organizaciones a las que pertenece el usuario.
      *
-     * @param Person $user
      * @return QueryBuilder
      */
     public function getMembershipByPersonQueryBuilder(Person $user)
@@ -83,7 +82,6 @@ class OrganizationRepository extends ServiceEntityRepository
     /**
      * Devuelve las organizaciones a las que pertenece el usuario.
      *
-     * @param Person $user
      * @return QueryBuilder
      */
     public function getMembershipByPerson(Person $user)
@@ -97,7 +95,6 @@ class OrganizationRepository extends ServiceEntityRepository
      * Devuelve la primera organización a la que pertenece el usuario indicado en la fecha pasada
      * como parámetro.
      *
-     * @param Person $user
      * @return Organization|null
      */
     public function findFirstByUserOrNull(Person $user)
@@ -126,7 +123,6 @@ class OrganizationRepository extends ServiceEntityRepository
     /**
      * Devuelve el número de organizaciones a las que pertenece un usuario en una fecha determinada.
      *
-     * @param Person $user
      * @return int
      */
     public function countOrganizationsByPerson(Person $user)
@@ -141,7 +137,6 @@ class OrganizationRepository extends ServiceEntityRepository
     /**
      * Pasado un array de ids de organizaciones, devolver la lista de objetos exceptuando la organización actual
      * @param $items
-     * @param Organization $organization
      * @return array
      */
     public function findAllInListByIdButCurrent($items, Organization $organization)

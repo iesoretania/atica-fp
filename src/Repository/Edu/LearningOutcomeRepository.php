@@ -85,7 +85,6 @@ class LearningOutcomeRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Subject $subject
      * @return LearningOutcome[]|Collection
      */
     public function findBySubject(Subject $subject)
@@ -97,7 +96,7 @@ class LearningOutcomeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function copyFromSubject(Subject $newSubject, Subject $source)
+    public function copyFromSubject(Subject $newSubject, Subject $source): void
     {
         $learningOutcomes = $this->findBySubject($source);
         foreach ($learningOutcomes as $learningOutcome) {

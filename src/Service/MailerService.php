@@ -33,13 +33,9 @@ class MailerService
 
     /**
      * @param Person[] $users
-     * @param array $subject
-     * @param array $body
-     * @param string|null $translationDomain
      *
-     * @return int
      */
-    public function sendEmail($users, $subject, $body, $translationDomain = null)
+    public function sendEmail($users, array $subject, array $body, ?string $translationDomain = null): int
     {
         // convertir array de usuarios en lista de correos
         $to = [];

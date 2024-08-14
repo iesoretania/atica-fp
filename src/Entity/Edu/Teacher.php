@@ -46,6 +46,9 @@ class Teacher implements \Stringable
     #[ORM\JoinColumn(nullable: true)]
     private ?Department $department = null;
 
+    /**
+     * @var Collection<int, Teaching>
+     */
     #[ORM\OneToMany(targetEntity: Teaching::class, mappedBy: 'teacher')]
     private Collection $teachings;
 
@@ -56,7 +59,7 @@ class Teacher implements \Stringable
 
     public function __toString(): string
     {
-        return ($this->getPerson() === null) ? '' : $this->getPerson()->__toString();
+        return ($this->getPerson() instanceof Person) ? $this->getPerson()->__toString() : '';
     }
 
     public function getId(): ?int

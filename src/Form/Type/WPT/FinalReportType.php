@@ -31,7 +31,7 @@ class FinalReportType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $aspects = [
             'form.grade_negative' => Report::GRADE_NEGATIVE,
@@ -88,7 +88,7 @@ class FinalReportType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Report::class,

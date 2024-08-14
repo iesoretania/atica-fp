@@ -18,6 +18,7 @@
 
 namespace App\Controller\WLT;
 
+use App\Entity\Edu\ReportTemplate;
 use App\Entity\WLT\Agreement;
 use App\Entity\WLT\WorkDay;
 use App\Form\Type\WLT\WorkDayTrackingType;
@@ -32,6 +33,7 @@ use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -49,7 +51,8 @@ class TrackingCalendarController extends AbstractController
         AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
         TranslatorInterface $translator,
         Agreement $agreement
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
 
         $readOnly = !$this->isGranted(AgreementVoter::LOCK, $agreement);
@@ -108,7 +111,8 @@ class TrackingCalendarController extends AbstractController
         ManagerRegistry $managerRegistry,
         WorkDay $workDay,
         WorkDayRepository $workDayRepository
-    ) {
+    ): Response
+    {
         $agreement = $workDay->getAgreement();
         $this->denyAccessUnlessGranted(WorkDayVoter::ACCESS, $workDay);
         $readOnly = !$this->isGranted(WorkDayVoter::FILL, $workDay);
@@ -204,7 +208,8 @@ class TrackingCalendarController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Agreement $agreement
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
         if ($request->get('week_report')) {
             $year = floor($request->get('week_report') / 100);
@@ -319,7 +324,7 @@ class TrackingCalendarController extends AbstractController
         $tmp = '';
 
         try {
-            if ($agreement->getProject()->getAttendanceReportTemplate()) {
+            if ($agreement->getProject()->getAttendanceReportTemplate() instanceof ReportTemplate) {
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $agreement->getProject()->getAttendanceReportTemplate()->getData());
                 $mpdf->SetDocTemplate($tmp, true);
@@ -360,7 +365,8 @@ class TrackingCalendarController extends AbstractController
         WorkDayRepository $workDayRepository,
         $year,
         $week
-    ) {
+    ): Response
+    {
         $weekDays = $workDayRepository->findByYearWeekAndAgreement($year, $week, $agreement);
 
         if ((is_countable($weekDays) ? count($weekDays) : 0) === 0) {
@@ -377,7 +383,7 @@ class TrackingCalendarController extends AbstractController
         $tmp = '';
 
         try {
-            if ($agreement->getProject()->getWeeklyActivityReportTemplate()) {
+            if ($agreement->getProject()->getWeeklyActivityReportTemplate() instanceof ReportTemplate) {
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $agreement->getProject()->getWeeklyActivityReportTemplate()->getData());
                 $mpdf->SetDocTemplate($tmp, true);
@@ -537,14 +543,14 @@ class TrackingCalendarController extends AbstractController
     private function pdfWriteFixedPosHTML(
         Mpdf $mpdf,
         $text,
-        $x,
-        $y,
-        $w,
-        $h,
-        $overflow = 'auto',
-        $align = 'left',
-        $escape = true
-    ) {
+        float|int $x,
+        float|int $y,
+        int|float $w,
+        int|float $h,
+        string $overflow = 'auto',
+        string $align = 'left',
+        bool $escape = true
+    ): void {
         if ($escape) {
             $text = nl2br(htmlentities((string) $text));
         }

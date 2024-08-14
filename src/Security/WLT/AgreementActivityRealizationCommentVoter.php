@@ -18,6 +18,7 @@
 
 namespace App\Security\WLT;
 
+use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Person;
 use App\Entity\WLT\AgreementActivityRealizationComment;
 use App\Security\CachedVoter;
@@ -116,7 +117,7 @@ class AgreementActivityRealizationCommentVoter extends CachedVoter
 
 
         // hay estudiante asociado (puede que no lo haya si es un convenio nuevo)
-        if ($agreement->getStudentEnrollment()) {
+        if ($agreement->getStudentEnrollment() instanceof StudentEnrollment) {
             // Si es jefe de su departamento o coordinador de FP dual, permitir acceder siempre
             // Jefe del departamento del estudiante, autorizado salvo modificar si el acuerdo es de otro curso académico
             $training = $agreement->getStudentEnrollment()->getGroup()->getGrade()->getTraining();

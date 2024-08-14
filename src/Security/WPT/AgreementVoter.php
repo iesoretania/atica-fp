@@ -122,22 +122,4 @@ class AgreementVoter extends CachedVoter
         // denegamos en cualquier otro caso
         return false;
     }
-
-    /**
-     * @param Survey $survey
-     * @return bool
-     * @throws \Exception
-     */
-    private function checkSurvey(Survey $survey = null)
-    {
-        $now = new \DateTime();
-
-        if ($survey === null) {
-            return false;
-        }
-        if ($survey->getStartTimestamp() && $survey->getStartTimestamp() > $now) {
-            return false;
-        }
-        return !($survey->getEndTimestamp() && $survey->getEndTimestamp() < $now);
-    }
 }

@@ -22,6 +22,7 @@ use App\Entity\Edu\Criterion;
 use App\Repository\WPT\ActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -45,9 +46,12 @@ class Activity implements \Stringable
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    /**
+     * @var Collection<int, Criterion>
+     */
     #[ORM\ManyToMany(targetEntity: Criterion::class)]
     #[ORM\JoinTable(name: 'wpt_activity_criterion')]
-    #[ORM\OrderBy(['code' => 'ASC'])]
+    #[ORM\OrderBy(['code' => Criteria::ASC])]
     private Collection $criteria;
 
     public function __construct()

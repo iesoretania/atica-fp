@@ -86,7 +86,7 @@ class ActivityRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function copyFromProject(Project $destination, Project $source)
+    public function copyFromProject(Project $destination, Project $source): void
     {
         $trainings = [];
         foreach ($destination->getGroups() as $group) {

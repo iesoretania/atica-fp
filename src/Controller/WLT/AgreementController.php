@@ -38,6 +38,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -80,7 +81,7 @@ class AgreementController extends AbstractController
         AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
         ManagerRegistry $managerRegistry,
         Agreement $agreement
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
@@ -169,8 +170,8 @@ class AgreementController extends AbstractController
         AgreementRepository $agreementRepository,
         ManagerRegistry $managerRegistry,
         Project $project,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         if ($project) {
@@ -317,7 +318,7 @@ class AgreementController extends AbstractController
         AgreementRepository $agreementRepository,
         ManagerRegistry $managerRegistry,
         Project $project
-    ) {
+    ): Response {
         $em = $managerRegistry->getManager();
 
         $agreements = $agreementRepository->findAllInListByIdAndProject($items, $project);
@@ -364,7 +365,7 @@ class AgreementController extends AbstractController
         AgreementRepository $agreementRepository,
         ManagerRegistry $managerRegistry,
         Project $project
-    ) {
+    ): Response {
         $agreement = null;
         $em = $managerRegistry->getManager();
 

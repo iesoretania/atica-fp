@@ -21,12 +21,13 @@ namespace App\Controller\WLT;
 use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MenuController extends AbstractController
 {
     #[Route(path: '/dual', name: 'work_linked_training', methods: ['GET'])]
-    public function index(UserExtensionService $userExtensionService)
+    public function index(UserExtensionService $userExtensionService): Response
     {
         $this->denyAccessUnlessGranted(
             WLTOrganizationVoter::WLT_ACCESS,

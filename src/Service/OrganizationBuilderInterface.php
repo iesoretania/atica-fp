@@ -22,8 +22,5 @@ use App\Entity\Person;
 
 interface OrganizationBuilderInterface
 {
-    /**
-     * @return array
-     */
     public function getOrganizations(Person $person) : array;
 }

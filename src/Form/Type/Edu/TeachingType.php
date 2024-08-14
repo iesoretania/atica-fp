@@ -37,16 +37,12 @@ class TeachingType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var Subject $subject */
         $subject = $options['subject'];
         $groups = $subject->getGrade()->getGroups();
-        if ($groups !== []) {
-            $group = $groups[0];
-        } else {
-            $group = null;
-        }
+        $group = $groups !== [] ? $groups[0] : null;
         $academicYear = $subject->getGrade()->getTraining()->getAcademicYear();
 
         $teachers = $this->teacherRepository->findByAcademicYear($academicYear);
@@ -82,7 +78,7 @@ class TeachingType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Teaching::class,

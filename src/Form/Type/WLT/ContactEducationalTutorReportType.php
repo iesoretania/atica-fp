@@ -44,7 +44,7 @@ class ContactEducationalTutorReportType extends AbstractType
         FormInterface $form,
         Teacher $teacher,
         array $selectedProjects = []
-    ) {
+    ): void {
         $workcenters = $this->contactRepository->findWorkcentersByTeacherAndProjects($teacher, $selectedProjects);
 
         $academicYear = $teacher->getAcademicYear();
@@ -116,9 +116,9 @@ class ContactEducationalTutorReportType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -129,7 +129,7 @@ class ContactEducationalTutorReportType extends AbstractType
             );
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -152,7 +152,7 @@ class ContactEducationalTutorReportType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => ContactEducationalTutorReport::class,

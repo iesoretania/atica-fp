@@ -70,7 +70,10 @@ class ActivityRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function getProgramActivitiesFromAgreementEnrollment(AgreementEnrollment $agreementEnrollment)
+    /**
+     * @return array<mixed, array<'data'|'learning_outcome'|'length', mixed>>
+     */
+    public function getProgramActivitiesFromAgreementEnrollment(AgreementEnrollment $agreementEnrollment): array
     {
         $activities = $this->createQueryBuilder('a')
             ->where('a IN (:items)')
@@ -128,7 +131,7 @@ class ActivityRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function copyFromShift(Shift $destination, Shift $source)
+    public function copyFromShift(Shift $destination, Shift $source): void
     {
         $activities = $source->getActivities();
 
@@ -159,7 +162,7 @@ class ActivityRepository extends ServiceEntityRepository
         }
     }
 
-    public function copyFromWLTProject(Shift $destination, Project $source)
+    public function copyFromWLTProject(Shift $destination, Project $source): void
     {
         $activities = $source->getActivities();
 
@@ -186,7 +189,7 @@ class ActivityRepository extends ServiceEntityRepository
         }
     }
 
-    public function deleteFromShifts($items)
+    public function deleteFromShifts($items): void
     {
         /** @var Shift $shift */
         foreach ($items as $shift) {

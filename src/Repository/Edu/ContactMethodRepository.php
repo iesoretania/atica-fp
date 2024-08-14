@@ -56,7 +56,6 @@ class ContactMethodRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param AcademicYear $academicYear
      * @return ContactMethod[]|Collection
      */
     public function findAllInListByIdAndAcademicYear(

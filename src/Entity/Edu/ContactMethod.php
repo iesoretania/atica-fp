@@ -39,12 +39,7 @@ class ContactMethod implements \Stringable
     private ?string $description = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $enabled;
-
-    public function __construct()
-    {
-        $this->enabled = true;
-    }
+    private ?bool $enabled = true;
 
     public function __toString(): string
     {

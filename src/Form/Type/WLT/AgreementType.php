@@ -54,7 +54,7 @@ class AgreementType extends AbstractType
         Company $company = null,
         StudentEnrollment $studentEnrollment = null,
         $currentActivityRealizations = []
-    ) {
+    ): void {
         $studentEnrollments = $project ? $project->getStudentEnrollments() : [];
 
         $workcenters = ($studentEnrollment && $company) ?
@@ -62,13 +62,13 @@ class AgreementType extends AbstractType
                 $company
             ) : [];
 
-        $teachers = $studentEnrollment !== null ?
+        $teachers = $studentEnrollment instanceof StudentEnrollment ?
             $this->teacherRepository->findByAcademicYear(
                 $studentEnrollment->getGroup()->getGrade()->getTraining()->getAcademicYear()
             ) : [];
 
-        if ($studentEnrollment !== null) {
-            if ($company !== null) {
+        if ($studentEnrollment instanceof StudentEnrollment) {
+            if ($company instanceof Company) {
                 $activityRealizations = $this->activityRealizationRepository->
                     findByProjectAndCompany($project, $company);
             } else {
@@ -182,7 +182,7 @@ class AgreementType extends AbstractType
                 'class' => ActivityRealization::class,
                 'data' => $currentActivityRealizations,
                 'expanded' => true,
-                'group_by' => fn(ActivityRealization $ar) => (string) $ar->getActivity(),
+                'group_by' => fn(ActivityRealization $ar): string => (string) $ar->getActivity(),
                 'multiple' => true,
                 'required' => false,
                 'choices' => $activityRealizations
@@ -192,9 +192,9 @@ class AgreementType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -209,7 +209,7 @@ class AgreementType extends AbstractType
             $this->addElements($form, $project, $company, $studentEnrollment, $currentActivityRealizations);
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event): void {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -231,7 +231,7 @@ class AgreementType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Agreement::class,

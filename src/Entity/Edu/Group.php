@@ -43,19 +43,28 @@ class Group implements \Stringable
     #[ORM\Column(type: Types::STRING)]
     private ?string $name = null;
 
+    /**
+     * @var Collection<int, Teaching>
+     */
     #[ORM\OneToMany(targetEntity: Teaching::class, mappedBy: 'group')]
     private Collection $teachings;
 
+    /**
+     * @var Collection<int, StudentEnrollment>
+     */
     #[ORM\OneToMany(targetEntity: StudentEnrollment::class, mappedBy: 'group')]
     private Collection $enrollments;
 
+    /**
+     * @var Collection<int, Teacher>
+     */
     #[ORM\ManyToMany(targetEntity: Teacher::class)]
     #[ORM\JoinTable(name: 'edu_group_tutor')]
     private Collection $tutors;
 
     public function __toString(): string
     {
-        return $this->getName();
+        return (string) $this->getName();
     }
 
     public function __construct()
@@ -133,7 +142,10 @@ class Group implements \Stringable
         return $this;
     }
 
-    public function getStudents()
+    /**
+     * @return Person[]
+     */
+    public function getStudents(): array
     {
         $students = [];
         foreach ($this->enrollments as $enrollment) {

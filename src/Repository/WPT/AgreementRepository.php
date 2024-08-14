@@ -27,6 +27,7 @@ use App\Entity\WPT\AgreementEnrollment;
 use App\Entity\WPT\Shift;
 use App\Entity\WPT\WorkDay;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
@@ -116,7 +117,7 @@ class AgreementRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Agreement[]
+     * @return Collection<int, Agreement>
      */
     public function findAllInListByNotIdAndAcademicYear(
         $items,
@@ -129,13 +130,7 @@ class AgreementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @param Person $student
-     *
-     * @return QueryBuilder
-     */
-    public function findByAcademicYearAndStudentQueryBuilder(AcademicYear $academicYear, Person $student)
+    public function findByAcademicYearAndStudentQueryBuilder(AcademicYear $academicYear, Person $student): QueryBuilder
     {
         return $this->createQueryBuilder('a')
             ->distinct()
@@ -148,13 +143,7 @@ class AgreementRepository extends ServiceEntityRepository
             ->setParameter('academic_year', $academicYear);
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @param Person $student
-     *
-     * @return int
-     */
-    public function countAcademicYearAndStudentPerson(AcademicYear $academicYear, Person $student)
+    public function countAcademicYearAndStudentPerson(AcademicYear $academicYear, Person $student): int
     {
         try {
             return $this->findByAcademicYearAndStudentQueryBuilder($academicYear, $student)
@@ -167,13 +156,7 @@ class AgreementRepository extends ServiceEntityRepository
         return 0;
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @param Person $workTutor
-     *
-     * @return int
-     */
-    public function countAcademicYearAndWorkTutorPerson(AcademicYear $academicYear, Person $workTutor)
+    public function countAcademicYearAndWorkTutorPerson(AcademicYear $academicYear, Person $workTutor): int
     {
         try {
             return $this->createQueryBuilder('a')
@@ -200,13 +183,7 @@ class AgreementRepository extends ServiceEntityRepository
         return 0;
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @param Person $educationalTutor
-     *
-     * @return int
-     */
-    public function countAcademicYearAndEducationalTutorPerson(AcademicYear $academicYear, Person $educationalTutor)
+    public function countAcademicYearAndEducationalTutorPerson(AcademicYear $academicYear, Person $educationalTutor): int
     {
         try {
             return $this->createQueryBuilder('a')
@@ -251,7 +228,7 @@ class AgreementRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function updateDates(Agreement $agreement)
+    public function updateDates(Agreement $agreement): void
     {
         $workDays = $this->workDayRepository->findByAgreement($agreement);
         if ((is_countable($workDays) ? count($workDays) : 0) === 0) {
@@ -268,7 +245,7 @@ class AgreementRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function cloneCalendarFromAgreement(Agreement $destination, Agreement $source, $overwrite = false)
+    public function cloneCalendarFromAgreement(Agreement $destination, Agreement $source, $overwrite = false): void
     {
         $workDays = $this->workDayRepository->findByAgreement($source);
         if ((is_countable($workDays) ? count($workDays) : 0) === 0) {
@@ -348,8 +325,7 @@ class AgreementRepository extends ServiceEntityRepository
             ->leftJoin('t.department', 'd')
             ->leftJoin('d.head', 'h')
             ->where('t.academicYear = :academic_year')
-            ->andWhere('h.person = :person OR ae.educationalTutor = :teacher OR '
-                . 'ae.additionalEducationalTutor = :teacher')
+            ->andWhere('h.person = :person OR ae.educationalTutor = :teacher OR ae.additionalEducationalTutor = :teacher')
             ->setParameter('academic_year', $academicYear)
             ->setParameter('person', $teacher->getPerson())
             ->setParameter('teacher', $teacher)
@@ -357,7 +333,7 @@ class AgreementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function deleteFromShifts($items)
+    public function deleteFromShifts($items): void
     {
         /** @var Shift $shift */
         foreach ($items as $shift) {

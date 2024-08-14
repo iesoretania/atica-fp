@@ -34,6 +34,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -41,14 +42,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class TrackingController extends AbstractController
 {
     /**
-     * @param WPTGroupRepository $groupRepository
-     * @param TeacherRepository $teacherRepository
-     * @param AcademicYear $academicYear
-     * @param QueryBuilder $queryBuilder
      * @param $person
      * @param $isManager
      * @param $q
-     * @return QueryBuilder
      */
     private static function generateAgreementQueryBuilder(
         WPTGroupRepository $groupRepository,
@@ -57,8 +53,8 @@ class TrackingController extends AbstractController
         QueryBuilder $queryBuilder,
         $person,
         $isManager,
-        $q
-    ) {
+        ?string $q
+    ): QueryBuilder {
         $queryBuilder
             ->select('ae')
             ->addSelect('a')
@@ -144,8 +140,7 @@ class TrackingController extends AbstractController
 
         if (false === $isManager && !$groups) {
             $queryBuilder
-                ->andWhere('se.person = :person OR ' .
-                           'ae.workTutor = :person OR ae.educationalTutor = :teacher OR ' .
+                ->andWhere('se.person = :person OR ae.workTutor = :person OR ae.educationalTutor = :teacher OR ' .
                            'ae.additionalWorkTutor = :person OR ae.additionalEducationalTutor = :teacher')
                 ->setParameter('person', $person)
                 ->setParameter('teacher', $teacher);
@@ -159,16 +154,11 @@ class TrackingController extends AbstractController
     }
 
     /**
-     * @param WPTGroupRepository $groupRepository
-     * @param TeacherRepository $teacherRepository
-     * @param AcademicYear $academicYear
-     * @param QueryBuilder $queryBuilder
      * @param $person
      * @param $isManager
      * @param $q
      * @param $page
      * @param $maxPerPage
-     * @return Pagerfanta
      */
     public static function generateAgreementPaginator(
         WPTGroupRepository $groupRepository,
@@ -178,9 +168,10 @@ class TrackingController extends AbstractController
         $person,
         $isManager,
         $q,
-        $page,
-        $maxPerPage
-    ) {
+        int $page,
+        int $maxPerPage
+    ): Pagerfanta
+    {
         $queryBuilder = self::generateAgreementQueryBuilder(
             $groupRepository,
             $teacherRepository,
@@ -213,10 +204,10 @@ class TrackingController extends AbstractController
         TeacherRepository $teacherRepository,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if ($academicYear === null) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -260,7 +251,8 @@ class TrackingController extends AbstractController
         WPTGroupRepository $groupRepository,
         TeacherRepository $teacherRepository,
         ManagerRegistry $managerRegistry
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $academicYear = $organization->getCurrentAcademicYear();
 

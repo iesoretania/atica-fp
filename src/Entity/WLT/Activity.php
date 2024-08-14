@@ -22,6 +22,7 @@ use App\Entity\Edu\Competency;
 use App\Repository\WLT\ActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -48,11 +49,17 @@ class Activity implements \Stringable
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $priorLearning = null;
 
+    /**
+     * @var Collection<int, Competency>
+     */
     #[ORM\ManyToMany(targetEntity: Competency::class)]
     #[ORM\JoinTable(name: 'wlt_activity_competency')]
-    #[ORM\OrderBy(['code' => 'ASC'])]
+    #[ORM\OrderBy(['code' => Criteria::ASC])]
     private Collection $competencies;
 
+    /**
+     * @var Collection<int, ActivityRealization>
+     */
     #[ORM\OneToMany(targetEntity: ActivityRealization::class, mappedBy: 'activity')]
     private Collection $activityRealizations;
 

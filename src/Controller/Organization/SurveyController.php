@@ -50,16 +50,17 @@ class SurveyController extends AbstractController
         SurveyRepository $surveyRepository,
         ManagerRegistry $managerRegistry,
         Survey $survey = null
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
-        if ($survey !== null) {
+        if ($survey instanceof Survey) {
             $this->denyAccessUnlessGranted(SurveyVoter::MANAGE, $survey);
         }
 
         $em = $managerRegistry->getManager();
 
-        if (null === $survey) {
+        if (!$survey instanceof Survey) {
             $survey = new Survey();
             $survey
                 ->setOrganization($organization);
@@ -128,7 +129,8 @@ class SurveyController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         int $page = 1
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -205,12 +207,7 @@ class SurveyController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @param SurveyRepository $surveyRepository
-     * @param TranslatorInterface $translator
      * @param $items
-     * @param Organization $organization
-     * @return Response
      */
     private function processPurge(
         Request $request,
@@ -219,7 +216,8 @@ class SurveyController extends AbstractController
         ManagerRegistry $managerRegistry,
         $items,
         Organization $organization
-    ) {
+    ): Response
+    {
         $em = $managerRegistry->getManager();
 
         $surveys = $surveyRepository->findAllInListByIdAndOrganization($items, $organization);
@@ -247,13 +245,7 @@ class SurveyController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @param SurveyRepository $surveyRepository
-     * @param SurveyQuestionRepository $surveyQuestionRepository
-     * @param TranslatorInterface $translator
      * @param $items
-     * @param Organization $organization
-     * @return Response
      */
     private function processDelete(
         Request $request,
@@ -263,7 +255,8 @@ class SurveyController extends AbstractController
         ManagerRegistry $managerRegistry,
         $items,
         Organization $organization
-    ) {
+    ): Response
+    {
         $em = $managerRegistry->getManager();
 
         $surveys = $surveyRepository->findAllInListByIdAndOrganizationAndNoAnswers($items, $organization);

@@ -32,7 +32,6 @@ class AcademicYearRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Organization $organization
      * @return AcademicYear[]
      */
     public function findAllByOrganization(Organization $organization)
@@ -47,8 +46,6 @@ class AcademicYearRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param Organization $organization
-     * @param AcademicYear $current
      * @return AcademicYear[]
      */
     public function findAllInListByIdAndOrganizationButCurrent(
@@ -90,8 +87,6 @@ class AcademicYearRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Organization $organization
-     * @param AcademicYear $academicYear
      * @return AcademicYear[]
      */
     public function findAllByOrganizationButOne(Organization $organization, AcademicYear $academicYear)

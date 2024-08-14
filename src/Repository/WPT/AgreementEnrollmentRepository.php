@@ -83,7 +83,7 @@ class AgreementEnrollmentRepository extends ServiceEntityRepository
     }
 
     public function findByAcademicYearAndPersonFilterQueryBuilder(
-        $q,
+        ?string $q,
         ?AcademicYear $academicYear,
         Person $person
     ) {
@@ -183,7 +183,7 @@ class AgreementEnrollmentRepository extends ServiceEntityRepository
         return 0;
     }
 
-    public function deleteFromAgreements($list)
+    public function deleteFromAgreements($list): void
     {
         $this->workDayRepository->deleteFromAgreements($list);
         $this->reportRepository->deleteFromAgreements($list);
@@ -196,11 +196,10 @@ class AgreementEnrollmentRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Shift $shift
      * @param string $q
      * @return QueryBuilder
      */
-    public function findByShiftAndFilter(Shift $shift, $q)
+    public function findByShiftAndFilter(Shift $shift, ?string $q)
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->createQueryBuilder('ar');

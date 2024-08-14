@@ -34,7 +34,6 @@ class StudentAnsweredSurveyRepository extends ServiceEntityRepository
 {
     public function __construct(
         ManagerRegistry $registry,
-        private readonly ShiftRepository $shiftRepository,
         private readonly AgreementEnrollmentRepository $agreementEnrollmentRepository
     ) {
         parent::__construct($registry, StudentAnsweredSurvey::class);
@@ -55,7 +54,7 @@ class StudentAnsweredSurveyRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function createNewAnsweredSurvey(Survey $survey, Shift $shift, StudentEnrollment $studentEnrollment)
+    public function createNewAnsweredSurvey(Survey $survey, Shift $shift, StudentEnrollment $studentEnrollment): StudentAnsweredSurvey
     {
         $studentSurvey = new AnsweredSurvey();
         $studentSurvey->setSurvey($survey);
@@ -84,7 +83,7 @@ class StudentAnsweredSurveyRepository extends ServiceEntityRepository
     }
 
     public function findByAcademicYearAndPersonFilterQueryBuilder(
-        $q,
+        ?string $q,
         ?AcademicYear $academicYear,
         Person $person
     ) {

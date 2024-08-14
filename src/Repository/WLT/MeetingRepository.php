@@ -36,7 +36,7 @@ class MeetingRepository extends ServiceEntityRepository
     public function orWhereContainsTextAndInGroups(
         QueryBuilder $queryBuilder,
         AcademicYear $academicYear,
-        $text,
+        string $text,
         $groups = []
     ) {
         $teacherMeetings = $this->createQueryBuilder('m')
@@ -120,7 +120,7 @@ class MeetingRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->setParameter('academic_year', $academicYear);
 
-        if ($teacher !== null) {
+        if ($teacher instanceof Teacher) {
             $qb
                 ->andWhere('m.createdBy = :teacher')
                 ->setParameter('teacher', $teacher);

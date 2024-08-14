@@ -56,7 +56,7 @@ class VisitType extends AbstractType
         $selectedAgreements = [],
         $teachers = [],
         \DateTimeInterface $dateTime = null
-    ) {
+    ): void {
         $workcenters = [];
 
         if ($academicYear &&
@@ -70,7 +70,7 @@ class VisitType extends AbstractType
         }
         $studentEnrollments = [];
 
-        if ($teacher !== null) {
+        if ($teacher instanceof Teacher) {
             $workcenters = $this->WPTWorkcenterRepository->findByWPTEducationalTutor($teacher);
         }
         if ($teacher && $workcenter && $dateTime) {
@@ -160,9 +160,9 @@ class VisitType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
 
             /** @var Contact $data */
@@ -185,7 +185,7 @@ class VisitType extends AbstractType
             );
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -224,7 +224,7 @@ class VisitType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Contact::class,

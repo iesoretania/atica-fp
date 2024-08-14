@@ -42,6 +42,9 @@ class LearningProgram implements \Stringable
     #[ORM\JoinColumn(nullable: false)]
     private ?Project $project = null;
 
+    /**
+     * @var Collection<int, ActivityRealization>
+     */
     #[ORM\ManyToMany(targetEntity: ActivityRealization::class)]
     #[ORM\JoinTable('wlt_learning_program_activity_realization')]
     private Collection $activityRealizations;
@@ -53,7 +56,7 @@ class LearningProgram implements \Stringable
 
     public function __toString(): string
     {
-        return ($this->getCompany() === null || $this->getProject() === null)
+        return (!$this->getCompany() instanceof Company || !$this->getProject() instanceof Project)
             ? ''
             : $this->getCompany()->__toString() . ' - ' . $this->getProject()->__toString();
     }

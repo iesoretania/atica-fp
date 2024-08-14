@@ -30,10 +30,7 @@ class WPTMenu implements MenuBuilderInterface
     {
     }
 
-    /**
-     * @return array|null
-     */
-    public function getMenuStructure()
+    public function getMenuStructure(): array
     {
         $organization = $this->userExtension->getCurrentOrganization();
 

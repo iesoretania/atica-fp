@@ -43,6 +43,9 @@ class LearningOutcome implements \Stringable
     #[ORM\Column(type: Types::TEXT, nullable: false)]
     private ?string $description = null;
 
+    /**
+     * @var Collection<int, Criterion>
+     */
     #[ORM\OneToMany(targetEntity: Criterion::class, mappedBy: 'learningOutcome')]
     private Collection $criteria;
 
@@ -53,9 +56,9 @@ class LearningOutcome implements \Stringable
 
     public function __toString(): string
     {
-        return ($this->getSubject() === null)
-            ? ''
-            : ($this->getSubject()->getCode() ?: $this->getSubject()->getName()) . ' - '. $this->getCode();
+        return ($this->getSubject() instanceof Subject)
+            ? ($this->getSubject()->getCode() ?: $this->getSubject()->getName()) . ' - '. $this->getCode()
+            : '';
     }
 
     /**

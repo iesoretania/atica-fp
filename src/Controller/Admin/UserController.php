@@ -52,7 +52,7 @@ class UserController extends AbstractController
     ): Response {
         $em = $managerRegistry->getManager();
 
-        if (null === $localUser) {
+        if (!$localUser instanceof Person) {
             $localUser = new Person();
             $em->persist($localUser);
         }
@@ -197,13 +197,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @param Person $user
-     * @param TranslatorInterface $translator
-     * @param FormInterface $form
-     * @param UserPasswordHasherInterface $passwordEncoder
-     * @return string
-     */
     private function processPasswordChange(
         Person $user,
         TranslatorInterface $translator,

@@ -11,7 +11,7 @@ use Doctrine\DBAL\Types\DateTimeType;
 
 class UTCDateTimeType extends DateTimeType
 {
-    private static $utc;
+    private static ?\DateTimeZone $utc = null;
 
     final public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {

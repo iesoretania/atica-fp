@@ -43,7 +43,7 @@ class ShiftType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var AcademicYear $academicYear */
         $academicYear = $options['academic_year'];
@@ -64,8 +64,8 @@ class ShiftType extends AbstractType
                 'label' => 'form.subject',
                 'class' => Subject::class,
                 'choice_translation_domain' => false,
-                'choice_label' => fn(Subject $subject) => $subject->getName() . ' - ' . $subject->getGrade() . ' - ' .
-                    $subject->getGrade()->getTraining()->getAcademicYear(),
+                'choice_label' => fn(Subject $subject): string => $subject->getName() . ' - ' . $subject->getGrade() . ' - ' .
+                    $subject->getGrade()->getTraining()->getAcademicYear()->getDescription(),
                 'choices' => $subjects,
                 'placeholder' => 'form.no_subject',
                 'required' => true
@@ -164,7 +164,7 @@ class ShiftType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Shift::class,

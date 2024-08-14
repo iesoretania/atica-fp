@@ -44,7 +44,7 @@ class WorkDayTrackingType extends AbstractType
         Agreement $agreement,
         WorkDay $workDay,
         $lockedActivityRealizations
-    ) {
+    ): void {
         $activityRealizations = $agreement->getActivityRealizations();
 
         $locked = $workDay->isLocked();
@@ -58,10 +58,10 @@ class WorkDayTrackingType extends AbstractType
             ->add('activityRealizations', EntityType::class, [
                 'label' => 'form.activity_realizations',
                 'class' => ActivityRealization::class,
-                'choice_attr' => fn(ActivityRealization $ar) => (!$lockManager && in_array($ar, $lockedActivityRealizations, true)) ?
+                'choice_attr' => fn(ActivityRealization $ar): array => (!$lockManager && in_array($ar, $lockedActivityRealizations, true)) ?
                     ['disabled' => 'disabled'] :
                     [],
-                'choice_label' => function (ActivityRealization $ar) use ($lockedActivityRealizations, $lockManager) {
+                'choice_label' => function (ActivityRealization $ar) use ($lockedActivityRealizations, $lockManager): string {
                     $label = $ar->__toString();
                     if (in_array($ar, $lockedActivityRealizations, true)) {
                         if ($lockManager) {
@@ -151,16 +151,16 @@ class WorkDayTrackingType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $data = $event->getData();
 
             $this->addElements($form, $data->getAgreement(), $data, $options['locked_activity_realizations']);
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $this->addElements(
                 $form,
@@ -173,7 +173,7 @@ class WorkDayTrackingType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => WorkDay::class,

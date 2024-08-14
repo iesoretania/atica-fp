@@ -34,7 +34,6 @@ class TrainingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @return QueryBuilder
      */
     private function findByAcademicYearQueryBuilder(AcademicYear $academicYear)
@@ -46,7 +45,6 @@ class TrainingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @return Training[]|Collection
      */
     public function findByAcademicYear(AcademicYear $academicYear)
@@ -58,7 +56,6 @@ class TrainingRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param AcademicYear $academicYear
      * @return Training[]
      */
     public function findAllInListByIdAndAcademicYear(
@@ -76,8 +73,6 @@ class TrainingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
-     * @param Person $departmentHead
      * @return QueryBuilder
      */
     private function findByAcademicYearAndDepartmentHeadQueryBuilder(
@@ -94,8 +89,6 @@ class TrainingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
-     * @param Person $departmentHead
      * @return Training[]
      */
     public function findByAcademicYearAndDepartmentHead(
@@ -108,8 +101,6 @@ class TrainingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
-     * @param Person $departmentHead
      * @return int
      */
     public function countAcademicYearAndDepartmentHead(
@@ -122,7 +113,7 @@ class TrainingRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function copyFromAcademicYear(AcademicYear $destination, AcademicYear $source)
+    public function copyFromAcademicYear(AcademicYear $destination, AcademicYear $source): void
     {
         $trainings = $this->findByAcademicYear($source);
         foreach ($trainings as $training) {

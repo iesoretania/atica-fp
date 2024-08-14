@@ -43,7 +43,6 @@ class SurveyQuestionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param SurveyQuestion $surveyQuestion
      * @return SurveyQuestion|null
      */
     public function getPreviousQuestion(SurveyQuestion $surveyQuestion)
@@ -60,7 +59,6 @@ class SurveyQuestionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param SurveyQuestion $surveyQuestion
      * @return SurveyQuestion|null
      */
     public function getNextQuestion(SurveyQuestion $surveyQuestion)
@@ -78,7 +76,6 @@ class SurveyQuestionRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param Organization $organization
      * @return SurveyQuestion[]
      */
     public function findAllInListByIdAndOrganization(

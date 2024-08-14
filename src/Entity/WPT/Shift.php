@@ -25,6 +25,7 @@ use App\Entity\Survey;
 use App\Repository\WPT\ShiftRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -81,11 +82,17 @@ class Shift implements \Stringable
     #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
     private ?ReportTemplate $activitySummaryReportTemplate = null;
 
+    /**
+     * @var Collection<int, Agreement>
+     */
     #[ORM\OneToMany(targetEntity: Agreement::class, mappedBy: 'shift')]
     private Collection $agreements;
 
+    /**
+     * @var Collection<int, Activity>
+     */
     #[ORM\OneToMany(targetEntity: Activity::class, mappedBy: 'shift')]
-    #[ORM\OrderBy(['code' => 'ASC', 'description' => 'ASC'])]
+    #[ORM\OrderBy(['code' => Criteria::ASC, 'description' => 'ASC'])]
     private Collection $activities;
 
     #[ORM\Column(type: Types::BOOLEAN)]
@@ -99,7 +106,7 @@ class Shift implements \Stringable
 
     public function __toString(): string
     {
-        return $this->getName();
+        return (string) $this->getName();
     }
 
     public function getId(): ?int

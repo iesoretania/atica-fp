@@ -71,8 +71,6 @@ class CronCommand extends Command
     }
 
     /**
-     * @param OutputInterface $output
-     * @param SymfonyStyle $style
      * @throws \Exception
      */
     protected function wltSendTrackingWarnings(OutputInterface $output, SymfonyStyle $style)
@@ -196,8 +194,6 @@ class CronCommand extends Command
     }
 
     /**
-     * @param OutputInterface $output
-     * @param SymfonyStyle $style
      * @throws \Exception
      */
     protected function wltSendSurveyWarnings(OutputInterface $output, SymfonyStyle $style)

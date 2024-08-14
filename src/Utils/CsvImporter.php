@@ -26,7 +26,7 @@ namespace App\Utils;
 class CsvImporter
 {
     private $fp;
-    private $header;
+    private array|bool|null $header = null;
 
     public function __construct($fileName, private $parse_header = true, private $delimiter = ",", private $length = 0)
     {
@@ -47,7 +47,10 @@ class CsvImporter
         }
     }
 
-    public function get($max_lines = 0)
+    /**
+     * @return mixed[][]
+     */
+    public function get($max_lines = 0): array
     {
         //if $max_lines is set to 0, then get all the data
 

@@ -28,10 +28,7 @@ class CoreMenu implements MenuBuilderInterface
     {
     }
 
-    /**
-     * @return array|null
-     */
-    public function getMenuStructure()
+    public function getMenuStructure(): array
     {
         $root = [];
         $isGlobalAdministrator = $this->userExtension->isUserGlobalAdministrator();

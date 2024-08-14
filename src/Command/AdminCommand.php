@@ -91,7 +91,9 @@ class AdminCommand extends Command
 
     final public function notEmpty(?string $str) : string
     {
-        if ($str === null || $str === '') throw new \RuntimeException($this->translator->trans('message.empty_error', [], 'command'));
+        if ($str === null || $str === '') {
+            throw new \RuntimeException($this->translator->trans('message.empty_error', [], 'command'));
+        }
         return $str;
     }
 }

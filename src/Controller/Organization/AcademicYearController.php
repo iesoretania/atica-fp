@@ -36,6 +36,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -50,13 +51,13 @@ class AcademicYearController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $em = $managerRegistry->getManager();
 
-        if (null === $academicYear) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = new AcademicYear();
             $year = date('Y');
             $startDate = new \DateTime($year . '/09/01');
@@ -111,7 +112,7 @@ class AcademicYearController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         int $page = 1
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -170,7 +171,7 @@ class AcademicYearController extends AbstractController
         ManagerRegistry $managerRegistry,
         AcademicYearRepository $academicYearRepository,
         TranslatorInterface $translator
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -195,12 +196,6 @@ class AcademicYearController extends AbstractController
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @param Organization $organization
-     * @param AcademicYear $current
-     * @return array
-     */
     private function processOperations(
         Request $request,
         TranslatorInterface $translator,
@@ -208,7 +203,7 @@ class AcademicYearController extends AbstractController
         AcademicYearRepository $academicYearRepository,
         Organization $organization,
         AcademicYear $current
-    ) {
+    ): array {
         $em = $managerRegistry->getManager();
 
         $redirect = false;
@@ -232,12 +227,10 @@ class AcademicYearController extends AbstractController
 
 
     /**
-     * @param Request $request
      * @param array $academicYears
-     * @param ObjectManager $em
      * @return bool
      */
-    private function processRemoveAcademicYear(Request $request, $academicYears, $em, TranslatorInterface $translator)
+    private function processRemoveAcademicYear(Request $request, $academicYears, ObjectManager $em, TranslatorInterface $translator)
     {
         $redirect = false;
         if ($request->get('confirm', '') === 'ok') {
@@ -257,10 +250,7 @@ class AcademicYearController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @param Organization $organization
      * @param ObjectManager $em
-     * @return bool
      */
     private function processSwitchAcademicYear(
         Request $request,
@@ -268,7 +258,7 @@ class AcademicYearController extends AbstractController
         AcademicYearRepository $academicYearRepository,
         Organization $organization,
         $em
-    ) {
+    ): bool {
         $academicYear = $academicYearRepository->findOneBy(
             [
                 'id' => $request->request->get('switch'),
@@ -291,7 +281,7 @@ class AcademicYearController extends AbstractController
      *
      * @param AcademicYear[] $academicYears
      */
-    private function deleteAcademicYears($academicYears, ObjectManager $em)
+    private function deleteAcademicYears($academicYears, ObjectManager $em): void
     {
         /* Borrar cursos académicos */
         $em->createQueryBuilder()
@@ -311,7 +301,7 @@ class AcademicYearController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);

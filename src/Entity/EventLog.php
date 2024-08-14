@@ -99,7 +99,7 @@ class EventLog
 
     public function setData($data): static
     {
-        $this->data = substr($data, 0, 255);
+        $this->data = substr((string) $data, 0, 255);
         return $this;
     }
 

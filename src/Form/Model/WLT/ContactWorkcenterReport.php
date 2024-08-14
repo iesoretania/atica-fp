@@ -29,10 +29,6 @@ class ContactWorkcenterReport
     /** @var ContactMethod[] */
     private $contactMethods;
 
-    public function __construct()
-    {
-    }
-
     /**
      * @return Project[]|null
      */
@@ -43,9 +39,8 @@ class ContactWorkcenterReport
 
     /**
      * @param Project[]|null $projects
-     * @return self
      */
-    public function setProjects($projects): self
+    public function setProjects($projects): static
     {
         $this->projects = $projects;
         return $this;
@@ -61,9 +56,8 @@ class ContactWorkcenterReport
 
     /**
      * @param ContactMethod[] $contactMethods
-     * @return self
      */
-    public function setContactMethods($contactMethods): self
+    public function setContactMethods($contactMethods): static
     {
         $this->contactMethods = $contactMethods;
         return $this;

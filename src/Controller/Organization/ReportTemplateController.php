@@ -31,6 +31,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -59,7 +60,7 @@ class ReportTemplateController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         ReportTemplate $template
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(ReportTemplateVoter::EDU_REPORT_TEMPLATE_VIEW, $template);
 
         $readOnly = !$this->isGranted(ReportTemplateVoter::EDU_REPORT_TEMPLATE_MANAGE, $template);
@@ -106,14 +107,15 @@ class ReportTemplateController extends AbstractController
     #[Route(path: '/descarga/{id}', name: 'organization_report_template_download', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function download(
         ReportTemplate $template
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(ReportTemplateVoter::EDU_REPORT_TEMPLATE_VIEW, $template);
 
-        return new StreamedResponse(function () use ($template) {
+        return new StreamedResponse(function () use ($template): void {
             fpassthru($template->getData());
             exit();
         },
-        \Symfony\Component\HttpFoundation\Response::HTTP_OK,
+        Response::HTTP_OK,
         [
             'Content-Type' => 'application/pdf'
         ]);
@@ -126,7 +128,7 @@ class ReportTemplateController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         int $page = 1
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -176,7 +178,7 @@ class ReportTemplateController extends AbstractController
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry,
         TranslatorInterface $translator
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 

@@ -24,100 +24,54 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class SubjectImport
 {
-    /**
-     * @var AcademicYear
-     */
-    private $academicYear;
+    private ?AcademicYear $academicYear;
 
-    /**
-     * @var UploadedFile
-     */
     #[Assert\File]
-    private $file;
+    private ?UploadedFile $file = null;
 
-    /**
-     * @var bool
-     */
-    private $extractTeachers;
+    private bool $extractTeachers = true;
 
-    /**
-     * @var bool
-     */
-    private $keepOneSubjectPerTraining;
+    private bool $keepOneSubjectPerTraining = true;
 
-    public function __construct()
-    {
-        $this->extractTeachers = true;
-        $this->keepOneSubjectPerTraining = true;
-    }
-
-    /**
-     * @return AcademicYear
-     */
-    public function getAcademicYear()
+    public function getAcademicYear(): ?AcademicYear
     {
         return $this->academicYear;
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @return SubjectImport
-     */
-    public function setAcademicYear($academicYear)
+    public function setAcademicYear(AcademicYear $academicYear): static
     {
         $this->academicYear = $academicYear;
         return $this;
     }
 
-    /**
-     * @return UploadedFile
-     */
-    public function getFile()
+    public function getFile(): ?UploadedFile
     {
         return $this->file;
     }
 
-    /**
-     *
-     * @return SubjectImport
-     */
-    public function setFile(UploadedFile $file)
+    public function setFile(UploadedFile $file): static
     {
         $this->file = $file;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isExtractTeachers()
+    public function isExtractTeachers(): bool
     {
         return $this->extractTeachers;
     }
 
-    /**
-     * @param bool $extractTeachers
-     * @return SubjectImport
-     */
-    public function setExtractTeachers($extractTeachers)
+    public function setExtractTeachers(bool $extractTeachers): static
     {
         $this->extractTeachers = $extractTeachers;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isKeepOneSubjectPerTraining()
+    public function isKeepOneSubjectPerTraining(): bool
     {
         return $this->keepOneSubjectPerTraining;
     }
 
-    /**
-     * @param bool $keepOneSubjectPerTraining
-     * @return SubjectImport
-     */
-    public function setKeepOneSubjectPerTraining($keepOneSubjectPerTraining)
+    public function setKeepOneSubjectPerTraining(bool $keepOneSubjectPerTraining): static
     {
         $this->keepOneSubjectPerTraining = $keepOneSubjectPerTraining;
         return $this;

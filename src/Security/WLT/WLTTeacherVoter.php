@@ -104,7 +104,7 @@ class WLTTeacherVoter extends CachedVoter
         };
     }
 
-    private function checkAccessPermission(Teacher $subject, Person $user)
+    private function checkAccessPermission(Teacher $subject, Person $user): bool
     {
         $projects = $this->projectRepository->findByEducationalTutor($subject);
 

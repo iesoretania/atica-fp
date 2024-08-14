@@ -19,6 +19,7 @@
 namespace App\Controller\Company;
 
 use App\Entity\Company;
+use App\Entity\Person;
 use App\Entity\Workcenter;
 use App\Form\Type\CompanyType;
 use App\Repository\CompanyRepository;
@@ -220,7 +221,7 @@ class CompanyController extends AbstractController
 
         $persons = $term === null ? [] : [$personRepository->findOneByUniqueIdentifierOrUsernameOrEmailAddress($term)];
 
-        if (count($persons) === 0 || null === $persons[0]) {
+        if ($persons === [] || !$persons[0] instanceof Person) {
             $data = [
                 ['id' => 0, 'term' => $term, 'text' => $translator->trans('title.new', [], 'person')]
             ];

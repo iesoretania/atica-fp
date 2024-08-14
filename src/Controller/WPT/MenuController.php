@@ -21,12 +21,13 @@ namespace App\Controller\WPT;
 use App\Security\WPT\WPTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MenuController extends AbstractController
 {
     #[Route(path: '/fct', name: 'workplace_training', methods: ['GET'])]
-    public function index(UserExtensionService $userExtensionService)
+    public function index(UserExtensionService $userExtensionService): Response
     {
         $this->denyAccessUnlessGranted(
             WPTOrganizationVoter::WPT_ACCESS_SECTION,

@@ -42,7 +42,7 @@ class StudentEnrollment implements \Stringable
 
     public function __toString(): string
     {
-        return ($this->getPerson() === null || $this->getGroup() === null)
+        return (!$this->getPerson() instanceof Person || !$this->getGroup() instanceof Group)
             ? ''
             : $this->getPerson()->__toString() . ' (' . $this->getGroup()->__toString() . ')';
     }

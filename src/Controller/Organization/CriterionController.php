@@ -47,7 +47,8 @@ class CriterionController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Criterion $criterion
-    ) {
+    ): Response
+    {
         $subject = $criterion->getLearningOutcome()->getSubject();
         $training = $subject->getGrade()->getTraining();
 
@@ -114,7 +115,8 @@ class CriterionController extends AbstractController
         ManagerRegistry $managerRegistry,
         LearningOutcome $learningOutcome,
         int $page = 1
-    ) {
+    ): Response
+    {
         $subject = $learningOutcome->getSubject();
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $subject->getGrade()->getTraining());
 
@@ -186,7 +188,8 @@ class CriterionController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         LearningOutcome $learningOutcome
-    ) {
+    ): Response
+    {
         $subject = $learningOutcome->getSubject();
         $training = $subject->getGrade()->getTraining();
 
@@ -247,7 +250,7 @@ class CriterionController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         LearningOutcome $learningOutcome
-    ) {
+    ): Response {
         $subject = $learningOutcome->getSubject();
         $training = $subject->getGrade()->getTraining();
 
@@ -285,7 +288,8 @@ class CriterionController extends AbstractController
     #[Route(path: '/criterio/exportar/{id}', name: 'organization_training_criterion_export', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function export(
         LearningOutcome $learningOutcome
-    ) {
+    ): Response
+    {
         $subject = $learningOutcome->getSubject();
         $training = $subject->getGrade()->getTraining();
 
@@ -294,7 +298,7 @@ class CriterionController extends AbstractController
         $data = '';
 
         foreach ($learningOutcome->getCriteria() as $criterion) {
-            $lines = explode("\n", $criterion->getName());
+            $lines = explode("\n", (string) $criterion->getName());
             foreach ($lines as &$line) {
                 $line = trim($line);
             }
@@ -310,12 +314,10 @@ class CriterionController extends AbstractController
 
     /**
      * @param $lines
-     *
-     * @return array
      */
-    private function parseImport($lines)
+    private function parseImport(string $lines): array
     {
-        $items = explode("\n", (string) $lines);
+        $items = explode("\n", $lines);
         $output = [];
         $matches = [];
 

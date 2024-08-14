@@ -53,7 +53,7 @@ class OrganizationController extends AbstractController
     ): Response {
         $em = $managerRegistry->getManager();
 
-        if (null === $organization) {
+        if (!$organization instanceof Organization) {
             $organization = $organizationRepository->createEducationalOrganization();
         }
 
@@ -164,7 +164,7 @@ class OrganizationController extends AbstractController
      *
      * @param Organization[] $organizations
      */
-    private function deleteOrganizations($organizations, ObjectManager $em)
+    private function deleteOrganizations($organizations, ObjectManager $em): void
     {
         /* Borrar los cursos académicos */
         $em->createQueryBuilder()
@@ -193,13 +193,10 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @param TranslatorInterface $translator
      * @param $organizations
-     * @param ObjectManager $em
      * @return bool
      */
-    private function processRemoveOrganizations(Request $request, TranslatorInterface $translator, $organizations, $em)
+    private function processRemoveOrganizations(Request $request, TranslatorInterface $translator, $organizations, ObjectManager $em)
     {
         $redirect = false;
         if ($request->get('confirm', '') === 'ok') {
@@ -215,12 +212,6 @@ class OrganizationController extends AbstractController
         return $redirect;
     }
 
-    /**
-     * @param Request $request
-     * @param TranslatorInterface $translator
-     * @param ObjectManager $em
-     * @return bool
-     */
     private function processSwitchOrganization(
         Request $request,
         TranslatorInterface $translator,
@@ -239,10 +230,6 @@ class OrganizationController extends AbstractController
         return false;
     }
 
-    /**
-     * @param Request $request
-     * @return array
-     */
     private function processOperations(
         Request $request,
         TranslatorInterface $translator,

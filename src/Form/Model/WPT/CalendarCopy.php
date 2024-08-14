@@ -25,48 +25,27 @@ class CalendarCopy
     public const OVERWRITE_ACTION_REPLACE = 1;
     public const OVERWRITE_ACTION_ADD = 2;
 
-    /** @var Agreement */
-    private $agreement;
+    private ?Agreement $agreement;
 
-    /** @var int */
-    private $overwriteAction;
+    private int $overwriteAction = self::OVERWRITE_ACTION_REPLACE;
 
-    public function __construct()
-    {
-        $this->overwriteAction = self::OVERWRITE_ACTION_REPLACE;
-    }
-
-    /**
-     * @return Agreement
-     */
-    public function getAgreement()
+    public function getAgreement(): ?Agreement
     {
         return $this->agreement;
     }
 
-    /**
-     * @param Agreement $agreement
-     * @return CalendarCopy
-     */
-    public function setAgreement($agreement)
+    public function setAgreement(Agreement $agreement): static
     {
         $this->agreement = $agreement;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getOverwriteAction()
+    public function getOverwriteAction(): int
     {
         return $this->overwriteAction;
     }
 
-    /**
-     * @param int $overwriteAction
-     * @return CalendarCopy
-     */
-    public function setOverwriteAction($overwriteAction)
+    public function setOverwriteAction(int $overwriteAction): static
     {
         $this->overwriteAction = $overwriteAction;
         return $this;

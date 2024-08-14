@@ -89,9 +89,15 @@ class Agreement implements \Stringable
     #[Assert\Regex('/^\d\d:\d\d$/')]
     private ?string $defaultEndTime2 = null;
 
+    /**
+     * @var Collection<int, AgreementActivityRealization>
+     */
     #[ORM\OneToMany(targetEntity: AgreementActivityRealization::class, mappedBy: 'agreement')]
     private Collection $evaluatedActivityRealizations;
 
+    /**
+     * @var Collection<int, WorkDay>
+     */
     #[ORM\OneToMany(targetEntity: WorkDay::class, mappedBy: 'agreement')]
     private Collection $workDays;
 
@@ -109,7 +115,7 @@ class Agreement implements \Stringable
 
     public function __toString(): string
     {
-        return ($this->getStudentEnrollment() === null || $this->getWorkcenter() === null)
+        return (!$this->getStudentEnrollment() instanceof StudentEnrollment || !$this->getWorkcenter() instanceof Workcenter)
             ? ''
             : $this->getStudentEnrollment()->__toString() . ' - ' . $this->getWorkcenter()->__toString();
     }

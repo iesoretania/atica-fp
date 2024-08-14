@@ -29,10 +29,8 @@ class NewTeacherType extends AbstractType
 {
     /**
      * Formulario base
-     *
-     * @param FormBuilderInterface $builder
      */
-    private function buildBaseForm(FormBuilderInterface $builder, array $options)
+    private function buildBaseForm(FormBuilderInterface $builder): void
     {
         $builder
             ->add('academicYear', null, [
@@ -55,15 +53,15 @@ class NewTeacherType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $this->buildBaseForm($builder, $options);
+        $this->buildBaseForm($builder);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Teacher::class,

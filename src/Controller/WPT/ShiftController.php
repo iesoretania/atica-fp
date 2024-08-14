@@ -19,6 +19,7 @@
 namespace App\Controller\WPT;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Grade;
 use App\Entity\WPT\Shift;
 use App\Form\Type\WPT\ShiftType;
 use App\Repository\Edu\AcademicYearRepository;
@@ -35,7 +36,9 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -51,9 +54,9 @@ class ShiftController extends AbstractController
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         int $page = 1
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if ($academicYear === null) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -145,10 +148,10 @@ class ShiftController extends AbstractController
         ManagerRegistry $managerRegistry,
         Shift $shift,
         AcademicYear $academicYear = null
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
 
-        $academicYear = $shift->getGrade() ? $shift->getGrade()->getTraining()->getAcademicYear() : $academicYear;
+        $academicYear = $shift->getGrade() instanceof Grade ? $shift->getGrade()->getTraining()->getAcademicYear() : $academicYear;
         $organization = $userExtensionService->getCurrentOrganization();
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -201,7 +204,7 @@ class ShiftController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);

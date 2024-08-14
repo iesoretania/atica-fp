@@ -38,6 +38,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -53,11 +54,11 @@ class EvaluationSummaryController extends AbstractController
         WLTGroupRepository $wltGroupRepository,
         AcademicYearRepository $academicYearRepository,
         ManagerRegistry $managerRegistry,
-        $page = 1,
+        int $page = 1,
         AcademicYear $academicYear = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -163,7 +164,7 @@ class EvaluationSummaryController extends AbstractController
         ActivityRealizationRepository $activityRealizationRepository,
         AgreementRepository $agreementRepository,
         StudentEnrollment $studentEnrollment
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_VIEW_GRADE, $organization);

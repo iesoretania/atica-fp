@@ -21,6 +21,7 @@ namespace App\Entity\Edu;
 use App\Repository\Edu\GradeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -43,12 +44,18 @@ class Grade implements \Stringable
     #[ORM\Column(type: Types::STRING)]
     private ?string $name = null;
 
+    /**
+     * @var Collection<int, Group>
+     */
     #[ORM\OneToMany(targetEntity: Group::class, mappedBy: 'grade')]
-    #[ORM\OrderBy(['name' => 'ASC'])]
+    #[ORM\OrderBy(['name' => Criteria::ASC])]
     private Collection $groups;
 
+    /**
+     * @var Collection<int, Subject>
+     */
     #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: 'grade')]
-    #[ORM\OrderBy(['name' => 'ASC'])]
+    #[ORM\OrderBy(['name' => Criteria::ASC])]
     private Collection $subjects;
 
     public function __construct()
@@ -59,7 +66,7 @@ class Grade implements \Stringable
 
     public function __toString(): string
     {
-        return $this->getName();
+        return (string) $this->getName();
     }
 
     public function getId(): ?int

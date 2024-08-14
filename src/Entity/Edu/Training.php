@@ -21,6 +21,7 @@ namespace App\Entity\Edu;
 use App\Repository\Edu\TrainingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -43,10 +44,16 @@ class Training implements \Stringable
     #[ORM\Column(type: Types::STRING)]
     private ?string $name = null;
 
+    /**
+     * @var Collection<int, Competency>
+     */
     #[ORM\OneToMany(targetEntity: Competency::class, mappedBy: 'training')]
-    #[ORM\OrderBy(['code' => 'ASC'])]
+    #[ORM\OrderBy(['code' => Criteria::ASC])]
     private Collection $competencies;
 
+    /**
+     * @var Collection<int, Grade>
+     */
     #[ORM\OneToMany(targetEntity: Grade::class, mappedBy: 'training')]
     private Collection $grades;
 
@@ -61,7 +68,7 @@ class Training implements \Stringable
 
     public function __toString(): string
     {
-        return $this->getName();
+        return (string) $this->getName();
     }
 
     public function getId(): ?int

@@ -20,6 +20,7 @@ namespace App\Controller\WLT;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
+use App\Entity\Organization;
 use App\Entity\Person;
 use App\Entity\WLT\Contact;
 use App\Entity\Workcenter;
@@ -40,6 +41,7 @@ use App\Security\OrganizationVoter;
 use App\Security\WLT\ContactVoter;
 use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
@@ -47,6 +49,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
@@ -110,11 +113,11 @@ class ContactController extends AbstractController
         WLTTeacherRepository $wltTeacherRepository,
         ManagerRegistry $managerRegistry,
         Contact $visit
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(ContactVoter::ACCESS, $visit);
 
         $organization = $userExtensionService->getCurrentOrganization();
-        $academicYear = $visit->getTeacher()
+        $academicYear = $visit->getTeacher() instanceof Teacher
             ? $visit->getTeacher()->getAcademicYear()
             : $organization->getCurrentAcademicYear();
 
@@ -205,10 +208,10 @@ class ContactController extends AbstractController
         ContactMethodRepository $contactMethodRepository,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if ($academicYear === null) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -220,10 +223,8 @@ class ContactController extends AbstractController
         $methodCollection = [];
         if (null !== $mf) {
             $methodIdsCollection = explode(',', (string) $mf);
-            if (is_array($methodIdsCollection)) {
-                $methodCollection = $contactMethodRepository
-                    ->findAllInListByIdAndAcademicYear($methodIdsCollection, $academicYear);
-            }
+            $methodCollection = $contactMethodRepository
+                ->findAllInListByIdAndAcademicYear($methodIdsCollection, $academicYear);
             if (in_array('0', $methodIdsCollection, true)) {
                 $methodCollection[] = null;
             }
@@ -359,7 +360,7 @@ class ContactController extends AbstractController
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry,
         TranslatorInterface $translator
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_VISIT, $organization);
@@ -403,20 +404,15 @@ class ContactController extends AbstractController
     }
 
     /**
-     * @param Security $security
      * @param $organization
-     * @param TeacherRepository $teacherRepository
-     * @param AcademicYear $academicYear
-     * @param WLTGroupRepository $wltGroupRepository
-     * @param WLTTeacherRepository $wltTeacherRepository
-     * @return Teacher[]|array|\Doctrine\Common\Collections\Collection
+     * @return Teacher[]|array|Collection
      */
     private function getAllowedTeachers(
-        Security $security,
-        $organization,
-        TeacherRepository $teacherRepository,
-        AcademicYear $academicYear,
-        WLTGroupRepository $wltGroupRepository,
+        Security             $security,
+        Organization         $organization,
+        TeacherRepository    $teacherRepository,
+        AcademicYear         $academicYear,
+        WLTGroupRepository   $wltGroupRepository,
         WLTTeacherRepository $wltTeacherRepository
     ) {
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
@@ -467,9 +463,9 @@ class ContactController extends AbstractController
         TranslatorInterface $translator,
         AcademicYear $academicYear = null,
         int $page = 1
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if ($academicYear === null) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -655,9 +651,9 @@ class ContactController extends AbstractController
         TranslatorInterface $translator,
         AcademicYear $academicYear = null,
         int $page = 1
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if ($academicYear === null) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 

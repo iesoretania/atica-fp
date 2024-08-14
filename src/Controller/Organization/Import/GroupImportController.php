@@ -34,6 +34,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -45,7 +46,7 @@ class GroupImportController extends AbstractController
         TeacherRepository $teacherRepository,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
-        Request $request)
+        Request $request): Response
     {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
@@ -90,10 +91,6 @@ class GroupImportController extends AbstractController
 
     /**
      * @param string $file
-     * @param AcademicYear $academicYear
-     * @param TeacherRepository $teacherRepository
-     * @param array $options
-     * @return array|null
      */
     private function importFromCsv(
         $file,
@@ -101,7 +98,7 @@ class GroupImportController extends AbstractController
         TeacherRepository $teacherRepository,
         ManagerRegistry $managerRegistry,
         array $options = []
-    ) {
+    ): array {
         $newCount = 0;
         $oldCount = 0;
 
@@ -233,16 +230,14 @@ class GroupImportController extends AbstractController
                         $matches = [];
                         preg_match_all('/\b(.*) \(.*\)/U', (string) $groupData['Tutor/a'], $matches, PREG_SET_ORDER, 0);
 
-                        $matches = array_map(fn($element) => $element[1], $matches);
+                        $matches = array_map(fn($element): string => $element[1], $matches);
                         $matches = array_unique($matches);
 
-                        if (null !== $matches) {
-                            foreach ($matches as $tutor) {
-                                $teacher = $teacherRepository->findByAcademicYearAndInternalCode($academicYear, $tutor);
+                        foreach ($matches as $tutor) {
+                            $teacher = $teacherRepository->findByAcademicYearAndInternalCode($academicYear, $tutor);
 
-                                if ($teacher && false === $group->getTutors()->contains($teacher)) {
-                                    $group->getTutors()->add($teacher);
-                                }
+                            if ($teacher && false === $group->getTutors()->contains($teacher)) {
+                                $group->getTutors()->add($teacher);
                             }
                         }
                     }
@@ -258,7 +253,7 @@ class GroupImportController extends AbstractController
         }
 
         // ordenar por nombre antes de devolverlo
-        usort($collection, fn(Group $a, Group $b) => $a->getName() <=> $b->getName());
+        usort($collection, fn(Group $a, Group $b): int => $a->getName() <=> $b->getName());
 
         return [
             'new_items' => $newCount,

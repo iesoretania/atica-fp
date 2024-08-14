@@ -37,7 +37,7 @@ class LearningProgramType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $activityRealizations =
             $this->activityRealizationRepository->findByProject($options['project']);
@@ -57,7 +57,7 @@ class LearningProgramType extends AbstractType
                 'label' => 'form.activity_realizations',
                 'class' => ActivityRealization::class,
                 'expanded' => true,
-                'group_by' => fn(ActivityRealization $ar) => (string) $ar->getActivity(),
+                'group_by' => fn(ActivityRealization $ar): string => (string) $ar->getActivity(),
                 'multiple' => true,
                 'required' => false,
                 'choices' => $activityRealizations
@@ -68,7 +68,7 @@ class LearningProgramType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => LearningProgram::class,

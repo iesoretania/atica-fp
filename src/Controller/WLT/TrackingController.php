@@ -34,6 +34,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -50,10 +51,10 @@ class TrackingController extends AbstractController
         ProjectRepository $projectRepository,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if ($academicYear === null) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -138,8 +139,7 @@ class TrackingController extends AbstractController
         if ($groups) {
             $queryBuilder
                 ->andWhere(
-                    'se.group IN (:groups) OR ' .
-                    'se.person = :person OR a.workTutor = :person OR et.person = :person OR ' .
+                    'se.group IN (:groups) OR se.person = :person OR a.workTutor = :person OR et.person = :person OR ' .
                     'a.additionalWorkTutor = :person OR aet.person = :person'
                 )
                 ->setParameter('groups', $groups)
@@ -148,8 +148,7 @@ class TrackingController extends AbstractController
         if ($projects) {
             $queryBuilder
                 ->andWhere(
-                    'pro IN (:projects) OR ' .
-                    'se.person = :person OR a.workTutor = :person OR et.person = :person OR ' .
+                    'pro IN (:projects) OR se.person = :person OR a.workTutor = :person OR et.person = :person OR ' .
                     'a.additionalWorkTutor = :person OR aet.person = :person'
                 )
                 ->setParameter('projects', $projects)

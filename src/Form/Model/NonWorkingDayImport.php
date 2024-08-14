@@ -24,48 +24,28 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class NonWorkingDayImport
 {
-    /**
-     * @var AcademicYear
-     */
-    private $academicYear;
+    private ?AcademicYear $academicYear = null;
 
-    /**
-     * @var UploadedFile
-     */
     #[Assert\File]
-    private $file;
+    private ?UploadedFile $file = null;
 
-    /**
-     * @return AcademicYear
-     */
-    public function getAcademicYear()
+    public function getAcademicYear(): ?AcademicYear
     {
         return $this->academicYear;
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @return NonWorkingDayImport
-     */
-    public function setAcademicYear($academicYear)
+    public function setAcademicYear(AcademicYear $academicYear): static
     {
         $this->academicYear = $academicYear;
         return $this;
     }
 
-    /**
-     * @return UploadedFile
-     */
-    public function getFile()
+    public function getFile(): ?UploadedFile
     {
         return $this->file;
     }
 
-    /**
-     * @param UploadedFile $file
-     * @return NonWorkingDayImport
-     */
-    public function setFile($file)
+    public function setFile(UploadedFile $file): static
     {
         $this->file = $file;
         return $this;

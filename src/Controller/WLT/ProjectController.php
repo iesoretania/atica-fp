@@ -43,6 +43,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -58,9 +59,9 @@ class ProjectController extends AbstractController
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         int $page = 1
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if ($academicYear === null) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -166,7 +167,7 @@ class ProjectController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Project $project
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $organization = $userExtensionService->getCurrentOrganization();
@@ -217,7 +218,7 @@ class ProjectController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Project $project
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);
 
@@ -272,7 +273,7 @@ class ProjectController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGE, $organization);

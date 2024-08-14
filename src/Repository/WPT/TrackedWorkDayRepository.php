@@ -39,10 +39,9 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
 
     /**
      * @param $list
-     * @param AgreementEnrollment $agreementEnrollment
      * @return TrackedWorkDay[]
      */
-    public function findInListByWorkDayIdAndAgreementEnrollment($list, AgreementEnrollment $agreementEnrollment)
+    public function findInListByWorkDayIdAndAgreementEnrollment($list, AgreementEnrollment $agreementEnrollment): array
     {
         $workDays = $this->workDayRepository->findInListByIdAndAgreement($list, $agreementEnrollment->getAgreement());
 
@@ -81,7 +80,7 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByAgreementEnrollmentWithWorkDay(AgreementEnrollment $agreementEnrollment)
+    public function findByAgreementEnrollmentWithWorkDay(AgreementEnrollment $agreementEnrollment): array
     {
         $data = $this->findAndCountByAgreementEnrollment($agreementEnrollment);
         $return = [];
@@ -136,14 +135,17 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function updateWeekLock($year, $week, $agreementEnrollment, $value)
+    public function updateWeekLock($year, $week, AgreementEnrollment $agreementEnrollment, $value)
     {
         $items = $this->findByYearWeekAndAgreementEnrollment($year, $week, $agreementEnrollment);
 
         return $this->updateLock($items, $agreementEnrollment, $value);
     }
 
-    public function findByYearWeekAndAgreementEnrollment($year, $week, AgreementEnrollment $agreementEnrollment)
+    /**
+     * @return mixed[]
+     */
+    public function findByYearWeekAndAgreementEnrollment($year, $week, AgreementEnrollment $agreementEnrollment): array
     {
         $workDays = $this->workDayRepository->findByYearWeekAndAgreement(
             $year,
@@ -161,7 +163,7 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
         return $result;
     }
 
-    public function getWeekInformation(TrackedWorkDay $firstWorkday)
+    public function getWeekInformation(TrackedWorkDay $firstWorkday): array
     {
         $total = 0;
         $current = 0;
@@ -220,7 +222,10 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
         }
     }
 
-    public static function groupByMonthAndWeekNumber($workDays)
+    /**
+     * @return \non-empty-array<int, array{\days: \non-empty-array<\int, \mixed>}>[]
+     */
+    public static function groupByMonthAndWeekNumber($workDays): array
     {
         $collection = [];
 
@@ -258,8 +263,6 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param WorkDay $workDay
-     * @param AgreementEnrollment $agreementEnrollment
      * @return TrackedWorkDay|null
      * @throws NonUniqueResultException
      */

@@ -55,10 +55,10 @@ class WorkDay
     private ?string $otherActivities = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $locked;
+    private ?bool $locked = false;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $absence;
+    private ?int $absence = self::NO_ABSENCE;
 
     #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
     #[Assert\Regex('/^\d\d:\d\d$/')]
@@ -76,6 +76,9 @@ class WorkDay
     #[Assert\Regex('/^\d\d:\d\d$/')]
     private ?string $endTime2 = null;
 
+    /**
+     * @var Collection<int, ActivityRealization>
+     */
     #[ORM\ManyToMany(targetEntity: ActivityRealization::class)]
     #[ORM\JoinTable('wlt_tracking')]
     private Collection $activityRealizations;
@@ -83,8 +86,6 @@ class WorkDay
     public function __construct()
     {
         $this->activityRealizations = new ArrayCollection();
-        $this->absence = self::NO_ABSENCE;
-        $this->locked = false;
     }
 
     public function getId(): ?int

@@ -87,7 +87,7 @@ class WPTTeacherRepository extends TeacherRepository
     }
 
     public function findTeachersShiftDataByAcademicYearAndTeacherFilteredQueryBuilder(
-        $q,
+        ?string $q,
         AcademicYear $academicYear,
         ?Teacher $teacher
     ) {
@@ -157,7 +157,7 @@ class WPTTeacherRepository extends TeacherRepository
         return $queryBuilder;
     }
 
-    public function getStatsByShiftWithAnsweredSurvey(Shift $shift) {
+    public function getStatsByShiftWithAnsweredSurvey(Shift $shift): array {
         $data = $this->createQueryBuilder('t')
             ->select('t')
             ->addSelect('etas')

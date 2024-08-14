@@ -32,6 +32,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -63,7 +64,7 @@ class NonWorkingDayController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         NonWorkingDay $nonWorkingDay
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $nonWorkingDay->getAcademicYear());
 
         $em = $managerRegistry->getManager();
@@ -114,10 +115,10 @@ class NonWorkingDayController extends AbstractController
         ManagerRegistry $managerRegistry,
         int $page = 1,
         AcademicYear $academicYear = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        if (null === $academicYear) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -173,11 +174,11 @@ class NonWorkingDayController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
         if ($academicYear->getOrganization() !== $userExtensionService->getCurrentOrganization()) {
-            return $this->createNotFoundException();
+            throw $this->createNotFoundException();
         }
 
         $em = $managerRegistry->getManager();

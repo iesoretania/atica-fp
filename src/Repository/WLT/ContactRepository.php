@@ -59,7 +59,7 @@ class ContactRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function getTeacherStatsByIdAndFilterQueryBuilder($teachers, $q)
+    public function getTeacherStatsByIdAndFilterQueryBuilder($teachers, ?string $q)
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->from(Teacher::class, 't')
@@ -82,7 +82,7 @@ class ContactRepository extends ServiceEntityRepository
         return $qb;
     }
 
-    public function getWorkcenterStatsByIdAcademicYearAndFilterQueryBuilder($workcenters, $academicYear, $q)
+    public function getWorkcenterStatsByIdAcademicYearAndFilterQueryBuilder($workcenters, $academicYear, ?string $q)
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->from(Workcenter::class, 'w')
@@ -140,8 +140,8 @@ class ContactRepository extends ServiceEntityRepository
     public function findByTeacherWorkcenterProjectsAndMethods(
         Teacher $teacher,
         Workcenter $workcenter = null,
-        $projects = [],
-        $contactMethods = []
+        array $projects = [],
+        array $contactMethods = []
     ) {
         $qb = $this->createQueryBuilder('c')
             ->select('c, p, w, t, m, pe')
@@ -153,7 +153,7 @@ class ContactRepository extends ServiceEntityRepository
             ->where('c.teacher = :teacher')
             ->setParameter('teacher', $teacher);
 
-        if ($workcenter) {
+        if ($workcenter instanceof Workcenter) {
             $qb
                 ->andWhere('c.workcenter = :workcenter')
                 ->setParameter('workcenter', $workcenter);
@@ -191,8 +191,8 @@ class ContactRepository extends ServiceEntityRepository
     public function findByAcademicYearWorkcenterProjectsAndMethods(
         AcademicYear $academicYear,
         Workcenter $workcenter,
-        $projects = [],
-        $contactMethods = []
+        array $projects = [],
+        array $contactMethods = []
     ) {
         $qb = $this->createQueryBuilder('c')
             ->select('c, p, w, t, m, pe')
@@ -238,8 +238,8 @@ class ContactRepository extends ServiceEntityRepository
     public function getContactMethodStatsByTeacherWorkcenterProjectsAndMethods(
         Teacher $teacher,
         Workcenter $workcenter = null,
-        $projects = [],
-        $contactMethods = []
+        array $projects = [],
+        array $contactMethods = []
     ) {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('cm, COUNT(c)')
@@ -255,7 +255,7 @@ class ContactRepository extends ServiceEntityRepository
             ->setParameter('academic_year', $teacher->getAcademicYear())
             ->setParameter('teacher', $teacher);
 
-        if ($workcenter) {
+        if ($workcenter instanceof Workcenter) {
             $qb
                 ->andWhere('c.workcenter = :workcenter')
                 ->setParameter('workcenter', $workcenter);
@@ -293,8 +293,8 @@ class ContactRepository extends ServiceEntityRepository
     public function getContactMethodStatsByAcademicYearWorkcenterProjectsAndMethods(
         AcademicYear $academicYear,
         Workcenter $workcenter = null,
-        $projects = [],
-        $contactMethods = []
+        array $projects = [],
+        array $contactMethods = []
     ) {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('cm, COUNT(c)')
@@ -367,7 +367,7 @@ class ContactRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function deleteFromProjects($items)
+    public function deleteFromProjects($items): void
     {
         $contacts = $this->createQueryBuilder('c')
             ->join('c.projects', 'p')

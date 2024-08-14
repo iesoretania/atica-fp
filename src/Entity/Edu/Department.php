@@ -46,7 +46,7 @@ class Department implements \Stringable
 
     public function __toString(): string
     {
-        return $this->getName();
+        return (string) $this->getName();
     }
 
     public function getId(): ?int

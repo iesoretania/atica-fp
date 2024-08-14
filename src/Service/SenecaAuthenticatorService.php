@@ -74,32 +74,13 @@ class SenecaAuthenticatorService
     }
 
     /**
-     * Get URL contents
-     *
-     * @param string $url
-     * @param boolean $forceSecurity
-     * @return string
-     */
-    private function getUrl($url, $forceSecurity)
-    {
-        $curl = curl_init();
-        $this->setCurlDefaultOptions($url, $forceSecurity, $curl);
-        curl_setopt($curl, CURLOPT_REFERER, $url);
-        $str = curl_exec($curl);
-        curl_close($curl);
-        return $str === false ? '' : (string) $str;
-    }
-
-    /**
      * Gets the content after POSTing into an URL
      *
-     * @param array $fields
      * @param string $postUrl
      * @param string $refererUrl
      * @param boolean $forceSecurity
-     * @return string
      */
-    private function postToUrl($fields, $postUrl, $refererUrl, $forceSecurity)
+    private function postToUrl(array $fields, $postUrl, $refererUrl, $forceSecurity): string
     {
         $fieldsString = '';
         foreach ($fields as $key => $value) {
@@ -122,7 +103,7 @@ class SenecaAuthenticatorService
      * @param $forceSecurity
      * @param $curl
      */
-    private function setCurlDefaultOptions($url, $forceSecurity, $curl)
+    private function setCurlDefaultOptions($url, $forceSecurity, \CurlHandle|bool $curl): void
     {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $forceSecurity);
         curl_setopt($curl, CURLOPT_HEADER, false);

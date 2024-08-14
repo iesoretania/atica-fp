@@ -24,20 +24,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class SubjectDataImport
 {
-    /**
-     * @var Grade
-     */
-    private $grade;
+    private ?Grade $grade = null;
 
-    /**
-     * @var UploadedFile
-     */
     #[Assert\File]
-    private $file;
-
-    public function __construct()
-    {
-    }
+    private ?UploadedFile $file = null;
 
     /**
      * @return ?Grade
@@ -47,29 +37,19 @@ class SubjectDataImport
         return $this->grade;
     }
 
-    /**
-     * @param ?Grade $grade
-     * @return self
-     */
-    public function setGrade(?Grade $grade)
+    public function setGrade(?Grade $grade): static
     {
         $this->grade = $grade;
         return $this;
     }
 
-    /**
-     * @return UploadedFile
-     */
-    public function getFile()
+    public function getFile(): ?UploadedFile
     {
         return $this->file;
     }
 
-    /**
-     *
-     * @return self
-     */
-    public function setFile(UploadedFile $file)
+
+    public function setFile(UploadedFile $file): static
     {
         $this->file = $file;
         return $this;

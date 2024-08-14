@@ -21,6 +21,7 @@ namespace App\Controller\WPT;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
 use App\Entity\Person;
+use App\Entity\Survey;
 use App\Entity\WPT\AgreementEnrollment;
 use App\Entity\WPT\Shift;
 use App\Entity\WPT\WorkTutorAnsweredSurvey;
@@ -41,7 +42,9 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -52,9 +55,8 @@ class SurveyController extends AbstractController
      * @param $queryBuilder
      * @param $pageSize
      * @param $page
-     * @return Pagerfanta
      */
-    private static function getPager($queryBuilder, $pageSize, $page): Pagerfanta
+    private function getPager($queryBuilder, int $pageSize, int $page): Pagerfanta
     {
         $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
@@ -69,7 +71,7 @@ class SurveyController extends AbstractController
     }
 
     #[Route(path: '/', name: 'workplace_training_survey', methods: ['GET'])]
-    public function index(UserExtensionService $userExtensionService)
+    public function index(UserExtensionService $userExtensionService): Response
     {
         $this->denyAccessUnlessGranted(
             WPTOrganizationVoter::WPT_ACCESS,
@@ -90,11 +92,11 @@ class SurveyController extends AbstractController
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         StudentAnsweredSurveyRepository $studentAnsweredSurveyRepository,
-        $page = 1,
+        int $page = 1,
         AcademicYear $academicYear = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS, $organization);
@@ -114,7 +116,7 @@ class SurveyController extends AbstractController
 
         $pageSize = $this->getParameter('page.size');
 
-        $pager = self::getPager($queryBuilder, $pageSize, $page);
+        $pager = $this->getPager($queryBuilder, $pageSize, $page);
 
         return $this->render('wpt/survey/student_list.html.twig', [
             'title' => $title,
@@ -137,7 +139,7 @@ class SurveyController extends AbstractController
         StudentAnsweredSurveyRepository $studentAnsweredSurveyRepository,
         ManagerRegistry $managerRegistry,
         AgreementEnrollment $agreementEnrollment
-    ) {
+    ): Response {
         $readOnly = !$this->isGranted(AgreementEnrollmentVoter::FILL_STUDENT_SURVEY, $agreementEnrollment);
 
         $academicYear = $agreementEnrollment
@@ -151,7 +153,7 @@ class SurveyController extends AbstractController
         $survey = $shift
             ->getStudentSurvey();
 
-        if ($survey) {
+        if ($survey instanceof Survey) {
             if ($studentAnsweredSurvey === null) {
                 $studentAnsweredSurvey = $studentAnsweredSurveyRepository->createNewAnsweredSurvey(
                     $survey,
@@ -214,11 +216,11 @@ class SurveyController extends AbstractController
         TranslatorInterface $translator,
         AgreementEnrollmentRepository $agreementEnrollmentRepository,
         AcademicYearRepository $academicYearRepository,
-        $page = 1,
+        int $page = 1,
         AcademicYear $academicYear = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -260,7 +262,7 @@ class SurveyController extends AbstractController
 
         $pageSize = $this->getParameter('page.size');
 
-        $pager = self::getPager($queryBuilder, $pageSize, $page);
+        $pager = $this->getPager($queryBuilder, $pageSize, $page);
 
         return $this->render('wpt/survey/work_tutor_list.html.twig', [
             'title' => $title,
@@ -284,7 +286,7 @@ class SurveyController extends AbstractController
         AgreementEnrollment $agreementEnrollment,
         ManagerRegistry $managerRegistry,
         Person $workTutor
-    ) {
+    ): Response {
         // sólo pueden rellenar la encuesta en nombre del responsable laboral titular o adicional
         if ($workTutor !== $agreementEnrollment->getWorkTutor()
             && $workTutor !== $agreementEnrollment->getAdditionalWorkTutor()) {
@@ -299,7 +301,7 @@ class SurveyController extends AbstractController
             && !$this->isGranted(AgreementEnrollmentVoter::MANAGE, $agreementEnrollment)
             && $workTutor === $agreementEnrollment->getWorkTutor() && $person !== $agreementEnrollment->getWorkTutor()
             && $person !== $agreementEnrollment->getEducationalTutor()->getPerson()
-            && ($agreementEnrollment->getAdditionalEducationalTutor() !== null
+            && ($agreementEnrollment->getAdditionalEducationalTutor() instanceof Teacher
                 && $person !== $agreementEnrollment->getAdditionalEducationalTutor()->getPerson()
             )
         ) {
@@ -319,7 +321,7 @@ class SurveyController extends AbstractController
             ->getShift()
             ->getCompanySurvey();
 
-        if ($survey) {
+        if ($survey instanceof Survey) {
             if ($workTutorAnsweredSurvey === null) {
                 $workTutorAnsweredSurvey = $workTutorAnsweredSurveyRepository->createNewAnsweredSurvey(
                     $survey,
@@ -382,11 +384,11 @@ class SurveyController extends AbstractController
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         WPTTeacherRepository $wptTeacherRepository,
-        $page = 1,
+        int $page = 1,
         AcademicYear $academicYear = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -410,7 +412,7 @@ class SurveyController extends AbstractController
             $teacher
         );
 
-        $pager = self::getPager($queryBuilder, $this->getParameter('page.size'), $page);
+        $pager = $this->getPager($queryBuilder, $this->getParameter('page.size'), $page);
 
         return $this->render('wpt/survey/educational_tutor_list.html.twig', [
             'title' => $title,
@@ -431,7 +433,7 @@ class SurveyController extends AbstractController
         ManagerRegistry $managerRegistry,
         Shift $shift,
         Teacher $teacher
-    ) {
+    ): Response {
         $em = $managerRegistry->getManager();
 
         $this->denyAccessUnlessGranted(ShiftVoter::ACCESS_EDUCATIONAL_TUTOR_SURVEY, $shift);
@@ -449,7 +451,7 @@ class SurveyController extends AbstractController
 
         $survey = $shift->getEducationalTutorSurvey();
 
-        if ($survey) {
+        if ($survey instanceof Survey) {
             $answeredSurvey =
                 $educationalTutorAnsweredSurveyRepository->findOneByShiftAndTeacher(
                     $shift,

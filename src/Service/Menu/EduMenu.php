@@ -31,10 +31,7 @@ class EduMenu implements MenuBuilderInterface
     {
     }
 
-    /**
-     * @return array|null
-     */
-    public function getMenuStructure()
+    public function getMenuStructure(): array
     {
         $organization = $this->userExtension->getCurrentOrganization();
         $isLocalAdministrator = $this->security->isGranted(OrganizationVoter::MANAGE, $organization);

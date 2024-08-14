@@ -32,7 +32,6 @@ class DepartmentRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @return Department[]
      */
     public function findByAcademicYear(AcademicYear $academicYear)
@@ -47,7 +46,6 @@ class DepartmentRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param AcademicYear $academicYear
      * @return Department[]
      */
     public function findAllInListByIdAndAcademicYear(

@@ -37,15 +37,10 @@ class WorkDay
     private ?Agreement $agreement = null;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $hours;
+    private ?int $hours = 0;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
-
-    public function __construct()
-    {
-        $this->hours = 0;
-    }
 
     public function getId(): ?int
     {

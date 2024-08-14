@@ -61,7 +61,8 @@ class LearningOutcomeController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         LearningOutcome $learningOutcome
-    ) {
+    ): Response
+    {
         $subject = $learningOutcome->getSubject();
         $training = $subject->getGrade()->getTraining();
 
@@ -122,8 +123,9 @@ class LearningOutcomeController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Subject $subject,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response
+    {
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $subject->getGrade()->getTraining());
 
         /** @var QueryBuilder $queryBuilder */
@@ -184,7 +186,8 @@ class LearningOutcomeController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Subject $subject
-    ) {
+    ): Response
+    {
         $training = $subject->getGrade()->getTraining();
 
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
@@ -239,7 +242,7 @@ class LearningOutcomeController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Subject $subject
-    ) {
+    ): Response {
         $training = $subject->getGrade()->getTraining();
 
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
@@ -274,14 +277,15 @@ class LearningOutcomeController extends AbstractController
     #[Route(path: '/materia/resultado/exportar/{id}', name: 'organization_training_learning_outcome_export', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function export(
         Subject $subject
-    ) {
+    ): Response
+    {
         $training = $subject->getGrade()->getTraining();
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
 
         $data = '';
 
         foreach ($subject->getLearningOutcomes() as $learningOutcome) {
-            $lines = explode("\n", $learningOutcome->getDescription());
+            $lines = explode("\n", (string) $learningOutcome->getDescription());
             foreach ($lines as &$line) {
                 $line = trim($line);
             }
@@ -297,12 +301,10 @@ class LearningOutcomeController extends AbstractController
 
     /**
      * @param $lines
-     *
-     * @return array
      */
-    private function parseImport($lines)
+    private function parseImport(string $lines): array
     {
-        $items = explode("\n", (string) $lines);
+        $items = explode("\n", $lines);
         $output = [];
         $matches = [];
 

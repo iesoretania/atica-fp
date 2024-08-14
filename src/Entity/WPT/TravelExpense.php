@@ -48,6 +48,9 @@ class TravelExpense
     #[ORM\JoinColumn(nullable: false)]
     private ?TravelRoute $travelRoute = null;
 
+    /**
+     * @var Collection<int, Agreement>
+     */
     #[ORM\ManyToMany(targetEntity: Agreement::class)]
     #[ORM\JoinTable(name: 'wpt_travel_expense_agreement')]
     private Collection $agreements;
@@ -56,7 +59,7 @@ class TravelExpense
     private ?string $otherExpensesDescription = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: false, options: ['default' => 0])]
-    private ?int $otherExpenses;
+    private ?int $otherExpenses = 0;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $description = null;
@@ -64,7 +67,6 @@ class TravelExpense
     public function __construct()
     {
         $this->agreements = new ArrayCollection();
-        $this->otherExpenses = 0;
     }
 
     public function getId(): ?int

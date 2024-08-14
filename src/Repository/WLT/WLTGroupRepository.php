@@ -150,7 +150,7 @@ class WLTGroupRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function findByAcademicYearAndPerson(AcademicYear $academicYear, Person $person)
+    public function findByAcademicYearAndPerson(AcademicYear $academicYear, Person $person): ArrayCollection
     {
         $groups = new ArrayCollection();
 
@@ -174,7 +174,7 @@ class WLTGroupRepository extends ServiceEntityRepository
         return $this->findByAcademicYearAndPerson($organization->getCurrentAcademicYear(), $person);
     }
 
-    public function findByAcademicYearAndGroupTutorOrDepartmentHeadPerson(AcademicYear $academicYear, Person $person)
+    public function findByAcademicYearAndGroupTutorOrDepartmentHeadPerson(AcademicYear $academicYear, Person $person): Collection
     {
         $groups = new ArrayCollection();
 
@@ -189,7 +189,7 @@ class WLTGroupRepository extends ServiceEntityRepository
         return $groups;
     }
 
-    public function findByAcademicYearAndGroupTutorOrTeacherOrDepartmentHeadPerson(AcademicYear $academicYear, Person $person)
+    public function findByAcademicYearAndGroupTutorOrTeacherOrDepartmentHeadPerson(AcademicYear $academicYear, Person $person): Collection
     {
         $groups = new ArrayCollection();
 
@@ -208,7 +208,7 @@ class WLTGroupRepository extends ServiceEntityRepository
         return $groups;
     }
 
-    private function appendGroups(ArrayCollection $groups, $newGroups)
+    private function appendGroups(ArrayCollection $groups, $newGroups): void
     {
         foreach ($newGroups as $group) {
             if (!$groups->contains($group)) {

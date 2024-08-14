@@ -50,8 +50,6 @@ class AgreementRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
-     * @param Person $student
      *
      * @return QueryBuilder
      */
@@ -100,8 +98,7 @@ class AgreementRepository extends ServiceEntityRepository
             ->leftJoin('t.department', 'd')
             ->leftJoin('d.head', 'h')
             ->where('t.academicYear = :academic_year')
-            ->andWhere('h.person = :person OR a.educationalTutor = :teacher OR '
-                . 'a.additionalEducationalTutor = :teacher')
+            ->andWhere('h.person = :person OR a.educationalTutor = :teacher OR a.additionalEducationalTutor = :teacher')
             ->setParameter('academic_year', $academicYear)
             ->setParameter('person', $teacher->getPerson())
             ->setParameter('teacher', $teacher)
@@ -110,8 +107,6 @@ class AgreementRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
-     * @param Person $student
      *
      * @return int
      */
@@ -129,8 +124,6 @@ class AgreementRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
-     * @param Person $workTutor
      *
      * @return int
      */
@@ -157,8 +150,6 @@ class AgreementRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
-     * @param Person $person
      *
      * @return QueryBuilder
      */
@@ -175,8 +166,6 @@ class AgreementRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
-     * @param Person $person
      *
      * @return int
      */
@@ -194,7 +183,6 @@ class AgreementRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param Project $project
      * @return Agreement[]
      */
     public function findAllInListByIdAndProject(
@@ -221,7 +209,6 @@ class AgreementRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param Project $project
      * @return Agreement[]
      */
     public function findAllInListByNotIdAndProject(
@@ -246,7 +233,7 @@ class AgreementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function updateDates(Agreement $agreement)
+    public function updateDates(Agreement $agreement): void
     {
         $workDays = $this->workDayRepository->findByAgreement($agreement);
         if ((is_countable($workDays) ? count($workDays) : 0) === 0) {
@@ -263,7 +250,7 @@ class AgreementRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function cloneCalendarFromAgreement(Agreement $destination, Agreement $source, $overwrite = false)
+    public function cloneCalendarFromAgreement(Agreement $destination, Agreement $source, $overwrite = false): void
     {
         $workDays = $this->workDayRepository->findByAgreement($source);
         if ((is_countable($workDays) ? count($workDays) : 0) === 0) {
@@ -293,9 +280,8 @@ class AgreementRepository extends ServiceEntityRepository
 
     /**
      * @param Agreement[]
-     * @return bool
      */
-    public function deleteFromList($list)
+    public function deleteFromList($list): bool
     {
         $em = $this->getEntityManager();
 
@@ -384,7 +370,7 @@ class AgreementRepository extends ServiceEntityRepository
             ->where('a.project = :project')
             ->setParameter('project', $project);
 
-        if ($academicYear) {
+        if ($academicYear instanceof AcademicYear) {
             $qb
                 ->andWhere('tr.academicYear = :academic_year')
                 ->setParameter('academic_year', $academicYear);
@@ -438,7 +424,7 @@ class AgreementRepository extends ServiceEntityRepository
                 ->setParameter('person', $person);
         }
 
-        if ($project !== null) {
+        if ($project instanceof Project) {
             $queryBuilder
                 ->andWhere('a.project = :project')
                 ->setParameter('project', $project);
@@ -473,7 +459,7 @@ class AgreementRepository extends ServiceEntityRepository
             }
         }
 
-        if ($project !== null) {
+        if ($project instanceof Project) {
             $queryBuilder
                 ->andWhere('a.project = :project')
                 ->setParameter('project', $project);
@@ -491,7 +477,7 @@ class AgreementRepository extends ServiceEntityRepository
     }
 
     public function findByAcademicYearAndPersonFilterQueryBuilder(
-        $q,
+        ?string $q,
         AcademicYear $academicYear,
         Person $person
     ) {
@@ -559,8 +545,7 @@ class AgreementRepository extends ServiceEntityRepository
 
         if (!$isWltManager && !$isManager && !$projects && !$groups) {
             $queryBuilder
-                ->andWhere('se.person = :person OR wt = :person OR awt = :person' .
-                           ' OR et.person = :person OR aet.person = :person')
+                ->andWhere('se.person = :person OR wt = :person OR awt = :person OR et.person = :person OR aet.person = :person')
                 ->setParameter('person', $person);
         }
 

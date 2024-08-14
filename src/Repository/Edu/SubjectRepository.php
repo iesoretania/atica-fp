@@ -40,7 +40,6 @@ class SubjectRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @return QueryBuilder
      */
     public function findByAcademicYearQueryBuilder(AcademicYear $academicYear)
@@ -54,7 +53,6 @@ class SubjectRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @return Subject[]
      */
     public function findByAcademicYear(AcademicYear $academicYear)
@@ -65,7 +63,6 @@ class SubjectRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @param string $subjectInternalCode
      * @param string $gradeInternalCode
      * @return Subject|null
@@ -91,7 +88,6 @@ class SubjectRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param AcademicYear $academicYear
      * @return Subject[]
      */
     public function findAllInListByIdAndAcademicYear(
@@ -111,7 +107,6 @@ class SubjectRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @param $filter
      * @return Subject[]
      */
@@ -141,7 +136,7 @@ class SubjectRepository extends ServiceEntityRepository
             ->setParameter('group', $group)
             ->orderBy('s.name', 'ASC');
 
-        if ($person !== null) {
+        if ($person instanceof Person) {
             $qb
                 ->join('s.teachings', 't')
                 ->join('t.teacher', 'te')
@@ -172,7 +167,6 @@ class SubjectRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Grade $grade
      * @return Subject[]|Collection
      */
     public function findByGrade(Grade $grade)
@@ -184,7 +178,7 @@ class SubjectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function copyFromGrade(Grade $destination, Grade $source)
+    public function copyFromGrade(Grade $destination, Grade $source): void
     {
         $subjects = $this->findByGrade($source);
         foreach ($subjects as $subject) {
@@ -212,7 +206,7 @@ class SubjectRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function deleteFromGradesList(array $grades)
+    public function deleteFromGradesList(array $grades): void
     {
         /** @var Grade $grade */
         foreach ($grades as $grade) {

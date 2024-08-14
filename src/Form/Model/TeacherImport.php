@@ -24,103 +24,55 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class TeacherImport
 {
-    /**
-     * @var AcademicYear
-     */
-    private $academicYear;
+    private ?AcademicYear $academicYear;
 
-    /**
-     * @var UploadedFile
-     */
     #[Assert\File]
-    private $file;
+    private ?UploadedFile $file = null;
 
-    /**
-     * @var boolean
-     */
-    private $externalPassword;
+    private bool $externalPassword = true;
 
-    /**
-     * @var boolean
-     */
-    private $generatePassword;
+    private bool $generatePassword = false;
 
-    /**
-     * TeacherImport constructor.
-     */
-    public function __construct()
-    {
-        $this->generatePassword = false;
-        $this->externalPassword = true;
-    }
-
-    /**
-     * @return AcademicYear
-     */
-    public function getAcademicYear()
+    public function getAcademicYear(): ?AcademicYear
     {
         return $this->academicYear;
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @return TeacherImport
-     */
-    public function setAcademicYear($academicYear)
+    public function setAcademicYear(AcademicYear $academicYear): static
     {
         $this->academicYear = $academicYear;
         return $this;
     }
 
-    /**
-     * @return UploadedFile
-     */
-    public function getFile()
+    public function getFile(): ?UploadedFile
     {
         return $this->file;
     }
 
-    /**
-     *
-     * @return TeacherImport
-     */
-    public function setFile(UploadedFile $file)
+
+    public function setFile(UploadedFile $file): static
     {
         $this->file = $file;
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function getGeneratePassword()
+    public function getGeneratePassword(): bool
     {
         return $this->generatePassword;
     }
 
-    /**
-     * @param boolean $generatePassword
-     * @return TeacherImport
-     */
-    public function setGeneratePassword($generatePassword)
+    public function setGeneratePassword(bool $generatePassword): static
     {
         $this->generatePassword = $generatePassword;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isExternalPassword()
+    public function isExternalPassword(): bool
     {
         return $this->externalPassword;
     }
 
-    /**
-     * @param bool $externalPassword
-     * @return TeacherImport
-     */
-    public function setExternalPassword($externalPassword)
+    public function setExternalPassword(bool $externalPassword): static
     {
         $this->externalPassword = $externalPassword;
         return $this;

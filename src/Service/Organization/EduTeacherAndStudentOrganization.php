@@ -31,7 +31,6 @@ class EduTeacherAndStudentOrganization implements OrganizationBuilderInterface
     public function getOrganizations(Person $person): array
     {
         $organizations = $this->eduOrganizationRepository->findByCurrentStudent($person);
-        $organizations = array_merge($organizations, $this->eduOrganizationRepository->findByCurrentTeacher($person));
-        return $organizations;
+        return array_merge($organizations, $this->eduOrganizationRepository->findByCurrentTeacher($person));
     }
 }

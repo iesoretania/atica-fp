@@ -32,9 +32,6 @@ class UserExtensionService
     {
     }
 
-    /**
-     * @return Organization|null
-     */
     final public function getCurrentOrganization(): ?Organization
     {
         if ($this->requestStack->getSession()->has('organization_id')) {
