@@ -63,7 +63,7 @@ class ReportController extends AbstractController
         );
     }
 
-    private function genericListAction(
+    private function genericList(
         Request                  $request,
         UserExtensionService     $userExtensionService,
         TranslatorInterface      $translator,
@@ -148,7 +148,7 @@ class ReportController extends AbstractController
         AcademicYear           $academicYear = null,
         int                    $page = 1
     ) {
-        return $this->genericListAction(
+        return $this->genericList(
             $request,
             $userExtensionService,
             $translator,
@@ -171,7 +171,7 @@ class ReportController extends AbstractController
         AcademicYear $academicYear = null,
         int $page = 1
     ) {
-        return $this->genericListAction(
+        return $this->genericList(
             $request,
             $userExtensionService,
             $translator,
@@ -193,7 +193,7 @@ class ReportController extends AbstractController
         AcademicYear $academicYear = null,
         int $page = 1
     ) {
-        return $this->genericListAction(
+        return $this->genericList(
             $request,
             $userExtensionService,
             $translator,
@@ -212,8 +212,7 @@ class ReportController extends AbstractController
         StudentAnsweredSurveyRepository $studentAnsweredSurveyRepository,
         SurveyQuestionRepository $surveyQuestionRepository,
         AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
-        Shift $shift,
-        AcademicYear $academicYear = null
+        Shift $shift
     ) {
         $this->denyAccessUnlessGranted(ShiftVoter::REPORT_STUDENT_SURVEY, $shift);
 
@@ -280,8 +279,7 @@ class ReportController extends AbstractController
         SurveyQuestionRepository $surveyQuestionRepository,
         AnsweredSurveyQuestionRepository $answeredSurveyQuestionRepository,
         WorkTutorAnsweredSurveyRepository $workTutorAnsweredSurveyRepository,
-        Shift $shift,
-        AcademicYear $academicYear = null
+        Shift $shift
     ) {
         $this->denyAccessUnlessGranted(ShiftVoter::REPORT_COMPANY_SURVEY, $shift);
 

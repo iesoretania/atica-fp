@@ -40,7 +40,6 @@ use Mpdf\Output\Destination;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -159,7 +158,7 @@ class TrackingCalendarController extends AbstractController
         $activities = clone $agreementEnrollment->getActivities();
 
         foreach ($trackedActivities as $trackedActivity) {
-            $activities->removeElement($trackedActivity->getActivity());
+            $trackedWorkDay->getTrackedActivities()->remove($trackedActivity->getActivity());
         }
         foreach ($activities as $newActivity) {
             $newTrackedActivity = new ActivityTracking();
@@ -167,9 +166,8 @@ class TrackingCalendarController extends AbstractController
                 ->setActivity($newActivity)
                 ->setTrackedWorkDay($trackedWorkDay)
                 ->setHours(0);
-            $trackedActivities->add($newTrackedActivity);
+            $trackedWorkDay->getTrackedActivities()->add($newTrackedActivity);
         }
-        $trackedWorkDay->setTrackedActivities($trackedActivities);
 
         $form = $this->createForm(WorkDayTrackingType::class, $trackedWorkDay, [
             'work_day' => $trackedWorkDay,

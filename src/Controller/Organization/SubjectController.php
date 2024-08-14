@@ -223,7 +223,7 @@ class SubjectController extends AbstractController
 
         $managerRegistry->getManager()->persist($teaching);
 
-        return $this->formTeachingAction($request, $userExtensionService, $translator, $managerRegistry, $teaching);
+        return $this->formTeaching($request, $userExtensionService, $translator, $managerRegistry, $teaching);
     }
 
     #[Route(path: '/asignacion/{id}', name: 'organization_teaching_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

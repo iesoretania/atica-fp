@@ -42,7 +42,7 @@ class TeachingType extends AbstractType
         /** @var Subject $subject */
         $subject = $options['subject'];
         $groups = $subject->getGrade()->getGroups();
-        $group = $groups !== [] ? $groups[0] : null;
+        $group = !$groups->isEmpty() ? $groups[0] : null;
         $academicYear = $subject->getGrade()->getTraining()->getAcademicYear();
 
         $teachers = $this->teacherRepository->findByAcademicYear($academicYear);

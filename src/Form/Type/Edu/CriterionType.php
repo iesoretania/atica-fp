@@ -20,7 +20,6 @@ namespace App\Form\Type\Edu;
 
 use App\Entity\Edu\Criterion;
 use App\Entity\Edu\LearningOutcome;
-use App\Entity\Edu\Subject;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;

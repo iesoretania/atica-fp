@@ -58,7 +58,7 @@ class RoleRepository extends ServiceEntityRepository
     {
         foreach ($rolesData as $roleName => $roleData) {
 
-            // inicialmente copiar quien tenía originalmente el rol
+            // inicialmente, copiar quien tenía originalmente el rol
             $toRemove = new ArrayCollection(array_map(fn(Role $role): ?Person => $role->getPerson(), $this->findByOrganizationAndRole($organization, $roleName)));
 
             $toAdd = [];

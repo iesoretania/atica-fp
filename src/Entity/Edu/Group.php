@@ -18,6 +18,7 @@
 
 namespace App\Entity\Edu;
 
+use App\Entity\Person;
 use App\Repository\Edu\GroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

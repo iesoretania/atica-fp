@@ -53,7 +53,7 @@ class TravelRouteController extends AbstractController
 
         $managerRegistry->getManager()->persist($travelRoute);
 
-        return $this->indexAction(
+        return $this->index(
             $request,
             $translator,
             $userExtensionService,

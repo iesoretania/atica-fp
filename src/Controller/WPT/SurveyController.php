@@ -42,7 +42,6 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -287,7 +286,7 @@ class SurveyController extends AbstractController
         ManagerRegistry $managerRegistry,
         Person $workTutor
     ): Response {
-        // sólo pueden rellenar la encuesta en nombre del responsable laboral titular o adicional
+        // solo pueden rellenar la encuesta en nombre del responsable laboral titular o adicional
         if ($workTutor !== $agreementEnrollment->getWorkTutor()
             && $workTutor !== $agreementEnrollment->getAdditionalWorkTutor()) {
             throw $this->createAccessDeniedException();
@@ -444,7 +443,7 @@ class SurveyController extends AbstractController
             $shift
         );
 
-        // sólo pueden rellenar la encuesta de tutores docentes (titulares o adicionales)
+        // solo pueden rellenar la encuesta de tutores docentes (titulares o adicionales)
         if ($agreementCount === 0) {
             throw $this->createAccessDeniedException();
         }

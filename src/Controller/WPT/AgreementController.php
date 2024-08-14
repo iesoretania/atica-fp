@@ -41,7 +41,6 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -70,7 +69,7 @@ class AgreementController extends AbstractController
 
         $managerRegistry->getManager()->persist($agreement);
 
-        return $this->indexAction(
+        return $this->index(
             $request,
             $userExtensionService,
             $translator,
@@ -315,10 +314,10 @@ class AgreementController extends AbstractController
 
         if ((is_countable($items) ? count($items) : 0) !== 0) {
             if ('' === $request->get('delete')) {
-                return $this->deleteAction($items, $request, $translator, $agreementRepository, $managerRegistry, $shift);
+                return $this->delete($items, $request, $translator, $agreementRepository, $managerRegistry, $shift);
             }
             if ('' === $request->get('copy')) {
-                return $this->copyAction($items, $request, $translator, $agreementRepository, $managerRegistry, $shift);
+                return $this->copy($items, $request, $translator, $agreementRepository, $managerRegistry, $shift);
             }
         }
 
@@ -328,7 +327,7 @@ class AgreementController extends AbstractController
         );
     }
 
-    private function deleteAction(
+    private function delete(
         $items,
         Request $request,
         TranslatorInterface $translator,
@@ -379,7 +378,7 @@ class AgreementController extends AbstractController
         ]);
     }
 
-    private function copyAction(
+    private function copy(
         $items,
         Request $request,
         TranslatorInterface $translator,

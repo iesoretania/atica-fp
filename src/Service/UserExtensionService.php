@@ -73,8 +73,10 @@ class UserExtensionService
             || $this->authorizationChecker->isGranted(OrganizationVoter::MANAGE, $this->getCurrentOrganization());
     }
 
-    final public function getOrganizations(Person $user)
+    final public function getOrganizations(?Person $user)
     {
+        if (!$user instanceof Person) return [];
+
         return $this->organizationRepository->getMembershipByPerson($user);
     }
 }

@@ -38,7 +38,6 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -64,7 +63,7 @@ class ActivityController extends AbstractController
 
         $managerRegistry->getManager()->persist($activity);
 
-        return $this->indexAction(
+        return $this->index(
             $request,
             $userExtensionService,
             $translator,

@@ -63,7 +63,7 @@ class AgreementController extends AbstractController
 
         $managerRegistry->getManager()->persist($agreement);
 
-        return $this->indexAction(
+        return $this->index(
             $request,
             $userExtensionService,
             $translator,
@@ -298,10 +298,10 @@ class AgreementController extends AbstractController
 
         if ((is_countable($items) ? count($items) : 0) !== 0) {
             if ('' === $request->get('delete')) {
-                return $this->deleteAction($items, $request, $translator, $agreementRepository, $managerRegistry, $project);
+                return $this->delete($items, $request, $translator, $agreementRepository, $managerRegistry, $project);
             }
             if ('' === $request->get('copy')) {
-                return $this->copyAction($items, $request, $translator, $agreementRepository, $managerRegistry, $project);
+                return $this->copy($items, $request, $translator, $agreementRepository, $managerRegistry, $project);
             }
         }
 
@@ -311,7 +311,7 @@ class AgreementController extends AbstractController
         );
     }
 
-    private function deleteAction(
+    private function delete(
         $items,
         Request $request,
         TranslatorInterface $translator,
@@ -358,7 +358,7 @@ class AgreementController extends AbstractController
         ]);
     }
 
-    private function copyAction(
+    private function copy(
         $items,
         Request $request,
         TranslatorInterface $translator,

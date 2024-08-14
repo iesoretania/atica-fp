@@ -53,7 +53,7 @@ class ActivityRealizationController extends AbstractController
 
         $managerRegistry->getManager()->persist($activityRealization);
 
-        return $this->formAction($request, $translator, $managerRegistry, $activityRealization);
+        return $this->form($request, $translator, $managerRegistry, $activityRealization);
     }
 
     #[Route(path: '/programa/{id}/detalles/concrecion', name: 'work_linked_training_project_activity_realization_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

@@ -52,7 +52,7 @@ class CompanyController extends AbstractController
 
         $managerRegistry->getManager()->persist($company);
 
-        return $this->formAction($request, $translator, $userExtensionService, $managerRegistry, $company);
+        return $this->form($request, $translator, $userExtensionService, $managerRegistry, $company);
     }
 
     #[Route(path: '/{id}', name: 'company_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

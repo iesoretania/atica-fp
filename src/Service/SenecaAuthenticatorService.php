@@ -74,7 +74,7 @@ class SenecaAuthenticatorService
     }
 
     /**
-     * Gets the content after POSTing into an URL
+     * Gets the content after POSTing into a URL
      *
      * @param string $postUrl
      * @param string $refererUrl

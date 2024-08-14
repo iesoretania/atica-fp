@@ -25,9 +25,7 @@ use App\Entity\Person;
 use App\Entity\WPT\Activity;
 use App\Entity\WPT\AgreementEnrollment;
 use App\Entity\WPT\Shift;
-use App\Repository\CompanyRepository;
 use App\Repository\Edu\TeacherRepository;
-use App\Repository\WorkcenterRepository;
 use App\Repository\WPT\WPTStudentEnrollmentRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -54,6 +52,8 @@ class AgreementEnrollmentType extends AbstractType
 
         if ($shift) {
             $activities = $shift->getActivities();
+        } else {
+            $activities = [];
         }
 
         $form

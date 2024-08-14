@@ -30,7 +30,6 @@ use App\Repository\CompanyRepository;
 use App\Repository\WLT\ActivityRealizationRepository;
 use App\Repository\WLT\ActivityRepository;
 use App\Repository\WLT\LearningProgramRepository;
-use App\Repository\WLT\WLTSubjectRepository;
 use App\Security\WLT\ProjectVoter;
 use App\Utils\CsvImporter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -61,7 +60,7 @@ class LearningProgramController extends AbstractController
         $learningProgram->setProject($project);
         $managerRegistry->getManager()->persist($learningProgram);
 
-        return $this->indexAction($request, $translator, $managerRegistry, $learningProgram);
+        return $this->index($request, $translator, $managerRegistry, $learningProgram);
     }
 
     #[Route(path: '/{id}', name: 'work_linked_training_learning_program_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
@@ -198,7 +197,7 @@ class LearningProgramController extends AbstractController
         $items = $request->request->get('items', []);
 
         if ((is_countable($items) ? count($items) : 0) !== 0 && '' === $request->get('delete')) {
-            return $this->deleteAction($items, $request, $translator, $learningProgramRepository, $managerRegistry, $project);
+            return $this->delete($items, $request, $translator, $learningProgramRepository, $managerRegistry, $project);
         }
 
         return $this->redirectToRoute(
@@ -207,7 +206,7 @@ class LearningProgramController extends AbstractController
         );
     }
 
-    private function deleteAction(
+    private function delete(
         $items,
         Request $request,
         TranslatorInterface $translator,
@@ -249,7 +248,6 @@ class LearningProgramController extends AbstractController
         ActivityRealizationRepository $activityRealizationRepository,
         LearningProgramRepository $learningProgramRepository,
         CompanyRepository $companyRepository,
-        WLTSubjectRepository $subjectRepository,
         EntityManagerInterface $entityManager,
         Project $project,
         Request $request

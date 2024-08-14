@@ -25,6 +25,7 @@ use App\Entity\Person;
 use App\Entity\WLT\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
 
 class WLTGroupRepository extends ServiceEntityRepository

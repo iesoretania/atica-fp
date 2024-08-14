@@ -33,7 +33,6 @@ use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -63,7 +62,7 @@ class TrackingCalendarController extends AbstractController
         $today->setTime(0, 0);
         $workDayToday = $workDayRepository->findOneByAgreementAndDate($agreement, $today);
 
-        $workDayStats = $agreement->getWorkDays() !== []
+        $workDayStats = !$agreement->getWorkDays()->isEmpty()
             ? $workDayRepository->hoursStatsByAgreement($agreement)
             : [];
 

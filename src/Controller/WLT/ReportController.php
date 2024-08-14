@@ -81,7 +81,7 @@ class ReportController extends AbstractController
         AcademicYear $academicYear = null,
         int $page = 1
     ) {
-        return $this->genericListAction(
+        return $this->genericList(
             $request,
             $userExtensionService,
             $translator,
@@ -104,7 +104,7 @@ class ReportController extends AbstractController
         AcademicYear $academicYear = null,
         int $page = 1
     ) {
-        return $this->genericListAction(
+        return $this->genericList(
             $request,
             $userExtensionService,
             $translator,
@@ -127,7 +127,7 @@ class ReportController extends AbstractController
         AcademicYear $academicYear = null,
         int $page = 1
     ) {
-        return $this->genericListAction(
+        return $this->genericList(
             $request,
             $userExtensionService,
             $translator,
@@ -150,7 +150,7 @@ class ReportController extends AbstractController
         AcademicYear $academicYear = null,
         int $page = 1
     ) {
-        return $this->genericListAction(
+        return $this->genericList(
             $request,
             $userExtensionService,
             $translator,
@@ -163,7 +163,7 @@ class ReportController extends AbstractController
         );
     }
 
-    private function genericListAction(
+    private function genericList(
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
@@ -453,7 +453,7 @@ class ReportController extends AbstractController
         AcademicYear $academicYear = null,
         int $page = 1
     ) {
-        return $this->genericListAction(
+        return $this->genericList(
             $request,
             $userExtensionService,
             $translator,
@@ -476,7 +476,7 @@ class ReportController extends AbstractController
         AcademicYear $academicYear = null,
         int $page = 1
     ) {
-        return $this->genericListAction(
+        return $this->genericList(
             $request,
             $userExtensionService,
             $translator,
@@ -499,7 +499,7 @@ class ReportController extends AbstractController
         AcademicYear $academicYear = null,
         int $page = 1
     ) {
-        return $this->genericListAction(
+        return $this->genericList(
             $request,
             $userExtensionService,
             $translator,

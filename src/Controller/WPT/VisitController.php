@@ -40,7 +40,6 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -75,7 +74,7 @@ class VisitController extends AbstractController
 
         $managerRegistry->getManager()->persist($visit);
 
-        return $this->indexAction(
+        return $this->index(
             $request,
             $translator,
             $userExtensionService,
@@ -385,7 +384,6 @@ class VisitController extends AbstractController
     public function visitSummaryReport(
         Environment          $engine,
         TranslatorInterface  $translator,
-        WPTTeacherRepository $wptTeacherRepository,
         ContactRepository    $visitRepository,
         Teacher              $teacher
     ) {

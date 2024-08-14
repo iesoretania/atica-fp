@@ -157,7 +157,7 @@ class ProjectController extends AbstractController
 
         $managerRegistry->getManager()->persist($project);
 
-        return $this->editAction($request, $userExtensionService, $translator, $managerRegistry,  $project);
+        return $this->edit($request, $userExtensionService, $translator, $managerRegistry,  $project);
     }
 
     #[Route(path: '/{id}', name: 'work_linked_training_project_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

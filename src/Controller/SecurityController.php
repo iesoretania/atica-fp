@@ -330,9 +330,12 @@ class SecurityController extends AbstractController
             if ($form->isSubmitted() && $form->isValid() && $form->get('organization')->getData()) {
                 $organization = $form->get('organization')->getData();
             }
+        } else {
+            $form = null;
+            $count = 0;
         }
 
-        if ($organization !== null) {
+        if ($organization instanceof Organization) {
             $this->denyAccessUnlessGranted(OrganizationVoter::ACCESS, $organization);
             $organizationId = $organization->getId();
             $session->set('organization_id', $organizationId);

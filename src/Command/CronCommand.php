@@ -408,11 +408,8 @@ class CronCommand extends Command
                         '%company%' => $agreement->getWorkcenter()->getCompany()->getName(),
                         '%limit%' => $agreementData[1],
                         '%count%' => $agreementData[2],
-                        '%organization%' => $workTutor
-                            ->getGroup()
-                            ->getGrade()
-                            ->getTraining()
-                            ->getAcademicYear()
+                        '%organization%' => $agreement
+                            ->getProject()
                             ->getOrganization()
                             ->getName()
                     ];

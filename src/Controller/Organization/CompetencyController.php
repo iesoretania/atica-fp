@@ -53,7 +53,7 @@ class CompetencyController extends AbstractController
 
         $managerRegistry->getManager()->persist($competency);
 
-        return $this->formAction($request, $translator, $managerRegistry, $competency);
+        return $this->form($request, $translator, $managerRegistry, $competency);
     }
 
     #[Route(path: '/competencia/{id}', name: 'organization_training_competency_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
