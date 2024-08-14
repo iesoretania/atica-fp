@@ -30,6 +30,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -68,7 +69,7 @@ class TravelRouteController extends AbstractController
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry,
         TravelRoute $travelRoute
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
@@ -113,7 +114,7 @@ class TravelRouteController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         int $page = 1
-    ) {
+    ): Response {
 
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
@@ -164,7 +165,7 @@ class TravelRouteController extends AbstractController
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry,
         TranslatorInterface $translator
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);

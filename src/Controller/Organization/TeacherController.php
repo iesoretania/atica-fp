@@ -20,6 +20,7 @@ namespace App\Controller\Organization;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
+use App\Entity\Person;
 use App\Form\Type\Edu\NewTeacherType;
 use App\Form\Type\Edu\TeacherType;
 use App\Repository\Edu\AcademicYearRepository;
@@ -33,6 +34,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -45,10 +47,10 @@ class TeacherController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Teacher $teacher
-    ) {
+    ): Response {
         $em = $managerRegistry->getManager();
 
-        if (null === $teacher->getPerson()) {
+        if (!$teacher->getPerson() instanceof Person) {
             return $this->redirectToRoute(
                 'organization_teacher_list',
                 [
@@ -97,7 +99,7 @@ class TeacherController extends AbstractController
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry,
         TeacherRepository $teacherRepository
-    )
+    ): Response
     {
         $em = $managerRegistry->getManager();
 
@@ -156,9 +158,9 @@ class TeacherController extends AbstractController
         ManagerRegistry $managerRegistry,
         int $page = 1,
         AcademicYear $academicYear = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
@@ -219,7 +221,7 @@ class TeacherController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
         $em = $managerRegistry->getManager();

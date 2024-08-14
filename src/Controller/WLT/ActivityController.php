@@ -34,6 +34,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -64,7 +65,7 @@ class ActivityController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Activity $activity
-    ) {
+    ): Response {
         $project = $activity->getProject();
 
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
@@ -121,8 +122,8 @@ class ActivityController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Project $project,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         /** @var QueryBuilder $queryBuilder */
@@ -180,7 +181,7 @@ class ActivityController extends AbstractController
         ManagerRegistry $managerRegistry,
         TranslatorInterface $translator,
         Project $project
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $em = $managerRegistry->getManager();
@@ -232,7 +233,7 @@ class ActivityController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Project $project
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $projects = $projectRepository->findRelatedByOrganizationButOne($project->getOrganization(), $project);

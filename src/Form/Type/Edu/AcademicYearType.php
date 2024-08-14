@@ -38,7 +38,7 @@ class AcademicYearType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $templates = $options['academic_year'] ?
             $this->reportTemplateRepository->findByOrganization($options['academic_year']->getOrganization()) : [];
@@ -99,7 +99,7 @@ class AcademicYearType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => AcademicYear::class,

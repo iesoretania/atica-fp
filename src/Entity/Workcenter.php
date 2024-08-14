@@ -64,9 +64,9 @@ class Workcenter implements \Stringable
 
     public function __toString(): string
     {
-        return ($this->getCompany() === null)
-            ? ''
-            : $this->getCompany()->getName() . ' - ' . $this->getName();
+        return ($this->getCompany() instanceof Company)
+            ? $this->getCompany()->getName() . ' - ' . $this->getName()
+            : '';
     }
 
     public function getId(): ?int

@@ -32,6 +32,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -46,7 +47,7 @@ class TeacherImportController extends AbstractController
         PersonRepository $personRepository,
         ManagerRegistry $managerRegistry,
         Request $request
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -95,11 +96,6 @@ class TeacherImportController extends AbstractController
 
     /**
      * @param string $file
-     * @param AcademicYear $academicYear
-     * @param UserPasswordHasherInterface $encoder
-     * @param PersonRepository $personRepository
-     * @param array $options
-     * @return array|null
      */
     private function importTeachersFromCsv(
         $file,
@@ -108,7 +104,7 @@ class TeacherImportController extends AbstractController
         PersonRepository $personRepository,
         ManagerRegistry $managerRegistry,
         array $options = []
-    ) {
+    ): array {
         $generatePassword = isset($options['generate_password']) && $options['generate_password'];
         $external = isset($options['external_check']) && $options['external_check'];
         $newUserCount = 0;
@@ -141,7 +137,7 @@ class TeacherImportController extends AbstractController
                             $personData['Usuario IdEA']
                         );
 
-                        if (null === $person) {
+                        if (!$person instanceof Person) {
                             $person = new Person();
 
                             $fullName = explode(', ', (string) $personData['Empleado/a']);

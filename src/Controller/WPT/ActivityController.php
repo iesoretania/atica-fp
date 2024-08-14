@@ -38,7 +38,9 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -78,7 +80,7 @@ class ActivityController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Activity $activity
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $activity->getShift());
@@ -141,8 +143,8 @@ class ActivityController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Shift $shift,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
@@ -209,7 +211,7 @@ class ActivityController extends AbstractController
         ActivityRepository $activityRepository,
         ManagerRegistry $managerRegistry,
         Shift $shift
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
@@ -260,7 +262,7 @@ class ActivityController extends AbstractController
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry,
         Shift $shift
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
@@ -296,12 +298,10 @@ class ActivityController extends AbstractController
 
     /**
      * @param $lines
-     *
-     * @return array
      */
-    private function parseImport($lines)
+    private function parseImport(string $lines): array
     {
-        $items = explode("\n", (string) $lines);
+        $items = explode("\n", $lines);
         $output = [];
         $matches = [];
 
@@ -324,7 +324,7 @@ class ActivityController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Shift $shift
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
@@ -387,7 +387,7 @@ class ActivityController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Shift $shift
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_MANAGER, $organization);

@@ -21,6 +21,7 @@ namespace App\Entity;
 use App\Repository\CompanyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -66,8 +67,11 @@ class Company implements \Stringable
     #[ORM\JoinColumn(nullable: true)]
     private ?Person $manager = null;
 
+    /**
+     * @var Collection<int, Workcenter>
+     */
     #[ORM\OneToMany(targetEntity: Workcenter::class, mappedBy: 'company')]
-    #[ORM\OrderBy(['name' => 'ASC'])]
+    #[ORM\OrderBy(['name' => Criteria::ASC])]
     private Collection $workcenters;
 
     public function __construct()
@@ -77,7 +81,7 @@ class Company implements \Stringable
 
     public function __toString(): string
     {
-        return $this->getName();
+        return (string) $this->getName();
     }
 
     public function getFullName(): string

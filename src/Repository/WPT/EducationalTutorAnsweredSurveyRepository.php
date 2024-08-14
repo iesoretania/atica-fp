@@ -53,7 +53,8 @@ class EducationalTutorAnsweredSurveyRepository extends ServiceEntityRepository
         Survey $survey,
         Shift $shift,
         Teacher $teacher
-    ) {
+    ): EducationalTutorAnsweredSurvey
+    {
         $studentSurvey = new AnsweredSurvey();
         $studentSurvey->setSurvey($survey);
 

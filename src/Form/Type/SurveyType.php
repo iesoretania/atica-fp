@@ -31,7 +31,7 @@ class SurveyType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('title', TextType::class, [
@@ -46,7 +46,7 @@ class SurveyType extends AbstractType
                     'class' => Survey::class,
                     'mapped' => false,
                     'choices' => $options['surveys'],
-                    'choice_label' => fn(Survey $s) => $s->getTitle(),
+                    'choice_label' => fn(Survey $s): ?string => $s->getTitle(),
                     'placeholder' => 'form.copy_from.none',
                     'required' => false
                 ]);
@@ -70,7 +70,7 @@ class SurveyType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Survey::class,

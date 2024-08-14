@@ -44,12 +44,12 @@ class ProjectType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $organization = $this->userExtensionService->getCurrentOrganization();
 
         $teachers = $this->teacherRepository->findByOrganization($organization);
-        $teacherPersons = array_map(static fn(Teacher $teacher) => $teacher->getPerson(), $teachers);
+        $teacherPersons = array_map(static fn(Teacher $teacher): ?Person => $teacher->getPerson(), $teachers);
 
         $groups = $this->groupRepository->findByOrganization($organization);
 
@@ -77,7 +77,7 @@ class ProjectType extends AbstractType
                 'class' => Group::class,
                 'choice_translation_domain' => false,
                 'choices' => $groups,
-                'choice_label' => fn(Group $group) => $group
+                'choice_label' => fn(Group $group): string => $group
                         ->getGrade()
                         ->getTraining()
                         ->getAcademicYear()
@@ -143,7 +143,7 @@ class ProjectType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Project::class,

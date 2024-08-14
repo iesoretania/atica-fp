@@ -152,7 +152,7 @@ class ProjectVoter extends CachedVoter
 
             case self::ACCESS_EDUCATIONAL_TUTOR_SURVEY:
             case self::FILL_EDUCATIONAL_TUTOR_SURVEY:
-                if ($isProjectManager || $isDepartmentHead) {
+                if ($isDepartmentHead) {
                     return true;
                 }
 

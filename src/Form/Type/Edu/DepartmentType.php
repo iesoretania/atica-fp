@@ -30,14 +30,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DepartmentType extends AbstractType
 {
-    public function __construct(private readonly AcademicYearRepository $academicYearRepository, private readonly TeacherRepository $teacherRepository, private readonly UserExtensionService $userExtensionService)
+    public function __construct(private readonly TeacherRepository $teacherRepository, private readonly UserExtensionService $userExtensionService)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $academicYear = $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
 
@@ -66,7 +66,7 @@ class DepartmentType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Department::class,

@@ -18,6 +18,7 @@
 
 namespace App\Controller\WPT;
 
+use App\Entity\Edu\ReportTemplate;
 use App\Entity\WPT\Agreement;
 use App\Entity\WPT\AgreementEnrollment;
 use App\Entity\WPT\Shift;
@@ -40,6 +41,7 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -84,7 +86,8 @@ class AgreementController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Agreement $agreement
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
@@ -179,7 +182,8 @@ class AgreementController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         AgreementEnrollment $agreementEnrollment
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_MANAGER, $organization);
         $agreement = $agreementEnrollment->getAgreement();
@@ -248,8 +252,9 @@ class AgreementController extends AbstractController
         TranslatorInterface $translator,
         AgreementEnrollmentRepository $agreementEnrollmentRepository,
         Shift $shift,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
 
         if ($shift) {
@@ -330,7 +335,8 @@ class AgreementController extends AbstractController
         AgreementRepository $agreementRepository,
         ManagerRegistry $managerRegistry,
         Shift $shift
-    ) {
+    ): Response
+    {
         $agreement = null;
         $em = $managerRegistry->getManager();
 
@@ -380,7 +386,8 @@ class AgreementController extends AbstractController
         AgreementRepository $agreementRepository,
         ManagerRegistry $managerRegistry,
         Shift $shift
-    ) {
+    ): Response
+    {
         $em = $managerRegistry->getManager();
 
         $academicYear = $shift->getGrade()->getTraining()->getAcademicYear();
@@ -464,7 +471,7 @@ class AgreementController extends AbstractController
                 ->getAgreement()->getShift()->getGrade()
                 ->getTraining()->getAcademicYear()->getDefaultLandscapeTemplate();
 
-            if ($template) {
+            if ($template instanceof ReportTemplate) {
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $template->getData());
                 $mpdf->SetDocTemplate($tmp, true);

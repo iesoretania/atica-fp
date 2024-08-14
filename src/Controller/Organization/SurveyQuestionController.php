@@ -69,7 +69,8 @@ class SurveyQuestionController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         SurveyQuestion $surveyQuestion
-    ) {
+    ): Response
+    {
         $em = $managerRegistry->getManager();
 
         $survey = $surveyQuestion->getSurvey();
@@ -126,7 +127,8 @@ class SurveyQuestionController extends AbstractController
         ManagerRegistry $managerRegistry,
         Survey $survey,
         int $page = 1
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(SurveyVoter::MANAGE, $survey);
 
         /** @var QueryBuilder $queryBuilder */
@@ -249,7 +251,7 @@ class SurveyQuestionController extends AbstractController
         SurveyQuestionRepository $surveyQuestionRepository,
         ManagerRegistry $managerRegistry,
         Survey $survey
-    ) {
+    ): Response {
         /** @var SurveyQuestion $surveyQuestion */
         $surveyQuestion = $surveyQuestionRepository->find($request->request->get('up'));
         if ($surveyQuestion && $surveyQuestion->getSurvey() === $survey) {
@@ -272,7 +274,7 @@ class SurveyQuestionController extends AbstractController
         SurveyQuestionRepository $surveyQuestionRepository,
         ManagerRegistry $managerRegistry,
         Survey $survey
-    ) {
+    ): Response {
         $surveyQuestion = $surveyQuestionRepository->find($request->request->get('down'));
         if ($surveyQuestion && $surveyQuestion->getSurvey() === $survey) {
             $nextSurveyQuestion = $surveyQuestionRepository->getNextQuestion($surveyQuestion);

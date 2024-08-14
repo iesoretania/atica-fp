@@ -61,7 +61,7 @@ class AcademicYear implements \Stringable
 
     public function __toString(): string
     {
-        return $this->getDescription();
+        return (string) $this->getDescription();
     }
 
     public function getId(): ?int

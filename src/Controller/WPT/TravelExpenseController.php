@@ -19,6 +19,7 @@
 namespace App\Controller\WPT;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\ReportTemplate;
 use App\Entity\Edu\Teacher;
 use App\Entity\Person;
 use App\Entity\WPT\TravelExpense;
@@ -39,7 +40,9 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
@@ -84,7 +87,7 @@ class TravelExpenseController extends AbstractController
         AgreementRepository $agreementRepository,
         ManagerRegistry $managerRegistry,
         TravelExpense $travelExpense
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(TravelExpenseVoter::ACCESS, $travelExpense);
 
         $academicYear = $travelExpense->getTeacher()->getAcademicYear();
@@ -154,8 +157,8 @@ class TravelExpenseController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Teacher $teacher,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response {
 
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_EXPENSE, $organization);
@@ -227,10 +230,10 @@ class TravelExpenseController extends AbstractController
         AcademicYearRepository $academicYearRepository,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -308,7 +311,7 @@ class TravelExpenseController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Teacher $teacher
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_EXPENSE, $organization);
@@ -375,7 +378,7 @@ class TravelExpenseController extends AbstractController
 
         try {
             $template = $teacher->getAcademicYear()->getDefaultLandscapeTemplate();
-            if ($template) {
+            if ($template instanceof ReportTemplate) {
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $template->getData());
                 $mpdf->SetDocTemplate($tmp, true);

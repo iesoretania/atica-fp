@@ -25,246 +25,148 @@ class CalendarAdd
     public const OVERWRITE_ACTION_REPLACE = 1;
     public const OVERWRITE_ACTION_ADD = 2;
 
-    /** @var \DateTime */
-    private $startDate;
+    private \DateTimeInterface $startDate;
 
-    /** @var int */
-    private $totalHours;
+    private int $totalHours = 0;
 
-    /** @var int */
-    private $hoursMon;
+    private int $hoursMon = 0;
 
-    /** @var int */
-    private $hoursTue;
+    private int $hoursTue = 0;
 
-    /** @var int */
-    private $hoursWed;
+    private int $hoursWed = 0;
 
-    /** @var int */
-    private $hoursThu;
+    private int $hoursThu = 0;
 
-    /** @var int */
-    private $hoursFri;
+    private int $hoursFri = 0;
 
-    /** @var int */
-    private $hoursSat;
+    private int $hoursSat = 0;
 
-    /** @var int */
-    private $hoursSun;
+    private int $hoursSun = 0;
 
-    /** @var int */
-    private $overwriteAction;
+    private int $overwriteAction = self::OVERWRITE_ACTION_REPLACE;
 
-    /** @var bool */
-    private $ignoreNonWorkingDays;
+    private bool $ignoreNonWorkingDays = false;
 
     public function __construct()
     {
         $this->startDate = new \DateTime();
-        $this->totalHours = 0;
-        $this->hoursMon = 0;
-        $this->hoursTue = 0;
-        $this->hoursWed = 0;
-        $this->hoursThu = 0;
-        $this->hoursFri = 0;
-        $this->hoursSat = 0;
-        $this->hoursSun = 0;
-        $this->overwriteAction = self::OVERWRITE_ACTION_REPLACE;
-        $this->ignoreNonWorkingDays = false;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getStartDate()
+    public function getStartDate(): \DateTimeInterface
     {
         return $this->startDate;
     }
 
-    /**
-     * @param \DateTime $startDate
-     * @return CalendarAdd
-     */
-    public function setStartDate(\DateTimeInterface $startDate)
+    public function setStartDate(\DateTimeInterface $startDate): static
     {
         $this->startDate = $startDate;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getTotalHours()
+    public function getTotalHours(): int
     {
         return $this->totalHours;
     }
 
-    /**
-     * @param int $totalHours
-     * @return CalendarAdd
-     */
-    public function setTotalHours($totalHours)
+    public function setTotalHours(int $totalHours): static
     {
         $this->totalHours = $totalHours;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getHoursMon()
+    public function getHoursMon(): int
     {
         return $this->hoursMon;
     }
 
-    /**
-     * @param int $hoursMon
-     * @return CalendarAdd
-     */
-    public function setHoursMon($hoursMon)
+    public function setHoursMon(int $hoursMon): static
     {
         $this->hoursMon = $hoursMon;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getHoursTue()
+    public function getHoursTue(): int
     {
         return $this->hoursTue;
     }
 
-    /**
-     * @param int $hoursTue
-     * @return CalendarAdd
-     */
-    public function setHoursTue($hoursTue)
+    public function setHoursTue(int $hoursTue): static
     {
         $this->hoursTue = $hoursTue;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getHoursWed()
+    public function getHoursWed(): int
     {
         return $this->hoursWed;
     }
 
-    /**
-     * @param int $hoursWed
-     * @return CalendarAdd
-     */
-    public function setHoursWed($hoursWed)
+    public function setHoursWed(int $hoursWed): static
     {
         $this->hoursWed = $hoursWed;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getHoursThu()
+    public function getHoursThu(): int
     {
         return $this->hoursThu;
     }
 
-    /**
-     * @param int $hoursThu
-     * @return CalendarAdd
-     */
-    public function setHoursThu($hoursThu)
+    public function setHoursThu(int $hoursThu): static
     {
         $this->hoursThu = $hoursThu;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getHoursFri()
+    public function getHoursFri(): int
     {
         return $this->hoursFri;
     }
 
-    /**
-     * @param int $hoursFri
-     * @return CalendarAdd
-     */
-    public function setHoursFri($hoursFri)
+    public function setHoursFri(int $hoursFri): static
     {
         $this->hoursFri = $hoursFri;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getHoursSat()
+    public function getHoursSat(): int
     {
         return $this->hoursSat;
     }
 
-    /**
-     * @param int $hoursSat
-     * @return CalendarAdd
-     */
-    public function setHoursSat($hoursSat)
+    public function setHoursSat(int $hoursSat): static
     {
         $this->hoursSat = $hoursSat;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getHoursSun()
+    public function getHoursSun(): int
     {
         return $this->hoursSun;
     }
 
-    /**
-     * @param int $hoursSun
-     * @return CalendarAdd
-     */
-    public function setHoursSun($hoursSun)
+    public function setHoursSun(int $hoursSun): static
     {
         $this->hoursSun = $hoursSun;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getOverwriteAction()
+    public function getOverwriteAction(): int
     {
         return $this->overwriteAction;
     }
 
-    /**
-     * @param int $overwriteAction
-     * @return CalendarAdd
-     */
-    public function setOverwriteAction($overwriteAction)
+    public function setOverwriteAction(int $overwriteAction): static
     {
         $this->overwriteAction = $overwriteAction;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function getIgnoreNonWorkingDays(): bool
     {
         return $this->ignoreNonWorkingDays;
     }
 
-    /**
-     * @param bool $ignoreNonWorkingDays
-     * @return CalendarAdd
-     */
     public function setIgnoreNonWorkingDays(bool $ignoreNonWorkingDays): CalendarAdd
     {
         $this->ignoreNonWorkingDays = $ignoreNonWorkingDays;

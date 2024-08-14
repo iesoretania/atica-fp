@@ -30,6 +30,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -61,7 +62,7 @@ class ActivityRealizationController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         ActivityRealization $activityRealization
-    ) {
+    ): Response {
         $activity = $activityRealization->getActivity();
         $project = $activity->getProject();
 
@@ -121,8 +122,8 @@ class ActivityRealizationController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Activity $activity,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response {
         $project = $activity->getProject();
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
@@ -187,7 +188,7 @@ class ActivityRealizationController extends AbstractController
         ActivityRealizationRepository $activityRealizationRepository,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
-        Activity $activity)
+        Activity $activity): Response
     {
         $project = $activity->getProject();
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);

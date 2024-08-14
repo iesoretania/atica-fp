@@ -46,9 +46,15 @@ class Survey
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endTimestamp = null;
 
+    /**
+     * @var Collection<int, SurveyQuestion>
+     */
     #[ORM\OneToMany(targetEntity: SurveyQuestion::class, mappedBy: 'survey')]
     private Collection $questions;
 
+    /**
+     * @var Collection<int, AnsweredSurvey>
+     */
     #[ORM\OneToMany(targetEntity: AnsweredSurvey::class, mappedBy: 'survey', fetch: 'EXTRA_LAZY')]
     private Collection $answers;
 

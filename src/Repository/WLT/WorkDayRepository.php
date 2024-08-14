@@ -86,7 +86,6 @@ class WorkDayRepository extends ServiceEntityRepository
 
     /**
      * @param array $list
-     * @param Agreement $agreement
      * @return WorkDay[]
      */
     public function findInListByIdAndAgreement($list, Agreement $agreement)
@@ -101,10 +100,7 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @param \DateTimeInterface $date
-     */
-    public function findOneByAgreementAndDate(Agreement $agreement, \DateTimeInterface $date)
+    public function findOneByAgreementAndDate(Agreement $agreement, \DateTimeInterface $date): ?WorkDay
     {
         return $this->createQueryBuilder('wr')
             ->where('wr.agreement = :agreement')
@@ -117,10 +113,9 @@ class WorkDayRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Agreement $agreement
      * @return int
      */
-    public function countByAgreement(Agreement $agreement)
+    public function countByAgreement(Agreement $agreement): int
     {
         try {
             return $this->createQueryBuilder('wr')
@@ -140,8 +135,6 @@ class WorkDayRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Agreement $agreement
-     * @param \DateTimeInterface $startDate
      * @param int $hours
      * @param int[] $weekHours
      * @param bool $overwrite
@@ -152,7 +145,7 @@ class WorkDayRepository extends ServiceEntityRepository
         Agreement $agreement,
         \DateTimeInterface $startDate,
         $hours,
-        $weekHours,
+        array $weekHours,
         $overwrite = false,
         $ignoreNonWorkingDays = false
     ) {
@@ -225,12 +218,10 @@ class WorkDayRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Agreement $agreement
      * @param \DateTime $startDate
      * @param int $hours
      * @param int[] $weekHours
      * @param bool $overWrite
-     *
      * @return WorkDay[]
      */
     public function createWorkDayCollectionByAcademicYearGroupByMonthAndWeekNumber(
@@ -255,9 +246,8 @@ class WorkDayRepository extends ServiceEntityRepository
 
     /**
      * @param WorkDay[] $workDays
-     * @return array
      */
-    public static function groupByMonthAndWeekNumber($workDays)
+    public static function groupByMonthAndWeekNumber($workDays): array
     {
         $collection = [];
 
@@ -308,9 +298,6 @@ class WorkDayRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    /**
-     * @param \DateTimeInterface $date
-     */
     public function findUnfilledWorkDaysBeforeDateByAgreement(Agreement $agreement, \DateTimeInterface $date)
     {
         return $this->createQueryBuilder('wd')
@@ -364,7 +351,7 @@ class WorkDayRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findByYearWeekAndAgreement($year, $week, Agreement $agreement)
+    public function findByYearWeekAndAgreement(string $year, $week, Agreement $agreement)
     {
         $startDate = new \DateTime();
         $startDate->setTimestamp(strtotime($year . 'W'. ($week < 10 ? '0' . $week : $week)));
@@ -382,7 +369,7 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function updateWeekLock($year, $week, $agreement, $value)
+    public function updateWeekLock($year, $week, Agreement $agreement, $value)
     {
         $items = $this->findByYearWeekAndAgreement($year, $week, $agreement);
         return $this->updateLock($items, $agreement, $value);
@@ -399,7 +386,7 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getWeekInformation(Workday $firstWorkday)
+    public function getWeekInformation(Workday $firstWorkday): array
     {
         $total = 0;
         $current = 0;

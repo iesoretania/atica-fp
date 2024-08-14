@@ -32,10 +32,8 @@ class TeacherType extends AbstractType
 {
     /**
      * Formulario base
-     *
-     * @param FormBuilderInterface $builder
      */
-    private function buildBaseForm(FormBuilderInterface $builder, array $options)
+    private function buildBaseForm(FormBuilderInterface $builder): void
     {
         $builder
             ->add('academicYear', null, [
@@ -101,11 +99,11 @@ class TeacherType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $this->buildBaseForm($builder, $options);
+        $this->buildBaseForm($builder);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             $builder = $event->getForm();
             /** @var Person $data */
             $data = $event->getData();
@@ -129,7 +127,7 @@ class TeacherType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Teacher::class,

@@ -23,9 +23,8 @@ class ImportParser
 
     /**
      * @param string $gradeName
-     * @return array
      */
-    public static function parseGradeName($gradeName)
+    public static function parseGradeName($gradeName): array
     {
         if (!str_contains($gradeName, 'F.P.') && !str_contains($gradeName, 'C.F.G.') && !str_contains($gradeName, 'C.E.G.')) {
             // Si no lleva la cadena F.P., eliminar el texto entre paréntesis y quitar 'de '

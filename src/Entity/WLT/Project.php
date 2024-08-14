@@ -50,10 +50,16 @@ class Project implements \Stringable
     #[ORM\JoinColumn(nullable: false)]
     private ?Person $manager = null;
 
+    /**
+     * @var Collection<int, Group>
+     */
     #[ORM\ManyToMany(targetEntity: Group::class)]
     #[ORM\JoinTable(name: 'wlt_project_group')]
     private Collection $groups;
 
+    /**
+     * @var Collection<int, StudentEnrollment>
+     */
     #[ORM\ManyToMany(targetEntity: StudentEnrollment::class)]
     #[ORM\JoinTable(name: 'wlt_project_student_enrollment')]
     private Collection $studentEnrollments;
@@ -76,14 +82,20 @@ class Project implements \Stringable
     #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
     private ?ReportTemplate $weeklyActivityReportTemplate = null;
 
+    /**
+     * @var Collection<int, Agreement>
+     */
     #[ORM\OneToMany(targetEntity: Agreement::class, mappedBy: 'project')]
     private Collection $agreements;
 
+    /**
+     * @var Collection<int, Activity>
+     */
     #[ORM\OneToMany(targetEntity: Activity::class, mappedBy: 'project')]
     private Collection $activities;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $locked;
+    private ?bool $locked = false;
 
     public function __construct()
     {
@@ -91,7 +103,6 @@ class Project implements \Stringable
         $this->studentEnrollments = new ArrayCollection();
         $this->agreements = new ArrayCollection();
         $this->activities = new ArrayCollection();
-        $this->locked = false;
     }
 
     public function __toString(): string

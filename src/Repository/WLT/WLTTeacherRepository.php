@@ -134,7 +134,7 @@ class WLTTeacherRepository extends TeacherRepository
     public function getStatsByProjectAndAcademicYearWithAnsweredSurvey(
         Project $project,
         ?AcademicYear $academicYear
-    ) {
+    ): array {
         $qb = $this->createQueryBuilder('t')
             ->select('t')
             ->addSelect('etas')
@@ -155,7 +155,7 @@ class WLTTeacherRepository extends TeacherRepository
             ->where('pr = :project')
             ->setParameter('project', $project);
 
-        if ($academicYear) {
+        if ($academicYear instanceof AcademicYear) {
             $qb
                 ->andWhere('t.academicYear = :academic_year')
                 ->setParameter('academic_year', $academicYear);
@@ -171,7 +171,7 @@ class WLTTeacherRepository extends TeacherRepository
     }
 
     public function findTeachersDataByProjectGroupByProjectAndPersonFilteredQueryBuilder(
-        $q,
+        ?string $q,
         AcademicYear $academicYear,
         Person $person
     ) {
@@ -255,7 +255,7 @@ class WLTTeacherRepository extends TeacherRepository
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName');
 
-        if ($academicYear) {
+        if ($academicYear instanceof AcademicYear) {
             $qb
                 ->andWhere('t.academicYear = :academic_year')
                 ->setParameter('academic_year', $academicYear);

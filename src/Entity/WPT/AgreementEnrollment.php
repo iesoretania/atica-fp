@@ -25,6 +25,7 @@ use App\Entity\Person;
 use App\Repository\WPT\AgreementEnrollmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -73,11 +74,17 @@ class AgreementEnrollment implements \Stringable
     #[ORM\OneToOne(targetEntity: Report::class, mappedBy: 'agreementEnrollment')]
     private ?Report $report = null;
 
+    /**
+     * @var Collection<int, Activity>
+     */
     #[ORM\ManyToMany(targetEntity: Activity::class)]
     #[ORM\JoinTable(name: 'wpt_agreement_activity')]
-    #[ORM\OrderBy(['code' => 'ASC', 'description' => 'ASC'])]
+    #[ORM\OrderBy(['code' => Criteria::ASC, 'description' => 'ASC'])]
     private Collection $activities;
 
+    /**
+     * @var Collection<int, TrackedWorkDay>
+     */
     #[ORM\OneToMany(targetEntity: TrackedWorkDay::class, mappedBy: 'agreementEnrollment')]
     private Collection $trackedWorkDays;
 
@@ -89,7 +96,7 @@ class AgreementEnrollment implements \Stringable
 
     public function __toString(): string
     {
-        return ($this->getAgreement() === null || $this->getStudentEnrollment() === null)
+        return (!$this->getAgreement() instanceof Agreement || !$this->getStudentEnrollment() instanceof StudentEnrollment)
             ? ''
             : $this->getAgreement()->__toString() . ' - ' . $this->getStudentEnrollment()->__toString();
     }

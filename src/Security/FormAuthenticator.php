@@ -51,9 +51,7 @@ class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuth
 
     final public function supports(Request $request): bool
     {
-        return !(
-            $request->attributes->get('_route') !== 'login_check' || !$request->isMethod('POST')
-        );
+        return $request->attributes->get('_route') === 'login_check' && $request->isMethod('POST');
     }
 
     /**
@@ -97,12 +95,8 @@ class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuth
 
         $user = $this->personRepository->findOneByUniqueIdentifierOrUsernameOrEmailAddress($username);
 
-        if ($user === null) {
-            throw new UserNotFoundException();
-        }
-
         if (!$user instanceof Person) {
-            throw new AuthenticationServiceException();
+            throw new UserNotFoundException();
         }
 
         // ¿Comprobación de contraseña desde Séneca?

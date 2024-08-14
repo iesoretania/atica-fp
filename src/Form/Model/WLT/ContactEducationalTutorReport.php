@@ -25,53 +25,33 @@ use App\Entity\Workcenter;
 
 class ContactEducationalTutorReport
 {
-    /** @var Teacher */
-    private $teacher;
+    private ?Teacher $teacher = null;
 
-    /** @var ?Workcenter */
-    private $workcenter;
+    private ?Workcenter $workcenter = null;
 
     /** @var ?Project[] */
     private $projects;
 
-    /** @var ContactMethod[] */
+    /** @var ContactMethod[]|null */
     private $contactMethods;
 
-    public function __construct()
-    {
-    }
-
-    /**
-     * @return ?Teacher
-     */
     public function getTeacher(): ?Teacher
     {
         return $this->teacher;
     }
 
-    /**
-     * @param Teacher $teacher
-     * @return ContactEducationalTutorReport
-     */
-    public function setTeacher(Teacher $teacher): ContactEducationalTutorReport
+    public function setTeacher(Teacher $teacher): static
     {
         $this->teacher = $teacher;
         return $this;
     }
 
-    /**
-     * @return Workcenter|null
-     */
     public function getWorkcenter(): ?Workcenter
     {
         return $this->workcenter;
     }
 
-    /**
-     * @param Workcenter|null $workcenter
-     * @return ContactEducationalTutorReport
-     */
-    public function setWorkcenter(?Workcenter $workcenter): ContactEducationalTutorReport
+    public function setWorkcenter(?Workcenter $workcenter): static
     {
         $this->workcenter = $workcenter;
         return $this;
@@ -87,9 +67,8 @@ class ContactEducationalTutorReport
 
     /**
      * @param Project[]|null $projects
-     * @return ContactEducationalTutorReport
      */
-    public function setProjects($projects): ContactEducationalTutorReport
+    public function setProjects($projects): static
     {
         $this->projects = $projects;
         return $this;
@@ -105,9 +84,8 @@ class ContactEducationalTutorReport
 
     /**
      * @param ContactMethod[] $contactMethods
-     * @return ContactEducationalTutorReport
      */
-    public function setContactMethods($contactMethods): ContactEducationalTutorReport
+    public function setContactMethods($contactMethods): static
     {
         $this->contactMethods = $contactMethods;
         return $this;

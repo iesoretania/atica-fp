@@ -18,6 +18,7 @@
 
 namespace App\Security\WPT;
 
+use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Person;
 use App\Entity\Survey;
 use App\Entity\WPT\AgreementEnrollment;
@@ -122,7 +123,7 @@ class AgreementEnrollmentVoter extends CachedVoter
             || ($subject->getAdditionalEducationalTutor() && $subject->getAdditionalEducationalTutor()->getPerson(
                 ) === $person);
         // hay estudiante asociado (puede que no lo haya si es un convenio nuevo)
-        if ($subject->getStudentEnrollment()) {
+        if ($subject->getStudentEnrollment() instanceof StudentEnrollment) {
             // Si es jefe de su departamento o coordinador de FP dual, permitir acceder siempre
             // Jefe del departamento del estudiante, autorizado salvo modificar si el acuerdo es de otro curso académico
             $training = $subject->getStudentEnrollment()->getGroup()->getGrade()->getTraining();
@@ -203,7 +204,6 @@ class AgreementEnrollmentVoter extends CachedVoter
     }
 
     /**
-     * @param Survey $survey
      * @return bool
      * @throws \Exception
      */
@@ -211,7 +211,7 @@ class AgreementEnrollmentVoter extends CachedVoter
     {
         $now = new \DateTime();
 
-        if ($survey === null) {
+        if (!$survey instanceof Survey) {
             return false;
         }
         if ($survey->getStartTimestamp() && $survey->getStartTimestamp() > $now) {

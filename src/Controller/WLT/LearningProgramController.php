@@ -41,6 +41,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -69,7 +70,7 @@ class LearningProgramController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         LearningProgram $learningProgram
-    ) {
+    ): Response {
         $project = $learningProgram->getProject();
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
@@ -125,8 +126,8 @@ class LearningProgramController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Project $project,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         /** @var QueryBuilder $queryBuilder */
@@ -213,7 +214,7 @@ class LearningProgramController extends AbstractController
         LearningProgramRepository $learningProgramRepository,
         ManagerRegistry $managerRegistry,
         Project $project
-    ) {
+    ): Response {
         $em = $managerRegistry->getManager();
 
         $learningPrograms = $learningProgramRepository->findAllInListByIdAndProject($items, $project);
@@ -252,7 +253,7 @@ class LearningProgramController extends AbstractController
         EntityManagerInterface $entityManager,
         Project $project,
         Request $request
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $formData = new LearningProgramImport();
@@ -284,7 +285,6 @@ class LearningProgramController extends AbstractController
                 $activityRealizationRepository,
                 $learningProgramRepository,
                 $companyRepository,
-                $subjectRepository,
                 $entityManager
             );
 
@@ -311,9 +311,8 @@ class LearningProgramController extends AbstractController
         ActivityRealizationRepository $activityRealizationRepository,
         LearningProgramRepository $learningProgramRepository,
         CompanyRepository $companyRepository,
-        WLTSubjectRepository $subjectRepository,
         EntityManagerInterface $entityManager
-    ) {
+    ): ?array {
         $newActivityCount = 0;
         $oldActivityCount = 0;
 

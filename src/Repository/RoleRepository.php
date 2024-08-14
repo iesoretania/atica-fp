@@ -33,12 +33,9 @@ class RoleRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Organization $organization
-     * @param Person $person
      * @param string $roleName
-     * @return bool
      */
-    public function personHasRole(Organization $organization, Person $person, $roleName)
+    public function personHasRole(Organization $organization, Person $person, $roleName): bool
     {
         $role = $this->findOneBy([
             'organization' => $organization,
@@ -57,12 +54,12 @@ class RoleRepository extends ServiceEntityRepository
         ]);
     }
 
-    public function updateOrganizationRoles(Organization $organization, $rolesData)
+    public function updateOrganizationRoles(Organization $organization, $rolesData): void
     {
         foreach ($rolesData as $roleName => $roleData) {
 
             // inicialmente copiar quien tenía originalmente el rol
-            $toRemove = new ArrayCollection(array_map(fn(Role $role) => $role->getPerson(), $this->findByOrganizationAndRole($organization, $roleName)));
+            $toRemove = new ArrayCollection(array_map(fn(Role $role): ?Person => $role->getPerson(), $this->findByOrganizationAndRole($organization, $roleName)));
 
             $toAdd = [];
 

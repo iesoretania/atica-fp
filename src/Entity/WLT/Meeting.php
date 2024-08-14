@@ -42,6 +42,9 @@ class Meeting
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateTime = null;
 
+    /**
+     * @var Collection<int, StudentEnrollment>
+     */
     #[ORM\ManyToMany(targetEntity: StudentEnrollment::class, fetch: 'EAGER')]
     #[ORM\JoinTable(name: 'wlt_meeting_student_enrollment')]
     private Collection $studentEnrollments;
@@ -50,6 +53,9 @@ class Meeting
     #[ORM\JoinColumn(nullable: false)]
     private ?Teacher $createdBy = null;
 
+    /**
+     * @var Collection<int, Teacher>
+     */
     #[ORM\ManyToMany(targetEntity: Teacher::class, fetch: 'EAGER')]
     #[ORM\JoinTable(name: 'wlt_meeting_teacher')]
     private Collection $teachers;

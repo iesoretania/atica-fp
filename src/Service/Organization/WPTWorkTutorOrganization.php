@@ -30,7 +30,6 @@ class WPTWorkTutorOrganization implements OrganizationBuilderInterface
 
     public function getOrganizations(Person $person): array
     {
-        $organizations = $this->wptOrganizationRepository->findByWorkTutor($person);
-        return $organizations;
+        return $this->wptOrganizationRepository->findByWorkTutor($person);
     }
 }

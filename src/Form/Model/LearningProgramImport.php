@@ -24,48 +24,28 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class LearningProgramImport
 {
-    /**
-     * @var Project
-     */
-    private $project;
+    private ?Project $project = null;
 
-    /**
-     * @var UploadedFile
-     */
     #[Assert\File]
-    private $file;
+    private ?UploadedFile $file = null;
 
-    /**
-     * @return Project
-     */
-    public function getProject()
+    public function getProject(): ?Project
     {
         return $this->project;
     }
 
-    /**
-     * @param Project $project
-     * @return LearningProgramImport
-     */
-    public function setProject($project)
+    public function setProject(Project $project): static
     {
         $this->project = $project;
         return $this;
     }
 
-    /**
-     * @return UploadedFile
-     */
-    public function getFile()
+    public function getFile(): ?UploadedFile
     {
         return $this->file;
     }
 
-    /**
-     * @param UploadedFile $file
-     * @return LearningProgramImport
-     */
-    public function setFile($file)
+    public function setFile(UploadedFile $file): static
     {
         $this->file = $file;
         return $this;

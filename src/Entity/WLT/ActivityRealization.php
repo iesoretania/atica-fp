@@ -45,6 +45,9 @@ class ActivityRealization implements \Stringable
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    /**
+     * @var Collection<int, LearningOutcome>
+     */
     #[ORM\ManyToMany(targetEntity: LearningOutcome::class)]
     #[ORM\JoinTable(name: 'wlt_activity_realization_learning_outcome')]
     private Collection $learningOutcomes;

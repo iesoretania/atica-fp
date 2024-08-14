@@ -66,7 +66,7 @@ class MenuItem
     /**
      * @var integer
      */
-    protected $priority;
+    protected $priority = 0;
 
     /**
      * MenuItem constructor
@@ -74,8 +74,6 @@ class MenuItem
     public function __construct()
     {
         $this->children = new ArrayCollection();
-        $this->parent = null;
-        $this->priority = 0;
     }
 
     /**
@@ -88,9 +86,8 @@ class MenuItem
 
     /**
      * @param string $name
-     * @return MenuItem
      */
-    public function setName($name)
+    public function setName($name): static
     {
         $this->name = $name;
         return $this;
@@ -106,9 +103,8 @@ class MenuItem
 
     /**
      * @param string $caption
-     * @return MenuItem
      */
-    public function setCaption($caption)
+    public function setCaption($caption): static
     {
         $this->caption = $caption;
         return $this;
@@ -124,9 +120,8 @@ class MenuItem
 
     /**
      * @param string $description
-     * @return MenuItem
      */
-    public function setDescription($description)
+    public function setDescription($description): static
     {
         $this->description = $description;
         return $this;
@@ -142,9 +137,8 @@ class MenuItem
 
     /**
      * @param string $routeName
-     * @return MenuItem
      */
-    public function setRouteName($routeName)
+    public function setRouteName($routeName): static
     {
         $this->routeName = $routeName;
         return $this;
@@ -160,9 +154,8 @@ class MenuItem
 
     /**
      * @param array $routeParams
-     * @return MenuItem
      */
-    public function setRouteParams($routeParams)
+    public function setRouteParams($routeParams): static
     {
         $this->routeParams = $routeParams;
         return $this;
@@ -178,9 +171,8 @@ class MenuItem
 
     /**
      * @param string $icon
-     * @return MenuItem
      */
-    public function setIcon($icon)
+    public function setIcon($icon): static
     {
         $this->icon = $icon;
         return $this;
@@ -194,16 +186,12 @@ class MenuItem
         return $this->children;
     }
 
-    /**
-     * @param MenuItem $child
-     * @return MenuItem
-     */
-    public function addChild(MenuItem $child)
+    public function addChild(MenuItem $child): static
     {
         $this->children->add($child);
 
         $iterator = $this->children->getIterator();
-        $iterator->uasort(function (MenuItem $a, MenuItem $b) {
+        $iterator->uasort(function (MenuItem $a, MenuItem $b): int {
             if ($a->getPriority() === $b->getPriority()) {
                 return $a->getName() < $b->getName() ? -1 : 1;
             }
@@ -215,11 +203,7 @@ class MenuItem
         return $this;
     }
 
-    /**
-     * @param MenuItem $child
-     * @return MenuItem
-     */
-    public function removeChild(MenuItem $child)
+    public function removeChild(MenuItem $child): static
     {
         $index = $this->children->indexOf($child);
         if (false !== $index) {
@@ -238,9 +222,8 @@ class MenuItem
 
     /**
      * @param MenuItem|null $parent
-     * @return MenuItem
      */
-    public function setParent(MenuItem $parent)
+    public function setParent(MenuItem $parent): static
     {
         $this->parent = $parent;
         return $this;
@@ -256,9 +239,8 @@ class MenuItem
 
     /**
      * @param int $priority
-     * @return MenuItem
      */
-    public function setPriority($priority)
+    public function setPriority($priority): static
     {
         $this->priority = $priority;
         return $this;
@@ -267,7 +249,7 @@ class MenuItem
     /**
      * @return MenuItem[]
      */
-    public function getPath()
+    public function getPath(): array
     {
         $path = [];
         $current = $this;

@@ -39,6 +39,9 @@ class AnsweredSurvey
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $timestamp = null;
 
+    /**
+     * @var Collection<int, AnsweredSurveyQuestion>
+     */
     #[ORM\OneToMany(targetEntity: AnsweredSurveyQuestion::class, mappedBy: 'answeredSurvey')]
     private Collection $answers;
 

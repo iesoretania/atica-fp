@@ -22,7 +22,7 @@ use ICal\ICal;
 
 class ICalService
 {
-    public function ICalParser($fileName, $options = [])
+    public function ICalParser($fileName, $options = []): ICal
     {
         return new ICal($fileName, $options);
     }

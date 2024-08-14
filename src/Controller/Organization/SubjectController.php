@@ -35,6 +35,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -49,13 +50,13 @@ class SubjectController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Subject $subject = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $em = $managerRegistry->getManager();
 
-        if (null === $subject) {
+        if (!$subject instanceof Subject) {
             $subject = new Subject();
             $academicYear = $organization->getCurrentAcademicYear();
             $em->persist($subject);
@@ -111,10 +112,10 @@ class SubjectController extends AbstractController
         ManagerRegistry $managerRegistry,
         int $page = 1,
         AcademicYear $academicYear = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        if (null === $academicYear) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -172,11 +173,11 @@ class SubjectController extends AbstractController
         SubjectRepository $subjectRepository,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
         if ($academicYear->getOrganization() !== $userExtensionService->getCurrentOrganization()) {
-            return $this->createNotFoundException();
+            throw $this->createNotFoundException();
         }
 
         $em = $managerRegistry->getManager();
@@ -232,7 +233,7 @@ class SubjectController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Teaching $teaching
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -291,7 +292,7 @@ class SubjectController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Teaching $teaching
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 

@@ -75,6 +75,9 @@ class TrackedWorkDay
     #[Assert\Regex('/^\d\d:\d\d$/')]
     private ?string $endTime2 = null;
 
+    /**
+     * @var Collection<int, ActivityTracking>
+     */
     #[ORM\OneToMany(targetEntity: ActivityTracking::class, mappedBy: 'trackedWorkDay')]
     private Collection $trackedActivities;
 

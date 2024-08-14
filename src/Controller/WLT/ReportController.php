@@ -20,6 +20,7 @@ namespace App\Controller\WLT;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\StudentEnrollment;
+use App\Entity\Survey;
 use App\Entity\WLT\Project;
 use App\Repository\AnsweredSurveyQuestionRepository;
 use App\Repository\Edu\AcademicYearRepository;
@@ -46,6 +47,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
@@ -55,7 +57,7 @@ use Twig\Environment;
 class ReportController extends AbstractController
 {
     #[Route(path: '/', name: 'work_linked_training_report', methods: ['GET'])]
-    public function index(UserExtensionService $userExtensionService)
+    public function index(UserExtensionService $userExtensionService): Response
     {
         $this->denyAccessUnlessGranted(
             WLTOrganizationVoter::WLT_MANAGER,
@@ -167,13 +169,13 @@ class ReportController extends AbstractController
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         ManagerRegistry $managerRegistry,
-        $title,
-        $routeName,
+        string $title,
+        string $routeName,
         AcademicYear $academicYear = null,
         int $page = 1
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if ($academicYear === null) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -533,7 +535,7 @@ class ReportController extends AbstractController
 
         $survey = $project->getStudentSurvey();
 
-        if ($survey) {
+        if ($survey instanceof Survey) {
             $studentAnswers = $studentAnsweredSurveyRepository->findByProjectAndAcademicYear($project, $academicYear);
 
             $list = [];
@@ -550,7 +552,7 @@ class ReportController extends AbstractController
             $stats = [$surveyStats, $answers];
         }
 
-        if (empty($stats)) {
+        if ($stats === []) {
             return $this->render('wlt/report/no_survey.html.twig', [
                 'menu_path' => 'work_linked_training_report_student_survey_list'
             ]);
@@ -598,7 +600,7 @@ class ReportController extends AbstractController
 
         $survey = $project->getStudentSurvey();
 
-        if ($survey) {
+        if ($survey instanceof Survey) {
             $workTutorAnswers = $workTutorAnsweredSurveyRepository->findByProjectAndAcademicYear($project, $academicYear);
 
             $list = $wltAnsweredSurveyRepository->findByWorkTutorSurveyProjectAndAcademicYear(
@@ -615,7 +617,7 @@ class ReportController extends AbstractController
             $stats = [$surveyStats, $answers];
         }
 
-        if (empty($stats)) {
+        if ($stats === []) {
             return $this->render('wlt/report/no_survey.html.twig', [
                 'menu_path' => 'work_linked_training_report_work_tutor_survey_list'
             ]);
@@ -659,7 +661,7 @@ class ReportController extends AbstractController
 
         $survey = $project->getEducationalTutorSurvey();
 
-        if ($survey) {
+        if ($survey instanceof Survey) {
             $list = $wltAnsweredSurveyRepository
                 ->findByEducationalTutorSurveyProjectAndAcademicYear($project, $academicYear);
 
@@ -675,7 +677,7 @@ class ReportController extends AbstractController
         $teachers = $wltTeacherRepository
             ->getStatsByProjectAndAcademicYearWithAnsweredSurvey($project, $academicYear);
 
-        if (empty($stats)) {
+        if ($stats === []) {
             return $this->render('wlt/report/no_survey.html.twig', [
                 'menu_path' => 'work_linked_training_report_educational_tutor_survey_list'
             ]);

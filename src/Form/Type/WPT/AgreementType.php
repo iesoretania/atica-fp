@@ -54,10 +54,10 @@ class AgreementType extends AbstractType
         AcademicYear $academicYear,
         $new,
         Company $company = null
-    ) {
+    ): void {
         $studentEnrollments = $shift ? $this->WPTStudentEnrollmentRepository->findByShift($shift) : [];
 
-        $workcenters = $company !== null ?
+        $workcenters = $company instanceof Company ?
             $this->workcenterRepository->findByCompany(
                 $company
             ) : [];
@@ -156,7 +156,7 @@ class AgreementType extends AbstractType
             ]);
     }
 
-    public function addTutors(FormInterface $form, $teachers, $new)
+    public function addTutors(FormInterface $form, $teachers, $new): void
     {
         $form
             ->add('educationalTutor', EntityType::class, [
@@ -184,9 +184,9 @@ class AgreementType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -197,7 +197,7 @@ class AgreementType extends AbstractType
             $this->addElements($form, $shift, $options['academic_year'], $options['new'], $company);
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -214,7 +214,7 @@ class AgreementType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Agreement::class,

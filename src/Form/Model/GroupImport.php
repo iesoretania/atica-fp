@@ -24,100 +24,54 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class GroupImport
 {
-    /**
-     * @var AcademicYear
-     */
-    private $academicYear;
+    private ?AcademicYear $academicYear;
 
-    /**
-     * @var UploadedFile
-     */
     #[Assert\File]
-    private $file;
+    private ?UploadedFile $file = null;
 
-    /**
-     * @var bool
-     */
-    private $restricted;
+    private bool $restricted = true;
 
-    /**
-     * @var bool
-     */
-    private $extractTutors;
+    private bool $extractTutors = true;
 
-    public function __construct()
-    {
-        $this->restricted = true;
-        $this->extractTutors = true;
-    }
-
-    /**
-     * @return AcademicYear
-     */
-    public function getAcademicYear()
+    public function getAcademicYear(): ?AcademicYear
     {
         return $this->academicYear;
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @return GroupImport
-     */
-    public function setAcademicYear($academicYear)
+    public function setAcademicYear(AcademicYear $academicYear): static
     {
         $this->academicYear = $academicYear;
         return $this;
     }
 
-    /**
-     * @return UploadedFile
-     */
-    public function getFile()
+    public function getFile(): ?UploadedFile
     {
         return $this->file;
     }
 
-    /**
-     *
-     * @return GroupImport
-     */
-    public function setFile(UploadedFile $file)
+    public function setFile(UploadedFile $file): static
     {
         $this->file = $file;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isRestricted()
+    public function isRestricted(): bool
     {
         return $this->restricted;
     }
 
-    /**
-     * @param bool $restricted
-     * @return GroupImport
-     */
-    public function setRestricted($restricted)
+    public function setRestricted(bool $restricted): static
     {
         $this->restricted = $restricted;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isExtractTutors()
+    public function isExtractTutors(): bool
     {
         return $this->extractTutors;
     }
 
-    /**
-     * @param bool $extractTutors
-     * @return GroupImport
-     */
-    public function setExtractTutors($extractTutors)
+    public function setExtractTutors(bool $extractTutors): static
     {
         $this->extractTutors = $extractTutors;
         return $this;

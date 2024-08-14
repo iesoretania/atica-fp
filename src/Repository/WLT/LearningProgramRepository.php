@@ -73,7 +73,7 @@ class LearningProgramRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function copyFromProject(Project $destination, Project $source)
+    public function copyFromProject(Project $destination, Project $source): void
     {
         $learningPrograms = $this->findByProject($source);
 

@@ -30,15 +30,15 @@ class ActivityCopyType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('shift', EntityType::class, [
                 'label' => 'form.source_shift',
                 'class' => Shift::class,
                 'choices' => $options['shifts'],
-                'choice_label' => static fn(Shift $shift) => $shift->getSubject()->getGrade()
-                        ->getTraining()->getAcademicYear() . ' - ' . $shift->getName(),
+                'choice_label' => static fn(Shift $shift): string => $shift->getSubject()->getGrade()
+                        ->getTraining()->getAcademicYear()->getDescription() . ' - ' . $shift->getName(),
                 'choice_translation_domain' => false,
                 'placeholder' => 'form.source_shift.none',
                 'required' => true
@@ -48,7 +48,7 @@ class ActivityCopyType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => ActivityCopy::class,

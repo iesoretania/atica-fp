@@ -27,7 +27,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class WPTGroupRepository extends GroupRepository
 {
-    public function findByAcademicYearAndWPTGroupTutorOrDepartmentHeadPerson(AcademicYear $academicYear, Person $person)
+    public function findByAcademicYearAndWPTGroupTutorOrDepartmentHeadPerson(AcademicYear $academicYear, Person $person): ArrayCollection
     {
         $groups = new ArrayCollection();
 
@@ -107,7 +107,7 @@ class WPTGroupRepository extends GroupRepository
             ->getSingleScalarResult();
     }
 
-    private function appendGroups(ArrayCollection $groups, $newGroups)
+    private function appendGroups(ArrayCollection $groups, $newGroups): void
     {
         foreach ($newGroups as $group) {
             if (!$groups->contains($group)) {

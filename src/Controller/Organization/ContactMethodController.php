@@ -32,6 +32,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -46,13 +47,13 @@ class ContactMethodController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         ContactMethod $contactMethod = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
         $em = $managerRegistry->getManager();
 
-        if (null === $contactMethod) {
+        if (!$contactMethod instanceof ContactMethod) {
             $contactMethod = new ContactMethod();
             $contactMethod
                 ->setAcademicYear($organization->getCurrentAcademicYear());
@@ -105,11 +106,11 @@ class ContactMethodController extends AbstractController
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
         ContactMethodRepository $contactMethodRepository,
-        $page = 1,
+        int $page = 1,
         AcademicYear $academicYear = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -147,7 +148,7 @@ class ContactMethodController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
         $em = $managerRegistry->getManager();

@@ -19,6 +19,7 @@
 namespace App\Controller\WPT;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\ReportTemplate;
 use App\Entity\WPT\AgreementEnrollment;
 use App\Entity\WPT\Report;
 use App\Form\Type\WPT\FinalReportType;
@@ -35,6 +36,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -54,10 +56,11 @@ class FinalReportController extends AbstractController
         TeacherRepository $teacherRepository,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
-        $page = 1
-    ) {
+        int $page = 1
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
-        if ($academicYear === null) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -101,7 +104,8 @@ class FinalReportController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         AgreementEnrollment $agreementEnrollment
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::VIEW_REPORT, $agreementEnrollment);
 
         $readOnly = !$this->isGranted(AgreementEnrollmentVoter::FILL_REPORT, $agreementEnrollment);
@@ -110,7 +114,7 @@ class FinalReportController extends AbstractController
 
         $report = $agreementEnrollment->getReport();
 
-        if (null === $report) {
+        if (!$report instanceof Report) {
             $report = new Report();
             $report
                 ->setAgreementEnrollment($agreementEnrollment)
@@ -159,7 +163,7 @@ class FinalReportController extends AbstractController
         AgreementEnrollment $agreementEnrollment
     ) {
         $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::VIEW_REPORT, $agreementEnrollment);
-        if (null === $agreementEnrollment->getReport()) {
+        if (!$agreementEnrollment->getReport() instanceof Report) {
             throw $this->createNotFoundException();
         }
 
@@ -173,7 +177,7 @@ class FinalReportController extends AbstractController
 
         try {
             $template = $agreementEnrollment->getAgreement()->getShift()->getFinalReportTemplate();
-            if ($template) {
+            if ($template instanceof ReportTemplate) {
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $template->getData());
                 $mpdf->SetDocTemplate($tmp, true);

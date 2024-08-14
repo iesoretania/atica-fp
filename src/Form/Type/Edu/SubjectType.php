@@ -36,7 +36,7 @@ class SubjectType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $academicYear = $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
 
@@ -68,7 +68,7 @@ class SubjectType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Subject::class,

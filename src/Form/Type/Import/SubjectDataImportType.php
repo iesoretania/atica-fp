@@ -32,19 +32,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SubjectDataImportType extends AbstractType
 {
-    /**
-     * @param GradeRepository $gradeRepository
-     * @param UserExtensionService $userExtensionService
-     */
     public function __construct(private readonly GradeRepository $gradeRepository, private readonly UserExtensionService $userExtensionService)
     {
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $grades = $this->gradeRepository->findByAcademicYear(
             $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear()
@@ -66,7 +58,7 @@ class SubjectDataImportType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => SubjectDataImport::class,

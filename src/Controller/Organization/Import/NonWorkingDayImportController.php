@@ -30,6 +30,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use ICal\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -43,7 +44,7 @@ class NonWorkingDayImportController extends AbstractController
         TranslatorInterface $translator,
         ICalService $iCalService,
         Request $request
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -84,12 +85,7 @@ class NonWorkingDayImportController extends AbstractController
 
     /**
      * @param string $file
-     * @param AcademicYear $academicYear
-     * @param NonWorkingDayRepository $nonWorkingDayRepository
-     * @param EntityManagerInterface $entityManager
-     * @param ICalService $iCalService
      *
-     * @return array
      *
      * @throws \Exception
      */
@@ -99,7 +95,7 @@ class NonWorkingDayImportController extends AbstractController
         NonWorkingDayRepository $nonWorkingDayRepository,
         EntityManagerInterface $entityManager,
         ICalService $iCalService
-    ) {
+    ): array {
         $newCount = 0;
         $oldCount = 0;
 

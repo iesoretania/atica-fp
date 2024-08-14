@@ -64,7 +64,6 @@ class WorkDayRepository extends ServiceEntityRepository
 
     /**
      * @param $list
-     * @param Agreement $agreement
      * @return WorkDay[]
      */
     public function findInListByIdAndAgreement($list, Agreement $agreement)
@@ -79,9 +78,6 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @param \DateTimeInterface $date
-     */
     public function findOneByAgreementAndDate(Agreement $agreement, \DateTimeInterface $date)
     {
         return $this->createQueryBuilder('wr')
@@ -127,9 +123,6 @@ class WorkDayRepository extends ServiceEntityRepository
         return self::groupByMonthAndWeekNumber($this->findByAgreement($agreement));
     }
 
-    /**
-     * @param \DateTimeInterface $startDate
-     */
     public function createWorkDayCollectionByAcademicYear(
         Agreement $agreement,
         \DateTimeInterface $startDate,
@@ -237,7 +230,7 @@ class WorkDayRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findByYearWeekAndAgreement($year, $week, Agreement $agreement)
+    public function findByYearWeekAndAgreement(string $year, $week, Agreement $agreement)
     {
         $startDate = new \DateTime();
         $startDate->setTimestamp(strtotime($year . 'W'. ($week < 10 ? '0' . $week : $week)));
@@ -255,7 +248,10 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public static function groupByMonthAndWeekNumber($workDays)
+    /**
+     * @return \non-empty-array<int, array{\days: \non-empty-array<\int, (array{} | array{\mixed, 0})>}>[]
+     */
+    public static function groupByMonthAndWeekNumber($workDays): array
     {
         $collection = [];
 
@@ -291,7 +287,7 @@ class WorkDayRepository extends ServiceEntityRepository
         return $collection;
     }
 
-    public function deleteFromAgreements($list)
+    public function deleteFromAgreements($list): void
     {
         // Primero borrar los elementos con seguimiento, tanto
         // sus datos como sus actividades

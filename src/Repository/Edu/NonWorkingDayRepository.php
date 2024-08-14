@@ -32,7 +32,6 @@ class NonWorkingDayRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @return NonWorkingDay[]
      */
     public function findByAcademicYear(AcademicYear $academicYear)
@@ -46,7 +45,6 @@ class NonWorkingDayRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @return NonWorkingDay|null
      * @param \DateTime|\DateTimeImmutable $dateTime
      */
@@ -63,7 +61,6 @@ class NonWorkingDayRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param AcademicYear $academicYear
      * @return NonWorkingDay[]
      */
     public function findAllInListByIdAndAcademicYear(

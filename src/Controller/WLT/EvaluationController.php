@@ -42,6 +42,7 @@ use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -55,7 +56,7 @@ class EvaluationController extends AbstractController
         ActivityRealizationGradeRepository $activityRealizationGradeRepository,
         ManagerRegistry $managerRegistry,
         Agreement $agreement
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(AgreementVoter::VIEW_GRADE, $agreement);
 
         $academicYear = $agreement->
@@ -115,9 +116,9 @@ class EvaluationController extends AbstractController
         ManagerRegistry $managerRegistry,
         int $page = 1,
         AcademicYear $academicYear = null
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -261,7 +262,7 @@ class EvaluationController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         AgreementActivityRealization $agreementActivityRealization
-    ) {
+    ): Response {
         $agreement = $agreementActivityRealization->getAgreement();
         $this->denyAccessUnlessGranted(AgreementVoter::VIEW_GRADE, $agreement);
 
@@ -292,7 +293,7 @@ class EvaluationController extends AbstractController
                 $this->addFlash('success', $translator->trans('message.saved', [],
                     'wlt_agreement_activity_realization'));
 
-                if (!$newComment) {
+                if (!$newComment instanceof AgreementActivityRealizationComment) {
                     return $this->redirectToRoute('work_linked_training_evaluation_form', [
                         'id' => $agreement->getId()
                     ]);
@@ -335,7 +336,7 @@ class EvaluationController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         AgreementActivityRealizationComment $agreementActivityRealizationComment
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(AgreementActivityRealizationCommentVoter::DELETE,
             $agreementActivityRealizationComment);
 

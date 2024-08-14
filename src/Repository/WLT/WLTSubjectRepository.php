@@ -32,7 +32,6 @@ class WLTSubjectRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Project $project
      * @param string $code
      * @return Subject|null
      */

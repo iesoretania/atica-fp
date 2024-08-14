@@ -44,6 +44,7 @@ use Doctrine\ORM\Query\QueryException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -60,7 +61,7 @@ class SubjectImportController extends AbstractController
         TranslatorInterface $translator,
         EntityManagerInterface $entityManager,
         Request $request
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -107,15 +108,6 @@ class SubjectImportController extends AbstractController
 
     /**
      * @param string $file
-     * @param AcademicYear $academicYear
-     * @param TeacherRepository $teacherRepository
-     * @param SubjectRepository $subjectRepository
-     * @param GradeRepository $gradeRepository
-     * @param GroupRepository $groupRepository
-     * @param TeachingRepository $teachingRepository
-     * @param EntityManagerInterface $entityManager
-     * @param array $options
-     * @return array|null
      */
     private function importFromCsv(
         $file,
@@ -126,8 +118,8 @@ class SubjectImportController extends AbstractController
         GroupRepository $groupRepository,
         TeachingRepository $teachingRepository,
         EntityManagerInterface $entityManager,
-        $options = []
-    ) {
+        array $options = []
+    ): array {
         $newCount = 0;
         $oldCount = 0;
 
@@ -282,7 +274,7 @@ class SubjectImportController extends AbstractController
         }
 
         // ordenar por enseñanza, nivel y nombre antes de devolverlo
-        usort($collection, function (Subject $a, Subject $b) {
+        usort($collection, function (Subject $a, Subject $b): int {
             $aValue = $a->getGrade()->getTraining()->getName() . $a->getGrade()->getName() . $a->getName();
             $bValue = $b->getGrade()->getTraining()->getName() . $b->getGrade()->getName() . $b->getName();
             return $aValue <=> $bValue;
@@ -305,7 +297,7 @@ class SubjectImportController extends AbstractController
         TranslatorInterface $translator,
         EntityManagerInterface $entityManager,
         Request $request
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -345,13 +337,7 @@ class SubjectImportController extends AbstractController
 
     /**
      * @param string $file
-     * @param Grade $grade
-     * @param SubjectRepository $subjectRepository
      * @param LearningOutcomeRepository $learingOutcomeRepository
-     * @param CriterionRepository $criterionRepository
-     * @param EntityManagerInterface $entityManager
-     * @param array $options
-     * @return array|null
      */
     private function importDataFromCsv(
         $file,
@@ -359,9 +345,8 @@ class SubjectImportController extends AbstractController
         SubjectRepository $subjectRepository,
         LearningOutcomeRepository $learningOutcomeRepository,
         CriterionRepository $criterionRepository,
-        EntityManagerInterface $entityManager,
-        $options = []
-    ) {
+        EntityManagerInterface $entityManager
+    ): ?array {
         $newSubjectCount = 0;
         $updatedSubjectCount = 0;
         $newLearningOutcomes = 0;

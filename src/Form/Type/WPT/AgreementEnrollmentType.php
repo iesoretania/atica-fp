@@ -40,7 +40,7 @@ use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class AgreementEnrollmentType extends AbstractType
 {
-    public function __construct(private readonly WorkcenterRepository $workcenterRepository, private readonly CompanyRepository $companyRepository, private readonly TeacherRepository $teacherRepository, private readonly WPTStudentEnrollmentRepository $WPTStudentEnrollmentRepository)
+    public function __construct(private readonly TeacherRepository $teacherRepository, private readonly WPTStudentEnrollmentRepository $WPTStudentEnrollmentRepository)
     {
     }
 
@@ -48,7 +48,7 @@ class AgreementEnrollmentType extends AbstractType
         FormInterface $form,
         Shift $shift,
         AcademicYear $academicYear
-    ) {
+    ): void {
         $studentEnrollments = $shift ? $this->WPTStudentEnrollmentRepository->findByShift($shift) : [];
         $teachers = $this->teacherRepository->findByAcademicYear($academicYear);
 
@@ -114,9 +114,9 @@ class AgreementEnrollmentType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -125,7 +125,7 @@ class AgreementEnrollmentType extends AbstractType
             $this->addElements($form, $shift, $options['academic_year']);
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
 
             /** @var Shift $shift */
@@ -138,7 +138,7 @@ class AgreementEnrollmentType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => AgreementEnrollment::class,

@@ -63,16 +63,10 @@ class SurveyQuestion
     private ?string $items = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $mandatory;
+    private ?bool $mandatory = false;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $orderNr;
-
-    public function __construct()
-    {
-        $this->orderNr = 0;
-        $this->mandatory = false;
-    }
+    private ?int $orderNr = 0;
 
     public function getId(): ?int
     {

@@ -37,6 +37,7 @@ use Doctrine\ORM\Query\QueryException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -53,7 +54,7 @@ class StudentImportController extends AbstractController
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordEncoder,
         Request $request
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -99,13 +100,6 @@ class StudentImportController extends AbstractController
 
     /**
      * @param string $file
-     * @param AcademicYear $academicYear
-     * @param StudentEnrollmentRepository $studentEnrollmentRepository
-     * @param GroupRepository $groupRepository
-     * @param PersonRepository $personRepository
-     * @param EntityManagerInterface $entityManager
-     * @param UserPasswordHasherInterface $passwordEncoder
-     * @return array|null
      */
     private function importFromCsv(
         $file,
@@ -115,8 +109,8 @@ class StudentImportController extends AbstractController
         PersonRepository $personRepository,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordEncoder,
-        $options = []
-    ) {
+        array $options = []
+    ): ?array {
         $newCount = 0;
         $oldCount = 0;
 
@@ -158,7 +152,7 @@ class StudentImportController extends AbstractController
                     } else {
                         $person = $personCollection[$uniqueIdentifier1];
                     }
-                    if (null === $person) {
+                    if (!$person instanceof Person) {
                         $gender = $studentData['Sexo'];
                         $gender = match ($gender) {
                             'H' => Person::GENDER_MALE,
@@ -227,7 +221,7 @@ class StudentImportController extends AbstractController
         TranslatorInterface $translator,
         EntityManagerInterface $entityManager,
         Request $request
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -266,9 +260,6 @@ class StudentImportController extends AbstractController
     }
     /**
      * @param string $file
-     * @param AcademicYear $academicYear
-     * @param StudentEnrollmentRepository $studentEnrollmentRepository
-     * @param EntityManagerInterface $entityManager
      * @param array $options
      */
     private function importLoginFromCsv(
@@ -276,7 +267,7 @@ class StudentImportController extends AbstractController
         AcademicYear $academicYear,
         StudentEnrollmentRepository $studentEnrollmentRepository,
         EntityManagerInterface $entityManager
-    ) {
+    ): array {
         $updatedCount = 0;
         $totalCount = 0;
 

@@ -22,26 +22,14 @@ use App\Entity\Edu\AcademicYear;
 
 class AcademicYearCopy
 {
-    /** @var AcademicYear */
-    private $academicYear;
+    private ?AcademicYear $academicYear;
 
-    public function __construct()
-    {
-    }
-
-    /**
-     * @return AcademicYear
-     */
-    public function getAcademicYear()
+    public function getAcademicYear(): ?AcademicYear
     {
         return $this->academicYear;
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @return AcademicYearCopy
-     */
-    public function setAcademicYear($academicYear)
+    public function setAcademicYear(AcademicYear $academicYear): static
     {
         $this->academicYear = $academicYear;
         return $this;

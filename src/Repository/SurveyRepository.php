@@ -46,7 +46,6 @@ class SurveyRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param Organization $organization
      * @return QueryBuilder
      */
     public function findAllInListByIdAndOrganizationQueryBuilder(
@@ -63,7 +62,6 @@ class SurveyRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param Organization $organization
      * @return Survey[]
      */
     public function findAllInListByIdAndOrganization(
@@ -77,7 +75,6 @@ class SurveyRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param Organization $organization
      * @return Survey[]
      */
     public function findAllInListByIdAndOrganizationAndNoAnswers(
@@ -107,7 +104,7 @@ class SurveyRepository extends ServiceEntityRepository
     /**
      * @param Survey[] $list
      */
-    public function purgeAnswersFromList($list)
+    public function purgeAnswersFromList($list): void
     {
         /** @var Survey $survey */
         foreach ($list as $survey) {

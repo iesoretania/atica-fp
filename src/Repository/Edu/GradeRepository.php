@@ -35,7 +35,6 @@ class GradeRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @return QueryBuilder
      */
     public function findByAcademicYearQueryBuilder(AcademicYear $academicYear)
@@ -49,7 +48,6 @@ class GradeRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @return Grade[]
      */
     public function findByAcademicYear(AcademicYear $academicYear)
@@ -60,7 +58,6 @@ class GradeRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @param string $internalCode
      * @return Grade|null
      */
@@ -81,7 +78,6 @@ class GradeRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param AcademicYear $academicYear
      * @return Grade[]
      */
     public function findAllInListByIdAndAcademicYear(
@@ -102,7 +98,6 @@ class GradeRepository extends ServiceEntityRepository
 
 
     /**
-     * @param Training $training
      * @return Grade[]|Collection
      */
     public function findByTraining(Training $training)
@@ -117,7 +112,7 @@ class GradeRepository extends ServiceEntityRepository
     public function copyFromTraining(
         Training $destination,
         Training $source
-    ) {
+    ): void {
         $grades = $this->findByTraining($source);
         foreach ($grades as $grade) {
             $newGrade = new Grade();

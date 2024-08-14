@@ -48,7 +48,6 @@ class GroupRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @return QueryBuilder
      */
     public function findByAcademicYearQueryBuilder(AcademicYear $academicYear)
@@ -61,7 +60,6 @@ class GroupRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @return Group[]
      */
     public function findByAcademicYear(AcademicYear $academicYear)
@@ -72,7 +70,6 @@ class GroupRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @param string $internalCode
      * @return Group|null
      */
@@ -91,7 +88,6 @@ class GroupRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param AcademicYear $academicYear
      * @param string $code
      * @return Group|null
      */
@@ -111,7 +107,6 @@ class GroupRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param AcademicYear $academicYear
      * @return Group[]
      */
     public function findAllInListByIdAndAcademicYear(

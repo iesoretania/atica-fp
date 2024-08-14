@@ -31,7 +31,7 @@ class SurveyQuestionType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('description', CKEditorType::class, [
@@ -43,7 +43,7 @@ class SurveyQuestionType extends AbstractType
                 'label' => 'form.type',
                 'disabled' => $options['locked'],
                 'choices' => SurveyQuestion::TYPES,
-                'choice_label' => fn($item) => 'type.' . $item,
+                'choice_label' => fn($item): string => 'type.' . $item,
                 'choice_translation_domain' => 'survey_question',
                 'required' => true
             ])
@@ -68,7 +68,7 @@ class SurveyQuestionType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => SurveyQuestion::class,

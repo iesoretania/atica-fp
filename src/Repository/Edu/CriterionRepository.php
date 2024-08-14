@@ -80,7 +80,6 @@ class CriterionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param LearningOutcome $learningOutcome
      * @return Criterion[]|Collection
      */
     private function findByLearningOutcome(LearningOutcome $learningOutcome)
@@ -93,7 +92,7 @@ class CriterionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function copyFromLearningOutcome(LearningOutcome $destination, LearningOutcome $source)
+    public function copyFromLearningOutcome(LearningOutcome $destination, LearningOutcome $source): void
     {
         $criteria = $this->findByLearningOutcome($source);
 

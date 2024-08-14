@@ -31,7 +31,10 @@ class WLTCompetencyRepository extends ServiceEntityRepository
         parent::__construct($registry, Competency::class);
     }
 
-    public function findByProject(Project $training)
+    /**
+     * @return Competency[]
+     */
+    public function findByProject(Project $training): array
     {
         $result = [];
 

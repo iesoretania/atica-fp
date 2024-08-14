@@ -42,7 +42,7 @@ class ActivityTrackingRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function getCountFromAgreementEnrollment(AgreementEnrollment $agreementEnrollment)
+    public function getCountFromAgreementEnrollment(AgreementEnrollment $agreementEnrollment): int
     {
         return $agreementEnrollment->getActivities()->count();
     }

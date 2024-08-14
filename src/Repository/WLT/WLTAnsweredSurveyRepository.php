@@ -47,7 +47,7 @@ class WLTAnsweredSurveyRepository extends ServiceEntityRepository
             )
             ->setParameter('project', $project);
 
-        if ($academicYear) {
+        if ($academicYear instanceof AcademicYear) {
             $qb
                 ->where('wtas.academicYear = :academic_year')
                 ->setParameter('academic_year', $academicYear);
@@ -71,7 +71,7 @@ class WLTAnsweredSurveyRepository extends ServiceEntityRepository
             )
             ->setParameter('project', $project);
 
-        if ($academicYear) {
+        if ($academicYear instanceof AcademicYear) {
             $qb
                 ->join(
                     Teacher::class,

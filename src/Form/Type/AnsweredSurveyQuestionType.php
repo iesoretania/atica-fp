@@ -39,9 +39,9 @@ class AnsweredSurveyQuestionType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             $form = $event->getForm();
             /** @var AnsweredSurveyQuestion $data */
             $data = $event->getData();
@@ -81,7 +81,7 @@ class AnsweredSurveyQuestionType extends AbstractType
                         $max = 10;
                     }
                 $itemCount = $type === SurveyQuestion::RANGE_1_5 ? 5 : 10;
-                    $items = explode(';', $data->getSurveyQuestion()->getItems());
+                    $items = explode(';', (string) $data->getSurveyQuestion()->getItems());
 
                     $choices = [];
                     $count = 0;
@@ -115,7 +115,7 @@ class AnsweredSurveyQuestionType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => AnsweredSurveyQuestion::class,

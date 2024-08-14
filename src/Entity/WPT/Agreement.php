@@ -46,6 +46,9 @@ class Agreement implements \Stringable
     #[ORM\JoinColumn(nullable: false)]
     private ?Workcenter $workcenter = null;
 
+    /**
+     * @var Collection<int, AgreementEnrollment>
+     */
     #[ORM\OneToMany(targetEntity: AgreementEnrollment::class, mappedBy: 'agreement')]
     private Collection $agreementEnrollments;
 
@@ -74,6 +77,9 @@ class Agreement implements \Stringable
     #[Assert\Regex('/^\d\d:\d\d$/')]
     private ?string $defaultEndTime2 = null;
 
+    /**
+     * @var Collection<int, WorkDay>
+     */
     #[ORM\OneToMany(targetEntity: WorkDay::class, mappedBy: 'agreement')]
     private Collection $workDays;
 
@@ -88,7 +94,7 @@ class Agreement implements \Stringable
 
     public function __toString(): string
     {
-        return ($this->getShift() === null || $this->getWorkcenter() === null) ? ''
+        return (!$this->getShift() instanceof Shift || !$this->getWorkcenter() instanceof Workcenter) ? ''
             : $this->getShift()->__toString()
             . ' - '
             . $this->getWorkcenter()->__toString()

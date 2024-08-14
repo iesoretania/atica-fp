@@ -48,8 +48,6 @@ class TeachingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Group $group
-     * @param Person $person
      *
      * @return int
      */

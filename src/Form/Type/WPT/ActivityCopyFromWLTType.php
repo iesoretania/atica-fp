@@ -30,14 +30,14 @@ class ActivityCopyFromWLTType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('project', EntityType::class, [
                 'label' => 'form.source_wlt_project',
                 'class' => Project::class,
                 'choices' => $options['projects'],
-                'choice_label' => static fn(Project $project) => $project->getName(),
+                'choice_label' => static fn(Project $project): ?string => $project->getName(),
                 'choice_translation_domain' => false,
                 'placeholder' => 'form.source_wlt_project.none',
                 'required' => true
@@ -47,7 +47,7 @@ class ActivityCopyFromWLTType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => ActivityCopyFromWLT::class,

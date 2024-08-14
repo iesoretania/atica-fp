@@ -57,7 +57,7 @@ class ContactType extends AbstractType
         $selectedProjects = [],
         $teachers = [],
         \DateTimeInterface $dateTime = null
-    ) {
+    ): void {
         $workcenters = $this->workcenterRepository->findAllSorted();
         $methods = [];
 
@@ -72,7 +72,7 @@ class ContactType extends AbstractType
             $teachers = [];
         }
         $studentEnrollments = [];
-        if ($workcenter !== null) {
+        if ($workcenter instanceof Workcenter) {
             $projects = $this->projectRepository->findByAcademicYearAndWorkcenter($academicYear, $workcenter);
             if ((is_countable($projects) ? count($projects) : 0) > 0) {
                 $studentEnrollments =
@@ -151,9 +151,9 @@ class ContactType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -173,7 +173,7 @@ class ContactType extends AbstractType
             );
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -208,7 +208,7 @@ class ContactType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Contact::class,

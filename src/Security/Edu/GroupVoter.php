@@ -18,6 +18,7 @@
 
 namespace App\Security\Edu;
 
+use App\Entity\Edu\Department;
 use App\Entity\Edu\Group;
 use App\Entity\Person;
 use App\Repository\Edu\TeachingRepository;
@@ -91,7 +92,7 @@ class GroupVoter extends CachedVoter
         // Si es jefe de su departamento o coordinador de FP dual, permitir acceder
         // 1) Jefe del departamento del ciclo formativo del grupo
         $training = $subject->getGrade()->getTraining();
-        if (null !== $training->getDepartment() && $training->getDepartment()->getHead() &&
+        if ($training->getDepartment() instanceof Department && $training->getDepartment()->getHead() &&
             $training->getDepartment()->getHead()->getPerson() === $user
         ) {
             return true;

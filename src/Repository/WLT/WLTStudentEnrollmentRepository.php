@@ -60,7 +60,7 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
         \DateTimeInterface $dateTime = null
     ) {
         $qb = $this->findByProjectsQueryBuilder($projects);
-        if ($dateTime !== null) {
+        if ($dateTime instanceof \DateTimeInterface) {
             $startDate = clone $dateTime;
             $startDate->setTime(0, 0);
             $endDate = clone $startDate;
@@ -103,7 +103,7 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
         $startDate->add(new \DateInterval('P1D'));
         $qb = $this->findByProjectsQueryBuilder([$project]);
 
-        if ($dateTime !== null) {
+        if ($dateTime instanceof \DateTimeInterface) {
             $qb
                 ->andWhere('a.startDate < :end_date_time')
                 ->andWhere('a.endDate >= :start_date_time')
@@ -119,7 +119,7 @@ class WLTStudentEnrollmentRepository extends ServiceEntityRepository
     {
         $qb = $this->findByProjectsQueryBuilder([$project]);
 
-        if ($academicYear) {
+        if ($academicYear instanceof AcademicYear) {
             $qb
                 ->andWhere('a = :academic_year')
                 ->setParameter('academic_year', $academicYear);

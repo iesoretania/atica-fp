@@ -24,76 +24,41 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class DepartmentImport
 {
-    /**
-     * @var AcademicYear
-     */
-    private $academicYear;
+    private ?AcademicYear $academicYear;
 
-    /**
-     * @var UploadedFile
-     */
     #[Assert\File]
-    private $file;
+    private ?UploadedFile $file = null;
 
-    /**
-     * @var bool
-     */
-    private $extractHeads;
+    private bool $extractHeads = true;
 
-    public function __construct()
-    {
-        $this->extractHeads = true;
-    }
-
-    /**
-     * @return AcademicYear
-     */
-    public function getAcademicYear()
+    public function getAcademicYear(): ?AcademicYear
     {
         return $this->academicYear;
     }
 
-    /**
-     * @param AcademicYear $academicYear
-     * @return DepartmentImport
-     */
-    public function setAcademicYear($academicYear)
+    public function setAcademicYear(AcademicYear $academicYear): static
     {
         $this->academicYear = $academicYear;
         return $this;
     }
 
-    /**
-     * @return UploadedFile
-     */
-    public function getFile()
+    public function getFile(): ?UploadedFile
     {
         return $this->file;
     }
 
-    /**
-     *
-     * @return DepartmentImport
-     */
-    public function setFile(UploadedFile $file)
+    public function setFile(UploadedFile $file): static
     {
         $this->file = $file;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isExtractHeads()
+    public function isExtractHeads(): bool
     {
         return $this->extractHeads;
     }
 
-    /**
-     * @param bool $extractHeads
-     * @return DepartmentImport
-     */
-    public function setExtractHeads($extractHeads)
+    public function setExtractHeads(bool $extractHeads): static
     {
         $this->extractHeads = $extractHeads;
         return $this;

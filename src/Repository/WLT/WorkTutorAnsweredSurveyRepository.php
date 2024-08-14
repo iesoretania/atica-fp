@@ -59,7 +59,8 @@ class WorkTutorAnsweredSurveyRepository extends ServiceEntityRepository
         Project $project,
         AcademicYear $academicYear,
         Person $workTutor
-    ) {
+    ): WorkTutorAnsweredSurvey
+    {
         $studentSurvey = new AnsweredSurvey();
         $studentSurvey->setSurvey($survey);
 
@@ -122,7 +123,7 @@ class WorkTutorAnsweredSurveyRepository extends ServiceEntityRepository
         ->addOrderBy('p.lastName')
         ->addOrderBy('p.firstName');
 
-        if ($academicYear) {
+        if ($academicYear instanceof AcademicYear) {
             $queryBuilder
                 ->andWhere('t.academicYear = :academic_year')
                 ->setParameter('academic_year', $academicYear);
@@ -138,7 +139,7 @@ class WorkTutorAnsweredSurveyRepository extends ServiceEntityRepository
             ->andWhere('wtas.project = :project')
             ->setParameter('project', $project);
 
-        if ($academicYear) {
+        if ($academicYear instanceof AcademicYear) {
             $qb
                 ->andWhere('wtas.academicYear = :academic_year')
                 ->setParameter('academic_year', $academicYear);

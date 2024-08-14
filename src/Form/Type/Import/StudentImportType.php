@@ -35,18 +35,12 @@ class StudentImportType extends AbstractType
 {
     /**
      * DepartmentImportType constructor.
-     * @param AcademicYearRepository $academicYearRepository
-     * @param UserExtensionService $userExtensionService
      */
     public function __construct(private readonly AcademicYearRepository $academicYearRepository, private readonly UserExtensionService $userExtensionService)
     {
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $academicYears = $this->academicYearRepository->findAllByOrganization(
             $this->userExtensionService->getCurrentOrganization()
@@ -77,7 +71,7 @@ class StudentImportType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => StudentImport::class,

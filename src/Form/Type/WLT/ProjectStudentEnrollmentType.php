@@ -36,7 +36,7 @@ class ProjectStudentEnrollmentType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $groups = $options['groups'];
         $studentEnrollments = $this->studentEnrollmentRepository->findByGroups($groups);
@@ -47,7 +47,7 @@ class ProjectStudentEnrollmentType extends AbstractType
                 'class' => Group::class,
                 'choice_translation_domain' => false,
                 'choices' => $groups,
-                'choice_label' => fn(Group $group) => $group
+                'choice_label' => fn(Group $group): string => $group
                         ->getGrade()
                         ->getTraining()
                         ->getAcademicYear()
@@ -61,10 +61,10 @@ class ProjectStudentEnrollmentType extends AbstractType
                 'class' => StudentEnrollment::class,
                 'choice_translation_domain' => false,
                 'choices' => $studentEnrollments,
-                'choice_label' => fn(StudentEnrollment $studentEnrollment) => $studentEnrollment->getPerson()->getLastName() . ', '
+                'choice_label' => fn(StudentEnrollment $studentEnrollment): string => $studentEnrollment->getPerson()->getLastName() . ', '
                     . $studentEnrollment->getPerson()->getFirstName() . ' ('
                     . $studentEnrollment->getPerson()->getUniqueIdentifier() . ')',
-                'group_by' => fn(StudentEnrollment $studentEnrollment) => $studentEnrollment
+                'group_by' => fn(StudentEnrollment $studentEnrollment): string => $studentEnrollment
                         ->getGroup()->getGrade()->getTraining()->getAcademicYear()->getDescription() . ' - '
                     . $studentEnrollment->getGroup()->getName(),
                 'multiple' => true,
@@ -76,7 +76,7 @@ class ProjectStudentEnrollmentType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Project::class,

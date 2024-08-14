@@ -66,7 +66,7 @@ class TravelRouteRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findByOrganizationAndQuery(Organization $organization, $term)
+    public function findByOrganizationAndQuery(Organization $organization, string $term)
     {
         return $this->createQueryBuilder('tr')
             ->where('tr.organization = :organization')

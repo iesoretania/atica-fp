@@ -19,6 +19,7 @@
 namespace App\Controller\WPT;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\ReportTemplate;
 use App\Entity\Edu\Teacher;
 use App\Entity\Person;
 use App\Entity\WPT\Contact;
@@ -39,7 +40,9 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -94,11 +97,11 @@ class VisitController extends AbstractController
         WPTGroupRepository $WPTGroupRepository,
         ManagerRegistry $managerRegistry,
         Contact $visit
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(VisitVoter::ACCESS, $visit);
 
         $organization = $userExtensionService->getCurrentOrganization();
-        $academicYear = $visit->getTeacher() ? $visit->getTeacher()->getAcademicYear() : $organization->getCurrentAcademicYear();
+        $academicYear = $visit->getTeacher() instanceof Teacher ? $visit->getTeacher()->getAcademicYear() : $organization->getCurrentAcademicYear();
 
         $em = $managerRegistry->getManager();
 
@@ -106,8 +109,6 @@ class VisitController extends AbstractController
 
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
         $isDepartmentHead = $security->isGranted(EduOrganizationVoter::EDU_DEPARTMENT_HEAD, $organization);
-
-        $teacher = null;
 
         $teachers = $this->getTeachersByAcademicYearAndUser(
             $WPTTeacherRepository,
@@ -171,7 +172,7 @@ class VisitController extends AbstractController
         ManagerRegistry $managerRegistry,
         Teacher $teacher,
         int $page = 1
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_VISIT, $organization);
 
@@ -258,9 +259,9 @@ class VisitController extends AbstractController
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         int $page = 1
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        if (null === $academicYear) {
+        if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
@@ -337,7 +338,7 @@ class VisitController extends AbstractController
         TranslatorInterface  $translator,
         ManagerRegistry      $managerRegistry,
         Teacher              $teacher
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_ACCESS_VISIT, $organization);
@@ -404,7 +405,7 @@ class VisitController extends AbstractController
 
         try {
             $template = $teacher->getAcademicYear()->getDefaultLandscapeTemplate();
-            if ($template) {
+            if ($template instanceof ReportTemplate) {
                 $tmp = tempnam('.', 'tpl');
                 file_put_contents($tmp, $template->getData());
                 $mpdf->SetDocTemplate($tmp, true);
@@ -438,9 +439,6 @@ class VisitController extends AbstractController
     }
 
     /**
-     * @param WPTTeacherRepository $WPTTeacherRepository
-     * @param WPTGroupRepository $WPTGroupRepository
-     * @param AcademicYear $academicYear
      * @param $isManager
      * @param $isDepartmentHead
      * @param $readOnly
@@ -450,9 +448,9 @@ class VisitController extends AbstractController
         WPTTeacherRepository $WPTTeacherRepository,
         WPTGroupRepository $WPTGroupRepository,
         AcademicYear $academicYear,
-        $isManager,
-        $isDepartmentHead,
-        $readOnly
+        bool $isManager,
+        bool $isDepartmentHead,
+        bool $readOnly
     ) {
         $groups = [];
         $teacher = null;

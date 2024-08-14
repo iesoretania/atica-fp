@@ -56,7 +56,7 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface, \Stri
     private ?string $uniqueIdentifier = null;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $gender;
+    private ?int $gender = self::GENDER_NEUTRAL;
 
     #[ORM\Column(type: Types::STRING, unique: true, nullable: true)]
     #[Assert\Regex(pattern: '/[@ ]{1,}/', message: 'login_username.invalid_chars', htmlPattern: false, match: false)]
@@ -66,12 +66,12 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface, \Stri
     private ?string $password = null;
 
     #[ORM\Column(type: Types::BOOLEAN, nullable: false)]
-    private bool $forcePasswordChange;
+    private bool $forcePasswordChange = false;
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $enabled;
+    private ?bool $enabled = true;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $globalAdministrator;
+    private ?bool $globalAdministrator = false;
 
     #[ORM\Column(type: Types::STRING, unique: true, nullable: true)]
     #[Assert\Email]
@@ -97,20 +97,10 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface, \Stri
     protected ?Organization $defaultOrganization = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $externalCheck;
+    private ?bool $externalCheck = false;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    protected ?bool $allowExternalCheck;
-
-    public function __construct()
-    {
-        $this->allowExternalCheck = false;
-        $this->enabled = true;
-        $this->externalCheck = false;
-        $this->forcePasswordChange = false;
-        $this->gender = self::GENDER_NEUTRAL;
-        $this->globalAdministrator = false;
-    }
+    protected ?bool $allowExternalCheck = false;
 
     public function __toString(): string
     {

@@ -94,18 +94,15 @@ class PersonalDataController extends AbstractController
     /**
      * Requests an email address change confirmation
      *
-     * @param Person $user
      * @param string $oldEmail
-     * @param MailerService $mailerService
-     * @param TranslatorInterface $translator
      * @throws \Exception
      */
     private function requestEmailAddressChange(
         Person $user,
-        $oldEmail,
+        ?string $oldEmail,
         MailerService $mailerService,
         TranslatorInterface $translator
-    ) {
+    ): void {
         $newEmail = $user->getEmailAddress();
 
         if ($newEmail === '') {
@@ -162,12 +159,7 @@ class PersonalDataController extends AbstractController
 
     /**
      * Checks if a password/email change has been requested and process it
-     * @param FormInterface $form
-     * @param Person $user
      * @param string $oldEmail
-     * @param MailerService $mailerService
-     * @param TranslatorInterface $translator
-     * @param UserPasswordHasherInterface $passwordEncoder
      * @return bool
      * @throws \Exception
      */

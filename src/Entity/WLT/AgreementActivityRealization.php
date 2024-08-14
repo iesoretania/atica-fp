@@ -22,6 +22,7 @@ use App\Entity\Person;
 use App\Repository\WLT\AgreementActivityRealizationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -54,16 +55,18 @@ class AgreementActivityRealization
     private ?\DateTimeInterface $gradedOn = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $disabled;
+    private ?bool $disabled = false;
 
+    /**
+     * @var Collection<int, AgreementActivityRealizationComment>
+     */
     #[ORM\OneToMany(targetEntity: AgreementActivityRealizationComment::class, mappedBy: 'agreementActivityRealization')]
-    #[ORM\OrderBy(['timestamp' => 'ASC'])]
+    #[ORM\OrderBy(['timestamp' => Criteria::ASC])]
     private Collection $comments;
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
-        $this->disabled = false;
     }
 
     public function getId(): ?int

@@ -51,7 +51,6 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
 
     /**
      * @param $items
-     * @param AcademicYear $academicYear
      * @return StudentEnrollment[]
      */
     public function findInListByAcademicYear($items, AcademicYear $academicYear)
