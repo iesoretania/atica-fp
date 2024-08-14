@@ -79,7 +79,7 @@ class MeetingController extends AbstractController
 
         $managerRegistry->getManager()->persist($meeting);
 
-        return $this->indexAction(
+        return $this->index(
             $request,
             $translator,
             $userExtensionService,
@@ -239,7 +239,7 @@ class MeetingController extends AbstractController
         $person = $this->getUser();
         if (!$isWltManager && !$isManager) {
             // no es administrador ni coordinador de FP:
-            // puede ser jefe de departamento o tutor de grupo  -> ver sólo visitas de los
+            // puede ser jefe de departamento o tutor de grupo -> ver solo visitas de los
             // estudiantes de sus grupos
             $groups = $groupRepository->findByAcademicYearAndGroupTutorOrDepartmentHeadPerson($academicYear, $person);
         } elseif ($isWltManager) {

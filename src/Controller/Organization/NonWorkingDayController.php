@@ -55,7 +55,7 @@ class NonWorkingDayController extends AbstractController
 
         $managerRegistry->getManager()->persist($nonWorkingDay);
 
-        return $this->indexAction($request, $translator, $managerRegistry, $nonWorkingDay);
+        return $this->index($request, $translator, $managerRegistry, $nonWorkingDay);
     }
 
     #[Route(path: '/{id}', name: 'organization_non_working_day_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

@@ -52,7 +52,7 @@ class LearningOutcomeController extends AbstractController
 
         $managerRegistry->getManager()->persist($learningOutcome);
 
-        return $this->formAction($request, $translator, $managerRegistry, $learningOutcome);
+        return $this->form($request, $translator, $managerRegistry, $learningOutcome);
     }
 
     #[Route(path: '/materia/resultado/{id}', name: 'organization_training_learning_outcome_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

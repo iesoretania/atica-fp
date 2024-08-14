@@ -51,7 +51,7 @@ class ReportTemplateController extends AbstractController
             ->setOrganization($userExtensionService->getCurrentOrganization());
         $managerRegistry->getManager()->persist($template);
 
-        return $this->editAction($request, $translator, $managerRegistry, $template);
+        return $this->edit($request, $translator, $managerRegistry, $template);
     }
 
     #[Route(path: '/{id}', name: 'organization_report_template_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

@@ -61,7 +61,7 @@ class SurveyQuestionController extends AbstractController
 
         $managerRegistry->getManager()->persist($surveyQuestion);
 
-        return $this->indexAction($request, $translator, $managerRegistry, $surveyQuestion);
+        return $this->index($request, $translator, $managerRegistry, $surveyQuestion);
     }
     #[Route(path: '/{id}', name: 'organization_survey_question_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function index(

@@ -38,7 +38,7 @@ class CriterionController extends AbstractController
 
         $managerRegistry->getManager()->persist($criterion);
 
-        return $this->criterionFormAction($request, $translator, $managerRegistry, $criterion);
+        return $this->criterionForm($request, $translator, $managerRegistry, $criterion);
     }
 
     #[Route(path: '/criterio/{id}', name: 'organization_training_criterion_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

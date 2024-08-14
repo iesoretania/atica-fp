@@ -248,9 +248,6 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return \non-empty-array<int, array{\days: \non-empty-array<\int, (array{} | array{\mixed, 0})>}>[]
-     */
     public static function groupByMonthAndWeekNumber($workDays): array
     {
         $collection = [];

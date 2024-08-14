@@ -52,7 +52,7 @@ class ActivityRealizationGradeController extends AbstractController
 
         $managerRegistry->getManager()->persist($activityRealizationGrade);
 
-        return $this->formAction($request, $translator, $managerRegistry, $activityRealizationGrade);
+        return $this->form($request, $translator, $managerRegistry, $activityRealizationGrade);
     }
 
     #[Route(path: '/{id}', name: 'work_linked_training_activity_realization_grade_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

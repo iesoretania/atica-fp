@@ -51,7 +51,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
@@ -89,7 +88,7 @@ class ContactController extends AbstractController
 
         $managerRegistry->getManager()->persist($visit);
 
-        return $this->indexAction(
+        return $this->index(
             $request,
             $translator,
             $userExtensionService,
@@ -265,7 +264,7 @@ class ContactController extends AbstractController
         $person = $this->getUser();
         if (!$isWltManager && !$isManager && !$isDepartmentHead) {
             // no es administrador ni coordinador de FP ni jefe de familia profesional:
-            // puede ser tutor de grupo  -> ver sólo visitas de los
+            // puede ser tutor de grupo -> ver solo visitas de los
             // estudiantes de sus grupos
             $groups = $groupRepository->findByAcademicYearAndGroupTutorOrDepartmentHeadPerson($academicYear, $person);
         } elseif ($isWltManager) {
@@ -546,7 +545,7 @@ class ContactController extends AbstractController
         );
 
         if (!in_array($teacher, $teachers, true)) {
-            throw new AccessDeniedException();
+            throw $this->createAccessDeniedException();
         }
 
         $contactEducationalTutorReport = new ContactEducationalTutorReport();
@@ -568,7 +567,7 @@ class ContactController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                return $this->educationalTutorReportAction(
+                return $this->educationalTutorReport(
                     $translator,
                     $engine,
                     $contactRepository,
@@ -737,7 +736,7 @@ class ContactController extends AbstractController
 
         $workcenters = $contactRepository->findWorkcentersByTeachers($teachers);
         if (!in_array($workcenter, $workcenters, true)) {
-            throw new AccessDeniedException();
+            throw $this->createAccessDeniedException();
         }
 
         $contactWorkcenterReport = new ContactWorkcenterReport();
@@ -759,7 +758,7 @@ class ContactController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                return $this->workcenterReportAction(
+                return $this->workcenterReport(
                     $translator,
                     $engine,
                     $contactRepository,

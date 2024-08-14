@@ -20,7 +20,6 @@ namespace App\Form\Type\Edu;
 
 use App\Entity\Edu\Department;
 use App\Entity\Edu\Teacher;
-use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\TeacherRepository;
 use App\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

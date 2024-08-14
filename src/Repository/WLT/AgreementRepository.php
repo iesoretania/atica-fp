@@ -519,7 +519,7 @@ class AgreementRepository extends ServiceEntityRepository
 
         if (!$isWltManager && !$isManager) {
             // no es administrador ni coordinador de FP:
-            // puede ser jefe de departamento o tutor de grupo  -> ver los acuerdos de los
+            // puede ser jefe de departamento o tutor de grupo -> ver los acuerdos de los
             // estudiantes de sus grupos
             $groups = $this->wltGroupRepository
                 ->findByAcademicYearAndGroupTutorOrDepartmentHeadPerson($academicYear, $person);

@@ -36,7 +36,6 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -137,7 +136,7 @@ class ShiftController extends AbstractController
 
         $managerRegistry->getManager()->persist($shift);
 
-        return $this->editAction($request, $userExtensionService, $translator, $managerRegistry, $shift, $academicYear);
+        return $this->edit($request, $userExtensionService, $translator, $managerRegistry, $shift, $academicYear);
     }
 
     #[Route(path: '/{id}', name: 'workplace_training_shift_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

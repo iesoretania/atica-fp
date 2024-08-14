@@ -19,7 +19,6 @@
 namespace App\Security\WPT;
 
 use App\Entity\Person;
-use App\Entity\Survey;
 use App\Entity\WPT\Agreement;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;

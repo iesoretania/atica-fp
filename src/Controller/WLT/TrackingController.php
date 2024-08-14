@@ -125,7 +125,7 @@ class TrackingController extends AbstractController
         $person = $this->getUser();
         if (!$isWltManager && !$isManager) {
             // no es administrador ni coordinador de FP:
-            // puede ser jefe de departamento, docente o tutor de grupo  -> ver los acuerdos de los
+            // puede ser jefe de departamento, docente o tutor de grupo -> ver los acuerdos de los
             // estudiantes de sus grupos
             $groups = $wltGroupRepository->findByAcademicYearAndGroupTutorOrTeacherOrDepartmentHeadPerson(
                 $academicYear,

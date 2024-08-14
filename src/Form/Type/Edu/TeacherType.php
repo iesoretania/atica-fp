@@ -105,7 +105,7 @@ class TeacherType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             $builder = $event->getForm();
-            /** @var Person $data */
+            /** @var Teacher $data */
             $data = $event->getData();
 
             if ($data->getPerson()->getAllowExternalCheck()) {

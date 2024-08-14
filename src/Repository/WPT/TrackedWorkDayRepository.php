@@ -222,9 +222,6 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * @return \non-empty-array<int, array{\days: \non-empty-array<\int, \mixed>}>[]
-     */
     public static function groupByMonthAndWeekNumber($workDays): array
     {
         $collection = [];

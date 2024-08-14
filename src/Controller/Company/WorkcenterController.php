@@ -57,7 +57,7 @@ class WorkcenterController extends AbstractController
 
         $managerRegistry->getManager()->persist($workcenter);
 
-        return $this->formAction($request, $translator, $managerRegistry, $workcenter);
+        return $this->form($request, $translator, $managerRegistry, $workcenter);
     }
 
     #[Route(path: '/sede/{id}', name: 'company_workcenter_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

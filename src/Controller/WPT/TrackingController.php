@@ -117,7 +117,7 @@ class TrackingController extends AbstractController
 
         if (false === $isManager) {
             // no es administrador ni directivo:
-            // puede ser jefe de departamento, tutor docente o tutor de grupo  -> ver los acuerdos de los
+            // puede ser jefe de departamento, tutor docente o tutor de grupo -> ver los acuerdos de los
             // estudiantes de sus grupos
             $groups = $groupRepository->findByAcademicYearAndWPTGroupTutorOrDepartmentHeadPerson(
                 $academicYear,
