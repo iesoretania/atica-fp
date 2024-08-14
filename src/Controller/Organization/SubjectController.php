@@ -216,7 +216,8 @@ class SubjectController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Subject $subject
-    ) {
+    ): Response
+    {
         $teaching = new Teaching();
         $teaching
             ->setSubject($subject);

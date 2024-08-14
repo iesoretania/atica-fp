@@ -75,7 +75,9 @@ class UserExtensionService
 
     final public function getOrganizations(?Person $user)
     {
-        if (!$user instanceof Person) return [];
+        if (!$user instanceof Person) {
+            return [];
+        }
 
         return $this->organizationRepository->getMembershipByPerson($user);
     }

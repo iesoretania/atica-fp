@@ -167,7 +167,7 @@ class TrackingController extends AbstractController
         QueryBuilder $queryBuilder,
         $person,
         $isManager,
-        $q,
+        ?string $q,
         int $page,
         int $maxPerPage
     ): Pagerfanta

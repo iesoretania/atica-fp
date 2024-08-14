@@ -31,7 +31,6 @@ class ImportParser
             // '2º de Bachillerato (Ciencias)' -> '2º de Bachillerato'
             $calculatedGradeName = trim((string) preg_replace('/(\(.*\))/', '', $gradeName));
             $calculatedGradeName = trim((string) preg_replace('/de /', '', $calculatedGradeName));
-
             $matches = [];
             // Enseñanza: Si el texto lleva 'º ' quedarse con el texto que le sigue
             // '2º de Bachillerato (Ciencias)' -> 'Bachillerato'
@@ -43,13 +42,12 @@ class ImportParser
             } else {
                 $trainingName = $calculatedGradeName;
             }
-        } else if (str_contains($gradeName, 'º ')) {
+        } elseif (str_contains($gradeName, 'º ')) {
             // Nivel: coger los dos primeros caracteres + texto entre paréntesis
             // '1º F.P.I.G.S. (Desarrollo de Aplicaciones Web)' ->
             // '1º Desarrollo de Aplicaciones Web'
             preg_match('/º *(.*)\(([^)(]*)\)/u', $gradeName, $matches);
             $calculatedGradeName = mb_substr($gradeName, 0, 2) . ' ' . $matches[2];
-
             // Enseñanza: Coger el texto que empieza por F.P. + texto entre paréntesis
             // 'F.P.I.G.S. Desarrollo de Aplicaciones Web'
             $trainingName = $matches[1] . $matches[2];

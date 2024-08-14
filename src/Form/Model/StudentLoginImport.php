@@ -24,10 +24,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class StudentLoginImport
 {
-    private ?AcademicYear $academicYear;
+    private ?AcademicYear $academicYear = null;
 
     #[Assert\File]
-    private?UploadedFile $file;
+    private?UploadedFile $file = null;
 
     public function getAcademicYear(): ?AcademicYear
     {

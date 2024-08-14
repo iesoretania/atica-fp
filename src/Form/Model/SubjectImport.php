@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class SubjectImport
 {
-    private ?AcademicYear $academicYear;
+    private ?AcademicYear $academicYear = null;
 
     #[Assert\File]
     private ?UploadedFile $file = null;

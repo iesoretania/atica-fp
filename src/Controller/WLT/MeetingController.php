@@ -59,7 +59,8 @@ class MeetingController extends AbstractController
         WLTGroupRepository $groupRepository,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WLTOrganizationVoter::WLT_ACCESS_MEETING, $organization);
 

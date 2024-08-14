@@ -92,7 +92,7 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
         return array_chunk($return, 3);
     }
 
-    public function findByAgreementEnrollmentGroupByMonthAndWeekNumber(AgreementEnrollment $agreementEnrollment)
+    public function findByAgreementEnrollmentGroupByMonthAndWeekNumber(AgreementEnrollment $agreementEnrollment): array
     {
         return self::groupByMonthAndWeekNumber($this->findByAgreementEnrollmentWithWorkDay($agreementEnrollment));
     }
@@ -145,7 +145,7 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
     /**
      * @return mixed[]
      */
-    public function findByYearWeekAndAgreementEnrollment($year, $week, AgreementEnrollment $agreementEnrollment): array
+    public function findByYearWeekAndAgreementEnrollment(string $year, $week, AgreementEnrollment $agreementEnrollment): array
     {
         $workDays = $this->workDayRepository->findByYearWeekAndAgreement(
             $year,

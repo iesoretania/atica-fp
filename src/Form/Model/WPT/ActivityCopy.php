@@ -22,7 +22,7 @@ use App\Entity\WPT\Shift;
 
 class ActivityCopy
 {
-    private ?Shift $shift;
+    private ?Shift $shift = null;
 
     public function getShift(): ?Shift
     {

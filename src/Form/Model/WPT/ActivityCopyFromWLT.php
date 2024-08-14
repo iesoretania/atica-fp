@@ -22,7 +22,7 @@ use App\Entity\WLT\Project;
 
 class ActivityCopyFromWLT
 {
-    private ?Project $project;
+    private ?Project $project = null;
 
     public function getProject(): ?Project
     {

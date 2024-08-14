@@ -45,7 +45,8 @@ class ReportTemplateController extends AbstractController
         UserExtensionService $userExtensionService,
         ManagerRegistry $managerRegistry,
         TranslatorInterface $translator
-    ) {
+    ): Response
+    {
         $template = new ReportTemplate();
         $template
             ->setOrganization($userExtensionService->getCurrentOrganization());

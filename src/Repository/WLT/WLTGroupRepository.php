@@ -170,7 +170,7 @@ class WLTGroupRepository extends ServiceEntityRepository
         return $groups;
     }
 
-    public function findByOrganizationAndPerson(Organization $organization, Person $person)
+    public function findByOrganizationAndPerson(Organization $organization, Person $person): ArrayCollection
     {
         return $this->findByAcademicYearAndPerson($organization->getCurrentAcademicYear(), $person);
     }

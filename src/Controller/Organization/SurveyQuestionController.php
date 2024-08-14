@@ -46,7 +46,8 @@ class SurveyQuestionController extends AbstractController
         SurveyQuestionRepository $surveyQuestionRepository,
         ManagerRegistry $managerRegistry,
         Survey $survey
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(SurveyVoter::MANAGE, $survey);
 
         if ($survey->getAnswers()->count() > 0) {
@@ -188,7 +189,7 @@ class SurveyQuestionController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Survey $survey
-    ) {
+    ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(SurveyVoter::MANAGE, $survey);
 

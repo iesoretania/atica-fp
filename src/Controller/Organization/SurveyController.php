@@ -181,7 +181,8 @@ class SurveyController extends AbstractController
         SurveyQuestionRepository $surveyQuestionRepository,
         ManagerRegistry $managerRegistry,
         UserExtensionService $userExtensionService
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 

@@ -22,7 +22,7 @@ use App\Entity\Edu\AcademicYear;
 
 class AcademicYearCopy
 {
-    private ?AcademicYear $academicYear;
+    private ?AcademicYear $academicYear = null;
 
     public function getAcademicYear(): ?AcademicYear
     {

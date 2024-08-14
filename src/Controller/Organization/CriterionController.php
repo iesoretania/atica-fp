@@ -28,7 +28,8 @@ class CriterionController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         LearningOutcome $learningOutcome
-    ) {
+    ): Response
+    {
         $subject = $learningOutcome->getSubject();
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $subject->getGrade()->getTraining());
 

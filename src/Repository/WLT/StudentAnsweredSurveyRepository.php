@@ -106,7 +106,7 @@ class StudentAnsweredSurveyRepository extends ServiceEntityRepository
     }
 
     public function findByAcademicYearAndPersonFilterQueryBuilder(
-        $q,
+        ?string $q,
         ?AcademicYear $academicYear,
         Person $person
     ) {

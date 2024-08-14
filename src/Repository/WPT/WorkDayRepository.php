@@ -118,7 +118,7 @@ class WorkDayRepository extends ServiceEntityRepository
         return 0;
     }
 
-    public function findByAgreementGroupByMonthAndWeekNumber(Agreement $agreement)
+    public function findByAgreementGroupByMonthAndWeekNumber(Agreement $agreement): array
     {
         return self::groupByMonthAndWeekNumber($this->findByAgreement($agreement));
     }
@@ -203,7 +203,7 @@ class WorkDayRepository extends ServiceEntityRepository
         $weekHours,
         $overWrite,
         $ignoreNonWorkingDays
-    ) {
+    ): array {
         $workDays = $this->createWorkDayCollectionByAcademicYear(
             $agreement,
             $startDate,

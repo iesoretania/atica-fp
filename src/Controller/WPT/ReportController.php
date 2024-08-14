@@ -147,7 +147,8 @@ class ReportController extends AbstractController
         ManagerRegistry        $managerRegistry,
         AcademicYear           $academicYear = null,
         int                    $page = 1
-    ) {
+    ): Response
+    {
         return $this->genericList(
             $request,
             $userExtensionService,
@@ -170,7 +171,8 @@ class ReportController extends AbstractController
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         int $page = 1
-    ) {
+    ): Response
+    {
         return $this->genericList(
             $request,
             $userExtensionService,
@@ -192,7 +194,8 @@ class ReportController extends AbstractController
         AcademicYearRepository $academicYearRepository,
         AcademicYear $academicYear = null,
         int $page = 1
-    ) {
+    ): Response
+    {
         return $this->genericList(
             $request,
             $userExtensionService,

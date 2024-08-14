@@ -45,7 +45,8 @@ class NonWorkingDayController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         AcademicYear $academicYear
-    ) {
+    ): Response
+    {
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
 

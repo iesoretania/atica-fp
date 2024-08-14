@@ -41,14 +41,14 @@ class MenuBuilderChain
         $this->menuBuilders[] = $menuBuilder;
     }
 
-    public function getChain()
+    public function getChain(): array
     {
         return $this->menuBuilders;
     }
 
     public function getMenu()
     {
-        if ($this->menuCache !== null) {
+        if ($this->menuCache instanceof MenuItem) {
             return $this->menuCache;
         }
 

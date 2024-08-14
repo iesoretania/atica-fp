@@ -263,7 +263,7 @@ class AgreementRepository extends ServiceEntityRepository
         foreach ($workDays as $workDay) {
             $newDate = new \DateTimeImmutable($workDay->getDate()->format('Y/m/d'), $utc);
             $newWorkDay = $this->workDayRepository->findOneByAgreementAndDate($destination, $newDate);
-            if (null === $newWorkDay) {
+            if (!$newWorkDay instanceof WorkDay) {
                 $newWorkDay = new WorkDay();
                 $newWorkDay
                     ->setAgreement($destination)
@@ -583,7 +583,7 @@ class AgreementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function deleteFromProjects($items)
+    public function deleteFromProjects($items): bool
     {
         $agreements = $this->createQueryBuilder('a')
             ->where('a.project IN (:items)')

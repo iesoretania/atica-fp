@@ -58,7 +58,8 @@ class TravelExpenseController extends AbstractController
         AgreementRepository $agreementRepository,
         ManagerRegistry $managerRegistry,
         Teacher $teacher
-    ) {
+    ): Response
+    {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WPTOrganizationVoter::WPT_CREATE_EXPENSE, $organization);
 
