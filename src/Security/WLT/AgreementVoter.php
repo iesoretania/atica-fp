@@ -172,7 +172,7 @@ class AgreementVoter extends CachedVoter
         switch ($attribute) {
             case self::MANAGE:
                 if ($isDepartmentHead || $isWltManager || $isEducationalTutor) {
-                    return $agreementIsLocked;
+                    return !$agreementIsLocked;
                 }
                 return false;
 
