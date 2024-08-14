@@ -70,7 +70,7 @@ class PersonType extends AbstractType
                     'form.gender.male' => Person::GENDER_MALE,
                     'form.gender.female' => Person::GENDER_FEMALE
                 ],
-                'disabled' => !$options['admin']
+                'disabled' => false
             ])
             ->add('emailAddress', EmailType::class, [
                 'label' => 'form.email_address',

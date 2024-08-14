@@ -158,7 +158,7 @@ class TrackingCalendarController extends AbstractController
         $activities = clone $agreementEnrollment->getActivities();
 
         foreach ($trackedActivities as $trackedActivity) {
-            $trackedWorkDay->getTrackedActivities()->remove($trackedActivity->getActivity());
+            $trackedWorkDay->getTrackedActivities()->removeElement($trackedActivity->getActivity());
         }
         foreach ($activities as $newActivity) {
             $newTrackedActivity = new ActivityTracking();
