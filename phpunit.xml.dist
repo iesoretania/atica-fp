@@ -23,7 +23,7 @@
 
         <!-- ###+ symfony/framework-bundle ### -->
         <env name="APP_ENV" value="dev"/>
-        <env name="APP_SECRET" value="b8e82922f9e24ba055aa5ef1369c961a"/>
+        <env name="APP_SECRET" value="2dfc7de8ac79596dfcee073aeb8a1878"/>
         <!-- ###- symfony/framework-bundle ### -->
 
         <!-- ###+ symfony/mailer ### -->
