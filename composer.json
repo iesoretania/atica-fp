@@ -13,7 +13,7 @@
         "babdev/pagerfanta-bundle": "^4.4",
         "doctrine/doctrine-bundle": "^2",
         "doctrine/doctrine-migrations-bundle": "^3.2",
-        "doctrine/orm": "^2.11",
+        "doctrine/orm": "^3.2",
         "friendsofsymfony/ckeditor-bundle": "^2.0",
         "johngrogg/ics-parser": "^2.1",
         "mpdf/mpdf": "^8",
