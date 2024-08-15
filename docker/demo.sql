@@ -23,12 +23,12 @@ DROP TABLE IF EXISTS `answered_survey`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `answered_survey` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `survey_id` int(11) DEFAULT NULL,
-  `timestamp` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_64D69900B3FE509D` (`survey_id`),
-  CONSTRAINT `FK_64D69900B3FE509D` FOREIGN KEY (`survey_id`) REFERENCES `survey` (`id`)
+                                   `id` int(11) NOT NULL AUTO_INCREMENT,
+                                   `survey_id` int(11) DEFAULT NULL,
+                                   `timestamp` datetime NOT NULL,
+                                   PRIMARY KEY (`id`),
+                                   KEY `IDX_64D69900B3FE509D` (`survey_id`),
+                                   CONSTRAINT `FK_64D69900B3FE509D` FOREIGN KEY (`survey_id`) REFERENCES `survey` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -49,13 +49,14 @@ DROP TABLE IF EXISTS `answered_survey_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `answered_survey_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `survey_id` int(11) DEFAULT NULL,
-  `timestamp` datetime DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_b49bd09be566418816c3b13bd208621c_idx` (`rev`)
+                                         `id` int(11) NOT NULL,
+                                         `rev` int(11) NOT NULL,
+                                         `survey_id` int(11) DEFAULT NULL,
+                                         `timestamp` datetime DEFAULT NULL,
+                                         `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                         PRIMARY KEY (`id`,`rev`),
+                                         KEY `rev_b49bd09be566418816c3b13bd208621c_idx` (`rev`),
+                                         CONSTRAINT `rev_b49bd09be566418816c3b13bd208621c_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -76,17 +77,17 @@ DROP TABLE IF EXISTS `answered_survey_question`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `answered_survey_question` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `answered_survey_id` int(11) NOT NULL,
-  `survey_question_id` int(11) NOT NULL,
-  `text_value` longtext COLLATE utf8mb4_spanish_ci,
-  `numeric_value` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_F38ED8C7A6DF29BAA97283E6` (`survey_question_id`,`answered_survey_id`),
-  KEY `IDX_F38ED8C7A97283E6` (`answered_survey_id`),
-  KEY `IDX_F38ED8C7A6DF29BA` (`survey_question_id`),
-  CONSTRAINT `FK_F38ED8C7A6DF29BA` FOREIGN KEY (`survey_question_id`) REFERENCES `survey_question` (`id`),
-  CONSTRAINT `FK_F38ED8C7A97283E6` FOREIGN KEY (`answered_survey_id`) REFERENCES `answered_survey` (`id`)
+                                            `id` int(11) NOT NULL AUTO_INCREMENT,
+                                            `answered_survey_id` int(11) NOT NULL,
+                                            `survey_question_id` int(11) NOT NULL,
+                                            `text_value` longtext COLLATE utf8mb4_spanish_ci,
+                                            `numeric_value` int(11) DEFAULT NULL,
+                                            PRIMARY KEY (`id`),
+                                            UNIQUE KEY `UNIQ_F38ED8C7A6DF29BAA97283E6` (`survey_question_id`,`answered_survey_id`),
+                                            KEY `IDX_F38ED8C7A97283E6` (`answered_survey_id`),
+                                            KEY `IDX_F38ED8C7A6DF29BA` (`survey_question_id`),
+                                            CONSTRAINT `FK_F38ED8C7A6DF29BA` FOREIGN KEY (`survey_question_id`) REFERENCES `survey_question` (`id`),
+                                            CONSTRAINT `FK_F38ED8C7A97283E6` FOREIGN KEY (`answered_survey_id`) REFERENCES `answered_survey` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -107,15 +108,16 @@ DROP TABLE IF EXISTS `answered_survey_question_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `answered_survey_question_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `answered_survey_id` int(11) DEFAULT NULL,
-  `survey_question_id` int(11) DEFAULT NULL,
-  `text_value` longtext COLLATE utf8mb4_spanish_ci,
-  `numeric_value` int(11) DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_2e8f92797ef775558ce93daa1c47f1fd_idx` (`rev`)
+                                                  `id` int(11) NOT NULL,
+                                                  `rev` int(11) NOT NULL,
+                                                  `answered_survey_id` int(11) DEFAULT NULL,
+                                                  `survey_question_id` int(11) DEFAULT NULL,
+                                                  `text_value` longtext COLLATE utf8mb4_spanish_ci,
+                                                  `numeric_value` int(11) DEFAULT NULL,
+                                                  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                                  PRIMARY KEY (`id`,`rev`),
+                                                  KEY `rev_2e8f92797ef775558ce93daa1c47f1fd_idx` (`rev`),
+                                                  CONSTRAINT `rev_2e8f92797ef775558ce93daa1c47f1fd_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -136,21 +138,21 @@ DROP TABLE IF EXISTS `company`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `company` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `manager_id` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `city` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `zip_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `phone_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `fax_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `web_site` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_4FBF094F77153098` (`code`),
-  KEY `IDX_4FBF094F783E3463` (`manager_id`),
-  CONSTRAINT `FK_4FBF094F783E3463` FOREIGN KEY (`manager_id`) REFERENCES `person` (`id`)
+                           `id` int(11) NOT NULL AUTO_INCREMENT,
+                           `manager_id` int(11) DEFAULT NULL,
+                           `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                           `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                           `address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                           `city` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                           `zip_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                           `phone_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                           `fax_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                           `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                           `web_site` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                           PRIMARY KEY (`id`),
+                           UNIQUE KEY `UNIQ_4FBF094F77153098` (`code`),
+                           KEY `IDX_4FBF094F783E3463` (`manager_id`),
+                           CONSTRAINT `FK_4FBF094F783E3463` FOREIGN KEY (`manager_id`) REFERENCES `person` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -172,21 +174,22 @@ DROP TABLE IF EXISTS `company_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `company_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `manager_id` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `city` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `zip_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `phone_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `fax_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `web_site` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_3af728e1cf16bdb0f83bb90e3b1af48a_idx` (`rev`)
+                                 `id` int(11) NOT NULL,
+                                 `rev` int(11) NOT NULL,
+                                 `manager_id` int(11) DEFAULT NULL,
+                                 `name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `city` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `zip_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `phone_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `fax_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `web_site` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                 PRIMARY KEY (`id`,`rev`),
+                                 KEY `rev_3af728e1cf16bdb0f83bb90e3b1af48a_idx` (`rev`),
+                                 CONSTRAINT `rev_3af728e1cf16bdb0f83bb90e3b1af48a_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -207,26 +210,26 @@ DROP TABLE IF EXISTS `edu_academic_year`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_academic_year` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `organization_id` int(11) NOT NULL,
-  `principal_id` int(11) DEFAULT NULL,
-  `financial_manager_id` int(11) DEFAULT NULL,
-  `description` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `start_date` date NOT NULL,
-  `end_date` date NOT NULL,
-  `default_portrait_template_id` int(11) DEFAULT NULL,
-  `default_landscape_template_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_CFBE31D032C8A3DE` (`organization_id`),
-  KEY `IDX_CFBE31D0474870EE` (`principal_id`),
-  KEY `IDX_CFBE31D0FD5CC44A` (`financial_manager_id`),
-  KEY `IDX_CFBE31D0FD003EB1` (`default_portrait_template_id`),
-  KEY `IDX_CFBE31D07179DA55` (`default_landscape_template_id`),
-  CONSTRAINT `FK_CFBE31D032C8A3DE` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`),
-  CONSTRAINT `FK_CFBE31D0474870EE` FOREIGN KEY (`principal_id`) REFERENCES `edu_teacher` (`id`),
-  CONSTRAINT `FK_CFBE31D07179DA55` FOREIGN KEY (`default_landscape_template_id`) REFERENCES `edu_report_template` (`id`),
-  CONSTRAINT `FK_CFBE31D0FD003EB1` FOREIGN KEY (`default_portrait_template_id`) REFERENCES `edu_report_template` (`id`),
-  CONSTRAINT `FK_CFBE31D0FD5CC44A` FOREIGN KEY (`financial_manager_id`) REFERENCES `edu_teacher` (`id`)
+                                     `id` int(11) NOT NULL AUTO_INCREMENT,
+                                     `organization_id` int(11) NOT NULL,
+                                     `principal_id` int(11) DEFAULT NULL,
+                                     `financial_manager_id` int(11) DEFAULT NULL,
+                                     `description` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                     `start_date` date NOT NULL,
+                                     `end_date` date NOT NULL,
+                                     `default_portrait_template_id` int(11) DEFAULT NULL,
+                                     `default_landscape_template_id` int(11) DEFAULT NULL,
+                                     PRIMARY KEY (`id`),
+                                     KEY `IDX_CFBE31D032C8A3DE` (`organization_id`),
+                                     KEY `IDX_CFBE31D0474870EE` (`principal_id`),
+                                     KEY `IDX_CFBE31D0FD5CC44A` (`financial_manager_id`),
+                                     KEY `IDX_CFBE31D0FD003EB1` (`default_portrait_template_id`),
+                                     KEY `IDX_CFBE31D07179DA55` (`default_landscape_template_id`),
+                                     CONSTRAINT `FK_CFBE31D032C8A3DE` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`),
+                                     CONSTRAINT `FK_CFBE31D0474870EE` FOREIGN KEY (`principal_id`) REFERENCES `edu_teacher` (`id`),
+                                     CONSTRAINT `FK_CFBE31D07179DA55` FOREIGN KEY (`default_landscape_template_id`) REFERENCES `edu_report_template` (`id`),
+                                     CONSTRAINT `FK_CFBE31D0FD003EB1` FOREIGN KEY (`default_portrait_template_id`) REFERENCES `edu_report_template` (`id`),
+                                     CONSTRAINT `FK_CFBE31D0FD5CC44A` FOREIGN KEY (`financial_manager_id`) REFERENCES `edu_teacher` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -248,19 +251,20 @@ DROP TABLE IF EXISTS `edu_academic_year_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_academic_year_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `organization_id` int(11) DEFAULT NULL,
-  `principal_id` int(11) DEFAULT NULL,
-  `financial_manager_id` int(11) DEFAULT NULL,
-  `description` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `start_date` date DEFAULT NULL,
-  `end_date` date DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `default_portrait_template_id` int(11) DEFAULT NULL,
-  `default_landscape_template_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_32b80cc3e6e41d58d2de465d160f9958_idx` (`rev`)
+                                           `id` int(11) NOT NULL,
+                                           `rev` int(11) NOT NULL,
+                                           `organization_id` int(11) DEFAULT NULL,
+                                           `principal_id` int(11) DEFAULT NULL,
+                                           `financial_manager_id` int(11) DEFAULT NULL,
+                                           `description` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                           `start_date` date DEFAULT NULL,
+                                           `end_date` date DEFAULT NULL,
+                                           `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                           `default_portrait_template_id` int(11) DEFAULT NULL,
+                                           `default_landscape_template_id` int(11) DEFAULT NULL,
+                                           PRIMARY KEY (`id`,`rev`),
+                                           KEY `rev_32b80cc3e6e41d58d2de465d160f9958_idx` (`rev`),
+                                           CONSTRAINT `rev_32b80cc3e6e41d58d2de465d160f9958_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -281,14 +285,14 @@ DROP TABLE IF EXISTS `edu_competency`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_competency` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `training_id` int(11) NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `description` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_237FAB0BBEFD98D177153098` (`training_id`,`code`),
-  KEY `IDX_237FAB0BBEFD98D1` (`training_id`),
-  CONSTRAINT `FK_237FAB0BBEFD98D1` FOREIGN KEY (`training_id`) REFERENCES `edu_training` (`id`)
+                                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                                  `training_id` int(11) NOT NULL,
+                                  `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                  `description` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
+                                  PRIMARY KEY (`id`),
+                                  UNIQUE KEY `UNIQ_237FAB0BBEFD98D177153098` (`training_id`,`code`),
+                                  KEY `IDX_237FAB0BBEFD98D1` (`training_id`),
+                                  CONSTRAINT `FK_237FAB0BBEFD98D1` FOREIGN KEY (`training_id`) REFERENCES `edu_training` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -303,6 +307,62 @@ INSERT INTO `edu_competency` VALUES (1,1,'a','Configurar y explotar sistemas inf
 UNLOCK TABLES;
 
 --
+-- Table structure for table `edu_contact_method`
+--
+
+DROP TABLE IF EXISTS `edu_contact_method`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `edu_contact_method` (
+                                      `id` int(11) NOT NULL AUTO_INCREMENT,
+                                      `academic_year_id` int(11) NOT NULL,
+                                      `description` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                      `enabled` tinyint(1) NOT NULL,
+                                      PRIMARY KEY (`id`),
+                                      KEY `IDX_4992BBDC54F3401` (`academic_year_id`),
+                                      CONSTRAINT `FK_4992BBDC54F3401` FOREIGN KEY (`academic_year_id`) REFERENCES `edu_academic_year` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `edu_contact_method`
+--
+
+LOCK TABLES `edu_contact_method` WRITE;
+/*!40000 ALTER TABLE `edu_contact_method` DISABLE KEYS */;
+/*!40000 ALTER TABLE `edu_contact_method` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `edu_contact_method_audit`
+--
+
+DROP TABLE IF EXISTS `edu_contact_method_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `edu_contact_method_audit` (
+                                            `id` int(11) NOT NULL,
+                                            `rev` int(11) NOT NULL,
+                                            `academic_year_id` int(11) DEFAULT NULL,
+                                            `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                                            `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                            `enabled` tinyint(1) DEFAULT NULL,
+                                            PRIMARY KEY (`id`,`rev`),
+                                            KEY `rev_f0caa067d32baecb08ec4f3fc820d0a6_idx` (`rev`),
+                                            CONSTRAINT `rev_f0caa067d32baecb08ec4f3fc820d0a6_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `edu_contact_method_audit`
+--
+
+LOCK TABLES `edu_contact_method_audit` WRITE;
+/*!40000 ALTER TABLE `edu_contact_method_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `edu_contact_method_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `edu_criterion`
 --
 
@@ -310,14 +370,14 @@ DROP TABLE IF EXISTS `edu_criterion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_criterion` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `learning_outcome_id` int(11) NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `name` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
-  `description` longtext COLLATE utf8mb4_spanish_ci,
-  PRIMARY KEY (`id`),
-  KEY `IDX_6A1D6D1335C2B2D5` (`learning_outcome_id`),
-  CONSTRAINT `FK_6A1D6D1335C2B2D5` FOREIGN KEY (`learning_outcome_id`) REFERENCES `edu_learning_outcome` (`id`)
+                                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                                 `learning_outcome_id` int(11) NOT NULL,
+                                 `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                 `name` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
+                                 `description` longtext COLLATE utf8mb4_spanish_ci,
+                                 PRIMARY KEY (`id`),
+                                 KEY `IDX_6A1D6D1335C2B2D5` (`learning_outcome_id`),
+                                 CONSTRAINT `FK_6A1D6D1335C2B2D5` FOREIGN KEY (`learning_outcome_id`) REFERENCES `edu_learning_outcome` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -339,16 +399,16 @@ DROP TABLE IF EXISTS `edu_department`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_department` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `academic_year_id` int(11) NOT NULL,
-  `head_id` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_6EB77EB1C54F3401` (`academic_year_id`),
-  KEY `IDX_6EB77EB1F41A619E` (`head_id`),
-  CONSTRAINT `FK_6EB77EB1C54F3401` FOREIGN KEY (`academic_year_id`) REFERENCES `edu_academic_year` (`id`),
-  CONSTRAINT `FK_6EB77EB1F41A619E` FOREIGN KEY (`head_id`) REFERENCES `edu_teacher` (`id`)
+                                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                                  `academic_year_id` int(11) NOT NULL,
+                                  `head_id` int(11) DEFAULT NULL,
+                                  `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                  `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                  PRIMARY KEY (`id`),
+                                  KEY `IDX_6EB77EB1C54F3401` (`academic_year_id`),
+                                  KEY `IDX_6EB77EB1F41A619E` (`head_id`),
+                                  CONSTRAINT `FK_6EB77EB1C54F3401` FOREIGN KEY (`academic_year_id`) REFERENCES `edu_academic_year` (`id`),
+                                  CONSTRAINT `FK_6EB77EB1F41A619E` FOREIGN KEY (`head_id`) REFERENCES `edu_teacher` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -370,13 +430,13 @@ DROP TABLE IF EXISTS `edu_grade`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_grade` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `training_id` int(11) NOT NULL,
-  `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_78AC6283BEFD98D1` (`training_id`),
-  CONSTRAINT `FK_78AC6283BEFD98D1` FOREIGN KEY (`training_id`) REFERENCES `edu_training` (`id`)
+                             `id` int(11) NOT NULL AUTO_INCREMENT,
+                             `training_id` int(11) NOT NULL,
+                             `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                             `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                             PRIMARY KEY (`id`),
+                             KEY `IDX_78AC6283BEFD98D1` (`training_id`),
+                             CONSTRAINT `FK_78AC6283BEFD98D1` FOREIGN KEY (`training_id`) REFERENCES `edu_training` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -398,13 +458,13 @@ DROP TABLE IF EXISTS `edu_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_group` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `grade_id` int(11) NOT NULL,
-  `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_4C368872FE19A1A8` (`grade_id`),
-  CONSTRAINT `FK_4C368872FE19A1A8` FOREIGN KEY (`grade_id`) REFERENCES `edu_grade` (`id`)
+                             `id` int(11) NOT NULL AUTO_INCREMENT,
+                             `grade_id` int(11) NOT NULL,
+                             `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                             `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                             PRIMARY KEY (`id`),
+                             KEY `IDX_4C368872FE19A1A8` (`grade_id`),
+                             CONSTRAINT `FK_4C368872FE19A1A8` FOREIGN KEY (`grade_id`) REFERENCES `edu_grade` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -426,13 +486,13 @@ DROP TABLE IF EXISTS `edu_group_tutor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_group_tutor` (
-  `group_id` int(11) NOT NULL,
-  `teacher_id` int(11) NOT NULL,
-  PRIMARY KEY (`group_id`,`teacher_id`),
-  KEY `IDX_78832E94FE54D947` (`group_id`),
-  KEY `IDX_78832E9441807E1D` (`teacher_id`),
-  CONSTRAINT `FK_78832E9441807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_78832E94FE54D947` FOREIGN KEY (`group_id`) REFERENCES `edu_group` (`id`) ON DELETE CASCADE
+                                   `group_id` int(11) NOT NULL,
+                                   `teacher_id` int(11) NOT NULL,
+                                   PRIMARY KEY (`group_id`,`teacher_id`),
+                                   KEY `IDX_78832E94FE54D947` (`group_id`),
+                                   KEY `IDX_78832E9441807E1D` (`teacher_id`),
+                                   CONSTRAINT `FK_78832E9441807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`) ON DELETE CASCADE,
+                                   CONSTRAINT `FK_78832E94FE54D947` FOREIGN KEY (`group_id`) REFERENCES `edu_group` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -454,14 +514,14 @@ DROP TABLE IF EXISTS `edu_learning_outcome`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_learning_outcome` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `subject_id` int(11) NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `description` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_301888C623EDC8777153098` (`subject_id`,`code`),
-  KEY `IDX_301888C623EDC87` (`subject_id`),
-  CONSTRAINT `FK_301888C623EDC87` FOREIGN KEY (`subject_id`) REFERENCES `edu_subject` (`id`)
+                                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                                        `subject_id` int(11) NOT NULL,
+                                        `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                        `description` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
+                                        PRIMARY KEY (`id`),
+                                        UNIQUE KEY `UNIQ_301888C623EDC8777153098` (`subject_id`,`code`),
+                                        KEY `IDX_301888C623EDC87` (`subject_id`),
+                                        CONSTRAINT `FK_301888C623EDC87` FOREIGN KEY (`subject_id`) REFERENCES `edu_subject` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=423 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -483,14 +543,14 @@ DROP TABLE IF EXISTS `edu_non_working_day`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_non_working_day` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `academic_year_id` int(11) NOT NULL,
-  `date` date NOT NULL,
-  `description` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_505655C0C54F3401AA9E377A` (`academic_year_id`,`date`),
-  KEY `IDX_505655C0C54F3401` (`academic_year_id`),
-  CONSTRAINT `FK_505655C0C54F3401` FOREIGN KEY (`academic_year_id`) REFERENCES `edu_academic_year` (`id`)
+                                       `id` int(11) NOT NULL AUTO_INCREMENT,
+                                       `academic_year_id` int(11) NOT NULL,
+                                       `date` date NOT NULL,
+                                       `description` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                       PRIMARY KEY (`id`),
+                                       UNIQUE KEY `UNIQ_505655C0C54F3401AA9E377A` (`academic_year_id`,`date`),
+                                       KEY `IDX_505655C0C54F3401` (`academic_year_id`),
+                                       CONSTRAINT `FK_505655C0C54F3401` FOREIGN KEY (`academic_year_id`) REFERENCES `edu_academic_year` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -512,13 +572,13 @@ DROP TABLE IF EXISTS `edu_report_template`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_report_template` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `organization_id` int(11) NOT NULL,
-  `description` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `data` longblob NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_F517C90732C8A3DE` (`organization_id`),
-  CONSTRAINT `FK_F517C90732C8A3DE` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`)
+                                       `id` int(11) NOT NULL AUTO_INCREMENT,
+                                       `organization_id` int(11) NOT NULL,
+                                       `description` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                       `data` longblob NOT NULL,
+                                       PRIMARY KEY (`id`),
+                                       KEY `IDX_F517C90732C8A3DE` (`organization_id`),
+                                       CONSTRAINT `FK_F517C90732C8A3DE` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -540,15 +600,15 @@ DROP TABLE IF EXISTS `edu_student_enrollment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_student_enrollment` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `person_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_7824A430217BBB47FE54D947` (`person_id`,`group_id`),
-  KEY `IDX_7824A430217BBB47` (`person_id`),
-  KEY `IDX_7824A430FE54D947` (`group_id`),
-  CONSTRAINT `FK_7824A430217BBB47` FOREIGN KEY (`person_id`) REFERENCES `person` (`id`),
-  CONSTRAINT `FK_7824A430FE54D947` FOREIGN KEY (`group_id`) REFERENCES `edu_group` (`id`)
+                                          `id` int(11) NOT NULL AUTO_INCREMENT,
+                                          `person_id` int(11) NOT NULL,
+                                          `group_id` int(11) NOT NULL,
+                                          PRIMARY KEY (`id`),
+                                          UNIQUE KEY `UNIQ_7824A430217BBB47FE54D947` (`person_id`,`group_id`),
+                                          KEY `IDX_7824A430217BBB47` (`person_id`),
+                                          KEY `IDX_7824A430FE54D947` (`group_id`),
+                                          CONSTRAINT `FK_7824A430217BBB47` FOREIGN KEY (`person_id`) REFERENCES `person` (`id`),
+                                          CONSTRAINT `FK_7824A430FE54D947` FOREIGN KEY (`group_id`) REFERENCES `edu_group` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -570,14 +630,14 @@ DROP TABLE IF EXISTS `edu_subject`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_subject` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `grade_id` int(11) NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_C298A968FE19A1A8` (`grade_id`),
-  CONSTRAINT `FK_C298A968FE19A1A8` FOREIGN KEY (`grade_id`) REFERENCES `edu_grade` (`id`)
+                               `id` int(11) NOT NULL AUTO_INCREMENT,
+                               `grade_id` int(11) NOT NULL,
+                               `code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                               `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                               `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                               PRIMARY KEY (`id`),
+                               KEY `IDX_C298A968FE19A1A8` (`grade_id`),
+                               CONSTRAINT `FK_C298A968FE19A1A8` FOREIGN KEY (`grade_id`) REFERENCES `edu_grade` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -599,18 +659,18 @@ DROP TABLE IF EXISTS `edu_teacher`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_teacher` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `person_id` int(11) NOT NULL,
-  `academic_year_id` int(11) NOT NULL,
-  `department_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_89A031C7217BBB47C54F3401` (`person_id`,`academic_year_id`),
-  KEY `IDX_89A031C7217BBB47` (`person_id`),
-  KEY `IDX_89A031C7C54F3401` (`academic_year_id`),
-  KEY `IDX_89A031C7AE80F5DF` (`department_id`),
-  CONSTRAINT `FK_89A031C7217BBB47` FOREIGN KEY (`person_id`) REFERENCES `person` (`id`),
-  CONSTRAINT `FK_89A031C7AE80F5DF` FOREIGN KEY (`department_id`) REFERENCES `edu_department` (`id`),
-  CONSTRAINT `FK_89A031C7C54F3401` FOREIGN KEY (`academic_year_id`) REFERENCES `edu_academic_year` (`id`)
+                               `id` int(11) NOT NULL AUTO_INCREMENT,
+                               `person_id` int(11) NOT NULL,
+                               `academic_year_id` int(11) NOT NULL,
+                               `department_id` int(11) DEFAULT NULL,
+                               PRIMARY KEY (`id`),
+                               UNIQUE KEY `UNIQ_89A031C7217BBB47C54F3401` (`person_id`,`academic_year_id`),
+                               KEY `IDX_89A031C7217BBB47` (`person_id`),
+                               KEY `IDX_89A031C7C54F3401` (`academic_year_id`),
+                               KEY `IDX_89A031C7AE80F5DF` (`department_id`),
+                               CONSTRAINT `FK_89A031C7217BBB47` FOREIGN KEY (`person_id`) REFERENCES `person` (`id`),
+                               CONSTRAINT `FK_89A031C7AE80F5DF` FOREIGN KEY (`department_id`) REFERENCES `edu_department` (`id`),
+                               CONSTRAINT `FK_89A031C7C54F3401` FOREIGN KEY (`academic_year_id`) REFERENCES `edu_academic_year` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -632,18 +692,18 @@ DROP TABLE IF EXISTS `edu_teaching`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_teaching` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `teacher_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL,
-  `subject_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_EB30486D41807E1DFE54D94723EDC87` (`teacher_id`,`group_id`,`subject_id`),
-  KEY `IDX_EB30486D41807E1D` (`teacher_id`),
-  KEY `IDX_EB30486DFE54D947` (`group_id`),
-  KEY `IDX_EB30486D23EDC87` (`subject_id`),
-  CONSTRAINT `FK_EB30486D23EDC87` FOREIGN KEY (`subject_id`) REFERENCES `edu_subject` (`id`),
-  CONSTRAINT `FK_EB30486D41807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`),
-  CONSTRAINT `FK_EB30486DFE54D947` FOREIGN KEY (`group_id`) REFERENCES `edu_group` (`id`)
+                                `id` int(11) NOT NULL AUTO_INCREMENT,
+                                `teacher_id` int(11) NOT NULL,
+                                `group_id` int(11) NOT NULL,
+                                `subject_id` int(11) NOT NULL,
+                                PRIMARY KEY (`id`),
+                                UNIQUE KEY `UNIQ_EB30486D41807E1DFE54D94723EDC87` (`teacher_id`,`group_id`,`subject_id`),
+                                KEY `IDX_EB30486D41807E1D` (`teacher_id`),
+                                KEY `IDX_EB30486DFE54D947` (`group_id`),
+                                KEY `IDX_EB30486D23EDC87` (`subject_id`),
+                                CONSTRAINT `FK_EB30486D23EDC87` FOREIGN KEY (`subject_id`) REFERENCES `edu_subject` (`id`),
+                                CONSTRAINT `FK_EB30486D41807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`),
+                                CONSTRAINT `FK_EB30486DFE54D947` FOREIGN KEY (`group_id`) REFERENCES `edu_group` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -665,16 +725,16 @@ DROP TABLE IF EXISTS `edu_training`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_training` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `academic_year_id` int(11) NOT NULL,
-  `department_id` int(11) DEFAULT NULL,
-  `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_2692AD50C54F3401` (`academic_year_id`),
-  KEY `IDX_2692AD50AE80F5DF` (`department_id`),
-  CONSTRAINT `FK_2692AD50AE80F5DF` FOREIGN KEY (`department_id`) REFERENCES `edu_department` (`id`),
-  CONSTRAINT `FK_2692AD50C54F3401` FOREIGN KEY (`academic_year_id`) REFERENCES `edu_academic_year` (`id`)
+                                `id` int(11) NOT NULL AUTO_INCREMENT,
+                                `academic_year_id` int(11) NOT NULL,
+                                `department_id` int(11) DEFAULT NULL,
+                                `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                PRIMARY KEY (`id`),
+                                KEY `IDX_2692AD50C54F3401` (`academic_year_id`),
+                                KEY `IDX_2692AD50AE80F5DF` (`department_id`),
+                                CONSTRAINT `FK_2692AD50AE80F5DF` FOREIGN KEY (`department_id`) REFERENCES `edu_department` (`id`),
+                                CONSTRAINT `FK_2692AD50C54F3401` FOREIGN KEY (`academic_year_id`) REFERENCES `edu_academic_year` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -696,14 +756,14 @@ DROP TABLE IF EXISTS `edu_travel_route`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `edu_travel_route` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `organization_id` int(11) NOT NULL,
-  `description` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `verified` tinyint(1) NOT NULL,
-  `distance` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_F66A658832C8A3DE` (`organization_id`),
-  CONSTRAINT `FK_F66A658832C8A3DE` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`)
+                                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                                    `organization_id` int(11) NOT NULL,
+                                    `description` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                    `verified` tinyint(1) NOT NULL,
+                                    `distance` int(11) NOT NULL,
+                                    PRIMARY KEY (`id`),
+                                    KEY `IDX_F66A658832C8A3DE` (`organization_id`),
+                                    CONSTRAINT `FK_F66A658832C8A3DE` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -724,16 +784,16 @@ DROP TABLE IF EXISTS `event_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `event_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) DEFAULT NULL,
-  `date_time` datetime NOT NULL,
-  `ip` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `event` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `data` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `data_attachment` longtext COLLATE utf8mb4_spanish_ci,
-  PRIMARY KEY (`id`),
-  KEY `IDX_9EF0AD16A76ED395` (`user_id`),
-  CONSTRAINT `FK_9EF0AD16A76ED395` FOREIGN KEY (`user_id`) REFERENCES `person` (`id`)
+                             `id` int(11) NOT NULL AUTO_INCREMENT,
+                             `user_id` int(11) DEFAULT NULL,
+                             `date_time` datetime NOT NULL,
+                             `ip` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                             `event` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                             `data` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                             `data_attachment` longtext COLLATE utf8mb4_spanish_ci,
+                             PRIMARY KEY (`id`),
+                             KEY `IDX_9EF0AD16A76ED395` (`user_id`),
+                             CONSTRAINT `FK_9EF0AD16A76ED395` FOREIGN KEY (`user_id`) REFERENCES `person` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -754,10 +814,10 @@ DROP TABLE IF EXISTS `migration_versions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `migration_versions` (
-  `version` varchar(191) COLLATE utf8_unicode_ci NOT NULL,
-  `executed_at` datetime DEFAULT NULL,
-  `execution_time` int(11) DEFAULT NULL,
-  PRIMARY KEY (`version`)
+                                      `version` varchar(191) COLLATE utf8_unicode_ci NOT NULL,
+                                      `executed_at` datetime DEFAULT NULL,
+                                      `execution_time` int(11) DEFAULT NULL,
+                                      PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -767,7 +827,7 @@ CREATE TABLE `migration_versions` (
 
 LOCK TABLES `migration_versions` WRITE;
 /*!40000 ALTER TABLE `migration_versions` DISABLE KEYS */;
-INSERT INTO `migration_versions` VALUES ('App\\Migrations\\Version20190115204202','2022-04-02 17:32:44',1852),('App\\Migrations\\Version20190120214146','2022-04-02 17:32:45',21),('App\\Migrations\\Version20190121231221','2022-04-02 17:32:45',176),('App\\Migrations\\Version20190125082340','2022-04-02 17:32:46',29),('App\\Migrations\\Version20190606175732','2022-04-02 17:32:46',482),('App\\Migrations\\Version20190606201046','2022-04-02 17:32:46',33),('App\\Migrations\\Version20190606210233','2022-04-02 17:32:46',60),('App\\Migrations\\Version20190607112650','2022-04-02 17:32:46',20),('App\\Migrations\\Version20190610105704','2022-04-02 17:32:46',122),('App\\Migrations\\Version20190611135227','2022-04-02 17:32:46',20),('App\\Migrations\\Version20190707224036','2022-04-02 17:32:46',756),('App\\Migrations\\Version20190707224037','2022-04-02 17:32:47',481),('App\\Migrations\\Version20191013171656','2022-04-02 17:32:48',67),('App\\Migrations\\Version20191105214506','2022-04-02 17:32:48',110),('App\\Migrations\\Version20191111175911','2022-04-02 17:32:48',193),('App\\Migrations\\Version20191117202915','2022-04-02 17:32:48',53),('App\\Migrations\\Version20200130213632','2022-04-02 17:32:48',49),('App\\Migrations\\Version20200130213703','2022-04-02 17:32:48',60),('App\\Migrations\\Version20200130222216','2022-04-02 17:32:48',15),('App\\Migrations\\Version20200219220420','2022-04-02 17:32:48',33),('App\\Migrations\\Version20200220080844','2022-04-02 17:32:48',37),('App\\Migrations\\Version20200220221122','2022-04-02 17:32:48',72),('App\\Migrations\\Version20200220223755','2022-04-02 17:32:48',78),('App\\Migrations\\Version20200304222616','2022-04-02 17:32:48',934),('App\\Migrations\\Version20200305125141','2022-04-02 17:32:49',169),('App\\Migrations\\Version20200306184748','2022-04-02 17:32:50',514),('App\\Migrations\\Version20200306225637','2022-04-02 17:32:50',403),('App\\Migrations\\Version20200308211815','2022-04-02 17:32:50',96),('App\\Migrations\\Version20200308223141','2022-04-02 17:32:51',22),('App\\Migrations\\Version20200309164705','2022-04-02 17:32:51',132),('App\\Migrations\\Version20200604183226','2022-04-02 17:32:51',69),('App\\Migrations\\Version20200613200942','2022-04-02 17:32:51',160),('App\\Migrations\\Version20220310091153','2022-04-02 17:32:51',199),('App\\Migrations\\Version20220330114555','2022-04-02 17:32:51',17),('App\\Migrations\\Version20220331071212','2022-04-02 17:32:51',103),('App\\Migrations\\Version20220331234101','2022-04-02 17:32:51',2);
+INSERT INTO `migration_versions` VALUES ('App\\Migrations\\Version20190115204202','2022-04-02 17:32:44',1852),('App\\Migrations\\Version20190120214146','2022-04-02 17:32:45',21),('App\\Migrations\\Version20190121231221','2022-04-02 17:32:45',176),('App\\Migrations\\Version20190125082340','2022-04-02 17:32:46',29),('App\\Migrations\\Version20190606175732','2022-04-02 17:32:46',482),('App\\Migrations\\Version20190606201046','2022-04-02 17:32:46',33),('App\\Migrations\\Version20190606210233','2022-04-02 17:32:46',60),('App\\Migrations\\Version20190607112650','2022-04-02 17:32:46',20),('App\\Migrations\\Version20190610105704','2022-04-02 17:32:46',122),('App\\Migrations\\Version20190611135227','2022-04-02 17:32:46',20),('App\\Migrations\\Version20190707224036','2022-04-02 17:32:46',756),('App\\Migrations\\Version20190707224037','2022-04-02 17:32:47',481),('App\\Migrations\\Version20191013171656','2022-04-02 17:32:48',67),('App\\Migrations\\Version20191105214506','2022-04-02 17:32:48',110),('App\\Migrations\\Version20191111175911','2022-04-02 17:32:48',193),('App\\Migrations\\Version20191117202915','2022-04-02 17:32:48',53),('App\\Migrations\\Version20200130213632','2022-04-02 17:32:48',49),('App\\Migrations\\Version20200130213703','2022-04-02 17:32:48',60),('App\\Migrations\\Version20200130222216','2022-04-02 17:32:48',15),('App\\Migrations\\Version20200219220420','2022-04-02 17:32:48',33),('App\\Migrations\\Version20200220080844','2022-04-02 17:32:48',37),('App\\Migrations\\Version20200220221122','2022-04-02 17:32:48',72),('App\\Migrations\\Version20200220223755','2022-04-02 17:32:48',78),('App\\Migrations\\Version20200304222616','2022-04-02 17:32:48',934),('App\\Migrations\\Version20200305125141','2022-04-02 17:32:49',169),('App\\Migrations\\Version20200306184748','2022-04-02 17:32:50',514),('App\\Migrations\\Version20200306225637','2022-04-02 17:32:50',403),('App\\Migrations\\Version20200308211815','2022-04-02 17:32:50',96),('App\\Migrations\\Version20200308223141','2022-04-02 17:32:51',22),('App\\Migrations\\Version20200309164705','2022-04-02 17:32:51',132),('App\\Migrations\\Version20200604183226','2022-04-02 17:32:51',69),('App\\Migrations\\Version20200613200942','2022-04-02 17:32:51',160),('App\\Migrations\\Version20220310091153','2022-04-02 17:32:51',199),('App\\Migrations\\Version20220330114555','2022-04-02 17:32:51',17),('App\\Migrations\\Version20220331071212','2022-04-02 17:32:51',103),('App\\Migrations\\Version20220331234101','2022-04-02 17:32:51',2),('App\\Migrations\\Version20220404195924','2024-08-15 12:48:22',83),('App\\Migrations\\Version20220411193210','2024-08-15 12:48:22',161),('App\\Migrations\\Version20220421122325','2024-08-15 12:48:23',7),('App\\Migrations\\Version20220421123848','2024-08-15 12:48:23',161),('App\\Migrations\\Version20220421172825','2024-08-15 12:48:23',45),('App\\Migrations\\Version20220422070736','2024-08-15 12:48:23',14),('App\\Migrations\\Version20220519103119','2024-08-15 12:48:23',37),('App\\Migrations\\Version20220519121305','2024-08-15 12:48:23',39),('App\\Migrations\\Version20220523120848','2024-08-15 12:48:23',124),('App\\Migrations\\Version20221229112412','2024-08-15 12:48:23',70),('App\\Migrations\\Version20231220130658','2024-08-15 12:48:23',162),('App\\Migrations\\Version20231220131607','2024-08-15 12:48:23',5),('App\\Migrations\\Version20231220132031','2024-08-15 12:48:23',190),('App\\Migrations\\Version20231221085431','2024-08-15 12:48:23',48),('App\\Migrations\\Version20240814114503','2024-08-15 12:48:24',364);
 /*!40000 ALTER TABLE `migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -779,22 +839,22 @@ DROP TABLE IF EXISTS `organization`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `organization` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `current_academic_year_id` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `city` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `zip_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `phone_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `fax_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `web_site` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `description` longtext COLLATE utf8mb4_spanish_ci,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_C1EE637C77153098` (`code`),
-  UNIQUE KEY `UNIQ_C1EE637C2B06A9F7` (`current_academic_year_id`),
-  CONSTRAINT `FK_C1EE637C2B06A9F7` FOREIGN KEY (`current_academic_year_id`) REFERENCES `edu_academic_year` (`id`)
+                                `id` int(11) NOT NULL AUTO_INCREMENT,
+                                `current_academic_year_id` int(11) DEFAULT NULL,
+                                `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                `address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `city` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                `zip_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `phone_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `fax_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `web_site` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `description` longtext COLLATE utf8mb4_spanish_ci,
+                                PRIMARY KEY (`id`),
+                                UNIQUE KEY `UNIQ_C1EE637C77153098` (`code`),
+                                UNIQUE KEY `UNIQ_C1EE637C2B06A9F7` (`current_academic_year_id`),
+                                CONSTRAINT `FK_C1EE637C2B06A9F7` FOREIGN KEY (`current_academic_year_id`) REFERENCES `edu_academic_year` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -816,32 +876,32 @@ DROP TABLE IF EXISTS `person`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `person` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `last_name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `unique_identifier` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `gender` int(11) NOT NULL,
-  `login_username` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `force_password_change` tinyint(1) NOT NULL,
-  `enabled` tinyint(1) NOT NULL,
-  `global_administrator` tinyint(1) NOT NULL,
-  `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `token` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `token_type` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `token_expiration` datetime DEFAULT NULL,
-  `last_access` datetime DEFAULT NULL,
-  `blocked_until` datetime DEFAULT NULL,
-  `external_check` tinyint(1) NOT NULL,
-  `allow_external_check` tinyint(1) NOT NULL,
-  `default_organization_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_34DCD1766BD2BEA0` (`unique_identifier`),
-  UNIQUE KEY `UNIQ_34DCD176D6FA26E8` (`login_username`),
-  UNIQUE KEY `UNIQ_34DCD176B08E074E` (`email_address`),
-  KEY `IDX_34DCD176AA9E0B02` (`default_organization_id`),
-  CONSTRAINT `FK_34DCD176AA9E0B02` FOREIGN KEY (`default_organization_id`) REFERENCES `organization` (`id`)
+                          `id` int(11) NOT NULL AUTO_INCREMENT,
+                          `first_name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                          `last_name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                          `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                          `unique_identifier` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                          `gender` int(11) NOT NULL,
+                          `login_username` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                          `password` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                          `force_password_change` tinyint(1) NOT NULL,
+                          `enabled` tinyint(1) NOT NULL,
+                          `global_administrator` tinyint(1) NOT NULL,
+                          `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                          `token` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                          `token_type` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                          `token_expiration` datetime DEFAULT NULL,
+                          `last_access` datetime DEFAULT NULL,
+                          `blocked_until` datetime DEFAULT NULL,
+                          `external_check` tinyint(1) NOT NULL,
+                          `allow_external_check` tinyint(1) NOT NULL,
+                          `default_organization_id` int(11) DEFAULT NULL,
+                          PRIMARY KEY (`id`),
+                          UNIQUE KEY `UNIQ_34DCD1766BD2BEA0` (`unique_identifier`),
+                          UNIQUE KEY `UNIQ_34DCD176D6FA26E8` (`login_username`),
+                          UNIQUE KEY `UNIQ_34DCD176B08E074E` (`email_address`),
+                          KEY `IDX_34DCD176AA9E0B02` (`default_organization_id`),
+                          CONSTRAINT `FK_34DCD176AA9E0B02` FOREIGN KEY (`default_organization_id`) REFERENCES `organization` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -863,30 +923,31 @@ DROP TABLE IF EXISTS `person_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `person_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `default_organization_id` int(11) DEFAULT NULL,
-  `first_name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `last_name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `unique_identifier` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `gender` int(11) DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `login_username` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `force_password_change` tinyint(1) DEFAULT NULL,
-  `enabled` tinyint(1) DEFAULT NULL,
-  `global_administrator` tinyint(1) DEFAULT NULL,
-  `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `token` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `token_type` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `token_expiration` datetime DEFAULT NULL,
-  `last_access` datetime DEFAULT NULL,
-  `blocked_until` datetime DEFAULT NULL,
-  `external_check` tinyint(1) DEFAULT NULL,
-  `allow_external_check` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_907be00c9c366335b3359c1e8e2f6227_idx` (`rev`)
+                                `id` int(11) NOT NULL,
+                                `rev` int(11) NOT NULL,
+                                `default_organization_id` int(11) DEFAULT NULL,
+                                `first_name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `last_name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `unique_identifier` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `gender` int(11) DEFAULT NULL,
+                                `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                `login_username` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `password` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `force_password_change` tinyint(1) DEFAULT NULL,
+                                `enabled` tinyint(1) DEFAULT NULL,
+                                `global_administrator` tinyint(1) DEFAULT NULL,
+                                `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `token` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `token_type` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `token_expiration` datetime DEFAULT NULL,
+                                `last_access` datetime DEFAULT NULL,
+                                `blocked_until` datetime DEFAULT NULL,
+                                `external_check` tinyint(1) DEFAULT NULL,
+                                `allow_external_check` tinyint(1) DEFAULT NULL,
+                                PRIMARY KEY (`id`,`rev`),
+                                KEY `rev_907be00c9c366335b3359c1e8e2f6227_idx` (`rev`),
+                                CONSTRAINT `rev_907be00c9c366335b3359c1e8e2f6227_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -907,10 +968,10 @@ DROP TABLE IF EXISTS `revisions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `revisions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `timestamp` datetime NOT NULL,
-  `username` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
+                             `id` int(11) NOT NULL AUTO_INCREMENT,
+                             `timestamp` datetime NOT NULL,
+                             `username` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                             PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -931,16 +992,16 @@ DROP TABLE IF EXISTS `role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `role` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `person_id` int(11) DEFAULT NULL,
-  `organization_id` int(11) DEFAULT NULL,
-  `role` varchar(20) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_57698A6A217BBB4732C8A3DE57698A6A` (`person_id`,`organization_id`,`role`),
-  KEY `IDX_57698A6A217BBB47` (`person_id`),
-  KEY `IDX_57698A6A32C8A3DE` (`organization_id`),
-  CONSTRAINT `FK_57698A6A217BBB47` FOREIGN KEY (`person_id`) REFERENCES `person` (`id`),
-  CONSTRAINT `FK_57698A6A32C8A3DE` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`)
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        `person_id` int(11) NOT NULL,
+                        `organization_id` int(11) NOT NULL,
+                        `role` varchar(20) COLLATE utf8mb4_spanish_ci NOT NULL,
+                        PRIMARY KEY (`id`),
+                        UNIQUE KEY `UNIQ_57698A6A217BBB4732C8A3DE57698A6A` (`person_id`,`organization_id`,`role`),
+                        KEY `IDX_57698A6A217BBB47` (`person_id`),
+                        KEY `IDX_57698A6A32C8A3DE` (`organization_id`),
+                        CONSTRAINT `FK_57698A6A217BBB47` FOREIGN KEY (`person_id`) REFERENCES `person` (`id`),
+                        CONSTRAINT `FK_57698A6A32C8A3DE` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -961,14 +1022,15 @@ DROP TABLE IF EXISTS `role_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `role_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `person_id` int(11) DEFAULT NULL,
-  `organization_id` int(11) DEFAULT NULL,
-  `role` varchar(20) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_92317bf7adb4788531df0b1cb910b5fc_idx` (`rev`)
+                              `id` int(11) NOT NULL,
+                              `rev` int(11) NOT NULL,
+                              `person_id` int(11) DEFAULT NULL,
+                              `organization_id` int(11) DEFAULT NULL,
+                              `role` varchar(20) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                              `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                              PRIMARY KEY (`id`,`rev`),
+                              KEY `rev_92317bf7adb4788531df0b1cb910b5fc_idx` (`rev`),
+                              CONSTRAINT `rev_92317bf7adb4788531df0b1cb910b5fc_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -989,14 +1051,14 @@ DROP TABLE IF EXISTS `survey`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `survey` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `organization_id` int(11) NOT NULL,
-  `title` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `start_timestamp` datetime DEFAULT NULL,
-  `end_timestamp` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_AD5F9BFC32C8A3DE` (`organization_id`),
-  CONSTRAINT `FK_AD5F9BFC32C8A3DE` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`)
+                          `id` int(11) NOT NULL AUTO_INCREMENT,
+                          `organization_id` int(11) NOT NULL,
+                          `title` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                          `start_timestamp` datetime DEFAULT NULL,
+                          `end_timestamp` datetime DEFAULT NULL,
+                          PRIMARY KEY (`id`),
+                          KEY `IDX_AD5F9BFC32C8A3DE` (`organization_id`),
+                          CONSTRAINT `FK_AD5F9BFC32C8A3DE` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1017,15 +1079,16 @@ DROP TABLE IF EXISTS `survey_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `survey_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `organization_id` int(11) DEFAULT NULL,
-  `title` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `start_timestamp` datetime DEFAULT NULL,
-  `end_timestamp` datetime DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_0b043444544b35c998515597d9c72406_idx` (`rev`)
+                                `id` int(11) NOT NULL,
+                                `rev` int(11) NOT NULL,
+                                `organization_id` int(11) DEFAULT NULL,
+                                `title` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `start_timestamp` datetime DEFAULT NULL,
+                                `end_timestamp` datetime DEFAULT NULL,
+                                `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                PRIMARY KEY (`id`,`rev`),
+                                KEY `rev_0b043444544b35c998515597d9c72406_idx` (`rev`),
+                                CONSTRAINT `rev_0b043444544b35c998515597d9c72406_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1046,16 +1109,16 @@ DROP TABLE IF EXISTS `survey_question`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `survey_question` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `survey_id` int(11) NOT NULL,
-  `description` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
-  `type` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `mandatory` tinyint(1) NOT NULL,
-  `order_nr` int(11) NOT NULL,
-  `items` longtext COLLATE utf8mb4_spanish_ci,
-  PRIMARY KEY (`id`),
-  KEY `IDX_EA000F69B3FE509D` (`survey_id`),
-  CONSTRAINT `FK_EA000F69B3FE509D` FOREIGN KEY (`survey_id`) REFERENCES `survey` (`id`)
+                                   `id` int(11) NOT NULL AUTO_INCREMENT,
+                                   `survey_id` int(11) NOT NULL,
+                                   `description` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
+                                   `type` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                   `mandatory` tinyint(1) NOT NULL,
+                                   `order_nr` int(11) NOT NULL,
+                                   `items` longtext COLLATE utf8mb4_spanish_ci,
+                                   PRIMARY KEY (`id`),
+                                   KEY `IDX_EA000F69B3FE509D` (`survey_id`),
+                                   CONSTRAINT `FK_EA000F69B3FE509D` FOREIGN KEY (`survey_id`) REFERENCES `survey` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1076,17 +1139,18 @@ DROP TABLE IF EXISTS `survey_question_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `survey_question_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `survey_id` int(11) DEFAULT NULL,
-  `description` longtext COLLATE utf8mb4_spanish_ci,
-  `type` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `mandatory` tinyint(1) DEFAULT NULL,
-  `order_nr` int(11) DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `items` longtext COLLATE utf8mb4_spanish_ci,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_c3e747f7590f2b4f4a7532c099a72b37_idx` (`rev`)
+                                         `id` int(11) NOT NULL,
+                                         `rev` int(11) NOT NULL,
+                                         `survey_id` int(11) DEFAULT NULL,
+                                         `description` longtext COLLATE utf8mb4_spanish_ci,
+                                         `type` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                         `mandatory` tinyint(1) DEFAULT NULL,
+                                         `order_nr` int(11) DEFAULT NULL,
+                                         `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                         `items` longtext COLLATE utf8mb4_spanish_ci,
+                                         PRIMARY KEY (`id`,`rev`),
+                                         KEY `rev_c3e747f7590f2b4f4a7532c099a72b37_idx` (`rev`),
+                                         CONSTRAINT `rev_c3e747f7590f2b4f4a7532c099a72b37_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1107,15 +1171,15 @@ DROP TABLE IF EXISTS `wlt_activity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_activity` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `description` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
-  `prior_learning` longtext COLLATE utf8mb4_spanish_ci,
-  `project_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_EAD6D79D166D1F9C77153098` (`project_id`,`code`),
-  KEY `IDX_EAD6D79D166D1F9C` (`project_id`),
-  CONSTRAINT `FK_EAD6D79D166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`)
+                                `id` int(11) NOT NULL AUTO_INCREMENT,
+                                `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                `description` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
+                                `prior_learning` longtext COLLATE utf8mb4_spanish_ci,
+                                `project_id` int(11) NOT NULL,
+                                PRIMARY KEY (`id`),
+                                UNIQUE KEY `UNIQ_EAD6D79D166D1F9C77153098` (`project_id`,`code`),
+                                KEY `IDX_EAD6D79D166D1F9C` (`project_id`),
+                                CONSTRAINT `FK_EAD6D79D166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1137,13 +1201,13 @@ DROP TABLE IF EXISTS `wlt_activity_competency`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_activity_competency` (
-  `activity_id` int(11) NOT NULL,
-  `competency_id` int(11) NOT NULL,
-  PRIMARY KEY (`activity_id`,`competency_id`),
-  KEY `IDX_39DDED3181C06096` (`activity_id`),
-  KEY `IDX_39DDED31FB9F58C` (`competency_id`),
-  CONSTRAINT `FK_39DDED3181C06096` FOREIGN KEY (`activity_id`) REFERENCES `wlt_activity` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_39DDED31FB9F58C` FOREIGN KEY (`competency_id`) REFERENCES `edu_competency` (`id`) ON DELETE CASCADE
+                                           `activity_id` int(11) NOT NULL,
+                                           `competency_id` int(11) NOT NULL,
+                                           PRIMARY KEY (`activity_id`,`competency_id`),
+                                           KEY `IDX_39DDED3181C06096` (`activity_id`),
+                                           KEY `IDX_39DDED31FB9F58C` (`competency_id`),
+                                           CONSTRAINT `FK_39DDED3181C06096` FOREIGN KEY (`activity_id`) REFERENCES `wlt_activity` (`id`) ON DELETE CASCADE,
+                                           CONSTRAINT `FK_39DDED31FB9F58C` FOREIGN KEY (`competency_id`) REFERENCES `edu_competency` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1164,14 +1228,14 @@ DROP TABLE IF EXISTS `wlt_activity_realization`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_activity_realization` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `activity_id` int(11) NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `description` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_BA14088981C0609677153098` (`activity_id`,`code`),
-  KEY `IDX_BA14088981C06096` (`activity_id`),
-  CONSTRAINT `FK_BA14088981C06096` FOREIGN KEY (`activity_id`) REFERENCES `wlt_activity` (`id`)
+                                            `id` int(11) NOT NULL AUTO_INCREMENT,
+                                            `activity_id` int(11) NOT NULL,
+                                            `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                            `description` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
+                                            PRIMARY KEY (`id`),
+                                            UNIQUE KEY `UNIQ_BA14088981C0609677153098` (`activity_id`,`code`),
+                                            KEY `IDX_BA14088981C06096` (`activity_id`),
+                                            CONSTRAINT `FK_BA14088981C06096` FOREIGN KEY (`activity_id`) REFERENCES `wlt_activity` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1193,14 +1257,14 @@ DROP TABLE IF EXISTS `wlt_activity_realization_grade`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_activity_realization_grade` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `description` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `numeric_grade` int(11) NOT NULL,
-  `notes` longtext COLLATE utf8mb4_spanish_ci,
-  `project_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_CD1FF777166D1F9C` (`project_id`),
-  CONSTRAINT `FK_CD1FF777166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`)
+                                                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                                                  `description` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                                  `numeric_grade` int(11) NOT NULL,
+                                                  `notes` longtext COLLATE utf8mb4_spanish_ci,
+                                                  `project_id` int(11) NOT NULL,
+                                                  PRIMARY KEY (`id`),
+                                                  KEY `IDX_CD1FF777166D1F9C` (`project_id`),
+                                                  CONSTRAINT `FK_CD1FF777166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1222,15 +1286,16 @@ DROP TABLE IF EXISTS `wlt_activity_realization_grade_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_activity_realization_grade_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `project_id` int(11) DEFAULT NULL,
-  `description` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `numeric_grade` int(11) DEFAULT NULL,
-  `notes` longtext COLLATE utf8mb4_spanish_ci,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_f465a2778ab91cc6186229f95700df6f_idx` (`rev`)
+                                                        `id` int(11) NOT NULL,
+                                                        `rev` int(11) NOT NULL,
+                                                        `project_id` int(11) DEFAULT NULL,
+                                                        `description` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                                        `numeric_grade` int(11) DEFAULT NULL,
+                                                        `notes` longtext COLLATE utf8mb4_spanish_ci,
+                                                        `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                                        PRIMARY KEY (`id`,`rev`),
+                                                        KEY `rev_f465a2778ab91cc6186229f95700df6f_idx` (`rev`),
+                                                        CONSTRAINT `rev_f465a2778ab91cc6186229f95700df6f_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1251,13 +1316,13 @@ DROP TABLE IF EXISTS `wlt_activity_realization_learning_outcome`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_activity_realization_learning_outcome` (
-  `activity_realization_id` int(11) NOT NULL,
-  `learning_outcome_id` int(11) NOT NULL,
-  PRIMARY KEY (`activity_realization_id`,`learning_outcome_id`),
-  KEY `IDX_C17FFB1E862E876A` (`activity_realization_id`),
-  KEY `IDX_C17FFB1E35C2B2D5` (`learning_outcome_id`),
-  CONSTRAINT `FK_C17FFB1E35C2B2D5` FOREIGN KEY (`learning_outcome_id`) REFERENCES `edu_learning_outcome` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_C17FFB1E862E876A` FOREIGN KEY (`activity_realization_id`) REFERENCES `wlt_activity_realization` (`id`) ON DELETE CASCADE
+                                                             `activity_realization_id` int(11) NOT NULL,
+                                                             `learning_outcome_id` int(11) NOT NULL,
+                                                             PRIMARY KEY (`activity_realization_id`,`learning_outcome_id`),
+                                                             KEY `IDX_C17FFB1E862E876A` (`activity_realization_id`),
+                                                             KEY `IDX_C17FFB1E35C2B2D5` (`learning_outcome_id`),
+                                                             CONSTRAINT `FK_C17FFB1E35C2B2D5` FOREIGN KEY (`learning_outcome_id`) REFERENCES `edu_learning_outcome` (`id`) ON DELETE CASCADE,
+                                                             CONSTRAINT `FK_C17FFB1E862E876A` FOREIGN KEY (`activity_realization_id`) REFERENCES `wlt_activity_realization` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1279,36 +1344,38 @@ DROP TABLE IF EXISTS `wlt_agreement`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_agreement` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `workcenter_id` int(11) NOT NULL,
-  `student_enrollment_id` int(11) NOT NULL,
-  `work_tutor_id` int(11) NOT NULL,
-  `start_date` date DEFAULT NULL,
-  `end_date` date DEFAULT NULL,
-  `default_start_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `default_end_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `default_start_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `default_end_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `student_survey_id` int(11) DEFAULT NULL,
-  `company_survey_id` int(11) DEFAULT NULL,
-  `project_id` int(11) NOT NULL,
-  `educational_tutor_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_2B23AFE9166D1F9CDAE14AC5A2473C4B` (`project_id`,`student_enrollment_id`,`workcenter_id`),
-  KEY `IDX_2B23AFE9A2473C4B` (`workcenter_id`),
-  KEY `IDX_2B23AFE9DAE14AC5` (`student_enrollment_id`),
-  KEY `IDX_2B23AFE9F53AEEAD` (`work_tutor_id`),
-  KEY `IDX_2B23AFE9D490911D` (`student_survey_id`),
-  KEY `IDX_2B23AFE980E5DA6D` (`company_survey_id`),
-  KEY `IDX_2B23AFE9166D1F9C` (`project_id`),
-  KEY `IDX_2B23AFE9E7F72E80` (`educational_tutor_id`),
-  CONSTRAINT `FK_2B23AFE9166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`),
-  CONSTRAINT `FK_2B23AFE980E5DA6D` FOREIGN KEY (`company_survey_id`) REFERENCES `answered_survey` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `FK_2B23AFE9A2473C4B` FOREIGN KEY (`workcenter_id`) REFERENCES `workcenter` (`id`),
-  CONSTRAINT `FK_2B23AFE9D490911D` FOREIGN KEY (`student_survey_id`) REFERENCES `answered_survey` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `FK_2B23AFE9DAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`),
-  CONSTRAINT `FK_2B23AFE9E7F72E80` FOREIGN KEY (`educational_tutor_id`) REFERENCES `edu_teacher` (`id`),
-  CONSTRAINT `FK_2B23AFE9F53AEEAD` FOREIGN KEY (`work_tutor_id`) REFERENCES `person` (`id`)
+                                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                                 `workcenter_id` int(11) NOT NULL,
+                                 `student_enrollment_id` int(11) NOT NULL,
+                                 `work_tutor_id` int(11) NOT NULL,
+                                 `start_date` date DEFAULT NULL,
+                                 `end_date` date DEFAULT NULL,
+                                 `default_start_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `default_end_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `default_start_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `default_end_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `project_id` int(11) NOT NULL,
+                                 `educational_tutor_id` int(11) NOT NULL,
+                                 `additional_work_tutor_id` int(11) DEFAULT NULL,
+                                 `additional_educational_tutor_id` int(11) DEFAULT NULL,
+                                 `work_tutor_remarks` longtext COLLATE utf8mb4_spanish_ci,
+                                 `internal_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 PRIMARY KEY (`id`),
+                                 UNIQUE KEY `UNIQ_2B23AFE9166D1F9CDAE14AC5A2473C4B` (`project_id`,`student_enrollment_id`,`workcenter_id`),
+                                 KEY `IDX_2B23AFE9A2473C4B` (`workcenter_id`),
+                                 KEY `IDX_2B23AFE9DAE14AC5` (`student_enrollment_id`),
+                                 KEY `IDX_2B23AFE9F53AEEAD` (`work_tutor_id`),
+                                 KEY `IDX_2B23AFE9166D1F9C` (`project_id`),
+                                 KEY `IDX_2B23AFE9E7F72E80` (`educational_tutor_id`),
+                                 KEY `IDX_2B23AFE9364A8C43` (`additional_work_tutor_id`),
+                                 KEY `IDX_2B23AFE96C7EFCBC` (`additional_educational_tutor_id`),
+                                 CONSTRAINT `FK_2B23AFE9166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`),
+                                 CONSTRAINT `FK_2B23AFE9364A8C43` FOREIGN KEY (`additional_work_tutor_id`) REFERENCES `person` (`id`),
+                                 CONSTRAINT `FK_2B23AFE96C7EFCBC` FOREIGN KEY (`additional_educational_tutor_id`) REFERENCES `edu_teacher` (`id`),
+                                 CONSTRAINT `FK_2B23AFE9A2473C4B` FOREIGN KEY (`workcenter_id`) REFERENCES `workcenter` (`id`),
+                                 CONSTRAINT `FK_2B23AFE9DAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`),
+                                 CONSTRAINT `FK_2B23AFE9E7F72E80` FOREIGN KEY (`educational_tutor_id`) REFERENCES `edu_teacher` (`id`),
+                                 CONSTRAINT `FK_2B23AFE9F53AEEAD` FOREIGN KEY (`work_tutor_id`) REFERENCES `person` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1318,7 +1385,7 @@ CREATE TABLE `wlt_agreement` (
 
 LOCK TABLES `wlt_agreement` WRITE;
 /*!40000 ALTER TABLE `wlt_agreement` DISABLE KEYS */;
-INSERT INTO `wlt_agreement` VALUES (1,1,1,47,'2022-02-10','2022-05-19','08:00','14:00',NULL,NULL,NULL,NULL,1,12),(2,3,10,48,'2022-02-10','2022-05-19',NULL,NULL,NULL,NULL,NULL,NULL,1,12),(3,4,11,49,'2022-02-10','2022-05-19',NULL,NULL,NULL,NULL,NULL,NULL,1,12);
+INSERT INTO `wlt_agreement` VALUES (1,1,1,47,'2022-02-10','2022-05-19','08:00','14:00',NULL,NULL,1,12,NULL,NULL,NULL,NULL),(2,3,10,48,'2022-02-10','2022-05-19',NULL,NULL,NULL,NULL,1,12,NULL,NULL,NULL,NULL),(3,4,11,49,'2022-02-10','2022-05-19',NULL,NULL,NULL,NULL,1,12,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `wlt_agreement` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1330,21 +1397,22 @@ DROP TABLE IF EXISTS `wlt_agreement_activity_realization`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_agreement_activity_realization` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `agreement_id` int(11) NOT NULL,
-  `activity_realization_id` int(11) NOT NULL,
-  `grade_id` int(11) DEFAULT NULL,
-  `graded_by_id` int(11) DEFAULT NULL,
-  `graded_on` date DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_BD86F07824890B2B` (`agreement_id`),
-  KEY `IDX_BD86F078862E876A` (`activity_realization_id`),
-  KEY `IDX_BD86F078FE19A1A8` (`grade_id`),
-  KEY `IDX_BD86F078C814BC2E` (`graded_by_id`),
-  CONSTRAINT `FK_BD86F07824890B2B` FOREIGN KEY (`agreement_id`) REFERENCES `wlt_agreement` (`id`),
-  CONSTRAINT `FK_BD86F078862E876A` FOREIGN KEY (`activity_realization_id`) REFERENCES `wlt_activity_realization` (`id`),
-  CONSTRAINT `FK_BD86F078C814BC2E` FOREIGN KEY (`graded_by_id`) REFERENCES `person` (`id`),
-  CONSTRAINT `FK_BD86F078FE19A1A8` FOREIGN KEY (`grade_id`) REFERENCES `wlt_activity_realization_grade` (`id`)
+                                                      `id` int(11) NOT NULL AUTO_INCREMENT,
+                                                      `agreement_id` int(11) NOT NULL,
+                                                      `activity_realization_id` int(11) NOT NULL,
+                                                      `grade_id` int(11) DEFAULT NULL,
+                                                      `graded_by_id` int(11) DEFAULT NULL,
+                                                      `graded_on` date DEFAULT NULL,
+                                                      `disabled` tinyint(1) NOT NULL,
+                                                      PRIMARY KEY (`id`),
+                                                      KEY `IDX_BD86F07824890B2B` (`agreement_id`),
+                                                      KEY `IDX_BD86F078862E876A` (`activity_realization_id`),
+                                                      KEY `IDX_BD86F078FE19A1A8` (`grade_id`),
+                                                      KEY `IDX_BD86F078C814BC2E` (`graded_by_id`),
+                                                      CONSTRAINT `FK_BD86F07824890B2B` FOREIGN KEY (`agreement_id`) REFERENCES `wlt_agreement` (`id`),
+                                                      CONSTRAINT `FK_BD86F078862E876A` FOREIGN KEY (`activity_realization_id`) REFERENCES `wlt_activity_realization` (`id`),
+                                                      CONSTRAINT `FK_BD86F078C814BC2E` FOREIGN KEY (`graded_by_id`) REFERENCES `person` (`id`),
+                                                      CONSTRAINT `FK_BD86F078FE19A1A8` FOREIGN KEY (`grade_id`) REFERENCES `wlt_activity_realization_grade` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1354,7 +1422,7 @@ CREATE TABLE `wlt_agreement_activity_realization` (
 
 LOCK TABLES `wlt_agreement_activity_realization` WRITE;
 /*!40000 ALTER TABLE `wlt_agreement_activity_realization` DISABLE KEYS */;
-INSERT INTO `wlt_agreement_activity_realization` VALUES (1,1,69,NULL,NULL,NULL),(2,1,27,NULL,NULL,NULL),(3,1,28,NULL,NULL,NULL),(4,1,29,NULL,NULL,NULL),(5,1,72,NULL,NULL,NULL),(6,1,79,NULL,NULL,NULL),(7,1,46,NULL,NULL,NULL),(8,1,57,NULL,NULL,NULL),(9,1,58,NULL,NULL,NULL),(10,1,59,NULL,NULL,NULL),(11,1,37,NULL,NULL,NULL),(12,1,1,NULL,NULL,NULL),(13,1,2,NULL,NULL,NULL),(14,1,3,NULL,NULL,NULL),(15,1,4,NULL,NULL,NULL),(16,1,12,NULL,NULL,NULL),(17,1,81,NULL,NULL,NULL),(18,1,107,NULL,NULL,NULL),(19,1,109,NULL,NULL,NULL),(20,2,27,NULL,NULL,NULL),(21,2,28,NULL,NULL,NULL),(22,2,29,NULL,NULL,NULL),(23,2,31,NULL,NULL,NULL),(24,2,32,NULL,NULL,NULL),(25,2,33,NULL,NULL,NULL),(26,2,34,NULL,NULL,NULL),(27,2,35,NULL,NULL,NULL),(28,2,36,NULL,NULL,NULL),(29,2,78,NULL,NULL,NULL),(30,2,79,NULL,NULL,NULL),(31,2,80,NULL,NULL,NULL),(32,2,57,NULL,NULL,NULL),(33,2,58,NULL,NULL,NULL),(34,2,59,NULL,NULL,NULL),(35,2,1,NULL,NULL,NULL),(36,2,9,NULL,NULL,NULL),(37,2,12,NULL,NULL,NULL),(38,2,89,NULL,NULL,NULL),(39,2,90,NULL,NULL,NULL),(40,3,100,NULL,NULL,NULL),(41,3,101,NULL,NULL,NULL),(42,3,102,NULL,NULL,NULL),(43,3,63,NULL,NULL,NULL),(44,3,64,NULL,NULL,NULL),(45,3,65,NULL,NULL,NULL),(46,3,43,NULL,NULL,NULL),(47,3,44,NULL,NULL,NULL),(48,3,45,NULL,NULL,NULL),(49,3,89,NULL,NULL,NULL),(50,3,90,NULL,NULL,NULL),(51,3,91,NULL,NULL,NULL),(52,3,92,NULL,NULL,NULL),(53,3,93,NULL,NULL,NULL),(54,3,15,NULL,NULL,NULL),(55,3,16,NULL,NULL,NULL),(56,3,17,NULL,NULL,NULL),(57,3,18,NULL,NULL,NULL),(58,3,19,NULL,NULL,NULL),(59,3,20,NULL,NULL,NULL),(60,3,21,NULL,NULL,NULL),(61,3,22,NULL,NULL,NULL),(62,3,23,NULL,NULL,NULL),(63,3,24,NULL,NULL,NULL),(64,3,25,NULL,NULL,NULL),(65,3,26,NULL,NULL,NULL);
+INSERT INTO `wlt_agreement_activity_realization` VALUES (1,1,69,NULL,NULL,NULL,0),(2,1,27,NULL,NULL,NULL,0),(3,1,28,NULL,NULL,NULL,0),(4,1,29,NULL,NULL,NULL,0),(5,1,72,NULL,NULL,NULL,0),(6,1,79,NULL,NULL,NULL,0),(7,1,46,NULL,NULL,NULL,0),(8,1,57,NULL,NULL,NULL,0),(9,1,58,NULL,NULL,NULL,0),(10,1,59,NULL,NULL,NULL,0),(11,1,37,NULL,NULL,NULL,0),(12,1,1,NULL,NULL,NULL,0),(13,1,2,NULL,NULL,NULL,0),(14,1,3,NULL,NULL,NULL,0),(15,1,4,NULL,NULL,NULL,0),(16,1,12,NULL,NULL,NULL,0),(17,1,81,NULL,NULL,NULL,0),(18,1,107,NULL,NULL,NULL,0),(19,1,109,NULL,NULL,NULL,0),(20,2,27,NULL,NULL,NULL,0),(21,2,28,NULL,NULL,NULL,0),(22,2,29,NULL,NULL,NULL,0),(23,2,31,NULL,NULL,NULL,0),(24,2,32,NULL,NULL,NULL,0),(25,2,33,NULL,NULL,NULL,0),(26,2,34,NULL,NULL,NULL,0),(27,2,35,NULL,NULL,NULL,0),(28,2,36,NULL,NULL,NULL,0),(29,2,78,NULL,NULL,NULL,0),(30,2,79,NULL,NULL,NULL,0),(31,2,80,NULL,NULL,NULL,0),(32,2,57,NULL,NULL,NULL,0),(33,2,58,NULL,NULL,NULL,0),(34,2,59,NULL,NULL,NULL,0),(35,2,1,NULL,NULL,NULL,0),(36,2,9,NULL,NULL,NULL,0),(37,2,12,NULL,NULL,NULL,0),(38,2,89,NULL,NULL,NULL,0),(39,2,90,NULL,NULL,NULL,0),(40,3,100,NULL,NULL,NULL,0),(41,3,101,NULL,NULL,NULL,0),(42,3,102,NULL,NULL,NULL,0),(43,3,63,NULL,NULL,NULL,0),(44,3,64,NULL,NULL,NULL,0),(45,3,65,NULL,NULL,NULL,0),(46,3,43,NULL,NULL,NULL,0),(47,3,44,NULL,NULL,NULL,0),(48,3,45,NULL,NULL,NULL,0),(49,3,89,NULL,NULL,NULL,0),(50,3,90,NULL,NULL,NULL,0),(51,3,91,NULL,NULL,NULL,0),(52,3,92,NULL,NULL,NULL,0),(53,3,93,NULL,NULL,NULL,0),(54,3,15,NULL,NULL,NULL,0),(55,3,16,NULL,NULL,NULL,0),(56,3,17,NULL,NULL,NULL,0),(57,3,18,NULL,NULL,NULL,0),(58,3,19,NULL,NULL,NULL,0),(59,3,20,NULL,NULL,NULL,0),(60,3,21,NULL,NULL,NULL,0),(61,3,22,NULL,NULL,NULL,0),(62,3,23,NULL,NULL,NULL,0),(63,3,24,NULL,NULL,NULL,0),(64,3,25,NULL,NULL,NULL,0),(65,3,26,NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `wlt_agreement_activity_realization` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1366,16 +1434,18 @@ DROP TABLE IF EXISTS `wlt_agreement_activity_realization_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_agreement_activity_realization_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `agreement_id` int(11) DEFAULT NULL,
-  `activity_realization_id` int(11) DEFAULT NULL,
-  `grade_id` int(11) DEFAULT NULL,
-  `graded_by_id` int(11) DEFAULT NULL,
-  `graded_on` date DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_3aa810fb5b23d95bfecc473791749abf_idx` (`rev`)
+                                                            `id` int(11) NOT NULL,
+                                                            `rev` int(11) NOT NULL,
+                                                            `agreement_id` int(11) DEFAULT NULL,
+                                                            `activity_realization_id` int(11) DEFAULT NULL,
+                                                            `grade_id` int(11) DEFAULT NULL,
+                                                            `graded_by_id` int(11) DEFAULT NULL,
+                                                            `graded_on` date DEFAULT NULL,
+                                                            `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                                            `disabled` tinyint(1) DEFAULT NULL,
+                                                            PRIMARY KEY (`id`,`rev`),
+                                                            KEY `rev_3aa810fb5b23d95bfecc473791749abf_idx` (`rev`),
+                                                            CONSTRAINT `rev_3aa810fb5b23d95bfecc473791749abf_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1389,6 +1459,236 @@ LOCK TABLES `wlt_agreement_activity_realization_audit` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `wlt_agreement_activity_realization_comment`
+--
+
+DROP TABLE IF EXISTS `wlt_agreement_activity_realization_comment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_agreement_activity_realization_comment` (
+                                                              `id` int(11) NOT NULL AUTO_INCREMENT,
+                                                              `agreement_activity_realization_id` int(11) NOT NULL,
+                                                              `person_id` int(11) NOT NULL,
+                                                              `comment` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                              `timestamp` datetime NOT NULL,
+                                                              PRIMARY KEY (`id`),
+                                                              KEY `IDX_DB49388DDEF5E775` (`agreement_activity_realization_id`),
+                                                              KEY `IDX_DB49388D217BBB47` (`person_id`),
+                                                              CONSTRAINT `FK_DB49388D217BBB47` FOREIGN KEY (`person_id`) REFERENCES `person` (`id`),
+                                                              CONSTRAINT `FK_DB49388DDEF5E775` FOREIGN KEY (`agreement_activity_realization_id`) REFERENCES `wlt_agreement_activity_realization` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_agreement_activity_realization_comment`
+--
+
+LOCK TABLES `wlt_agreement_activity_realization_comment` WRITE;
+/*!40000 ALTER TABLE `wlt_agreement_activity_realization_comment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_agreement_activity_realization_comment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wlt_agreement_activity_realization_comment_audit`
+--
+
+DROP TABLE IF EXISTS `wlt_agreement_activity_realization_comment_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_agreement_activity_realization_comment_audit` (
+                                                                    `id` int(11) NOT NULL,
+                                                                    `rev` int(11) NOT NULL,
+                                                                    `agreement_activity_realization_id` int(11) DEFAULT NULL,
+                                                                    `person_id` int(11) DEFAULT NULL,
+                                                                    `comment` longtext COLLATE utf8mb4_unicode_ci,
+                                                                    `timestamp` datetime DEFAULT NULL,
+                                                                    `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                                    PRIMARY KEY (`id`,`rev`),
+                                                                    KEY `rev_935c6eb03972c07b2fc1ea23e44b8f95_idx` (`rev`),
+                                                                    CONSTRAINT `rev_935c6eb03972c07b2fc1ea23e44b8f95_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_agreement_activity_realization_comment_audit`
+--
+
+LOCK TABLES `wlt_agreement_activity_realization_comment_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_agreement_activity_realization_comment_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_agreement_activity_realization_comment_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wlt_contact`
+--
+
+DROP TABLE IF EXISTS `wlt_contact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_contact` (
+                               `id` int(11) NOT NULL AUTO_INCREMENT,
+                               `teacher_id` int(11) NOT NULL,
+                               `workcenter_id` int(11) NOT NULL,
+                               `date_time` datetime NOT NULL,
+                               `detail` longtext COLLATE utf8mb4_spanish_ci,
+                               `method_id` int(11) DEFAULT NULL,
+                               PRIMARY KEY (`id`),
+                               KEY `IDX_8702589741807E1D` (`teacher_id`),
+                               KEY `IDX_87025897A2473C4B` (`workcenter_id`),
+                               KEY `IDX_8702589719883967` (`method_id`),
+                               CONSTRAINT `FK_8702589719883967` FOREIGN KEY (`method_id`) REFERENCES `edu_contact_method` (`id`),
+                               CONSTRAINT `FK_8702589741807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`),
+                               CONSTRAINT `FK_87025897A2473C4B` FOREIGN KEY (`workcenter_id`) REFERENCES `workcenter` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_contact`
+--
+
+LOCK TABLES `wlt_contact` WRITE;
+/*!40000 ALTER TABLE `wlt_contact` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_contact` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wlt_contact_audit`
+--
+
+DROP TABLE IF EXISTS `wlt_contact_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_contact_audit` (
+                                     `id` int(11) NOT NULL,
+                                     `rev` int(11) NOT NULL,
+                                     `teacher_id` int(11) DEFAULT NULL,
+                                     `workcenter_id` int(11) DEFAULT NULL,
+                                     `date_time` datetime DEFAULT NULL,
+                                     `detail` longtext COLLATE utf8mb4_spanish_ci,
+                                     `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                     `method_id` int(11) DEFAULT NULL,
+                                     PRIMARY KEY (`id`,`rev`),
+                                     KEY `rev_1a3b3959a5ced6400bc91d305339a7c0_idx` (`rev`),
+                                     CONSTRAINT `rev_1a3b3959a5ced6400bc91d305339a7c0_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_contact_audit`
+--
+
+LOCK TABLES `wlt_contact_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_contact_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_contact_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wlt_contact_project`
+--
+
+DROP TABLE IF EXISTS `wlt_contact_project`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_contact_project` (
+                                       `contact_id` int(11) NOT NULL,
+                                       `project_id` int(11) NOT NULL,
+                                       PRIMARY KEY (`contact_id`,`project_id`),
+                                       KEY `IDX_208AE622E7A1254A` (`contact_id`),
+                                       KEY `IDX_208AE622166D1F9C` (`project_id`),
+                                       CONSTRAINT `FK_208AE622166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`) ON DELETE CASCADE,
+                                       CONSTRAINT `FK_208AE622E7A1254A` FOREIGN KEY (`contact_id`) REFERENCES `wlt_contact` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_contact_project`
+--
+
+LOCK TABLES `wlt_contact_project` WRITE;
+/*!40000 ALTER TABLE `wlt_contact_project` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_contact_project` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wlt_contact_project_audit`
+--
+
+DROP TABLE IF EXISTS `wlt_contact_project_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_contact_project_audit` (
+                                             `contact_id` int(11) NOT NULL,
+                                             `project_id` int(11) NOT NULL,
+                                             `rev` int(11) NOT NULL,
+                                             `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                             PRIMARY KEY (`contact_id`,`project_id`,`rev`),
+                                             KEY `rev_abc3d380c2aa42af58909c1fd4f4dc82_idx` (`rev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_contact_project_audit`
+--
+
+LOCK TABLES `wlt_contact_project_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_contact_project_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_contact_project_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wlt_contact_student_enrollment`
+--
+
+DROP TABLE IF EXISTS `wlt_contact_student_enrollment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_contact_student_enrollment` (
+                                                  `contact_id` int(11) NOT NULL,
+                                                  `student_enrollment_id` int(11) NOT NULL,
+                                                  PRIMARY KEY (`contact_id`,`student_enrollment_id`),
+                                                  KEY `IDX_A3EF12EDE7A1254A` (`contact_id`),
+                                                  KEY `IDX_A3EF12EDDAE14AC5` (`student_enrollment_id`),
+                                                  CONSTRAINT `FK_A3EF12EDDAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`) ON DELETE CASCADE,
+                                                  CONSTRAINT `FK_A3EF12EDE7A1254A` FOREIGN KEY (`contact_id`) REFERENCES `wlt_contact` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_contact_student_enrollment`
+--
+
+LOCK TABLES `wlt_contact_student_enrollment` WRITE;
+/*!40000 ALTER TABLE `wlt_contact_student_enrollment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_contact_student_enrollment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wlt_contact_student_enrollment_audit`
+--
+
+DROP TABLE IF EXISTS `wlt_contact_student_enrollment_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_contact_student_enrollment_audit` (
+                                                        `contact_id` int(11) NOT NULL,
+                                                        `student_enrollment_id` int(11) NOT NULL,
+                                                        `rev` int(11) NOT NULL,
+                                                        `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                        PRIMARY KEY (`contact_id`,`student_enrollment_id`,`rev`),
+                                                        KEY `rev_e0bd3edfb4c855c59d87e3bcba7e9825_idx` (`rev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_contact_student_enrollment_audit`
+--
+
+LOCK TABLES `wlt_contact_student_enrollment_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_contact_student_enrollment_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_contact_student_enrollment_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `wlt_educational_tutor_answered_survey`
 --
 
@@ -1396,17 +1696,17 @@ DROP TABLE IF EXISTS `wlt_educational_tutor_answered_survey`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_educational_tutor_answered_survey` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `project_id` int(11) NOT NULL,
-  `teacher_id` int(11) NOT NULL,
-  `answered_survey_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_CBD11B75166D1F9C` (`project_id`),
-  KEY `IDX_CBD11B75A97283E6` (`answered_survey_id`),
-  KEY `IDX_CBD11B7541807E1D` (`teacher_id`),
-  CONSTRAINT `FK_CBD11B75166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`),
-  CONSTRAINT `FK_CBD11B7541807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`),
-  CONSTRAINT `FK_CBD11B75A97283E6` FOREIGN KEY (`answered_survey_id`) REFERENCES `answered_survey` (`id`)
+                                                         `id` int(11) NOT NULL AUTO_INCREMENT,
+                                                         `project_id` int(11) NOT NULL,
+                                                         `teacher_id` int(11) NOT NULL,
+                                                         `answered_survey_id` int(11) NOT NULL,
+                                                         PRIMARY KEY (`id`),
+                                                         KEY `IDX_CBD11B75166D1F9C` (`project_id`),
+                                                         KEY `IDX_CBD11B75A97283E6` (`answered_survey_id`),
+                                                         KEY `IDX_CBD11B7541807E1D` (`teacher_id`),
+                                                         CONSTRAINT `FK_CBD11B75166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`),
+                                                         CONSTRAINT `FK_CBD11B7541807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`),
+                                                         CONSTRAINT `FK_CBD11B75A97283E6` FOREIGN KEY (`answered_survey_id`) REFERENCES `answered_survey` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1420,6 +1720,35 @@ LOCK TABLES `wlt_educational_tutor_answered_survey` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `wlt_educational_tutor_answered_survey_audit`
+--
+
+DROP TABLE IF EXISTS `wlt_educational_tutor_answered_survey_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_educational_tutor_answered_survey_audit` (
+                                                               `id` int(11) NOT NULL,
+                                                               `rev` int(11) NOT NULL,
+                                                               `project_id` int(11) DEFAULT NULL,
+                                                               `teacher_id` int(11) DEFAULT NULL,
+                                                               `answered_survey_id` int(11) DEFAULT NULL,
+                                                               `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                               PRIMARY KEY (`id`,`rev`),
+                                                               KEY `rev_68c9c40ff36ffd2b1378aa4b2746dcac_idx` (`rev`),
+                                                               CONSTRAINT `rev_68c9c40ff36ffd2b1378aa4b2746dcac_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_educational_tutor_answered_survey_audit`
+--
+
+LOCK TABLES `wlt_educational_tutor_answered_survey_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_educational_tutor_answered_survey_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_educational_tutor_answered_survey_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `wlt_learning_program`
 --
 
@@ -1427,14 +1756,14 @@ DROP TABLE IF EXISTS `wlt_learning_program`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_learning_program` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `company_id` int(11) NOT NULL,
-  `project_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_5EB2E44D979B1AD6` (`company_id`),
-  KEY `IDX_5EB2E44D166D1F9C` (`project_id`),
-  CONSTRAINT `FK_5EB2E44D166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`),
-  CONSTRAINT `FK_5EB2E44D979B1AD6` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
+                                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                                        `company_id` int(11) NOT NULL,
+                                        `project_id` int(11) NOT NULL,
+                                        PRIMARY KEY (`id`),
+                                        KEY `IDX_5EB2E44D979B1AD6` (`company_id`),
+                                        KEY `IDX_5EB2E44D166D1F9C` (`project_id`),
+                                        CONSTRAINT `FK_5EB2E44D166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`),
+                                        CONSTRAINT `FK_5EB2E44D979B1AD6` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1456,13 +1785,13 @@ DROP TABLE IF EXISTS `wlt_learning_program_activity_realization`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_learning_program_activity_realization` (
-  `learning_program_id` int(11) NOT NULL,
-  `activity_realization_id` int(11) NOT NULL,
-  PRIMARY KEY (`learning_program_id`,`activity_realization_id`),
-  KEY `IDX_7EADE17BED94D8BC` (`learning_program_id`),
-  KEY `IDX_7EADE17B862E876A` (`activity_realization_id`),
-  CONSTRAINT `FK_7EADE17B862E876A` FOREIGN KEY (`activity_realization_id`) REFERENCES `wlt_activity_realization` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_7EADE17BED94D8BC` FOREIGN KEY (`learning_program_id`) REFERENCES `wlt_learning_program` (`id`) ON DELETE CASCADE
+                                                             `learning_program_id` int(11) NOT NULL,
+                                                             `activity_realization_id` int(11) NOT NULL,
+                                                             PRIMARY KEY (`learning_program_id`,`activity_realization_id`),
+                                                             KEY `IDX_7EADE17BED94D8BC` (`learning_program_id`),
+                                                             KEY `IDX_7EADE17B862E876A` (`activity_realization_id`),
+                                                             CONSTRAINT `FK_7EADE17B862E876A` FOREIGN KEY (`activity_realization_id`) REFERENCES `wlt_activity_realization` (`id`) ON DELETE CASCADE,
+                                                             CONSTRAINT `FK_7EADE17BED94D8BC` FOREIGN KEY (`learning_program_id`) REFERENCES `wlt_learning_program` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1477,6 +1806,32 @@ INSERT INTO `wlt_learning_program_activity_realization` VALUES (1,1),(1,2),(1,3)
 UNLOCK TABLES;
 
 --
+-- Table structure for table `wlt_learning_program_activity_realization_audit`
+--
+
+DROP TABLE IF EXISTS `wlt_learning_program_activity_realization_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_learning_program_activity_realization_audit` (
+                                                                   `learning_program_id` int(11) NOT NULL,
+                                                                   `activity_realization_id` int(11) NOT NULL,
+                                                                   `rev` int(11) NOT NULL,
+                                                                   `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                                   PRIMARY KEY (`learning_program_id`,`activity_realization_id`,`rev`),
+                                                                   KEY `rev_ea7fce12514ea7fc1d7a89d6eedaccbf_idx` (`rev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_learning_program_activity_realization_audit`
+--
+
+LOCK TABLES `wlt_learning_program_activity_realization_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_learning_program_activity_realization_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_learning_program_activity_realization_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `wlt_learning_program_audit`
 --
 
@@ -1484,13 +1839,14 @@ DROP TABLE IF EXISTS `wlt_learning_program_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_learning_program_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `company_id` int(11) DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `project_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_3e4a8a47037e8657861e40d29d7511a6_idx` (`rev`)
+                                              `id` int(11) NOT NULL,
+                                              `rev` int(11) NOT NULL,
+                                              `company_id` int(11) DEFAULT NULL,
+                                              `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                              `project_id` int(11) DEFAULT NULL,
+                                              PRIMARY KEY (`id`,`rev`),
+                                              KEY `rev_3e4a8a47037e8657861e40d29d7511a6_idx` (`rev`),
+                                              CONSTRAINT `rev_3e4a8a47037e8657861e40d29d7511a6_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1511,16 +1867,16 @@ DROP TABLE IF EXISTS `wlt_meeting`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_meeting` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `created_by_id` int(11) NOT NULL,
-  `date_time` datetime NOT NULL,
-  `detail` longtext COLLATE utf8mb4_spanish_ci,
-  `project_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_3E755F96B03A8386` (`created_by_id`),
-  KEY `IDX_3E755F96166D1F9C` (`project_id`),
-  CONSTRAINT `FK_3E755F96166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`),
-  CONSTRAINT `FK_3E755F96B03A8386` FOREIGN KEY (`created_by_id`) REFERENCES `edu_teacher` (`id`)
+                               `id` int(11) NOT NULL AUTO_INCREMENT,
+                               `created_by_id` int(11) NOT NULL,
+                               `date_time` datetime NOT NULL,
+                               `detail` longtext COLLATE utf8mb4_spanish_ci,
+                               `project_id` int(11) NOT NULL,
+                               PRIMARY KEY (`id`),
+                               KEY `IDX_3E755F96B03A8386` (`created_by_id`),
+                               KEY `IDX_3E755F96166D1F9C` (`project_id`),
+                               CONSTRAINT `FK_3E755F96166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`),
+                               CONSTRAINT `FK_3E755F96B03A8386` FOREIGN KEY (`created_by_id`) REFERENCES `edu_teacher` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1541,15 +1897,16 @@ DROP TABLE IF EXISTS `wlt_meeting_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_meeting_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `created_by_id` int(11) DEFAULT NULL,
-  `date_time` datetime DEFAULT NULL,
-  `detail` longtext COLLATE utf8mb4_spanish_ci,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `project_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_4f5b29d8966971ed79a052aacd98c68f_idx` (`rev`)
+                                     `id` int(11) NOT NULL,
+                                     `rev` int(11) NOT NULL,
+                                     `created_by_id` int(11) DEFAULT NULL,
+                                     `date_time` datetime DEFAULT NULL,
+                                     `detail` longtext COLLATE utf8mb4_spanish_ci,
+                                     `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                     `project_id` int(11) DEFAULT NULL,
+                                     PRIMARY KEY (`id`,`rev`),
+                                     KEY `rev_4f5b29d8966971ed79a052aacd98c68f_idx` (`rev`),
+                                     CONSTRAINT `rev_4f5b29d8966971ed79a052aacd98c68f_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1570,13 +1927,13 @@ DROP TABLE IF EXISTS `wlt_meeting_student_enrollment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_meeting_student_enrollment` (
-  `meeting_id` int(11) NOT NULL,
-  `student_enrollment_id` int(11) NOT NULL,
-  PRIMARY KEY (`meeting_id`,`student_enrollment_id`),
-  KEY `IDX_A19B8C2067433D9C` (`meeting_id`),
-  KEY `IDX_A19B8C20DAE14AC5` (`student_enrollment_id`),
-  CONSTRAINT `FK_A19B8C2067433D9C` FOREIGN KEY (`meeting_id`) REFERENCES `wlt_meeting` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_A19B8C20DAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`) ON DELETE CASCADE
+                                                  `meeting_id` int(11) NOT NULL,
+                                                  `student_enrollment_id` int(11) NOT NULL,
+                                                  PRIMARY KEY (`meeting_id`,`student_enrollment_id`),
+                                                  KEY `IDX_A19B8C2067433D9C` (`meeting_id`),
+                                                  KEY `IDX_A19B8C20DAE14AC5` (`student_enrollment_id`),
+                                                  CONSTRAINT `FK_A19B8C2067433D9C` FOREIGN KEY (`meeting_id`) REFERENCES `wlt_meeting` (`id`) ON DELETE CASCADE,
+                                                  CONSTRAINT `FK_A19B8C20DAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1590,6 +1947,32 @@ LOCK TABLES `wlt_meeting_student_enrollment` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `wlt_meeting_student_enrollment_audit`
+--
+
+DROP TABLE IF EXISTS `wlt_meeting_student_enrollment_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_meeting_student_enrollment_audit` (
+                                                        `meeting_id` int(11) NOT NULL,
+                                                        `student_enrollment_id` int(11) NOT NULL,
+                                                        `rev` int(11) NOT NULL,
+                                                        `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                        PRIMARY KEY (`meeting_id`,`student_enrollment_id`,`rev`),
+                                                        KEY `rev_eec9e93b7a9dff9fef2970100c0b2da9_idx` (`rev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_meeting_student_enrollment_audit`
+--
+
+LOCK TABLES `wlt_meeting_student_enrollment_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_meeting_student_enrollment_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_meeting_student_enrollment_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `wlt_meeting_teacher`
 --
 
@@ -1597,13 +1980,13 @@ DROP TABLE IF EXISTS `wlt_meeting_teacher`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_meeting_teacher` (
-  `meeting_id` int(11) NOT NULL,
-  `teacher_id` int(11) NOT NULL,
-  PRIMARY KEY (`meeting_id`,`teacher_id`),
-  KEY `IDX_BD32F91567433D9C` (`meeting_id`),
-  KEY `IDX_BD32F91541807E1D` (`teacher_id`),
-  CONSTRAINT `FK_BD32F91541807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_BD32F91567433D9C` FOREIGN KEY (`meeting_id`) REFERENCES `wlt_meeting` (`id`) ON DELETE CASCADE
+                                       `meeting_id` int(11) NOT NULL,
+                                       `teacher_id` int(11) NOT NULL,
+                                       PRIMARY KEY (`meeting_id`,`teacher_id`),
+                                       KEY `IDX_BD32F91567433D9C` (`meeting_id`),
+                                       KEY `IDX_BD32F91541807E1D` (`teacher_id`),
+                                       CONSTRAINT `FK_BD32F91541807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`) ON DELETE CASCADE,
+                                       CONSTRAINT `FK_BD32F91567433D9C` FOREIGN KEY (`meeting_id`) REFERENCES `wlt_meeting` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1617,6 +2000,32 @@ LOCK TABLES `wlt_meeting_teacher` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `wlt_meeting_teacher_audit`
+--
+
+DROP TABLE IF EXISTS `wlt_meeting_teacher_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_meeting_teacher_audit` (
+                                             `meeting_id` int(11) NOT NULL,
+                                             `teacher_id` int(11) NOT NULL,
+                                             `rev` int(11) NOT NULL,
+                                             `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                             PRIMARY KEY (`meeting_id`,`teacher_id`,`rev`),
+                                             KEY `rev_188d4938230f9bff872496b972c09981_idx` (`rev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_meeting_teacher_audit`
+--
+
+LOCK TABLES `wlt_meeting_teacher_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_meeting_teacher_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_meeting_teacher_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `wlt_project`
 --
 
@@ -1624,30 +2033,31 @@ DROP TABLE IF EXISTS `wlt_project`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_project` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `organization_id` int(11) NOT NULL,
-  `manager_id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `student_survey_id` int(11) DEFAULT NULL,
-  `company_survey_id` int(11) DEFAULT NULL,
-  `educational_tutor_survey_id` int(11) DEFAULT NULL,
-  `attendance_report_template_id` int(11) DEFAULT NULL,
-  `weekly_activity_report_template_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_E4D36E4132C8A3DE` (`organization_id`),
-  KEY `IDX_E4D36E41783E3463` (`manager_id`),
-  KEY `IDX_E4D36E41D490911D` (`student_survey_id`),
-  KEY `IDX_E4D36E4180E5DA6D` (`company_survey_id`),
-  KEY `IDX_E4D36E4168F6798B` (`educational_tutor_survey_id`),
-  KEY `IDX_E4D36E4113E6472B` (`attendance_report_template_id`),
-  KEY `IDX_E4D36E413BBF8EEC` (`weekly_activity_report_template_id`),
-  CONSTRAINT `FK_E4D36E4113E6472B` FOREIGN KEY (`attendance_report_template_id`) REFERENCES `edu_report_template` (`id`),
-  CONSTRAINT `FK_E4D36E4132C8A3DE` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`),
-  CONSTRAINT `FK_E4D36E413BBF8EEC` FOREIGN KEY (`weekly_activity_report_template_id`) REFERENCES `edu_report_template` (`id`),
-  CONSTRAINT `FK_E4D36E4168F6798B` FOREIGN KEY (`educational_tutor_survey_id`) REFERENCES `survey` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `FK_E4D36E41783E3463` FOREIGN KEY (`manager_id`) REFERENCES `person` (`id`),
-  CONSTRAINT `FK_E4D36E4180E5DA6D` FOREIGN KEY (`company_survey_id`) REFERENCES `survey` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `FK_E4D36E41D490911D` FOREIGN KEY (`student_survey_id`) REFERENCES `survey` (`id`) ON DELETE SET NULL
+                               `id` int(11) NOT NULL AUTO_INCREMENT,
+                               `organization_id` int(11) NOT NULL,
+                               `manager_id` int(11) NOT NULL,
+                               `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                               `student_survey_id` int(11) DEFAULT NULL,
+                               `company_survey_id` int(11) DEFAULT NULL,
+                               `educational_tutor_survey_id` int(11) DEFAULT NULL,
+                               `attendance_report_template_id` int(11) DEFAULT NULL,
+                               `weekly_activity_report_template_id` int(11) DEFAULT NULL,
+                               `locked` tinyint(1) NOT NULL,
+                               PRIMARY KEY (`id`),
+                               KEY `IDX_E4D36E4132C8A3DE` (`organization_id`),
+                               KEY `IDX_E4D36E41783E3463` (`manager_id`),
+                               KEY `IDX_E4D36E41D490911D` (`student_survey_id`),
+                               KEY `IDX_E4D36E4180E5DA6D` (`company_survey_id`),
+                               KEY `IDX_E4D36E4168F6798B` (`educational_tutor_survey_id`),
+                               KEY `IDX_E4D36E4113E6472B` (`attendance_report_template_id`),
+                               KEY `IDX_E4D36E413BBF8EEC` (`weekly_activity_report_template_id`),
+                               CONSTRAINT `FK_E4D36E4113E6472B` FOREIGN KEY (`attendance_report_template_id`) REFERENCES `edu_report_template` (`id`),
+                               CONSTRAINT `FK_E4D36E4132C8A3DE` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`),
+                               CONSTRAINT `FK_E4D36E413BBF8EEC` FOREIGN KEY (`weekly_activity_report_template_id`) REFERENCES `edu_report_template` (`id`),
+                               CONSTRAINT `FK_E4D36E4168F6798B` FOREIGN KEY (`educational_tutor_survey_id`) REFERENCES `survey` (`id`) ON DELETE SET NULL,
+                               CONSTRAINT `FK_E4D36E41783E3463` FOREIGN KEY (`manager_id`) REFERENCES `person` (`id`),
+                               CONSTRAINT `FK_E4D36E4180E5DA6D` FOREIGN KEY (`company_survey_id`) REFERENCES `survey` (`id`) ON DELETE SET NULL,
+                               CONSTRAINT `FK_E4D36E41D490911D` FOREIGN KEY (`student_survey_id`) REFERENCES `survey` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1657,7 +2067,7 @@ CREATE TABLE `wlt_project` (
 
 LOCK TABLES `wlt_project` WRITE;
 /*!40000 ALTER TABLE `wlt_project` DISABLE KEYS */;
-INSERT INTO `wlt_project` VALUES (1,1,2,'F.P.I.G.S. Desarrollo de Aplicaciones Multiplataforma – 2021-2023',NULL,NULL,NULL,1,2);
+INSERT INTO `wlt_project` VALUES (1,1,2,'F.P.I.G.S. Desarrollo de Aplicaciones Multiplataforma – 2021-2023',NULL,NULL,NULL,1,2,0);
 /*!40000 ALTER TABLE `wlt_project` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1669,19 +2079,21 @@ DROP TABLE IF EXISTS `wlt_project_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_project_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `organization_id` int(11) DEFAULT NULL,
-  `manager_id` int(11) DEFAULT NULL,
-  `student_survey_id` int(11) DEFAULT NULL,
-  `company_survey_id` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `educational_tutor_survey_id` int(11) DEFAULT NULL,
-  `attendance_report_template_id` int(11) DEFAULT NULL,
-  `weekly_activity_report_template_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_e55594229ab1a86fcf85548ae1e37a5e_idx` (`rev`)
+                                     `id` int(11) NOT NULL,
+                                     `rev` int(11) NOT NULL,
+                                     `organization_id` int(11) DEFAULT NULL,
+                                     `manager_id` int(11) DEFAULT NULL,
+                                     `student_survey_id` int(11) DEFAULT NULL,
+                                     `company_survey_id` int(11) DEFAULT NULL,
+                                     `name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                     `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                     `educational_tutor_survey_id` int(11) DEFAULT NULL,
+                                     `attendance_report_template_id` int(11) DEFAULT NULL,
+                                     `weekly_activity_report_template_id` int(11) DEFAULT NULL,
+                                     `locked` tinyint(1) DEFAULT NULL,
+                                     PRIMARY KEY (`id`,`rev`),
+                                     KEY `rev_e55594229ab1a86fcf85548ae1e37a5e_idx` (`rev`),
+                                     CONSTRAINT `rev_e55594229ab1a86fcf85548ae1e37a5e_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1702,13 +2114,13 @@ DROP TABLE IF EXISTS `wlt_project_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_project_group` (
-  `project_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL,
-  PRIMARY KEY (`project_id`,`group_id`),
-  KEY `IDX_9FF4D6B7166D1F9C` (`project_id`),
-  KEY `IDX_9FF4D6B7FE54D947` (`group_id`),
-  CONSTRAINT `FK_9FF4D6B7166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_9FF4D6B7FE54D947` FOREIGN KEY (`group_id`) REFERENCES `edu_group` (`id`) ON DELETE CASCADE
+                                     `project_id` int(11) NOT NULL,
+                                     `group_id` int(11) NOT NULL,
+                                     PRIMARY KEY (`project_id`,`group_id`),
+                                     KEY `IDX_9FF4D6B7166D1F9C` (`project_id`),
+                                     KEY `IDX_9FF4D6B7FE54D947` (`group_id`),
+                                     CONSTRAINT `FK_9FF4D6B7166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`) ON DELETE CASCADE,
+                                     CONSTRAINT `FK_9FF4D6B7FE54D947` FOREIGN KEY (`group_id`) REFERENCES `edu_group` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1723,6 +2135,32 @@ INSERT INTO `wlt_project_group` VALUES (1,1),(1,2);
 UNLOCK TABLES;
 
 --
+-- Table structure for table `wlt_project_group_audit`
+--
+
+DROP TABLE IF EXISTS `wlt_project_group_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_project_group_audit` (
+                                           `project_id` int(11) NOT NULL,
+                                           `group_id` int(11) NOT NULL,
+                                           `rev` int(11) NOT NULL,
+                                           `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                           PRIMARY KEY (`project_id`,`group_id`,`rev`),
+                                           KEY `rev_d9538b953230ccb18da4bab0b4de9237_idx` (`rev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_project_group_audit`
+--
+
+LOCK TABLES `wlt_project_group_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_project_group_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_project_group_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `wlt_project_student_enrollment`
 --
 
@@ -1730,13 +2168,13 @@ DROP TABLE IF EXISTS `wlt_project_student_enrollment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_project_student_enrollment` (
-  `project_id` int(11) NOT NULL,
-  `student_enrollment_id` int(11) NOT NULL,
-  PRIMARY KEY (`project_id`,`student_enrollment_id`),
-  KEY `IDX_E0458B76166D1F9C` (`project_id`),
-  KEY `IDX_E0458B76DAE14AC5` (`student_enrollment_id`),
-  CONSTRAINT `FK_E0458B76166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_E0458B76DAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`) ON DELETE CASCADE
+                                                  `project_id` int(11) NOT NULL,
+                                                  `student_enrollment_id` int(11) NOT NULL,
+                                                  PRIMARY KEY (`project_id`,`student_enrollment_id`),
+                                                  KEY `IDX_E0458B76166D1F9C` (`project_id`),
+                                                  KEY `IDX_E0458B76DAE14AC5` (`student_enrollment_id`),
+                                                  CONSTRAINT `FK_E0458B76166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`) ON DELETE CASCADE,
+                                                  CONSTRAINT `FK_E0458B76DAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1751,6 +2189,92 @@ INSERT INTO `wlt_project_student_enrollment` VALUES (1,1),(1,10),(1,11),(1,12),(
 UNLOCK TABLES;
 
 --
+-- Table structure for table `wlt_project_student_enrollment_audit`
+--
+
+DROP TABLE IF EXISTS `wlt_project_student_enrollment_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_project_student_enrollment_audit` (
+                                                        `project_id` int(11) NOT NULL,
+                                                        `student_enrollment_id` int(11) NOT NULL,
+                                                        `rev` int(11) NOT NULL,
+                                                        `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                        PRIMARY KEY (`project_id`,`student_enrollment_id`,`rev`),
+                                                        KEY `rev_50632f17d0233de6402b0980b438b5e1_idx` (`rev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_project_student_enrollment_audit`
+--
+
+LOCK TABLES `wlt_project_student_enrollment_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_project_student_enrollment_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_project_student_enrollment_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wlt_student_answered_survey`
+--
+
+DROP TABLE IF EXISTS `wlt_student_answered_survey`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_student_answered_survey` (
+                                               `id` int(11) NOT NULL AUTO_INCREMENT,
+                                               `project_id` int(11) NOT NULL,
+                                               `student_enrollment_id` int(11) NOT NULL,
+                                               `answered_survey_id` int(11) NOT NULL,
+                                               PRIMARY KEY (`id`),
+                                               KEY `IDX_E4FA2DBC166D1F9C` (`project_id`),
+                                               KEY `IDX_E4FA2DBCDAE14AC5` (`student_enrollment_id`),
+                                               KEY `IDX_E4FA2DBCA97283E6` (`answered_survey_id`),
+                                               CONSTRAINT `FK_E4FA2DBC166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`),
+                                               CONSTRAINT `FK_E4FA2DBCA97283E6` FOREIGN KEY (`answered_survey_id`) REFERENCES `answered_survey` (`id`),
+                                               CONSTRAINT `FK_E4FA2DBCDAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_student_answered_survey`
+--
+
+LOCK TABLES `wlt_student_answered_survey` WRITE;
+/*!40000 ALTER TABLE `wlt_student_answered_survey` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_student_answered_survey` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wlt_student_answered_survey_audit`
+--
+
+DROP TABLE IF EXISTS `wlt_student_answered_survey_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_student_answered_survey_audit` (
+                                                     `id` int(11) NOT NULL,
+                                                     `rev` int(11) NOT NULL,
+                                                     `project_id` int(11) DEFAULT NULL,
+                                                     `student_enrollment_id` int(11) DEFAULT NULL,
+                                                     `answered_survey_id` int(11) DEFAULT NULL,
+                                                     `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                     PRIMARY KEY (`id`,`rev`),
+                                                     KEY `rev_7233771bba2039be6047b538a296dbb3_idx` (`rev`),
+                                                     CONSTRAINT `rev_7233771bba2039be6047b538a296dbb3_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_student_answered_survey_audit`
+--
+
+LOCK TABLES `wlt_student_answered_survey_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_student_answered_survey_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_student_answered_survey_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `wlt_tracking`
 --
 
@@ -1758,13 +2282,13 @@ DROP TABLE IF EXISTS `wlt_tracking`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_tracking` (
-  `work_day_id` int(11) NOT NULL,
-  `activity_realization_id` int(11) NOT NULL,
-  PRIMARY KEY (`work_day_id`,`activity_realization_id`),
-  KEY `IDX_EEDEBCDBA23B8704` (`work_day_id`),
-  KEY `IDX_EEDEBCDB862E876A` (`activity_realization_id`),
-  CONSTRAINT `FK_EEDEBCDB862E876A` FOREIGN KEY (`activity_realization_id`) REFERENCES `wlt_activity_realization` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_EEDEBCDBA23B8704` FOREIGN KEY (`work_day_id`) REFERENCES `wlt_work_day` (`id`) ON DELETE CASCADE
+                                `work_day_id` int(11) NOT NULL,
+                                `activity_realization_id` int(11) NOT NULL,
+                                PRIMARY KEY (`work_day_id`,`activity_realization_id`),
+                                KEY `IDX_EEDEBCDBA23B8704` (`work_day_id`),
+                                KEY `IDX_EEDEBCDB862E876A` (`activity_realization_id`),
+                                CONSTRAINT `FK_EEDEBCDB862E876A` FOREIGN KEY (`activity_realization_id`) REFERENCES `wlt_activity_realization` (`id`) ON DELETE CASCADE,
+                                CONSTRAINT `FK_EEDEBCDBA23B8704` FOREIGN KEY (`work_day_id`) REFERENCES `wlt_work_day` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1778,116 +2302,148 @@ LOCK TABLES `wlt_tracking` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `wlt_visit`
+-- Table structure for table `wlt_tracking_audit`
 --
 
-DROP TABLE IF EXISTS `wlt_visit`;
+DROP TABLE IF EXISTS `wlt_tracking_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `wlt_visit` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `teacher_id` int(11) NOT NULL,
-  `workcenter_id` int(11) NOT NULL,
-  `date_time` datetime NOT NULL,
-  `detail` longtext COLLATE utf8mb4_spanish_ci,
-  PRIMARY KEY (`id`),
-  KEY `IDX_952C5F7841807E1D` (`teacher_id`),
-  KEY `IDX_952C5F78A2473C4B` (`workcenter_id`),
-  CONSTRAINT `FK_952C5F7841807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`),
-  CONSTRAINT `FK_952C5F78A2473C4B` FOREIGN KEY (`workcenter_id`) REFERENCES `workcenter` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+CREATE TABLE `wlt_tracking_audit` (
+                                      `work_day_id` int(11) NOT NULL,
+                                      `activity_realization_id` int(11) NOT NULL,
+                                      `rev` int(11) NOT NULL,
+                                      `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                      PRIMARY KEY (`work_day_id`,`activity_realization_id`,`rev`),
+                                      KEY `rev_401b520edfe354349e84f8011843482d_idx` (`rev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `wlt_visit`
+-- Dumping data for table `wlt_tracking_audit`
 --
 
-LOCK TABLES `wlt_visit` WRITE;
-/*!40000 ALTER TABLE `wlt_visit` DISABLE KEYS */;
-/*!40000 ALTER TABLE `wlt_visit` ENABLE KEYS */;
+LOCK TABLES `wlt_tracking_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_tracking_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_tracking_audit` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `wlt_visit_audit`
+-- Table structure for table `wlt_travel_expense`
 --
 
-DROP TABLE IF EXISTS `wlt_visit_audit`;
+DROP TABLE IF EXISTS `wlt_travel_expense`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `wlt_visit_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `teacher_id` int(11) DEFAULT NULL,
-  `workcenter_id` int(11) DEFAULT NULL,
-  `date_time` datetime DEFAULT NULL,
-  `detail` longtext COLLATE utf8mb4_spanish_ci,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_f8bf02d8fb496c8df3fcc8ad9bc828b7_idx` (`rev`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+CREATE TABLE `wlt_travel_expense` (
+                                      `id` int(11) NOT NULL AUTO_INCREMENT,
+                                      `teacher_id` int(11) NOT NULL,
+                                      `travel_route_id` int(11) NOT NULL,
+                                      `from_date_time` datetime NOT NULL,
+                                      `to_date_time` datetime NOT NULL,
+                                      `other_expenses_description` longtext COLLATE utf8mb4_unicode_ci,
+                                      `other_expenses` int(11) NOT NULL DEFAULT '0',
+                                      `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                                      PRIMARY KEY (`id`),
+                                      KEY `IDX_4524F57F41807E1D` (`teacher_id`),
+                                      KEY `IDX_4524F57F5E9DD7A3` (`travel_route_id`),
+                                      CONSTRAINT `FK_4524F57F41807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`),
+                                      CONSTRAINT `FK_4524F57F5E9DD7A3` FOREIGN KEY (`travel_route_id`) REFERENCES `edu_travel_route` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `wlt_visit_audit`
+-- Dumping data for table `wlt_travel_expense`
 --
 
-LOCK TABLES `wlt_visit_audit` WRITE;
-/*!40000 ALTER TABLE `wlt_visit_audit` DISABLE KEYS */;
-/*!40000 ALTER TABLE `wlt_visit_audit` ENABLE KEYS */;
+LOCK TABLES `wlt_travel_expense` WRITE;
+/*!40000 ALTER TABLE `wlt_travel_expense` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_travel_expense` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `wlt_visit_project`
+-- Table structure for table `wlt_travel_expense_agreement`
 --
 
-DROP TABLE IF EXISTS `wlt_visit_project`;
+DROP TABLE IF EXISTS `wlt_travel_expense_agreement`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `wlt_visit_project` (
-  `visit_id` int(11) NOT NULL,
-  `project_id` int(11) NOT NULL,
-  PRIMARY KEY (`visit_id`,`project_id`),
-  KEY `IDX_985B4FC575FA0FF2` (`visit_id`),
-  KEY `IDX_985B4FC5166D1F9C` (`project_id`),
-  CONSTRAINT `FK_985B4FC5166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_985B4FC575FA0FF2` FOREIGN KEY (`visit_id`) REFERENCES `wlt_visit` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+CREATE TABLE `wlt_travel_expense_agreement` (
+                                                `travel_expense_id` int(11) NOT NULL,
+                                                `agreement_id` int(11) NOT NULL,
+                                                PRIMARY KEY (`travel_expense_id`,`agreement_id`),
+                                                KEY `IDX_D3D5958BAA203AA8` (`travel_expense_id`),
+                                                KEY `IDX_D3D5958B24890B2B` (`agreement_id`),
+                                                CONSTRAINT `FK_D3D5958B24890B2B` FOREIGN KEY (`agreement_id`) REFERENCES `wlt_agreement` (`id`) ON DELETE CASCADE,
+                                                CONSTRAINT `FK_D3D5958BAA203AA8` FOREIGN KEY (`travel_expense_id`) REFERENCES `wlt_travel_expense` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `wlt_visit_project`
+-- Dumping data for table `wlt_travel_expense_agreement`
 --
 
-LOCK TABLES `wlt_visit_project` WRITE;
-/*!40000 ALTER TABLE `wlt_visit_project` DISABLE KEYS */;
-/*!40000 ALTER TABLE `wlt_visit_project` ENABLE KEYS */;
+LOCK TABLES `wlt_travel_expense_agreement` WRITE;
+/*!40000 ALTER TABLE `wlt_travel_expense_agreement` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_travel_expense_agreement` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `wlt_visit_student_enrollment`
+-- Table structure for table `wlt_travel_expense_agreement_audit`
 --
 
-DROP TABLE IF EXISTS `wlt_visit_student_enrollment`;
+DROP TABLE IF EXISTS `wlt_travel_expense_agreement_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `wlt_visit_student_enrollment` (
-  `visit_id` int(11) NOT NULL,
-  `student_enrollment_id` int(11) NOT NULL,
-  PRIMARY KEY (`visit_id`,`student_enrollment_id`),
-  KEY `IDX_FEC31DBA75FA0FF2` (`visit_id`),
-  KEY `IDX_FEC31DBADAE14AC5` (`student_enrollment_id`),
-  CONSTRAINT `FK_FEC31DBA75FA0FF2` FOREIGN KEY (`visit_id`) REFERENCES `wlt_visit` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_FEC31DBADAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+CREATE TABLE `wlt_travel_expense_agreement_audit` (
+                                                      `travel_expense_id` int(11) NOT NULL,
+                                                      `agreement_id` int(11) NOT NULL,
+                                                      `rev` int(11) NOT NULL,
+                                                      `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                      PRIMARY KEY (`travel_expense_id`,`agreement_id`,`rev`),
+                                                      KEY `rev_539576fd942d298158b17757be101662_idx` (`rev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `wlt_visit_student_enrollment`
+-- Dumping data for table `wlt_travel_expense_agreement_audit`
 --
 
-LOCK TABLES `wlt_visit_student_enrollment` WRITE;
-/*!40000 ALTER TABLE `wlt_visit_student_enrollment` DISABLE KEYS */;
-/*!40000 ALTER TABLE `wlt_visit_student_enrollment` ENABLE KEYS */;
+LOCK TABLES `wlt_travel_expense_agreement_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_travel_expense_agreement_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_travel_expense_agreement_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wlt_travel_expense_audit`
+--
+
+DROP TABLE IF EXISTS `wlt_travel_expense_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_travel_expense_audit` (
+                                            `id` int(11) NOT NULL,
+                                            `rev` int(11) NOT NULL,
+                                            `teacher_id` int(11) DEFAULT NULL,
+                                            `travel_route_id` int(11) DEFAULT NULL,
+                                            `from_date_time` datetime DEFAULT NULL,
+                                            `to_date_time` datetime DEFAULT NULL,
+                                            `other_expenses_description` longtext COLLATE utf8mb4_unicode_ci,
+                                            `other_expenses` int(11) DEFAULT '0',
+                                            `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                                            `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                            PRIMARY KEY (`id`,`rev`),
+                                            KEY `rev_a88868b0c6712e0abd1e296b1217a283_idx` (`rev`),
+                                            CONSTRAINT `rev_a88868b0c6712e0abd1e296b1217a283_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_travel_expense_audit`
+--
+
+LOCK TABLES `wlt_travel_expense_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_travel_expense_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_travel_expense_audit` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1898,22 +2454,22 @@ DROP TABLE IF EXISTS `wlt_work_day`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_work_day` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `agreement_id` int(11) NOT NULL,
-  `hours` int(11) NOT NULL,
-  `date` date NOT NULL,
-  `notes` longtext COLLATE utf8mb4_spanish_ci,
-  `locked` tinyint(1) NOT NULL,
-  `absence` int(11) NOT NULL,
-  `start_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `end_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `start_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `end_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `other_activities` longtext COLLATE utf8mb4_spanish_ci,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_D96CA0CB24890B2BAA9E377A` (`agreement_id`,`date`),
-  KEY `IDX_D96CA0CB24890B2B` (`agreement_id`),
-  CONSTRAINT `FK_D96CA0CB24890B2B` FOREIGN KEY (`agreement_id`) REFERENCES `wlt_agreement` (`id`)
+                                `id` int(11) NOT NULL AUTO_INCREMENT,
+                                `agreement_id` int(11) NOT NULL,
+                                `hours` int(11) NOT NULL,
+                                `date` date NOT NULL,
+                                `notes` longtext COLLATE utf8mb4_spanish_ci,
+                                `locked` tinyint(1) NOT NULL,
+                                `absence` int(11) NOT NULL,
+                                `start_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `end_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `start_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `end_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                `other_activities` longtext COLLATE utf8mb4_spanish_ci,
+                                PRIMARY KEY (`id`),
+                                UNIQUE KEY `UNIQ_D96CA0CB24890B2BAA9E377A` (`agreement_id`,`date`),
+                                KEY `IDX_D96CA0CB24890B2B` (`agreement_id`),
+                                CONSTRAINT `FK_D96CA0CB24890B2B` FOREIGN KEY (`agreement_id`) REFERENCES `wlt_agreement` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1935,22 +2491,23 @@ DROP TABLE IF EXISTS `wlt_work_day_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wlt_work_day_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `agreement_id` int(11) DEFAULT NULL,
-  `hours` int(11) DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  `notes` longtext COLLATE utf8mb4_spanish_ci,
-  `locked` tinyint(1) DEFAULT NULL,
-  `absence` int(11) DEFAULT NULL,
-  `start_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `end_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `start_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `end_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `other_activities` longtext COLLATE utf8mb4_spanish_ci,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_a182ece7d34180bb9b41759ce4dafebc_idx` (`rev`)
+                                      `id` int(11) NOT NULL,
+                                      `rev` int(11) NOT NULL,
+                                      `agreement_id` int(11) DEFAULT NULL,
+                                      `hours` int(11) DEFAULT NULL,
+                                      `date` date DEFAULT NULL,
+                                      `notes` longtext COLLATE utf8mb4_spanish_ci,
+                                      `locked` tinyint(1) DEFAULT NULL,
+                                      `absence` int(11) DEFAULT NULL,
+                                      `start_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                      `end_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                      `start_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                      `end_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                      `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                      `other_activities` longtext COLLATE utf8mb4_spanish_ci,
+                                      PRIMARY KEY (`id`,`rev`),
+                                      KEY `rev_a182ece7d34180bb9b41759ce4dafebc_idx` (`rev`),
+                                      CONSTRAINT `rev_a182ece7d34180bb9b41759ce4dafebc_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1964,6 +2521,70 @@ LOCK TABLES `wlt_work_day_audit` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `wlt_work_tutor_answered_survey`
+--
+
+DROP TABLE IF EXISTS `wlt_work_tutor_answered_survey`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_work_tutor_answered_survey` (
+                                                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                                                  `project_id` int(11) NOT NULL,
+                                                  `academic_year_id` int(11) NOT NULL,
+                                                  `work_tutor_id` int(11) NOT NULL,
+                                                  `answered_survey_id` int(11) NOT NULL,
+                                                  PRIMARY KEY (`id`),
+                                                  KEY `IDX_B4644BE3166D1F9C` (`project_id`),
+                                                  KEY `IDX_B4644BE3C54F3401` (`academic_year_id`),
+                                                  KEY `IDX_B4644BE3F53AEEAD` (`work_tutor_id`),
+                                                  KEY `IDX_B4644BE3A97283E6` (`answered_survey_id`),
+                                                  CONSTRAINT `FK_B4644BE3166D1F9C` FOREIGN KEY (`project_id`) REFERENCES `wlt_project` (`id`),
+                                                  CONSTRAINT `FK_B4644BE3A97283E6` FOREIGN KEY (`answered_survey_id`) REFERENCES `answered_survey` (`id`),
+                                                  CONSTRAINT `FK_B4644BE3C54F3401` FOREIGN KEY (`academic_year_id`) REFERENCES `edu_academic_year` (`id`),
+                                                  CONSTRAINT `FK_B4644BE3F53AEEAD` FOREIGN KEY (`work_tutor_id`) REFERENCES `person` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_work_tutor_answered_survey`
+--
+
+LOCK TABLES `wlt_work_tutor_answered_survey` WRITE;
+/*!40000 ALTER TABLE `wlt_work_tutor_answered_survey` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_work_tutor_answered_survey` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wlt_work_tutor_answered_survey_audit`
+--
+
+DROP TABLE IF EXISTS `wlt_work_tutor_answered_survey_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wlt_work_tutor_answered_survey_audit` (
+                                                        `id` int(11) NOT NULL,
+                                                        `rev` int(11) NOT NULL,
+                                                        `project_id` int(11) DEFAULT NULL,
+                                                        `academic_year_id` int(11) DEFAULT NULL,
+                                                        `work_tutor_id` int(11) DEFAULT NULL,
+                                                        `answered_survey_id` int(11) DEFAULT NULL,
+                                                        `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                        PRIMARY KEY (`id`,`rev`),
+                                                        KEY `rev_583e3ede99c93193ba43436008b164e7_idx` (`rev`),
+                                                        CONSTRAINT `rev_583e3ede99c93193ba43436008b164e7_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wlt_work_tutor_answered_survey_audit`
+--
+
+LOCK TABLES `wlt_work_tutor_answered_survey_audit` WRITE;
+/*!40000 ALTER TABLE `wlt_work_tutor_answered_survey_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wlt_work_tutor_answered_survey_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `workcenter`
 --
 
@@ -1971,21 +2592,21 @@ DROP TABLE IF EXISTS `workcenter`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `workcenter` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `company_id` int(11) NOT NULL,
-  `manager_id` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `city` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `zip_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `phone_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `fax_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_E2337C97979B1AD6` (`company_id`),
-  KEY `IDX_E2337C97783E3463` (`manager_id`),
-  CONSTRAINT `FK_E2337C97783E3463` FOREIGN KEY (`manager_id`) REFERENCES `person` (`id`),
-  CONSTRAINT `FK_E2337C97979B1AD6` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
+                              `id` int(11) NOT NULL AUTO_INCREMENT,
+                              `company_id` int(11) NOT NULL,
+                              `manager_id` int(11) DEFAULT NULL,
+                              `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                              `address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                              `city` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                              `zip_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                              `phone_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                              `fax_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                              `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                              PRIMARY KEY (`id`),
+                              KEY `IDX_E2337C97979B1AD6` (`company_id`),
+                              KEY `IDX_E2337C97783E3463` (`manager_id`),
+                              CONSTRAINT `FK_E2337C97783E3463` FOREIGN KEY (`manager_id`) REFERENCES `person` (`id`),
+                              CONSTRAINT `FK_E2337C97979B1AD6` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2007,20 +2628,21 @@ DROP TABLE IF EXISTS `workcenter_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `workcenter_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `company_id` int(11) DEFAULT NULL,
-  `manager_id` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `city` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `zip_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `phone_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `fax_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_54a4a65186f56b9de79ff6f4b726b582_idx` (`rev`)
+                                    `id` int(11) NOT NULL,
+                                    `rev` int(11) NOT NULL,
+                                    `company_id` int(11) DEFAULT NULL,
+                                    `manager_id` int(11) DEFAULT NULL,
+                                    `name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                    `address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                    `city` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                    `zip_code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                    `phone_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                    `fax_number` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                    `email_address` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                    `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                    PRIMARY KEY (`id`,`rev`),
+                                    KEY `rev_54a4a65186f56b9de79ff6f4b726b582_idx` (`rev`),
+                                    CONSTRAINT `rev_54a4a65186f56b9de79ff6f4b726b582_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2041,14 +2663,14 @@ DROP TABLE IF EXISTS `wpt_activity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_activity` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `shift_id` int(11) NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `description` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_4E3A8191BB70BC0E77153098` (`shift_id`,`code`),
-  KEY `IDX_4E3A8191BB70BC0E` (`shift_id`),
-  CONSTRAINT `FK_4E3A8191BB70BC0E` FOREIGN KEY (`shift_id`) REFERENCES `wpt_shift` (`id`)
+                                `id` int(11) NOT NULL AUTO_INCREMENT,
+                                `shift_id` int(11) NOT NULL,
+                                `code` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                `description` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
+                                PRIMARY KEY (`id`),
+                                UNIQUE KEY `UNIQ_4E3A8191BB70BC0E77153098` (`shift_id`,`code`),
+                                KEY `IDX_4E3A8191BB70BC0E` (`shift_id`),
+                                CONSTRAINT `FK_4E3A8191BB70BC0E` FOREIGN KEY (`shift_id`) REFERENCES `wpt_shift` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2070,14 +2692,15 @@ DROP TABLE IF EXISTS `wpt_activity_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_activity_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `shift_id` int(11) DEFAULT NULL,
-  `code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `description` longtext COLLATE utf8mb4_spanish_ci,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_9c2622768c8baa59674e5941fb6223f9_idx` (`rev`)
+                                      `id` int(11) NOT NULL,
+                                      `rev` int(11) NOT NULL,
+                                      `shift_id` int(11) DEFAULT NULL,
+                                      `code` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                      `description` longtext COLLATE utf8mb4_spanish_ci,
+                                      `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                      PRIMARY KEY (`id`,`rev`),
+                                      KEY `rev_9c2622768c8baa59674e5941fb6223f9_idx` (`rev`),
+                                      CONSTRAINT `rev_9c2622768c8baa59674e5941fb6223f9_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2098,13 +2721,13 @@ DROP TABLE IF EXISTS `wpt_activity_criterion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_activity_criterion` (
-  `activity_id` int(11) NOT NULL,
-  `criterion_id` int(11) NOT NULL,
-  PRIMARY KEY (`activity_id`,`criterion_id`),
-  KEY `IDX_6E60352681C06096` (`activity_id`),
-  KEY `IDX_6E60352697766307` (`criterion_id`),
-  CONSTRAINT `FK_6E60352681C06096` FOREIGN KEY (`activity_id`) REFERENCES `wpt_activity` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_6E60352697766307` FOREIGN KEY (`criterion_id`) REFERENCES `edu_criterion` (`id`) ON DELETE CASCADE
+                                          `activity_id` int(11) NOT NULL,
+                                          `criterion_id` int(11) NOT NULL,
+                                          PRIMARY KEY (`activity_id`,`criterion_id`),
+                                          KEY `IDX_6E60352681C06096` (`activity_id`),
+                                          KEY `IDX_6E60352697766307` (`criterion_id`),
+                                          CONSTRAINT `FK_6E60352681C06096` FOREIGN KEY (`activity_id`) REFERENCES `wpt_activity` (`id`) ON DELETE CASCADE,
+                                          CONSTRAINT `FK_6E60352697766307` FOREIGN KEY (`criterion_id`) REFERENCES `edu_criterion` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2119,6 +2742,32 @@ INSERT INTO `wpt_activity_criterion` VALUES (1,1),(1,2),(1,3),(1,4),(1,5),(1,6),
 UNLOCK TABLES;
 
 --
+-- Table structure for table `wpt_activity_criterion_audit`
+--
+
+DROP TABLE IF EXISTS `wpt_activity_criterion_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wpt_activity_criterion_audit` (
+                                                `activity_id` int(11) NOT NULL,
+                                                `criterion_id` int(11) NOT NULL,
+                                                `rev` int(11) NOT NULL,
+                                                `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                PRIMARY KEY (`activity_id`,`criterion_id`,`rev`),
+                                                KEY `rev_42b2c0fbadffd3ee42fe5760da2d16a7_idx` (`rev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wpt_activity_criterion_audit`
+--
+
+LOCK TABLES `wpt_activity_criterion_audit` WRITE;
+/*!40000 ALTER TABLE `wpt_activity_criterion_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_activity_criterion_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `wpt_activity_tracking`
 --
 
@@ -2126,15 +2775,15 @@ DROP TABLE IF EXISTS `wpt_activity_tracking`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_activity_tracking` (
-  `tracked_work_day_id` int(11) NOT NULL,
-  `activity_id` int(11) NOT NULL,
-  `notes` longtext COLLATE utf8mb4_spanish_ci,
-  `hours` int(11) NOT NULL,
-  PRIMARY KEY (`tracked_work_day_id`,`activity_id`),
-  KEY `IDX_FD82654581C06096` (`activity_id`),
-  KEY `IDX_FD826545BE757E4C` (`tracked_work_day_id`),
-  CONSTRAINT `FK_FD82654581C06096` FOREIGN KEY (`activity_id`) REFERENCES `wpt_activity` (`id`),
-  CONSTRAINT `FK_FD826545BE757E4C` FOREIGN KEY (`tracked_work_day_id`) REFERENCES `wpt_tracked_work_day` (`id`)
+                                         `tracked_work_day_id` int(11) NOT NULL,
+                                         `activity_id` int(11) NOT NULL,
+                                         `notes` longtext COLLATE utf8mb4_spanish_ci,
+                                         `hours` int(11) NOT NULL,
+                                         PRIMARY KEY (`tracked_work_day_id`,`activity_id`),
+                                         KEY `IDX_FD82654581C06096` (`activity_id`),
+                                         KEY `IDX_FD826545BE757E4C` (`tracked_work_day_id`),
+                                         CONSTRAINT `FK_FD82654581C06096` FOREIGN KEY (`activity_id`) REFERENCES `wpt_activity` (`id`),
+                                         CONSTRAINT `FK_FD826545BE757E4C` FOREIGN KEY (`tracked_work_day_id`) REFERENCES `wpt_tracked_work_day` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2155,22 +2804,23 @@ DROP TABLE IF EXISTS `wpt_agreement`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_agreement` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `shift_id` int(11) NOT NULL,
-  `workcenter_id` int(11) NOT NULL,
-  `start_date` date DEFAULT NULL,
-  `end_date` date DEFAULT NULL,
-  `sign_date` date DEFAULT NULL,
-  `default_start_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `default_end_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `default_start_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `default_end_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_22310F94BB70BC0E` (`shift_id`),
-  KEY `IDX_22310F94A2473C4B` (`workcenter_id`),
-  CONSTRAINT `FK_22310F94A2473C4B` FOREIGN KEY (`workcenter_id`) REFERENCES `workcenter` (`id`),
-  CONSTRAINT `FK_22310F94BB70BC0E` FOREIGN KEY (`shift_id`) REFERENCES `wpt_shift` (`id`)
+                                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                                 `shift_id` int(11) NOT NULL,
+                                 `workcenter_id` int(11) NOT NULL,
+                                 `start_date` date DEFAULT NULL,
+                                 `end_date` date DEFAULT NULL,
+                                 `sign_date` date DEFAULT NULL,
+                                 `default_start_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `default_end_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `default_start_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `default_end_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                 `locked` tinyint(1) NOT NULL,
+                                 PRIMARY KEY (`id`),
+                                 KEY `IDX_22310F94BB70BC0E` (`shift_id`),
+                                 KEY `IDX_22310F94A2473C4B` (`workcenter_id`),
+                                 CONSTRAINT `FK_22310F94A2473C4B` FOREIGN KEY (`workcenter_id`) REFERENCES `workcenter` (`id`),
+                                 CONSTRAINT `FK_22310F94BB70BC0E` FOREIGN KEY (`shift_id`) REFERENCES `wpt_shift` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2180,7 +2830,7 @@ CREATE TABLE `wpt_agreement` (
 
 LOCK TABLES `wpt_agreement` WRITE;
 /*!40000 ALTER TABLE `wpt_agreement` DISABLE KEYS */;
-INSERT INTO `wpt_agreement` VALUES (1,1,1,'2022-03-24','2022-06-22',NULL,'08:00','15:00',NULL,NULL,NULL),(2,1,3,'2022-03-24','2022-06-22',NULL,'08:00','15:00',NULL,NULL,NULL),(3,1,4,'2022-03-24','2022-06-22',NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `wpt_agreement` VALUES (1,1,1,'2022-03-24','2022-06-22',NULL,'08:00','15:00',NULL,NULL,NULL,0),(2,1,3,'2022-03-24','2022-06-22',NULL,'08:00','15:00',NULL,NULL,NULL,0),(3,1,4,'2022-03-24','2022-06-22',NULL,NULL,NULL,NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `wpt_agreement` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2192,13 +2842,13 @@ DROP TABLE IF EXISTS `wpt_agreement_activity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_agreement_activity` (
-  `agreement_enrollment_id` int(11) NOT NULL,
-  `activity_id` int(11) NOT NULL,
-  PRIMARY KEY (`agreement_enrollment_id`,`activity_id`),
-  KEY `IDX_889D477F81C06096` (`activity_id`),
-  KEY `IDX_889D477FA32BEB28` (`agreement_enrollment_id`),
-  CONSTRAINT `FK_889D477F81C06096` FOREIGN KEY (`activity_id`) REFERENCES `wpt_activity` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_889D477FA32BEB28` FOREIGN KEY (`agreement_enrollment_id`) REFERENCES `wpt_agreement_enrollment` (`id`) ON DELETE CASCADE
+                                          `agreement_enrollment_id` int(11) NOT NULL,
+                                          `activity_id` int(11) NOT NULL,
+                                          PRIMARY KEY (`agreement_enrollment_id`,`activity_id`),
+                                          KEY `IDX_889D477F81C06096` (`activity_id`),
+                                          KEY `IDX_889D477FA32BEB28` (`agreement_enrollment_id`),
+                                          CONSTRAINT `FK_889D477F81C06096` FOREIGN KEY (`activity_id`) REFERENCES `wpt_activity` (`id`) ON DELETE CASCADE,
+                                          CONSTRAINT `FK_889D477FA32BEB28` FOREIGN KEY (`agreement_enrollment_id`) REFERENCES `wpt_agreement_enrollment` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2220,21 +2870,23 @@ DROP TABLE IF EXISTS `wpt_agreement_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_agreement_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `shift_id` int(11) DEFAULT NULL,
-  `workcenter_id` int(11) DEFAULT NULL,
-  `start_date` date DEFAULT NULL,
-  `end_date` date DEFAULT NULL,
-  `sign_date` date DEFAULT NULL,
-  `default_start_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `default_end_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `default_start_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `default_end_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_c44410e99c46f4c316201779be629ca6_idx` (`rev`)
+                                       `id` int(11) NOT NULL,
+                                       `rev` int(11) NOT NULL,
+                                       `shift_id` int(11) DEFAULT NULL,
+                                       `workcenter_id` int(11) DEFAULT NULL,
+                                       `start_date` date DEFAULT NULL,
+                                       `end_date` date DEFAULT NULL,
+                                       `sign_date` date DEFAULT NULL,
+                                       `default_start_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                       `default_end_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                       `default_start_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                       `default_end_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                       `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                       `name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                       `locked` tinyint(1) DEFAULT NULL,
+                                       PRIMARY KEY (`id`,`rev`),
+                                       KEY `rev_c44410e99c46f4c316201779be629ca6_idx` (`rev`),
+                                       CONSTRAINT `rev_c44410e99c46f4c316201779be629ca6_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2255,33 +2907,33 @@ DROP TABLE IF EXISTS `wpt_agreement_enrollment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_agreement_enrollment` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `agreement_id` int(11) NOT NULL,
-  `student_enrollment_id` int(11) NOT NULL,
-  `student_survey_id` int(11) DEFAULT NULL,
-  `work_tutor_id` int(11) NOT NULL,
-  `educational_tutor_id` int(11) NOT NULL,
-  `company_survey_id` int(11) DEFAULT NULL,
-  `additional_work_tutor_id` int(11) DEFAULT NULL,
-  `additional_educational_tutor_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_A24B4F7824890B2BDAE14AC5` (`agreement_id`,`student_enrollment_id`),
-  KEY `IDX_A24B4F7824890B2B` (`agreement_id`),
-  KEY `IDX_A24B4F78DAE14AC5` (`student_enrollment_id`),
-  KEY `IDX_A24B4F78D490911D` (`student_survey_id`),
-  KEY `IDX_A24B4F78F53AEEAD` (`work_tutor_id`),
-  KEY `IDX_A24B4F78E7F72E80` (`educational_tutor_id`),
-  KEY `IDX_A24B4F7880E5DA6D` (`company_survey_id`),
-  KEY `IDX_A24B4F78364A8C43` (`additional_work_tutor_id`),
-  KEY `IDX_A24B4F786C7EFCBC` (`additional_educational_tutor_id`),
-  CONSTRAINT `FK_A24B4F7824890B2B` FOREIGN KEY (`agreement_id`) REFERENCES `wpt_agreement` (`id`),
-  CONSTRAINT `FK_A24B4F78364A8C43` FOREIGN KEY (`additional_work_tutor_id`) REFERENCES `person` (`id`),
-  CONSTRAINT `FK_A24B4F786C7EFCBC` FOREIGN KEY (`additional_educational_tutor_id`) REFERENCES `edu_teacher` (`id`),
-  CONSTRAINT `FK_A24B4F7880E5DA6D` FOREIGN KEY (`company_survey_id`) REFERENCES `answered_survey` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `FK_A24B4F78D490911D` FOREIGN KEY (`student_survey_id`) REFERENCES `answered_survey` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `FK_A24B4F78DAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`),
-  CONSTRAINT `FK_A24B4F78E7F72E80` FOREIGN KEY (`educational_tutor_id`) REFERENCES `edu_teacher` (`id`),
-  CONSTRAINT `FK_A24B4F78F53AEEAD` FOREIGN KEY (`work_tutor_id`) REFERENCES `person` (`id`)
+                                            `id` int(11) NOT NULL AUTO_INCREMENT,
+                                            `agreement_id` int(11) NOT NULL,
+                                            `student_enrollment_id` int(11) NOT NULL,
+                                            `student_survey_id` int(11) DEFAULT NULL,
+                                            `work_tutor_id` int(11) NOT NULL,
+                                            `educational_tutor_id` int(11) NOT NULL,
+                                            `company_survey_id` int(11) DEFAULT NULL,
+                                            `additional_work_tutor_id` int(11) DEFAULT NULL,
+                                            `additional_educational_tutor_id` int(11) DEFAULT NULL,
+                                            PRIMARY KEY (`id`),
+                                            UNIQUE KEY `UNIQ_A24B4F7824890B2BDAE14AC5` (`agreement_id`,`student_enrollment_id`),
+                                            KEY `IDX_A24B4F7824890B2B` (`agreement_id`),
+                                            KEY `IDX_A24B4F78DAE14AC5` (`student_enrollment_id`),
+                                            KEY `IDX_A24B4F78D490911D` (`student_survey_id`),
+                                            KEY `IDX_A24B4F78F53AEEAD` (`work_tutor_id`),
+                                            KEY `IDX_A24B4F78E7F72E80` (`educational_tutor_id`),
+                                            KEY `IDX_A24B4F7880E5DA6D` (`company_survey_id`),
+                                            KEY `IDX_A24B4F78364A8C43` (`additional_work_tutor_id`),
+                                            KEY `IDX_A24B4F786C7EFCBC` (`additional_educational_tutor_id`),
+                                            CONSTRAINT `FK_A24B4F7824890B2B` FOREIGN KEY (`agreement_id`) REFERENCES `wpt_agreement` (`id`),
+                                            CONSTRAINT `FK_A24B4F78364A8C43` FOREIGN KEY (`additional_work_tutor_id`) REFERENCES `person` (`id`),
+                                            CONSTRAINT `FK_A24B4F786C7EFCBC` FOREIGN KEY (`additional_educational_tutor_id`) REFERENCES `edu_teacher` (`id`),
+                                            CONSTRAINT `FK_A24B4F7880E5DA6D` FOREIGN KEY (`company_survey_id`) REFERENCES `answered_survey` (`id`) ON DELETE SET NULL,
+                                            CONSTRAINT `FK_A24B4F78D490911D` FOREIGN KEY (`student_survey_id`) REFERENCES `answered_survey` (`id`) ON DELETE SET NULL,
+                                            CONSTRAINT `FK_A24B4F78DAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`),
+                                            CONSTRAINT `FK_A24B4F78E7F72E80` FOREIGN KEY (`educational_tutor_id`) REFERENCES `edu_teacher` (`id`),
+                                            CONSTRAINT `FK_A24B4F78F53AEEAD` FOREIGN KEY (`work_tutor_id`) REFERENCES `person` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2296,6 +2948,236 @@ INSERT INTO `wpt_agreement_enrollment` VALUES (1,1,33,NULL,47,15,NULL,NULL,NULL)
 UNLOCK TABLES;
 
 --
+-- Table structure for table `wpt_contact`
+--
+
+DROP TABLE IF EXISTS `wpt_contact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wpt_contact` (
+                               `id` int(11) NOT NULL AUTO_INCREMENT,
+                               `teacher_id` int(11) NOT NULL,
+                               `workcenter_id` int(11) NOT NULL,
+                               `date_time` datetime NOT NULL,
+                               `detail` longtext COLLATE utf8mb4_spanish_ci,
+                               `method_id` int(11) DEFAULT NULL,
+                               PRIMARY KEY (`id`),
+                               KEY `IDX_BA9039F141807E1D` (`teacher_id`),
+                               KEY `IDX_BA9039F1A2473C4B` (`workcenter_id`),
+                               KEY `IDX_BA9039F119883967` (`method_id`),
+                               CONSTRAINT `FK_BE387B1C19883967` FOREIGN KEY (`method_id`) REFERENCES `edu_contact_method` (`id`),
+                               CONSTRAINT `FK_BE387B1C41807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`),
+                               CONSTRAINT `FK_BE387B1CA2473C4B` FOREIGN KEY (`workcenter_id`) REFERENCES `workcenter` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wpt_contact`
+--
+
+LOCK TABLES `wpt_contact` WRITE;
+/*!40000 ALTER TABLE `wpt_contact` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_contact` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wpt_contact_agreement`
+--
+
+DROP TABLE IF EXISTS `wpt_contact_agreement`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wpt_contact_agreement` (
+                                         `contact_id` int(11) NOT NULL,
+                                         `agreement_id` int(11) NOT NULL,
+                                         PRIMARY KEY (`contact_id`,`agreement_id`),
+                                         KEY `IDX_B560CE08E7A1254A` (`contact_id`),
+                                         KEY `IDX_B560CE0824890B2B` (`agreement_id`),
+                                         CONSTRAINT `FK_AFFBB6224890B2B` FOREIGN KEY (`agreement_id`) REFERENCES `wpt_agreement` (`id`) ON DELETE CASCADE,
+                                         CONSTRAINT `FK_B560CE08E7A1254A` FOREIGN KEY (`contact_id`) REFERENCES `wpt_contact` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wpt_contact_agreement`
+--
+
+LOCK TABLES `wpt_contact_agreement` WRITE;
+/*!40000 ALTER TABLE `wpt_contact_agreement` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_contact_agreement` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wpt_contact_agreement_audit`
+--
+
+DROP TABLE IF EXISTS `wpt_contact_agreement_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wpt_contact_agreement_audit` (
+                                               `contact_id` int(11) NOT NULL,
+                                               `agreement_id` int(11) NOT NULL,
+                                               `rev` int(11) NOT NULL,
+                                               `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                               PRIMARY KEY (`contact_id`,`agreement_id`,`rev`),
+                                               KEY `rev_670f76fa408fe3e42c32679f18c3bbe7_idx` (`rev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wpt_contact_agreement_audit`
+--
+
+LOCK TABLES `wpt_contact_agreement_audit` WRITE;
+/*!40000 ALTER TABLE `wpt_contact_agreement_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_contact_agreement_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wpt_contact_audit`
+--
+
+DROP TABLE IF EXISTS `wpt_contact_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wpt_contact_audit` (
+                                     `id` int(11) NOT NULL,
+                                     `rev` int(11) NOT NULL,
+                                     `teacher_id` int(11) DEFAULT NULL,
+                                     `workcenter_id` int(11) DEFAULT NULL,
+                                     `method_id` int(11) DEFAULT NULL,
+                                     `date_time` datetime DEFAULT NULL,
+                                     `detail` longtext COLLATE utf8mb4_unicode_ci,
+                                     `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                     PRIMARY KEY (`id`,`rev`),
+                                     KEY `rev_14a73b1dc586567879897aac041a9700_idx` (`rev`),
+                                     CONSTRAINT `rev_14a73b1dc586567879897aac041a9700_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wpt_contact_audit`
+--
+
+LOCK TABLES `wpt_contact_audit` WRITE;
+/*!40000 ALTER TABLE `wpt_contact_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_contact_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wpt_contact_student_enrollment`
+--
+
+DROP TABLE IF EXISTS `wpt_contact_student_enrollment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wpt_contact_student_enrollment` (
+                                                  `contact_id` int(11) NOT NULL,
+                                                  `student_enrollment_id` int(11) NOT NULL,
+                                                  PRIMARY KEY (`contact_id`,`student_enrollment_id`),
+                                                  KEY `IDX_DC95389BE7A1254A` (`contact_id`),
+                                                  KEY `IDX_DC95389BDAE14AC5` (`student_enrollment_id`),
+                                                  CONSTRAINT `FK_3740B20DAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`) ON DELETE CASCADE,
+                                                  CONSTRAINT `FK_DC95389BE7A1254A` FOREIGN KEY (`contact_id`) REFERENCES `wpt_contact` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wpt_contact_student_enrollment`
+--
+
+LOCK TABLES `wpt_contact_student_enrollment` WRITE;
+/*!40000 ALTER TABLE `wpt_contact_student_enrollment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_contact_student_enrollment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wpt_contact_student_enrollment_audit`
+--
+
+DROP TABLE IF EXISTS `wpt_contact_student_enrollment_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wpt_contact_student_enrollment_audit` (
+                                                        `contact_id` int(11) NOT NULL,
+                                                        `student_enrollment_id` int(11) NOT NULL,
+                                                        `rev` int(11) NOT NULL,
+                                                        `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                        PRIMARY KEY (`contact_id`,`student_enrollment_id`,`rev`),
+                                                        KEY `rev_676fe97e25939c1e21812b83094a2efa_idx` (`rev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wpt_contact_student_enrollment_audit`
+--
+
+LOCK TABLES `wpt_contact_student_enrollment_audit` WRITE;
+/*!40000 ALTER TABLE `wpt_contact_student_enrollment_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_contact_student_enrollment_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wpt_educational_tutor_answered_survey`
+--
+
+DROP TABLE IF EXISTS `wpt_educational_tutor_answered_survey`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wpt_educational_tutor_answered_survey` (
+                                                         `id` int(11) NOT NULL AUTO_INCREMENT,
+                                                         `shift_id` int(11) NOT NULL,
+                                                         `teacher_id` int(11) NOT NULL,
+                                                         `answered_survey_id` int(11) NOT NULL,
+                                                         PRIMARY KEY (`id`),
+                                                         KEY `IDX_62609090BB70BC0E` (`shift_id`),
+                                                         KEY `IDX_6260909041807E1D` (`teacher_id`),
+                                                         KEY `IDX_62609090A97283E6` (`answered_survey_id`),
+                                                         CONSTRAINT `FK_6260909041807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`),
+                                                         CONSTRAINT `FK_62609090A97283E6` FOREIGN KEY (`answered_survey_id`) REFERENCES `answered_survey` (`id`),
+                                                         CONSTRAINT `FK_62609090BB70BC0E` FOREIGN KEY (`shift_id`) REFERENCES `wpt_shift` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wpt_educational_tutor_answered_survey`
+--
+
+LOCK TABLES `wpt_educational_tutor_answered_survey` WRITE;
+/*!40000 ALTER TABLE `wpt_educational_tutor_answered_survey` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_educational_tutor_answered_survey` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wpt_educational_tutor_answered_survey_audit`
+--
+
+DROP TABLE IF EXISTS `wpt_educational_tutor_answered_survey_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wpt_educational_tutor_answered_survey_audit` (
+                                                               `id` int(11) NOT NULL,
+                                                               `rev` int(11) NOT NULL,
+                                                               `shift_id` int(11) DEFAULT NULL,
+                                                               `teacher_id` int(11) DEFAULT NULL,
+                                                               `answered_survey_id` int(11) DEFAULT NULL,
+                                                               `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                               PRIMARY KEY (`id`,`rev`),
+                                                               KEY `rev_d3a1a7f9086d9bd8a93c67e81b8519eb_idx` (`rev`),
+                                                               CONSTRAINT `rev_d3a1a7f9086d9bd8a93c67e81b8519eb_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wpt_educational_tutor_answered_survey_audit`
+--
+
+LOCK TABLES `wpt_educational_tutor_answered_survey_audit` WRITE;
+/*!40000 ALTER TABLE `wpt_educational_tutor_answered_survey_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_educational_tutor_answered_survey_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `wpt_report`
 --
 
@@ -2303,20 +3185,20 @@ DROP TABLE IF EXISTS `wpt_report`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_report` (
-  `agreement_enrollment_id` int(11) NOT NULL,
-  `work_activities` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
-  `professional_competence` int(11) NOT NULL,
-  `organizational_competence` int(11) NOT NULL,
-  `relational_competence` int(11) NOT NULL,
-  `contingency_response` int(11) NOT NULL,
-  `other_description1` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `other1` int(11) DEFAULT NULL,
-  `other_description2` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `other2` int(11) DEFAULT NULL,
-  `proposed_changes` longtext COLLATE utf8mb4_spanish_ci,
-  `sign_date` date NOT NULL,
-  PRIMARY KEY (`agreement_enrollment_id`),
-  CONSTRAINT `FK_8FD6E551A32BEB28` FOREIGN KEY (`agreement_enrollment_id`) REFERENCES `wpt_agreement_enrollment` (`id`)
+                              `agreement_enrollment_id` int(11) NOT NULL,
+                              `work_activities` longtext COLLATE utf8mb4_spanish_ci NOT NULL,
+                              `professional_competence` int(11) NOT NULL,
+                              `organizational_competence` int(11) NOT NULL,
+                              `relational_competence` int(11) NOT NULL,
+                              `contingency_response` int(11) NOT NULL,
+                              `other_description1` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                              `other1` int(11) DEFAULT NULL,
+                              `other_description2` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                              `other2` int(11) DEFAULT NULL,
+                              `proposed_changes` longtext COLLATE utf8mb4_spanish_ci,
+                              `sign_date` date NOT NULL,
+                              PRIMARY KEY (`agreement_enrollment_id`),
+                              CONSTRAINT `FK_8FD6E551A32BEB28` FOREIGN KEY (`agreement_enrollment_id`) REFERENCES `wpt_agreement_enrollment` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2337,36 +3219,37 @@ DROP TABLE IF EXISTS `wpt_shift`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_shift` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `subject_id` int(11) NOT NULL,
-  `student_survey_id` int(11) DEFAULT NULL,
-  `company_survey_id` int(11) DEFAULT NULL,
-  `educational_tutor_survey_id` int(11) DEFAULT NULL,
-  `attendance_report_template_id` int(11) DEFAULT NULL,
-  `final_report_template_id` int(11) DEFAULT NULL,
-  `weekly_activity_report_template_id` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `hours` int(11) NOT NULL,
-  `type` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `quarter` int(11) NOT NULL,
-  `activity_summary_report_template_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_584DA96023EDC87` (`subject_id`),
-  KEY `IDX_584DA960D490911D` (`student_survey_id`),
-  KEY `IDX_584DA96080E5DA6D` (`company_survey_id`),
-  KEY `IDX_584DA96068F6798B` (`educational_tutor_survey_id`),
-  KEY `IDX_584DA96013E6472B` (`attendance_report_template_id`),
-  KEY `IDX_584DA96010BDE131` (`final_report_template_id`),
-  KEY `IDX_584DA9603BBF8EEC` (`weekly_activity_report_template_id`),
-  KEY `IDX_584DA9607791D10` (`activity_summary_report_template_id`),
-  CONSTRAINT `FK_584DA96010BDE131` FOREIGN KEY (`final_report_template_id`) REFERENCES `edu_report_template` (`id`),
-  CONSTRAINT `FK_584DA96013E6472B` FOREIGN KEY (`attendance_report_template_id`) REFERENCES `edu_report_template` (`id`),
-  CONSTRAINT `FK_584DA96023EDC87` FOREIGN KEY (`subject_id`) REFERENCES `edu_subject` (`id`),
-  CONSTRAINT `FK_584DA9603BBF8EEC` FOREIGN KEY (`weekly_activity_report_template_id`) REFERENCES `edu_report_template` (`id`),
-  CONSTRAINT `FK_584DA96068F6798B` FOREIGN KEY (`educational_tutor_survey_id`) REFERENCES `survey` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `FK_584DA9607791D10` FOREIGN KEY (`activity_summary_report_template_id`) REFERENCES `edu_report_template` (`id`),
-  CONSTRAINT `FK_584DA96080E5DA6D` FOREIGN KEY (`company_survey_id`) REFERENCES `survey` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `FK_584DA960D490911D` FOREIGN KEY (`student_survey_id`) REFERENCES `survey` (`id`) ON DELETE SET NULL
+                             `id` int(11) NOT NULL AUTO_INCREMENT,
+                             `subject_id` int(11) NOT NULL,
+                             `student_survey_id` int(11) DEFAULT NULL,
+                             `company_survey_id` int(11) DEFAULT NULL,
+                             `educational_tutor_survey_id` int(11) DEFAULT NULL,
+                             `attendance_report_template_id` int(11) DEFAULT NULL,
+                             `final_report_template_id` int(11) DEFAULT NULL,
+                             `weekly_activity_report_template_id` int(11) DEFAULT NULL,
+                             `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                             `hours` int(11) NOT NULL,
+                             `type` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
+                             `quarter` int(11) NOT NULL,
+                             `activity_summary_report_template_id` int(11) DEFAULT NULL,
+                             `locked` tinyint(1) NOT NULL,
+                             PRIMARY KEY (`id`),
+                             KEY `IDX_584DA96023EDC87` (`subject_id`),
+                             KEY `IDX_584DA960D490911D` (`student_survey_id`),
+                             KEY `IDX_584DA96080E5DA6D` (`company_survey_id`),
+                             KEY `IDX_584DA96068F6798B` (`educational_tutor_survey_id`),
+                             KEY `IDX_584DA96013E6472B` (`attendance_report_template_id`),
+                             KEY `IDX_584DA96010BDE131` (`final_report_template_id`),
+                             KEY `IDX_584DA9603BBF8EEC` (`weekly_activity_report_template_id`),
+                             KEY `IDX_584DA9607791D10` (`activity_summary_report_template_id`),
+                             CONSTRAINT `FK_584DA96010BDE131` FOREIGN KEY (`final_report_template_id`) REFERENCES `edu_report_template` (`id`),
+                             CONSTRAINT `FK_584DA96013E6472B` FOREIGN KEY (`attendance_report_template_id`) REFERENCES `edu_report_template` (`id`),
+                             CONSTRAINT `FK_584DA96023EDC87` FOREIGN KEY (`subject_id`) REFERENCES `edu_subject` (`id`),
+                             CONSTRAINT `FK_584DA9603BBF8EEC` FOREIGN KEY (`weekly_activity_report_template_id`) REFERENCES `edu_report_template` (`id`),
+                             CONSTRAINT `FK_584DA96068F6798B` FOREIGN KEY (`educational_tutor_survey_id`) REFERENCES `survey` (`id`) ON DELETE SET NULL,
+                             CONSTRAINT `FK_584DA9607791D10` FOREIGN KEY (`activity_summary_report_template_id`) REFERENCES `edu_report_template` (`id`),
+                             CONSTRAINT `FK_584DA96080E5DA6D` FOREIGN KEY (`company_survey_id`) REFERENCES `survey` (`id`) ON DELETE SET NULL,
+                             CONSTRAINT `FK_584DA960D490911D` FOREIGN KEY (`student_survey_id`) REFERENCES `survey` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2376,7 +3259,7 @@ CREATE TABLE `wpt_shift` (
 
 LOCK TABLES `wpt_shift` WRITE;
 /*!40000 ALTER TABLE `wpt_shift` DISABLE KEYS */;
-INSERT INTO `wpt_shift` VALUES (1,13,NULL,NULL,NULL,1,4,3,'DAM - 3T',370,'Superior',3,5);
+INSERT INTO `wpt_shift` VALUES (1,13,NULL,NULL,NULL,1,4,3,'DAM - 3T',370,'Superior',3,5,0);
 /*!40000 ALTER TABLE `wpt_shift` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2388,23 +3271,25 @@ DROP TABLE IF EXISTS `wpt_shift_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_shift_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `subject_id` int(11) DEFAULT NULL,
-  `student_survey_id` int(11) DEFAULT NULL,
-  `company_survey_id` int(11) DEFAULT NULL,
-  `educational_tutor_survey_id` int(11) DEFAULT NULL,
-  `attendance_report_template_id` int(11) DEFAULT NULL,
-  `final_report_template_id` int(11) DEFAULT NULL,
-  `weekly_activity_report_template_id` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `hours` int(11) DEFAULT NULL,
-  `type` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `quarter` int(11) DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `activity_summary_report_template_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_71f73a2d4dc70e8d55eaad661689e458_idx` (`rev`)
+                                   `id` int(11) NOT NULL,
+                                   `rev` int(11) NOT NULL,
+                                   `subject_id` int(11) DEFAULT NULL,
+                                   `student_survey_id` int(11) DEFAULT NULL,
+                                   `company_survey_id` int(11) DEFAULT NULL,
+                                   `educational_tutor_survey_id` int(11) DEFAULT NULL,
+                                   `attendance_report_template_id` int(11) DEFAULT NULL,
+                                   `final_report_template_id` int(11) DEFAULT NULL,
+                                   `weekly_activity_report_template_id` int(11) DEFAULT NULL,
+                                   `name` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                   `hours` int(11) DEFAULT NULL,
+                                   `type` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                   `quarter` int(11) DEFAULT NULL,
+                                   `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                   `activity_summary_report_template_id` int(11) DEFAULT NULL,
+                                   `locked` tinyint(1) DEFAULT NULL,
+                                   PRIMARY KEY (`id`,`rev`),
+                                   KEY `rev_71f73a2d4dc70e8d55eaad661689e458_idx` (`rev`),
+                                   CONSTRAINT `rev_71f73a2d4dc70e8d55eaad661689e458_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2418,6 +3303,66 @@ LOCK TABLES `wpt_shift_audit` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `wpt_student_answered_survey`
+--
+
+DROP TABLE IF EXISTS `wpt_student_answered_survey`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wpt_student_answered_survey` (
+                                               `id` int(11) NOT NULL AUTO_INCREMENT,
+                                               `shift_id` int(11) NOT NULL,
+                                               `student_enrollment_id` int(11) NOT NULL,
+                                               `answered_survey_id` int(11) NOT NULL,
+                                               PRIMARY KEY (`id`),
+                                               KEY `IDX_3115CDA6BB70BC0E` (`shift_id`),
+                                               KEY `IDX_3115CDA6DAE14AC5` (`student_enrollment_id`),
+                                               KEY `IDX_3115CDA6A97283E6` (`answered_survey_id`),
+                                               CONSTRAINT `FK_3115CDA6A97283E6` FOREIGN KEY (`answered_survey_id`) REFERENCES `answered_survey` (`id`),
+                                               CONSTRAINT `FK_3115CDA6BB70BC0E` FOREIGN KEY (`shift_id`) REFERENCES `wpt_shift` (`id`),
+                                               CONSTRAINT `FK_3115CDA6DAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wpt_student_answered_survey`
+--
+
+LOCK TABLES `wpt_student_answered_survey` WRITE;
+/*!40000 ALTER TABLE `wpt_student_answered_survey` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_student_answered_survey` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wpt_student_answered_survey_audit`
+--
+
+DROP TABLE IF EXISTS `wpt_student_answered_survey_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wpt_student_answered_survey_audit` (
+                                                     `id` int(11) NOT NULL,
+                                                     `rev` int(11) NOT NULL,
+                                                     `shift_id` int(11) DEFAULT NULL,
+                                                     `student_enrollment_id` int(11) DEFAULT NULL,
+                                                     `answered_survey_id` int(11) DEFAULT NULL,
+                                                     `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                     PRIMARY KEY (`id`,`rev`),
+                                                     KEY `rev_18ec14100e728ec30e97808504c4bcae_idx` (`rev`),
+                                                     CONSTRAINT `rev_18ec14100e728ec30e97808504c4bcae_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wpt_student_answered_survey_audit`
+--
+
+LOCK TABLES `wpt_student_answered_survey_audit` WRITE;
+/*!40000 ALTER TABLE `wpt_student_answered_survey_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_student_answered_survey_audit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `wpt_tracked_work_day`
 --
 
@@ -2425,23 +3370,23 @@ DROP TABLE IF EXISTS `wpt_tracked_work_day`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_tracked_work_day` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `work_day_id` int(11) NOT NULL,
-  `agreement_enrollment_id` int(11) NOT NULL,
-  `notes` longtext COLLATE utf8mb4_spanish_ci,
-  `other_activities` longtext COLLATE utf8mb4_spanish_ci,
-  `locked` tinyint(1) NOT NULL,
-  `absence` int(11) NOT NULL,
-  `start_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `end_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `start_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `end_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_E7E67EDAA32BEB28A23B8704` (`agreement_enrollment_id`,`work_day_id`),
-  KEY `IDX_E7E67EDAA23B8704` (`work_day_id`),
-  KEY `IDX_E7E67EDAA32BEB28` (`agreement_enrollment_id`),
-  CONSTRAINT `FK_E7E67EDAA23B8704` FOREIGN KEY (`work_day_id`) REFERENCES `wpt_work_day` (`id`),
-  CONSTRAINT `FK_E7E67EDAA32BEB28` FOREIGN KEY (`agreement_enrollment_id`) REFERENCES `wpt_agreement_enrollment` (`id`)
+                                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                                        `work_day_id` int(11) NOT NULL,
+                                        `agreement_enrollment_id` int(11) NOT NULL,
+                                        `notes` longtext COLLATE utf8mb4_spanish_ci,
+                                        `other_activities` longtext COLLATE utf8mb4_spanish_ci,
+                                        `locked` tinyint(1) NOT NULL,
+                                        `absence` int(11) NOT NULL,
+                                        `start_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                        `end_time1` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                        `start_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                        `end_time2` varchar(5) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                        PRIMARY KEY (`id`),
+                                        UNIQUE KEY `UNIQ_E7E67EDAA32BEB28A23B8704` (`agreement_enrollment_id`,`work_day_id`),
+                                        KEY `IDX_E7E67EDAA23B8704` (`work_day_id`),
+                                        KEY `IDX_E7E67EDAA32BEB28` (`agreement_enrollment_id`),
+                                        CONSTRAINT `FK_E7E67EDAA23B8704` FOREIGN KEY (`work_day_id`) REFERENCES `wpt_work_day` (`id`),
+                                        CONSTRAINT `FK_E7E67EDAA32BEB28` FOREIGN KEY (`agreement_enrollment_id`) REFERENCES `wpt_agreement_enrollment` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2462,19 +3407,19 @@ DROP TABLE IF EXISTS `wpt_travel_expense`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_travel_expense` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `teacher_id` int(11) NOT NULL,
-  `travel_route_id` int(11) DEFAULT NULL,
-  `from_date_time` datetime NOT NULL,
-  `to_date_time` datetime NOT NULL,
-  `other_expenses_description` longtext COLLATE utf8mb4_spanish_ci,
-  `other_expenses` int(11) DEFAULT NULL,
-  `description` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_C76D045341807E1D` (`teacher_id`),
-  KEY `IDX_C76D04535E9DD7A3` (`travel_route_id`),
-  CONSTRAINT `FK_C76D045341807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`),
-  CONSTRAINT `FK_C76D04535E9DD7A3` FOREIGN KEY (`travel_route_id`) REFERENCES `edu_travel_route` (`id`)
+                                      `id` int(11) NOT NULL AUTO_INCREMENT,
+                                      `teacher_id` int(11) NOT NULL,
+                                      `travel_route_id` int(11) NOT NULL,
+                                      `from_date_time` datetime NOT NULL,
+                                      `to_date_time` datetime NOT NULL,
+                                      `other_expenses_description` longtext COLLATE utf8mb4_spanish_ci,
+                                      `other_expenses` int(11) NOT NULL DEFAULT '0',
+                                      `description` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+                                      PRIMARY KEY (`id`),
+                                      KEY `IDX_C76D045341807E1D` (`teacher_id`),
+                                      KEY `IDX_C76D04535E9DD7A3` (`travel_route_id`),
+                                      CONSTRAINT `FK_C76D045341807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`),
+                                      CONSTRAINT `FK_C76D04535E9DD7A3` FOREIGN KEY (`travel_route_id`) REFERENCES `edu_travel_route` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2495,13 +3440,13 @@ DROP TABLE IF EXISTS `wpt_travel_expense_agreement`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_travel_expense_agreement` (
-  `travel_expense_id` int(11) NOT NULL,
-  `agreement_id` int(11) NOT NULL,
-  PRIMARY KEY (`travel_expense_id`,`agreement_id`),
-  KEY `IDX_2E628311AA203AA8` (`travel_expense_id`),
-  KEY `IDX_2E62831124890B2B` (`agreement_id`),
-  CONSTRAINT `FK_2E62831124890B2B` FOREIGN KEY (`agreement_id`) REFERENCES `wpt_agreement` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_2E628311AA203AA8` FOREIGN KEY (`travel_expense_id`) REFERENCES `wpt_travel_expense` (`id`) ON DELETE CASCADE
+                                                `travel_expense_id` int(11) NOT NULL,
+                                                `agreement_id` int(11) NOT NULL,
+                                                PRIMARY KEY (`travel_expense_id`,`agreement_id`),
+                                                KEY `IDX_2E628311AA203AA8` (`travel_expense_id`),
+                                                KEY `IDX_2E62831124890B2B` (`agreement_id`),
+                                                CONSTRAINT `FK_2E62831124890B2B` FOREIGN KEY (`agreement_id`) REFERENCES `wpt_agreement` (`id`) ON DELETE CASCADE,
+                                                CONSTRAINT `FK_2E628311AA203AA8` FOREIGN KEY (`travel_expense_id`) REFERENCES `wpt_travel_expense` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2515,87 +3460,62 @@ LOCK TABLES `wpt_travel_expense_agreement` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `wpt_visit`
+-- Table structure for table `wpt_travel_expense_agreement_audit`
 --
 
-DROP TABLE IF EXISTS `wpt_visit`;
+DROP TABLE IF EXISTS `wpt_travel_expense_agreement_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `wpt_visit` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `teacher_id` int(11) NOT NULL,
-  `workcenter_id` int(11) NOT NULL,
-  `date_time` datetime NOT NULL,
-  `detail` longtext COLLATE utf8mb4_spanish_ci,
-  PRIMARY KEY (`id`),
-  KEY `IDX_BE387B1C41807E1D` (`teacher_id`),
-  KEY `IDX_BE387B1CA2473C4B` (`workcenter_id`),
-  CONSTRAINT `FK_BE387B1C41807E1D` FOREIGN KEY (`teacher_id`) REFERENCES `edu_teacher` (`id`),
-  CONSTRAINT `FK_BE387B1CA2473C4B` FOREIGN KEY (`workcenter_id`) REFERENCES `workcenter` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+CREATE TABLE `wpt_travel_expense_agreement_audit` (
+                                                      `travel_expense_id` int(11) NOT NULL,
+                                                      `agreement_id` int(11) NOT NULL,
+                                                      `rev` int(11) NOT NULL,
+                                                      `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                      PRIMARY KEY (`travel_expense_id`,`agreement_id`,`rev`),
+                                                      KEY `rev_bcc2b7829a2e57f8c109e7da204f5623_idx` (`rev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `wpt_visit`
+-- Dumping data for table `wpt_travel_expense_agreement_audit`
 --
 
-LOCK TABLES `wpt_visit` WRITE;
-/*!40000 ALTER TABLE `wpt_visit` DISABLE KEYS */;
-/*!40000 ALTER TABLE `wpt_visit` ENABLE KEYS */;
+LOCK TABLES `wpt_travel_expense_agreement_audit` WRITE;
+/*!40000 ALTER TABLE `wpt_travel_expense_agreement_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_travel_expense_agreement_audit` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `wpt_visit_agreement`
+-- Table structure for table `wpt_travel_expense_audit`
 --
 
-DROP TABLE IF EXISTS `wpt_visit_agreement`;
+DROP TABLE IF EXISTS `wpt_travel_expense_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `wpt_visit_agreement` (
-  `visit_id` int(11) NOT NULL,
-  `agreement_id` int(11) NOT NULL,
-  PRIMARY KEY (`visit_id`,`agreement_id`),
-  KEY `IDX_AFFBB6275FA0FF2` (`visit_id`),
-  KEY `IDX_AFFBB6224890B2B` (`agreement_id`),
-  CONSTRAINT `FK_AFFBB6224890B2B` FOREIGN KEY (`agreement_id`) REFERENCES `wpt_agreement` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_AFFBB6275FA0FF2` FOREIGN KEY (`visit_id`) REFERENCES `wpt_visit` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+CREATE TABLE `wpt_travel_expense_audit` (
+                                            `id` int(11) NOT NULL,
+                                            `rev` int(11) NOT NULL,
+                                            `teacher_id` int(11) DEFAULT NULL,
+                                            `travel_route_id` int(11) DEFAULT NULL,
+                                            `from_date_time` datetime DEFAULT NULL,
+                                            `to_date_time` datetime DEFAULT NULL,
+                                            `other_expenses_description` longtext COLLATE utf8mb4_unicode_ci,
+                                            `other_expenses` int(11) DEFAULT '0',
+                                            `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                                            `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                            PRIMARY KEY (`id`,`rev`),
+                                            KEY `rev_27f57b88f7b19e7f0da66637d23c7c37_idx` (`rev`),
+                                            CONSTRAINT `rev_27f57b88f7b19e7f0da66637d23c7c37_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `wpt_visit_agreement`
+-- Dumping data for table `wpt_travel_expense_audit`
 --
 
-LOCK TABLES `wpt_visit_agreement` WRITE;
-/*!40000 ALTER TABLE `wpt_visit_agreement` DISABLE KEYS */;
-/*!40000 ALTER TABLE `wpt_visit_agreement` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `wpt_visit_student_enrollment`
---
-
-DROP TABLE IF EXISTS `wpt_visit_student_enrollment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `wpt_visit_student_enrollment` (
-  `visit_id` int(11) NOT NULL,
-  `student_enrollment_id` int(11) NOT NULL,
-  PRIMARY KEY (`visit_id`,`student_enrollment_id`),
-  KEY `IDX_3740B2075FA0FF2` (`visit_id`),
-  KEY `IDX_3740B20DAE14AC5` (`student_enrollment_id`),
-  CONSTRAINT `FK_3740B2075FA0FF2` FOREIGN KEY (`visit_id`) REFERENCES `wpt_visit` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_3740B20DAE14AC5` FOREIGN KEY (`student_enrollment_id`) REFERENCES `edu_student_enrollment` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `wpt_visit_student_enrollment`
---
-
-LOCK TABLES `wpt_visit_student_enrollment` WRITE;
-/*!40000 ALTER TABLE `wpt_visit_student_enrollment` DISABLE KEYS */;
-/*!40000 ALTER TABLE `wpt_visit_student_enrollment` ENABLE KEYS */;
+LOCK TABLES `wpt_travel_expense_audit` WRITE;
+/*!40000 ALTER TABLE `wpt_travel_expense_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_travel_expense_audit` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2606,14 +3526,14 @@ DROP TABLE IF EXISTS `wpt_work_day`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_work_day` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `agreement_id` int(11) NOT NULL,
-  `hours` int(11) NOT NULL,
-  `date` date NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_7D80F6C724890B2BAA9E377A` (`agreement_id`,`date`),
-  KEY `IDX_7D80F6C724890B2B` (`agreement_id`),
-  CONSTRAINT `FK_7D80F6C724890B2B` FOREIGN KEY (`agreement_id`) REFERENCES `wpt_agreement` (`id`)
+                                `id` int(11) NOT NULL AUTO_INCREMENT,
+                                `agreement_id` int(11) NOT NULL,
+                                `hours` int(11) NOT NULL,
+                                `date` date NOT NULL,
+                                PRIMARY KEY (`id`),
+                                UNIQUE KEY `UNIQ_7D80F6C724890B2BAA9E377A` (`agreement_id`,`date`),
+                                KEY `IDX_7D80F6C724890B2B` (`agreement_id`),
+                                CONSTRAINT `FK_7D80F6C724890B2B` FOREIGN KEY (`agreement_id`) REFERENCES `wpt_agreement` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=142 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2635,14 +3555,15 @@ DROP TABLE IF EXISTS `wpt_work_day_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wpt_work_day_audit` (
-  `id` int(11) NOT NULL,
-  `rev` int(11) NOT NULL,
-  `agreement_id` int(11) DEFAULT NULL,
-  `hours` int(11) DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`,`rev`),
-  KEY `rev_5078b049add7547b5901b17a05bf1608_idx` (`rev`)
+                                      `id` int(11) NOT NULL,
+                                      `rev` int(11) NOT NULL,
+                                      `agreement_id` int(11) DEFAULT NULL,
+                                      `hours` int(11) DEFAULT NULL,
+                                      `date` date DEFAULT NULL,
+                                      `revtype` varchar(4) COLLATE utf8mb4_spanish_ci NOT NULL,
+                                      PRIMARY KEY (`id`,`rev`),
+                                      KEY `rev_5078b049add7547b5901b17a05bf1608_idx` (`rev`),
+                                      CONSTRAINT `rev_5078b049add7547b5901b17a05bf1608_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2654,6 +3575,66 @@ LOCK TABLES `wpt_work_day_audit` WRITE;
 /*!40000 ALTER TABLE `wpt_work_day_audit` DISABLE KEYS */;
 /*!40000 ALTER TABLE `wpt_work_day_audit` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `wpt_work_tutor_answered_survey`
+--
+
+DROP TABLE IF EXISTS `wpt_work_tutor_answered_survey`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wpt_work_tutor_answered_survey` (
+                                                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                                                  `shift_id` int(11) NOT NULL,
+                                                  `work_tutor_id` int(11) NOT NULL,
+                                                  `answered_survey_id` int(11) NOT NULL,
+                                                  PRIMARY KEY (`id`),
+                                                  KEY `IDX_CB1E6195BB70BC0E` (`shift_id`),
+                                                  KEY `IDX_CB1E6195F53AEEAD` (`work_tutor_id`),
+                                                  KEY `IDX_CB1E6195A97283E6` (`answered_survey_id`),
+                                                  CONSTRAINT `FK_CB1E6195A97283E6` FOREIGN KEY (`answered_survey_id`) REFERENCES `answered_survey` (`id`),
+                                                  CONSTRAINT `FK_CB1E6195BB70BC0E` FOREIGN KEY (`shift_id`) REFERENCES `wpt_shift` (`id`),
+                                                  CONSTRAINT `FK_CB1E6195F53AEEAD` FOREIGN KEY (`work_tutor_id`) REFERENCES `person` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wpt_work_tutor_answered_survey`
+--
+
+LOCK TABLES `wpt_work_tutor_answered_survey` WRITE;
+/*!40000 ALTER TABLE `wpt_work_tutor_answered_survey` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_work_tutor_answered_survey` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wpt_work_tutor_answered_survey_audit`
+--
+
+DROP TABLE IF EXISTS `wpt_work_tutor_answered_survey_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wpt_work_tutor_answered_survey_audit` (
+                                                        `id` int(11) NOT NULL,
+                                                        `rev` int(11) NOT NULL,
+                                                        `shift_id` int(11) DEFAULT NULL,
+                                                        `work_tutor_id` int(11) DEFAULT NULL,
+                                                        `answered_survey_id` int(11) DEFAULT NULL,
+                                                        `revtype` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                        PRIMARY KEY (`id`,`rev`),
+                                                        KEY `rev_9b088cb8b5a15bf14b41b058e4fb67c5_idx` (`rev`),
+                                                        CONSTRAINT `rev_9b088cb8b5a15bf14b41b058e4fb67c5_fk` FOREIGN KEY (`rev`) REFERENCES `revisions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wpt_work_tutor_answered_survey_audit`
+--
+
+LOCK TABLES `wpt_work_tutor_answered_survey_audit` WRITE;
+/*!40000 ALTER TABLE `wpt_work_tutor_answered_survey_audit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wpt_work_tutor_answered_survey_audit` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -2664,4 +3645,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-03 18:25:59
+-- Dump completed on 2024-08-15 14:49:39
