@@ -42,7 +42,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route(path: '/dual/programa')]
@@ -196,7 +196,7 @@ class LearningProgramController extends AbstractController
     ): Response|RedirectResponse {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
-        $items = $request->request->get('items', []);
+        $items = $request->request->all('items');
 
         if ((is_countable($items) ? count($items) : 0) !== 0 && '' === $request->get('delete')) {
             return $this->delete($items, $request, $translator, $learningProgramRepository, $managerRegistry, $project);

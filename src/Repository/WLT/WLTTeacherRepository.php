@@ -33,7 +33,7 @@ use App\Security\WLT\WLTOrganizationVoter;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class WLTTeacherRepository extends TeacherRepository
 {

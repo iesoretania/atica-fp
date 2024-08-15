@@ -40,11 +40,11 @@ use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route(path: '/dual/encuesta')]
@@ -84,9 +84,7 @@ class SurveyController extends AbstractController
         );
     }
 
-    /**
-     * @Security("is_granted('WLT_AGREEMENT_VIEW_STUDENT_SURVEY', agreement)")
-     */
+    #[IsGranted(AgreementVoter::VIEW_STUDENT_SURVEY, subject: 'agreement')]
     #[Route(path: '/estudiante/cumplimentar/{id}', name: 'work_linked_training_survey_student_form', methods: ['GET', 'POST'])]
     public function studentFill(
         Request $request,
@@ -163,9 +161,7 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Security("is_granted('WLT_AGREEMENT_VIEW_WORK_TUTOR_SURVEY', agreement)")
-     */
+    #[IsGranted(AgreementVoter::VIEW_COMPANY_SURVEY, subject: 'agreement')]
     #[Route(path: '/empresa/cumplimentar/{id}/{workTutor}', name: 'work_linked_training_survey_work_tutor_form')]
     public function workTutorFill(
         Request $request,

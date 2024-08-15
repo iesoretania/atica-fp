@@ -31,12 +31,12 @@ use App\Security\WLT\WorkDayVoter;
 use Doctrine\Persistence\ManagerRegistry;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
 use Twig\Environment;
@@ -239,7 +239,7 @@ class TrackingCalendarController extends AbstractController
             );
         }
 
-        $items = $request->request->get('items', []);
+        $items = $request->request->all('items');
         if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute(
                 'work_linked_training_tracking_calendar_list',
@@ -305,15 +305,13 @@ class TrackingCalendarController extends AbstractController
         ]);
     }
 
-    /**
-     * @Security("is_granted('WLT_AGREEMENT_ACCESS', agreement)")
-     */
+    #[IsGranted(AgreementVoter::ACCESS, subject: 'agreement')]
     #[Route(path: '/{id}/asistencia', name: 'work_linked_training_tracking_calendar_attendance_report', methods: ['GET'])]
     public function attendanceReport(
         Environment $engine,
         TranslatorInterface $translator,
         Agreement $agreement
-    ) {
+    ): Response {
         $mpdfService = new MpdfService();
         $mpdfService->setAddDefaultConstructorArgs(false);
         ini_set("pcre.backtrack_limit", "5000000");
@@ -354,9 +352,7 @@ class TrackingCalendarController extends AbstractController
         }
     }
 
-    /**
-     * @Security("is_granted('WLT_AGREEMENT_ACCESS', agreement)")
-     */
+    #[IsGranted(AgreementVoter::ACCESS, subject: 'agreement')]
     #[Route(path: '/{id}/informe/descargar/{year}/{week}', name: 'work_linked_training_tracking_calendar_activity_report', methods: ['GET'])]
     public function activityReport(
         TranslatorInterface $translator,
