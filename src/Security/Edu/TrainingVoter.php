@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2023: Luis Ramón López López
+  Copyright (C) 2018-2024: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -26,8 +26,8 @@ use App\Security\OrganizationVoter;
 use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Psr\Cache\CacheItemPoolInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class TrainingVoter extends CachedVoter
 {

@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2023: Luis Ramón López López
+  Copyright (C) 2018-2024: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -21,6 +21,7 @@ namespace App\Form\Type\WPT;
 use App\Entity\WPT\AgreementEnrollment;
 use App\Entity\WPT\TrackedWorkDay;
 use App\Security\WPT\AgreementEnrollmentVoter;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -29,7 +30,6 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Bundle\SecurityBundle\Security;
 
 class WorkDayTrackingType extends AbstractType
 {
