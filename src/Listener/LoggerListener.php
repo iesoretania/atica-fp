@@ -80,12 +80,12 @@ class LoggerListener implements EventSubscriberInterface
     }
 
 
-    public function onAuthenticationFailure(AuthenticationFailureEvent $event): void
+    public function onAuthenticationFailure(LoginFailureEvent $event): void
     {
         /** @var Person $user */
-        $user = $event->getAuthenticationToken()->getUser();
+        $user = $event->getRequest()->getUser();
 
-        $ip = $this->requestStack->getMasterRequest()->getClientIp();
+        $ip = $this->requestStack->getMainRequest()->getClientIp();
         $eventName = EventLog::LOGIN_ERROR;
         $data = $this->authenticationUtils->getLastUsername();
 
