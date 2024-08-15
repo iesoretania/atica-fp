@@ -1,11 +1,8 @@
 <?php
 
 use Rector\Config\RectorConfig;
-use Rector\Doctrine\CodeQuality\Rector\Class_\AddReturnDocBlockToCollectionPropertyGetterByToManyAttributeRector;
 use Rector\Symfony\Set\SymfonySetList;
-use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector;
+use Rector\Symfony\Symfony62\Rector\Class_\SecurityAttributeToIsGrantedAttributeRector;
 
 return RectorConfig::configure()
     // register single rule
@@ -19,20 +16,21 @@ return RectorConfig::configure()
     ->withPhpSets(php82: true)
     ->withAttributesSets(symfony: true, doctrine: true)
     ->withSets([
-        SymfonySetList::SYMFONY_60,
+        /*SymfonySetList::SYMFONY_60,
         SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES,
-        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION
+        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION*/
+        SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES
     ])
     ->withRules([
-        ReturnTypeFromStrictNativeCallRector::class,
-        AddVoidReturnTypeWhereNoReturnRector::class,
-        AddReturnTypeDeclarationRector::class,
-        AddReturnDocBlockToCollectionPropertyGetterByToManyAttributeRector::class,
+        //ReturnTypeFromStrictNativeCallRector::class,
+        //AddVoidReturnTypeWhereNoReturnRector::class,
+        //AddReturnTypeDeclarationRector::class,
+        SecurityAttributeToIsGrantedAttributeRector::class
     ])
     ->withPreparedSets(
-        deadCode: true,
+        /*deadCode: true,
         codeQuality: true,
         typeDeclarations: true,
         doctrineCodeQuality: true,
-        symfonyCodeQuality: true
+        symfonyCodeQuality: true*/
     );
