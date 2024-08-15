@@ -27,7 +27,7 @@ use App\Security\WLT\WLTOrganizationVoter;
 use App\Service\UserExtensionService;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class TrainingVoter extends CachedVoter
 {

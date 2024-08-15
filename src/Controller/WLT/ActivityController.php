@@ -35,7 +35,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route(path: '/dual/proyecto')]
@@ -187,7 +187,7 @@ class ActivityController extends AbstractController
 
         $em = $managerRegistry->getManager();
 
-        $items = $request->request->get('items', []);
+        $items = $request->request->all('items');
         if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('work_linked_training_project_activity_list', ['id' => $project->getId()]);
         }

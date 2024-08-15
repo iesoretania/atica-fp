@@ -29,7 +29,7 @@ use App\Security\OrganizationVoter;
 use App\Security\WPT\WPTOrganizationVoter;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class WPTTeacherRepository extends TeacherRepository
 {

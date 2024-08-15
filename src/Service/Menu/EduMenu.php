@@ -23,7 +23,7 @@ use App\Security\Edu\EduOrganizationVoter;
 use App\Security\OrganizationVoter;
 use App\Service\MenuBuilderInterface;
 use App\Service\UserExtensionService;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class EduMenu implements MenuBuilderInterface
 {

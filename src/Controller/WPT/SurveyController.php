@@ -44,7 +44,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route(path: '/fct/encuesta')]
@@ -128,9 +129,7 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Security("is_granted('WPT_AGREEMENT_ENROLLMENT_VIEW_STUDENT_SURVEY', agreementEnrollment)")
-     */
+    #[IsGranted(AgreementEnrollmentVoter::VIEW_STUDENT_SURVEY, subject: 'agreementEnrollment')]
     #[Route(path: '/estudiante/cumplimentar/{id}', name: 'workplace_training_survey_student_form', methods: ['GET', 'POST'])]
     public function studentFill(
         Request $request,
@@ -274,9 +273,7 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Security("is_granted('WPT_AGREEMENT_ENROLLMENT_VIEW_COMPANY_SURVEY', agreementEnrollment)")
-     */
+    #[IsGranted(AgreementEnrollmentVoter::VIEW_COMPANY_SURVEY, subject: 'agreementEnrollment')]
     #[Route(path: '/empresa/cumplimentar/{id}/{workTutor}', name: 'workplace_training_survey_work_tutor_form')]
     public function workTutorFill(
         Request $request,

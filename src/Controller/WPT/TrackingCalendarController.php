@@ -42,8 +42,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
 use Twig\Environment;
@@ -270,7 +271,7 @@ class TrackingCalendarController extends AbstractController
             );
         }
 
-        $items = $request->request->get('items', []);
+        $items = $request->request->all('items');
         if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute(
                 'workplace_training_tracking_calendar_list',
@@ -335,9 +336,7 @@ class TrackingCalendarController extends AbstractController
         ]);
     }
 
-    /**
-     * @Security("is_granted('WPT_AGREEMENT_ENROLLMENT_ACCESS', agreementEnrollment)")
-     */
+    #[IsGranted(AgreementEnrollmentVoter::ACCESS, subject: 'agreementEnrollment')]
     #[Route(path: '/{id}/asistencia/descargar', name: 'workplace_training_tracking_calendar_attendance_report', methods: ['GET'])]
     public function attendanceReport(
         Environment $engine,
@@ -390,9 +389,7 @@ class TrackingCalendarController extends AbstractController
         }
     }
 
-    /**
-     * @Security("is_granted('WPT_AGREEMENT_ENROLLMENT_VIEW_ACTIVITY_REPORT', agreementEnrollment)")
-     */
+    #[IsGranted(AgreementEnrollmentVoter::VIEW_ACTIVITY_REPORT, subject: 'agreementEnrollment')]
     #[Route(path: '/{id}/actividades/descargar', name: 'workplace_training_tracking_calendar_activity_summary_report', methods: ['GET'])]
     public function activitySummaryReport(
         Environment $engine,
@@ -481,9 +478,7 @@ class TrackingCalendarController extends AbstractController
         }
     }
 
-    /**
-     * @Security("is_granted('WPT_AGREEMENT_ENROLLMENT_ACCESS', agreementEnrollment)")
-     */
+    #[IsGranted(AgreementEnrollmentVoter::ACCESS, subject: 'agreementEnrollment')]
     #[Route(path: '/{id}/informe/{year}/{week}', name: 'workplace_training_tracking_calendar_activity_report', methods: ['GET'])]
     public function activityReport(
         TranslatorInterface $translator,

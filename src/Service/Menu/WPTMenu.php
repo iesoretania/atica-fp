@@ -22,7 +22,7 @@ use App\Menu\MenuItem;
 use App\Security\WPT\WPTOrganizationVoter;
 use App\Service\MenuBuilderInterface;
 use App\Service\UserExtensionService;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class WPTMenu implements MenuBuilderInterface
 {
