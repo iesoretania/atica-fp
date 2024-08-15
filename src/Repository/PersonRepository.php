@@ -99,7 +99,7 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
         }
         try {
             return $this->getEntityManager()
-                ->createQuery('SELECT p FROM App:Person p
+                ->createQuery('SELECT p FROM App\Entity\Person p
                            WHERE p.loginUsername = :username
                            OR p.emailAddress = :username')
                 ->setParameters([

@@ -362,7 +362,7 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface, \Stri
 
         return $this;
     }
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->getLoginUsername() ?: $this->getEmailAddress();
     }
