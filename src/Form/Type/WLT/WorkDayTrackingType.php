@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2023: Luis Ramón López López
+  Copyright (C) 2018-2024: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -23,6 +23,7 @@ use App\Entity\WLT\Agreement;
 use App\Entity\WLT\WorkDay;
 use App\Security\WLT\AgreementVoter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,7 +31,6 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WorkDayTrackingType extends AbstractType
