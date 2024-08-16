@@ -9,6 +9,7 @@ en las distintas versiones de la misma.
 * chore: Actualización de los componentes internos
 * feat: Se muestra información útil adicional en las secciones de importación de datos
 * feat: Modificado el sistema de extensiones para un soporte inicial de módulos desactivables
+* feat: Permitir activar o desactivar módulos desde la interfaz de administración de un curso académico
 
 6.2.2 (2024-10-02)
 ------------------

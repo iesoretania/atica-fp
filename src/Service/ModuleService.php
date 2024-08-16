@@ -20,7 +20,7 @@ namespace App\Service;
 
 use App\Module\MenuItem;
 
-class ModuleBuilderChain
+class ModuleService
 {
     /**
      * @var ModuleBuilderInterface[]

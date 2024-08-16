@@ -63,7 +63,7 @@ services:
         App\Service\OrganizationBuilderInterface:
             tags: [ 'app.organization' ]
 
-    App\Service\ModuleBuilderChain:
+    App\Service\ModuleService:
         arguments: [!tagged { tag: 'app.menu' }]
 
     App\Service\OrganizationBuilderChain:

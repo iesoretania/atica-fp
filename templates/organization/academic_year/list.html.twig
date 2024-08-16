@@ -6,9 +6,10 @@
 
 {% block table_header %}
     <th class="w-20"><label><input type="checkbox" id="select"> {{ 'header.description'|trans }}</label></th>
-    <th class="w-25">{{ 'header.principal'|trans }}</th>
-    <th class="w-25">{{ 'header.financial_manager'|trans }}</th>
-    <th class="w-20"></th>
+    <th class="w-20">{{ 'header.principal'|trans }}</th>
+    <th class="w-20">{{ 'header.financial_manager'|trans }}</th>
+    <th class="w-15">{{ 'header.modules'|trans }}</th>
+    <th class="w-15"></th>
     <th class="w-10">{{ 'header.active'|trans }}</th>
 {% endblock %}
 
@@ -24,6 +25,11 @@
                     </td>
                     <td>
                         {{ academic_year.financialManager|default('') }}
+                    </td>
+                    <td>
+                        {% for module in module_extension.modules %}
+                            {% if academic_year.hasModule(module) %}<span class="badge badge-pill badge-info" title="{{ 'module.description'|trans([], 'module_'~module) }}">{{ 'module.initials'|trans([], 'module_'~module) }}</span>{% endif %}
+                        {% endfor %}
                     </td>
                     <td>
                         {{ m.link_button(path('organization_academic_year_copy', {'id': academic_year.id}), 'copy', 'btn-secondary btn-sm btn-block', 'form.copy'|trans) }}

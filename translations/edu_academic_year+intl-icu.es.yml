@@ -4,6 +4,7 @@ form.principal: Director/a
 form.financial_manager: Secretario/a
 form.start_date: Fecha de inicio
 form.end_date: Fecha final
+form.enabled_modules: Módulos activos
 form.default_portrait_template: Plantilla predeterminada vertical
 form.default_landscape_template: Plantilla predeterminada apaisado
 form.no_template: Sin plantilla
@@ -47,6 +48,7 @@ table.active: Activado
 header.description: Curso académico
 header.principal: Director/a
 header.financial_manager: Secretario/a
+header.modules: Módulos
 header.active: ¿Activo?
 
 message.saved: Datos actualizados con éxito.
