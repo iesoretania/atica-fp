@@ -3,7 +3,7 @@
 
 <div class="row pb-sm-4">
     <div class="card-deck w-100 m-auto">
-    {% set menu_item = menu_extension.getMenuByRouteName(menu_path|default(app.request.get('_route'))) %}
+    {% set menu_item = module_extension.getMenuByRouteName(menu_path|default(app.request.get('_route'))) %}
     {% set l = 0 %}
     {% for item in menu_item.children %}
         {% set l = l + 1 %}

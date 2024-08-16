@@ -18,10 +18,9 @@
 
 namespace App\Service;
 
-interface MenuBuilderInterface
+interface ModuleBuilderInterface
 {
-    /**
-     * @return array|null
-     */
-    public function getMenuStructure();
+    public function getMenuStructure(): ?array;
+
+    public function getModuleName(): ?string;
 }

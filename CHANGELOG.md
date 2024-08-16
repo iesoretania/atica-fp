@@ -7,6 +7,8 @@ en las distintas versiones de la misma.
 7.x.x (xxxx-xx-xx)
 ------------------
 * chore: Actualización de los componentes internos
+* feat: Se muestra información útil adicional en las secciones de importación de datos
+* feat: Modificado el sistema de extensiones para un soporte inicial de módulos desactivables
 
 6.2.2 (2024-10-02)
 ------------------

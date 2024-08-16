@@ -18,16 +18,21 @@
 
 namespace App\Service;
 
-use App\Menu\MenuItem;
+use App\Module\MenuItem;
 
-class MenuBuilderChain
+class ModuleBuilderChain
 {
     /**
-     * @var MenuBuilderInterface[]
+     * @var ModuleBuilderInterface[]
      */
     private array $menuBuilders = [];
 
     private ?MenuItem $menuCache = null;
+
+    /**
+     * @var string[]
+     */
+    private array $modules = [];
 
     public function __construct($menus)
     {
@@ -39,6 +44,10 @@ class MenuBuilderChain
     public function addMenuBuilder($menuBuilder): void
     {
         $this->menuBuilders[] = $menuBuilder;
+        $moduleName = $menuBuilder->getModuleName();
+        if ($moduleName) {
+            $this->modules[] = $moduleName;
+        }
     }
 
     public function getChain(): array
@@ -126,5 +135,10 @@ class MenuBuilderChain
     {
         $item = $this->checkMenuRouteName($route, $this->getMenu());
         return $item !== null ? $item->getPath() : null;
+    }
+
+    public function getModules(): array
+    {
+        return $this->modules;
     }
 }

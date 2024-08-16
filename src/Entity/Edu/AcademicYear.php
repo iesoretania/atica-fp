@@ -60,7 +60,7 @@ class AcademicYear implements \Stringable
     private ?ReportTemplate $defaultLandscapeTemplate = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    private ?string $disabledModules = null;
+    private ?string $enabledModules = null;
 
     public function __toString(): string
     {
@@ -160,14 +160,14 @@ class AcademicYear implements \Stringable
         return $this;
     }
 
-    public function getDisabledModules(): ?string
+    public function getEnabledModules(): ?string
     {
-        return $this->disabledModules;
+        return $this->enabledModules;
     }
 
-    public function setDisabledModules(?string $disabledModules): static
+    public function setEnabledModules(?string $enabledModules): static
     {
-        $this->disabledModules = $disabledModules;
+        $this->enabledModules = $enabledModules;
         return $this;
     }
 }
