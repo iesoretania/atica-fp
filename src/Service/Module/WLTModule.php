@@ -16,18 +16,23 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace App\Service\Menu;
+namespace App\Service\Module;
 
-use App\Menu\MenuItem;
+use App\Module\MenuItem;
 use App\Security\WLT\WLTOrganizationVoter;
-use App\Service\MenuBuilderInterface;
+use App\Service\ModuleBuilderInterface;
 use App\Service\UserExtensionService;
 use Symfony\Bundle\SecurityBundle\Security;
 
-class WLTMenu implements MenuBuilderInterface
+class WLTModule implements ModuleBuilderInterface
 {
     public function __construct(private readonly UserExtensionService $userExtension, private readonly Security $security)
     {
+    }
+
+    public function getModuleName(): ?string
+    {
+        return 'wlt';
     }
 
     public function getMenuStructure(): array
