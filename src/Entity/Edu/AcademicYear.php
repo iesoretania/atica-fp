@@ -170,4 +170,9 @@ class AcademicYear implements \Stringable
         $this->enabledModules = $enabledModules;
         return $this;
     }
+
+    public function hasModule(string $module): bool
+    {
+        return ($this->enabledModules === null) || str_contains($this->enabledModules, $module);
+    }
 }

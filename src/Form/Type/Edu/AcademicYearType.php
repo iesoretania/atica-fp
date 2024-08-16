@@ -23,15 +23,17 @@ use App\Entity\Edu\ReportTemplate;
 use App\Entity\Edu\Teacher;
 use App\Repository\Edu\ReportTemplateRepository;
 use App\Repository\Edu\TeacherRepository;
-use App\Repository\SurveyRepository;
+use App\Service\ModuleService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AcademicYearType extends AbstractType
 {
-    public function __construct(private readonly TeacherRepository $teacherRepository, SurveyRepository $surveyRepository, private readonly ReportTemplateRepository $reportTemplateRepository)
+    public function __construct(private readonly TeacherRepository $teacherRepository, private readonly ReportTemplateRepository $reportTemplateRepository, private readonly ModuleService $moduleService, private readonly TranslatorInterface $translator)
     {
     }
 
@@ -45,6 +47,11 @@ class AcademicYearType extends AbstractType
 
         $teachers = $options['academic_year'] ? $this->teacherRepository->
             findByAcademicYear($options['academic_year']) : [];
+
+        $moduleChoices = [];
+        foreach ($this->moduleService->getModules() as $module) {
+            $moduleChoices[$this->translator->trans('module.description', [], 'module_' . $module)] = $module;
+        }
 
         $builder
             ->add('description', null, [
@@ -74,6 +81,15 @@ class AcademicYearType extends AbstractType
                 'choice_translation_domain' => false,
                 'choices' => $teachers,
                 'placeholder' => 'form.none',
+                'required' => false
+            ])
+            ->add('modules', ChoiceType::class, [
+                'mapped' => false,
+                'label' => 'form.enabled_modules',
+                'choice_translation_domain' => false,
+                'choices' => $moduleChoices,
+                'multiple' => true,
+                'expanded' => true,
                 'required' => false
             ])
             ->add('defaultPortraitTemplate', EntityType::class, [

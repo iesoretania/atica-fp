@@ -27,6 +27,7 @@ use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\TrainingRepository;
 use App\Security\Edu\AcademicYearVoter;
 use App\Security\OrganizationVoter;
+use App\Service\ModuleService;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -50,6 +51,7 @@ class AcademicYearController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
+        ModuleService $moduleService,
         AcademicYear $academicYear = null
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -73,10 +75,17 @@ class AcademicYearController extends AbstractController
             'academic_year' => $academicYear->getId() !== null ? $academicYear : null
         ]);
 
+        if ($academicYear->getEnabledModules() === null) {
+            $form->get('modules')->setData($moduleService->getModules());
+        } else {
+            $form->get('modules')->setData(explode(',', $academicYear->getEnabledModules()));
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                $academicYear->setEnabledModules(implode(',', $form->get('modules')->getData()));
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'edu_academic_year'));
                 return $this->redirectToRoute('organization_academic_year_list');
@@ -212,7 +221,7 @@ class AcademicYearController extends AbstractController
         }
 
         $items = $request->request->all('items');
-        if ((is_countable($items) ? count($items) : 0) === 0) {
+        if (count($items) === 0) {
             $redirect = true;
         }
 
