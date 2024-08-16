@@ -64,11 +64,6 @@ class ContactVoter extends CachedVoter
             return false;
         }
 
-        // los administradores globales siempre tienen permiso
-        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
-            return true;
-        }
-
         /** @var Person $user */
         $user = $token->getUser();
 
@@ -82,6 +77,16 @@ class ContactVoter extends CachedVoter
         // Si no es de la organización actual, denegar
         if ($subject->getTeacher()->getAcademicYear()->getOrganization() !== $organization) {
             return false;
+        }
+
+        // si el módulo está deshabilitado, denegar
+        if (!$organization->getCurrentAcademicYear()->hasModule('wlt')) {
+            return false;
+        }
+
+        // los administradores globales siempre tienen permiso
+        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
+            return true;
         }
 
         // Si es administrador de la organización, permitir siempre

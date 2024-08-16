@@ -18,6 +18,7 @@
 
 namespace App\Security\WLT;
 
+use App\Entity\Organization;
 use App\Entity\Person;
 use App\Entity\WLT\WorkDay;
 use App\Security\CachedVoter;
@@ -65,11 +66,6 @@ class WorkDayVoter extends CachedVoter
             return false;
         }
 
-        // los administradores globales siempre tienen permiso
-        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
-            return true;
-        }
-
         /** @var Person $user */
         $user = $token->getUser();
 
@@ -80,11 +76,20 @@ class WorkDayVoter extends CachedVoter
 
         $organization = $this->userExtensionService->getCurrentOrganization();
 
+        // si el módulo está deshabilitado, denegar
+        if (!$organization instanceof Organization || !$organization->getCurrentAcademicYear()->hasModule('wlt')) {
+            return false;
+        }
+
+        // los administradores globales siempre tienen permiso
+        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
+            return true;
+        }
+
         // Si no es de la organización actual, denegar
         if ($subject->getAgreement()->getProject()->getOrganization() !== $organization) {
             return false;
         }
-
         // Si es administrador de la organización, permitir siempre
         if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
             return true;

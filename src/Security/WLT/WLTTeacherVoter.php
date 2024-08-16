@@ -69,11 +69,6 @@ class WLTTeacherVoter extends CachedVoter
             return false;
         }
 
-        // los administradores globales siempre tienen permiso
-        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
-            return true;
-        }
-
         /** @var Person $user */
         $user = $token->getUser();
 
@@ -84,9 +79,19 @@ class WLTTeacherVoter extends CachedVoter
 
         $organization = $this->userExtensionService->getCurrentOrganization();
 
-        // Si no es de la organización actual, denegar
-        if ($subject->getAcademicYear()->getOrganization() !== $organization) {
+        // si es de otra organización, denegar
+        if ($organization !== $this->userExtensionService->getCurrentOrganization()) {
             return false;
+        }
+
+        // si el módulo está deshabilitado, denegar
+        if (!$organization->getCurrentAcademicYear()->hasModule('wlt')) {
+            return false;
+        }
+
+        // los administradores globales siempre tienen permiso
+        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
+            return true;
         }
 
         // Si es administrador de la organización, permitir siempre
