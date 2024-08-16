@@ -59,6 +59,9 @@ class AcademicYear implements \Stringable
     #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
     private ?ReportTemplate $defaultLandscapeTemplate = null;
 
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $disabledModules = null;
+
     public function __toString(): string
     {
         return (string) $this->getDescription();
@@ -154,6 +157,17 @@ class AcademicYear implements \Stringable
     public function setDefaultLandscapeTemplate(?ReportTemplate $defaultLandscapeTemplate): static
     {
         $this->defaultLandscapeTemplate = $defaultLandscapeTemplate;
+        return $this;
+    }
+
+    public function getDisabledModules(): ?string
+    {
+        return $this->disabledModules;
+    }
+
+    public function setDisabledModules(?string $disabledModules): static
+    {
+        $this->disabledModules = $disabledModules;
         return $this;
     }
 }

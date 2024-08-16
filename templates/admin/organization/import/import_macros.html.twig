@@ -1,0 +1,10 @@
+{% trans_default_domain 'import' %}
+{% macro show_import_instructions(columns, section) %}
+<div class="alert alert-info">
+    <b>{{ 'instructions.navigation'|trans }}</b> {{ ('instructions.path.' ~ section) |trans }}<br>
+    <b>{{ 'instructions.columns'|trans }}</b>
+    {% for column_data in columns %}
+        {{ column_data.column }}{% if not column_data.mandatory %} {{ 'columns.optional'|trans }}{% endif %}{% if not loop.last %}, {% endif %}
+    {% endfor %}
+</div>
+{% endmacro %}

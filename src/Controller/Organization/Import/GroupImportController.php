@@ -43,6 +43,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GroupImportController extends AbstractController
 {
+    static private $columns = [
+        ['column' => 'Unidad', 'mandatory' => true],
+        ['column' => 'Curso', 'mandatory' => true],
+        ['column' => 'Tutor/a', 'mandatory' => false],
+    ];
+
     #[Route(path: '/centro/importar/grupo', name: 'organization_import_group_form', methods: ['GET', 'POST'])]
     public function index(
         UserExtensionService $userExtensionService,
@@ -94,6 +100,7 @@ class GroupImportController extends AbstractController
             'title' => $title,
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
+            'columns' => self::$columns,
             'stats' => $stats
         ]);
     }
@@ -142,8 +149,10 @@ class GroupImportController extends AbstractController
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $groupData) {
-                    if (!isset($groupData['Unidad'], $groupData['Curso'], $groupData['Tutor/a'])) {
-                        return ['error' => '_missing_columns'];
+                    foreach (self::$columns as $columnData) {
+                        if ($columnData['mandatory'] && !isset($groupData[$columnData['column']])) {
+                            return ['error' => '_missing_columns'];
+                        }
                     }
                     $groupName = $groupData['Unidad'];
                     $gradeName = $groupData['Curso'];

@@ -7,6 +7,10 @@ form.submit: Importar
 form.again: Importar otro fichero
 form.back: Volver
 
+instructions.navigation: "Ruta en Séneca para la exportación: "
+instructions.columns: "Columnas del fichero a importar: "
+columns.optional: (opcional)
+
 message.teacher.password_info: |
   El profesorado nuevo ha sido incorporado con una contraseña generada automáticamente. Dicha contraseña
   es su usuario IdEA. Recomendamos que sea cambiada lo antes posible para evitar problemas de accesos
@@ -27,6 +31,7 @@ form.teacher.generate_password: Contraseña inicial del nuevo profesorado
 form.teacher.generate_password.no: No generar ninguna
 form.teacher.generate_password.yes: Establecer por defecto en el usuario IdEA (aumenta el tiempo de importación)
 form.teacher.do_import: Importar profesorado
+instructions.path.teacher: "Personal > Personal del centro > Botón 'Exportar datos'"
 
 report.teacher.list: Docentes nuevos dados de alta en la plataforma
 report.teacher.existing_teachers: Docentes ya existentes
@@ -41,6 +46,7 @@ form.group.extract_tutors: Tutores de grupo
 form.group.extract_tutors.no: No asignar los tutores
 form.group.extract_tutors.yes: Asignar tutores de los grupos
 form.group.do_import: Importar grupos
+instructions.path.group: "Alumnado > Relación de unidades > Curso: Cualquiera > Botón 'Exportar datos'"
 
 form.group.overwrite_usernames: Sobreescribir nombres de usuario existentes
 form.group.overwrite_usernames.no: No, se mantendrán los usuarios existentes
@@ -56,6 +62,7 @@ form.department.extract_heads: Jefaturas de departamento
 form.department.extract_heads.no: No asignar
 form.department.extract_heads.yes: Asignar automáticamente
 form.department.do_import: Importar departamentos
+instructions.path.department: "Centro > Datos propios > Órganos de coordinación docente > Departamentos"
 
 report.department.list: Departamentos procesados
 report.department.new: Departamentos nuevos incorporados
@@ -70,6 +77,7 @@ form.subject.keep_one_subject_per_training: Materias iguales en misma enseñanza
 form.subject.keep_one_subject_per_training.no: Incorporar como materias independientes
 form.subject.keep_one_subject_per_training.yes: Dejar solamente la que esté en el curso mayor
 form.subject.do_import: Importar materias
+instructions.path.subject: "Personal > Personal del centro > Botón 'Materia y grupos' > Unidad: Cualquiera > Botón 'Exportar datos'"
 
 report.subject.list: Materias procesadas
 report.subject.deleted_list: Duplicados eliminados
@@ -79,6 +87,7 @@ report.subject.old: Materias ya existentes
 title.criteria.import: Importación de RAs y criterios de evaluación
 form.criteria.grade: Curso
 form.criteria.do_import: Importar datos
+instructions.path.criteria: "Alumnado > Evaluación > Currículo F.P. > Criterios de Evaluación > (Elegir curso) > Módulo: Cualquiera > Botón 'Exportar datos'"
 
 report.criteria.new_subjects: Módulos profesionales incorporados
 report.criteria.updated_subjects: Módulos profesionales actualizados
@@ -93,11 +102,13 @@ report.student.old: Estudiantes ya existentes
 
 title.student.import: Importación de estudiantes
 form.student.academic_year: Curso académico
-form.student.do_import: Importar estudiantes
+instructions.path.student: "Alumnado > Alumnado del centro > (Seleccionar curso/unidad o todos) > Botón 'Exportar datos'"
 
+form.student.do_import: Importar estudiantes
 title.student_login.import: Importación de usuario PASEN
 form.student_login.academic_year: Curso académico
 form.student_login.do_import: Importar usuarios PASEN
+instructions.path.student_login: "Utilidades > Panel de control Pasen > Gestión de usuarios Pasen > Alumnado > (Seleccionar curso/unidad o todos) > Botón 'Exportar datos'"
 
 report.student_login.list: Nombres de usuario procesados
 report.student_login.updated: Estudiantes actualizados con el nombre de usuario

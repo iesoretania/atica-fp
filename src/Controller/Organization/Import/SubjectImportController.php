@@ -50,6 +50,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SubjectImportController extends AbstractController
 {
+    static private $columns = [
+        ['column' => 'Materia', 'mandatory' => true],
+        ['column' => 'Unidad', 'mandatory' => true],
+        ['column' => 'Curso', 'mandatory' => true],
+        ['column' => 'Profesor/a', 'mandatory' => false]
+    ];
+
+    static private $criteriaColumns = [
+        ['column' => 'Módulo Profesional', 'mandatory' => true],
+        ['column' => 'Resultado de Aprendizaje', 'mandatory' => true],
+        ['column' => 'Criterios de Evaluación', 'mandatory' => true]
+    ];
+
     #[Route(path: '/centro/importar/materia', name: 'organization_import_subject_form', methods: ['GET', 'POST'])]
     public function index(
         UserExtensionService $userExtensionService,
@@ -102,6 +115,7 @@ class SubjectImportController extends AbstractController
             'title' => $title,
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
+            'columns' => self::$columns,
             'stats' => $stats
         ]);
     }
@@ -135,9 +149,10 @@ class SubjectImportController extends AbstractController
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $subjectData) {
-                    if (!isset($subjectData['Materia']) || !isset($subjectData['Unidad'])
-                        || !isset($subjectData['Profesor/a'])) {
-                        return ['error' => '_missing_columns'];
+                    foreach (self::$columns as $columnData) {
+                        if ($columnData['mandatory'] && !isset($subjectData[$columnData['column']])) {
+                            return ['error' => '_missing_columns'];
+                        }
                     }
                     $subjectName = trim((string) $subjectData['Materia']);
                     $subjectName = preg_replace('/\ +/', ' ', $subjectName, -1);
@@ -198,7 +213,7 @@ class SubjectImportController extends AbstractController
                         }
 
                         // profesorado
-                        if ($options['extract_teachers']) {
+                        if ($options['extract_teachers'] && isset($subjectData['Profesor/a'])) {
                             $teacherName = $subjectData['Profesor/a'];
 
                             $teacher = null;
@@ -318,19 +333,20 @@ class SubjectImportController extends AbstractController
                 $entityManager
             );
 
-            if (null !== $stats) {
+            if (!isset($stats['error'])) {
                 $this->addFlash('success', $translator->trans('message.import_ok', [], 'import'));
                 $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
             } else {
-                $this->addFlash('error', $translator->trans('message.import_error', [], 'import'));
+                $this->addFlash('error', $translator->trans('message.import_error' . $stats['error'], [], 'import'));
             }
         }
         $title = $translator->trans('title.criteria.import', [], 'import');
 
-        return $this->render('admin/organization/import/subject_data_import_form.html.twig', [
+        return $this->render('admin/organization/import/criteria_import_form.html.twig', [
             'title' => $title,
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
+            'columns' => self::$criteriaColumns,
             'stats' => $stats
         ]);
     }
@@ -363,9 +379,10 @@ class SubjectImportController extends AbstractController
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $criteriaData) {
-                    if (!isset($criteriaData['Módulo Profesional'], $criteriaData['Resultado de Aprendizaje'],
-                        $criteriaData['Criterios de Evaluación'])) {
-                        return null;
+                    foreach (self::$criteriaColumns as $columnData) {
+                        if ($columnData['mandatory'] && !isset($criteriaData[$columnData['column']])) {
+                            return ['error' => '_missing_columns'];
+                        }
                     }
                     $subjectName = trim((string) $criteriaData['Módulo Profesional']);
 
