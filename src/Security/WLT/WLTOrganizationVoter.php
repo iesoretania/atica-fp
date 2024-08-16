@@ -26,39 +26,41 @@ use App\Repository\WLT\WLTGroupRepository;
 use App\Security\CachedVoter;
 use App\Security\Edu\EduOrganizationVoter;
 use App\Security\OrganizationVoter;
+use App\Service\UserExtensionService;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
 class WLTOrganizationVoter extends CachedVoter
 {
-    public const WLT_ACCESS = 'ORGANIZATION_ACCESS_WORKLINKED_TRAINING';
-    public const WLT_MANAGE = 'ORGANIZATION_MANAGE_WORKLINKED_TRAINING';
-    public const WLT_GRADE = 'ORGANIZATION_GRADE_WORKLINKED_TRAINING';
-    public const WLT_VIEW_GRADE = 'ORGANIZATION_VIEW_GRADE_WORKLINKED_TRAINING';
-    public const WLT_VIEW_EVALUATION = 'ORGANIZATION_VIEW_EVALUATION_WORKLINKED_TRAINING';
-    public const WLT_ACCESS_VISIT = 'ORGANIZATION_ACCESS_WORKLINKED_TRAINING_VISIT';
-    public const WLT_CREATE_VISIT = 'ORGANIZATION_CREATE_WORKLINKED_TRAINING_VISIT';
-    public const WLT_ACCESS_MEETING = 'ORGANIZATION_ACCESS_WORKLINKED_MEETING_VISIT';
-    public const WLT_CREATE_MEETING = 'ORGANIZATION_CREATE_WORKLINKED_MEETING_VISIT';
+    public const WLT_ACCESS = 'WLT_ORGANIZATION_ACCESS';
+    public const WLT_MANAGE = 'WLT_ORGANIZATION_MANAGE';
+    public const WLT_GRADE = 'WLT_ORGANIZATION_GRADE';
+    public const WLT_VIEW_GRADE = 'WLT_ORGANIZATION_VIEW_GRADE';
+    public const WLT_VIEW_EVALUATION = 'WLT_ORGANIZATION_VIEW_EVALUATION';
+    public const WLT_ACCESS_VISIT = 'WLT_ORGANIZATION_ACCESS_VISIT';
+    public const WLT_CREATE_VISIT = 'WLT_ORGANIZATION_CREATE_VISIT';
+    public const WLT_ACCESS_MEETING = 'WLT_ORGANIZATION_ACCESS_WORKLINKED_MEETING_VISIT';
+    public const WLT_CREATE_MEETING = 'WLT_ORGANIZATION_CREATE_WORKLINKED_MEETING_VISIT';
 
-    public const WLT_GROUP_TUTOR = 'ORGANIZATION_WLT_GROUP_TUTOR';
-    public const WLT_WORK_TUTOR = 'ORGANIZATION_WLT_WORK_TUTOR';
-    public const WLT_STUDENT = 'ORGANIZATION_WLT_STUDENT';
-    public const WLT_TEACHER = 'ORGANIZATION_WLT_TEACHER';
-    public const WLT_MANAGER = 'ORGANIZATION_WLT_MANAGER';
-    public const WLT_EDUCATIONAL_TUTOR = 'ORGANIZATION_WLT_EDUCATIONAL_TUTOR';
-    public const WLT_DEPARTMENT_HEAD = 'ORGANIZATION_WLT_DEPARTMENT_HEAD';
+    public const WLT_GROUP_TUTOR = 'WLT_ORGANIZATION_GROUP_TUTOR';
+    public const WLT_WORK_TUTOR = 'WLT_ORGANIZATION_WORK_TUTOR';
+    public const WLT_STUDENT = 'WLT_ORGANIZATION_STUDENT';
+    public const WLT_TEACHER = 'WLT_ORGANIZATION_TEACHER';
+    public const WLT_MANAGER = 'WLT_ORGANIZATION_MANAGER';
+    public const WLT_EDUCATIONAL_TUTOR = 'WLT_ORGANIZATION_EDUCATIONAL_TUTOR';
+    public const WLT_DEPARTMENT_HEAD = 'WLT_ORGANIZATION_DEPARTMENT_HEAD';
 
-    public const WLT_ACCESS_EXPENSE = 'ORGANIZATION_WLT_ACCESS_EXPENSE';
-    public const WLT_CREATE_EXPENSE = 'ORGANIZATION_WLT_CREATE_EXPENSE';
+    public const WLT_ACCESS_EXPENSE = 'WLT_ORGANIZATION_ACCESS_EXPENSE';
+    public const WLT_CREATE_EXPENSE = 'WLT_ORGANIZATION_CREATE_EXPENSE';
 
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
         private readonly AccessDecisionManagerInterface $decisionManager,
         private readonly AgreementRepository $agreementRepository,
         private readonly ProjectRepository $projectRepository,
-        private readonly WLTGroupRepository $WLTGroupRepository
+        private readonly WLTGroupRepository $WLTGroupRepository,
+        private readonly UserExtensionService $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
     }
@@ -103,17 +105,23 @@ class WLTOrganizationVoter extends CachedVoter
             return false;
         }
 
-        // los administradores globales siempre tienen permiso
-        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
-            return true;
-        }
-
         /** @var Person $user */
         $user = $token->getUser();
 
         if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
+        }
+
+        // si el módulo está deshabilitado, denegar
+        if (!$this->userExtensionService->getCurrentOrganization() instanceof Organization ||
+            !$this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear()->hasModule('wlt')) {
+            return false;
+        }
+
+        // los administradores globales siempre tienen permiso
+        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
+            return true;
         }
 
         // Si es administrador de la organización, permitir siempre
