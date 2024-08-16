@@ -19,6 +19,7 @@
 namespace App\Security\WPT;
 
 use App\Entity\Edu\Teaching;
+use App\Entity\Organization;
 use App\Entity\Person;
 use App\Entity\WPT\TravelExpense;
 use App\Security\CachedVoter;
@@ -66,11 +67,6 @@ class TravelExpenseVoter extends CachedVoter
             return false;
         }
 
-        // los administradores globales siempre tienen permiso
-        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
-            return true;
-        }
-
         /** @var Person $user */
         $user = $token->getUser();
 
@@ -80,6 +76,17 @@ class TravelExpenseVoter extends CachedVoter
         }
 
         $organization = $this->userExtensionService->getCurrentOrganization();
+
+        // si el módulo está deshabilitado, denegar
+        if (!$organization instanceof Organization ||
+            !$organization->getCurrentAcademicYear()->hasModule('wpt')) {
+            return false;
+        }
+
+        // los administradores globales siempre tienen permiso
+        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
+            return true;
+        }
 
         // Si no es de la organización actual, denegar
         if ($subject->getTeacher()->getAcademicYear()->getOrganization() !== $organization) {

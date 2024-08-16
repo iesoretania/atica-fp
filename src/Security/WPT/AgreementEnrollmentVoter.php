@@ -19,6 +19,7 @@
 namespace App\Security\WPT;
 
 use App\Entity\Edu\StudentEnrollment;
+use App\Entity\Organization;
 use App\Entity\Person;
 use App\Entity\Survey;
 use App\Entity\WPT\AgreementEnrollment;
@@ -84,11 +85,6 @@ class AgreementEnrollmentVoter extends CachedVoter
             return false;
         }
 
-        // los administradores globales siempre tienen permiso
-        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
-            return true;
-        }
-
         /** @var Person $user */
         $user = $token->getUser();
 
@@ -98,6 +94,17 @@ class AgreementEnrollmentVoter extends CachedVoter
         }
 
         $organization = $this->userExtensionService->getCurrentOrganization();
+
+        // si el módulo está deshabilitado, denegar
+        if (!$organization instanceof Organization ||
+            !$organization->getCurrentAcademicYear()->hasModule('wpt')) {
+            return false;
+        }
+
+        // los administradores globales siempre tienen permiso
+        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
+            return true;
+        }
 
         // si es de otra organización, denegar
         if ($organization !== $this->userExtensionService->getCurrentOrganization()) {
