@@ -38,6 +38,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DepartmentImportController extends AbstractController
 {
+    static private $columns = [
+        ['column' => 'Descripción', 'mandatory' => true],
+        ['column' => 'Jefe de departamento', 'mandatory' => false]
+    ];
+
     #[Route(path: '/centro/importar/departamento', name: 'organization_import_department_form', methods: ['GET', 'POST'])]
     public function index(
         UserExtensionService $userExtensionService,
@@ -84,6 +89,7 @@ class DepartmentImportController extends AbstractController
             'title' => $title,
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
+            'columns' => self::$columns,
             'stats' => $stats
         ]);
     }
@@ -109,9 +115,12 @@ class DepartmentImportController extends AbstractController
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $departmentData) {
-                    if (!isset($departmentData['Descripción'], $departmentData['Jefe de departamento'])) {
-                        return ['error' => '_missing_columns'];
+                    foreach (self::$columns as $columnData) {
+                        if ($columnData['mandatory'] && !isset($departmentData[$columnData['column']])) {
+                            return ['error' => '_missing_columns'];
+                        }
                     }
+
                     $departmentName = $departmentData['Descripción'];
 
                     $department = $departmentRepository->findOneBy([

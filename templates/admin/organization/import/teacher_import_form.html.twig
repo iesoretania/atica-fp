@@ -1,8 +1,10 @@
 {% trans_default_domain 'import' %}
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
+{% import 'admin/organization/import/import_macros.html.twig' as im %}
 {% block content %}
     {% if not stats %}
+        {{ im.show_import_instructions(columns, 'teacher') }}
         {{ form_start(form) }}
         {{ form_widget(form) }}
         {{ m.start_button() }}

@@ -40,6 +40,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TeacherImportController extends AbstractController
 {
+    static private $columns = [
+        ['column' => 'Usuario IdEA', 'mandatory' => true],
+        ['column' => 'DNI/Pasaporte', 'mandatory' => true],
+        ['column' => 'Empleado/a', 'mandatory' => true]
+    ];
+
     #[Route(path: '/centro/importar/profesorado', name: 'organization_import_teacher_form', methods: ['GET', 'POST'])]
     public function index(
         UserExtensionService $userExtensionService,
@@ -92,6 +98,7 @@ class TeacherImportController extends AbstractController
             'title' => $title,
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
+            'columns' => self::$columns,
             'generate_password' => $formData->getGeneratePassword(),
             'stats' => $stats
         ]);
@@ -124,9 +131,10 @@ class TeacherImportController extends AbstractController
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $personData) {
-                    if (!isset($personData['Usuario IdEA']) || !isset($personData['DNI/Pasaporte'])
-                        || !isset($personData['Empleado/a'])) {
-                        return ['error' => '_missing_columns'];
+                    foreach (self::$columns as $columnData) {
+                        if ($columnData['mandatory'] && !isset($personData[$columnData['column']])) {
+                            return ['error' => '_missing_columns'];
+                        }
                     }
                     $userName = $personData['Usuario IdEA'];
 

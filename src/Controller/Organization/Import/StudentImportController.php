@@ -44,6 +44,24 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class StudentImportController extends AbstractController
 {
+    static private $columns = [
+        ['column' => 'Alumno/a', 'mandatory' => true],
+        ['column' => 'Estado Matrícula', 'mandatory' => false],
+        ['column' => 'Unidad', 'mandatory' => true],
+        ['column' => 'Nº Id. Escolar', 'mandatory' => true],
+        ['column' => 'DNI/Pasaporte', 'mandatory' => true],
+        ['column' => 'Nombre', 'mandatory' => true],
+        ['column' => 'Primer apellido', 'mandatory' => true],
+        ['column' => 'Segundo apellido', 'mandatory' => true],
+        ['column' => 'Sexo', 'mandatory' => false]
+    ];
+
+    static private $loginColumns = [
+        ['column' => 'Nombre', 'mandatory' => true],
+        ['column' => 'Usuario IdEA', 'mandatory' => true],
+        ['column' => 'Activo en Séneca', 'mandatory' => true]
+    ];
+
     #[Route(path: '/centro/importar/estudiante', name: 'organization_import_student_form', methods: ['GET', 'POST'])]
     public function index(
         UserExtensionService $userExtensionService,
@@ -93,6 +111,7 @@ class StudentImportController extends AbstractController
             'title' => $title,
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
+            'columns' => self::$columns,
             'stats' => $stats
         ]);
     }
@@ -119,12 +138,16 @@ class StudentImportController extends AbstractController
 
         $personCollection = [];
 
+
+
         $porDefecto = $passwordEncoder->hashPassword(new Person(), $academicYear->getOrganization()->getCode());
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $studentData) {
-                    if (!isset($studentData['Alumno/a'], $studentData['Estado Matrícula'], $studentData['Unidad'], $studentData['Nº Id. Escolar'], $studentData['DNI/Pasaporte'], $studentData['Nombre'], $studentData['Primer apellido'], $studentData['Segundo apellido'], $studentData['Sexo'])) {
-                        return ['error' => '_missing_columns'];
+                    foreach (self::$columns as $columnData) {
+                        if ($columnData['mandatory'] && !isset($studentData[$columnData['column']])) {
+                            return ['error' => '_missing_columns'];
+                        }
                     }
 
                     // ignorar bajas y matrículas anuladas o trasladadas
@@ -152,12 +175,15 @@ class StudentImportController extends AbstractController
                         $person = $personCollection[$uniqueIdentifier1];
                     }
                     if (!$person instanceof Person) {
-                        $gender = $studentData['Sexo'];
-                        $gender = match ($gender) {
-                            'H' => Person::GENDER_MALE,
-                            'M' => Person::GENDER_FEMALE,
-                            default => Person::GENDER_NEUTRAL,
-                        };
+                        if (isset($studentData['Sexo'])) {
+                            $gender = match ($studentData['Sexo']) {
+                                'H' => Person::GENDER_MALE,
+                                'M' => Person::GENDER_FEMALE,
+                                default => Person::GENDER_NEUTRAL,
+                            };
+                        } else {
+                            $gender = Person::GENDER_NEUTRAL;
+                        }
 
                         $person = new Person();
                         $person
@@ -254,6 +280,7 @@ class StudentImportController extends AbstractController
             'title' => $title,
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
+            'columns' => self::$loginColumns,
             'stats' => $stats
         ]);
     }
@@ -279,12 +306,15 @@ class StudentImportController extends AbstractController
         $lastName = '';
         $lastUsername = '';
         $conflict = false;
+
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $studentData) {
                     $totalCount++;
-                    if (!isset($studentData['Nombre']) || !isset($studentData['Usuario IdEA']) || !isset($studentData['Activo en Séneca'])) {
-                        return ['error' => '_missing_columns'];
+                    foreach (self::$columns as $columnData) {
+                        if ($columnData['mandatory'] && !isset($studentData[$columnData['column']])) {
+                            return ['error' => '_missing_columns'];
+                        }
                     }
 
                     // ignorar estudiantes no activos
