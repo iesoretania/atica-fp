@@ -25,6 +25,7 @@ use App\Repository\WPT\WPTGroupRepository;
 use App\Security\CachedVoter;
 use App\Security\Edu\EduOrganizationVoter;
 use App\Security\OrganizationVoter;
+use App\Service\UserExtensionService;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
@@ -52,7 +53,8 @@ class WPTOrganizationVoter extends CachedVoter
         CacheItemPoolInterface $cacheItemPoolItemPool,
         private readonly WPTGroupRepository $wptGroupRepository,
         private readonly AgreementRepository $agreementRepository,
-        private readonly AccessDecisionManagerInterface $decisionManager
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly UserExtensionService $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
     }
@@ -62,7 +64,6 @@ class WPTOrganizationVoter extends CachedVoter
      */
     final public function supports($attribute, $subject): bool
     {
-
         if (!$subject instanceof Organization) {
             return false;
         }
@@ -92,17 +93,23 @@ class WPTOrganizationVoter extends CachedVoter
             return false;
         }
 
-        // los administradores globales siempre tienen permiso
-        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
-            return true;
-        }
-
         /** @var Person $user */
         $user = $token->getUser();
 
         if (!$user instanceof Person) {
             // si el usuario no ha entrado, denegar
             return false;
+        }
+
+        // si el módulo está deshabilitado, denegar
+        if (!$this->userExtensionService->getCurrentOrganization() instanceof Organization ||
+            !$this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear()->hasModule('wpt')) {
+            return false;
+        }
+
+        // los administradores globales siempre tienen permiso
+        if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
+            return true;
         }
 
         // Si es administrador de la organización, permitir siempre
