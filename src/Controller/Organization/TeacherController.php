@@ -226,7 +226,7 @@ class TeacherController extends AbstractController
 
         $em = $managerRegistry->getManager();
 
-        $items = $request->request->get('users', []);
+        $items = $request->request->all('users');
         if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_teacher_list', ['academicYear' => $academicYear->getId()]);
         }

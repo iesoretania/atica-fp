@@ -270,7 +270,7 @@ class ActivityController extends AbstractController
 
         $em = $managerRegistry->getManager();
 
-        $lines = trim($request->request->get('data', []));
+        $lines = trim($request->request->get('data', ''));
         if ($lines === '') {
             return $this->redirectToRoute('workplace_training_activity_list', ['id' => $shift->getId()]);
         }

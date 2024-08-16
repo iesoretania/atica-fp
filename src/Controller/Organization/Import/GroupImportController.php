@@ -24,7 +24,10 @@ use App\Entity\Edu\Group;
 use App\Entity\Edu\Training;
 use App\Form\Model\GroupImport;
 use App\Form\Type\Import\GroupImportType;
+use App\Repository\Edu\GradeRepository;
+use App\Repository\Edu\GroupRepository;
 use App\Repository\Edu\TeacherRepository;
+use App\Repository\Edu\TrainingRepository;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use App\Utils\CsvImporter;
@@ -44,6 +47,9 @@ class GroupImportController extends AbstractController
     public function index(
         UserExtensionService $userExtensionService,
         TeacherRepository $teacherRepository,
+        TrainingRepository $trainingRepository,
+        GradeRepository $gradeRepository,
+        GroupRepository $groupRepository,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         Request $request): Response
@@ -65,6 +71,9 @@ class GroupImportController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $stats = $this->importFromCsv($formData->getFile()->getPathname(), $formData->getAcademicYear(),
                 $teacherRepository,
+                $trainingRepository,
+                $gradeRepository,
+                $groupRepository,
                 $managerRegistry,
                 [
                     'restricted' => $formData->isRestricted(),
@@ -96,6 +105,9 @@ class GroupImportController extends AbstractController
         $file,
         AcademicYear $academicYear,
         TeacherRepository $teacherRepository,
+        TrainingRepository $trainingRepository,
+        GradeRepository $gradeRepository,
+        GroupRepository $groupRepository,
         ManagerRegistry $managerRegistry,
         array $options = []
     ): array {
@@ -114,15 +126,15 @@ class GroupImportController extends AbstractController
         $collection = [];
 
         // precargar los datos de la organización y del curso académico para evitar múltiples consultas
-        $items = $em->getRepository(Training::class)->findBy(['academicYear' => $academicYear]);
+        $items = $trainingRepository->findBy(['academicYear' => $academicYear]);
         foreach($items as $item) {
             $trainingCollection[$item->getInternalCode()] = $item;
         }
-        $items = $em->getRepository(Grade::class)->findByAcademicYear($academicYear);
+        $items = $gradeRepository->findByAcademicYear($academicYear);
         foreach($items as $item) {
             $gradeCollection[$item->getInternalCode()] = $item;
         }
-        $items = $em->getRepository(Group::class)->findByAcademicYear($academicYear);
+        $items = $groupRepository->findByAcademicYear($academicYear);
         foreach($items as $item) {
             $groupCollection[$item->getInternalCode()] = $item;
         }
@@ -130,7 +142,7 @@ class GroupImportController extends AbstractController
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $groupData) {
-                    if (!isset($groupData['Unidad']) || !isset($groupData['Curso']) || !isset($groupData['Tutor/a']) ) {
+                    if (!isset($groupData['Unidad'], $groupData['Curso'], $groupData['Tutor/a'])) {
                         return ['error' => '_missing_columns'];
                     }
                     $groupName = $groupData['Unidad'];
@@ -157,7 +169,7 @@ class GroupImportController extends AbstractController
                         if (isset($trainingCollection[$trainingName])) {
                             $training = $trainingCollection[$trainingName];
                         } else {
-                            $training = $em->getRepository(Training::class)->findOneBy([
+                            $training = $trainingRepository->findOneBy([
                                 'internalCode' => $trainingName,
                                 'academicYear' => $academicYear
                             ]);
@@ -176,7 +188,7 @@ class GroupImportController extends AbstractController
 
                         if (!isset($gradeCollection[$calculatedGradeName])) {
                             if ($training->getId() !== null) {
-                                $grade = $em->getRepository(Grade::class)->findOneBy([
+                                $grade = $gradeRepository->findOneBy([
                                     'internalCode' => $calculatedGradeName,
                                     'training' => $training
                                 ]);
@@ -202,7 +214,7 @@ class GroupImportController extends AbstractController
                     $group = null;
                     if ($grade->getId()) {
                         if (!isset($groupCollection[$groupName])) {
-                            $group = $em->getRepository(Group::class)->findOneBy([
+                            $group = $groupRepository->findOneBy([
                                 'internalCode' => $groupName,
                                 'grade' => $grade
                             ]);

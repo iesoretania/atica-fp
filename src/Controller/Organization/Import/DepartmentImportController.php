@@ -109,7 +109,7 @@ class DepartmentImportController extends AbstractController
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $departmentData) {
-                    if (!isset($departmentData['Descripción']) || !isset($departmentData['Jefe de departamento'])) {
+                    if (!isset($departmentData['Descripción'], $departmentData['Jefe de departamento'])) {
                         return ['error' => '_missing_columns'];
                     }
                     $departmentName = $departmentData['Descripción'];

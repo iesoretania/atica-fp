@@ -80,12 +80,11 @@ class StudentImportController extends AbstractController
                     'overwrite_usernames' => $formData->getOverwriteUserNames()
                 ]
             );
-
-            if (null !== $stats) {
+            if (!isset($stats['error'])) {
                 $this->addFlash('success', $translator->trans('message.import_ok', [], 'import'));
                 $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
             } else {
-                $this->addFlash('error', $translator->trans('message.import_error', [], 'import'));
+                $this->addFlash('error', $translator->trans('message.import_error' . $stats['error'], [], 'import'));
             }
         }
         $title = $translator->trans('title.student.import', [], 'import');
@@ -124,8 +123,8 @@ class StudentImportController extends AbstractController
         try {
             while ($data = $importer->get(100)) {
                 foreach ($data as $studentData) {
-                    if (!isset($studentData['Alumno/a'])) {
-                        return null;
+                    if (!isset($studentData['Alumno/a'], $studentData['Estado Matrícula'], $studentData['Unidad'], $studentData['Nº Id. Escolar'], $studentData['DNI/Pasaporte'], $studentData['Nombre'], $studentData['Primer apellido'], $studentData['Segundo apellido'], $studentData['Sexo'])) {
+                        return ['error' => '_missing_columns'];
                     }
 
                     // ignorar bajas y matrículas anuladas o trasladadas
