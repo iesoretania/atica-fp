@@ -240,7 +240,7 @@ class CompetencyController extends AbstractController
 
         $em = $managerRegistry->getManager();
 
-        $lines = trim($request->request->get('data', []));
+        $lines = trim($request->request->get('data', ''));
         if ($lines === '') {
             return $this->redirectToRoute('organization_training_competency_list', ['id' => $training->getId()]);
         }

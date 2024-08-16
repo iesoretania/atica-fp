@@ -23,6 +23,7 @@ use App\Entity\Edu\Teacher;
 use App\Entity\Person;
 use App\Form\Model\TeacherImport;
 use App\Form\Type\Import\TeacherImportType;
+use App\Repository\Edu\TeacherRepository;
 use App\Repository\PersonRepository;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
@@ -45,6 +46,7 @@ class TeacherImportController extends AbstractController
         TranslatorInterface $translator,
         UserPasswordHasherInterface $passwordEncoder,
         PersonRepository $personRepository,
+        TeacherRepository $teacherRepository,
         ManagerRegistry $managerRegistry,
         Request $request
     ): Response {
@@ -69,6 +71,7 @@ class TeacherImportController extends AbstractController
                 $passwordEncoder,
                 $personRepository,
                 $managerRegistry,
+                $teacherRepository,
                 [
                     'generate_password' => $formData->getGeneratePassword(),
                     'external_check' => $formData->isExternalPassword()
@@ -103,6 +106,7 @@ class TeacherImportController extends AbstractController
         UserPasswordHasherInterface $encoder,
         PersonRepository $personRepository,
         ManagerRegistry $managerRegistry,
+        TeacherRepository $teacherRepository,
         array $options = []
     ): array {
         $generatePassword = isset($options['generate_password']) && $options['generate_password'];
@@ -171,7 +175,7 @@ class TeacherImportController extends AbstractController
                         $personCollection[$userName] = $person;
                     }
 
-                    $teacher = $person->getId() ? $em->getRepository(Teacher::class)->findOneBy([
+                    $teacher = $person->getId() ? $teacherRepository->findOneBy([
                             'academicYear' => $academicYear,
                             'person' => $person
                         ]) : null;

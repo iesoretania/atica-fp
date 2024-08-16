@@ -250,7 +250,7 @@ class LearningOutcomeController extends AbstractController
 
         $em = $managerRegistry->getManager();
 
-        $lines = trim($request->request->get('data', []));
+        $lines = trim($request->request->get('data', ''));
         if ($lines === '') {
             return $this->redirectToRoute('organization_training_learning_outcome_list', ['id' => $subject->getId()]);
         }

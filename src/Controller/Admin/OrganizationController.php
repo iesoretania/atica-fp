@@ -213,9 +213,9 @@ class OrganizationController extends AbstractController
     private function processSwitchOrganization(
         Request $request,
         TranslatorInterface $translator,
-        ObjectManager $em
+        OrganizationRepository $organizationRepository
     ): bool {
-        $organization = $em->getRepository(Organization::class)->find($request->request->get('switch', null));
+        $organization = $organizationRepository->find($request->request->get('switch', null));
         if ($organization !== null) {
             $request->getSession()->set('organization_id', $organization->getId());
             $this->addFlash(
@@ -232,23 +232,24 @@ class OrganizationController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
+        OrganizationRepository $organizationRepository,
         ManagerRegistry $managerRegistry
     ): array {
         $em = $managerRegistry->getManager();
 
         $redirect = false;
         if ($request->request->has('switch')) {
-            $redirect = $this->processSwitchOrganization($request, $translator, $em);
+            $redirect = $this->processSwitchOrganization($request, $translator, $organizationRepository);
         }
 
-        $items = $request->request->get('organizations', []);
+        $items = $request->request->all('organizations');
         if ((is_countable($items) ? count($items) : 0) === 0) {
             $redirect = true;
         }
 
         $organizations = [];
         if (!$redirect) {
-            $organizations = $em->getRepository(Organization::class)->
+            $organizations = $organizationRepository->
                 findAllInListByIdButCurrent($items, $userExtensionService->getCurrentOrganization());
             $redirect = $this->processRemoveOrganizations($request, $translator, $organizations, $em);
         }
