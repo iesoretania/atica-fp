@@ -70,7 +70,8 @@ class SecurityController extends AbstractController
         MailerService $mailerService,
         Session $session,
         TranslatorInterface $translator,
-        PersonRepository $personRepository
+        PersonRepository $personRepository,
+        ManagerRegistry $managerRegistry
     ): Response {
 
         $data = [
@@ -87,7 +88,7 @@ class SecurityController extends AbstractController
 
         // ¿se ha enviado una dirección?
         if ($form->isSubmitted() && $form->isValid()) {
-            $error = $this->doPasswordResetRequest((string) $email, $mailerService, $translator, $request->getSession(), $personRepository);
+            $error = $this->doPasswordResetRequest((string) $email, $mailerService, $translator, $request->getSession(), $personRepository, $managerRegistry);
 
             if (!is_string($error)) {
                 return $error;
@@ -114,7 +115,7 @@ class SecurityController extends AbstractController
         $token
     ): Response {
         /**
-         * @var Person
+         * @var Person $user
          */
         $user = $personRepositoryRepository->findOneBy([
             'id' => $userId,
@@ -240,7 +241,7 @@ class SecurityController extends AbstractController
         $token
     ): Response {
         /**
-         * @var Person
+         * @var Person $user
          */
         $user = $personRepository->findOneBy([
             'id' => $userId,
@@ -360,8 +361,6 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @param $email
-     * @return string|RedirectResponse
      * @throws \Exception
      */
     private function doPasswordResetRequest(
@@ -369,7 +368,8 @@ class SecurityController extends AbstractController
         MailerService $mailerService,
         TranslatorInterface $translator,
         Session $session,
-        PersonRepository $personRepository
+        PersonRepository $personRepository,
+        ManagerRegistry $managerRegistry
     ) {
         /** @var Person|null $user */
         // comprobar que está asociada a un usuario
@@ -422,7 +422,7 @@ class SecurityController extends AbstractController
                     $this->addFlash('error', $translator->trans('form.reset.error', [], 'security'));
                 } else {
                     // guardar token
-                    $this->get('doctrine')->getManager()->flush();
+                    $managerRegistry->getManager()->flush();
 
                     $this->addFlash(
                         'success',

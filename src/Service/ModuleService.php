@@ -133,8 +133,7 @@ class ModuleService
      */
     public function getPathByRouteName($route)
     {
-        $item = $this->checkMenuRouteName($route, $this->getMenu());
-        return $item !== null ? $item->getPath() : null;
+        return $this->checkMenuRouteName($route, $this->getMenu())?->getPath();
     }
 
     public function getModules(): array

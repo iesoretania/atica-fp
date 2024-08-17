@@ -161,7 +161,7 @@ class DepartmentImportController extends AbstractController
         }
 
         // ordenar por nombre antes de devolverlo
-        usort($collection, fn(Department $a, Department $b): int => $a->getName() <=> $b->getName());
+        usort($collection, static fn(Department $a, Department $b): int => $a->getName() <=> $b->getName());
 
         return [
             'new_items' => $newCount,

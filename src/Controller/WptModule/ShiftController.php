@@ -1,0 +1,246 @@
+<?php
+/*
+  Copyright (C) 2018-2024: Luis Ramón López López
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see [http://www.gnu.org/licenses/].
+*/
+
+namespace App\Controller\WptModule;
+
+use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Grade;
+use App\Entity\WptModule\Shift;
+use App\Form\Type\WptModule\ShiftType;
+use App\Repository\Edu\AcademicYearRepository;
+use App\Repository\WptModule\ActivityRepository;
+use App\Repository\WptModule\AgreementRepository;
+use App\Repository\WptModule\ShiftRepository;
+use App\Security\OrganizationVoter;
+use App\Security\WptModule\ShiftVoter;
+use App\Security\WptModule\OrganizationVoter as WptOrganizationVoter;
+use App\Service\UserExtensionService;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use PagerFanta\Exception\OutOfRangeCurrentPageException;
+use Pagerfanta\Pagerfanta;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+#[Route(path: '/fct/convocatoria')]
+class ShiftController extends AbstractController
+{
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'workplace_training_shift_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function list(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
+        AcademicYear $academicYear = null,
+        int $page = 1
+    ): Response {
+        $organization = $userExtensionService->getCurrentOrganization();
+        if (!$academicYear instanceof AcademicYear) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
+
+        $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_MANAGER, $organization);
+
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
+
+        $queryBuilder
+            ->select('s')
+            ->distinct()
+            ->from(Shift::class, 's')
+            ->join('s.subject', 'su')
+            ->leftJoin('su.grade', 'gr')
+            ->leftJoin('gr.groups', 'g')
+            ->join('gr.training', 'tr')
+            ->leftJoin('tr.department', 'd')
+            ->leftJoin('d.head', 'h')
+            ->orderBy('s.name');
+
+        $q = $request->get('q');
+        if ($q) {
+            $queryBuilder
+                ->where('s.name LIKE :tq')
+                ->orWhere('gr.name LIKE :tq')
+                ->orWhere('tr.name LIKE :tq')
+                ->orWhere('g.name LIKE :tq')
+                ->setParameter('tq', '%'.$q.'%');
+        }
+
+        if (!$isManager) {
+            $queryBuilder
+                ->andWhere('d.head IS NOT NULL AND h.person = :manager')
+                ->setParameter('manager', $this->getUser());
+        }
+
+        $queryBuilder
+            ->andWhere('tr.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear);
+
+        $adapter = new QueryAdapter($queryBuilder, false);
+        $pager = new Pagerfanta($adapter);
+        try {
+            $pager
+                ->setMaxPerPage($this->getParameter('page.size'))
+                ->setCurrentPage($page);
+        } catch (OutOfRangeCurrentPageException) {
+            $pager->setCurrentPage(1);
+        }
+
+        $title = $translator->trans('title.list', [], 'wpt_shift');
+
+        return $this->render('wpt/shift/list.html.twig', [
+            'title' => $title,
+            'pager' => $pager,
+            'q' => $q,
+            'domain' => 'wpt_shift',
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
+        ]);
+    }
+
+    #[Route(path: '/nueva/{academicYear}', name: 'workplace_training_shift_new', requirements: ['academicYear' => '\d+'], methods: ['GET', 'POST'])]
+    public function new(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
+        AcademicYear $academicYear
+    ): Response
+    {
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_MANAGER, $organization);
+
+        $shift = new Shift();
+        $shift->setLocked(false);
+
+        $managerRegistry->getManager()->persist($shift);
+
+        return $this->edit($request, $userExtensionService, $translator, $managerRegistry, $shift, $academicYear);
+    }
+
+    #[Route(path: '/{id}', name: 'workplace_training_shift_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function edit(
+        Request $request,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
+        Shift $shift,
+        AcademicYear $academicYear = null
+    ): Response {
+        $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
+
+        $academicYear = $shift->getGrade() instanceof Grade ? $shift->getGrade()->getTraining()->getAcademicYear() : $academicYear;
+        $organization = $userExtensionService->getCurrentOrganization();
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+
+        $em = $managerRegistry->getManager();
+
+        $form = $this->createForm(ShiftType::class, $shift, [
+            'lock_manager' => !$isManager,
+            'academic_year' => $academicYear
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $em->flush();
+                $this->addFlash('success', $translator->trans('message.saved', [], 'wpt_shift'));
+                return $this->redirectToRoute('workplace_training_shift_list');
+            } catch (\Exception) {
+                $this->addFlash('error', $translator->trans('message.error', [], 'wpt_shift'));
+            }
+        }
+
+        $title = $translator->trans(
+            $shift->getId() !== null ? 'title.edit' : 'title.new',
+            [],
+            'wpt_shift'
+        );
+
+        $breadcrumb = [
+            $shift->getId() !== null ?
+                ['fixed' => $shift->getName()] :
+                ['fixed' => $translator->trans('title.new', [], 'wpt_shift')]
+        ];
+
+        return $this->render('wpt/shift/form.html.twig', [
+            'menu_path' => 'workplace_training_shift_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'form' => $form->createView()
+        ]);
+    }
+
+    #[Route(path: '/eliminar/{academicYear}', name: 'workplace_training_shift_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function operation(
+        Request $request,
+        ShiftRepository $shiftRepository,
+        AgreementRepository $agreementRepository,
+        ActivityRepository $activityRepository,
+        UserExtensionService $userExtensionService,
+        TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
+        AcademicYear $academicYear
+    ): Response {
+        $organization = $userExtensionService->getCurrentOrganization();
+
+        $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_MANAGER, $organization);
+
+        $em = $managerRegistry->getManager();
+
+        $items = $request->request->all('items');
+        if ((is_countable($items) ? count($items) : 0) === 0) {
+            return $this->redirectToRoute('workplace_training_shift_list');
+        }
+        $selectedItems = $shiftRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
+
+        if ($request->get('confirm', '') === 'ok') {
+            try {
+                $agreementRepository->deleteFromShifts($selectedItems);
+                $activityRepository->deleteFromShifts($selectedItems);
+                $shiftRepository->deleteFromList($selectedItems);
+
+                $em->flush();
+                $this->addFlash('success', $translator->trans('message.deleted', [], 'wpt_shift'));
+            } catch (\Exception) {
+                $this->addFlash('error', $translator->trans('message.delete_error', [], 'wpt_shift'));
+            }
+            return $this->redirectToRoute('workplace_training_shift_list', ['academicYear' => $academicYear->getId()]);
+        }
+
+        $title = $translator->trans('title.delete', [], 'wpt_shift');
+        $breadcrumb = [
+            ['fixed' => $title]
+        ];
+
+        return $this->render('wpt/shift/delete.html.twig', [
+            'menu_path' => 'workplace_training_shift_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'items' => $selectedItems
+        ]);
+    }
+}

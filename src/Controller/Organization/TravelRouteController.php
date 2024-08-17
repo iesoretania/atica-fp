@@ -21,7 +21,7 @@ namespace App\Controller\Organization;
 use App\Entity\Edu\TravelRoute;
 use App\Form\Type\Edu\TravelRouteType;
 use App\Repository\Edu\TravelRouteRepository;
-use App\Security\Edu\EduOrganizationVoter;
+use App\Security\Edu\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -46,7 +46,7 @@ class TravelRouteController extends AbstractController
     ): Response
     {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
         $travelRoute = new TravelRoute();
         $travelRoute
@@ -72,7 +72,7 @@ class TravelRouteController extends AbstractController
         TravelRoute $travelRoute
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
         $em = $managerRegistry->getManager();
 
@@ -118,7 +118,7 @@ class TravelRouteController extends AbstractController
     ): Response {
 
         $organization = $userExtensionService->getCurrentOrganization();
-        $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
@@ -169,7 +169,7 @@ class TravelRouteController extends AbstractController
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
         $em = $managerRegistry->getManager();
 

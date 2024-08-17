@@ -43,7 +43,6 @@ class MailerService
             $to[$user->getEmailAddress()] = $user->__toString();
         }
 
-        /** @var Email $msg */
         $msg = (new Email())
             ->subject($this->prefix . $this->translator->
                 trans($subject['id'], $subject['parameters'], $translationDomain))

@@ -80,7 +80,7 @@ class AnsweredSurveyQuestionType extends AbstractType
                         $min = 0;
                         $max = 10;
                     }
-                $itemCount = $type === SurveyQuestion::RANGE_1_5 ? 5 : 10;
+
                     $items = explode(';', (string) $data->getSurveyQuestion()->getItems());
 
                     $choices = [];

@@ -228,17 +228,13 @@ class SubjectImportController extends AbstractController
                             // si el profesor existe
                             if ($teacher && $subject) {
                                 $indexSubject = $teacherName . '.' . $groupName . '.' . $subjectName;
-                                if (!isset($teachingCollection[$indexSubject])) {
-                                    $teaching = $teachingRepository->findOneBy(
-                                        [
-                                            'teacher' => $teacher,
-                                            'group' => $group,
-                                            'subject' => $subject
-                                        ]
-                                    );
-                                } else {
-                                    $teaching = $teachingCollection[$indexSubject];
-                                }
+                                $teaching = $teachingCollection[$indexSubject] ?? $teachingRepository->findOneBy(
+                                    [
+                                        'teacher' => $teacher,
+                                        'group' => $group,
+                                        'subject' => $subject
+                                    ]
+                                );
 
                                 // comprobar si existe la asignación y, si no, la crea
                                 if (null === $teaching) {
@@ -289,7 +285,7 @@ class SubjectImportController extends AbstractController
         }
 
         // ordenar por enseñanza, nivel y nombre antes de devolverlo
-        usort($collection, function (Subject $a, Subject $b): int {
+        usort($collection, static function (Subject $a, Subject $b): int {
             $aValue = $a->getGrade()->getTraining()->getName() . $a->getGrade()->getName() . $a->getName();
             $bValue = $b->getGrade()->getTraining()->getName() . $b->getGrade()->getName() . $b->getName();
             return $aValue <=> $bValue;
@@ -351,10 +347,6 @@ class SubjectImportController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string $file
-     * @param LearningOutcomeRepository $learingOutcomeRepository
-     */
     private function importDataFromCsv(
         $file,
         Grade $grade,

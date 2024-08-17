@@ -61,17 +61,11 @@ class LearningOutcome implements \Stringable
             : '';
     }
 
-    /**
-     * @return int
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Subject
-     */
     public function getSubject(): ?Subject
     {
         return $this->subject;

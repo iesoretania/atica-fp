@@ -20,16 +20,17 @@ namespace App\Command;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
-use App\Entity\WLT\Agreement;
-use App\Entity\WLT\Project;
-use App\Entity\WLT\WorkDay;
+use App\Entity\WltModule\Agreement;
+use App\Entity\WltModule\Project;
+use App\Entity\WltModule\WorkDay;
 use App\Repository\Edu\AcademicYearRepository;
-use App\Repository\WLT\AgreementRepository;
-use App\Repository\WLT\EducationalTutorAnsweredSurveyRepository;
-use App\Repository\WLT\ProjectRepository;
-use App\Repository\WLT\WLTTeacherRepository;
-use App\Repository\WLT\WorkDayRepository;
+use App\Repository\WltModule\AgreementRepository;
+use App\Repository\WltModule\EducationalTutorAnsweredSurveyRepository;
+use App\Repository\WltModule\ProjectRepository;
+use App\Repository\WltModule\TeacherRepository;
+use App\Repository\WltModule\WorkDayRepository;
 use App\Service\MailerService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,29 +38,29 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[AsCommand(name: 'app:cron')]
 class CronCommand extends Command
 {
     public function __construct(
-        private readonly TranslatorInterface $translator,
-        private readonly MailerService $mailerService,
-        private readonly WorkDayRepository $workDayRepository,
-        private readonly AgreementRepository $agreementRepository,
-        private readonly AcademicYearRepository $academicYearRepository,
-        private readonly ProjectRepository $projectRepository,
-        private readonly WLTTeacherRepository $wltTeacherRepository,
+        private readonly TranslatorInterface                      $translator,
+        private readonly MailerService                            $mailerService,
+        private readonly WorkDayRepository                        $workDayRepository,
+        private readonly AgreementRepository                      $agreementRepository,
+        private readonly AcademicYearRepository                   $academicYearRepository,
+        private readonly ProjectRepository                        $projectRepository,
+        private readonly TeacherRepository                        $wltTeacherRepository,
         private readonly EducationalTutorAnsweredSurveyRepository $educationalTutorAnsweredSurveyRepository
     ) {
         parent::__construct();
     }
 
-    protected function configure(): void
+    public function configure(): void
     {
         $this
-            ->setName('app:cron')
             ->setDescription('Execute cron tasks');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new SymfonyStyle($input, $output);
         $style->title($this->translator->trans('title.cron', [], 'cron'));
@@ -73,7 +74,7 @@ class CronCommand extends Command
     /**
      * @throws \Exception
      */
-    protected function wltSendTrackingWarnings(OutputInterface $output, SymfonyStyle $style)
+    private function wltSendTrackingWarnings(OutputInterface $output, SymfonyStyle $style)
     {
         $now = new \DateTime('now', new \DateTimeZone('UTC'));
 
@@ -196,7 +197,7 @@ class CronCommand extends Command
     /**
      * @throws \Exception
      */
-    protected function wltSendSurveyWarnings(OutputInterface $output, SymfonyStyle $style)
+    private function wltSendSurveyWarnings(OutputInterface $output, SymfonyStyle $style)
     {
         $now = new \DateTime('now', new \DateTimeZone('UTC'));
 

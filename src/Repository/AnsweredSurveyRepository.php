@@ -23,7 +23,7 @@ use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
 use App\Entity\Edu\Training;
 use App\Entity\Survey;
-use App\Entity\WLT\Agreement;
+use App\Entity\WltModule\Agreement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

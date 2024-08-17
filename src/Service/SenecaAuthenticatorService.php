@@ -19,6 +19,7 @@
 namespace App\Service;
 
 use phpseclib3\Math\BigInteger;
+use Random\RandomException;
 
 class SenecaAuthenticatorService
 {
@@ -35,6 +36,7 @@ class SenecaAuthenticatorService
      * @param string $user
      * @param string $password
      * @return bool
+     * @throws RandomException
      */
     public function checkUserCredentials($user, $password)
     {
@@ -89,21 +91,22 @@ class SenecaAuthenticatorService
         $fieldsString = rtrim($fieldsString, '&');
 
         $curl = curl_init();
+
+        if ($curl === false) {
+            return '';
+        }
+
         $this->setCurlDefaultOptions($postUrl, $forceSecurity, $curl);
         curl_setopt($curl, CURLOPT_REFERER, $refererUrl);
         curl_setopt($curl, CURLOPT_POST, count($fields));
         curl_setopt($curl, CURLOPT_POSTFIELDS, $fieldsString);
         $str = curl_exec($curl);
         curl_close($curl);
+
         return $str === false ? '' : (string) $str;
     }
 
-    /**
-     * @param $url
-     * @param $forceSecurity
-     * @param $curl
-     */
-    private function setCurlDefaultOptions($url, $forceSecurity, \CurlHandle|bool $curl): void
+    private function setCurlDefaultOptions($url, $forceSecurity, \CurlHandle $curl): void
     {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $forceSecurity);
         curl_setopt($curl, CURLOPT_HEADER, false);

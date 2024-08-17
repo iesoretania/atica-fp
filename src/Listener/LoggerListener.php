@@ -26,7 +26,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
@@ -102,11 +101,6 @@ class LoggerListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param $eventName
-     * @param $ip
-     * @param $data
-     */
     private function createLogEntry(string $eventName, Person $user = null, ?string $ip = null, $data = null): void
     {
         $em = $this->managerRegistry->getManager();

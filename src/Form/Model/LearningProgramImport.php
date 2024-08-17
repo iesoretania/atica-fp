@@ -18,7 +18,7 @@
 
 namespace App\Form\Model;
 
-use App\Entity\WLT\Project;
+use App\Entity\WltModule\Project;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 

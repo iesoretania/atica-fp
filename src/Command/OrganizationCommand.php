@@ -20,6 +20,7 @@ namespace App\Command;
 
 use App\Repository\OrganizationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,6 +29,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[AsCommand(name: 'app:organization')]
 class OrganizationCommand extends Command
 {
     public function __construct(
@@ -41,7 +43,6 @@ class OrganizationCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('app:organization')
             ->setDescription('Create new organization')
             ->addArgument('name', InputArgument::REQUIRED, 'Organization to be created')
             ->addOption('code', null, InputOption::VALUE_REQUIRED, 'Organization code')

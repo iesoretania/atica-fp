@@ -169,11 +169,7 @@ class StudentImportController extends AbstractController
                     $uniqueIdentifier1 = $studentData['Nº Id. Escolar'];
                     $uniqueIdentifier2 = $studentData['DNI/Pasaporte'];
 
-                    if (!isset($personCollection[$uniqueIdentifier1])) {
-                        $person = $personRepository->findOneByUniqueIdentifiers($uniqueIdentifier1, $uniqueIdentifier2);
-                    } else {
-                        $person = $personCollection[$uniqueIdentifier1];
-                    }
+                    $person = $personCollection[$uniqueIdentifier1] ?? $personRepository->findOneByUniqueIdentifiers($uniqueIdentifier1, $uniqueIdentifier2);
                     if (!$person instanceof Person) {
                         if (isset($studentData['Sexo'])) {
                             $gender = match ($studentData['Sexo']) {
@@ -284,10 +280,7 @@ class StudentImportController extends AbstractController
             'stats' => $stats
         ]);
     }
-    /**
-     * @param string $file
-     * @param array $options
-     */
+
     private function importLoginFromCsv(
         $file,
         AcademicYear $academicYear,
@@ -355,7 +348,7 @@ class StudentImportController extends AbstractController
                         $pieces[0]
                     );
 
-                    if (count($studentEnrollments) == 0) {
+                    if (count($studentEnrollments) === 0) {
                         continue;
                     }
 

@@ -66,12 +66,9 @@ class NonWorkingDayImportController extends AbstractController
                 $iCalService
             );
 
-            if (null !== $stats) {
-                $this->addFlash('success', $translator->trans('message.import_ok', [], 'import'));
-                $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
-            } else {
-                $this->addFlash('error', $translator->trans('message.import_error', [], 'import'));
-            }
+            $this->addFlash('success', $translator->trans('message.import_ok', [], 'import'));
+            $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
+
         }
         $title = $translator->trans('title.non_working_day.import', [], 'import');
 
