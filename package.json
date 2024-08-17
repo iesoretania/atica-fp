@@ -2,7 +2,7 @@
     "devDependencies": {
         "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.16.0",
-        "@fortawesome/fontawesome-free": "^5.15.4",
+        "@fortawesome/fontawesome-free": "^6.6.0",
         "@hotwired/stimulus": "^3.0.0",
         "@symfony/stimulus-bridge": "^3.2.0",
         "@symfony/webpack-encore": "^4.0.0",
