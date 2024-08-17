@@ -23,54 +23,29 @@ use Doctrine\Common\Collections\Collection;
 
 class MenuItem
 {
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name;
+
+    private ?string $caption;
+
+    private ?string $description;
+
+    private ?string $routeName;
+
+    private array $routeParams = [];
+
+    private ?string $icon;
 
     /**
-     * @var string
+     * @var Collection<int, MenuItem>
      */
-    private $caption;
+    private Collection $children;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?MenuItem $parent = null;
 
-    /**
-     * @var string
-     */
-    private $routeName;
+    private int $priority = 0;
 
-    /**
-     * @var array
-     */
-    private $routeParams = [];
+    private ?string $module = null;
 
-    /**
-     * @var string
-     */
-    private $icon;
-
-    /**
-     * @var Collection
-     */
-    private $children;
-
-    /**
-     * @var MenuItem|null
-     */
-    private $parent;
-
-    /**
-     * @var integer
-     */
-    private $priority = 0;
-
-    /**
-     * MenuItem constructor
-     */
     public function __construct()
     {
         $this->children = new ArrayCollection();
@@ -257,5 +232,16 @@ class MenuItem
         }
 
         return $path;
+    }
+
+    public function getModule(): ?string
+    {
+        return $this->module;
+    }
+
+    public function setModule(?string $module): static
+    {
+        $this->module = $module;
+        return $this;
     }
 }

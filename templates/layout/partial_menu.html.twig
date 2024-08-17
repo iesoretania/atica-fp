@@ -7,7 +7,7 @@
     {% set l = 0 %}
     {% for item in menu_item.children %}
         {% set l = l + 1 %}
-        {{ mm.menu_item(item.caption, item.description, item.routeName, item.routeParams, item.icon) }}
+        {{ mm.menu_item(item.caption, item.description, item.routeName, item.routeParams, item.icon, null, null, item.module) }}
         {% if loop.index % 3 == 0 and (not loop.last or last_url|default(false)) %}</div></div><div class="row pb-sm-4"><div class="card-deck w-100 m-auto">{% endif %}
     {% endfor %}
     {% set l = menu_item.children|length %}
