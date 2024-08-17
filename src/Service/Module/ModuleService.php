@@ -16,9 +16,7 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace App\Service;
-
-use App\Module\MenuItem;
+namespace App\Service\Module;
 
 class ModuleService
 {

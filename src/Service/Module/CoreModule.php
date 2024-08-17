@@ -18,8 +18,6 @@
 
 namespace App\Service\Module;
 
-use App\Module\MenuItem;
-use App\Service\ModuleBuilderInterface;
 use App\Service\UserExtensionService;
 
 class CoreModule implements ModuleBuilderInterface

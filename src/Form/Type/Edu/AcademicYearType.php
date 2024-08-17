@@ -23,7 +23,7 @@ use App\Entity\Edu\ReportTemplate;
 use App\Entity\Edu\Teacher;
 use App\Repository\Edu\ReportTemplateRepository;
 use App\Repository\Edu\TeacherRepository;
-use App\Service\ModuleService;
+use App\Service\Module\ModuleService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

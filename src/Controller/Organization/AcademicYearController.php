@@ -27,7 +27,7 @@ use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\TrainingRepository;
 use App\Security\Edu\AcademicYearVoter;
 use App\Security\OrganizationVoter;
-use App\Service\ModuleService;
+use App\Service\Module\ModuleService;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
