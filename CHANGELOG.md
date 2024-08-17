@@ -14,6 +14,8 @@ en las distintas versiones de la misma.
 * fix: No eliminar las concreciones marcadas en una jornada bloqueada si se intenta asignarle una falta de asistencia
 * fix: Bloqueada actualización de CKEditor4 a la versión 4.22.1 porque las posteriores son con licencia comercial
 
+* feat: Nuevo módulo para la gestión de la fase de formación en empresa
+
 6.2.1 (2024-07-28)
 ------------------
 * feat: Mostrar correo electrónico del estudiante en la sección de información del tutor
