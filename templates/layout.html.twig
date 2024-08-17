@@ -20,7 +20,7 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav animate side-nav">
                 {% for item in module_extension.menu.children %}
-                    {{ ml.navbar_item(item.caption, item.icon, item.routeName) }}
+                    {{ ml.navbar_item(item.caption, item.icon, item.routeName, false, item.module) }}
                 {% endfor %}
             </ul>
 
@@ -80,7 +80,7 @@
                         <li class="breadcrumb-item">
                         {% if not loop.last or (breadcrumb is defined and breadcrumb) %}{% set last_url = path(menu_item.routeName, menu_item.routeParams) %}<a href="{{ last_url }}" class="breadcrumb-link">{% endif %}
                         {%- if menu_item.icon %}<i class="fa fa-{{ menu_item.icon }}"></i> {% endif -%}
-                        {%- if not loop.first and menu_item.caption %}{% if menu_item.icon %}<span class="hidden-xs hidden-sm">{% endif %}{{- menu_item.caption|trans({}, 'menu') -}}{% if menu_item.icon %}</span>{% endif %}{% endif %}
+                        {%- if not loop.first and menu_item.caption %}{% if menu_item.icon %}<span class="hidden-xs hidden-sm">{% endif %}{{- menu_item.caption|trans({}, menu_item.module is not empty ? 'module_' ~ menu_item.module : 'menu') -}}{% if menu_item.icon %}</span>{% endif %}{% endif %}
                         {%- if loop.first %}<span class="hidden-xs hidden-sm">{{- user_extension.currentOrganization.name -}}</span>{% endif %}
                         {% if not loop.last or (breadcrumb is defined and breadcrumb) %}</a>{% endif %}
                         </li>
@@ -89,7 +89,7 @@
                         <li class="breadcrumb-item active">
                             {%- if item.routeName is defined %}{% set last_url = path(item.routeName, item.routeParams ?: {}) %}<a href="{{ last_url }}" class="breadcrumb-link">{% endif -%}
                                 {%- if item.icon is defined %}<i class="fa fa-{{ item.icon }}"></i> {% endif -%}
-                                {%- if item.caption is defined %}{{- item.caption|trans({}, 'menu') -}}{% endif %}{{- item.fixed|default('') -}}
+                                {%- if item.caption is defined %}{{- item.caption|trans({}, item.module is not empty ? 'module_' ~ item.module : 'menu') -}}{% endif %}{{- item.fixed|default('') -}}
                                 {%- if item.routeName is defined %}</a>{% endif -%}
                         </li>
                     {%- endfor %}
