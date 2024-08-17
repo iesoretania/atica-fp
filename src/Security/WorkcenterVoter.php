@@ -22,7 +22,7 @@ use App\Entity\Person;
 use App\Entity\Workcenter;
 use App\Repository\Edu\TeacherRepository;
 use App\Repository\Edu\TrainingRepository;
-use App\Security\WLT\WLTOrganizationVoter;
+use App\Security\WltModule\OrganizationVoter as WltOrganizationVoter;
 use App\Service\UserExtensionService;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -99,7 +99,7 @@ class WorkcenterVoter extends CachedVoter
                 }
 
                 // 2) Coordinador de FP dual
-                if ($this->decisionManager->decide($token, [WLTOrganizationVoter::WLT_MANAGER], $organization)) {
+                if ($this->decisionManager->decide($token, [WltOrganizationVoter::WLT_MANAGER], $organization)) {
                     return true;
                 }
                 break;

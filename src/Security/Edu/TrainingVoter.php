@@ -23,7 +23,7 @@ use App\Entity\Person;
 use App\Repository\Edu\TeacherRepository;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
-use App\Security\WLT\WLTOrganizationVoter;
+use App\Security\WltModule\OrganizationVoter as WltOrganizationVoter;
 use App\Service\UserExtensionService;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -89,7 +89,7 @@ class TrainingVoter extends CachedVoter
         }
 
         // Si es el coordinador de FP dual, permitir si el ciclo es dual
-        if ($this->security->isGranted(WLTOrganizationVoter::WLT_MANAGER, $organization)) {
+        if ($this->security->isGranted(WltOrganizationVoter::WLT_MANAGER, $organization)) {
             return true;
         }
 

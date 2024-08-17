@@ -93,9 +93,6 @@ class PersonalDataController extends AbstractController
 
     /**
      * Requests an email address change confirmation
-     *
-     * @param string $oldEmail
-     * @throws \Exception
      */
     private function requestEmailAddressChange(
         Person $user,

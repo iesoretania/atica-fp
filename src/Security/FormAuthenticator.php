@@ -76,15 +76,6 @@ class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuth
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function start(Request $request, AuthenticationException $authException = null): Response
-    {
-        $url = $this->router->generate('login');
-        return new RedirectResponse($url);
-    }
-
-    /**
      * @inheritDoc
      */
     public function authenticate(Request $request): Passport

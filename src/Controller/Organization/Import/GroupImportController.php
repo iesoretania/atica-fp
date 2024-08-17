@@ -222,14 +222,10 @@ class GroupImportController extends AbstractController
 
                     $group = null;
                     if ($grade->getId()) {
-                        if (!isset($groupCollection[$groupName])) {
-                            $group = $groupRepository->findOneBy([
-                                'internalCode' => $groupName,
-                                'grade' => $grade
-                            ]);
-                        } else {
-                            $group = $groupCollection[$groupName];
-                        }
+                        $group = $groupCollection[$groupName] ?? $groupRepository->findOneBy([
+                            'internalCode' => $groupName,
+                            'grade' => $grade
+                        ]);
                     }
 
                     if (null === $group) {
@@ -250,7 +246,7 @@ class GroupImportController extends AbstractController
                         $matches = [];
                         preg_match_all('/\b(.*) \(.*\)/U', (string) $groupData['Tutor/a'], $matches, PREG_SET_ORDER, 0);
 
-                        $matches = array_map(fn($element): string => $element[1], $matches);
+                        $matches = array_map(static fn($element): string => $element[1], $matches);
                         $matches = array_unique($matches);
 
                         foreach ($matches as $tutor) {
@@ -273,7 +269,7 @@ class GroupImportController extends AbstractController
         }
 
         // ordenar por nombre antes de devolverlo
-        usort($collection, fn(Group $a, Group $b): int => $a->getName() <=> $b->getName());
+        usort($collection, static fn(Group $a, Group $b): int => $a->getName() <=> $b->getName());
 
         return [
             'new_items' => $newCount,

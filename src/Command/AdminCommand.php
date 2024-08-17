@@ -21,6 +21,7 @@ namespace App\Command;
 use App\Entity\Person;
 use App\Repository\PersonRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,6 +31,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[AsCommand(name: 'app:admin')]
 class AdminCommand extends Command
 {
     public function __construct(
@@ -41,10 +43,9 @@ class AdminCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
+    public function configure(): void
     {
         $this
-            ->setName('app:admin')
             ->setDescription('Create admin user')
             ->addArgument('username', InputArgument::REQUIRED, 'Username to be created or updated')
             ->addOption('firstname', null, InputOption::VALUE_OPTIONAL, 'First name to be assigned when creating user (optional)')
@@ -52,7 +53,7 @@ class AdminCommand extends Command
             ->addOption('password', null, InputOption::VALUE_OPTIONAL, 'Password to be asigned (if not specified, will ask for one');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new SymfonyStyle($input, $output);
         $style->title($this->translator->trans('title.admin', [], 'command'));

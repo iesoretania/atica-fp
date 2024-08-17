@@ -26,47 +26,47 @@ class MenuItem
     /**
      * @var string
      */
-    protected $name;
+    private $name;
 
     /**
      * @var string
      */
-    protected $caption;
+    private $caption;
 
     /**
      * @var string
      */
-    protected $description;
+    private $description;
 
     /**
      * @var string
      */
-    protected $routeName;
+    private $routeName;
 
     /**
      * @var array
      */
-    protected $routeParams = [];
+    private $routeParams = [];
 
     /**
      * @var string
      */
-    protected $icon;
+    private $icon;
 
     /**
      * @var Collection
      */
-    protected $children;
+    private $children;
 
     /**
      * @var MenuItem|null
      */
-    protected $parent;
+    private $parent;
 
     /**
      * @var integer
      */
-    protected $priority = 0;
+    private $priority = 0;
 
     /**
      * MenuItem constructor
@@ -220,10 +220,7 @@ class MenuItem
         return $this->parent;
     }
 
-    /**
-     * @param MenuItem|null $parent
-     */
-    public function setParent(MenuItem $parent): static
+    public function setParent(?MenuItem $parent): static
     {
         $this->parent = $parent;
         return $this;

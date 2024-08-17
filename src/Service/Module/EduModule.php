@@ -19,7 +19,7 @@
 namespace App\Service\Module;
 
 use App\Module\MenuItem;
-use App\Security\Edu\EduOrganizationVoter;
+use App\Security\Edu\OrganizationVoter as EduOrganizationVoter;
 use App\Security\OrganizationVoter;
 use App\Service\ModuleBuilderInterface;
 use App\Service\UserExtensionService;

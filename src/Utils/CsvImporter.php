@@ -48,7 +48,7 @@ class CsvImporter
     }
 
     /**
-     * @return mixed[][]
+     * @return array[]
      */
     public function get($max_lines = 0): array
     {

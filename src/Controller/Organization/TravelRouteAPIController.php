@@ -21,7 +21,7 @@ namespace App\Controller\Organization;
 use App\Entity\Edu\TravelRoute;
 use App\Form\Type\Edu\NewTravelRouteType;
 use App\Repository\Edu\TravelRouteRepository;
-use App\Security\Edu\EduOrganizationVoter;
+use App\Security\Edu\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,7 +41,7 @@ class TravelRouteAPIController extends AbstractController
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_TEACHER, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::EDU_TEACHER, $organization);
 
         $em = $managerRegistry->getManager();
 
@@ -83,7 +83,7 @@ class TravelRouteAPIController extends AbstractController
 
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(EduOrganizationVoter::EDU_TEACHER, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::EDU_TEACHER, $organization);
 
         $routes = $travelRouteRepository->findByOrganizationAndQuery($organization, $term);
 

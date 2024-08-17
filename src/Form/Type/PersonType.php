@@ -118,7 +118,7 @@ class PersonType extends AbstractType
             /** @var Person $data */
             $data = $event->getData();
 
-            if ($data->getAllowExternalCheck() || $options['admin']) {
+            if ($options['admin'] || $data->getAllowExternalCheck()) {
                 $builder
                     ->add('externalCheck', ChoiceType::class, [
                         'label' => 'form.external_check',

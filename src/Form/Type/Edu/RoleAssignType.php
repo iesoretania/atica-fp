@@ -44,11 +44,11 @@ class RoleAssignType extends AbstractType
         $academicYear = $organization->getCurrentAcademicYear();
 
         $teachers = $this->teacherRepository->findByAcademicYear($academicYear);
-        $persons = array_map(fn(Teacher $teacher): ?Person => $teacher->getPerson(), $teachers);
+        $persons = array_map(static fn(Teacher $teacher): ?Person => $teacher->getPerson(), $teachers);
 
         foreach (Role::ROLES as $roleName) {
             $assignedRole = $this->roleRepository->findByOrganizationAndRole($organization, $roleName);
-            $currentPersons = array_map(fn(Role $role): ?Person => $role->getPerson(), $assignedRole);
+            $currentPersons = array_map(static fn(Role $role): ?Person => $role->getPerson(), $assignedRole);
 
             $builder
                 ->add($roleName, EntityType::class, [
