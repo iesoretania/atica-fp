@@ -16,11 +16,11 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace App\Service;
+namespace App\Service\Module;
 
-use App\Entity\Person;
-
-interface OrganizationBuilderInterface
+interface ModuleBuilderInterface
 {
-    public function getOrganizations(Person $person) : array;
+    public function getMenuStructure(): ?array;
+
+    public function getModuleName(): ?string;
 }

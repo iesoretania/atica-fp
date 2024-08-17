@@ -16,11 +16,30 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace App\Service;
+namespace App\Service\Organization;
 
-interface ModuleBuilderInterface
+use App\Entity\Person;
+
+class OrganizationBuilderChain
 {
-    public function getMenuStructure(): ?array;
+    /**
+     * @param OrganizationBuilderInterface[] $organizationBuilders
+     */
+    public function __construct(private $organizationBuilders)
+    {
+    }
 
-    public function getModuleName(): ?string;
+    final public function getOrganizations(Person $person) : array
+    {
+        $organizations = [];
+        foreach ($this->organizationBuilders as $organizationBuilder) {
+            foreach ($organizationBuilder->getOrganizations($person) as $organization) {
+                if (!in_array($organization, $organizations, true)) {
+                    $organizations[] = $organization;
+                }
+            }
+        }
+
+        return $organizations;
+    }
 }

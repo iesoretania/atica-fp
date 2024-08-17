@@ -14,8 +14,8 @@ twig:
         app_version:  '%app.version%'
         app_pub_date:  '%app.pub_date%'
         user_extension: '@App\Service\UserExtensionService'
-        module_extension: '@App\Service\ModuleService'
-        organization_extension: '@App\Service\OrganizationBuilderChain'
+        module_extension: '@App\Service\Module\ModuleService'
+        organization_extension: '@App\Service\Organization\OrganizationBuilderChain'
 
 when@test:
     twig:

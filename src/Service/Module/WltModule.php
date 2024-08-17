@@ -18,9 +18,7 @@
 
 namespace App\Service\Module;
 
-use App\Module\MenuItem;
 use App\Security\WltModule\OrganizationVoter;
-use App\Service\ModuleBuilderInterface;
 use App\Service\UserExtensionService;
 use Symfony\Bundle\SecurityBundle\Security;
 

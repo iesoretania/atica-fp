@@ -20,7 +20,6 @@ namespace App\Service\Organization;
 
 use App\Entity\Person;
 use App\Repository\WptModule\OrganizationRepository;
-use App\Service\OrganizationBuilderInterface;
 
 class WptWorkTutorOrganization implements OrganizationBuilderInterface
 {

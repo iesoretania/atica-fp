@@ -57,16 +57,16 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     _instanceof:
-        App\Service\ModuleBuilderInterface:
+        App\Service\Module\ModuleBuilderInterface:
             tags: [ 'app.menu' ]
 
-        App\Service\OrganizationBuilderInterface:
+        App\Service\Organization\OrganizationBuilderInterface:
             tags: [ 'app.organization' ]
 
-    App\Service\ModuleService:
+    App\Service\Module\ModuleService:
         arguments: [!tagged { tag: 'app.menu' }]
 
-    App\Service\OrganizationBuilderChain:
+    App\Service\Organization\OrganizationBuilderChain:
         arguments: [!tagged { tag: 'app.organization' }]
 
     App\Service\MailerService:

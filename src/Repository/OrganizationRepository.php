@@ -21,7 +21,7 @@ namespace App\Repository;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Organization;
 use App\Entity\Person;
-use App\Service\OrganizationBuilderChain;
+use App\Service\Organization\OrganizationBuilderChain;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;

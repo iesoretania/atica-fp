@@ -20,7 +20,6 @@ namespace App\Service\Organization;
 
 use App\Entity\Person;
 use App\Repository\Edu\EduOrganizationRepository;
-use App\Service\OrganizationBuilderInterface;
 
 class EduTeacherAndStudentOrganization implements OrganizationBuilderInterface
 {
