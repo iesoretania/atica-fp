@@ -319,7 +319,9 @@ class WorkDayRepository extends ServiceEntityRepository
     {
         /** @var WorkDay $workDay */
         foreach ($list as $workDay) {
-            $workDay->setActivityRealizations([]);
+            if (!$workDay->isLocked()) {
+                $workDay->setActivityRealizations(new ArrayCollection());
+            }
         }
 
         return $this->getEntityManager()->createQueryBuilder()

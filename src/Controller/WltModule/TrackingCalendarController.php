@@ -242,7 +242,7 @@ class TrackingCalendarController extends AbstractController
         }
 
         $items = $request->request->all('items');
-        if ((is_countable($items) ? count($items) : 0) === 0) {
+        if (count($items) === 0) {
             return $this->redirectToRoute(
                 'work_linked_training_tracking_calendar_list',
                 ['id' => $agreement->getId()]
