@@ -11,6 +11,7 @@ en las distintas versiones de la misma.
 * feat: Modificado el sistema de extensiones para un soporte inicial de módulos desactivables
 * feat: Permitir activar o desactivar módulos desde la interfaz de administración de un curso académico
 * chore: Eliminar importación obsoleta de programas formativos desde un CSV
+* fix: No eliminar las concreciones marcadas en una jornada bloqueada si se intenta asignarle una falta de asistencia
 
 6.2.1 (2024-07-28)
 ------------------
