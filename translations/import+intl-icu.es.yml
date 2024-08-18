@@ -133,19 +133,5 @@ instructions.non_working_day.import: |
 
 link.non_working_day.import: "https://www.juntadeandalucia.es/educacion/secretariavirtual/consulta/calendario-escolar/"
 
-title.learning_program.import: Importación de empresas y sus programas formativos
-form.learning_program.project: Proyecto
-form.learning_program.project.none: Seleccione proyecto de FP dual
-form.learning_program.do_import: Importar empresas y sus programas formativos
-
-report.learning_program.activity.list: Concreciones de actividad procesadas
-report.learning_program.activity.new: Concreciones nuevas incorporadas
-report.learning_program.activity.old: Concreciones ya existentes
-
-report.learning_program.company.list: Empresas procesadas
-report.learning_program.company.new: Empresas incorporadas
-report.learning_program.company.old: Empresas con programa ya existente
-report.learning_program.company.unknown: Empresas desconocidas
-
 report.learning_program.subject.list: Problemas con materias
 report.learning_program.subject.unknown: Códigos de materia no encontrados

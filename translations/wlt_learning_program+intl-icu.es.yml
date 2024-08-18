@@ -7,7 +7,6 @@ form.activity_realizations: Actividades a realizar en la empresa
 form.no_activity_realizations: No se han definido actividades en el proyecto
 
 form.save: Guardar cambios
-form.import: Importar empresas y sus programas
 form.delete: Eliminar las empresas seleccionadas
 form.back: Volver
 form.delete_confirm: Confirmar borrado
@@ -35,7 +34,5 @@ header.items: Actividades a realizar
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
-message.import: Programas importados con éxito.
-message.import_error: Los programas no se han podido copiar debido a un error.
 message.deleted: Acuerdos eliminados con éxito.
 message.delete_error: Ha ocurrido un error al eliminar los acuerdos de colaboración.
