@@ -18,6 +18,7 @@
 
 namespace App\Entity\WltModule;
 
+use App\Entity\Edu\PerformanceScaleValue;
 use App\Entity\Person;
 use App\Repository\WltModule\AgreementActivityRealizationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -43,9 +44,9 @@ class AgreementActivityRealization
     #[ORM\JoinColumn(nullable: false)]
     private ?ActivityRealization $activityRealization = null;
 
-    #[ORM\ManyToOne(targetEntity: ActivityRealizationGrade::class)]
+    #[ORM\ManyToOne(targetEntity: PerformanceScaleValue::class)]
     #[ORM\JoinColumn(nullable: true)]
-    private ?ActivityRealizationGrade $grade = null;
+    private ?PerformanceScaleValue $grade = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -96,12 +97,12 @@ class AgreementActivityRealization
         return $this;
     }
 
-    public function getGrade(): ?ActivityRealizationGrade
+    public function getGrade(): ?PerformanceScaleValue
     {
         return $this->grade;
     }
 
-    public function setGrade(?ActivityRealizationGrade $grade): static
+    public function setGrade(?PerformanceScaleValue $grade): static
     {
         $this->grade = $grade;
         return $this;

@@ -16,34 +16,31 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace App\Entity\WltModule;
+namespace App\Entity\Edu;
 
-use App\Repository\WltModule\ActivityRealizationGradeRepository;
+use App\Entity\Organization;
+use App\Repository\Edu\PerformanceScaleRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ActivityRealizationGradeRepository::class)]
-#[ORM\Table(name: 'wlt_activity_realization_grade')]
-class ActivityRealizationGrade implements \Stringable
+#[ORM\Entity(repositoryClass: PerformanceScaleRepository::class)]
+#[ORM\Table(name: 'edu_performance_scale')]
+class PerformanceScale implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Project::class)]
+    #[ORM\ManyToOne(targetEntity: Organization::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Project $project = null;
+    private ?Organization $organization = null;
 
     #[ORM\Column(type: Types::STRING)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::INTEGER)]
-    private ?int $numericGrade = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $notes = null;
-
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $enabled = false;
 
     public function __toString(): string
     {
@@ -55,14 +52,14 @@ class ActivityRealizationGrade implements \Stringable
         return $this->id;
     }
 
-    public function getProject(): ?Project
+    public function getOrganization(): ?Organization
     {
-        return $this->project;
+        return $this->organization;
     }
 
-    public function setProject(Project $project): static
+    public function setOrganization(Organization $organization): static
     {
-        $this->project = $project;
+        $this->organization = $organization;
         return $this;
     }
 
@@ -77,25 +74,15 @@ class ActivityRealizationGrade implements \Stringable
         return $this;
     }
 
-    public function getNumericGrade(): ?int
+    public function isEnabled(): ?bool
     {
-        return $this->numericGrade;
+        return $this->enabled;
     }
 
-    public function setNumericGrade(int $numericGrade): static
+    public function setEnabled(bool $enabled): static
     {
-        $this->numericGrade = $numericGrade;
+        $this->enabled = $enabled;
         return $this;
     }
 
-    public function getNotes(): ?string
-    {
-        return $this->notes;
-    }
-
-    public function setNotes(?string $notes): static
-    {
-        $this->notes = $notes;
-        return $this;
-    }
 }

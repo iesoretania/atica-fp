@@ -19,6 +19,7 @@
 namespace App\Entity\WltModule;
 
 use App\Entity\Edu\Group;
+use App\Entity\Edu\PerformanceScale;
 use App\Entity\Edu\ReportTemplate;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Organization;
@@ -96,6 +97,9 @@ class Project implements \Stringable
 
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $locked = false;
+
+    #[ORM\ManyToOne(targetEntity: PerformanceScale::class)]
+    private ?PerformanceScale $performanceScale = null;
 
     public function __construct()
     {
@@ -255,6 +259,17 @@ class Project implements \Stringable
     public function setLocked(bool $locked): static
     {
         $this->locked = $locked;
+        return $this;
+    }
+
+    public function getPerformanceScale(): ?PerformanceScale
+    {
+        return $this->performanceScale;
+    }
+
+    public function setPerformanceScale(?PerformanceScale $performanceScale): Project
+    {
+        $this->performanceScale = $performanceScale;
         return $this;
     }
 }

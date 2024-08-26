@@ -6,27 +6,39 @@ simple_things_entity_audit:
         - App\Entity\Workcenter
         - App\Entity\Edu\AcademicYear
         - App\Entity\Edu\ContactMethod
-        - App\Entity\WLT\ActivityRealizationGrade
-        - App\Entity\WLT\AgreementActivityRealization
-        - App\Entity\WLT\AgreementActivityRealizationComment
-        - App\Entity\WLT\Contact
-        - App\Entity\WLT\EducationalTutorAnsweredSurvey
-        - App\Entity\WLT\LearningProgram
-        - App\Entity\WLT\Meeting
-        - App\Entity\WLT\Project
-        - App\Entity\WLT\StudentAnsweredSurvey
-        - App\Entity\WLT\TravelExpense
-        - App\Entity\WLT\WorkDay
-        - App\Entity\WLT\WorkTutorAnsweredSurvey
-        - App\Entity\WPT\Activity
-        - App\Entity\WPT\Agreement
-        - App\Entity\WPT\Contact
-        - App\Entity\WPT\EducationalTutorAnsweredSurvey
-        - App\Entity\WPT\Shift
-        - App\Entity\WPT\StudentAnsweredSurvey
-        - App\Entity\WPT\TravelExpense
-        - App\Entity\WPT\WorkDay
-        - App\Entity\WPT\WorkTutorAnsweredSurvey
+        - App\Entity\Edu\PerformanceScale
+        - App\Entity\Edu\PerformanceScaleValue
+        - App\Entity\ItpModule\Activity
+        - App\Entity\ItpModule\ActivityLearningOutcome
+        - App\Entity\ItpModule\CompanyProgram
+        - App\Entity\ItpModule\ProgramGrade
+        - App\Entity\ItpModule\SpecificTraining
+        - App\Entity\ItpModule\StudentLearningProgram
+        - App\Entity\ItpModule\StudentLearningProgramActivity
+        - App\Entity\ItpModule\StudentLearningProgramActivityComment
+        - App\Entity\ItpModule\TrainingProgram
+        - App\Entity\ItpModule\TrainingProgramGroup
+        - App\Entity\ItpModule\WorkDay
+        - App\Entity\WltModule\AgreementActivityRealization
+        - App\Entity\WltModule\AgreementActivityRealizationComment
+        - App\Entity\WltModule\Contact
+        - App\Entity\WltModule\EducationalTutorAnsweredSurvey
+        - App\Entity\WltModule\LearningProgram
+        - App\Entity\WltModule\Meeting
+        - App\Entity\WltModule\Project
+        - App\Entity\WltModule\StudentAnsweredSurvey
+        - App\Entity\WltModule\TravelExpense
+        - App\Entity\WltModule\WorkDay
+        - App\Entity\WltModule\WorkTutorAnsweredSurvey
+        - App\Entity\WptModule\Activity
+        - App\Entity\WptModule\Agreement
+        - App\Entity\WptModule\Contact
+        - App\Entity\WptModule\EducationalTutorAnsweredSurvey
+        - App\Entity\WptModule\Shift
+        - App\Entity\WptModule\StudentAnsweredSurvey
+        - App\Entity\WptModule\TravelExpense
+        - App\Entity\WptModule\WorkDay
+        - App\Entity\WptModule\WorkTutorAnsweredSurvey
         - App\Entity\Survey
         - App\Entity\SurveyQuestion
         - App\Entity\AnsweredSurvey
