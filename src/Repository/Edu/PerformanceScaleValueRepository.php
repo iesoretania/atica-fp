@@ -18,8 +18,10 @@
 
 namespace App\Repository\Edu;
 
+use App\Entity\Edu\PerformanceScale;
 use App\Entity\Edu\PerformanceScaleValue;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 class PerformanceScaleValueRepository extends ServiceEntityRepository
@@ -27,5 +29,60 @@ class PerformanceScaleValueRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PerformanceScaleValue::class);
+    }
+
+    public function findByPerformanceScale(?PerformanceScale $performanceScale)
+    {
+        return $this->createQueryBuilder('psv')
+            ->where('psv.performanceScale = :performance_scale')
+            ->setParameter('performance_scale', $performanceScale)
+            ->orderBy('psv.numericGrade', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAllInListByIdAndPerformanceScale(
+        $items,
+        PerformanceScale $performanceScale
+    ) {
+        return $this->createQueryBuilder('psv')
+            ->where('psv IN (:items)')
+            ->andWhere('psv.performanceScale = :performance_scale')
+            ->setParameter('items', $items)
+            ->setParameter('performance_scale', $performanceScale)
+            ->orderBy('psv.numericGrade', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function deleteFromList($items)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(PerformanceScaleValue::class, 'psv')
+            ->where('psv IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function findByPerformanceScaleAndPartialStringQueryBuilder(PerformanceScale $performanceScale, mixed $q): QueryBuilder
+    {
+        $queryBuilder = $this->createQueryBuilder('psv')
+            ->orderBy('psv.numericGrade', 'DESC');
+
+        if ($q) {
+            $queryBuilder
+                ->where('psv.numericCode = :q')
+                ->orWhere('psv.description LIKE :tq')
+                ->orWhere('psv.notes LIKE :tq')
+                ->setParameter('q', $q)
+                ->setParameter('tq', '%'.$q.'%');
+        }
+
+        $queryBuilder
+            ->andWhere('psv.performanceScale = :performance_scale')
+            ->setParameter('performance_scale', $performanceScale);
+
+        return $queryBuilder;
     }
 }

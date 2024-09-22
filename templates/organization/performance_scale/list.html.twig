@@ -1,0 +1,41 @@
+{% trans_default_domain 'edu_performance_scale' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('organization_performance_scale_new') }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-80"><label><input type="checkbox" id="select"> {{ 'header.description'|trans }}</label></th>
+    <th class="w-20"></th>
+{% endblock %}
+
+
+{% block table_body %}
+    {% for performance_scale in pager %}
+        {% set url = path('organization_performance_scale_edit', {'id': performance_scale.id}) %}
+        <tr class="clickable-row" data-href="{{ url }}">
+            <td>
+                <label><input type="checkbox" name="items[]" value="{{ performance_scale.id }}" class="selectable"> <a href="{{ url }}">{{ performance_scale.description }}</a></label>
+                {% if not performance_scale.enabled %}<span class="badge badge-pill badge-danger">{{ 'table.disabled'|trans }}</span>{% endif %}
+            </td>
+            <td>
+                {{ m.link_button(path('organization_performance_scale_value_list',{'id': performance_scale.id}), 'award', 'btn-info btn-block btn-sm', 'table.values'|trans, null, 'd-md-none d-lg-inline') }}
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="2">{{ 'table.no_items'|trans }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('organization_performance_scale_operation') }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}

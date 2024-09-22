@@ -1,0 +1,36 @@
+form.description: Descripción
+form.enabled: ¿Activa?
+form.enabled.yes: Sí, puede seleccionarse
+form.enabled.no: No, no puede seleccionarse
+
+form.save: Guardar cambios
+form.delete: Eliminar las escalas seleccionadas
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar las siguientes escalas? En el caso de que alguna de ellas esté siendo usada, el borrado no tendrá lugar.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Escala de nivel de desempeño
+title.new: Nueva escala de nivel de desempeño
+title.delete: Eliminar escala de nivel de desempeño
+
+table.new: Nueva escala
+title.list: Listado de escalas de nivel de desempeño
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay escalas
+table.filter: Filtrar...
+table.disabled: Desactivada
+table.values: Niveles de la escala
+table.enabled.yes: Sí
+table.enabled.no: No
+
+header.description: Descripción
+header.enabled: ¿Activa?
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Escalas eliminadas con éxito del centro.
+message.delete_error: Ha ocurrido un error al eliminar las escalas seleccionadas.

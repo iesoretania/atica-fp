@@ -52,6 +52,9 @@ menu.organization.report_template.detail: Gestionar las plantillas de los inform
 menu.organization.travel_route: Itinerarios de desplazamiento
 menu.organization.travel_route.detail: Gestionar los itinerarios de desplazamiento
 
+menu.organization.performance_scale: Escalas de valoración del desempeño
+menu.organization.performance_scale.detail: Gestionar las escalas de valoración del desempeño
+
 menu.organization.contact_method: Tipos de contacto con empresas
 menu.organization.contact_method.detail: Gestionar los tipos de contacto que se pueden realizar con las empresas
 

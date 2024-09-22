@@ -1,0 +1,34 @@
+form.description: Descripción
+form.grade: Nivel de desempeño
+form.numeric_grade: Calificación numérica
+form.notes: Notas
+
+form.save: Guardar cambios
+form.delete: Eliminar los niveles seleccionados
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+prompt.delete_confirm: |
+    ¿Está seguro de que desea eliminar los siguientes niveles? En el caso de que alguno de ellos esté siendo usado, el borrado no tendrá lugar.
+
+    Esta operación no se puede deshacer.
+
+title.edit: Datos del nivel de desempeño
+title.new: Nuevo nivel de desempeño
+title.delete: Eliminar niveles de desempeño
+
+table.new: Nuevo nivel de desempeño
+title.list: Configuración de los niveles de desempeño
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay niveles de desempeño
+table.filter: Filtrar...
+
+header.description: Descripción
+header.grade: Nivel de desempeño
+header.numeric_grade: Calificación numérica
+header.notes: Notas
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Niveles eliminados de la escala.
+message.delete_error: Ha ocurrido un error al eliminar los niveles.

@@ -8,7 +8,7 @@
     <th><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
     <th>{{ 'header.manager'|trans }}</th>
     <th>{{ 'header.student_count'|trans }}</th>
-    <th colspan="5"></th>
+    <th colspan="4"></th>
 {% endblock %}
 
 {% block table_body %}
@@ -38,13 +38,10 @@
                     <td>
                         {{ m.link_button(path('work_linked_training_agreement_list', {'id': item.id}), 'handshake', 'btn-info btn-sm btn-block', 'table.agreements'|trans) }}
                     </td>
-                    <td>
-                        {{ m.link_button(path('work_linked_training_activity_realization_grade_list', {'id': item.id}), 'award', 'btn-info btn-sm btn-block', 'table.grades'|trans) }}
-                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="8">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="7">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

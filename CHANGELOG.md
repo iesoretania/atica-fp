@@ -15,6 +15,7 @@ en las distintas versiones de la misma.
 * fix: Bloqueada actualización de CKEditor4 a la versión 4.22.1 porque las posteriores son con licencia comercial
 
 * feat: Nuevo módulo para la gestión de la fase de formación en empresa
+* feat: Las escalas de valoración del desempeño ahora se establecen a nivel de centro educativo, permitiendo su reutilización
 
 6.2.1 (2024-07-28)
 ------------------

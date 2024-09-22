@@ -24,17 +24,17 @@ use App\Entity\WltModule\Project;
 use App\Form\Type\WltModule\ProjectStudentEnrollmentType;
 use App\Form\Type\WltModule\ProjectType;
 use App\Repository\Edu\AcademicYearRepository;
-use App\Repository\WltModule\ActivityRealizationGradeRepository;
 use App\Repository\WltModule\ActivityRepository;
 use App\Repository\WltModule\AgreementActivityRealizationRepository;
 use App\Repository\WltModule\AgreementRepository;
 use App\Repository\WltModule\ContactRepository;
 use App\Repository\WltModule\LearningProgramRepository;
 use App\Repository\WltModule\MeetingRepository;
+use App\Repository\WltModule\PerformanceScaleValueRepository;
 use App\Repository\WltModule\ProjectRepository;
 use App\Security\OrganizationVoter;
-use App\Security\WltModule\ProjectVoter;
 use App\Security\WltModule\OrganizationVoter as WltOrganizationVoter;
+use App\Security\WltModule\ProjectVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -262,18 +262,18 @@ class ProjectController extends AbstractController
 
     #[Route(path: '/eliminar', name: 'work_linked_training_project_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function operation(
-        Request $request,
-        ProjectRepository $projectRepository,
-        AgreementRepository $agreementRepository,
-        ActivityRepository $activityRepository,
-        LearningProgramRepository $learningProgramRepository,
+        Request                                $request,
+        ProjectRepository                      $projectRepository,
+        AgreementRepository                    $agreementRepository,
+        ActivityRepository                     $activityRepository,
+        LearningProgramRepository              $learningProgramRepository,
         AgreementActivityRealizationRepository $agreementActivityRealizationRepository,
-        ActivityRealizationGradeRepository $activityRealizationGradeRepository,
-        MeetingRepository $meetingRepository,
-        ContactRepository $contactRepository,
-        UserExtensionService $userExtensionService,
-        TranslatorInterface $translator,
-        ManagerRegistry $managerRegistry
+        PerformanceScaleValueRepository        $activityRealizationGradeRepository,
+        MeetingRepository                      $meetingRepository,
+        ContactRepository                      $contactRepository,
+        UserExtensionService                   $userExtensionService,
+        TranslatorInterface                    $translator,
+        ManagerRegistry                        $managerRegistry
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
@@ -282,7 +282,7 @@ class ProjectController extends AbstractController
         $em = $managerRegistry->getManager();
 
         $items = $request->request->all('items');
-        if ((is_countable($items) ? count($items) : 0) === 0) {
+        if (count($items) === 0) {
             return $this->redirectToRoute('work_linked_training_project_list');
         }
         $selectedItems = $projectRepository->findAllInListByIdAndOrganization($items, $organization);
@@ -302,7 +302,6 @@ class ProjectController extends AbstractController
                     $activityRepository->deleteFromList($project->getActivities());
                 }
                 $learningProgramRepository->deleteFromProjects($selectedItems);
-                $activityRealizationGradeRepository->deleteFromProjects($selectedItems);
                 $projectRepository->deleteFromList($selectedItems);
 
                 $em->flush();

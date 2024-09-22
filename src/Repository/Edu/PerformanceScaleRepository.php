@@ -19,7 +19,9 @@
 namespace App\Repository\Edu;
 
 use App\Entity\Edu\PerformanceScale;
+use App\Entity\Organization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 class PerformanceScaleRepository extends ServiceEntityRepository
@@ -27,5 +29,47 @@ class PerformanceScaleRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PerformanceScale::class);
+    }
+
+    public function findByOrganization(?Organization $organization): array
+    {
+        return $this->createQueryBuilder('ps')
+            ->where('ps.organization = :organization')
+            ->setParameter('organization', $organization)
+            ->orderBy('ps.description')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByOrganizationAndPartialStringQueryBuilder(Organization $organization, mixed $q): QueryBuilder
+    {
+        return $this->createQueryBuilder('ps')
+            ->where('ps.organization = :organization')
+            ->andWhere('ps.description LIKE :q')
+            ->setParameter('organization', $organization)
+            ->setParameter('q', '%' . $q . '%')
+            ->orderBy('ps.description');
+    }
+
+    public function findAllInListByIdAndOrganization(array $items, Organization $organization): array
+    {
+        return $this->createQueryBuilder('ps')
+            ->where('ps IN (:items)')
+            ->andWhere('ps.organization = :organization')
+            ->setParameter('items', $items)
+            ->setParameter('organization', $organization)
+            ->orderBy('ps.description', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function deleteFromList(array $items)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(PerformanceScale::class, 'ps')
+            ->where('ps IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
     }
 }

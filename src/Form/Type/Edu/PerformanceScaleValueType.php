@@ -16,8 +16,9 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace App\Form\Type\WltModule;
+namespace App\Form\Type\Edu;
 
+use App\Entity\Edu\PerformanceScaleValue;
 use App\Entity\WltModule\ActivityRealizationGrade;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -27,7 +28,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Range;
 
-class ActivityRealizationGradeType extends AbstractType
+class PerformanceScaleValueType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -57,7 +58,7 @@ class ActivityRealizationGradeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => ActivityRealizationGrade::class,
+            'data_class' => PerformanceScaleValue::class,
             'translation_domain' => 'wlt_activity_realization_grade'
         ]);
     }

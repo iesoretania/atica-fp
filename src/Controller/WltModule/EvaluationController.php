@@ -27,10 +27,10 @@ use App\Entity\WltModule\AgreementActivityRealizationComment;
 use App\Form\Type\WltModule\AgreementActivityRealizationNewCommentType;
 use App\Form\Type\WltModule\AgreementEvaluationType;
 use App\Repository\Edu\AcademicYearRepository;
+use App\Repository\Edu\PerformanceScaleValueRepository;
 use App\Repository\Edu\TeacherRepository;
-use App\Repository\WltModule\ActivityRealizationGradeRepository;
-use App\Repository\WltModule\ProjectRepository;
 use App\Repository\WltModule\GroupRepository as WltGroupRepository;
+use App\Repository\WltModule\ProjectRepository;
 use App\Security\OrganizationVoter;
 use App\Security\WltModule\AgreementActivityRealizationCommentVoter;
 use App\Security\WltModule\AgreementVoter;
@@ -52,11 +52,11 @@ class EvaluationController extends AbstractController
 {
     #[Route(path: '/{id}', name: 'work_linked_training_evaluation_form', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function index(
-        Request $request,
-        TranslatorInterface $translator,
-        ActivityRealizationGradeRepository $activityRealizationGradeRepository,
-        ManagerRegistry $managerRegistry,
-        Agreement $agreement
+        Request                         $request,
+        TranslatorInterface             $translator,
+        PerformanceScaleValueRepository $performanceScaleValueRepository,
+        ManagerRegistry                 $managerRegistry,
+        Agreement                       $agreement
     ): Response {
         $this->denyAccessUnlessGranted(AgreementVoter::VIEW_GRADE, $agreement);
 
@@ -73,7 +73,7 @@ class EvaluationController extends AbstractController
 
         $form->handleRequest($request);
 
-        $grades = $activityRealizationGradeRepository->findByProject($agreement->getProject());
+        $grades = $performanceScaleValueRepository->findByPerformanceScale($agreement->getProject()->getPerformanceScale());
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
