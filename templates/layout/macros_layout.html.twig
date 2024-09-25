@@ -12,7 +12,7 @@
 {% macro navbar_item(name, icon, route_name = '', disabled = false, module = null) %}
     {% if not disabled %}
         <li class="nav-item {% if route_name and app.request.get('_route') starts with route_name %} active{% endif %}">
-            <a class="nav-link" href="{{ route_name ? path(route_name) : '#' }}" title="{{ (name~'.detail') | trans([], module is not empty ? 'module_' ~ module : 'menu') }}"> <i class="fas fa-{{ icon }} fa-fw"></i> {{ name | trans([], module is not empty ? 'module_' ~ module : 'menu') }} <i class="fas fa-{{ icon }} shortmenu animate nav-icon"></i></a>
+            <a class="nav-link" href="{{ route_name ? path(route_name) : '#' }}" title="{{ (name~'.detail') | trans([], module ? 'module_' ~ module : 'menu') }}"> <i class="fas fa-{{ icon }} fa-fw"></i> {{ name | trans([], module ? 'module_' ~ module : 'menu') }} <i class="fas fa-{{ icon }} shortmenu animate nav-icon"></i></a>
         </li>
     {% endif %}
 {% endmacro %}
