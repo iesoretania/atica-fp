@@ -211,7 +211,7 @@ class AcademicYearController extends AbstractController
         ManagerRegistry $managerRegistry,
         AcademicYearRepository $academicYearRepository,
         Organization $organization,
-        AcademicYear $current
+        ?AcademicYear $current
     ): array {
         $em = $managerRegistry->getManager();
 
@@ -231,6 +231,15 @@ class AcademicYearController extends AbstractController
                 findAllInListByIdAndOrganizationButCurrent($items, $organization, $current);
             $redirect = $this->processRemoveAcademicYear($request, $academicYears, $em, $translator);
         }
+
+        if (!$organization->getCurrentAcademicYear() instanceof AcademicYear) {
+            $latest = $academicYearRepository->findLatestByOrganization($organization);
+            if ($latest instanceof AcademicYear) {
+                $organization->setCurrentAcademicYear($latest);
+                $em->flush();
+            }
+        }
+
         return [$redirect, $academicYears];
     }
 
