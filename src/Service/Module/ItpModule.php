@@ -18,6 +18,7 @@
 
 namespace App\Service\Module;
 
+use App\Security\ItpModule\OrganizationVoter;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Service\UserExtensionService;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -51,6 +52,20 @@ class ItpModule implements ModuleBuilderInterface
                 ->setPriority(3000);
 
             $root[] = $menu1;
+
+            if ($this->security->isGranted(OrganizationVoter::ITP_MANAGER, $organization)) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('in_company_training_phase_training_program')
+                    ->setRouteName('in_company_training_phase_training_program_list')
+                    ->setCaption('menu.in_company_training_phase.training_program')
+                    ->setDescription('menu.in_company_training_phase.training_program.detail')
+                    ->setIcon('folder-open')
+                    ->setModule('itp')
+                    ->setPriority(1000);
+
+                $menu1->addChild($menu2);
+            }
         }
 
         return $root;

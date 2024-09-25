@@ -1,0 +1,62 @@
+form.training: Enseñanza
+form.grades: Niveles
+form.groups: Grupos asociados
+form.target_hours: Horas previstas
+form.default_modality: Modalidad por defecto
+form.default_modality.general: General
+form.default_modality.intensive: Intensiva
+form.performance_scale: Escala de valoración del desempeño
+form.attendance_report_template: Plantilla del informe de asistencia
+form.weekly_activity_report_template: Plantilla del informe semanal de actividades
+form.activity_summary_report_template: Plantilla del registro resumen de actividades
+form.final_report_template: Plantilla del informe del tutor/a laboral
+form.student_survey: Modelo de encuesta de satisfacción de alumnado
+form.company_survey: Modelo de encuesta de satisfacción de empresa colaboradora
+form.educational_tutor_survey: Modelo de encuesta de satisfacción de tutoría docente
+
+form.locked: Plan de formación bloqueado
+form.locked.no: Se pueden realizar cambios
+form.locked.yes: Sólo el equipo directivo puede realizar cambios
+
+form.no_training: Escoja la enseñanza
+form.no_performance_scale: Seleccione una escala de valoración del desempeño
+form.no_template: Sin plantilla
+form.no_survey: Ninguna
+
+form.save: Guardar cambios
+form.delete: Eliminar los programas formativos seleccionadas
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+table.new: Nuevo programa formativo
+
+prompt.delete_confirm: |
+  ¿Está seguro de que desea eliminar los siguientes programas formativos? Se eliminarán todos los datos asociados.
+
+  Esta operación no se puede deshacer.
+
+title.edit: Modificar programa formativo
+title.new: Nuevo programa formativo
+title.delete: Eliminar programa formativo
+
+title.list: Fase de Formación en Empresa
+
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay programas formativos
+table.filter: Filtrar...
+
+table.modality.1: General
+table.modality.2: Intensiva
+
+header.name: Nombre
+header.training: Enseñanza
+header.grades: Niveles
+header.groups: Grupos asociados
+header.target_hours: Horas previstas
+header.default_modality: Modalidad por defecto
+header.training_program: Plan de formación
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Planes de formación eliminados con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los planes de formación.

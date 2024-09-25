@@ -3,3 +3,6 @@ module.description: "Formación en empresa"
 
 menu.in_company_training_phase: Formación en empresa
 menu.in_company_training_phase.detail: Actividades relacionadas con la Formación en Empresa
+
+menu.in_company_training_phase.training_program: Plan de formación
+menu.in_company_training_phase.training_program.detail: Configuración de los planes de formación

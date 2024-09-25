@@ -3,7 +3,9 @@
 namespace App\Entity\ItpModule;
 
 use App\Entity\Edu\PerformanceScale;
+use App\Entity\Edu\ReportTemplate;
 use App\Entity\Edu\Training;
+use App\Entity\Survey;
 use App\Repository\ItpModule\TrainingProgramRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -64,6 +66,29 @@ class TrainingProgram
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?PerformanceScale $performanceScale = null;
+    #[ORM\ManyToOne(targetEntity: Survey::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Survey $studentSurvey = null;
+
+    #[ORM\ManyToOne(targetEntity: Survey::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Survey $companySurvey = null;
+
+    #[ORM\ManyToOne(targetEntity: Survey::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Survey $educationalTutorSurvey = null;
+
+    #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
+    private ?ReportTemplate $attendanceReportTemplate = null;
+
+    #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
+    private ?ReportTemplate $finalReportTemplate = null;
+
+    #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
+    private ?ReportTemplate $weeklyActivityReportTemplate = null;
+
+    #[ORM\ManyToOne(targetEntity: ReportTemplate::class)]
+    private ?ReportTemplate $activitySummaryReportTemplate = null;
 
     #[ORM\Column]
     private ?bool $locked = false;
@@ -179,6 +204,83 @@ class TrainingProgram
     {
         $this->locked = $locked;
 
+        return $this;
+    }
+
+    public function getStudentSurvey(): ?Survey
+    {
+        return $this->studentSurvey;
+    }
+
+    public function setStudentSurvey(?Survey $studentSurvey): static
+    {
+        $this->studentSurvey = $studentSurvey;
+        return $this;
+    }
+
+    public function getCompanySurvey(): ?Survey
+    {
+        return $this->companySurvey;
+    }
+
+    public function setCompanySurvey(?Survey $companySurvey): static
+    {
+        $this->companySurvey = $companySurvey;
+        return $this;
+    }
+
+    public function getEducationalTutorSurvey(): ?Survey
+    {
+        return $this->educationalTutorSurvey;
+    }
+
+    public function setEducationalTutorSurvey(?Survey $educationalTutorSurvey): static
+    {
+        $this->educationalTutorSurvey = $educationalTutorSurvey;
+        return $this;
+    }
+
+    public function getAttendanceReportTemplate(): ?ReportTemplate
+    {
+        return $this->attendanceReportTemplate;
+    }
+
+    public function setAttendanceReportTemplate(?ReportTemplate $attendanceReportTemplate): static
+    {
+        $this->attendanceReportTemplate = $attendanceReportTemplate;
+        return $this;
+    }
+
+    public function getWeeklyActivityReportTemplate(): ?ReportTemplate
+    {
+        return $this->weeklyActivityReportTemplate;
+    }
+
+    public function setWeeklyActivityReportTemplate(?ReportTemplate $weeklyActivityReportTemplate): static
+    {
+        $this->weeklyActivityReportTemplate = $weeklyActivityReportTemplate;
+        return $this;
+    }
+
+    public function getFinalReportTemplate(): ?ReportTemplate
+    {
+        return $this->finalReportTemplate;
+    }
+
+    public function setFinalReportTemplate(?ReportTemplate $finalReportTemplate): static
+    {
+        $this->finalReportTemplate = $finalReportTemplate;
+        return $this;
+    }
+
+    public function getActivitySummaryReportTemplate(): ?ReportTemplate
+    {
+        return $this->activitySummaryReportTemplate;
+    }
+
+    public function setActivitySummaryReportTemplate(?ReportTemplate $activitySummaryReportTemplate): static
+    {
+        $this->activitySummaryReportTemplate = $activitySummaryReportTemplate;
         return $this;
     }
 }

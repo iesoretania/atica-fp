@@ -184,7 +184,7 @@ label.required:after {
 
 /* Barra de búsqueda */
 input[type="search"] {
-    font-family: "Font Awesome 6 Free", $font-family-sans-serif;
+    font-family: $font-family-sans-serif, "Font Awesome 6 Free";
 }
 
 table#list th, table#list td {

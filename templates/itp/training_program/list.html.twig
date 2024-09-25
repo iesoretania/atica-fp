@@ -1,0 +1,56 @@
+{% trans_default_domain 'itp_training_program' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('in_company_training_phase_training_program_new', {'academicYear': academic_year.id}) }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-65"><label><input type="checkbox" id="select"> {{ 'header.training'|trans }}</label></th>
+    <th class="w-10">{{ 'header.default_modality'|trans }}</th>
+    <th class="w-20">{{ 'header.groups'|trans }}</th>
+    <th class="w-15">{{ 'header.target_hours'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('in_company_training_phase_training_program_edit', {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
+                            <a href="{{ url }}">{{ item.training.name }}</a>{% if item.locked %} <i class="fa fa-lock"></i>{% endif %}
+                        </label>
+                    </td>
+                    <td>
+                        {{ ('table.modality.' ~ item.defaultModality) | trans }}
+                    </td>
+                    <td>
+                        {% for grade in item.training.grades %}{% for group in grade.groups %}{{ group.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% if not loop.last %}, {% endif %}{% endfor %}
+                    </td>
+                    <td>
+                        {{ item.targetHours }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('in_company_training_phase_training_program_operation', {'academicYear': academic_year.id}) }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+{% endblock %}

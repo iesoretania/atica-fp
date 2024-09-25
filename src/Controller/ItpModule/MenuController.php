@@ -18,6 +18,7 @@
 
 namespace App\Controller\ItpModule;
 
+use App\Security\ItpModule\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,10 +29,11 @@ class MenuController extends AbstractController
     #[Route(path: '/formacion', name: 'in_company_training_phase', methods: ['GET'])]
     public function index(UserExtensionService $userExtensionService): Response
     {
-        /*$this->denyAccessUnlessGranted(
-            WltOrganizationVoter::WLT_ACCESS,
+        $this->denyAccessUnlessGranted(
+            OrganizationVoter::ITP_ACCESS_SECTION,
             $userExtensionService->getCurrentOrganization()
-        );*/
+        );
+
         return $this->render(
             'default/index.html.twig',
             [

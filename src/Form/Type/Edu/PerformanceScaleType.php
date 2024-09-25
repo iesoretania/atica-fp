@@ -36,14 +36,6 @@ class PerformanceScaleType extends AbstractType
             ->add('description', TextType::class, [
                 'label' => 'form.description',
                 'required' => true
-            ])
-            ->add('enabled', ChoiceType::class, [
-                'label' => 'form.enabled',
-                'expanded' => true,
-                'choices' => [
-                    'form.enabled.yes' => true,
-                    'form.enabled.no' => false
-                ]
             ]);
     }
 
