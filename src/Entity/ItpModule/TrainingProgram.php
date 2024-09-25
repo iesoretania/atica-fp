@@ -65,6 +65,9 @@ class TrainingProgram
     #[ORM\JoinColumn(nullable: false)]
     private ?PerformanceScale $performanceScale = null;
 
+    #[ORM\Column]
+    private ?bool $locked = false;
+
     public function __construct()
     {
         $this->activities = new ArrayCollection();
@@ -163,6 +166,18 @@ class TrainingProgram
     public function setPerformanceScale(?PerformanceScale $performanceScale): static
     {
         $this->performanceScale = $performanceScale;
+
+        return $this;
+    }
+
+    public function isLocked(): ?bool
+    {
+        return $this->locked;
+    }
+
+    public function setLocked(bool $locked): static
+    {
+        $this->locked = $locked;
 
         return $this;
     }
