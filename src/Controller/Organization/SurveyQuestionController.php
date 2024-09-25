@@ -87,17 +87,17 @@ class SurveyQuestionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.saved', [], 'survey_question'));
+                $this->addFlash('success', $translator->trans('message.saved', [], 'edu_survey_question'));
                 return $this->redirectToRoute('organization_survey_question_list', ['id' => $survey->getId()]);
             } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.save_error', [], 'survey_question'));
+                $this->addFlash('error', $translator->trans('message.save_error', [], 'edu_survey_question'));
             }
         }
 
         $title = $translator->trans(
             $surveyQuestion->getId() !== null ? 'title.edit' : 'title.new',
             [],
-            'survey_question'
+            'edu_survey_question'
         );
 
         $breadcrumb = [
@@ -107,8 +107,8 @@ class SurveyQuestionController extends AbstractController
                 'routeParams' => ['id' => $survey->getId()]
             ],
             $surveyQuestion->getId() !== null ?
-                ['fixed' => $translator->trans('title.edit', [], 'survey_question')] :
-                ['fixed' => $translator->trans('title.new', [], 'survey_question')]
+                ['fixed' => $translator->trans('title.edit', [], 'edu_survey_question')] :
+                ['fixed' => $translator->trans('title.new', [], 'edu_survey_question')]
         ];
 
         return $this->render('organization/survey/question_form.html.twig', [
@@ -161,7 +161,7 @@ class SurveyQuestionController extends AbstractController
             $pager->setCurrentPage(1);
         }
 
-        $title = $translator->trans('title.list', [], 'survey_question') . ' - ' . $survey->getTitle();
+        $title = $translator->trans('title.list', [], 'edu_survey_question') . ' - ' . $survey->getTitle();
 
         $breadcrumb = [
             [
@@ -175,7 +175,7 @@ class SurveyQuestionController extends AbstractController
             'breadcrumb' => $breadcrumb,
             'pager' => $pager,
             'q' => $q,
-            'domain' => 'survey_question',
+            'domain' => 'edu_survey_question',
             'survey' => $survey,
             'locked' => $survey->getAnswers()->count() > 0
         ]);
@@ -232,17 +232,17 @@ class SurveyQuestionController extends AbstractController
                 $surveyQuestionRepository->deleteFromList($surveys);
 
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.deleted', [], 'survey_question'));
+                $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_survey_question'));
             } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.delete_error', [], 'survey_question'));
+                $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_survey_question'));
             }
             return $this->redirectToRoute('organization_survey_question_list', ['id' => $survey->getId()]);
         }
 
         return $this->render('organization/survey/question_delete.html.twig', [
             'menu_path' => 'organization_survey_list',
-            'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'survey_question')]],
-            'title' => $translator->trans('title.delete', [], 'survey_question'),
+            'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'edu_survey_question')]],
+            'title' => $translator->trans('title.delete', [], 'edu_survey_question'),
             'items' => $surveys
         ]);
     }

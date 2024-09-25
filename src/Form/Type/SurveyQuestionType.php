@@ -44,7 +44,7 @@ class SurveyQuestionType extends AbstractType
                 'disabled' => $options['locked'],
                 'choices' => SurveyQuestion::TYPES,
                 'choice_label' => fn($item): string => 'type.' . $item,
-                'choice_translation_domain' => 'survey_question',
+                'choice_translation_domain' => 'edu_survey_question',
                 'required' => true
             ])
             ->add('items', TextType::class, [
@@ -72,7 +72,7 @@ class SurveyQuestionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => SurveyQuestion::class,
-            'translation_domain' => 'survey_question',
+            'translation_domain' => 'edu_survey_question',
             'locked' => false
         ]);
     }

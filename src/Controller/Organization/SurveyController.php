@@ -95,23 +95,23 @@ class SurveyController extends AbstractController
                     }
                 }
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.saved', [], 'survey'));
+                $this->addFlash('success', $translator->trans('message.saved', [], 'edu_survey'));
                 return $this->redirectToRoute('organization_survey_list');
             } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.save_error', [], 'survey'));
+                $this->addFlash('error', $translator->trans('message.save_error', [], 'edu_survey'));
             }
         }
 
         $title = $translator->trans(
             $survey->getId() !== null ? 'title.edit' : 'title.new',
             [],
-            'survey'
+            'edu_survey'
         );
 
         $breadcrumb = [
             $survey->getId() !== null ?
                 ['fixed' => $survey->getTitle()] :
-                ['fixed' => $translator->trans('title.new', [], 'survey')]
+                ['fixed' => $translator->trans('title.new', [], 'edu_survey')]
         ];
 
         return $this->render('organization/survey/form.html.twig', [
@@ -163,13 +163,13 @@ class SurveyController extends AbstractController
             $pager->setCurrentPage(1);
         }
 
-        $title = $translator->trans('title.list', [], 'survey');
+        $title = $translator->trans('title.list', [], 'edu_survey');
 
         return $this->render('organization/survey/list.html.twig', [
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'domain' => 'survey'
+            'domain' => 'edu_survey'
         ]);
     }
 
@@ -230,17 +230,17 @@ class SurveyController extends AbstractController
                 $surveyRepository->purgeAnswersFromList($surveys);
 
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.purged', [], 'survey'));
+                $this->addFlash('success', $translator->trans('message.purged', [], 'edu_survey'));
             } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.purge_error', [], 'survey'));
+                $this->addFlash('error', $translator->trans('message.purge_error', [], 'edu_survey'));
             }
             return $this->redirectToRoute('organization_survey_list');
         }
 
         return $this->render('organization/survey/purge.html.twig', [
             'menu_path' => 'organization_survey_list',
-            'breadcrumb' => [['fixed' => $translator->trans('title.purge', [], 'survey')]],
-            'title' => $translator->trans('title.purge', [], 'survey'),
+            'breadcrumb' => [['fixed' => $translator->trans('title.purge', [], 'edu_survey')]],
+            'title' => $translator->trans('title.purge', [], 'edu_survey'),
             'items' => $surveys
         ]);
     }
@@ -273,17 +273,17 @@ class SurveyController extends AbstractController
                 $surveyRepository->deleteFromList($surveys);
 
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.deleted', [], 'survey'));
+                $this->addFlash('success', $translator->trans('message.deleted', [], 'edu_survey'));
             } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.delete_error', [], 'survey'));
+                $this->addFlash('error', $translator->trans('message.delete_error', [], 'edu_survey'));
             }
             return $this->redirectToRoute('organization_survey_list');
         }
 
         return $this->render('organization/survey/delete.html.twig', [
             'menu_path' => 'organization_survey_list',
-            'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'survey')]],
-            'title' => $translator->trans('title.delete', [], 'survey'),
+            'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'edu_survey')]],
+            'title' => $translator->trans('title.delete', [], 'edu_survey'),
             'items' => $surveys
         ]);
     }

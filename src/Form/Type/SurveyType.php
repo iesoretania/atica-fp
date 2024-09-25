@@ -75,7 +75,7 @@ class SurveyType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Survey::class,
             'surveys' => [],
-            'translation_domain' => 'survey'
+            'translation_domain' => 'edu_survey'
         ]);
     }
 }
