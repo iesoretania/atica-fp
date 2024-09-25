@@ -83,7 +83,7 @@ class PerformanceScaleValueController extends AbstractController
         $title = $translator->trans(
             $performanceScaleValue->getId() !== null ? 'title.edit' : 'title.new',
             [],
-            'wlt_activity_realization_grade'
+            'edu_performance_scale_value'
         );
 
         $breadcrumb = [

@@ -17,6 +17,8 @@ form.delete: Eliminar los itinerarios seleccionados
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
+form.unverified: "(sin verificar)"
+
 table.new: Nuevo itinerario
 
 prompt.delete_confirm: |

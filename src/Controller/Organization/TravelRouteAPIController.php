@@ -99,7 +99,7 @@ class TravelRouteAPIController extends AbstractController
                         $translator->trans('format.thousand_separator', [], 'general')
                     ) . ' ' . $translator->trans('suffix.distance', [], 'general') . ')'
                     )
-                    : (' ' . $translator->trans('form.unverified', [], 'wpt_travel_expense'))
+                    : (' ' . $translator->trans('form.unverified', [], 'edu_travel_route'))
                 );
             $data[] = ['id' => $travelRoute->getId(), 'term' => $term, 'text' => $description];
         }
