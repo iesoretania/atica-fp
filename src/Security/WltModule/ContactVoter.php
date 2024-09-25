@@ -18,6 +18,7 @@
 
 namespace App\Security\WltModule;
 
+use App\Entity\Edu\AcademicYear;
 use App\Entity\Person;
 use App\Entity\WltModule\Contact;
 use App\Security\CachedVoter;
@@ -80,7 +81,8 @@ class ContactVoter extends CachedVoter
         }
 
         // si el módulo está deshabilitado, denegar
-        if (!$organization->getCurrentAcademicYear()->hasModule('wlt')) {
+        if (!$organization->getCurrentAcademicYear() instanceof AcademicYear ||
+            !$organization->getCurrentAcademicYear()->hasModule('wlt')) {
             return false;
         }
 

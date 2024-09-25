@@ -18,6 +18,7 @@
 
 namespace App\Security\WltModule;
 
+use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Group;
 use App\Entity\Edu\Teacher;
 use App\Entity\Person;
@@ -85,7 +86,8 @@ class TeacherVoter extends CachedVoter
         }
 
         // si el módulo está deshabilitado, denegar
-        if (!$organization->getCurrentAcademicYear()->hasModule('wlt')) {
+        if (!$organization->getCurrentAcademicYear() instanceof AcademicYear ||
+            !$organization->getCurrentAcademicYear()->hasModule('wlt')) {
             return false;
         }
 

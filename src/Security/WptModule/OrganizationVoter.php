@@ -18,6 +18,7 @@
 
 namespace App\Security\WptModule;
 
+use App\Entity\Edu\AcademicYear;
 use App\Entity\Organization;
 use App\Entity\Person;
 use App\Repository\WptModule\AgreementRepository;
@@ -103,6 +104,7 @@ class OrganizationVoter extends CachedVoter
 
         // si el módulo está deshabilitado, denegar
         if (!$this->userExtensionService->getCurrentOrganization() instanceof Organization ||
+            !$this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear() instanceof AcademicYear ||
             !$this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear()->hasModule('wpt')) {
             return false;
         }

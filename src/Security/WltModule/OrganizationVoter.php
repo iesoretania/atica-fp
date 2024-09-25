@@ -18,11 +18,12 @@
 
 namespace App\Security\WltModule;
 
+use App\Entity\Edu\AcademicYear;
 use App\Entity\Organization;
 use App\Entity\Person;
 use App\Repository\WltModule\AgreementRepository;
-use App\Repository\WltModule\ProjectRepository;
 use App\Repository\WltModule\GroupRepository;
+use App\Repository\WltModule\ProjectRepository;
 use App\Security\CachedVoter;
 use App\Security\Edu\OrganizationVoter as EduOrganizationVoter;
 use App\Security\OrganizationVoter as BaseOrganizationVoter;
@@ -115,6 +116,7 @@ class OrganizationVoter extends CachedVoter
 
         // si el módulo está deshabilitado, denegar
         if (!$this->userExtensionService->getCurrentOrganization() instanceof Organization ||
+            !$this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear() instanceof AcademicYear ||
             !$this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear()->hasModule('wlt')) {
             return false;
         }

@@ -18,6 +18,7 @@
 
 namespace App\Security\ItpModule;
 
+use App\Entity\Edu\AcademicYear;
 use App\Entity\Organization;
 use App\Entity\Person;
 use App\Security\CachedVoter;
@@ -74,6 +75,7 @@ class OrganizationVoter extends CachedVoter
 
         // si el módulo está deshabilitado, denegar
         if (!$this->userExtensionService->getCurrentOrganization() instanceof Organization ||
+            !$this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear() instanceof AcademicYear ||
             !$this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear()->hasModule('itp')) {
             return false;
         }

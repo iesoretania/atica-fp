@@ -18,6 +18,7 @@
 
 namespace App\Security\WltModule;
 
+use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Person;
 use App\Entity\Survey;
@@ -99,7 +100,8 @@ class AgreementVoter extends CachedVoter
         }
 
         // si el módulo está deshabilitado, denegar
-        if (!$organization->getCurrentAcademicYear()->hasModule('wlt')) {
+        if (!$organization->getCurrentAcademicYear() instanceof AcademicYear ||
+            !$organization->getCurrentAcademicYear()->hasModule('wlt')) {
             return false;
         }
 
