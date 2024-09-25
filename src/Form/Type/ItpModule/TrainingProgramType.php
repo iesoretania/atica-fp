@@ -30,6 +30,7 @@ use App\Repository\Edu\ReportTemplateRepository;
 use App\Repository\ItpModule\TrainingRepository;
 use App\Repository\SurveyRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -179,6 +180,9 @@ class TrainingProgramType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
+            'constraints' => [
+                new UniqueEntity(['fields' => 'training']),
+            ],
             'data_class' => TrainingProgram::class,
             'lock_manager' => false,
             'academic_year' => null,

@@ -24,7 +24,7 @@ class TrainingProgram
     private ?int $id = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(unique: true, nullable: false)]
     private ?Training $training = null;
 
     #[ORM\Column(nullable: true)]
