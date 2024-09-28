@@ -29,6 +29,7 @@ form.back: Volver
 form.delete_confirm: Confirmar borrado
 
 form.program_grades: Horas previstas por curso
+form.total_hours: Total de horas previstas
 
 table.new: Nuevo programa formativo
 
