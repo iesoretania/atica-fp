@@ -19,7 +19,7 @@ class Activity
 
     #[ORM\ManyToOne(inversedBy: 'activities')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?TrainingProgram $trainingProgram = null;
+    private ?ProgramGrade $programGrade = null;
 
     #[ORM\Column(length: 255)]
     private ?string $code = null;
@@ -46,14 +46,14 @@ class Activity
         return $this->id;
     }
 
-    public function getTrainingProgram(): ?TrainingProgram
+    public function getProgramGrade(): ?ProgramGrade
     {
-        return $this->trainingProgram;
+        return $this->programGrade;
     }
 
-    public function setTrainingProgram(TrainingProgram $trainingProgram): static
+    public function setProgramGrade(ProgramGrade $programGrade): static
     {
-        $this->trainingProgram = $trainingProgram;
+        $this->programGrade = $programGrade;
 
         return $this;
     }

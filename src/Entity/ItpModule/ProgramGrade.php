@@ -4,6 +4,8 @@ namespace App\Entity\ItpModule;
 
 use App\Entity\Edu\Grade;
 use App\Repository\ItpModule\ProgramGradeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProgramGradeRepository::class)]
@@ -25,6 +27,17 @@ class ProgramGrade
 
     #[ORM\Column(nullable: true)]
     private ?int $targetHours = null;
+
+    /**
+     * @var Collection<int, Activity>
+     */
+    #[ORM\OneToMany(targetEntity: Activity::class, mappedBy: 'programGrade', orphanRemoval: true)]
+    private Collection $activities;
+
+    public function __construct()
+    {
+        $this->activities = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -65,5 +78,13 @@ class ProgramGrade
         $this->targetHours = $targetHours;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Activity>
+     */
+    public function getActivities(): Collection
+    {
+        return $this->activities;
     }
 }

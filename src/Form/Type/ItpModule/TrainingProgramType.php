@@ -96,7 +96,7 @@ class TrainingProgramType extends AbstractType
                 'constraints' => [
                     new GreaterThanOrEqual(0)
                 ],
-                'required' => true
+                'required' => false
             ])
             ->add('locked', ChoiceType::class, [
                 'label' => 'form.locked',

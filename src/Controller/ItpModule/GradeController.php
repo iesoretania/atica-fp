@@ -22,29 +22,32 @@ use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Training;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\TrainingProgram;
-use App\Form\Type\ItpModule\ProgramGradesType;
 use App\Repository\Edu\GradeRepository;
 use App\Repository\Edu\TrainingRepository;
 use App\Repository\ItpModule\ProgramGradeRepository;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
+use Pagerfanta\Adapter\ArrayAdapter;
+use PagerFanta\Exception\OutOfRangeCurrentPageException;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route(path: '/formacion/programa/detalle')]
-class TrainingProgramDetailController extends AbstractController
+#[Route(path: '/formacion/programa/curso')]
+class GradeController extends AbstractController
 {
-    #[Route(path: '/listar/{trainingProgram}', name: 'in_company_training_phase_training_program_detail', requirements: ['trainingProgram' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(path: '/listar/{trainingProgram}/{page}', name: 'in_company_training_phase_grade_list', requirements: ['trainingProgram' => '\d+', 'page' => '\d+'], methods: ['GET'])]
     public function list(
         Request $request,
         TrainingRepository $trainingRepository,
         GradeRepository $gradeRepository,
         ProgramGradeRepository $programGradeRepository,
         TranslatorInterface $translator,
-        TrainingProgram $trainingProgram
+        TrainingProgram $trainingProgram,
+        int $page = 1
     ): Response {
         assert($trainingProgram->getTraining() instanceof Training);
         $academicYear = $trainingProgram->getTraining()->getAcademicYear();
@@ -67,54 +70,81 @@ class TrainingProgramDetailController extends AbstractController
             }
         }
 
+        $new = false;
         foreach ($grades as $grade) {
+            $new = true;
             $programGrade = new ProgramGrade();
             $programGrade
                 ->setTrainingProgram($trainingProgram)
                 ->setGrade($grade);
             $programGradeRepository->persist($programGrade);
-            $programGrades[] = $programGrade;
-
-            // ordenar colección
-            uasort(
-                $programGrades,
-                static fn(ProgramGrade $a, ProgramGrade $b) => $a->getGrade()->getName() <=> $b->getGrade()->getName()
-            );
+        }
+        if ($new) {
+            $programGradeRepository->flush();
         }
 
-        $programGradesData = [
-            'programGrades' => $programGrades
+        $programGradesStats = $programGradeRepository->getProgramGradesStatsByTrainingProgram($trainingProgram);
+        $programGradesWeightStats = $programGradeRepository->getProgramGradesWeightStatsByTrainingProgram($trainingProgram);
+
+        $weightTotal = array_reduce(
+            $programGradesWeightStats,
+            static fn($carry, $item) => $carry + $item['weight'],
+            0
+        );
+
+        $stats = [
+            'total_hours' => array_reduce(
+                $programGradesStats,
+                static fn($carry, $item) => $carry + $item[0]->getTargetHours(),
+                0
+            ),
+            'total_activities' => $this->getReducedStats($programGradesStats, 'total_activities'),
+            'total_subjects' => $this->getReducedStats($programGradesStats, 'total_subjects'),
+            'total_learning_outcomes' => $this->getReducedStats($programGradesStats, 'total_learning_outcomes'),
+            'total_criteria' => $this->getReducedStats($programGradesStats, 'total_criteria'),
+            'target_hours' => $trainingProgram->getTargetHours(),
+            'actual_subjects' => $this->getReducedStats($programGradesStats, 'subjects'),
+            'actual_learning_outcomes' => $this->getReducedStats($programGradesStats, 'learning_outcomes'),
+            'actual_criteria' => $this->getReducedStats($programGradesStats, 'criteria'),
         ];
 
-        $formProgramGrades = $this->createForm(ProgramGradesType::class, $programGradesData);
-        $formProgramGrades->handleRequest($request);
-
-        if ($formProgramGrades->isSubmitted() && $formProgramGrades->isValid()) {
-            try {
-                $programGradeRepository->flush();
-                $this->addFlash('success', $translator->trans('message.saved', [], 'itp_training_program'));
-                return $this->redirectToRoute('in_company_training_phase_training_program_list',
-                    ['academicYear' => $academicYear->getId()]
-                );
-            } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.error', [], 'itp_training_program'));
-            }
+        $adapter = new ArrayAdapter($programGradesStats);
+        $pager = new Pagerfanta($adapter);
+        try {
+            $pager
+                ->setMaxPerPage($this->getParameter('page.size'))
+                ->setCurrentPage($page);
+        } catch (OutOfRangeCurrentPageException) {
+            $pager->setCurrentPage(1);
         }
 
-        $title = $translator->trans('title.detail', [], 'itp_training_program');
+        $title = $translator->trans('title.detail', [], 'itp_training_program')
+            . ' - ' . $trainingProgram->getTraining()->__toString();
 
         $breadcrumb = [
             ['fixed' => $trainingProgram->getTraining()->getName()],
             ['fixed' => $translator->trans('title.detail', [], 'itp_training_program')]
         ];
 
-        return $this->render('itp/training_program/detail.html.twig', [
+        return $this->render('itp/training_program/grade_list.html.twig', [
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
-            'form_program_grades' => $formProgramGrades->createView(),
             'title' => $title,
+            'pager' => $pager,
             'domain' => 'itp_training_program',
-            'training_program' => $trainingProgram
+            'training_program' => $trainingProgram,
+            'stats' => $stats,
+            'weights_stats' => $programGradesWeightStats,
+            'weight_total' => $weightTotal
         ]);
+    }
+
+    private function getReducedStats(array $programGradesStats, string $column): int
+    {
+        return array_reduce(
+            $programGradesStats,
+            static fn($carry, $item) => $carry + $item[$column],
+            0
+        );
     }
 }

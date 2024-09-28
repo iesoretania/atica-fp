@@ -24,29 +24,30 @@ form.no_template: Sin plantilla
 form.no_survey: Ninguna
 
 form.save: Guardar cambios
-form.delete: Eliminar los programas formativos seleccionados
+form.delete: Eliminar los planes de formación seleccionados
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
+form.grade: Curso
 form.program_grades: Horas previstas por curso
 form.total_hours: Total de horas previstas
 
-table.new: Nuevo programa formativo
+table.new: Nuevo plan de formación
 
 prompt.delete_confirm: |
   ¿Está seguro de que desea eliminar los siguientes programas formativos? Se eliminarán todos los datos asociados.
 
   Esta operación no se puede deshacer.
 
-title.edit: Modificar programa formativo
-title.new: Nuevo programa formativo
-title.delete: Eliminar programa formativo
+title.edit: Modificar plan de formación
+title.new: Nuevo plan de formación
+title.delete: Eliminar plan de formación
 
 title.list: Fase de Formación en Empresa
 title.detail: Plan de formación inicial
 
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
-table.no_items: No hay programas formativos
+table.no_items: No hay planes de formación
 table.filter: Filtrar...
 
 table.modality.1: General
@@ -56,7 +57,7 @@ table.basic_data: Datos básicos
 
 header.name: Nombre
 header.training: Enseñanza
-header.grades: Niveles
+header.grades: Cursos
 header.groups: Grupos asociados
 header.target_hours: Horas previstas
 header.default_modality: Modalidad por defecto

@@ -34,12 +34,6 @@ class TrainingProgram
     private ?int $defaultModality = self::MODE_GENERAL;
 
     /**
-     * @var Collection<int, Activity>
-     */
-    #[ORM\OneToMany(targetEntity: Activity::class, mappedBy: 'trainingProgram', orphanRemoval: true)]
-    private Collection $activities;
-
-    /**
      * @var Collection<int, SpecificTraining>
      */
     #[ORM\OneToMany(targetEntity: SpecificTraining::class, mappedBy: 'trainingProgram', orphanRemoval: true)]
@@ -95,7 +89,6 @@ class TrainingProgram
 
     public function __construct()
     {
-        $this->activities = new ArrayCollection();
         $this->specificTrainings = new ArrayCollection();
         $this->trainingProgramGroups = new ArrayCollection();
         $this->trainingProgramGrades = new ArrayCollection();
@@ -141,14 +134,6 @@ class TrainingProgram
         $this->defaultModality = $defaultModality;
 
         return $this;
-    }
-
-    /**
-     * @return Collection<int, Activity>
-     */
-    public function getActivities(): Collection
-    {
-        return $this->activities;
     }
 
     /**

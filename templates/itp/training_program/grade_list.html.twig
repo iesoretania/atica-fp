@@ -1,0 +1,93 @@
+{% trans_default_domain 'itp_grade' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block table_header %}
+    <th class="w-25">{{ 'header.grade'|trans }}</th>
+    <th class="w-15">{{ 'header.groups'|trans }}</th>
+    <th class="w-10">{{ 'header.target_hours'|trans }}</th>
+    <th class="w-10">{{ 'header.activities'|trans }}</th>
+    <th class="w-10">{{ 'header.subjects'|trans }}</th>
+    <th class="w-10">{{ 'header.learning_outcomes'|trans }}</th>
+    <th class="w-10">{{ 'header.criteria'|trans }}</th>
+    <th class="w-10">{{ 'header.weighted'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = '' %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">{{ item[0].grade.name }}</a>
+                    </td>
+                    <td>
+                        {% for group in item[0].grade.groups %}{{ group.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+                    </td>
+                    <td>
+                        {{ (item[0].targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'))}}
+                        {%- if stats['target_hours'] %}/{{ (stats['target_hours'] / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} ({{ (100 * item[0].targetHours / stats['target_hours'])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %){% endif %}
+                    </td>
+                    <td>
+                        {{ item['total_activities'] }}
+                    </td>
+                    <td>
+                        {{ item['subjects'] }}
+                        {%- if item['total_subjects'] %}/{{ item['total_subjects'] }} ({{ (100 * item['subjects'] / item['total_subjects'])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %){% endif %}
+                    </td>
+                    <td>
+                        {{ item['learning_outcomes'] }}
+                        {%- if item['total_learning_outcomes'] %}/{{ item['total_learning_outcomes'] }} ({{ (100 * item['learning_outcomes'] / item['total_learning_outcomes'])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %){% endif %}
+                    </td>
+                    <td>
+                        {{ item['criteria'] }}
+                        {%- if item['total_criteria'] %}/{{ item['total_criteria'] }} ({{ (100 * stats['actual_criteria'] / item['total_criteria'])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %){% endif %}
+                    </td>
+                    <td>
+                        {{ (weights_stats[item[0].grade.id].weight ?? 0)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block table_footer %}
+    <tfoot>
+        <tr>
+            <td colspan="2">
+            </td>
+            <td>
+                {{ (stats['total_hours'] / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
+                {%- if stats['target_hours'] %}/{{ (stats['target_hours'] / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} ({{ (100 * stats['total_hours'] / stats['target_hours'])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %){% endif %}
+            </td>
+            <td>
+                {{ stats['total_activities'] }}
+            </td>
+            <td>
+                {{ stats['actual_subjects'] }}
+                {%- if stats['total_subjects'] %}/{{ stats['total_subjects'] }} ({{ (100 * stats['actual_subjects'] / stats['total_subjects'])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %){% endif %}
+            </td>
+            <td>
+                {{ stats['actual_learning_outcomes'] }}
+                {%- if stats['total_learning_outcomes'] %}/{{ stats['total_learning_outcomes'] }} ({{ (100 * stats['actual_learning_outcomes'] / stats['total_learning_outcomes'])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %){% endif %}
+            </td>
+            <td>
+                {{ stats['actual_criteria'] }}
+                {%- if stats['total_criteria'] %}/{{ stats['total_criteria'] }} ({{ (100 * stats['actual_criteria'] / stats['total_criteria'])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %){% endif %}
+            </td>
+            <td>
+                {{ weight_total|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
+                {%- if stats['total_learning_outcomes'] %}/{{ stats['total_learning_outcomes'] }} ({{ (100 * weight_total / stats['total_learning_outcomes'])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %){% endif %}
+            </td>
+        </tr>
+    </tfoot>
+{% endblock %}
+
+{% block filter %}{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}

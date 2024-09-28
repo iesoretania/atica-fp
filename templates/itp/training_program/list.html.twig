@@ -14,7 +14,7 @@
 
 {% block table_body %}
             {% for item in pager %}
-                {% set url = path('in_company_training_phase_training_program_detail', {'trainingProgram': item.id}) %}
+                {% set url = path('in_company_training_phase_grade_list', {'trainingProgram': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">

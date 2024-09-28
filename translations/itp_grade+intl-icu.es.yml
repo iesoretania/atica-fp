@@ -1,0 +1,35 @@
+form.grade: Curso
+form.groups: Grupos asociados
+form.target_hours: Horas previstas
+
+form.save: Guardar cambios
+form.back: Volver
+
+form.total_hours: Total de horas previstas
+
+title.list: Plan de formación inicial
+
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay cursos
+
+table.modality.1: General
+table.modality.2: Intensiva
+
+table.basic_data: Datos básicos
+
+header.name: Nombre
+header.training: Enseñanza
+header.grade: Curso
+header.groups: Grupos asociados
+header.target_hours: Horas previstas
+header.activities: Actividades formativas
+header.subjects: Módulos profesionales
+header.learning_outcomes: RAs
+header.criteria: CEs
+header.weighted: RAs ponderados
+header.training_program: Plan de formación
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Planes de formación eliminados con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los planes de formación.
