@@ -21,10 +21,7 @@ namespace App\Repository\ItpModule;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Training;
 use App\Entity\ItpModule\TrainingProgram;
-use App\Entity\Person;
-use App\Repository\Edu\GradeRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -67,11 +64,15 @@ class TrainingRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        return $this->findByAcademicYearQueryBuilder($academicYear)
-            ->andWhere('t NOT IN (:selected)')
-            ->setParameter('academic_year', $academicYear)
-            ->setParameter('selected', $selected)
-            ->getQuery()
+        $qb = $this->findByAcademicYearQueryBuilder($academicYear);
+
+        if (count($selected) !== 0) {
+            $qb
+                ->andWhere('t NOT IN (:selected)')
+                ->setParameter('selected', $selected);
+        }
+
+        return $qb->getQuery()
             ->getResult();
     }
 }

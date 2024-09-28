@@ -127,4 +127,14 @@ class TrainingRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByAcademicYearWithTrainingsAndGroups(?AcademicYear $academicYear)
+    {
+        return $this->findByAcademicYearQueryBuilder($academicYear)
+            ->addSelect('gr', 'g')
+            ->join('t.grades', 'gr')
+            ->join('gr.groups', 'g')
+            ->getQuery()
+            ->getResult();
+    }
+
 }

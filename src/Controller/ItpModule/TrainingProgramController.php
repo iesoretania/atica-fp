@@ -26,13 +26,13 @@ use App\Form\Type\ItpModule\TrainingProgramType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\DepartmentRepository;
 use App\Repository\Edu\TeacherRepository;
+use App\Repository\Edu\TrainingRepository;
 use App\Repository\ItpModule\TrainingProgramRepository;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\Persistence\ManagerRegistry;
-use Mpdf\Tag\Tr;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -51,6 +51,7 @@ class TrainingProgramController extends AbstractController
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
         TrainingProgramRepository $trainingProgramRepository,
+        TrainingRepository $trainingRepository,
         TranslatorInterface $translator,
         AcademicYear $academicYear = null,
         int $page = 1
@@ -68,6 +69,9 @@ class TrainingProgramController extends AbstractController
 
         /** @var Person $person */
         $person = $this->getUser();
+
+        // Precargar grupos y enseñanzas
+        $trainingRepository->findByAcademicYearWithTrainingsAndGroups($academicYear);
 
         $queryBuilder = $trainingProgramRepository->createProgramRepositoryQueryBuilder(
             $academicYear,
