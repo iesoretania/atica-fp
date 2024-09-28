@@ -24,9 +24,11 @@ form.no_template: Sin plantilla
 form.no_survey: Ninguna
 
 form.save: Guardar cambios
-form.delete: Eliminar los programas formativos seleccionadas
+form.delete: Eliminar los programas formativos seleccionados
 form.back: Volver
 form.delete_confirm: Confirmar borrado
+
+form.program_grades: Horas previstas por curso
 
 table.new: Nuevo programa formativo
 
@@ -40,6 +42,7 @@ title.new: Nuevo programa formativo
 title.delete: Eliminar programa formativo
 
 title.list: Fase de Formación en Empresa
+title.detail: Plan de formación inicial
 
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
 table.no_items: No hay programas formativos
@@ -47,6 +50,8 @@ table.filter: Filtrar...
 
 table.modality.1: General
 table.modality.2: Intensiva
+
+table.basic_data: Datos básicos
 
 header.name: Nombre
 header.training: Enseñanza

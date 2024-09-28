@@ -37,7 +37,17 @@
     {% endif %}
 {% endblock %}
 
-{% block _work_day_tracking_trackedActivities_widget %}
+{% block _program_grades_programGrades_widget %}
+<div class="text_widget card card-body bg-light mb-4">
+    <div {{ block('widget_container_attributes') }}>
+        {% for element in form.children %}
+            {{ form_widget(element, {translation_domain: false}) }}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block _program_grades_widget %}
 <div class="text_widget card card-body bg-light mb-4">
     <div {{ block('widget_container_attributes') }}>
         {% for element in form.children %}

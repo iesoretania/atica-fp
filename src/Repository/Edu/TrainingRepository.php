@@ -137,4 +137,14 @@ class TrainingRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByTrainingsAndGroups(?Training $training)
+    {
+        return $this->createQueryBuilder('t')
+            ->addSelect('gr', 'g')
+            ->join('t.grades', 'gr')
+            ->join('gr.groups', 'g')
+            ->getQuery()
+            ->getResult();
+    }
+
 }

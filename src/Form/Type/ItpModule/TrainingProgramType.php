@@ -33,9 +33,10 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 class TrainingProgramType extends AbstractType
 {
@@ -88,8 +89,13 @@ class TrainingProgramType extends AbstractType
                 'expanded' => true,
                 'required' => true
             ])
-            ->add('targetHours', IntegerType::class, [
+            ->add('targetHours', MoneyType::class, [
                 'label' => 'form.target_hours',
+                'currency' => false,
+                'divisor' => 100,
+                'constraints' => [
+                    new GreaterThanOrEqual(0)
+                ],
                 'required' => true
             ])
             ->add('locked', ChoiceType::class, [

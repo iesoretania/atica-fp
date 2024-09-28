@@ -21,9 +21,7 @@ namespace App\Security\ItpModule;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Training;
 use App\Entity\ItpModule\TrainingProgram;
-use App\Entity\Organization;
 use App\Entity\Person;
-use App\Entity\WptModule\Shift;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
@@ -101,7 +99,7 @@ class TrainingProgramVoter extends CachedVoter
         }
 
         $isCurrentAcademicYear = $subject->getTraining()->getAcademicYear()
-            === $this->userExtensionService->getCurrentOrganization();
+            === $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
 
         // El jefe de departamento de la familia profesional de proyecto también puede
         $isDepartmentHead = $subject->getTraining()->getDepartment() && $subject->getTraining(

@@ -1,0 +1,27 @@
+{% trans_default_domain 'itp_training_program' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% form_theme form_program_grades _self %}
+
+{% block content %}
+    <h2>{{ training_program.training }}</h2>
+    <div class="text_widget card card-body bg-light mb-4">
+        {{ form_start(form_program_grades) }}
+            {{ form_widget(form_program_grades) }}
+            {{ m.start_button() }}
+            {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+            {{ m.end_button() }}
+        {{ form_end(form_program_grades) }}
+    </div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}
+
+{% block _program_grades_programGrades_widget %}
+    <div class="text_widget mb-4">
+        <div {{ block('widget_container_attributes') }}>
+            {% for element in form.children %}
+                {{ form_widget(element, {translation_domain: false}) }}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
