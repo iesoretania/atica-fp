@@ -54,7 +54,7 @@ class ProgramGradeRepository extends ServiceEntityRepository
             ->join('pg.trainingProgram', 'tp')
             ->join('pg.grade', 'g')
             ->leftJoin('pg.activities', 'a')
-            ->leftJoin('a.assignedCriteria', 'xc')
+            ->leftJoin('a.assignedLearningOutcomes', 'xc')
             ->leftJoin('xc.learningOutcome', 'xlo')
             ->leftJoin('xlo.subject', 'xs')
             ->leftJoin('g.subjects', 's')

@@ -34,11 +34,11 @@ class Activity
      * @var Collection<int, ActivityLearningOutcome>
      */
     #[ORM\OneToMany(targetEntity: ActivityLearningOutcome::class, mappedBy: 'activity', orphanRemoval: true)]
-    private Collection $assignedCriteria;
+    private Collection $assignedLearningOutcomes;
 
     public function __construct()
     {
-        $this->assignedCriteria = new ArrayCollection();
+        $this->assignedLearningOutcomes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -97,8 +97,8 @@ class Activity
     /**
      * @return Collection<int, ActivityLearningOutcome>
      */
-    public function getAssignedCriteria(): Collection
+    public function getAssignedLearningOutcomes(): Collection
     {
-        return $this->assignedCriteria;
+        return $this->assignedLearningOutcomes;
     }
 }

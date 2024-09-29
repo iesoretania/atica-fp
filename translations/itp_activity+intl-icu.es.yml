@@ -1,0 +1,27 @@
+form.code: Código
+form.name: Nombre
+form.description: Descripción
+form.subjects: Módulos profesionales
+
+form.save: Guardar cambios
+form.back: Volver
+
+title.list: Actividades del plan de formación
+title.detail: Plan de formación
+title.new: Nueva actividad formativa
+title.edit: Detalles de la actividad
+
+table.new: Nueva actividad formativa
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay actividades formativas
+table.filter: Filtrar...
+
+header.code: Código
+header.name: Nombre
+header.description: Descripción
+header.learning_outcomes_and_criteria: RAs y CEs
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Planes de formación eliminados con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los planes de formación.

@@ -127,4 +127,17 @@ class LearningOutcomeRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function findBySubjects(array $subjects): array
+    {
+        return $this->createQueryBuilder('lo')
+            ->addSelect('s')
+            ->join('lo.subject', 's')
+            ->where('s IN (:subjects)')
+            ->setParameter('subjects', $subjects)
+            ->orderBy('s.code')
+            ->addOrderBy('lo.code')
+            ->getQuery()
+            ->getResult();
+    }
 }

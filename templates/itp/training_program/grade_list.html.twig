@@ -3,14 +3,18 @@
 {% import 'macros.html.twig' as m %}
 
 {% block table_header %}
-    <th class="w-25">{{ 'header.grade'|trans }}</th>
-    <th class="w-15">{{ 'header.groups'|trans }}</th>
-    <th class="w-10">{{ 'header.target_hours'|trans }}</th>
-    <th class="w-10">{{ 'header.activities'|trans }}</th>
-    <th class="w-10">{{ 'header.subjects'|trans }}</th>
-    <th class="w-10">{{ 'header.learning_outcomes'|trans }}</th>
-    <th class="w-10">{{ 'header.criteria'|trans }}</th>
+    <th class="w-15">{{ 'header.grade'|trans }}</th>
+    <th class="w-10">{{ 'header.groups'|trans }}</th>
+    <th class="w-5">{{ 'header.target_hours'|trans }}</th>
+    <th class="w-5">{{ 'header.activities'|trans }}</th>
+    <th class="w-5">{{ 'header.subjects'|trans }}</th>
+    <th class="w-5">{{ 'header.learning_outcomes'|trans }}</th>
+    <th class="w-5">{{ 'header.criteria'|trans }}</th>
     <th class="w-10">{{ 'header.weighted'|trans }}</th>
+    <th class="w-10"></th>
+    <th class="w-10"></th>
+    <th class="w-10"></th>
+    <th class="w-10"></th>
 {% endblock %}
 
 {% block table_body %}
@@ -45,10 +49,22 @@
                     <td>
                         {{ (weights_stats[item[0].grade.id].weight ?? 0)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
                     </td>
+                    <td>
+                        {{ m.link_toolbar_button(path('in_company_training_phase_activity_list', {'programGrade': item[0].id}), 'book', 'btn-info btn-sm btn-block h-100', 'header.activities'|trans) }}
+                    </td>
+                    <td>
+                        {{ m.link_toolbar_button('', 'industry', 'btn-info btn-sm btn-block', 'header.companies'|trans) }}
+                    </td>
+                    <td>
+                        {{ m.link_toolbar_button('', 'users', 'btn-info btn-sm btn-block', 'header.training_program'|trans) }}
+                    </td>
+                    <td>
+                        {{ m.link_toolbar_button('', 'thumbtack', 'btn-info btn-sm btn-block', 'header.specific_training'|trans) }}
+                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="8">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="12">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}
@@ -81,6 +97,7 @@
                 {{ weight_total|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
                 {%- if stats['total_learning_outcomes'] %}/{{ stats['total_learning_outcomes'] }} ({{ (100 * weight_total / stats['total_learning_outcomes'])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %){% endif %}
             </td>
+            <td colspan="4"></td>
         </tr>
     </tfoot>
 {% endblock %}

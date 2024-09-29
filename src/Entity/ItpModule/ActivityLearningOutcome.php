@@ -4,12 +4,12 @@ namespace App\Entity\ItpModule;
 
 use App\Entity\Edu\Criterion;
 use App\Entity\Edu\LearningOutcome;
-use App\Repository\ItpModule\ActivityCriterionRepository;
+use App\Repository\ItpModule\ActivityLearningOutcomeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ActivityCriterionRepository::class)]
+#[ORM\Entity(repositoryClass: ActivityLearningOutcomeRepository::class)]
 #[ORM\Table(name: 'itp_activity_learning_outcome')]
 #[ORM\UniqueConstraint(name: 'activity_learning_outcome_unique', columns: ['activity_id', 'learning_outcome_id'])]
 class ActivityLearningOutcome
@@ -19,7 +19,7 @@ class ActivityLearningOutcome
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'assignedCriteria')]
+    #[ORM\ManyToOne(inversedBy: 'assignedLearningOutcomes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Activity $activity = null;
 

@@ -22,6 +22,10 @@
     <a href="{{ href }}" class="btn btn-sm-block {{ class }}"{% if id %} id="{{ id }}"{% endif %}{% if new_window %} target="_blank"{% endif %}>{% if icon %}<i class="fa fa-{{ icon }}"></i> {% endif %}{% if responsive %}<span class="{{ responsive }}">{% endif %}{{ caption }}{% if responsive %}</span>{% endif %}</a>
 {% endmacro %}
 
+{% macro link_toolbar_button(href, icon = null, class = 'btn-success', caption, id = null, responsive = null, new_window = false) %}
+    <a href="{{ href }}" class="btn btn-sm-block {{ class }}"{% if id %} id="{{ id }}"{% endif %}{% if new_window %} target="_blank"{% endif %}>{% if icon %}<i class="fa fa-{{ icon }}"></i> {% endif %}<br />{% if responsive %}<span class="{{ responsive }}">{% endif %}{{ caption }}{% if responsive %}</span>{% endif %}</a>
+{% endmacro %}
+
 {% macro link_button_new(href, icon = null, class = 'btn-success', caption, id = null, responsive = null) %}
     {{ _self.link_button(href, icon, class, caption, id, responsive, true) }}
 {% endmacro %}

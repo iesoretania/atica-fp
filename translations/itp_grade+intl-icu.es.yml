@@ -28,6 +28,8 @@ header.learning_outcomes: RAs
 header.criteria: CEs
 header.weighted: RAs ponderados
 header.training_program: Plan de formación
+header.companies: Empresas colaboradoras
+header.specific_training: Formación específica
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

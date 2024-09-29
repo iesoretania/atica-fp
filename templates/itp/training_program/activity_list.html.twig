@@ -1,0 +1,52 @@
+{% trans_default_domain 'itp_activity' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('in_company_training_phase_activity_new', {'programGrade': program_grade.id}) }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-5">{{ 'header.code'|trans }}</th>
+    <th class="w-25">{{ 'header.name'|trans }}</th>
+    <th class="w-35">{{ 'header.description'|trans }}</th>
+    <th class="w-40">{{ 'header.learning_outcomes_and_criteria'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('in_company_training_phase_activity_edit', {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">{{ item.code }}</a>
+                    </td>
+                    <td>
+                        {{ item.name }}
+                    </td>
+                    <td>
+                        {{ item.description|nl2br }}
+                    </td>
+                    <td>
+                        {%  if item.assignedLearningOutcomes %}
+                        <ul class="pl-3">
+                        {% for activity_learning_outcome in item.assignedLearningOutcomes %}
+                            <li>{{ activity_learning_outcome.learningOutcome.subject.code ?? activity_learning_outcome.learningOutcome.subject }} -
+                            {{ activity_learning_outcome.learningOutcome.code }}:
+                            {% for criterium in activity_learning_outcome.criteria %}
+                                {{ criterium.code }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                            </li>
+                        {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}
