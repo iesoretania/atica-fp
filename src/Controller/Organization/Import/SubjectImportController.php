@@ -412,7 +412,7 @@ class SubjectImportController extends AbstractController
                     $learningOutcomeDescription = trim($matches[2]);
 
                     $criterionDescription = $criteriaData['Criterios de Evaluación'];
-                    preg_match('/^(.*)\) (.*)/u', (string) $criterionDescription, $matches);
+                    preg_match('/^(.*?)\) (.*)/u', (string) $criterionDescription, $matches);
                     $criterionCode = $matches[1];
                     $criterionDescription = trim($matches[2]);
 
