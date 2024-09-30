@@ -82,7 +82,7 @@ class CriterionRepository extends ServiceEntityRepository
     /**
      * @return Criterion[]|Collection
      */
-    private function findByLearningOutcome(LearningOutcome $learningOutcome)
+    public function findByLearningOutcome(LearningOutcome $learningOutcome)
     {
         return $this->createQueryBuilder('c')
             ->where('c.learningOutcome = :learning_outcome')

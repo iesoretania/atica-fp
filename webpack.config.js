@@ -32,6 +32,7 @@ Encore
     .addEntry('wpt_agreement', './assets/js/wpt/agreement.js')
     .addEntry('wpt_agreement_enrollment', './assets/js/wpt/agreement_enrollment.js')
     .addEntry('wpt_visit', './assets/js/wpt/visit.js')
+    .addEntry('itp_activity', './assets/js/itp/activity.js')
 
     // CKEditor
     .copyFiles([

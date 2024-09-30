@@ -115,6 +115,7 @@ class ActivityController extends AbstractController
         ActivityRepository $activityRepository,
         SubjectRepository $itpSubjectRepository,
         LearningOutcomeRepository $learningOutcomeRepository,
+        ActivityLearningOutcomeRepository $activityLearningOutcomeRepository,
         ProgramGrade $programGrade
     ): Response
     {
@@ -133,7 +134,7 @@ class ActivityController extends AbstractController
 
         $activityRepository->persist($activity);
 
-        return $this->edit($request, $translator, $activityRepository, $itpSubjectRepository, $learningOutcomeRepository, $activity);
+        return $this->edit($request, $translator, $activityRepository, $itpSubjectRepository, $learningOutcomeRepository, $activityLearningOutcomeRepository, $activity);
     }
 
     #[Route(path: '/{id}', name: 'in_company_training_phase_activity_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
@@ -148,7 +149,8 @@ class ActivityController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted(ActivityVoter::MANAGE, $activity);
 
-        $subjects = $itpSubjectRepository->findByActivity($activity);
+        $subjects = $activity->getId() ? $itpSubjectRepository->findByActivity($activity) : [];
+
         $learningOutcomes = $learningOutcomeRepository->findBySubjects($subjects);
         $actualActivityLearningOutcomes = $activityLearningOutcomeRepository->findByActivity($activity);
 
@@ -177,10 +179,12 @@ class ActivityController extends AbstractController
         $form = $this->createForm(ActivityType::class, $activity, [
             'activity_learning_outcomes' => $activityLearningOutcomes
         ]);
-        $form->handleRequest($request);
 
         // Obtener módulos que tengan CEs asociados a la actividad
         $form->get('subjects')->setData($subjects);
+
+        $form->handleRequest($request);
+
 
         $learningOutcomes = $learningOutcomeRepository->findBySubjects($subjects);
 
@@ -200,15 +204,23 @@ class ActivityController extends AbstractController
             'itp_activity'
         );
 
-        /*$breadcrumb = [
-            $trainingProgram->getId() !== null ?
-                ['fixed' => $academicYear->getDescription()] :
-                ['fixed' => $translator->trans('title.new', [], 'itp_training_program')]
-        ];*/
+        $breadcrumb = [
+            [
+                'fixed' => $activity->getProgramGrade()->getTrainingProgram()->getTraining()->getName(),
+                'routeName' => 'in_company_training_phase_grade_list',
+                'routeParams' => ['trainingProgram' => $activity->getProgramGrade()->getTrainingProgram()->getId()]
+            ],
+            [
+                'fixed' => $activity->getProgramGrade()->getGrade()->getName(),
+                'routeName' => 'in_company_training_phase_activity_list',
+                'routeParams' => ['programGrade' => $activity->getProgramGrade()->getId()]
+            ],
+            ['fixed' => $activity->getCode() ?? $translator->trans('title.new', [], 'itp_activity')]
+        ];
 
         return $this->render('itp/training_program/activity_form.html.twig', [
             'menu_path' => 'in_company_training_phase_training_program_list',
-            //'breadcrumb' => $breadcrumb,
+            'breadcrumb' => $breadcrumb,
             'title' => $title,
             'activity' => $activity,
             'form' => $form->createView()

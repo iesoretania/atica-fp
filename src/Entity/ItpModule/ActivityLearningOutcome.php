@@ -84,7 +84,7 @@ class ActivityLearningOutcome
         return $this->shared;
     }
 
-    public function setShared(bool $shared): static
+    public function setShared(?bool $shared): static
     {
         $this->shared = $shared;
 

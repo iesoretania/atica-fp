@@ -2,6 +2,13 @@ form.code: Código
 form.name: Nombre
 form.description: Descripción
 form.subjects: Módulos profesionales
+form.learning_outcomes: Resultados de aprendizaje y criterios de evaluación
+form.criteria: Criterios de evaluación
+
+form.shared: ¿Compartido?
+form.shared.yes: Sí
+form.shared.no: Exclusivo en la empresa
+form.shared.none: No se aplica a esta actividad
 
 form.save: Guardar cambios
 form.back: Volver

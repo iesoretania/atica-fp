@@ -1,6 +1,7 @@
 {% trans_default_domain 'itp_activity' %}
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
+{% form_theme form _self %}
 {% block content %}
     {{ form_start(form) }}
     {{ form_widget(form) }}
@@ -9,4 +10,38 @@
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+{% endblock %}
+
+{% block _activity_assignedLearningOutcomes_row %}
+    {% dump(form) %}
+    {% set subject = null %}
+    {% for child_form in form.children %}
+        {% if subject != child_form.vars.value.learningOutcome.subject %}
+            {% set subject = child_form.vars.value.learningOutcome.subject %}
+            <h4>{{ subject }}</h4>
+        {% endif %}
+        {% set id = child_form.vars.value.learningOutcome.id %}
+        <div class="form-group row">
+            <legend class="col-sm-2 col-form-label required"><b>{{ child_form.vars.value.learningOutcome.code }}: </b>{{ child_form.vars.value.learningOutcome.description }}</legend>
+            <div {{ block('widget_container_attributes') }} class="col-sm-10 learning_outcome_{{ id }}">
+                {{ form_widget(child_form.shared) }}
+                {% for name, criterium in child_form.children.criteria.children %}
+                    {% if loop.first %}
+                        <button type="button" id="select_all" data-toggle="learning_outcome_{{ id }}" class="btn btn-sm btn-secondary" title="{{ 'form.select_all'|trans }}"><i class="fa fa-check-square"></i></button>
+                        <button type="button" id="select_none" data-toggle="learning_outcome_{{ id }}" class="btn btn-sm btn-secondary" title="{{ 'form.select_none'|trans }}"><i class="fa fa-square"></i></button>
+                    {% endif %}
+                    {{ form_widget(criterium, {translation_domain: false}) }}
+                {% else %}
+                <h5 class="checkbox-category">
+                    {{ 'form.no_activity_realizations'|trans }}
+                </h5>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('itp_activity') }}
 {% endblock %}
