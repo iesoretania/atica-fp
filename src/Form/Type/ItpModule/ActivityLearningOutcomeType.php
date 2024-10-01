@@ -3,7 +3,7 @@
 namespace App\Form\Type\ItpModule;
 
 use App\Entity\Edu\Criterion;
-use App\Entity\ItpModule\ActivityLearningOutcome;
+use App\Entity\ItpModule\ProgramGradeLearningOutcome;
 use App\Repository\Edu\CriterionRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -57,7 +57,7 @@ class ActivityLearningOutcomeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => ActivityLearningOutcome::class,
+            'data_class' => ProgramGradeLearningOutcome::class,
             'translation_domain' => 'itp_activity'
         ]);
     }

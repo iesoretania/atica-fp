@@ -3,6 +3,7 @@
 namespace App\Entity\ItpModule;
 
 use App\Entity\Edu\Grade;
+use App\Entity\Edu\Subject;
 use App\Repository\ItpModule\ProgramGradeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -34,9 +35,23 @@ class ProgramGrade
     #[ORM\OneToMany(targetEntity: Activity::class, mappedBy: 'programGrade', orphanRemoval: true)]
     private Collection $activities;
 
+    /**
+     * @var Collection<int, ProgramGradeLearningOutcome>
+     */
+    #[ORM\OneToMany(targetEntity: ProgramGradeLearningOutcome::class, mappedBy: 'programGrade', orphanRemoval: true)]
+    private Collection $programGradeLearningOutcomes;
+
+    /**
+     * @var Collection<int, Subject>
+     */
+    #[ORM\ManyToMany(targetEntity: Subject::class)]
+    private Collection $subjects;
+
     public function __construct()
     {
         $this->activities = new ArrayCollection();
+        $this->programGradeLearningOutcomes = new ArrayCollection();
+        $this->subjects = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -86,5 +101,37 @@ class ProgramGrade
     public function getActivities(): Collection
     {
         return $this->activities;
+    }
+
+    /**
+     * @return Collection<int, ProgramGradeLearningOutcome>
+     */
+    public function getProgramGradeLearningOutcomes(): Collection
+    {
+        return $this->programGradeLearningOutcomes;
+    }
+
+    /**
+     * @return Collection<int, Subject>
+     */
+    public function getSubjects(): Collection
+    {
+        return $this->subjects;
+    }
+
+    public function addSubject(Subject $subject): static
+    {
+        if (!$this->subjects->contains($subject)) {
+            $this->subjects->add($subject);
+        }
+
+        return $this;
+    }
+
+    public function removeSubject(Subject $subject): static
+    {
+        $this->subjects->removeElement($subject);
+
+        return $this;
     }
 }

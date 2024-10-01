@@ -23,13 +23,13 @@ use App\Entity\Edu\Grade;
 use App\Entity\Edu\LearningOutcome;
 use App\Entity\Edu\Training;
 use App\Entity\ItpModule\Activity;
-use App\Entity\ItpModule\ActivityLearningOutcome;
 use App\Entity\ItpModule\ProgramGrade;
+use App\Entity\ItpModule\ProgramGradeLearningOutcome;
 use App\Entity\Person;
 use App\Form\Type\ItpModule\ActivityType;
 use App\Repository\Edu\LearningOutcomeRepository;
-use App\Repository\ItpModule\ActivityLearningOutcomeRepository;
 use App\Repository\ItpModule\ActivityRepository;
+use App\Repository\ItpModule\ProgramGradeLearningOutcomeRepository;
 use App\Repository\ItpModule\SubjectRepository;
 use App\Security\ItpModule\ActivityVoter;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
@@ -110,13 +110,13 @@ class ActivityController extends AbstractController
 
     #[Route(path: '/nueva/{programGrade}', name: 'in_company_training_phase_activity_new', requirements: ['programGrade' => '\d+'], methods: ['GET', 'POST'])]
     public function new(
-        Request $request,
-        TranslatorInterface $translator,
-        ActivityRepository $activityRepository,
-        SubjectRepository $itpSubjectRepository,
-        LearningOutcomeRepository $learningOutcomeRepository,
-        ActivityLearningOutcomeRepository $activityLearningOutcomeRepository,
-        ProgramGrade $programGrade
+        Request                               $request,
+        TranslatorInterface                   $translator,
+        ActivityRepository                    $activityRepository,
+        SubjectRepository                     $itpSubjectRepository,
+        LearningOutcomeRepository             $learningOutcomeRepository,
+        ProgramGradeLearningOutcomeRepository $activityLearningOutcomeRepository,
+        ProgramGrade                          $programGrade
     ): Response
     {
         assert($programGrade->getGrade() instanceof Grade);
@@ -139,13 +139,13 @@ class ActivityController extends AbstractController
 
     #[Route(path: '/{id}', name: 'in_company_training_phase_activity_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(
-        Request $request,
-        TranslatorInterface $translator,
-        ActivityRepository $activityRepository,
-        SubjectRepository $itpSubjectRepository,
-        LearningOutcomeRepository $learningOutcomeRepository,
-        ActivityLearningOutcomeRepository $activityLearningOutcomeRepository,
-        Activity $activity
+        Request                               $request,
+        TranslatorInterface                   $translator,
+        ActivityRepository                    $activityRepository,
+        SubjectRepository                     $itpSubjectRepository,
+        LearningOutcomeRepository             $learningOutcomeRepository,
+        ProgramGradeLearningOutcomeRepository $activityLearningOutcomeRepository,
+        Activity                              $activity
     ): Response {
         $this->denyAccessUnlessGranted(ActivityVoter::MANAGE, $activity);
 
@@ -164,7 +164,7 @@ class ActivityController extends AbstractController
                     }
                 }
                 if ($activityLearningOutcome === null) {
-                    $activityLearningOutcome = new ActivityLearningOutcome();
+                    $activityLearningOutcome = new ProgramGradeLearningOutcome();
                     $activityLearningOutcome
                         ->setActivity($activity)
                         ->setShared(false)

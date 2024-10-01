@@ -3,8 +3,8 @@
 namespace App\Repository\ItpModule;
 
 use App\Entity\Edu\LearningOutcome;
-use App\Entity\ItpModule\ActivityLearningOutcome;
 use App\Entity\ItpModule\ProgramGrade;
+use App\Entity\ItpModule\ProgramGradeLearningOutcome;
 use App\Entity\ItpModule\TrainingProgram;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -78,7 +78,7 @@ class ProgramGradeRepository extends ServiceEntityRepository
             ->join('lo.subject', 's')
             ->join('s.grade', 'g')
             ->leftJoin('lo.criteria', 'c')
-            ->leftJoin(ActivityLearningOutcome::class, 'alo', 'WITH', 'alo.learningOutcome = lo')
+            ->leftJoin(ProgramGradeLearningOutcome::class, 'alo', 'WITH', 'alo.learningOutcome = lo')
             ->leftJoin('alo.activity', 'a')
             ->leftJoin('a.programGrade', 'pg')
             ->leftJoin('alo.criteria', 'pc')

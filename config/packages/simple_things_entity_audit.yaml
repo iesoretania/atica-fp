@@ -9,9 +9,9 @@ simple_things_entity_audit:
         - App\Entity\Edu\PerformanceScale
         - App\Entity\Edu\PerformanceScaleValue
         - App\Entity\ItpModule\Activity
-        - App\Entity\ItpModule\ActivityLearningOutcome
         - App\Entity\ItpModule\CompanyProgram
         - App\Entity\ItpModule\ProgramGrade
+        - App\Entity\ItpModule\ProgramGradeLearningOutcome
         - App\Entity\ItpModule\SpecificTraining
         - App\Entity\ItpModule\StudentLearningProgram
         - App\Entity\ItpModule\StudentLearningProgramActivity

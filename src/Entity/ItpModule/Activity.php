@@ -2,6 +2,7 @@
 
 namespace App\Entity\ItpModule;
 
+use App\Entity\Edu\Criterion;
 use App\Repository\ItpModule\ActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -31,14 +32,15 @@ class Activity
     private ?string $description = null;
 
     /**
-     * @var Collection<int, ActivityLearningOutcome>
+     * @var Collection<int, Criterion>
      */
-    #[ORM\OneToMany(targetEntity: ActivityLearningOutcome::class, mappedBy: 'activity', orphanRemoval: true)]
-    private Collection $assignedLearningOutcomes;
+    #[ORM\ManyToMany(targetEntity: Criterion::class)]
+    #[ORM\JoinTable(name: 'itp_activity_criterion')]
+    private Collection $criteria;
 
     public function __construct()
     {
-        $this->assignedLearningOutcomes = new ArrayCollection();
+        $this->criteria = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -95,10 +97,26 @@ class Activity
     }
 
     /**
-     * @return Collection<int, ActivityLearningOutcome>
+     * @return Collection<int, Criterion>
      */
-    public function getAssignedLearningOutcomes(): Collection
+    public function getCriteria(): Collection
     {
-        return $this->assignedLearningOutcomes;
+        return $this->criteria;
+    }
+
+    public function addCriterion(Criterion $criterion): static
+    {
+        if (!$this->criteria->contains($criterion)) {
+            $this->criteria->add($criterion);
+        }
+
+        return $this;
+    }
+
+    public function removeCriterion(Criterion $criterion): static
+    {
+        $this->criteria->removeElement($criterion);
+
+        return $this;
     }
 }

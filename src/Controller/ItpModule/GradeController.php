@@ -79,34 +79,10 @@ class GradeController extends AbstractController
         }
         if ($new) {
             $programGradeRepository->flush();
+            $programGrades = $programGradeRepository->findByTrainingProgram($trainingProgram);
         }
 
-        $programGradesStats = $programGradeRepository->getProgramGradesStatsByTrainingProgram($trainingProgram);
-        $programGradesWeightStats = $programGradeRepository->getProgramGradesWeightStatsByTrainingProgram($trainingProgram);
-
-        $weightTotal = array_reduce(
-            $programGradesWeightStats,
-            static fn($carry, $item) => $carry + $item['weight'],
-            0
-        );
-
-        $stats = [
-            'total_hours' => array_reduce(
-                $programGradesStats,
-                static fn($carry, $item) => $carry + $item[0]->getTargetHours(),
-                0
-            ),
-            'total_activities' => $this->getReducedStats($programGradesStats, 'total_activities'),
-            'total_subjects' => $this->getReducedStats($programGradesStats, 'total_subjects'),
-            'total_learning_outcomes' => $this->getReducedStats($programGradesStats, 'total_learning_outcomes'),
-            'total_criteria' => $this->getReducedStats($programGradesStats, 'total_criteria'),
-            'target_hours' => $trainingProgram->getTargetHours(),
-            'actual_subjects' => $this->getReducedStats($programGradesStats, 'subjects'),
-            'actual_learning_outcomes' => $this->getReducedStats($programGradesStats, 'learning_outcomes'),
-            'actual_criteria' => $this->getReducedStats($programGradesStats, 'criteria'),
-        ];
-
-        $adapter = new ArrayAdapter($programGradesStats);
+        $adapter = new ArrayAdapter($programGrades);
         $pager = new Pagerfanta($adapter);
         try {
             $pager
@@ -130,10 +106,7 @@ class GradeController extends AbstractController
             'title' => $title,
             'pager' => $pager,
             'domain' => 'itp_training_program',
-            'training_program' => $trainingProgram,
-            'stats' => $stats,
-            'weights_stats' => $programGradesWeightStats,
-            'weight_total' => $weightTotal
+            'training_program' => $trainingProgram
         ]);
     }
 
