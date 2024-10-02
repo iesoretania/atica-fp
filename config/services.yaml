@@ -5,8 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     # Versión de la aplicación
-    app.version:                "7"
-    app.pub_date:               "2024-07-28"
+    app.version:                "7alpha-itp"
+    app.pub_date:               "2024-10-02"
 
     # Prefijo de las notificaciones enviadas a los usuarios
     notification.prefix:        "%env(APP_NOTIFICATION_PREFIX)%"
