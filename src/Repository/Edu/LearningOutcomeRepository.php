@@ -128,7 +128,7 @@ class LearningOutcomeRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findBySubjects(array $subjects): array
+    public function findBySubjects($subjects): array
     {
         return $this->createQueryBuilder('lo')
             ->addSelect('s')
@@ -136,7 +136,9 @@ class LearningOutcomeRepository extends ServiceEntityRepository
             ->where('s IN (:subjects)')
             ->setParameter('subjects', $subjects)
             ->orderBy('s.code')
+            ->addOrderBy('s.name')
             ->addOrderBy('lo.code')
+            ->addOrderBy('lo.description')
             ->getQuery()
             ->getResult();
     }

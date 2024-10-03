@@ -43,7 +43,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route(path: '/formacion/programa/curso/actividad')]
+#[Route(path: '/formacion/plan/curso/actividad')]
 class ActivityController extends AbstractController
 {
     #[Route(path: '/listar/{programGrade}/{page}', name: 'in_company_training_phase_activity_list', requirements: ['programGrade' => '\d+', 'page' => '\d+'], methods: ['GET'])]
@@ -226,50 +226,4 @@ class ActivityController extends AbstractController
             'form' => $form->createView()
         ]);
     }
-
-    /*#[Route(path: '/eliminar/{academicYear}', name: 'in_company_training_phase_training_program_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
-    public function operation(
-        Request                   $request,
-        TrainingProgramRepository $trainingProgramRepository,
-        UserExtensionService      $userExtensionService,
-        TranslatorInterface       $translator,
-        ManagerRegistry           $managerRegistry,
-        AcademicYear              $academicYear
-    ): Response {
-        $organization = $userExtensionService->getCurrentOrganization();
-
-        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);
-
-        $em = $managerRegistry->getManager();
-
-        $items = $request->request->all('items');
-        if (count($items) === 0) {
-            return $this->redirectToRoute('in_company_training_phase_training_program_list', ['academicYear' => $academicYear->getId()]);
-        }
-        $selectedItems = $trainingProgramRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
-
-        if ($request->get('confirm', '') === 'ok') {
-            try {
-                $trainingProgramRepository->deleteFromList($selectedItems);
-
-                $em->flush();
-                $this->addFlash('success', $translator->trans('message.deleted', [], 'itp_training_program'));
-            } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.delete_error', [], 'itp_training_program'));
-            }
-            return $this->redirectToRoute('in_company_training_phase_training_program_list', ['academicYear' => $academicYear->getId()]);
-        }
-
-        $title = $translator->trans('title.delete', [], 'itp_training_program');
-        $breadcrumb = [
-            ['fixed' => $title]
-        ];
-
-        return $this->render('itp/training_program/delete.html.twig', [
-            'menu_path' => 'in_company_training_phase_training_program_list',
-            'breadcrumb' => $breadcrumb,
-            'title' => $title,
-            'items' => $selectedItems
-        ]);
-    }*/
 }

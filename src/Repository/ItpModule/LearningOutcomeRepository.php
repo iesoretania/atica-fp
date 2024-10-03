@@ -19,7 +19,9 @@
 namespace App\Repository\ItpModule;
 
 use App\Entity\Edu\LearningOutcome;
+use App\Entity\ItpModule\ProgramGrade;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 class LearningOutcomeRepository extends ServiceEntityRepository
@@ -27,5 +29,20 @@ class LearningOutcomeRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, LearningOutcome::class);
+    }
+
+    final public function createLearningOutcomeByProgramGradeQueryBuilder(ProgramGrade $programGrade, mixed $q): QueryBuilder
+    {
+        return $this->createQueryBuilder('lo')
+            ->join('lo.subject', 's')
+            ->join('s.grade', 'g')
+            ->join(ProgramGrade::class, 'pg', 'WITH', 'pg.grade = g')
+            ->andWhere('pg = :programGrade')
+            ->addOrderBy('s.code', 'ASC')
+            ->addOrderBy('s.name', 'ASC')
+            ->addOrderBy('lo.code', 'ASC')
+            ->andWhere('lo.code LIKE :tq OR lo.description LIKE :tq OR s.code LIKE :tq OR s.name LIKE :tq')
+            ->setParameter('programGrade', $programGrade)
+            ->setParameter('tq', '%' . $q . '%');
     }
 }

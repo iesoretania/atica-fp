@@ -109,4 +109,14 @@ class ProgramGradeRepository extends ServiceEntityRepository
 
         return $result;
     }
+
+    public function deleteFromTrainingProgramList($items)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->delete(ProgramGrade::class, 'pg')
+            ->where('pg.trainingProgram IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
 }

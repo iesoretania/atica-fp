@@ -1,13 +1,19 @@
 form.grade: Curso
 form.groups: Grupos asociados
 form.target_hours: Horas previstas
+form.subjects: Módulos profesionales
 
 form.save: Guardar cambios
 form.back: Volver
 
 form.total_hours: Total de horas previstas
+form.learning_outcome.not_selected: No está en el plan
+form.learning_outcome.none: Deseleccionar
+form.learning_outcome.shared: Compartido
+form.learning_outcome.exclusive: Exclusivo en empresa
 
 title.list: Plan de formación inicial
+title.learning_outcomes: Resultados de aprendizaje
 
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
 table.no_items: No hay cursos

@@ -35,7 +35,7 @@
                     <td>
                     </td>
                     <td>
-                        {{ m.link_toolbar_button('', 'list', 'btn-info btn-sm btn-block', 'header.learning_outcomes'|trans) }}
+                        {{ m.link_toolbar_button(path('in_company_training_phase_grade_learning_outcome_edit', {'programGrade': item.id}), 'list', 'btn-info btn-sm btn-block', 'header.learning_outcomes'|trans) }}
                     </td>
                     <td>
                         {{ m.link_toolbar_button(path('in_company_training_phase_activity_list', {'programGrade': item.id}), 'book', 'btn-info btn-sm btn-block h-100', 'header.activities'|trans) }}

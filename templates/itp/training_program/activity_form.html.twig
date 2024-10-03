@@ -13,7 +13,6 @@
 {% endblock %}
 
 {% block _activity_assignedLearningOutcomes_row %}
-    {% dump(form) %}
     {% set subject = null %}
     {% for child_form in form.children %}
         {% if subject != child_form.vars.value.learningOutcome.subject %}

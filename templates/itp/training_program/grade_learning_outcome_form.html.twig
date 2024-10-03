@@ -1,0 +1,59 @@
+{% trans_default_domain 'itp_grade' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% form_theme form _self %}
+
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <p></p>
+    {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('itp_learning_outcome') }}
+{% endblock %}
+
+{% block _program_grade_currentProgramGradeLearningOutcomes_row %}
+    <div id="learning_outcomes">
+    {% set last_subject = null %}
+    {% for item in form.children %}
+        {% set learning_outcome = item.vars.value.programGradeLearningOutcome.learningOutcome %}
+        {% set subject = learning_outcome.subject %}
+        {% if last_subject != subject %}
+            {% if last_subject is not null %}
+                </div>
+                </div>
+            {% endif %}
+            <div class="card">
+            <div class="card-body">
+            <div class="row">
+                <legend class="col-sm-8 col-form-label required">
+                        <h4><b>{{ subject }}</b></h4>
+                </legend>
+                <div class="col-sm-4">
+                    <button type="button" id="pselect_all" data-toggle="lo_{{ subject.id }}_0" class="btn btn-sm btn-secondary" title="{{ 'form.learning_outcome.none'|trans }}"><i class="fa fa-circle-xmark"></i> {{ 'form.learning_outcome.none'|trans }}</button>
+                    <button type="button" id="pselect_all" data-toggle="lo_{{ subject.id }}_1" class="btn btn-sm btn-secondary" title="{{ 'form.learning_outcome.shared'|trans }}"><i class="fa fa-circle-check"></i> {{ 'form.learning_outcome.shared'|trans }}</button>
+                    <button type="button" id="pselect_all" data-toggle="lo_{{ subject.id }}_2" class="btn btn-sm btn-secondary" title="{{ 'form.learning_outcome.exclusive'|trans }}"><i class="fa fa-circle-exclamation"></i> {{ 'form.learning_outcome.exclusive'|trans }}</button>
+                </div>
+            </div>
+            {% set last_subject = subject %}
+        {% endif %}
+        <div class="row">
+            <legend class="col-sm-8 col-form-label required">
+                <b>{{ learning_outcome.code }}</b>: {{ learning_outcome.description }}
+            </legend>
+            <div class="col-sm-4">
+                {{ form_widget(item.selected) }}
+            </div>
+        </div>
+    {% endfor %}
+    {% if last_subject is not null %}
+        </div>
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}

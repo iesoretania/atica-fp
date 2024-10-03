@@ -14,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TrainingProgramRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private readonly ProgramGradeRepository $programGradeRepository)
     {
         parent::__construct($registry, TrainingProgram::class);
     }
@@ -76,6 +76,7 @@ class TrainingProgramRepository extends ServiceEntityRepository
 
     public function deleteFromList($items)
     {
+        $this->programGradeRepository->deleteFromTrainingProgramList($items);
         return $this->getEntityManager()->createQueryBuilder()
             ->delete(TrainingProgram::class, 'tp')
             ->where('tp IN (:items)')
