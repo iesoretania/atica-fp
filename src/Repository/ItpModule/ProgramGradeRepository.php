@@ -119,4 +119,23 @@ class ProgramGradeRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function getStatsByTrainingProgram(TrainingProgram $trainingProgram): array
+    {
+        return $this->createQueryBuilder('pg')
+            ->select('pg as program_grade')
+            ->addSelect('COUNT(DISTINCT a) AS total_activities')
+            ->addSelect('COUNT(DISTINCT s) AS total_subjects')
+            ->addSelect('COUNT(DISTINCT pglo) AS total_learning_outcomes')
+            ->join('pg.grade', 'g')
+            ->leftJoin('pg.activities', 'a')
+            ->leftJoin('pg.subjects', 's')
+            ->leftJoin('pg.programGradeLearningOutcomes', 'pglo')
+            ->andWhere('pg.trainingProgram = :trainingProgram')
+            ->setParameter('trainingProgram', $trainingProgram)
+            ->groupBy('pg')
+            ->orderBy('g.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

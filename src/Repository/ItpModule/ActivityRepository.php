@@ -21,10 +21,9 @@ class ActivityRepository extends ServiceEntityRepository
     public function createActivityByProgramGradeQueryBuilder(ProgramGrade $programGrade, ?string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('a')
-            ->addSelect('ac', 'c', 'lo')
+            ->addSelect('c', 'lo')
             ->andWhere('a.programGrade = :programGrade')
-            ->leftJoin('a.assignedLearningOutcomes', 'ac')
-            ->leftJoin('ac.criteria', 'c')
+            ->leftJoin('a.criteria', 'c')
             ->leftJoin('c.learningOutcome', 'lo')
             ->setParameter('programGrade', $programGrade)
             ->orderBy('a.code', 'ASC')

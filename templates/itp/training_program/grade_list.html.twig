@@ -7,8 +7,8 @@
     <th class="w-20">{{ 'header.groups'|trans }}</th>
     <th class="w-5">{{ 'header.target_hours'|trans }}</th>
     <th class="w-5">{{ 'header.subjects'|trans }}</th>
-    <th class="w-5">{{ 'header.activities'|trans }}</th>
     <th class="w-5">{{ 'header.learning_outcomes'|trans }}</th>
+    <th class="w-5">{{ 'header.activities'|trans }}</th>
     <th class="w-10"></th>
     <th class="w-10"></th>
     <th class="w-10"></th>
@@ -18,27 +18,31 @@
 {% block table_body %}
             {% for item in pager %}
                 {% set url = '' %}
+                {% set program_grade = item.program_grade %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <a href="{{ url }}">{{ item.grade.name }}</a>
+                        <a href="{{ url }}">{{ program_grade.grade.name }}</a>
                     </td>
                     <td>
-                        {% for group in item.grade.groups %}{{ group.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+                        {% for group in program_grade.grade.groups %}{{ group.name }}{% if not loop.last %}, {% endif %}{% endfor %}
                     </td>
                     <td>
-                        {{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'))}}
+                        {{ (program_grade.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
                     </td>
                     <td>
+                        {{ item.total_subjects }}
                     </td>
                     <td>
+                        {{ item.total_learning_outcomes }}
                     </td>
                     <td>
+                        {{ item.total_activities }}
                     </td>
                     <td>
-                        {{ m.link_toolbar_button(path('in_company_training_phase_grade_learning_outcome_edit', {'programGrade': item.id}), 'list', 'btn-info btn-sm btn-block', 'header.learning_outcomes'|trans) }}
+                        {{ m.link_toolbar_button(path('in_company_training_phase_grade_learning_outcome_edit', {'programGrade': program_grade.id}), 'list', 'btn-info btn-sm btn-block', 'header.learning_outcomes'|trans) }}
                     </td>
                     <td>
-                        {{ m.link_toolbar_button(path('in_company_training_phase_activity_list', {'programGrade': item.id}), 'book', 'btn-info btn-sm btn-block h-100', 'header.activities'|trans) }}
+                        {{ m.link_toolbar_button(path('in_company_training_phase_activity_list', {'programGrade': program_grade.id}), 'book', 'btn-info btn-sm btn-block h-100', 'header.activities'|trans) }}
                     </td>
                     <td>
                         {{ m.link_toolbar_button('', 'industry', 'btn-info btn-sm btn-block', 'header.companies'|trans) }}

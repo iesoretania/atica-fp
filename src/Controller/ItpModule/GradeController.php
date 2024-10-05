@@ -83,10 +83,11 @@ class GradeController extends AbstractController
         }
         if ($new) {
             $programGradeRepository->flush();
-            $programGrades = $programGradeRepository->findByTrainingProgram($trainingProgram);
         }
 
-        $adapter = new ArrayAdapter($programGrades);
+        $programGradeStats = $programGradeRepository->getStatsByTrainingProgram($trainingProgram);
+
+        $adapter = new ArrayAdapter($programGradeStats);
         $pager = new Pagerfanta($adapter);
         try {
             $pager
