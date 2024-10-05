@@ -21,7 +21,7 @@
             {% if item.learningOutcome.subject.id != last_subject_id %}
                 {% set last_subject_id = item.learningOutcome.subject.id %}
                 <h4 class="checkbox-category">
-                    {{ item.learningOutcome.subject }}{% if item.learningOutcome.code %} ({{ item.learningOutcome.subject.code }}){% endif %}
+                    {{ item.learningOutcome.subject }}{% if item.learningOutcome.subject.code %} ({{ item.learningOutcome.subject.code }}){% endif %}
                 </h4>
             {% endif %}
             {% if item.learningOutcome.id != last_learning_outcome_id %}

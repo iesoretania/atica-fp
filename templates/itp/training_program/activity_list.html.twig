@@ -32,7 +32,7 @@
                             {% set criteria_set = [] %}
                             {% set criteria = item.criteria|sort((a,b) => a.learningOutcome.subject.name == b.learningOutcome.subject.name ? (a.learningOutcome.code == b.learningOutcome.code ? a.code <=> b.code : a.learningOutcome.code <=> b.learningOutcome.code) : (a.learningOutcome.subject.name <=> b.learningOutcome.subject.name)) %}
                             {% for criterium in criteria %}
-                                {% if criteria_set is not empty and (loop.last or last_learning_outcome_id != criterium.learningOutcome.id) %}
+                                {% if criteria_set is not empty and (last_learning_outcome_id != criterium.learningOutcome.id) %}
                                     (<i>{{ criteria_set|join(', ') }}</i>)
                                     {% set criteria_set = [] %}
                                 {%- endif -%}
@@ -47,7 +47,7 @@
                                 {% set last_subject_id = criterium.learningOutcome.subject.id %}
                                 {% set criteria_set = criteria_set | merge([criterium.code]) %}
                             {% endfor %}
-                            {% if last_learning_outcome_id is not null %}({{ criteria_set|join(', ') }}){% endif %}
+                                        {% if criteria_set is not empty %}(<i>{{ criteria_set|join(', ') }}</i>){% endif %}
                             {% if last_subject_id is not null %}</li>{% endif %}
                         </ul>
                         {% endif %}
