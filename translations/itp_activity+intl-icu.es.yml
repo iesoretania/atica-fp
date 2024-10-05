@@ -13,10 +13,12 @@ form.shared.none: No se aplica a esta actividad
 form.save: Guardar cambios
 form.back: Volver
 
+form.no_activity: No hay actividades formativas en este curso
+
 title.list: Actividades del plan de formación
 title.detail: Plan de formación
 title.new: Nueva actividad formativa
-title.edit: Detalles de la actividad
+title.edit: Detalles de la actividad formativa
 
 table.new: Nueva actividad formativa
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"

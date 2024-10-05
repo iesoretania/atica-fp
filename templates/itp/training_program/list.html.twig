@@ -28,7 +28,7 @@
                         {% for grade in item.training.grades %}{% for group in grade.groups %}{{ group.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% if not loop.last %}, {% endif %}{% endfor %}
                     </td>
                     <td>
-                        {{ item.targetHours / 100 }}
+                        {{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
                     </td>
                     <td>
                         {{ m.link_button(path('in_company_training_phase_training_program_edit', {'id': item.id}), 'pencil', 'btn-info btn-sm btn-block', 'table.basic_data'|trans) }}

@@ -18,12 +18,12 @@
 
 namespace App\Form\Type\ItpModule;
 
+use App\Entity\Edu\Criterion;
 use App\Entity\ItpModule\Activity;
 use App\Entity\ItpModule\ProgramGrade;
-use App\Repository\Edu\SubjectRepository;
+use App\Repository\ItpModule\CriterionRepository as ItpCriterionRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -35,7 +35,7 @@ use Symfony\Component\Validator\Constraints\Count;
 class ActivityType extends AbstractType
 {
     public function __construct(
-        private readonly SubjectRepository $subjectRepository,
+        private readonly ItpCriterionRepository $itpCriterionRepository,
     )
     {
     }
@@ -61,32 +61,23 @@ class ActivityType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
-            /** @var Activity $data */
             $data = $event->getData();
             assert($data instanceof Activity);
             assert($data->getProgramGrade() instanceof ProgramGrade);
-            $subjects = $this->subjectRepository->findByGrade($data->getProgramGrade()->getGrade());
+
+            $criteria = $this->itpCriterionRepository->findByProgramGrade($data->getProgramGrade());
 
             $form
-                ->add('subjects', ChoiceType::class, [
-                    'mapped' => false,
-                    'label' => 'form.subjects',
-                    'choice_label' => 'name',
-                    'choices' => $subjects,
+                ->add('criteria', EntityType::class, [
+                    'label' => 'form.criteria',
+                    'class' => Criterion::class,
+                    'choices' => $criteria,
                     'constraints' => [
                         new Count(['min' => 1])
                     ],
                     'multiple' => true,
                     'expanded' => true,
                     'required' => true
-                ]);
-            $form
-                ->add('assignedLearningOutcomes', CollectionType::class, [
-                    'label' => 'form.learning_outcomes',
-                    'entry_type' => ActivityLearningOutcomeType::class,
-                    'entry_options' => [
-                        'label' => false
-                    ]
                 ]);
         });
     }
@@ -98,7 +89,6 @@ class ActivityType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Activity::class,
-            'activity_learning_outcomes' => [],
             'translation_domain' => 'itp_activity'
         ]);
     }

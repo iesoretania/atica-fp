@@ -20,17 +20,12 @@ namespace App\Controller\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Grade;
-use App\Entity\Edu\LearningOutcome;
 use App\Entity\Edu\Training;
 use App\Entity\ItpModule\Activity;
 use App\Entity\ItpModule\ProgramGrade;
-use App\Entity\ItpModule\ProgramGradeLearningOutcome;
 use App\Entity\Person;
 use App\Form\Type\ItpModule\ActivityType;
-use App\Repository\Edu\LearningOutcomeRepository;
 use App\Repository\ItpModule\ActivityRepository;
-use App\Repository\ItpModule\ProgramGradeLearningOutcomeRepository;
-use App\Repository\ItpModule\SubjectRepository;
 use App\Security\ItpModule\ActivityVoter;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
@@ -113,9 +108,6 @@ class ActivityController extends AbstractController
         Request                               $request,
         TranslatorInterface                   $translator,
         ActivityRepository                    $activityRepository,
-        SubjectRepository                     $itpSubjectRepository,
-        LearningOutcomeRepository             $learningOutcomeRepository,
-        ProgramGradeLearningOutcomeRepository $activityLearningOutcomeRepository,
         ProgramGrade                          $programGrade
     ): Response
     {
@@ -134,7 +126,7 @@ class ActivityController extends AbstractController
 
         $activityRepository->persist($activity);
 
-        return $this->edit($request, $translator, $activityRepository, $itpSubjectRepository, $learningOutcomeRepository, $activityLearningOutcomeRepository, $activity);
+        return $this->edit($request, $translator, $activityRepository, $activity);
     }
 
     #[Route(path: '/{id}', name: 'in_company_training_phase_activity_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
@@ -142,51 +134,13 @@ class ActivityController extends AbstractController
         Request                               $request,
         TranslatorInterface                   $translator,
         ActivityRepository                    $activityRepository,
-        SubjectRepository                     $itpSubjectRepository,
-        LearningOutcomeRepository             $learningOutcomeRepository,
-        ProgramGradeLearningOutcomeRepository $activityLearningOutcomeRepository,
         Activity                              $activity
     ): Response {
         $this->denyAccessUnlessGranted(ActivityVoter::MANAGE, $activity);
 
-        $subjects = $activity->getId() ? $itpSubjectRepository->findByActivity($activity) : [];
-
-        $learningOutcomes = $learningOutcomeRepository->findBySubjects($subjects);
-        $actualActivityLearningOutcomes = $activityLearningOutcomeRepository->findByActivity($activity);
-
-        $activityLearningOutcomes = array_map(
-            function (LearningOutcome $learningOutcome) use ($actualActivityLearningOutcomes, $activityLearningOutcomeRepository, $activity) {
-                $activityLearningOutcome = null;
-                foreach ($actualActivityLearningOutcomes as $aal) {
-                    if ($aal->getLearningOutcome() === $learningOutcome) {
-                        $activityLearningOutcome = $aal;
-                        break;
-                    }
-                }
-                if ($activityLearningOutcome === null) {
-                    $activityLearningOutcome = new ProgramGradeLearningOutcome();
-                    $activityLearningOutcome
-                        ->setActivity($activity)
-                        ->setShared(false)
-                        ->setLearningOutcome($learningOutcome);
-                    $activityLearningOutcomeRepository->persist($activityLearningOutcome);
-                }
-                return $activityLearningOutcome;
-            },
-            $learningOutcomes
-        );
-
-        $form = $this->createForm(ActivityType::class, $activity, [
-            'activity_learning_outcomes' => $activityLearningOutcomes
-        ]);
-
-        // Obtener módulos que tengan CEs asociados a la actividad
-        $form->get('subjects')->setData($subjects);
+        $form = $this->createForm(ActivityType::class, $activity);
 
         $form->handleRequest($request);
-
-
-        $learningOutcomes = $learningOutcomeRepository->findBySubjects($subjects);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
