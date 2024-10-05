@@ -67,4 +67,14 @@ class ProgramGradeLearningOutcomeRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->flush();
     }
+
+    public function deleteFromProgramGradeList($items)
+    {
+        $this->createQueryBuilder('pglo')
+            ->delete()
+            ->where('pglo.programGrade IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
 }
