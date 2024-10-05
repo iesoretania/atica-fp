@@ -57,7 +57,7 @@ class TrainingProgramRepository extends ServiceEntityRepository
 
         if ($q) {
             $queryBuilder
-                ->where('tr.name LIKE :tq')
+                ->where('tr.name LIKE :tq OR d.name LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
 

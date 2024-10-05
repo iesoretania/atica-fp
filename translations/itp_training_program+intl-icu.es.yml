@@ -57,6 +57,7 @@ table.basic_data: Datos básicos
 
 header.name: Nombre
 header.training: Enseñanza
+header.department: Familia profesional
 header.grades: Cursos
 header.groups: Grupos asociados
 header.target_hours: Horas previstas
