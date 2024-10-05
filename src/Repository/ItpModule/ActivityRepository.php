@@ -50,4 +50,14 @@ class ActivityRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->flush();
     }
+
+    public function deleteFromProgramGradeList($items)
+    {
+        $this->createQueryBuilder('a')
+            ->delete()
+            ->where('a.programGrade IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
 }
