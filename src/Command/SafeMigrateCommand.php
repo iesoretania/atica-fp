@@ -91,9 +91,7 @@ class SafeMigrateCommand extends Command
                 $this->backupFilePath)
             ) {
                 $this->io->success($this->translator->trans('message.migration.success.restore', [], 'command'));
-                if (!$removeBackup) {
-                    $this->removeBackup();
-                }
+                $this->removeBackup();
             } else {
                 $this->io->error($this->translator->trans('message.migration.error.restore', [], 'command'));
             }
