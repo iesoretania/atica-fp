@@ -50,6 +50,8 @@
                 {{ form_widget(item.selected) }}
             </div>
         </div>
+    {% else %}
+        <h5><b>{{ 'form.no_learning_outcome'|trans }}</b></h5>
     {% endfor %}
     {% if last_subject is not null %}
         </div>

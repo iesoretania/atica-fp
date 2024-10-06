@@ -11,6 +11,7 @@ form.learning_outcome.not_selected: No está en el plan
 form.learning_outcome.none: Deseleccionar
 form.learning_outcome.shared: Compartido
 form.learning_outcome.exclusive: Exclusivo en empresa
+form.no_learning_outcome: No hay RAs que mostrar en los módulos profesionales seleccionados
 
 title.list: Plan de formación inicial
 title.learning_outcomes: Resultados de aprendizaje
@@ -41,3 +42,4 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Planes de formación eliminados con éxito.
 message.delete_error: Ha ocurrido un error al eliminar los planes de formación.
+
