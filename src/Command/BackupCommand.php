@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsCommand(
     name: 'app:backup',
@@ -29,8 +30,11 @@ class BackupCommand extends Command
     // Define $io as a class property
     private SymfonyStyle $io;
 
-    public function __construct(private readonly string $projectDir, EntityManagerInterface $em)
-    {
+    public function __construct(
+        private readonly string              $projectDir,
+        private readonly TranslatorInterface $translator,
+        EntityManagerInterface               $em,
+    ) {
         parent::__construct();
         $this->databaseName = $em->getConnection()->getDatabase();
         $this->databaseUser = $em->getConnection()->getParams()['user'];
@@ -59,7 +63,7 @@ class BackupCommand extends Command
 
         if ($input->getOption('timestamp')) {
             if ($input->getOption('filename')) {
-                $this->io->error('Cannot use both --filename and --timestamp options together.');
+                $this->io->error($this->translator->trans('message.backup.error.options.timestamp_and_filename', [], 'command'));
                 return Command::FAILURE;
             }
             $timestamp = date('Y-m-d_H-i-s');
@@ -75,9 +79,10 @@ class BackupCommand extends Command
         $this->backupFilePath = $this->backupPath . '/' . $this->backupFilename;
 
         // Step 1: Create database snapshot
-        $this->io->section('Creating database snapshot...');
+        $this->io->section($this->translator->trans('title.backup', [], 'command'));
         if (!BackupUtils::createDatabaseBackup(
             $this->io,
+            $this->translator,
             $this->databaseName,
             $this->databaseUser,
             $this->databasePassword,
@@ -85,10 +90,10 @@ class BackupCommand extends Command
             $this->databasePort,
             $this->backupFilePath
         )) {
-            $this->io->error('Failed to create database snapshot.');
+            $this->io->error($this->translator->trans('message.backup.error', [], 'command'));
             return Command::FAILURE;
         }
-        $this->io->success('Database snapshot created successfully into ' . $this->backupFilePath);
+        $this->io->success($this->translator->trans('message.backup.success', ['%file%' => $this->backupFilePath], 'command'));
 
         return Command::SUCCESS;
     }

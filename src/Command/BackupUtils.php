@@ -4,25 +4,27 @@ namespace App\Command;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BackupUtils
 {
-
     public static function createDatabaseBackup(
-        SymfonyStyle $io,
-        string $databaseName,
-        string $databaseUser,
-        string $databasePassword,
-        string $databaseHost,
-        string $databasePort,
-        string $backupFilePath): bool
+        SymfonyStyle        $io,
+        TranslatorInterface $translator,
+        string              $databaseName,
+        string              $databaseUser,
+        string              $databasePassword,
+        string              $databaseHost,
+        string              $databasePort,
+        string              $backupFilePath): bool
     {
         // Ensure the directory exists before creating the backup file
         $backupDir = dirname($backupFilePath);
 
         if (!is_dir($backupDir)) {
-            if (!mkdir($backupDir, 0755, true) && !is_dir($backupDir)) {
-                $io->error('Failed to create backup directory.');
+            if (is_file($backupDir)
+                || (!mkdir($backupDir, 0755, true) && !is_dir($backupDir))) {
+                $io->error($translator->trans('message.backup.error.backup_dir', ['%dir%' => $backupDir], 'command'));
                 return false; // Failed to create directory
             }
         }
@@ -38,20 +40,21 @@ class BackupUtils
             '--result-file=' . $backupFilePath, // Store output in the backup file
         ];
 
-        $io->text('Running database backup command: ' . implode(' ', $command));
+        $io->text($translator->trans('message.backup.info.run', ['%command%' => implode(' ', $command)], 'command') );
 
-        return self::runCommand($io, $command);
+        return self::runCommand($io, $translator, $command);
     }
 
 
     public static function restoreDatabaseBackup(
-        SymfonyStyle $io,
-        string $databaseName,
-        string $databaseUser,
-        string $databasePassword,
-        string $databaseHost,
-        string $databasePort,
-        string $backupFilePath): bool
+        SymfonyStyle        $io,
+        TranslatorInterface $translator,
+        string              $databaseName,
+        string              $databaseUser,
+        string              $databasePassword,
+        string              $databaseHost,
+        string              $databasePort,
+        string              $backupFilePath): bool
     {
         // Command to restore MySQL database
         $command = [
@@ -65,12 +68,12 @@ class BackupUtils
             'source ' . $backupFilePath,
         ];
 
-        $io->text('Running database restore command: ' . implode(' ', $command));
+        $io->text($translator->trans('message.restore.info.run', ['%command%' => implode(' ', $command)], 'command') );
 
-        return self::runCommand($io, $command);
+        return self::runCommand($io, $translator, $command);
     }
 
-    public static function runCommand(SymfonyStyle $io, array $command): bool
+    public static function runCommand(SymfonyStyle $io, TranslatorInterface $translator, array $command): bool
     {
         $process = new Process($command);
         $process->setTimeout(3600); // 1 hour timeout for large migrations
@@ -79,7 +82,7 @@ class BackupUtils
             $process->mustRun();
             return true;
         } catch (\Exception $e) {
-            $io->error('Error running command: ' . $e->getMessage());
+            $io->error($translator->trans('message.run_error', ['%error%' => $e->getMessage()], 'command'));
             return false;
         }
     }

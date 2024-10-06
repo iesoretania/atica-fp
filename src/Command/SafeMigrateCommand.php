@@ -8,9 +8,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsCommand(
     name: 'app:safe-migrate',
@@ -27,8 +27,11 @@ class SafeMigrateCommand extends Command
     // Define $io as a class property
     private SymfonyStyle $io;
 
-    public function __construct(private readonly string $projectDir, EntityManagerInterface $em)
-    {
+    public function __construct(
+        private readonly string              $projectDir,
+        private readonly TranslatorInterface $translator,
+        EntityManagerInterface               $em
+    ) {
         parent::__construct();
         $this->databaseName = $em->getConnection()->getDatabase();
         $this->databaseUser = $em->getConnection()->getParams()['user'];
@@ -42,8 +45,6 @@ class SafeMigrateCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->addOption('no-backup-removal', null, InputOption::VALUE_NONE, 'Do not remove the backup file after migration');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -52,9 +53,10 @@ class SafeMigrateCommand extends Command
         $this->io = new SymfonyStyle($input, $output);
 
         // Step 1: Create database snapshot
-        $this->io->section('Creating database snapshot...');
+        $this->io->section($this->translator->trans('title.migration.backup', [], 'command'));
         if (!BackupUtils::createDatabaseBackup(
             $this->io,
+            $this->translator,
             $this->databaseName,
             $this->databaseUser,
             $this->databasePassword,
@@ -62,24 +64,25 @@ class SafeMigrateCommand extends Command
             $this->databasePort,
             $this->backupFilePath
         )) {
-            $this->io->error('Failed to create database snapshot. Aborting migration.');
+            $this->io->error($this->translator->trans('message.migration.error.backup', [], 'command'));
             return Command::FAILURE;
         }
-        $this->io->success('Database snapshot created successfully.');
+        $this->io->success($this->translator->trans('message.migration.success.backup', [], 'command'));
 
         // Step 2: Run Doctrine migration
-        $this->io->section('Running Doctrine migrations...');
+        $this->io->section($this->translator->trans('title.migration.migrate', [], 'command'));
         try {
             // This runs the `doctrine:migrations:migrate` command
             $migrateCommand = $this->getApplication()->find('doctrine:migrations:migrate');
             $migrateCommand->run($input, $output);
         } catch (\Exception $e) {
-            $this->io->error('Migration failed: ' . $e->getMessage());
-            $this->io->section('Restoring database from snapshot...');
+            $this->io->error($this->translator->trans('message.migration.error.migrate', ['%error' => $e->getMessage()], 'command'));
+            $this->io->section($this->translator->trans('title.migration.restore', [], 'command'));
 
             // Step 3: Restore database if migration fails
             if (BackupUtils::restoreDatabaseBackup(
                 $this->io,
+                $this->translator,
                 $this->databaseName,
                 $this->databaseUser,
                 $this->databasePassword,
@@ -87,21 +90,19 @@ class SafeMigrateCommand extends Command
                 $this->databasePort,
                 $this->backupFilePath)
             ) {
-                $this->io->success('Database restored successfully after mailed migration.');
-                if (!$input->getOption('no-backup-removal')) {
+                $this->io->success($this->translator->trans('message.migration.success.restore', [], 'command'));
+                if (!$removeBackup) {
                     $this->removeBackup();
                 }
             } else {
-                $this->io->error('Failed to restore the database from snapshot.');
+                $this->io->error($this->translator->trans('message.migration.error.restore', [], 'command'));
             }
             return Command::FAILURE;
         }
 
-        $this->io->success('Migration completed successfully.');
+        $this->io->success($this->translator->trans('message.migration.success.migrate', [], 'command'));
 
-        if (!$input->getOption('no-backup-removal')) {
-            $this->removeBackup();
-        }
+        $this->removeBackup();
 
         return Command::SUCCESS;
     }
@@ -109,9 +110,9 @@ class SafeMigrateCommand extends Command
     public function removeBackup(): void
     {
         if (!unlink($this->backupFilePath)) {
-            $this->io->warning('Failed to delete the database snapshot file.');
+            $this->io->warning($this->translator->trans('message.migration.warning.backup_removal', ['%file%' => $this->backupFilePath], 'command'));
         } else {
-            $this->io->success('Database snapshot file deleted successfully.');
+            $this->io->success($this->translator->trans('message.migration.success.backup_removal', ['%file%' => $this->backupFilePath], 'command'));
         }
     }
 }

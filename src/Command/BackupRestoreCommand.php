@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsCommand(
     name: 'app:backup-restore',
@@ -29,8 +30,11 @@ class BackupRestoreCommand extends Command
     // Define $io as a class property
     private SymfonyStyle $io;
 
-    public function __construct(private readonly string $projectDir, EntityManagerInterface $em)
-    {
+    public function __construct(
+        private readonly string              $projectDir,
+        private readonly TranslatorInterface $translator,
+        EntityManagerInterface               $em
+    ) {
         parent::__construct();
         $this->databaseName = $em->getConnection()->getDatabase();
         $this->databaseUser = $em->getConnection()->getParams()['user'];
@@ -64,21 +68,13 @@ class BackupRestoreCommand extends Command
             $this->backupPath = $input->getOption('path');
         }
 
-        // Ensure the directory exists before creating the backup file
-        $backupDir = dirname($this->backupFilePath);
-
-        if (!is_dir($backupDir)) {
-            if (!mkdir($backupDir, 0755, true) && !is_dir($backupDir)) {
-                $this->io->error('Failed to create backup directory.');
-                return Command::FAILURE; // Failed to create directory
-            }
-        }
-
         $this->backupFilePath = $this->backupPath . '/' . $this->backupFilename;
 
+        $this->io->section($this->translator->trans('title.restore', [], 'command'));
         // Restore database
         if (!BackupUtils::restoreDatabaseBackup(
             $this->io,
+            $this->translator,
             $this->databaseName,
             $this->databaseUser,
             $this->databasePassword,
@@ -86,11 +82,11 @@ class BackupRestoreCommand extends Command
             $this->databasePort,
             $this->backupFilePath)
         ) {
-            $this->io->error('Failed to restore the database from snapshot.');
+            $this->io->error($this->translator->trans('message.restore.error', ['%file%' => $this->backupFilePath], 'command'));
             return Command::FAILURE;
         }
 
-        $this->io->success('Database snapshot restored successfully from ' . $this->backupFilePath);
+        $this->io->success($this->translator->trans('message.restore.success', ['%file%' => $this->backupFilePath], 'command'));
         return Command::SUCCESS;
     }
 }

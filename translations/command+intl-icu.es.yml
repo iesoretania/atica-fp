@@ -12,3 +12,32 @@ input.organization.city: "Introduzca localidad"
 message.success: Operación realizada con éxito
 message.error: Ocurrió un error al realizar la operación
 message.empty_error: Campo obligatorio, no puede estar vacío
+message.run_error: "Error al ejecutar el comando: {error}"
+
+title.backup: Creando instantánea de la base de datos...
+message.backup.error.options.timestamp_and_filename: No se pueden usar las opciones --filename y --timestamp a la vez.
+message.backup.error.backup_dir: "Error al crear directorio de copia de seguridad: {dir}"
+message.backup.error: No se ha podido crear la instantánea de la base de datos.
+message.backup.success: Creada instantánea con éxito en {file}
+message.backup.info.run: "Ejecutando comando de copia de seguridad: {command}"
+
+title.restore: Restaurando instantánea de la base de datos...
+message.restore.error: Ha fallado la restauración de la instantánea de la base de datos desde {$file}
+message.restore.success: Se ha restaurado la instantánea con éxito desde {file}
+message.restore.info.run: "Ejecutando comando de restauración: {command}"
+
+title.migration.backup: Creando instantánea de la base de datos antes de la migración...
+message.migration.error.backup: No se ha podido crear la instantánea de la base de datos. Abortando migración.
+message.migration.success.backup: Creada instantánea con éxito.
+
+title.migration.migrate: Ejecutando migraciones de Doctrine...
+message.migration.error.migrate: "Ocurrió un error al ejecutar las migraciones de Doctrine: {error}"
+
+title.migration.restore: Restaurando instantánea de la base de datos...
+message.migration.success.restore: Se ha restaurado la instantánea con éxito tras la migración fallida.
+message.migration.error.restore: Ha fallado la restauración de la instantánea de la base de datos. Por favor, restaure manualmente la base de datos.
+
+message.migration.success.migrate: Se ha completado la migración con éxito.
+message.migration.warning.backup_removal: "Ha fallado la eliminación de la instantánea de la base de datos: {file}"
+message.migration.success.backup_removal: Se ha eliminado con éxito la instantánea de la base de datos.
+
