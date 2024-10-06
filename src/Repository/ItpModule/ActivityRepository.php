@@ -60,4 +60,27 @@ class ActivityRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function findAllInListByIdAndProgramGrade(array $items, ProgramGrade $programGrade): array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a IN (:items)')
+            ->andWhere('a.programGrade = :programGrade')
+            ->setParameter('items', $items)
+            ->setParameter('programGrade', $programGrade)
+            ->orderBy('a.code', 'ASC')
+            ->addOrderBy('a.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function deleteFromList(array $items): void
+    {
+        $this->createQueryBuilder('a')
+            ->delete()
+            ->where('a IN (:selectedItems)')
+            ->setParameter('selectedItems', $items)
+            ->getQuery()
+            ->execute();
+    }
 }

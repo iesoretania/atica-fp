@@ -5,7 +5,7 @@
 {% block path_new %}{{ path('in_company_training_phase_activity_new', {'programGrade': program_grade.id}) }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-5">{{ 'header.code'|trans }}</th>
+    <th class="w-5"><label><input type="checkbox" id="select"> {{ 'header.code'|trans }}</label></th>
     <th class="w-25">{{ 'header.name'|trans }}</th>
     <th class="w-35">{{ 'header.description'|trans }}</th>
     <th class="w-40">{{ 'header.learning_outcomes_and_criteria'|trans }}</th>
@@ -16,7 +16,9 @@
                 {% set url = path('in_company_training_phase_activity_edit', {'id': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
                         <a href="{{ url }}">{{ item.code }}</a>
+                        </label>
                     </td>
                     <td>
                         {{ item.name }}
@@ -60,7 +62,13 @@
             {% endfor %}
 {% endblock %}
 
+{% block before_table %}
+    <form action="{{ path('in_company_training_phase_activity_operation', {'programGrade': program_grade.id}) }}" method="post">
+{% endblock %}
+
 {% block after_table %}
     <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+</form>
 {% endblock %}

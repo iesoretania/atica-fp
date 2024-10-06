@@ -5,13 +5,10 @@ form.subjects: Módulos profesionales
 form.learning_outcomes: Resultados de aprendizaje y criterios de evaluación
 form.criteria: Criterios de evaluación
 
-form.shared: ¿Compartido?
-form.shared.yes: Sí
-form.shared.no: Exclusivo en la empresa
-form.shared.none: No se aplica a esta actividad
-
 form.save: Guardar cambios
+form.delete: Eliminar actividades formativas
 form.back: Volver
+form.delete_confirm: Confirmar borrado
 
 form.no_activity: No hay actividades formativas en este curso
 
@@ -19,6 +16,7 @@ title.list: Actividades del plan de formación
 title.detail: Plan de formación
 title.new: Nueva actividad formativa
 title.edit: Detalles de la actividad formativa
+title.delete: Eliminar actividades formativas
 
 table.new: Nueva actividad formativa
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
@@ -32,5 +30,10 @@ header.learning_outcomes_and_criteria: RAs y CEs
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
-message.deleted: Planes de formación eliminados con éxito.
-message.delete_error: Ha ocurrido un error al eliminar los planes de formación.
+message.deleted: Actividades formativas eliminadas con éxito.
+message.delete_error: Ha ocurrido un error al eliminar las actividades formativa del plan de formación.
+
+prompt.delete_confirm: |
+    ¿Está seguro de que desea eliminar las siguientes actividades formativas? Se eliminarán todos los datos asociados.
+
+    Esta operación no se puede deshacer.
