@@ -25,7 +25,7 @@ class StudentLearningProgram
 
     #[ORM\ManyToOne(inversedBy: 'studentLearningPrograms')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?TrainingProgramGroup $trainingProgramGroup = null;
+    private ?ProgramGroup $trainingProgramGroup = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -66,12 +66,12 @@ class StudentLearningProgram
         return $this->id;
     }
 
-    public function getTrainingProgramGroup(): ?TrainingProgramGroup
+    public function getTrainingProgramGroup(): ?ProgramGroup
     {
         return $this->trainingProgramGroup;
     }
 
-    public function setTrainingProgramGroup(TrainingProgramGroup $trainingProgramGroup): static
+    public function setTrainingProgramGroup(ProgramGroup $trainingProgramGroup): static
     {
         $this->trainingProgramGroup = $trainingProgramGroup;
 

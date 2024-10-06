@@ -53,12 +53,19 @@ class ProgramGrade
     #[ORM\OneToMany(targetEntity: CompanyProgram::class, mappedBy: 'programGrade', orphanRemoval: true)]
     private Collection $companyPrograms;
 
+    /**
+     * @var Collection<int, ProgramGroup>
+     */
+    #[ORM\OneToMany(targetEntity: ProgramGroup::class, mappedBy: 'programGrade', orphanRemoval: true)]
+    private Collection $trainingProgramGroups;
+
     public function __construct()
     {
         $this->activities = new ArrayCollection();
         $this->programGradeLearningOutcomes = new ArrayCollection();
         $this->subjects = new ArrayCollection();
         $this->companyPrograms = new ArrayCollection();
+        $this->trainingProgramGroups = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -148,5 +155,13 @@ class ProgramGrade
         $this->subjects->removeElement($subject);
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, ProgramGroup>
+     */
+    public function getTrainingProgramGroups(): Collection
+    {
+        return $this->trainingProgramGroups;
     }
 }

@@ -40,12 +40,6 @@ class TrainingProgram
     private Collection $specificTrainings;
 
     /**
-     * @var Collection<int, TrainingProgramGroup>
-     */
-    #[ORM\OneToMany(targetEntity: TrainingProgramGroup::class, mappedBy: 'trainingProgram', orphanRemoval: true)]
-    private Collection $trainingProgramGroups;
-
-    /**
      * @var Collection<int, ProgramGrade>
      */
     #[ORM\OneToMany(targetEntity: ProgramGrade::class, mappedBy: 'trainingProgram', orphanRemoval: true)]
@@ -84,7 +78,6 @@ class TrainingProgram
     public function __construct()
     {
         $this->specificTrainings = new ArrayCollection();
-        $this->trainingProgramGroups = new ArrayCollection();
         $this->trainingProgramGrades = new ArrayCollection();
     }
 
@@ -135,14 +128,6 @@ class TrainingProgram
     public function getSpecificTrainings(): Collection
     {
         return $this->specificTrainings;
-    }
-
-    /**
-     * @return Collection<int, TrainingProgramGroup>
-     */
-    public function getTrainingProgramGroups(): Collection
-    {
-        return $this->trainingProgramGroups;
     }
 
     /**

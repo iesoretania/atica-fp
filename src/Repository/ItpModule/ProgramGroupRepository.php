@@ -18,14 +18,77 @@
 
 namespace App\Repository\ItpModule;
 
-use App\Entity\ItpModule\TrainingProgramGroup;
+use App\Entity\ItpModule\ProgramGrade;
+use App\Entity\ItpModule\ProgramGroup;
+use App\Repository\Edu\GroupRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 class ProgramGroupRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly GroupRepository $groupRepository
+    ) {
+        parent::__construct($registry, ProgramGroup::class);
+    }
+
+    public function findAllByProgramGrade(ProgramGrade $programGrade): array
     {
-        parent::__construct($registry, TrainingProgramGroup::class);
+        do {
+            $changes = false;
+            $actualProgramGroups = $this->createQueryBuilder('pg')
+                ->join('pg.group', 'g')
+                ->where('pg.programGrade = :program_grade')
+                ->setParameter('program_grade', $programGrade)
+                ->orderBy('g.name', 'ASC')
+                ->getQuery()
+                ->getResult();
+
+            $groups = $this->groupRepository->findByGrade($programGrade->getGrade());
+
+            foreach ($actualProgramGroups as $actualProgramGroup) {
+                if (!in_array($actualProgramGroup->getGroup(), $groups)) {
+                    $changes = true;
+                    $this->getEntityManager()->remove($actualProgramGroup);
+                }
+            }
+
+            $return = [];
+            foreach ($groups as $group) {
+                $found = false;
+                foreach ($actualProgramGroups as $actualProgramGroup) {
+                    if ($actualProgramGroup->getGroup() === $group) {
+                        $return[] = $actualProgramGroup;
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    $changes = true;
+                    $programGroup = new ProgramGroup();
+                    $programGroup
+                        ->setProgramGrade($programGrade)
+                        ->setGroup($group);
+                    $this->getEntityManager()->persist($programGroup);
+                    $return[] = $programGroup;
+                }
+            }
+            if ($changes) {
+                $this->getEntityManager()->flush();
+            }
+        } while ($changes);
+
+        return $return;
+    }
+
+    public function deleteFromProgramGradeList(array $items)
+    {
+        $this->createQueryBuilder('pg')
+            ->delete()
+            ->where('pg.programGrade IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
     }
 }

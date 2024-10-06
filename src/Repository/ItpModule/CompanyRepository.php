@@ -35,9 +35,14 @@ class CompanyRepository extends BaseRepository
         $existant = $getProgramGrade->getCompanyPrograms()->toArray();
         $companies = array_map(fn(CompanyProgram $cp) => $cp->getCompany(), $existant);
 
-        $qb = $this->createQueryBuilder('c')
-            ->where('c NOT IN (:companies)')
-            ->setParameter('companies', $companies)
+        $qb = $this->createQueryBuilder('c');
+        if (count($companies) > 0) {
+            $qb
+                ->where('c NOT IN (:companies)')
+                ->setParameter('companies', $companies);
+        }
+
+        $qb
             ->orderBy('c.name', 'ASC')
             ->addOrderBy('c.code', 'ASC');
 

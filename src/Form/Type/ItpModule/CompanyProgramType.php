@@ -33,13 +33,11 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CompanyProgramType extends AbstractType
 {
     public function __construct(
         private readonly CompanyRepository $itpCompanyRepository,
-        private readonly TranslatorInterface $translator
     )
     {
     }
@@ -80,7 +78,7 @@ class CompanyProgramType extends AbstractType
                 ->add('monitoringInstruments', TextareaType::class, [
                     'label' => 'form.monitoring_instruments',
                     'attr' => [
-                        'placeholder' => $this->translator->trans('form.monitoring_instruments.placeholder', [], 'itp_company'),
+                        'placeholder' => 'form.monitoring_instruments.placeholder',
                         'rows' => 5
                     ],
                     'required' => false

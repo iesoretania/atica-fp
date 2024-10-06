@@ -19,6 +19,7 @@
 namespace App\Repository\Edu;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Grade;
 use App\Entity\Edu\Group;
 use App\Entity\Organization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -121,6 +122,16 @@ class GroupRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->setParameter('academic_year', $academicYear)
             ->orderBy('g.name')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByGrade(Grade $getGrade): array
+    {
+        return $this->createQueryBuilder('g')
+            ->where('g.grade = :grade')
+            ->setParameter('grade', $getGrade)
+            ->orderBy('g.name', 'ASC')
             ->getQuery()
             ->getResult();
     }

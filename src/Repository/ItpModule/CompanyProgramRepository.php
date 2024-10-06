@@ -87,12 +87,22 @@ class CompanyProgramRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function deleteFromList(array $selectedItems): void
+    public function deleteFromList(array $items): void
     {
         $this->createQueryBuilder('cp')
             ->delete()
             ->where('cp IN (:items)')
-            ->setParameter('items', $selectedItems)
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function deleteFromProgramGradeList(array $items): void
+    {
+        $this->createQueryBuilder('cp')
+            ->delete()
+            ->where('cp.programGrade IN (:items)')
+            ->setParameter('items', $items)
             ->getQuery()
             ->execute();
     }

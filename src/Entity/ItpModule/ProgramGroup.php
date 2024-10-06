@@ -27,9 +27,10 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProgramGroupRepository::class)]
-#[ORM\Table(name: 'itp_training_program_group')]
-class TrainingProgramGroup
+#[ORM\Table(name: 'itp_program_group')]
+class ProgramGroup
 {
+    public const MODE_INHERITED = 0;
     public const MODE_GENERAL = 1;
     public const MODE_INTENSIVE = 2;
 
@@ -40,7 +41,7 @@ class TrainingProgramGroup
 
     #[ORM\ManyToOne(inversedBy: 'trainingProgramGroups')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?TrainingProgram $trainingProgram = null;
+    private ?ProgramGrade $programGrade = null;
 
     #[ORM\ManyToOne(targetEntity: Group::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -50,8 +51,8 @@ class TrainingProgramGroup
      * @var Collection<int, Teacher>
      */
     #[ORM\ManyToMany(targetEntity: Teacher::class)]
-    #[ORM\JoinTable(name: 'itp_training_program_group_manager')]
-    private Collection $manager;
+    #[ORM\JoinTable(name: 'itp_program_group_manager')]
+    private Collection $managers;
 
     #[ORM\Column(type: Types::BOOLEAN, nullable: false)]
     private ?bool $locked = false;
@@ -73,7 +74,7 @@ class TrainingProgramGroup
 
     public function __construct()
     {
-        $this->manager = new ArrayCollection();
+        $this->managers = new ArrayCollection();
         $this->studentLearningPrograms = new ArrayCollection();
     }
 
@@ -82,14 +83,14 @@ class TrainingProgramGroup
         return $this->id;
     }
 
-    public function getTrainingProgram(): ?TrainingProgram
+    public function getProgramGrade(): ?ProgramGrade
     {
-        return $this->trainingProgram;
+        return $this->programGrade;
     }
 
-    public function setTrainingProgram(TrainingProgram $trainingProgram): static
+    public function setProgramGrade(ProgramGrade $programGrade): static
     {
-        $this->trainingProgram = $trainingProgram;
+        $this->programGrade = $programGrade;
 
         return $this;
     }
@@ -99,7 +100,7 @@ class TrainingProgramGroup
         return $this->group;
     }
 
-    public function setGroup(Group $group): TrainingProgramGroup
+    public function setGroup(Group $group): ProgramGroup
     {
         $this->group = $group;
         return $this;
@@ -108,15 +109,15 @@ class TrainingProgramGroup
     /**
      * @return Collection<int, Teacher>
      */
-    public function getManager(): Collection
+    public function getManagers(): Collection
     {
-        return $this->manager;
+        return $this->managers;
     }
 
     public function addManager(Teacher $manager): static
     {
-        if (!$this->manager->contains($manager)) {
-            $this->manager->add($manager);
+        if (!$this->managers->contains($manager)) {
+            $this->managers->add($manager);
         }
 
         return $this;
@@ -124,7 +125,7 @@ class TrainingProgramGroup
 
     public function removeManager(Teacher $manager): static
     {
-        $this->manager->removeElement($manager);
+        $this->managers->removeElement($manager);
 
         return $this;
     }
@@ -156,6 +157,13 @@ class TrainingProgramGroup
     public function getModality(): ?int
     {
         return $this->modality;
+    }
+
+    public function getActualModality(): ?int
+    {
+        return $this->modality === self::MODE_INHERITED ?
+            $this->getProgramGrade()->getTrainingProgram()->getDefaultModality() :
+            $this->modality;
     }
 
     public function setModality(int $modality): static

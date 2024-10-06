@@ -1,0 +1,33 @@
+form.agreement_number: Número de convenio de colaboración
+form.monitoring_instruments: Mecanismos de seguimiento
+form.monitoring_instruments.placeholder: Indique los mecanismos de seguimiento que se utilizarán en la empresa u organismo equiparable
+form.program_activities: Actividades formativas
+
+form.save: Guardar cambios
+form.delete: Eliminar participaciones
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+form.no_company: Seleccione una empresa u organismo equiparable
+form.no_activity: No hay actividades definidas en el plan de formación y debe seleccionarse al menos una
+
+title.list: Empresas del plan de formación
+title.new: Nueva incorporación
+title.edit: Detalles de la empresa
+
+table.new: Incorporar nueva empresa
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay elementos que mostrar
+table.filter: Filtrar...
+
+table.modality.1: General
+table.modality.2: Intensiva
+table.modality.inherited: (heredada)
+
+header.name: Grupo
+header.managers: Tutorías duales de grupo
+header.default_modality: Modalidad por defecto
+header.target_hours: Horas previstas
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.

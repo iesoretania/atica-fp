@@ -1,0 +1,39 @@
+{% trans_default_domain 'itp_activity' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% form_theme form _self %}
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ m.start_button() }}
+        {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.end_button() }}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block _activity_criteria_widget %}
+    <div {{ block('widget_container_attributes') }}>
+        {% set last_subject_id = null %}
+        {% set last_learning_outcome_id = null %}
+        {% for key, option in form.children %}
+            {% set item = form.vars.choices[key].data %}
+            {% if item.learningOutcome.subject.id != last_subject_id %}
+                {% set last_subject_id = item.learningOutcome.subject.id %}
+                <h4 class="checkbox-category">
+                    {{ item.learningOutcome.subject }}{% if item.learningOutcome.subject.code %} ({{ item.learningOutcome.subject.code }}){% endif %}
+                </h4>
+            {% endif %}
+            {% if item.learningOutcome.id != last_learning_outcome_id %}
+                {% set last_learning_outcome_id = item.learningOutcome.id %}
+                <h5 class="checkbox-category">
+                    {{ item.learningOutcome.code }}. {{ item.learningOutcome.description }}
+                </h5>
+            {% endif %}
+            {{ form_widget(option) }}
+        {% else %}
+            <h5>{{ 'form.no_activity'|trans }}</h5>
+        {% endfor %}
+    </div>
+{% endblock %}
+

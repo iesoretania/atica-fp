@@ -1,0 +1,41 @@
+{% trans_default_domain 'itp_group' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th class="w-15">{{ 'header.name'|trans }}</th>
+    <th class="w-30">{{ 'header.managers'|trans }}</th>
+    <th class="w-10">{{ 'header.default_modality'|trans }}</th>
+    <th class="w-10">{{ 'header.target_hours'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('in_company_training_phase_activity_edit', {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">{{ item.group.name }}</a>
+                    </td>
+                    <td>
+                        {{ item.managers|join(', ') }}
+                    </td>
+                    <td>
+                        {{ ('table.modality.' ~ item.actualModality) | trans }}{% if item.modality == 0 %} {{ 'table.modality.inherited'|trans }}{% endif %}
+                    </td>
+                    <td>
+                        {{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}

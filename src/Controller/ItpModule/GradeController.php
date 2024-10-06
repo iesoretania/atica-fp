@@ -63,27 +63,7 @@ class GradeController extends AbstractController
         $trainingRepository->findByAcademicYearWithTrainingsAndGroups($academicYear);
         $trainingRepository->findByTrainingsAndGroups($trainingProgram->getTraining());
 
-        $grades = $gradeRepository->findByTraining($trainingProgram->getTraining());
-        $programGrades = $programGradeRepository->findByTrainingProgram($trainingProgram);
-
-        foreach ($programGrades as $programGrade) {
-            if (($key = array_search($programGrade->getGrade(), $grades, true)) !== false) {
-                unset($grades[$key]);
-            }
-        }
-
-        $new = false;
-        foreach ($grades as $grade) {
-            $new = true;
-            $programGrade = new ProgramGrade();
-            $programGrade
-                ->setTrainingProgram($trainingProgram)
-                ->setGrade($grade);
-            $programGradeRepository->persist($programGrade);
-        }
-        if ($new) {
-            $programGradeRepository->flush();
-        }
+        $programGradeRepository->findAllByTrainingProgram($trainingProgram);
 
         $programGradeStats = $programGradeRepository->getStatsByTrainingProgram($trainingProgram);
 
