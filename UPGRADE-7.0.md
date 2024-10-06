@@ -17,6 +17,17 @@ Soporte de la fase de formación en empresa
 La aplicación incluye un nuevo módulo para gestionar la fase de formación en empresa de los estudiantes
 atendiendo a la nueva normativa de FP.
 
+Escalas de valoracion
+---------------------
+Las escalas de valoración del desempeño que se configuraban específicamente para los proyectos de FP dual
+ahora se especifican globalmente a nivel de centro educativo. Esto permite reutilizar las escalas de valoración
+entre diferentes proyectos de FP dual y planes de formación de la nueva fase de formación en empresa.
+
+Con este fin, se ha añadido una nueva sección en la configuración del centro educativo para gestionar las escalas.
+
+Las escalas de valoración individuales de los proyectos de FP dual se han migrado a la nueva sección de escalas
+de forma automática, asignándoles como descripción el nombre del proyecto.
+
 Copias de seguridad desde la consola
 ------------------------------------
 Ahora es posible generar y recuperar copias de seguridad desde la consola de comandos. Los comandos son:
