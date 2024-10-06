@@ -16,6 +16,7 @@ en las distintas versiones de la misma.
 
 * feat: Nuevo módulo para la gestión de la fase de formación en empresa
 * feat: Las escalas de valoración del desempeño ahora se establecen a nivel de centro educativo, permitiendo su reutilización
+* feat: Añadidos comandos para realizar copias de seguridad y restauraciones de la base de datos desde la consola
 
 6.2.1 (2024-07-28)
 ------------------

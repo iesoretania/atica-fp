@@ -16,3 +16,14 @@ Soporte de la fase de formación en empresa
 ------------------------------------------
 La aplicación incluye un nuevo módulo para gestionar la fase de formación en empresa de los estudiantes
 atendiendo a la nueva normativa de FP.
+
+Copias de seguridad desde la consola
+------------------------------------
+Ahora es posible generar y recuperar copias de seguridad desde la consola de comandos. Los comandos son:
+- ```bin/console app:backup``` para generar una copia de seguridad. Parámetros:
+  * ```--path <directorio>``` (opcional): Permite indicar el directorio donde se guardará la copia de seguridad. Por defecto será la carpeta ```/backups``` del despliegue.
+  * ```--filename <nombre_fichero>``` (opcional): Establecer el nombre del fichero con que se guardará la copia de seguridad. Por defecto será ```backup.sql```.
+  * ```--timestamp``` (opcional): Si se indica, se añadirá la fecha y hora al nombre del archivo de copia de seguridad. Es incompatible con la opción ```--filename```.
+- ```bin/console app:backup-restore``` para recuperar una copia de seguridad. Parámetros:
+    * ```--path <directorio>``` (opcional): Permite indicar el directorio donde se encuentra la copia de seguridad. Por defecto será la carpeta ```/backups``` del despliegue.
+    * ```--filename <nombre_fichero>``` (opcional): Establecer el nombre del fichero desde el que se restaurará la copia de seguridad. Por defecto será ```backup.sql```.
