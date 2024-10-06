@@ -10,7 +10,7 @@ form.back: Volver
 form.delete_confirm: Confirmar borrado
 
 form.no_company: Seleccione una empresa u organismo equiparable
-form.no_activity: No hay actividades definidas en el plan de formación
+form.no_activity: No hay actividades definidas en el plan de formación y debe seleccionarse al menos una
 
 title.list: Empresas del plan de formación
 title.new: Nueva incorporación
