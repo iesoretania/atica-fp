@@ -105,7 +105,7 @@ class GradeController extends AbstractController
             ['fixed' => $translator->trans('title.detail', [], 'itp_training_program')]
         ];
 
-        return $this->render('itp/training_program/grade_list.html.twig', [
+        return $this->render('itp/training_program/grade/list.html.twig', [
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
@@ -182,7 +182,7 @@ class GradeController extends AbstractController
             ['fixed' => $translator->trans('title.learning_outcomes', [], 'itp_grade')]
         ];
 
-        return $this->render('itp/training_program/grade_learning_outcome_form.html.twig', [
+        return $this->render('itp/training_program/grade/learning_outcome_form.html.twig', [
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
