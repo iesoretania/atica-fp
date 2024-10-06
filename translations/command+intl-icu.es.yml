@@ -22,7 +22,7 @@ message.backup.success: Creada instantánea con éxito en {file}
 message.backup.info.run: "Ejecutando comando de copia de seguridad: {command}"
 
 title.restore: Restaurando instantánea de la base de datos...
-message.restore.error: Ha fallado la restauración de la instantánea de la base de datos desde {$file}
+message.restore.error: Ha fallado la restauración de la instantánea de la base de datos desde {file}
 message.restore.success: Se ha restaurado la instantánea con éxito desde {file}
 message.restore.info.run: "Ejecutando comando de restauración: {command}"
 
