@@ -100,6 +100,16 @@ class TeacherRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByGroup($group): array
+    {
+        return $this->createQueryBuilder('t')
+            ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
+            ->andWhere('te.group = :group')
+            ->setParameter('group', $group)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllInListByIdAndAcademicYear(
         $items,
         AcademicYear $academicYear

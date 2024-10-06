@@ -68,8 +68,12 @@ class ProgramGroupRepository extends ServiceEntityRepository
                     $changes = true;
                     $programGroup = new ProgramGroup();
                     $programGroup
+                        ->setModality(ProgramGroup::MODE_INHERITED)
                         ->setProgramGrade($programGrade)
                         ->setGroup($group);
+                    if ($programGrade->getTargetHours()) {
+                        $programGroup->setTargetHours($programGrade->getTargetHours());
+                    }
                     $this->getEntityManager()->persist($programGroup);
                     $return[] = $programGroup;
                 }
@@ -90,5 +94,10 @@ class ProgramGroupRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
     }
 }

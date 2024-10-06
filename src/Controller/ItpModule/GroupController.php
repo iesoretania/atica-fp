@@ -18,16 +18,10 @@
 
 namespace App\Controller\ItpModule;
 
-use App\Entity\Edu\AcademicYear;
-use App\Entity\Edu\Grade;
-use App\Entity\Edu\Training;
-use App\Entity\ItpModule\CompanyProgram;
 use App\Entity\ItpModule\ProgramGrade;
-use App\Form\Type\ItpModule\CompanyProgramType;
-use App\Repository\ItpModule\CompanyProgramRepository;
-use App\Repository\ItpModule\CompanyRepository as ItpCompanyRepository;
+use App\Entity\ItpModule\ProgramGroup;
+use App\Form\Type\ItpModule\ProgramGroupType;
 use App\Repository\ItpModule\ProgramGroupRepository;
-use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
 use Pagerfanta\Adapter\ArrayAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
@@ -43,7 +37,6 @@ class GroupController extends AbstractController
 {
     #[Route(path: '/listar/{programGrade}/{page}', name: 'in_company_training_phase_group_list', requirements: ['programGrade' => '\d+', 'page' => '\d+'], methods: ['GET'])]
     public function list(
-        Request                $request,
         TranslatorInterface    $translator,
         ProgramGroupRepository $programGroupRepository,
         ProgramGrade           $programGrade,
@@ -65,7 +58,7 @@ class GroupController extends AbstractController
             $pager->setCurrentPage(1);
         }
 
-        $title = $translator->trans('title.list', [], 'itp_company')
+        $title = $translator->trans('title.list', [], 'itp_group')
             . ' - ' . $programGrade->getGrade()->__toString();
 
         $breadcrumb = [
@@ -75,7 +68,7 @@ class GroupController extends AbstractController
                 'routeParams' => ['trainingProgram' => $programGrade->getTrainingProgram()->getId()]
             ],
             ['fixed' => $programGrade->getGrade()->getName()],
-            ['fixed' => $translator->trans('title.list', [], 'itp_company')]
+            ['fixed' => $translator->trans('title.list', [], 'itp_group')]
         ];
 
         return $this->render('itp/training_program/group/list.html.twig', [
@@ -83,140 +76,57 @@ class GroupController extends AbstractController
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,
-            'domain' => 'itp_company',
+            'domain' => 'itp_group',
             'program_grade' => $programGrade,
         ]);
     }
 
-    #[Route(path: '/nueva/{programGrade}', name: 'in_company_training_phase_company_new', requirements: ['programGrade' => '\d+'], methods: ['GET', 'POST'])]
-    public function new(
-        Request                  $request,
-        TranslatorInterface      $translator,
-        ItpCompanyRepository     $itpCompanyRepository,
-        CompanyProgramRepository $companyProgramRepository,
-        ProgramGrade             $programGrade
-    ): Response
-    {
-        assert($programGrade instanceof ProgramGrade);
-        $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
-
-        $companyProgram = new CompanyProgram();
-        $companyProgram
-            ->setProgramGrade($programGrade);
-
-        $companyProgramRepository->persist($companyProgram);
-
-        return $this->edit($request, $translator, $itpCompanyRepository, $companyProgramRepository, $companyProgram);
-    }
-
-    #[Route(path: '/{id}', name: 'in_company_training_phase_company_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}', name: 'in_company_training_phase_group_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(
-        Request                  $request,
-        TranslatorInterface      $translator,
-        ItpCompanyRepository     $itpCompanyRepository,
-        CompanyProgramRepository $companyProgramRepository,
-        CompanyProgram           $companyProgram
+        Request                $request,
+        TranslatorInterface    $translator,
+        ProgramGroupRepository $programGroupRepository,
+        ProgramGroup           $programGroup
     ): Response {
-        assert($companyProgram->getProgramGrade() instanceof ProgramGrade);
-        $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $companyProgram->getProgramGrade()->getTrainingProgram());
+        assert($programGroup->getProgramGrade() instanceof ProgramGrade);
+        $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGroup->getProgramGrade()->getTrainingProgram());
 
-        $form = $this->createForm(CompanyProgramType::class, $companyProgram);
+        $form = $this->createForm(ProgramGroupType::class, $programGroup);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $companyProgramRepository->flush();
-                $this->addFlash('success', $translator->trans('message.saved', [], 'itp_company'));
-                return $this->redirectToRoute('in_company_training_phase_company_list', ['programGrade' => $companyProgram->getProgramGrade()->getId()]);
+                $programGroupRepository->flush();
+                $this->addFlash('success', $translator->trans('message.saved', [], 'itp_group'));
+                return $this->redirectToRoute('in_company_training_phase_group_list', ['programGrade' => $programGroup->getProgramGrade()->getId()]);
             } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.error', [], 'itp_company'));
+                $this->addFlash('error', $translator->trans('message.error', [], 'itp_group'));
             }
         }
 
-        $title = $translator->trans(
-            $companyProgram->getId() !== null ? 'title.edit' : 'title.new',
-            [],
-            'itp_company'
-        );
+        $title = $translator->trans('title.edit', [], 'itp_company');
 
         $breadcrumb = [
             [
-                'fixed' => $companyProgram->getProgramGrade()->getTrainingProgram()->getTraining()->getName(),
+                'fixed' => $programGroup->getProgramGrade()->getTrainingProgram()->getTraining()->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
-                'routeParams' => ['trainingProgram' => $companyProgram->getProgramGrade()->getTrainingProgram()->getId()]
+                'routeParams' => ['trainingProgram' => $programGroup->getProgramGrade()->getTrainingProgram()->getId()]
             ],
             [
-                'fixed' => $companyProgram->getProgramGrade()->getGrade()->getName(),
-                'routeName' => 'in_company_training_phase_company_list',
-                'routeParams' => ['programGrade' => $companyProgram->getProgramGrade()->getId()]
+                'fixed' => $programGroup->getProgramGrade()->getGrade()->getName(),
+                'routeName' => 'in_company_training_phase_group_list',
+                'routeParams' => ['programGrade' => $programGroup->getProgramGrade()->getId()]
             ],
-            ['fixed' => $companyProgram->getId() ? $companyProgram->getCompany() : $translator->trans('title.new', [], 'itp_company')]
+            ['fixed' => $programGroup->getGroup()->__toString()]
         ];
 
         return $this->render('itp/training_program/company/form.html.twig', [
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'company_program' => $companyProgram,
+            'company_program' => $programGroup,
             'form' => $form->createView()
-        ]);
-    }
-
-    #[Route(path: '/eliminar/{programGrade}', name: 'in_company_training_phase_company_operation', requirements: ['programGrade' => '\d+'], methods: ['POST'])]
-    public function operation(
-        Request                  $request,
-        TranslatorInterface      $translator,
-        CompanyProgramRepository $companyProgramRepository,
-        ProgramGrade             $programGrade
-    ): Response {
-        assert($programGrade->getGrade() instanceof Grade);
-        assert($programGrade->getGrade()->getTraining() instanceof Training);
-        $academicYear = $programGrade->getGrade()->getTraining()->getAcademicYear();
-        assert($academicYear instanceof AcademicYear);
-        $organization = $academicYear->getOrganization();
-
-        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);
-        $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
-
-        $items = $request->request->all('items');
-        if (count($items) === 0) {
-            return $this->redirectToRoute('in_company_training_phase_company_list', ['programGrade' => $programGrade->getId()]);
-        }
-        $selectedItems = $companyProgramRepository->findAllInListByIdAndProgramGrade($items, $programGrade);
-
-        if ($request->get('confirm', '') === 'ok') {
-            try {
-                $companyProgramRepository->deleteFromList($selectedItems);
-                $companyProgramRepository->flush();
-                $this->addFlash('success', $translator->trans('message.deleted', [], 'itp_company'));
-            } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.delete_error', [], 'itp_company'));
-            }
-            return $this->redirectToRoute('in_company_training_phase_company_list', ['programGrade' => $programGrade->getId()]);
-        }
-
-        $title = $translator->trans('title.delete', [], 'itp_company');
-
-        $breadcrumb = [
-            [
-                'fixed' => $programGrade->getTrainingProgram()->getTraining()->getName(),
-                'routeName' => 'in_company_training_phase_grade_list',
-                'routeParams' => ['trainingProgram' => $programGrade->getTrainingProgram()->getId()]
-            ],
-            [
-                'fixed' => $programGrade->getGrade()->getName(),
-                'routeName' => 'in_company_training_phase_company_list',
-                'routeParams' => ['programGrade' => $programGrade->getId()]
-            ],
-            ['fixed' => $title]
-        ];
-
-        return $this->render('itp/training_program/company/delete.html.twig', [
-            'menu_path' => 'in_company_training_phase_training_program_list',
-            'breadcrumb' => $breadcrumb,
-            'title' => $title,
-            'items' => $selectedItems
         ]);
     }
 }

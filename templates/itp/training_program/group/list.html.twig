@@ -9,11 +9,12 @@
     <th class="w-30">{{ 'header.managers'|trans }}</th>
     <th class="w-10">{{ 'header.default_modality'|trans }}</th>
     <th class="w-10">{{ 'header.target_hours'|trans }}</th>
+    <th class="w-10"></th>
 {% endblock %}
 
 {% block table_body %}
             {% for item in pager %}
-                {% set url = path('in_company_training_phase_activity_edit', {'id': item.id}) %}
+                {% set url = '' %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <a href="{{ url }}">{{ item.group.name }}</a>
@@ -27,13 +28,18 @@
                     <td>
                         {{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
                     </td>
+                    <td>
+                        {{ m.link_button(path('in_company_training_phase_group_edit', {'id': item.id}), 'edit', 'btn-info btn-sm btn-block', 'form.edit'|trans) }}
+                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}
+
+{% block filter %}{% endblock %}
 
 {% block after_table %}
     <div class="clearfix"></div>

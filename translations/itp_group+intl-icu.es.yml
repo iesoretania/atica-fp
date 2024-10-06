@@ -3,6 +3,15 @@ form.monitoring_instruments: Mecanismos de seguimiento
 form.monitoring_instruments.placeholder: Indique los mecanismos de seguimiento que se utilizarán en la empresa u organismo equiparable
 form.program_activities: Actividades formativas
 
+form.edit: Modificar datos
+
+form.target_hours: Horas previstas
+form.modality: Modalidad
+form.modality.inherited: Por defecto según plan de formación
+form.modality.general: General
+form.modality.intensive: Intensiva
+form.managers: Tutorías duales de grupo
+
 form.save: Guardar cambios
 form.delete: Eliminar participaciones
 form.back: Volver
@@ -11,9 +20,9 @@ form.delete_confirm: Confirmar borrado
 form.no_company: Seleccione una empresa u organismo equiparable
 form.no_activity: No hay actividades definidas en el plan de formación y debe seleccionarse al menos una
 
-title.list: Empresas del plan de formación
+title.list: Grupos del nivel
 title.new: Nueva incorporación
-title.edit: Detalles de la empresa
+title.edit: Detalles del grupo
 
 table.new: Incorporar nueva empresa
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
