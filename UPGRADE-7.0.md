@@ -10,7 +10,7 @@ de la plataforma y la 7.0.
 Actualización de los componentes internos
 -----------------------------------------
 Para soportar las últimas versiones de algunos componentes, se han tenido que modificar los requisitos
-mínimos de PHP y NodeJS. Ahora se requiere PHP ≥8.2 y NodeJS ≥20.
+mínimos de PHP y NodeJS. Ahora se requiere PHP ≥ 8.2 y NodeJS ≥ 20.
 
 Soporte de la fase de formación en empresa
 ------------------------------------------
