@@ -51,12 +51,6 @@ class TrainingProgram
     #[ORM\OneToMany(targetEntity: ProgramGrade::class, mappedBy: 'trainingProgram', orphanRemoval: true)]
     private Collection $trainingProgramGrades;
 
-    /**
-     * @var Collection<int, ProgramGrade>
-     */
-    #[ORM\OneToMany(targetEntity: CompanyProgram::class, mappedBy: 'trainingProgram', orphanRemoval: true)]
-    private Collection $companyPrograms;
-
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?PerformanceScale $performanceScale = null;
@@ -92,7 +86,6 @@ class TrainingProgram
         $this->specificTrainings = new ArrayCollection();
         $this->trainingProgramGroups = new ArrayCollection();
         $this->trainingProgramGrades = new ArrayCollection();
-        $this->companyPrograms = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -158,14 +151,6 @@ class TrainingProgram
     public function getTrainingProgramGrades(): Collection
     {
         return $this->trainingProgramGrades;
-    }
-
-    /**
-     * @return Collection<int, CompanyProgram>
-     */
-    public function getCompanyPrograms(): Collection
-    {
-        return $this->companyPrograms;
     }
 
     public function getPerformanceScale(): ?PerformanceScale

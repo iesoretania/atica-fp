@@ -45,7 +45,7 @@
                         {{ m.link_toolbar_button(path('in_company_training_phase_activity_list', {'programGrade': program_grade.id}), 'book', 'btn-info btn-sm btn-block h-100', 'header.activities'|trans) }}
                     </td>
                     <td>
-                        {{ m.link_toolbar_button('', 'industry', 'btn-info btn-sm btn-block', 'header.companies'|trans) }}
+                        {{ m.link_toolbar_button(path('in_company_training_phase_company_list', {'programGrade': program_grade.id}), 'industry', 'btn-info btn-sm btn-block', 'header.companies'|trans) }}
                     </td>
                     <td>
                         {{ m.link_toolbar_button('', 'thumbtack', 'btn-info btn-sm btn-block', 'header.specific_training'|trans) }}

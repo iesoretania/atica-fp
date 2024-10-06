@@ -47,11 +47,18 @@ class ProgramGrade
     #[ORM\ManyToMany(targetEntity: Subject::class)]
     private Collection $subjects;
 
+    /**
+     * @var Collection<int, ProgramGrade>
+     */
+    #[ORM\OneToMany(targetEntity: CompanyProgram::class, mappedBy: 'programGrade', orphanRemoval: true)]
+    private Collection $companyPrograms;
+
     public function __construct()
     {
         $this->activities = new ArrayCollection();
         $this->programGradeLearningOutcomes = new ArrayCollection();
         $this->subjects = new ArrayCollection();
+        $this->companyPrograms = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -109,6 +116,14 @@ class ProgramGrade
     public function getProgramGradeLearningOutcomes(): Collection
     {
         return $this->programGradeLearningOutcomes;
+    }
+
+    /**
+     * @return Collection<int, CompanyProgram>
+     */
+    public function getCompanyPrograms(): Collection
+    {
+        return $this->companyPrograms;
     }
 
     /**

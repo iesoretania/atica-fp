@@ -1,0 +1,41 @@
+form.company: Empresa u organismo equiparable
+form.agreement_number: Número de convenio de colaboración
+form.monitoring_instruments: Mecanismos de seguimiento
+form.monitoring_instruments.placeholder: Indique los mecanismos de seguimiento que se utilizarán en la empresa u organismo equiparable
+form.program_activities: Actividades formativas
+
+form.save: Guardar cambios
+form.delete: Eliminar participaciones
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+
+form.no_company: Seleccione una empresa u organismo equiparable
+form.no_activity: No hay actividades definidas en el plan de formación
+
+title.list: Empresas del plan de formación
+title.new: Nueva incorporación
+title.edit: Detalles de la empresa
+
+table.new: Incorporar nueva empresa
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay elementos que mostrar
+table.filter: Filtrar...
+
+
+header.code: CIF
+header.name: Nombre
+header.agreement_number: Número de convenio
+header.subjects: Módulos profesionales
+header.activities: Actividades formativas
+header.learning_outcomes: Resultados de aprendizaje
+header.criteria: Criterios de evaluación
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Participación de las empresas eliminada con éxito.
+message.delete_error: Ha ocurrido un error al eliminar la participación de las empresas.
+
+prompt.delete_confirm: |
+    ¿Está seguro de que desea eliminar la participación de las siguientes empresas? Se eliminarán todos los datos asociados.
+
+    Esta operación no se puede deshacer.

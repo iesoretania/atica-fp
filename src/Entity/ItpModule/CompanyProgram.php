@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CompanyProgramRepository::class)]
 #[ORM\Table(name: 'itp_company_program')]
+#[ORM\UniqueConstraint(name: 'company_program_unique', columns: ['program_grade_id', 'company_id'])]
 class CompanyProgram
 {
     #[ORM\Id]
@@ -20,7 +21,7 @@ class CompanyProgram
 
     #[ORM\ManyToOne(inversedBy: 'companyPrograms')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?TrainingProgram $trainingProgram = null;
+    private ?ProgramGrade $programGrade = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -49,14 +50,14 @@ class CompanyProgram
         return $this->id;
     }
 
-    public function getTrainingProgram(): ?TrainingProgram
+    public function getProgramGrade(): ?ProgramGrade
     {
-        return $this->trainingProgram;
+        return $this->programGrade;
     }
 
-    public function setTrainingProgram(TrainingProgram $trainingProgram): static
+    public function setProgramGrade(ProgramGrade $programGrade): static
     {
-        $this->trainingProgram = $trainingProgram;
+        $this->programGrade = $programGrade;
 
         return $this;
     }
