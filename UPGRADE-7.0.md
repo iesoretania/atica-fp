@@ -27,3 +27,10 @@ Ahora es posible generar y recuperar copias de seguridad desde la consola de com
 - ```bin/console app:backup-restore``` para recuperar una copia de seguridad. Parámetros:
     * ```--path <directorio>``` (opcional): Permite indicar el directorio donde se encuentra la copia de seguridad. Por defecto será la carpeta ```/backups``` del despliegue.
     * ```--filename <nombre_fichero>``` (opcional): Establecer el nombre del fichero desde el que se restaurará la copia de seguridad. Por defecto será ```backup.sql```.
+
+Migraciones seguras
+-------------------
+Para evitar pérdidas de datos potenciales al realizar una migración, se puede realizar una migración segura desde la consola:
+- ```bin/console app:safe-migrate``` para realizarla.
+
+Los parámetros son los mismos que con la migración habitual, incluyendo ```-n``` para realizarla sin pedir confirmación.
