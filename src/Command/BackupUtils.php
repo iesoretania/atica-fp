@@ -40,7 +40,10 @@ class BackupUtils
             '--result-file=' . $backupFilePath, // Store output in the backup file
         ];
 
-        $io->text($translator->trans('message.backup.info.run', ['%command%' => implode(' ', $command)], 'command') );
+        $commandCopy = $command;
+        $commandCopy[4] = '-p*****'; // Hide password in the command output
+
+        $io->text($translator->trans('message.backup.info.run', ['%command%' => implode(' ', $commandCopy)], 'command') );
 
         return self::runCommand($io, $translator, $command);
     }
@@ -68,7 +71,10 @@ class BackupUtils
             'source ' . $backupFilePath,
         ];
 
-        $io->text($translator->trans('message.restore.info.run', ['%command%' => implode(' ', $command)], 'command') );
+        $commandCopy = $command;
+        $commandCopy[4] = '-p*****'; // Hide password in the command output
+
+        $io->text($translator->trans('message.restore.info.run', ['%command%' => implode(' ', $commandCopy)], 'command') );
 
         return self::runCommand($io, $translator, $command);
     }
