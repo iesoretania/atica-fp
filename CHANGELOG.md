@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+6.2.3 (2024-10-07)
+------------------
+* fix: Solucionado un problema al copiar el programa formativo de una convocatoria de otro curso académico
+
 6.2.2 (2024-10-02)
 ------------------
 * fix: Incorporados cambios de la rama 7.x.x para importar correctamente las enseñanzas nuevas de FP
