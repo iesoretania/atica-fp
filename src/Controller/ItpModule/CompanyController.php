@@ -38,7 +38,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route(path: '/formacion/plan/curso/empresa')]
+#[Route(path: '/formacion/plan/empresa')]
 class CompanyController extends AbstractController
 {
     #[Route(path: '/listar/{programGrade}/{page}', name: 'in_company_training_phase_company_list', requirements: ['programGrade' => '\d+', 'page' => '\d+'], methods: ['GET'])]

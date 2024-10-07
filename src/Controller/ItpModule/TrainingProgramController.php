@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route(path: '/formacion/programa')]
+#[Route(path: '/formacion/plan')]
 class TrainingProgramController extends AbstractController
 {
     #[Route(path: '/listar/{academicYear}/{page}', name: 'in_company_training_phase_training_program_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]

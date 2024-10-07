@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route(path: '/formacion/plan/curso/grupo')]
+#[Route(path: '/formacion/plan/grupo')]
 class GroupController extends AbstractController
 {
     #[Route(path: '/listar/{programGrade}/{page}', name: 'in_company_training_phase_group_list', requirements: ['programGrade' => '\d+', 'page' => '\d+'], methods: ['GET'])]
