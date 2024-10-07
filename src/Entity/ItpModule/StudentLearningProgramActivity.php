@@ -11,6 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StudentLearningProgramActivityRepository::class)]
+#[ORM\Table(name: 'itp_student_learning_program_activity')]
 class StudentLearningProgramActivity
 {
     #[ORM\Id]

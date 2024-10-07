@@ -6,6 +6,7 @@ use App\Repository\ItpModule\StudentLearningProgramActivityCommentRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StudentLearningProgramActivityCommentRepository::class)]
+#[ORM\Table(name: 'itp_student_learning_program_activity_comment')]
 class StudentLearningProgramActivityComment
 {
     #[ORM\Id]

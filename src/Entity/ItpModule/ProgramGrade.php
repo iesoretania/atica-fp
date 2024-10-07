@@ -45,6 +45,7 @@ class ProgramGrade
      * @var Collection<int, Subject>
      */
     #[ORM\ManyToMany(targetEntity: Subject::class)]
+    #[ORM\JoinTable(name: 'itp_program_grade_subject')]
     private Collection $subjects;
 
     /**
