@@ -4,15 +4,15 @@ namespace App\Entity\ItpModule;
 
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Workcenter;
-use App\Repository\ItpModule\StudentLearningProgramRepository;
+use App\Repository\ItpModule\StudentProgramRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: StudentLearningProgramRepository::class)]
-#[ORM\Table(name: 'itp_student_learning_program')]
-class StudentLearningProgram
+#[ORM\Entity(repositoryClass: StudentProgramRepository::class)]
+#[ORM\Table(name: 'itp_student_program')]
+class StudentProgram
 {
     public const MODE_DEFAULT = 0;
     public const MODE_GENERAL = 1;
@@ -23,9 +23,9 @@ class StudentLearningProgram
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'studentLearningPrograms')]
+    #[ORM\ManyToOne(inversedBy: 'studentPrograms')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?ProgramGroup $trainingProgramGroup = null;
+    private ?ProgramGroup $programGroup = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -66,14 +66,14 @@ class StudentLearningProgram
         return $this->id;
     }
 
-    public function getTrainingProgramGroup(): ?ProgramGroup
+    public function getProgramGroup(): ?ProgramGroup
     {
-        return $this->trainingProgramGroup;
+        return $this->programGroup;
     }
 
-    public function setTrainingProgramGroup(ProgramGroup $trainingProgramGroup): static
+    public function setProgramGroup(ProgramGroup $programGroup): static
     {
-        $this->trainingProgramGroup = $trainingProgramGroup;
+        $this->programGroup = $programGroup;
 
         return $this;
     }

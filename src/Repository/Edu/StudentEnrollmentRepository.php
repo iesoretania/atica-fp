@@ -19,6 +19,7 @@
 namespace App\Repository\Edu;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Group;
 use App\Entity\Edu\StudentEnrollment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -97,6 +98,19 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
             ->setParameter('first_name', $firstName)
             ->setParameter('last_name', $lastName)
             ->addOrderBy('g.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByGroup(Group $getGroup): array
+    {
+        return $this->createQueryBuilder('se')
+            ->join('se.group', 'g')
+            ->join('se.person', 'p')
+            ->where('g = :group')
+            ->setParameter('group', $getGroup)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
             ->getQuery()
             ->getResult();
     }

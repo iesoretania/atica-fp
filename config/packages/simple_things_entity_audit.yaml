@@ -14,9 +14,9 @@ simple_things_entity_audit:
         - App\Entity\ItpModule\ProgramGradeLearningOutcome
         - App\Entity\ItpModule\ProgramGroup
         - App\Entity\ItpModule\SpecificTraining
-        - App\Entity\ItpModule\StudentLearningProgram
-        - App\Entity\ItpModule\StudentLearningProgramActivity
-        - App\Entity\ItpModule\StudentLearningProgramActivityComment
+        - App\Entity\ItpModule\StudentProgram
+        - App\Entity\ItpModule\StudentProgramActivity
+        - App\Entity\ItpModule\StudentProgramActivityComment
         - App\Entity\ItpModule\TrainingProgram
         - App\Entity\ItpModule\WorkDay
         - App\Entity\WltModule\AgreementActivityRealization

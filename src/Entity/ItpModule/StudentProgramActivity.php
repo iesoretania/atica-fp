@@ -4,15 +4,15 @@ namespace App\Entity\ItpModule;
 
 use App\Entity\Edu\PerformanceScaleValue;
 use App\Entity\Person;
-use App\Repository\ItpModule\StudentLearningProgramActivityRepository;
+use App\Repository\ItpModule\StudentProgramActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: StudentLearningProgramActivityRepository::class)]
-#[ORM\Table(name: 'itp_student_learning_program_activity')]
-class StudentLearningProgramActivity
+#[ORM\Entity(repositoryClass: StudentProgramActivityRepository::class)]
+#[ORM\Table(name: 'itp_student_program_activity')]
+class StudentProgramActivity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -33,9 +33,9 @@ class StudentLearningProgramActivity
     private ?string $details = null;
 
     /**
-     * @var Collection<int, StudentLearningProgramActivityComment>
+     * @var Collection<int, StudentProgramActivityComment>
      */
-    #[ORM\OneToMany(targetEntity: StudentLearningProgramActivityComment::class, mappedBy: 'studentLearningProgramActivity', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: StudentProgramActivityComment::class, mappedBy: 'studentProgramActivity', orphanRemoval: true)]
     private Collection $comments;
 
     #[ORM\ManyToOne]
@@ -100,7 +100,7 @@ class StudentLearningProgramActivity
     }
 
     /**
-     * @return Collection<int, StudentLearningProgramActivityComment>
+     * @return Collection<int, StudentProgramActivityComment>
      */
     public function getComments(): Collection
     {

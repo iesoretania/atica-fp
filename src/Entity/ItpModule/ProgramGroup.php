@@ -67,15 +67,15 @@ class ProgramGroup
     private ?int $targetHours = null;
 
     /**
-     * @var Collection<int, StudentLearningProgram>
+     * @var Collection<int, StudentProgram>
      */
-    #[ORM\OneToMany(targetEntity: StudentLearningProgram::class, mappedBy: 'trainingProgramGroup', orphanRemoval: true)]
-    private Collection $studentLearningPrograms;
+    #[ORM\OneToMany(targetEntity: StudentProgram::class, mappedBy: 'programGroup', orphanRemoval: true)]
+    private Collection $studentPrograms;
 
     public function __construct()
     {
         $this->managers = new ArrayCollection();
-        $this->studentLearningPrograms = new ArrayCollection();
+        $this->studentPrograms = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -186,10 +186,10 @@ class ProgramGroup
     }
 
     /**
-     * @return Collection<int, StudentLearningProgram>
+     * @return Collection<int, StudentProgram>
      */
-    public function getStudentLearningPrograms(): Collection
+    public function getStudentPrograms(): Collection
     {
-        return $this->studentLearningPrograms;
+        return $this->studentPrograms;
     }
 }

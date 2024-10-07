@@ -48,4 +48,16 @@ class CompanyRepository extends BaseRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findByProgramGrade(ProgramGrade $getProgramGrade): array
+    {
+        return $this->createQueryBuilder('c')
+            ->join(CompanyProgram::class, 'cp', 'WITH', 'cp.company = c')
+            ->where('cp.programGrade = :programGrade')
+            ->setParameter('programGrade', $getProgramGrade)
+            ->orderBy('c.name', 'ASC')
+            ->addOrderBy('c.code', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

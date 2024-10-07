@@ -14,7 +14,7 @@
 
 {% block table_body %}
             {% for item in pager %}
-                {% set url = '' %}
+                {% set url = path('in_company_training_phase_student_program_list', {'programGroup': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <a href="{{ url }}">{{ item.group.name }}</a>

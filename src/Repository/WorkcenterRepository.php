@@ -67,10 +67,23 @@ class WorkcenterRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findAllSorted()
+    public function findAllSorted(): array
     {
         return $this->createQueryBuilder('w')
             ->join('w.company', 'c')
+            ->orderBy('c.name')
+            ->addOrderBy('w.name')
+            ->addOrderBy('w.city')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByCompanies(array $companies): array
+    {
+        return $this->createQueryBuilder('w')
+            ->join('w.company', 'c')
+            ->where('c IN (:companies)')
+            ->setParameter('companies', $companies)
             ->orderBy('c.name')
             ->addOrderBy('w.name')
             ->addOrderBy('w.city')
