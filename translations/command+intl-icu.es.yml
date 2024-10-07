@@ -15,6 +15,7 @@ message.empty_error: Campo obligatorio, no puede estar vacío
 message.run_error: "Error al ejecutar el comando: {error}"
 
 title.backup: Creando instantánea de la base de datos...
+message.backup.error.options.backup_file_name: No se pueden usar las opciones --filename, --path y/o --timestamp si se especifica el fichero como parámetro.
 message.backup.error.options.timestamp_and_filename: No se pueden usar las opciones --filename y --timestamp a la vez.
 message.backup.error.backup_dir: "Error al crear directorio de copia de seguridad: {dir}"
 message.backup.error: No se ha podido crear la instantánea de la base de datos.
@@ -22,9 +23,15 @@ message.backup.success: Creada instantánea con éxito en {file}
 message.backup.info.run: "Ejecutando comando de copia de seguridad: {command}"
 
 title.restore: Restaurando instantánea de la base de datos...
+message.restore.error.options: No se pueden usar las opciones --filename y/o --path si se especifica el fichero como parámetro.
+message.restore.error.file_not_found: No se ha podido acceder al fichero {file}
 message.restore.error: Ha fallado la restauración de la instantánea de la base de datos desde {file}
 message.restore.success: Se ha restaurado la instantánea con éxito desde {file}
 message.restore.info.run: "Ejecutando comando de restauración: {command}"
+
+title.recreate: Recreando la base de datos...
+message.recreate.error: "Ocurrió un error al recrear la base de datos: {error}"
+message.recreate.success: Se ha recreado la base de datos con éxito.
 
 title.migration.backup: Creando instantánea de la base de datos antes de la migración...
 message.migration.error.backup: No se ha podido crear la instantánea de la base de datos. Abortando migración.

@@ -2,6 +2,10 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Exception\ExceptionInterface;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -91,5 +95,40 @@ class BackupUtils
             $io->error($translator->trans('message.run_error', ['%error%' => $e->getMessage()], 'command'));
             return false;
         }
+    }
+
+    public static function recreateDatabase(SymfonyStyle $io, OutputInterface $output, TranslatorInterface $translator, Application $application): bool
+    {
+        // Drop and recreate database
+        try {
+            $io->section($translator->trans('title.recreate', [], 'command'));
+
+            // This runs the `doctrine:database:drop` command
+            $dropDatabaseCommand = $application->find('doctrine:database:drop');
+            $argv = [$_SERVER['argv'][0], 'doctrine:database:drop', '--force', '-n'];
+            $input2 = new ArgvInput($argv);
+            $input2->setInteractive(false);
+            $result = $dropDatabaseCommand->run($input2, $output);
+            if ($result !== 0) {
+                $io->error($translator->trans('message.recreate.error', ['%error' => $result], 'command'));
+                return false;
+            }
+
+            // This runs the `doctrine:database:create` command
+            $createDatabaseCommand = $application->find('doctrine:database:create');
+            $argv = [$_SERVER['argv'][0], 'doctrine:database:create', '-n'];
+            $input2 = new ArgvInput($argv);
+            $input2->setInteractive(false);
+            $result = $createDatabaseCommand->run($input2, $output);
+            if ($result !== 0) {
+                $io->error($translator->trans('message.recreate.error', ['%error' => $result], 'command'));
+                return false;
+            }
+            $io->success($translator->trans('message.recreate.success', [], 'command'));
+        } catch (\Exception $e) {
+            $io->error($translator->trans('message.recreate.error', ['%error' => $e->getMessage()], 'command'));
+            return false;
+        }
+        return true;
     }
 }

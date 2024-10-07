@@ -7,7 +7,10 @@ namespace App\Command;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -45,6 +48,10 @@ class SafeMigrateCommand extends Command
 
     protected function configure(): void
     {
+        $this
+            ->addOption('keep-backup', null, InputOption::VALUE_NONE, 'Keep the backup file after the migration is complete.')
+            ->addArgument('version', InputArgument::OPTIONAL, 'The version number (YYYYMMDDHHMMSS) or alias to migrate to.')
+            ->addOption('recreate-database', null, InputOption::VALUE_NONE, 'Recreate the database before restoring the backup');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -74,12 +81,32 @@ class SafeMigrateCommand extends Command
         try {
             // This runs the `doctrine:migrations:migrate` command
             $migrateCommand = $this->getApplication()->find('doctrine:migrations:migrate');
-            $migrateCommand->run($input, $output);
+            $argv = $_SERVER['argv'];
+            $key = array_search('--keep-backup', $argv, true);
+            if ($key) {
+                unset($argv[$key]);
+            }
+            $key = array_search('--recreate-database', $argv, true);
+            if ($key) {
+                unset($argv[$key]);
+            }
+            $input2 = new ArgvInput($argv);
+            $input2->setInteractive($input->isInteractive());
+
+            $migrateCommand->run($input2, $output);
         } catch (\Exception $e) {
+            // Migration failed
             $this->io->error($this->translator->trans('message.migration.error.migrate', ['%error' => $e->getMessage()], 'command'));
+
+            // Step 3: Restore database snapshot
             $this->io->section($this->translator->trans('title.migration.restore', [], 'command'));
 
-            // Step 3: Restore database if migration fails
+            // Step 3a: Recreate database if parameter exists
+            if ($input->getOption('recreate-database') && !BackupUtils::recreateDatabase($this->io, $output, $this->translator, $this->getApplication())) {
+                return Command::FAILURE;
+            }
+
+            // Step 3b: Restore database
             if (BackupUtils::restoreDatabaseBackup(
                 $this->io,
                 $this->translator,
@@ -91,7 +118,9 @@ class SafeMigrateCommand extends Command
                 $this->backupFilePath)
             ) {
                 $this->io->success($this->translator->trans('message.migration.success.restore', [], 'command'));
-                $this->removeBackup();
+                if (!$input->hasOption('keep-backup')) {
+                    $this->removeBackup();
+                }
             } else {
                 $this->io->error($this->translator->trans('message.migration.error.restore', [], 'command'));
             }
@@ -100,7 +129,9 @@ class SafeMigrateCommand extends Command
 
         $this->io->success($this->translator->trans('message.migration.success.migrate', [], 'command'));
 
-        $this->removeBackup();
+        if (!$input->hasOption('keep-backup')) {
+            $this->removeBackup();
+        }
 
         return Command::SUCCESS;
     }

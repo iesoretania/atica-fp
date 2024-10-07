@@ -51,9 +51,10 @@ class BackupCommand extends Command
     public function configure(): void
     {
         $this
-            ->addOption('filename', null, InputOption::VALUE_OPTIONAL, 'Backup filename')
-            ->addOption('timestamp', null, InputOption::VALUE_NONE, 'Uses current date & time as backup filename')
-            ->addOption('path', null, InputOption::VALUE_OPTIONAL, 'Backup destination path, relative to current directory');
+            ->addArgument('backup_file_path', InputOption::VALUE_OPTIONAL, 'Path to the backup file to store the snapshot')
+            ->addOption('filename', null, InputOption::VALUE_REQUIRED, 'Backup filename')
+            ->addOption('path', null, InputOption::VALUE_REQUIRED, 'Backup destination path, relative to current directory')
+            ->addOption('timestamp', null, InputOption::VALUE_NONE, 'Uses current date & time as backup filename');
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
@@ -61,22 +62,30 @@ class BackupCommand extends Command
         // Initialize $io here
         $this->io = new SymfonyStyle($input, $output);
 
-        if ($input->getOption('timestamp')) {
-            if ($input->getOption('filename')) {
-                $this->io->error($this->translator->trans('message.backup.error.options.timestamp_and_filename', [], 'command'));
+        if ($input->getArgument('backup_file_path')) {
+            if ($input->getOption('filename') || $input->getOption('path') || $input->getOption('timestamp')) {
+                $this->io->error($this->translator->trans('message.backup.error.options.backup_file_name', [], 'command'));
                 return Command::FAILURE;
             }
-            $timestamp = date('Y-m-d_H-i-s');
-            $this->backupFilename = 'backup_' . $timestamp . '.sql';
-        } elseif ($input->getOption('filename')) {
-            $this->backupFilename = $input->getOption('filename');
-        }
+            $this->backupFilePath = $input->getArgument('backup_file_path')[0];
+        } else {
+            if ($input->getOption('timestamp')) {
+                if ($input->getOption('filename')) {
+                    $this->io->error($this->translator->trans('message.backup.error.options.timestamp_and_filename', [], 'command'));
+                    return Command::FAILURE;
+                }
+                $timestamp = date('Y-m-d_H-i-s');
+                $this->backupFilename = 'backup_' . $timestamp . '.sql';
+            } elseif ($input->getOption('filename')) {
+                $this->backupFilename = $input->getOption('filename');
+            }
 
-        if ($input->getOption('path')) {
-            $this->backupPath = $input->getOption('path');
-        }
+            if ($input->getOption('path')) {
+                $this->backupPath = $input->getOption('path');
+            }
 
-        $this->backupFilePath = $this->backupPath . '/' . $this->backupFilename;
+            $this->backupFilePath = $this->backupPath . '/' . $this->backupFilename;
+        }
 
         // Step 1: Create database snapshot
         $this->io->section($this->translator->trans('title.backup', [], 'command'));

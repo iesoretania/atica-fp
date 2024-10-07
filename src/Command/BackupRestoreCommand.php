@@ -7,6 +7,7 @@ namespace App\Command;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -51,8 +52,10 @@ class BackupRestoreCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addOption('filename', null, InputOption::VALUE_OPTIONAL, 'Backup filename (default: backup.sql)')
-            ->addOption('path', null, InputOption::VALUE_OPTIONAL, 'Backup destination path, relative to current directory');
+            ->addArgument('backup_file_path', InputOption::VALUE_OPTIONAL, 'Path to the backup file to restore')
+            ->addOption('filename', null, InputOption::VALUE_REQUIRED, 'Backup filename (default: backup.sql)')
+            ->addOption('path', null, InputOption::VALUE_REQUIRED, 'Backup destination path, relative to current directory')
+            ->addOption('recreate-database', null, InputOption::VALUE_NONE, 'Recreate the database before restoring the backup');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -60,15 +63,31 @@ class BackupRestoreCommand extends Command
         // Initialize $io here
         $this->io = new SymfonyStyle($input, $output);
 
-        if ($input->getOption('filename')) {
-            $this->backupFilename = $input->getOption('filename');
+        if ($input->getArgument('backup_file_path')) {
+            if ($input->getOption('filename') || $input->getOption('path')) {
+                $this->io->error($this->translator->trans('message.restore.error.options', [], 'command'));
+                return Command::FAILURE;
+            }
+            $this->backupFilePath = $input->getArgument('backup_file_path')[0];
+        } else {
+            if ($input->getOption('filename')) {
+                $this->backupFilename = $input->getOption('filename');
+            }
+
+            if ($input->getOption('path')) {
+                $this->backupPath = $input->getOption('path');
+            }
+            $this->backupFilePath = $this->backupPath . '/' . $this->backupFilename;
         }
 
-        if ($input->getOption('path')) {
-            $this->backupPath = $input->getOption('path');
+        if (!is_file($this->backupFilePath)) {
+            $this->io->error($this->translator->trans('message.restore.error.file_not_found', ['%file%' => $this->backupFilePath], 'command'));
+            return Command::FAILURE;
         }
 
-        $this->backupFilePath = $this->backupPath . '/' . $this->backupFilename;
+        if ($input->getOption('recreate-database') && !BackupUtils::recreateDatabase($this->io, $output, $this->translator, $this->getApplication())) {
+            return Command::FAILURE;
+        }
 
         $this->io->section($this->translator->trans('title.restore', [], 'command'));
         // Restore database

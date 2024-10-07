@@ -32,16 +32,22 @@ Copias de seguridad desde la consola
 ------------------------------------
 Ahora es posible generar y recuperar copias de seguridad desde la consola de comandos. Los comandos son:
 - ```bin/console app:backup``` para generar una copia de seguridad. Parámetros:
+  * ```<nombre_del_fichero>``` (opcional): Permite establecer el nombre del fichero con que se guardará la copia de seguridad. Si se especifica, no pueden usarse opciones.
   * ```--path <directorio>``` (opcional): Permite indicar el directorio donde se guardará la copia de seguridad. Por defecto será la carpeta ```/backups``` del despliegue.
   * ```--filename <nombre_fichero>``` (opcional): Establecer el nombre del fichero con que se guardará la copia de seguridad. Por defecto será ```backup.sql```.
   * ```--timestamp``` (opcional): Si se indica, se añadirá la fecha y hora al nombre del archivo de copia de seguridad. Es incompatible con la opción ```--filename```.
 - ```bin/console app:backup-restore``` para recuperar una copia de seguridad. Parámetros:
-    * ```--path <directorio>``` (opcional): Permite indicar el directorio donde se encuentra la copia de seguridad. Por defecto será la carpeta ```/backups``` del despliegue.
-    * ```--filename <nombre_fichero>``` (opcional): Establecer el nombre del fichero desde el que se restaurará la copia de seguridad. Por defecto será ```backup.sql```.
+  * ```<nombre_del_fichero>``` (opcional): Permite establecer el nombre del fichero desde el que se recuperará la copia de seguridad. Si se especifica, no pueden usarse opciones.
+  * ```--path <directorio>``` (opcional): Permite indicar el directorio donde se encuentra la copia de seguridad. Por defecto será la carpeta ```/backups``` del despliegue.
+  * ```--filename <nombre_fichero>``` (opcional): Establecer el nombre del fichero desde el que se restaurará la copia de seguridad. Por defecto será ```backup.sql```.
+  * ```--recreate-database```: Elimina la base de datos y la vuelve a crear al recuperar la copia de seguridad.
 
 Migraciones seguras
 -------------------
 Para evitar pérdidas de datos potenciales al realizar una migración, se puede realizar una migración segura desde la consola:
-- ```bin/console app:safe-migrate``` para realizarla.
+- ```bin/console app:safe-migrate``` para realizarla. Parámetros opcionales:
+  * ```-n```: Realiza la migración sin pedir confirmación.
+  * ```--keep-backup```: Conserva la copia de seguridad generada durante la migración.
+  * ```--recreate-database```: Elimina la base de datos y la vuelve a crear si es necesario recuperar la copia de seguridad.
 
 Los parámetros son los mismos que con la migración habitual, incluyendo ```-n``` para realizarla sin pedir confirmación.
