@@ -18,6 +18,7 @@
 
 namespace App\Repository\WPT;
 
+use App\Entity\Edu\LearningOutcome;
 use App\Entity\WLT\Project;
 use App\Entity\WPT\Activity;
 use App\Entity\WPT\AgreementEnrollment;
@@ -138,24 +139,28 @@ class ActivityRepository extends ServiceEntityRepository
         $activities = $source->getActivities();
 
         foreach ($activities as $activity) {
-            $newActivity = new Activity();
+            dump($activity);
+            $newActivity = $this->findOneByCodeAndShift($activity->getCode(), $destination);
+
+            if (!$newActivity instanceof Activity) {
+                $newActivity = new Activity();
+                $this->getEntityManager()->persist($newActivity);
+            }
+
             $newActivity
                 ->setShift($destination)
                 ->setCode($activity->getCode())
                 ->setDescription($activity->getDescription());
 
-            $this->getEntityManager()->persist($newActivity);
-
             $criteria = $activity->getCriteria();
 
             foreach ($criteria as $criterion) {
+                $subject = $source->getSubject();
                 $learningOutcome = $this->learningOutcomeRepository
-                    ->findOneByCodeAndSubject($criterion->getLearningOutcome()->getCode(), $destination->getSubject());
-
-                if ($learningOutcome) {
+                    ->findOneByCodeAndSubject($criterion->getLearningOutcome()->getCode(), $subject);
+                if ($learningOutcome instanceof LearningOutcome) {
                     $criterion = $this->criterionRepository
                         ->findOneByCodeAndLearningOutcome($criterion->getCode(), $learningOutcome);
-
                     if ($criterion && !$newActivity->getCriteria()->contains($learningOutcome)) {
                         $newActivity->getCriteria()->add($criterion);
                     }
