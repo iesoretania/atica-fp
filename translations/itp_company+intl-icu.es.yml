@@ -15,12 +15,12 @@ form.no_activity: No hay actividades definidas en el plan de formación y debe s
 title.list: Empresas del plan de formación
 title.new: Nueva incorporación
 title.edit: Detalles de la empresa
+title.delete: Eliminar participaciones en el plan de formación
 
 table.new: Incorporar nueva empresa
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
 table.no_items: No hay elementos que mostrar
 table.filter: Filtrar...
-
 
 header.code: CIF
 header.name: Nombre
