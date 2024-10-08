@@ -9,12 +9,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: StudentProgramRepository::class)]
 #[ORM\Table(name: 'itp_student_program')]
 class StudentProgram
 {
-    public const MODE_DEFAULT = 0;
+    public const MODE_INHERITED = 0;
     public const MODE_GENERAL = 1;
     public const MODE_INTENSIVE = 2;
 
@@ -36,18 +37,26 @@ class StudentProgram
     private ?Workcenter $workcenter = null;
 
     #[ORM\Column]
-    private ?int $modality = self::MODE_DEFAULT;
+    private ?int $modality = self::MODE_INHERITED;
 
     #[ORM\Column]
     private ?bool $authorizationNeeded = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\When(
+        expression: 'this.isAuthorizationNeeded() === true',
+        constraints: [new Assert\NotBlank()]
+    )]
     private ?string $authorizationDescription = null;
 
     #[ORM\Column]
     private ?bool $adaptationNeeded = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\When(
+        expression: 'this.isAdaptationNeeded() === true',
+        constraints: [new Assert\NotBlank()]
+    )]
     private ?string $adaptationDescription = null;
 
     /**
@@ -112,6 +121,13 @@ class StudentProgram
         $this->modality = $modality;
 
         return $this;
+    }
+
+    public function getActualModality(): ?int
+    {
+        return $this->modality === self::MODE_INHERITED ?
+            $this->getProgramGroup()->getActualModality() :
+            $this->modality;
     }
 
     public function isAuthorizationNeeded(): ?bool

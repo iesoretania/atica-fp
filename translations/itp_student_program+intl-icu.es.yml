@@ -8,9 +8,11 @@ form.modality.intensive: Intensiva
 form.authorization_needed: Necesita autorización
 form.authorization_needed.no: No
 form.authorization_needed.yes: Sí, se describe más abajo
+form.authorization_description: Descripción de la autorización requerida
 form.adaptation_needed: Necesita adaptación o medidas especiales
 form.adaptation_needed.no: No
 form.adaptation_needed.yes: Sí, se describen más abajo
+form.adaptation_description: Descripción de las adaptaciones y/o medidas necesarias
 
 form.save: Guardar cambios
 form.delete: Eliminar estancia
@@ -41,6 +43,9 @@ header.hours: Horas
 header.activities: Actividades
 header.learning_outcomes: RAs
 header.criteria: CEs
+
+label.mode.general: General
+label.mode.intensive: Intensiva
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

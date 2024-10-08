@@ -12,8 +12,8 @@
     <th class="w-10">{{ 'header.date_range'|trans }}</th>
     <th class="w-5">{{ 'header.activities'|trans }}</th>
     <th class="w-5">{{ 'header.learning_outcomes'|trans }}</th>
-    <th class="w-5">{{ 'header.hours'|trans }}</th>
     <th class="w-5">{{ 'header.criteria'|trans }}</th>
+    <th class="w-5">{{ 'header.hours'|trans }}</th>
     <th class="w-5"></th>
 {% endblock %}
 
@@ -25,6 +25,17 @@
                         <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
                         <a href="{{ url }}">{{ item.studentEnrollment.person }}</a>
                         </label>
+                        {% if item.actualModality == constant('App\\Entity\\ItpModule\\StudentProgram::MODE_GENERAL') %}
+                            <span class="badge badge-pill badge-info">{{ 'label.mode.general'|trans }}</span>
+                        {% else %}
+                            <span class="badge badge-pill badge-warning">{{ 'label.mode.intensive'|trans }}</span>
+                        {% endif %}
+                        {% if item.isAuthorizationNeeded %}
+                            <i class="fa fa-user-shield" title="{{ item.authorizationDescription }}"></i>
+                        {% endif %}
+                        {% if item.isAdaptationNeeded %}
+                            <i class="fa fa-universal-access" title="{{ item.adaptationDescription }}"></i>
+                        {% endif %}
                     </td>
                     <td>
                         {{ item.workcenter }}

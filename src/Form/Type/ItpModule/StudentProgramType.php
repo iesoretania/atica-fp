@@ -31,10 +31,13 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\When;
 
 class StudentProgramType extends AbstractType
 {
@@ -66,7 +69,6 @@ class StudentProgramType extends AbstractType
 
             $companies = $this->itpCompanyRepository->findByProgramGrade($data->getProgramGroup()->getProgramGrade());
             $workcenters = $this->workcenterRepository->findByCompanies($companies);
-
             $form
                 ->add('studentEnrollment', EntityType::class, [
                     'label' => 'form.student',
@@ -104,6 +106,9 @@ class StudentProgramType extends AbstractType
                     'class' => Workcenter::class,
                     'choices' => $workcenters,
                     'choice_label' => 'name',
+                    /*'constraints' => [
+                        new UniqueEntity(['fields' => ['studentEnrollment', 'workcenter']])
+                    ],*/
                     'placeholder' => 'form.no_workcenter',
                     'required' => true
                 ])
@@ -116,6 +121,11 @@ class StudentProgramType extends AbstractType
                     'expanded' => true,
                     'required' => true
                 ])
+                ->add('authorizationDescription', TextareaType::class, [
+                    'label' => 'form.authorization_description',
+                    'attr' => ['rows' => 3],
+                    'required' => false
+                ])
                 ->add('adaptationNeeded', ChoiceType::class, [
                     'label' => 'form.adaptation_needed',
                     'choices' => [
@@ -124,6 +134,11 @@ class StudentProgramType extends AbstractType
                     ],
                     'expanded' => true,
                     'required' => true
+                ])
+                ->add('adaptationDescription', TextareaType::class, [
+                    'label' => 'form.adaptation_description',
+                    'attr' => ['rows' => 3],
+                    'required' => false
                 ]);
         });
     }
