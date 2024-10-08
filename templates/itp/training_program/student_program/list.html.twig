@@ -5,10 +5,9 @@
 {% block path_new %}{{ path('in_company_training_phase_student_program_new', {'programGroup': program_group.id}) }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-15"><label><input type="checkbox" id="select"> {{ 'header.student_name'|trans }}</label></th>
-    <th class="w-20">{{ 'header.workcenter'|trans }}</th>
-    <th class="w-15">{{ 'header.educational_tutor'|trans }}</th>
-    <th class="w-15">{{ 'header.work_tutor'|trans }}</th>
+    <th class="w-20"><label><input type="checkbox" id="select"> {{ 'header.student_name'|trans }}</label></th>
+    <th class="w-25">{{ 'header.workcenter'|trans }}</th>
+    <th class="w-20">{{ 'header.tutors'|trans }}</th>
     <th class="w-10">{{ 'header.date_range'|trans }}</th>
     <th class="w-5">{{ 'header.activities'|trans }}</th>
     <th class="w-5">{{ 'header.learning_outcomes'|trans }}</th>
@@ -23,7 +22,7 @@
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
-                        <a href="{{ url }}">{{ item.studentEnrollment.person }}</a>
+                        <a href="{{ url }}">{{ item.studentEnrollment.person.lastFirstName }}</a>
                         </label>
                         {% if item.actualModality == constant('App\\Entity\\ItpModule\\StudentProgram::MODE_GENERAL') %}
                             <span class="badge badge-pill badge-info">{{ 'label.mode.general'|trans }}</span>
@@ -39,10 +38,6 @@
                     </td>
                     <td>
                         {{ item.workcenter }}
-                    </td>
-                    <td>
-                    </td>
-                    <td>
                     </td>
                     <td>
                     </td>

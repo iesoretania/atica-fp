@@ -132,6 +132,7 @@ class StudentLearningProgramController extends AbstractController
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
 
         $form = $this->createForm(StudentProgramType::class, $studentProgram);
+        $form->get('company')->setData($studentProgram->getWorkcenter()?->getCompany());
 
         $form->handleRequest($request);
 
@@ -162,9 +163,13 @@ class StudentLearningProgramController extends AbstractController
                 'routeName' => 'in_company_training_phase_group_list',
                 'routeParams' => ['programGrade' => $programGroup->getProgramGrade()->getId()]
             ],
-            ['fixed' => $studentProgram->getProgramGroup()->getGroup()->__toString()],
+            [
+                'fixed' => $studentProgram->getProgramGroup()->getGroup()->__toString(),
+                'routeName' => 'in_company_training_phase_student_program_list',
+                'routeParams' => ['programGroup' => $programGroup->getId()]
+            ],
             ['fixed' => $studentProgram->getId()
-                ? ($studentProgram->getStudentEnrollment()->__toString() . ' - ' . $studentProgram->getWorkcenter()->__toString())
+                ? ($studentProgram->getStudentEnrollment()->__toString() . ' - ' . $studentProgram->getWorkcenter()?->__toString())
                 : $translator->trans('title.new', [], 'itp_student_program')
             ]
         ];

@@ -20,6 +20,7 @@ form.back: Volver
 form.delete_confirm: Confirmar borrado
 
 form.no_student: Seleccione un estudiante
+form.fixed_student: No se puede modificar el estudiante
 form.no_company: Seleccione una empresa u organismo equiparable
 form.no_workcenter: Seleccione una sede de la empresa u organismo equiparable
 
@@ -36,6 +37,7 @@ table.filter: Filtrar...
 header.student_name: Estudiante
 header.modality: Modalidad
 header.workcenter: Centro de trabajo
+header.tutors: Tutorías duales
 header.educational_tutor: Tutor/a docente de seguimiento
 header.work_tutor: Tutor/a dual de empresa
 header.date_range: Fecha de inicio y fin

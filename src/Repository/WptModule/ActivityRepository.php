@@ -137,7 +137,6 @@ class ActivityRepository extends ServiceEntityRepository
         $activities = $source->getActivities();
 
         foreach ($activities as $activity) {
-            dump($activity);
             $newActivity = $this->findOneByCodeAndShift($activity->getCode(), $destination);
 
             if (!$newActivity instanceof Activity) {

@@ -21,6 +21,7 @@ class StudentProgramRepository extends ServiceEntityRepository
     public function createByProgramGroupQueryBuilder(ProgramGroup $programGroup, ?string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('slp')
+            ->addSelect('se', 's', 'w', 'c', 'pg', 'g')
             ->join('slp.studentEnrollment', 'se')
             ->join('se.person', 's')
             ->join('slp.workcenter', 'w')

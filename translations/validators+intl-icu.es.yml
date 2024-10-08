@@ -8,6 +8,7 @@ calendar.week_hours.invalid: Debe especificarse al menos una hora a la semana
 agreement.student_workcenter.unique: Este estudiante ya tiene un convenio en esta sede
 agreement.student_agreement.unique: Este estudiante ya pertenece al acuerdo de colaboración
 company_program.company_training.unique: Esta empresa ya tiene un programa asociado al proyecto
+student_program.enrollment.workcenter.unique: Este estudiante ya tiene una estancia en el centro de trabajo
 
 selection.count.invalid.min: Debe seleccionar al menos {limit, plural, one {# elemento} other {# elementos}}
 selection.count.invalid.max: Debe seleccionar como máximo {limit, plural, one {# elemento} other {# elementos}}
