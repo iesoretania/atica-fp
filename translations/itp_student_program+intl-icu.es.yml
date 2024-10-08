@@ -6,11 +6,11 @@ form.modality.inherited: Por defecto según plan de formación
 form.modality.general: General
 form.modality.intensive: Intensiva
 form.authorization_needed: Necesita autorización
-form.authorization_needed.yes: No
-form.authorization_needed.no: Sí, se describe más abajo
+form.authorization_needed.no: No
+form.authorization_needed.yes: Sí, se describe más abajo
 form.adaptation_needed: Necesita adaptación o medidas especiales
-form.adaptation_needed.yes: No
-form.adaptation_needed.no: Sí, se describen más abajo
+form.adaptation_needed.no: No
+form.adaptation_needed.yes: Sí, se describen más abajo
 
 form.save: Guardar cambios
 form.delete: Eliminar estancia
