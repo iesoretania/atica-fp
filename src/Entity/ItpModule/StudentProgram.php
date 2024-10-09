@@ -28,7 +28,7 @@ class StudentProgram
     private ?ProgramGroup $programGroup = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(unique: true, nullable: false)]
     private ?StudentEnrollment $studentEnrollment = null;
 
     /**

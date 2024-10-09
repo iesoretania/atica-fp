@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20241009163557 extends AbstractMigration
+final class Version20241009172150 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -25,6 +25,7 @@ final class Version20241009163557 extends AbstractMigration
         $this->addSql('ALTER TABLE itp_student_program_workcenter ADD CONSTRAINT FK_65275568D367EAEB FOREIGN KEY (student_program_id) REFERENCES itp_student_program (id)');
         $this->addSql('ALTER TABLE itp_student_program_workcenter ADD CONSTRAINT FK_65275568A2473C4B FOREIGN KEY (workcenter_id) REFERENCES workcenter (id)');
         $this->addSql('ALTER TABLE itp_student_program_workcenter_audit ADD CONSTRAINT rev_06d3662eda53d40081d2087a87118e04_fk FOREIGN KEY (rev) REFERENCES revisions (id)');
+        $this->addSql('ALTER TABLE itp_student_program DROP INDEX IDX_27082D76DAE14AC5, ADD UNIQUE INDEX UNIQ_27082D76DAE14AC5 (student_enrollment_id)');
         $this->addSql('ALTER TABLE itp_student_program DROP FOREIGN KEY FK_27082D76A2473C4B');
         $this->addSql('DROP INDEX IDX_27082D76A2473C4B ON itp_student_program');
         $this->addSql('ALTER TABLE itp_student_program DROP workcenter_id');
@@ -46,6 +47,7 @@ final class Version20241009163557 extends AbstractMigration
         $this->addSql('ALTER TABLE itp_student_program_workcenter_audit DROP FOREIGN KEY rev_06d3662eda53d40081d2087a87118e04_fk');
         $this->addSql('DROP TABLE itp_student_program_workcenter');
         $this->addSql('DROP TABLE itp_student_program_workcenter_audit');
+        $this->addSql('ALTER TABLE itp_student_program DROP INDEX UNIQ_27082D76DAE14AC5, ADD INDEX IDX_27082D76DAE14AC5 (student_enrollment_id)');
         $this->addSql('ALTER TABLE itp_student_program ADD workcenter_id INT NOT NULL');
         $this->addSql('ALTER TABLE itp_student_program ADD CONSTRAINT FK_27082D76A2473C4B FOREIGN KEY (workcenter_id) REFERENCES workcenter (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
         $this->addSql('CREATE INDEX IDX_27082D76A2473C4B ON itp_student_program (workcenter_id)');

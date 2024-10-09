@@ -25,7 +25,7 @@ use App\Entity\Person;
 use App\Form\Type\ItpModule\StudentProgramType;
 use App\Repository\ItpModule\StudentProgramRepository;
 use App\Security\ItpModule\TrainingProgramVoter;
-use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Adapter\ArrayAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,12 +54,12 @@ class StudentLearningProgramController extends AbstractController
         /** @var Person $person */
         $person = $this->getUser();
 
-        $queryBuilder = $studentLearningProgramRepository->createByProgramGroupQueryBuilder(
+        $studentPrograms = $studentLearningProgramRepository->findOrCreateAllByProgramGroup(
             $programGroup,
             $q
         );
 
-        $adapter = new QueryAdapter($queryBuilder, true);
+        $adapter = new ArrayAdapter($studentPrograms);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

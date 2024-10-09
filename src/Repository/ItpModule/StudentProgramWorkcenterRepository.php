@@ -17,4 +17,13 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         parent::__construct($registry, StudentProgramWorkcenter::class);
     }
 
+    public function deleteFromStudentProgramList(array $items): void
+    {
+        $this->createQueryBuilder('spw')
+            ->delete()
+            ->where('spw.studentProgram IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
 }
