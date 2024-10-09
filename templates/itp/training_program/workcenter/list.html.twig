@@ -1,0 +1,61 @@
+{% trans_default_domain 'itp_student_program_workcenter' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('in_company_training_phase_student_program_workcenter_new', {'studentProgram': student_program.id}) }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-20"><label><input type="checkbox" id="select"> {{ 'header.workcenter'|trans }}</label></th>
+    <th class="w-25">{{ 'header.educational_tutor'|trans }}</th>
+    <th class="w-20">{{ 'header.work_tutor'|trans }}</th>
+    <th class="w-10">{{ 'header.date_range'|trans }}</th>
+    <th class="w-5">{{ 'header.activities'|trans }}</th>
+    <th class="w-5">{{ 'header.learning_outcomes'|trans }}</th>
+    <th class="w-5">{{ 'header.criteria'|trans }}</th>
+    <th class="w-5">{{ 'header.hours'|trans }}</th>
+    <th class="w-5"></th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('in_company_training_phase_student_program_workcenter_edit', {'studentProgramWorkcenter': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
+                        <a href="{{ url }}">{{ item.workcenter }}</a>
+                        </label>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="11">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('in_company_training_phase_company_operation', {'programGrade': student_program.id}) }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+</form>
+{% endblock %}

@@ -15,18 +15,18 @@ form.adaptation_needed.yes: Sí, se describen más abajo
 form.adaptation_description: Descripción de las adaptaciones y/o medidas necesarias
 
 form.save: Guardar cambios
-form.delete: Eliminar estancia
 form.back: Volver
-form.delete_confirm: Confirmar borrado
+form.edit: Modificar datos
+
+form.clean: Limpiar planes seleccinados
+form.clean_confirm: Confirmar limpiado
 
 form.no_student: Seleccione un estudiante
 form.fixed_student: No se puede modificar el estudiante
 form.no_company: Seleccione una empresa u organismo equiparable
 form.no_workcenter: Seleccione una sede de la empresa u organismo equiparable
 
-title.list: Estancias del plan de formación
-title.new: Nueva estancia en empresa
-title.edit: Detalles de la estancia
+title.list: Planes de formación individualizados
 title.delete: Eliminar estancias del plan de formación
 
 table.new: Registrar nueva estancia
@@ -51,10 +51,10 @@ label.mode.intensive: Intensiva
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
-message.deleted: Estancias eliminadas con éxito.
-message.delete_error: Ha ocurrido un error al eliminar las estancias.
+message.cleaned: Planes eliminados con éxito.
+message.clean_error: Ha ocurrido un error al eliminar los planes.
 
-prompt.delete_confirm: |
-    ¿Está seguro de que desea eliminar las siguiente estancias de estudiantes en empresas? Se eliminarán todos los datos asociados.
+prompt.clean_confirm: |
+    ¿Está seguro de que desea eliminar los planes de formación de los siguientes estudiantes? Se eliminarán todos los datos asociados, como los datos de seguimiento o el calendario.
 
-    Esta operación no se puede deshacer.
+    Cuidado: Esta operación no se puede deshacer.

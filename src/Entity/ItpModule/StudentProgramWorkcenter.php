@@ -3,12 +3,12 @@
 namespace App\Entity\ItpModule;
 
 use App\Entity\Workcenter;
-use App\Repository\ItpModule\StudentProgramRepository;
+use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: StudentProgramRepository::class)]
+#[ORM\Entity(repositoryClass: StudentProgramWorkcenterRepository::class)]
 #[ORM\Table(name: 'itp_student_program_workcenter')]
 class StudentProgramWorkcenter
 {
@@ -34,6 +34,11 @@ class StudentProgramWorkcenter
     public function __construct()
     {
         $this->workDays = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getStudentProgram(): ?StudentProgram

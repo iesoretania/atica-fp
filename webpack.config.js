@@ -33,7 +33,7 @@ Encore
     .addEntry('wpt_agreement_enrollment', './assets/js/wpt/agreement_enrollment.js')
     .addEntry('wpt_visit', './assets/js/wpt/visit.js')
     .addEntry('itp_learning_outcome', './assets/js/itp/learning_outcome.js')
-    .addEntry('itp_student_program', './assets/js/itp/student_program.js')
+    .addEntry('itp_workcenter', './assets/js/itp/workcenter.js')
 
     // CKEditor
     .copyFiles([

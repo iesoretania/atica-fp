@@ -35,13 +35,13 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route(path: '/formacion/plan/curso/grupo/estudiante')]
-class StudentLearningProgramController extends AbstractController
+class StudentProgramController extends AbstractController
 {
     #[Route(path: '/listar/{programGroup}/{page}', name: 'in_company_training_phase_student_program_list', requirements: ['programGroup' => '\d+', 'page' => '\d+'], methods: ['GET'])]
     public function list(
         Request                  $request,
         TranslatorInterface      $translator,
-        StudentProgramRepository $studentLearningProgramRepository,
+        StudentProgramRepository $studentProgramRepository,
         ProgramGroup             $programGroup,
         int                      $page = 1
     ): Response
@@ -54,7 +54,7 @@ class StudentLearningProgramController extends AbstractController
         /** @var Person $person */
         $person = $this->getUser();
 
-        $studentPrograms = $studentLearningProgramRepository->findOrCreateAllByProgramGroup(
+        $studentPrograms = $studentProgramRepository->findOrCreateAllByProgramGroup(
             $programGroup,
             $q
         );
@@ -127,12 +127,13 @@ class StudentLearningProgramController extends AbstractController
         StudentProgram           $studentProgram
     ): Response {
         $programGroup = $studentProgram->getProgramGroup();
+        assert($programGroup instanceof ProgramGroup);
         $programGrade = $programGroup->getProgramGrade();
         assert($programGrade instanceof ProgramGrade);
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
 
         $form = $this->createForm(StudentProgramType::class, $studentProgram);
-        $form->get('company')->setData($studentProgram->getWorkcenter()?->getCompany());
+        //$form->get('company')->setData($studentProgram->getWorkcenter()?->getCompany());
 
         $form->handleRequest($request);
 
@@ -146,11 +147,11 @@ class StudentLearningProgramController extends AbstractController
             }
         }
 
-        $title = $translator->trans(
-            $studentProgram->getId() !== null ? 'title.edit' : 'title.new',
+        $title = ($studentProgram->getId() === null ? $translator->trans(
+            'title.new',
             [],
             'itp_student_program'
-        ) .  ' - ' . $programGroup->getGroup()->__toString();
+        ) : $studentProgram->getStudentEnrollment()->getPerson()->__toString()) .  ' - ' . $programGroup->getGroup()->__toString();
 
         $breadcrumb = [
             [
@@ -169,7 +170,7 @@ class StudentLearningProgramController extends AbstractController
                 'routeParams' => ['programGroup' => $programGroup->getId()]
             ],
             ['fixed' => $studentProgram->getId()
-                ? ($studentProgram->getStudentEnrollment()->__toString() . ' - ' . $studentProgram->getWorkcenter()?->__toString())
+                ? ($studentProgram->getStudentEnrollment()->getPerson()->__toString())
                 : $translator->trans('title.new', [], 'itp_student_program')
             ]
         ];
@@ -178,7 +179,7 @@ class StudentLearningProgramController extends AbstractController
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'company_program' => $studentProgram,
+            'student_program' => $studentProgram,
             'form' => $form->createView()
         ]);
     }

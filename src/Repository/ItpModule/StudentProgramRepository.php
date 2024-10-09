@@ -88,9 +88,9 @@ class StudentProgramRepository extends ServiceEntityRepository
                     $changed = true;
                 }
                 $return[] = $studentProgram;
-                if ($changed) {
-                    $this->flush();
-                }
+            }
+            if ($changed) {
+                $this->flush();
             }
         } while ($changed);
 

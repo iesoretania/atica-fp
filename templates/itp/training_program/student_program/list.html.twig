@@ -2,23 +2,22 @@
 {% extends 'generic/list.html.twig' %}
 {% import 'macros.html.twig' as m %}
 
-{% block path_new %}{{ path('in_company_training_phase_student_program_new', {'programGroup': program_group.id}) }}{% endblock %}
+{% block new_action %}{% endblock %}
 
 {% block table_header %}
-    <th class="w-20"><label><input type="checkbox" id="select"> {{ 'header.student_name'|trans }}</label></th>
-    <th class="w-25">{{ 'header.workcenter'|trans }}</th>
+    <th class="w-25"><label><input type="checkbox" id="select"> {{ 'header.student_name'|trans }}</label></th>
     <th class="w-20">{{ 'header.tutors'|trans }}</th>
-    <th class="w-10">{{ 'header.date_range'|trans }}</th>
+    <th class="w-20">{{ 'header.date_range'|trans }}</th>
     <th class="w-5">{{ 'header.activities'|trans }}</th>
     <th class="w-5">{{ 'header.learning_outcomes'|trans }}</th>
     <th class="w-5">{{ 'header.criteria'|trans }}</th>
     <th class="w-5">{{ 'header.hours'|trans }}</th>
-    <th class="w-5"></th>
+    <th class="w-15"></th>
 {% endblock %}
 
 {% block table_body %}
             {% for item in pager %}
-                {% set url = path('in_company_training_phase_student_program_edit', {'studentProgram': item.id}) %}
+                {% set url = path('in_company_training_phase_student_program_workcenter_list', {'studentProgram': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
@@ -51,13 +50,12 @@
                     <td>
                     </td>
                     <td>
-                    </td>
-                    <td>
+                        {{ m.link_button(path('in_company_training_phase_student_program_edit', {'studentProgram': item.id}), 'edit', 'btn-info btn-sm btn-block', 'form.edit'|trans) }}
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="11">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="10">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}
@@ -69,6 +67,6 @@
 {% block after_table %}
     <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    {{ m.submit_button('delete', 'broom', 'btn-danger enable-on-items', 'form.clean'|trans) }}
 </form>
 {% endblock %}
