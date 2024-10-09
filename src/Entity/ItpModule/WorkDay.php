@@ -19,7 +19,7 @@ class WorkDay
 
     #[ORM\ManyToOne(inversedBy: 'workDays')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?StudentProgram $studentLearningProgram = null;
+    private ?StudentProgramWorkcenter $studentProgramWorkcenter = null;
 
     /**
      * @var Collection<int, Activity>
@@ -68,14 +68,14 @@ class WorkDay
         return $this->id;
     }
 
-    public function getStudentLearningProgram(): ?StudentProgram
+    public function getStudentProgramWorkcenter(): ?StudentProgramWorkcenter
     {
-        return $this->studentLearningProgram;
+        return $this->studentProgramWorkcenter;
     }
 
-    public function setStudentLearningProgram(StudentProgram $studentLearningProgram): static
+    public function setStudentProgramWorkcenter(StudentProgramWorkcenter $studentProgramWorkcenter): static
     {
-        $this->studentLearningProgram = $studentLearningProgram;
+        $this->studentProgramWorkcenter = $studentProgramWorkcenter;
 
         return $this;
     }

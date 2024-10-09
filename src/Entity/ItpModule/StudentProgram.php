@@ -3,7 +3,6 @@
 namespace App\Entity\ItpModule;
 
 use App\Entity\Edu\StudentEnrollment;
-use App\Entity\Workcenter;
 use App\Repository\ItpModule\StudentProgramRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -32,9 +31,11 @@ class StudentProgram
     #[ORM\JoinColumn(nullable: false)]
     private ?StudentEnrollment $studentEnrollment = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Workcenter $workcenter = null;
+    /**
+     * @var Collection<int, StudentProgramWorkcenter>
+     */
+    #[ORM\OneToMany(targetEntity: StudentProgramWorkcenter::class, mappedBy: 'studentProgram', orphanRemoval: true)]
+    private Collection $studentProgramWorkcenters;
 
     #[ORM\Column]
     private ?int $modality = self::MODE_INHERITED;
@@ -59,15 +60,9 @@ class StudentProgram
     )]
     private ?string $adaptationDescription = null;
 
-    /**
-     * @var Collection<int, WorkDay>
-     */
-    #[ORM\OneToMany(targetEntity: WorkDay::class, mappedBy: 'studentLearningProgram', orphanRemoval: true)]
-    private Collection $workDays;
-
     public function __construct()
     {
-        $this->workDays = new ArrayCollection();
+        $this->studentProgramWorkcenters = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -99,16 +94,12 @@ class StudentProgram
         return $this;
     }
 
-    public function getWorkcenter(): ?Workcenter
+    /**
+     * @return Collection<int, StudentProgramWorkcenter>
+     */
+    public function getStudentProgramWorkcenters(): Collection
     {
-        return $this->workcenter;
-    }
-
-    public function setWorkcenter(?Workcenter $workcenter): static
-    {
-        $this->workcenter = $workcenter;
-
-        return $this;
+        return $this->studentProgramWorkcenters;
     }
 
     public function getModality(): ?int
@@ -176,13 +167,5 @@ class StudentProgram
         $this->adaptationDescription = $adaptationDescription;
 
         return $this;
-    }
-
-    /**
-     * @return Collection<int, WorkDay>
-     */
-    public function getWorkDays(): Collection
-    {
-        return $this->workDays;
     }
 }
