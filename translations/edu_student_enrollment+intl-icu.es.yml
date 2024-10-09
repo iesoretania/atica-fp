@@ -28,6 +28,9 @@ prompt.delete_confirm: |
 
   Esta operación no se puede deshacer.
 
+prompt.at_your_own_risk_warning: |
+  Cuidado, realizar cambios aquí puede provocar problemas en otras partes de la aplicación. No haga nada si no está seguro de los efectos.
+
 title.edit: Datos de la matrícula
 title.delete: Eliminar matrícula
 
