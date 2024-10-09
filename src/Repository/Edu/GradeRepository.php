@@ -37,7 +37,7 @@ class GradeRepository extends ServiceEntityRepository
     /**
      * @return QueryBuilder
      */
-    public function findByAcademicYearQueryBuilder(AcademicYear $academicYear)
+    public function findByAcademicYearQueryBuilder(AcademicYear $academicYear): QueryBuilder
     {
         return $this->createQueryBuilder('g')
             ->innerJoin('g.training', 't')
@@ -50,18 +50,19 @@ class GradeRepository extends ServiceEntityRepository
     /**
      * @return Grade[]
      */
-    public function findByAcademicYear(AcademicYear $academicYear)
+    public function findByAcademicYear(AcademicYear $academicYear): array
     {
         return $this->findByAcademicYearQueryBuilder($academicYear)
+            ->orderBy('g.name')
+            ->addOrderBy('t.name')
             ->getQuery()
             ->getResult();
     }
 
     /**
      * @param string $internalCode
-     * @return Grade|null
      */
-    public function findOneByAcademicYearAndInternalCode(AcademicYear $academicYear, $internalCode)
+    public function findOneByAcademicYearAndInternalCode(AcademicYear $academicYear, $internalCode): ?Grade
     {
         try {
             return $this->findByAcademicYearQueryBuilder($academicYear)
@@ -83,7 +84,7 @@ class GradeRepository extends ServiceEntityRepository
     public function findAllInListByIdAndAcademicYear(
         $items,
         AcademicYear $academicYear
-    ) {
+    ): array {
         return $this->createQueryBuilder('g')
             ->join('g.training', 't')
             ->where('g.id IN (:items)')
@@ -100,7 +101,7 @@ class GradeRepository extends ServiceEntityRepository
     /**
      * @return Grade[]|Collection
      */
-    public function findByTraining(Training $training)
+    public function findByTraining(Training $training): array
     {
         return $this->createQueryBuilder('g')
             ->where('g.training = :training')
@@ -126,11 +127,11 @@ class GradeRepository extends ServiceEntityRepository
         }
     }
 
-    public function deleteFromList(array $grades)
+    public function deleteFromList(array $grades): void
     {
         $this->subjectRepository->deleteFromGradesList($grades);
 
-        return $this->getEntityManager()
+        $this->getEntityManager()
             ->createQueryBuilder()
             ->delete(Grade::class, 'g')
             ->where('g IN (:items)')
