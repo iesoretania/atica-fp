@@ -8,6 +8,7 @@ use App\Entity\Workcenter;
 use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StudentProgramWorkcenterRepository::class)]
@@ -46,6 +47,12 @@ class StudentProgramWorkcenter
 
     #[ORM\ManyToOne]
     private ?Person $additionalWorkTutor = null;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $startDate = null;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $endDate = null;
 
     public function __construct()
     {
@@ -133,6 +140,30 @@ class StudentProgramWorkcenter
     public function setAdditionalWorkTutor(?Person $additionalWorkTutor): static
     {
         $this->additionalWorkTutor = $additionalWorkTutor;
+
+        return $this;
+    }
+
+    public function getStartDate(): ?\DateTimeImmutable
+    {
+        return $this->startDate;
+    }
+
+    public function setStartDate(?\DateTimeImmutable $startDate): static
+    {
+        $this->startDate = $startDate;
+
+        return $this;
+    }
+
+    public function getEndDate(): ?\DateTimeImmutable
+    {
+        return $this->endDate;
+    }
+
+    public function setEndDate(?\DateTimeImmutable $endDate): static
+    {
+        $this->endDate = $endDate;
 
         return $this;
     }

@@ -32,6 +32,9 @@
                         {{ item.workTutor }}
                     </td>
                     <td>
+                        {% if item.startDate and item.endDate %}
+                            {{ item.startDate|date('format.date'|trans({}, 'general')) }} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}
+                        {% endif %}
                     </td>
                     <td>
                     </td>

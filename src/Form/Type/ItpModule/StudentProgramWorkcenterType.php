@@ -32,6 +32,7 @@ use App\Repository\WorkcenterRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -151,6 +152,16 @@ class StudentProgramWorkcenterType extends AbstractType
                 'remote_route' => 'api_person_query',
                 'placeholder' => 'form.additional_work_tutor.none',
                 'attr' => ['class' => 'person'],
+                'required' => false
+            ])
+            ->add('startDate', DateType::class, [
+                'label' => 'form.start_date',
+                'widget' => 'single_text',
+                'required' => false
+            ])
+            ->add('endDate', DateType::class, [
+                'label' => 'form.end_date',
+                'widget' => 'single_text',
                 'required' => false
             ]);
     }
