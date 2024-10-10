@@ -12,6 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'itp_work_day')]
 class WorkDay
 {
+    public const ABSENCE_NONE = 0;
+    public const ABSENCE_UNJUSTIFIED = 1;
+    public const ABSENCE_JUSTIFIED = 2;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -41,10 +45,10 @@ class WorkDay
     private ?string $otherActivities = null;
 
     #[ORM\Column]
-    private ?bool $locked = null;
+    private ?bool $locked = false;
 
     #[ORM\Column]
-    private ?int $absence = null;
+    private ?int $absence = self::ABSENCE_NONE;
 
     #[ORM\Column(length: 5, nullable: true)]
     private ?string $startTime1 = null;

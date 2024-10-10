@@ -13,7 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class StudentProgramWorkcenterRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private readonly WorkDayRepository $workDayRepository)
     {
         parent::__construct($registry, StudentProgramWorkcenter::class);
     }
@@ -86,5 +86,15 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
             ->setParameter('selectedItems', $selectedItems)
             ->getQuery()
             ->execute();
+    }
+
+    final public function updateDates(StudentProgramWorkcenter $studentProgramWorkcenter): void
+    {
+        static $timezone = new \DateTimeZone('UTC');
+        $stats = $this->workDayRepository->getStudentProgramWorkcenterStats($studentProgramWorkcenter);
+        if (isset($stats['endDate'], $stats['startDate'])) {
+            $studentProgramWorkcenter->setStartDate(new \DateTimeImmutable($stats['startDate'], $timezone));
+            $studentProgramWorkcenter->setEndDate(new \DateTimeImmutable($stats['endDate'], $timezone));
+        }
     }
 }

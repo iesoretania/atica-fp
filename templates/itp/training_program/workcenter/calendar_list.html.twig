@@ -1,14 +1,13 @@
-
 {% trans_default_domain 'calendar' %}
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
-    <form action="" class="list" method="post">
+    <form action="{{ path('in_company_training_phase_student_program_workcenter_calendar_delete', {'studentProgramWorkcenter': student_program_workcenter.id}) }}" class="list" method="post">
     {% embed 'wlt/agreement/calendar_partial.html.twig' %}
         {% block day %}
             <td class="w-d{% if day %} workday{% endif %}">
                 {% if day %}
-                    {% set url = '' %}
+                    {% set url = path('in_company_training_phase_student_program_workcenter_calendar_form', {'workDay': day.id}) %}
                     {% if not read_only %}<label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> {% endif %}<a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a></label><br/>
                     {{ 'caption.hours'|trans({'count': day.hours}, 'calendar') }}
                 {% elseif n > 0 %}
@@ -20,7 +19,7 @@
 
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {% if not read_only %}
-        {{ m.link_button('', 'calendar-plus', 'btn-success', 'form.add'|trans) }}
+        {{ m.link_button(path('in_company_training_phase_student_program_workcenter_calendar_add', {'studentProgramWorkcenter': student_program_workcenter.id}), 'calendar-plus', 'btn-success', 'form.add'|trans) }}
         {{ m.link_button('', 'check-square', 'btn-primary', 'form.select_deselect'|trans, 'toggle') }}
         {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
     {% endif %}
