@@ -186,7 +186,8 @@ class StudentProgramWorkcenterController extends AbstractController
                 'routeName' => 'in_company_training_phase_student_program_workcenter_list',
                 'routeParams' => ['studentProgram' => $studentProgram->getId()]
             ],
-            ['fixed' => $translator->trans($studentProgramWorkcenter->getId() ? 'title.edit' : 'title.new', [], 'itp_student_program_workcenter')
+            [
+                'fixed' => $translator->trans($studentProgramWorkcenter->getId() ? 'title.edit' : 'title.new', [], 'itp_student_program_workcenter')
             ]
         ];
 
@@ -198,41 +199,38 @@ class StudentProgramWorkcenterController extends AbstractController
             'form' => $form->createView()
         ]);
     }
-/*
-    #[Route(path: '/eliminar/{programGrade}', name: 'in_company_training_phase_company_operation', requirements: ['programGrade' => '\d+'], methods: ['POST'])]
-    public function operation(
-        Request                  $request,
-        TranslatorInterface      $translator,
-        CompanyProgramRepository $companyProgramRepository,
-        ProgramGrade             $programGrade
-    ): Response {
-        assert($programGrade->getGrade() instanceof Grade);
-        assert($programGrade->getGrade()->getTraining() instanceof Training);
-        $academicYear = $programGrade->getGrade()->getTraining()->getAcademicYear();
-        assert($academicYear instanceof AcademicYear);
-        $organization = $academicYear->getOrganization();
 
-        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);
+    #[Route(path: '/eliminar/{studentProgram}', name: 'in_company_training_phase_student_program_workcenter_operation', requirements: ['studentProgram' => '\d+'], methods: ['POST'])]
+    public function operation(
+        Request                            $request,
+        TranslatorInterface                $translator,
+        StudentProgramWorkcenterRepository $studentProgramWorkcenterRepository,
+        StudentProgram                     $studentProgram
+    ): Response {
+        $programGroup = $studentProgram->getProgramGroup();
+        assert($programGroup instanceof ProgramGroup);
+        $programGrade = $programGroup->getProgramGrade();
+        assert($programGrade instanceof ProgramGrade);
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
 
         $items = $request->request->all('items');
         if (count($items) === 0) {
-            return $this->redirectToRoute('in_company_training_phase_company_list', ['programGrade' => $programGrade->getId()]);
+            return $this->redirectToRoute('in_company_training_phase_student_program_workcenter_list', ['studentProgram' => $studentProgram->getId()]);
         }
-        $selectedItems = $companyProgramRepository->findAllInListByIdAndProgramGrade($items, $programGrade);
+        $selectedItems = $studentProgramWorkcenterRepository->findAllInListByIdAndStudentProgram($items, $studentProgram);
 
         if ($request->get('confirm', '') === 'ok') {
             try {
-                $companyProgramRepository->deleteFromList($selectedItems);
-                $companyProgramRepository->flush();
-                $this->addFlash('success', $translator->trans('message.deleted', [], 'itp_company'));
+                $studentProgramWorkcenterRepository->deleteFromList($selectedItems);
+                $studentProgramWorkcenterRepository->flush();
+                $this->addFlash('success', $translator->trans('message.deleted', [], 'itp_student_program_workcenter'));
             } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.delete_error', [], 'itp_company'));
+                $this->addFlash('error', $translator->trans('message.delete_error', [], 'itp_student_program_workcenter'));
             }
-            return $this->redirectToRoute('in_company_training_phase_company_list', ['programGrade' => $programGrade->getId()]);
+            return $this->redirectToRoute('in_company_training_phase_student_program_workcenter_list', ['studentProgram' => $studentProgram->getId()]);
         }
 
-        $title = $translator->trans('title.delete', [], 'itp_company');
+        $title = $translator->trans('title.delete', [], 'itp_student_program_workcenter');
 
         $breadcrumb = [
             [
@@ -242,17 +240,27 @@ class StudentProgramWorkcenterController extends AbstractController
             ],
             [
                 'fixed' => $programGrade->getGrade()->getName(),
-                'routeName' => 'in_company_training_phase_company_list',
-                'routeParams' => ['programGrade' => $programGrade->getId()]
+                'routeName' => 'in_company_training_phase_group_list',
+                'routeParams' => ['programGrade' => $programGroup->getProgramGrade()->getId()]
+            ],
+            [
+                'fixed' => $studentProgram->getProgramGroup()->getGroup()->__toString(),
+                'routeName' => 'in_company_training_phase_student_program_list',
+                'routeParams' => ['programGroup' => $programGroup->getId()]
+            ],
+            [
+                'fixed' => $studentProgram->getStudentEnrollment()->getPerson()->__toString(),
+                'routeName' => 'in_company_training_phase_student_program_workcenter_list',
+                'routeParams' => ['studentProgram' => $studentProgram->getId()]
             ],
             ['fixed' => $title]
         ];
 
-        return $this->render('itp/training_program/company/delete.html.twig', [
+        return $this->render('itp/training_program/workcenter/delete.html.twig', [
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'items' => $selectedItems
         ]);
-    }*/
+    }
 }

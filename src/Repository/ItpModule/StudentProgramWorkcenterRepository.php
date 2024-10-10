@@ -57,4 +57,34 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->flush();
     }
+
+    final public function findAllInListByIdAndStudentProgram(array $items, StudentProgram $studentProgram): array
+    {
+        return $this->createQueryBuilder('spw')
+            ->addSelect('spw', 'c', 'w', 'p', 'g', 'sp', 'se')
+            ->join('spw.studentProgram', 'sp')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('se.group', 'g')
+            ->join('spw.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->where('spw.id IN (:items)')
+            ->andWhere('spw.studentProgram = :studentProgram')
+            ->setParameter('items', $items)
+            ->setParameter('studentProgram', $studentProgram)
+            ->orderBy('c.name', 'ASC')
+            ->addOrderBy('w.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    final public function deleteFromList(array $selectedItems): void
+    {
+        $this->createQueryBuilder('spw')
+            ->delete()
+            ->where('spw.id IN (:selectedItems)')
+            ->setParameter('selectedItems', $selectedItems)
+            ->getQuery()
+            ->execute();
+    }
 }

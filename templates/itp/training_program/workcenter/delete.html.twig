@@ -1,0 +1,42 @@
+{% trans_default_domain 'itp_student_program_workcenter' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    <form method="post">
+        {% for item in items %}
+            <input type="hidden" name="items[]" value="{{ item.id }}">
+        {% endfor %}
+        <input type="hidden" name="confirm" value="ok">
+        <div class="alert alert-warning">{{ 'prompt.delete_confirm'|trans|nl2br }}</div>
+        <div id="table" class="col-md-12 table-responsive">
+            <table id="list" class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ 'header.student'|trans }}</label></th>
+                        <th>{{ 'header.workcenter'|trans }}</label></th>
+                        <th>{{ 'header.educational_tutor'|trans }}</label></th>
+                        <th>{{ 'header.work_tutor'|trans }}</label></th>
+                        <th>{{ 'header.date_range'|trans }}</label></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ item.studentProgram.studentEnrollment }}</td>
+                            <td>{{ item.workcenter }}</td>
+                            <td>{{ item.educationalTutor }}</td>
+                            <td>{{ item.workTutor }}</td>
+                            <td>
+                                {% if item.startDate and item.endDate %}
+                                    {{ item.startDate|date('format.date'|trans({}, 'general')) }} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger', 'form.delete_confirm'|trans) }}
+    </form>
+{% endblock %}

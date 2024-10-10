@@ -31,6 +31,7 @@ table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único r
 table.no_items: No hay elementos que mostrar
 table.filter: Filtrar...
 
+header.student: Estudiante
 header.workcenter: Centro de trabajo
 header.educational_tutor: Tutor/a docente de seguimiento
 header.work_tutor: Tutor/a dual de empresa

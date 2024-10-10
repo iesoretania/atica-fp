@@ -56,7 +56,7 @@
 {% endblock %}
 
 {% block before_table %}
-    <form action="{{ path('in_company_training_phase_company_operation', {'programGrade': student_program.id}) }}" method="post">
+    <form action="{{ path('in_company_training_phase_student_program_workcenter_operation', {'studentProgram': student_program.id}) }}" method="post">
 {% endblock %}
 
 {% block after_table %}
