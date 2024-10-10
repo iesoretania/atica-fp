@@ -24,6 +24,7 @@ title.list: Estancias del plan de formación
 title.new: Nueva estancia en empresa
 title.edit: Detalles de la estancia
 title.delete: Eliminar estancias del plan de formación
+title.calendar: Calendario de la estancia
 
 table.new: Registrar nueva estancia
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"

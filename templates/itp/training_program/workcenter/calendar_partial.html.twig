@@ -1,0 +1,64 @@
+{% trans_default_domain 'calendar' %}
+
+{% if calendar is not empty %}
+    <div class="row">
+    {% for num, month in calendar %}
+        <div class="col-sm">
+            <div class="table-responsive">
+                <table class="calendar table table-bordered table-condensed table-hover">
+                    <thead>
+                    <tr>
+                        {% set year = num//12 %}
+                        <th colspan="7" class="calendar-month">{{ ('month'~(num % 12))|trans({}, 'calendar') }} {{ year }}</th>
+                    </tr>
+                    <tr>
+                        <th class="w-d">{{ 'dow0'|trans({}, 'calendar') }}</th>
+                        <th class="w-d">{{ 'dow1'|trans({}, 'calendar') }}</th>
+                        <th class="w-d">{{ 'dow2'|trans({}, 'calendar') }}</th>
+                        <th class="w-d">{{ 'dow3'|trans({}, 'calendar') }}</th>
+                        <th class="w-d">{{ 'dow4'|trans({}, 'calendar') }}</th>
+                        <th class="w-d">{{ 'dow5'|trans({}, 'calendar') }}</th>
+                        <th class="w-d">{{ 'dow6'|trans({}, 'calendar') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for week in month %}
+                        <tr>
+                            {% for n, dayData in week.days %}
+                                {% set day = dayData ? dayData[0] : null  %}
+                                {% block day %}
+                                <td class="w-d{% if day %} workday{% endif %}">
+                                    {% if day %}
+                                        <b>{{ n }}</b><br/>
+                                        {{ 'caption.hours'|trans({'count': day.hours}) }}
+                                    {% elseif n > 0 %}
+                                        {{ n }}
+                                    {% endif %}
+                                </td>
+                                {% endblock %}
+                            {% endfor %}
+                            {% if week.days|length < 7 %}
+                                {% for n in 6..week.days|length %}
+                                    <td class="w-d"></td>
+                                {% endfor %}
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% if not loop.first and loop.index is divisible by(2) and not loop.last %}
+    </div>
+    <div class="row">
+    {% endif %}
+    {% endfor %}
+    {% if (calendar|length % 2) > 0 %}
+        {% for i in range((calendar|length % 2), 1) %}
+            <div class="col-sm"></div>
+        {% endfor %}
+    {% endif %}
+    </div>
+{% else %}
+    <div class="alert alert-warning">{{ 'prompt.empty'|trans({}, 'calendar')|nl2br }}</div>
+{% endif %}

@@ -45,7 +45,7 @@
                     <td>
                     </td>
                     <td>
-                        {{ m.link_button('', 'calendar', 'btn-info btn-sm btn-block', 'form.calendar'|trans) }}
+                        {{ m.link_button(path('in_company_training_phase_student_program_workcenter_calendar_list', {'studentProgramWorkcenter': item.id}), 'calendar', 'btn-info btn-sm btn-block', 'form.calendar'|trans) }}
                     </td>
                 </tr>
             {% else %}
