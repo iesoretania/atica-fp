@@ -2,6 +2,8 @@
 
 namespace App\Entity\ItpModule;
 
+use App\Entity\Edu\Teacher;
+use App\Entity\Person;
 use App\Entity\Workcenter;
 use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,6 +32,20 @@ class StudentProgramWorkcenter
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Workcenter $workcenter = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Teacher $educationalTutor = null;
+
+    #[ORM\ManyToOne]
+    private ?Teacher $additionalEducationalTutor = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Person $workTutor = null;
+
+    #[ORM\ManyToOne]
+    private ?Person $additionalWorkTutor = null;
 
     public function __construct()
     {
@@ -69,6 +85,54 @@ class StudentProgramWorkcenter
     public function setWorkcenter(?Workcenter $workcenter): static
     {
         $this->workcenter = $workcenter;
+
+        return $this;
+    }
+
+    public function getEducationalTutor(): ?Teacher
+    {
+        return $this->educationalTutor;
+    }
+
+    public function setEducationalTutor(?Teacher $educationalTutor): static
+    {
+        $this->educationalTutor = $educationalTutor;
+
+        return $this;
+    }
+
+    public function getAdditionalEducationalTutor(): ?Teacher
+    {
+        return $this->additionalEducationalTutor;
+    }
+
+    public function setAdditionalEducationalTutor(?Teacher $additionalEducationalTutor): static
+    {
+        $this->additionalEducationalTutor = $additionalEducationalTutor;
+
+        return $this;
+    }
+
+    public function getWorkTutor(): ?Person
+    {
+        return $this->workTutor;
+    }
+
+    public function setWorkTutor(?Person $workTutor): static
+    {
+        $this->workTutor = $workTutor;
+
+        return $this;
+    }
+
+    public function getAdditionalWorkTutor(): ?Person
+    {
+        return $this->additionalWorkTutor;
+    }
+
+    public function setAdditionalWorkTutor(?Person $additionalWorkTutor): static
+    {
+        $this->additionalWorkTutor = $additionalWorkTutor;
 
         return $this;
     }

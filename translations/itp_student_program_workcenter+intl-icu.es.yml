@@ -1,14 +1,19 @@
 form.company: Empresa u organismo equiparable
 form.workcenter: Centro de trabajo
-
-form.save: Guardar cambios
-form.back: Volver
+form.educational_tutor: Docente responsable del seguimiento
+form.additional_educational_tutor: Docente responsable del seguimiento adicional
+form.work_tutor: Tutor/a dual de empresa
+form.additional_work_tutor: Tutor/a dual de empresa adicional
 
 form.delete: Eliminar estancias seleccionadas
 form.delete_confirm: Confirmar eliminación
 
 form.no_company: Seleccione una empresa u organismo equiparable
 form.no_workcenter: Seleccione una sede de la empresa u organismo equiparable
+form.educational_tutor.none: Seleccione el docente responsable del seguimiento
+form.additional_educational_tutor.none: (Opcional) Seleccione el docente responsable del seguimiento
+form.work_tutor.none: Seleccione el tutor/a dual de empresa
+form.additional_work_tutor.none: (Opcional) Seleccione un tutor/a dual de empresa adicional
 
 title.list: Estancias del plan de formación
 title.new: Nueva estancia en empresa

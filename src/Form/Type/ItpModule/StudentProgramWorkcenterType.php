@@ -19,11 +19,14 @@
 namespace App\Form\Type\ItpModule;
 
 use App\Entity\Company;
+use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgram;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
+use App\Entity\Person;
 use App\Entity\Workcenter;
+use App\Repository\Edu\TeacherRepository;
 use App\Repository\ItpModule\CompanyRepository;
 use App\Repository\WorkcenterRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -34,13 +37,14 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class StudentProgramWorkcenterType extends AbstractType
 {
     public function __construct(
-        private readonly CompanyRepository           $itpCompanyRepository,
-        private readonly WorkcenterRepository        $workcenterRepository,
-        private readonly CompanyRepository $companyRepository
+        private readonly CompanyRepository    $itpCompanyRepository,
+        private readonly WorkcenterRepository $workcenterRepository,
+        private readonly CompanyRepository    $companyRepository, private readonly TeacherRepository $teacherRepository
     )
     {
     }
@@ -60,6 +64,7 @@ class StudentProgramWorkcenterType extends AbstractType
             assert($studentProgram->getProgramGroup()->getProgramGrade() instanceof ProgramGrade);
 
             $companies = $this->itpCompanyRepository->findByProgramGrade($studentProgram->getProgramGroup()->getProgramGrade());
+            $teachers = $this->teacherRepository->findByGroup($studentProgram->getProgramGroup()->getGroup());
 
             if ($form->has('company') && $form->get('company')->getData() instanceof Company) {
                 $workcenters = $this->workcenterRepository->findByCompany($form->get('company')->getData());
@@ -68,7 +73,7 @@ class StudentProgramWorkcenterType extends AbstractType
             } else {
                 $workcenters = [];
             }
-            $this->addElements($form, $companies, $workcenters);
+            $this->addElements($form, $companies, $workcenters, $teachers);
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options): void {
@@ -77,6 +82,7 @@ class StudentProgramWorkcenterType extends AbstractType
             $data = $form->getData();
             $company = $this->companyRepository->find($formData['company']);
             $companies = $this->itpCompanyRepository->findByProgramGrade($data->getStudentProgram()->getProgramGroup()->getProgramGrade());
+            $teachers = $this->teacherRepository->findByGroup($data->getStudentProgram()->getProgramGroup()->getGroup());
 
             if ($company instanceof Company) {
                 $workcenters = $this->workcenterRepository->findByCompany($company);
@@ -84,11 +90,11 @@ class StudentProgramWorkcenterType extends AbstractType
                 $workcenters = [];
             }
 
-            $this->addElements($form, $companies, $workcenters);
+            $this->addElements($form, $companies, $workcenters, $teachers);
         });
     }
 
-    private function addElements(FormInterface $form, array $companies, array $workcenters): void
+    private function addElements(FormInterface $form, array $companies, array $workcenters, array $teachers): void
     {
         $form
             ->add('company', EntityType::class, [
@@ -110,6 +116,42 @@ class StudentProgramWorkcenterType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'form.no_workcenter',
                 'required' => true
+            ])
+            ->add('educationalTutor', EntityType::class, [
+                'label' => 'form.educational_tutor',
+                'class' => Teacher::class,
+                'choices' => $teachers,
+                'placeholder' => 'form.educational_tutor.none',
+                'required' => true
+            ])
+            ->add('additionalEducationalTutor', EntityType::class, [
+                'label' => 'form.additional_educational_tutor',
+                'class' => Teacher::class,
+                'choices' => $teachers,
+                'placeholder' => 'form.additional_educational_tutor.none',
+                'required' => false
+            ])
+            ->add('workTutor', Select2EntityType::class, [
+                'label' => 'form.work_tutor',
+                'multiple' => false,
+                'text_property' => 'fullDisplayName',
+                'class' => Person::class,
+                'minimum_input_length' => 3,
+                'remote_route' => 'api_person_query',
+                'placeholder' => 'form.work_tutor.none',
+                'attr' => ['class' => 'person'],
+                'required' => true
+            ])
+            ->add('additionalWorkTutor', Select2EntityType::class, [
+                'label' => 'form.additional_work_tutor',
+                'multiple' => false,
+                'text_property' => 'fullDisplayName',
+                'class' => Person::class,
+                'minimum_input_length' => 3,
+                'remote_route' => 'api_person_query',
+                'placeholder' => 'form.additional_work_tutor.none',
+                'attr' => ['class' => 'person'],
+                'required' => false
             ]);
     }
 
@@ -123,7 +165,7 @@ class StudentProgramWorkcenterType extends AbstractType
             'constraints' => [
                 new UniqueEntity(['fields' => ['studentProgram', 'workcenter'], 'message' => 'student_program.enrollment.workcenter.unique'])
             ],
-            'translation_domain' => 'itp_student_program'
+            'translation_domain' => 'itp_student_program_workcenter'
         ]);
     }
 }

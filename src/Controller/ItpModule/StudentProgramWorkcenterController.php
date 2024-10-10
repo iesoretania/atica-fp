@@ -163,7 +163,7 @@ class StudentProgramWorkcenterController extends AbstractController
             'title.new',
             [],
             'itp_student_program_workcenter'
-        ) : $studentProgram->getStudentEnrollment()->getPerson()->__toString()) .  ' - ' . $programGroup->getGroup()->__toString();
+        ) . ' - ' : '') . $studentProgram->getStudentEnrollment()->getPerson()->__toString() .  ' - ' . $programGroup->getGroup()->__toString();
 
         $breadcrumb = [
             [
@@ -181,9 +181,12 @@ class StudentProgramWorkcenterController extends AbstractController
                 'routeName' => 'in_company_training_phase_student_program_list',
                 'routeParams' => ['programGroup' => $programGroup->getId()]
             ],
-            ['fixed' => $studentProgramWorkcenter->getId()
-                ? ($studentProgram->getStudentEnrollment()->getPerson()->__toString())
-                : $translator->trans('title.new', [], 'itp_student_program')
+            [
+                'fixed' => $studentProgram->getStudentEnrollment()->getPerson()->__toString(),
+                'routeName' => 'in_company_training_phase_student_program_workcenter_list',
+                'routeParams' => ['studentProgram' => $studentProgram->getId()]
+            ],
+            ['fixed' => $translator->trans($studentProgramWorkcenter->getId() ? 'title.edit' : 'title.new', [], 'itp_student_program_workcenter')
             ]
         ];
 

@@ -103,9 +103,12 @@ class TeacherRepository extends ServiceEntityRepository
     public function findByGroup($group): array
     {
         return $this->createQueryBuilder('t')
+            ->join('t.person', 'p')
             ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
             ->andWhere('te.group = :group')
             ->setParameter('group', $group)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
             ->getQuery()
             ->getResult();
     }
