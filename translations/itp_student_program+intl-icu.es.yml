@@ -27,7 +27,7 @@ form.no_company: Seleccione una empresa u organismo equiparable
 form.no_workcenter: Seleccione una sede de la empresa u organismo equiparable
 
 title.list: Planes de formación individualizados
-title.delete: Eliminar estancias del plan de formación
+title.clean: Eliminar estancias del plan de formación
 
 table.new: Registrar nueva estancia
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"

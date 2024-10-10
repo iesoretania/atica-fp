@@ -107,7 +107,7 @@ class StudentProgramRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    private function deleteFromList(array $items): void
+    final public function deleteFromList(array $items): void
     {
         $this->studentProgramWorkcenterRepository->deleteFromStudentProgramList($items);
         $this->createQueryBuilder('slp')
@@ -116,5 +116,20 @@ class StudentProgramRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();
+    }
+
+    final public function findAllInListByIdAndProgramGroup(array $items, ProgramGroup $programGroup): array
+    {
+        return $this->createQueryBuilder('sp')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->where('sp.programGroup = :program_group')
+            ->andWhere('sp.id IN (:items)')
+            ->setParameter('program_group', $programGroup)
+            ->setParameter('items', $items)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->getQuery()
+            ->getResult();
     }
 }

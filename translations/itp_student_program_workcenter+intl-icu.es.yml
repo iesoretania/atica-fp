@@ -5,8 +5,11 @@ form.additional_educational_tutor: Docente responsable del seguimiento adicional
 form.work_tutor: Tutor/a dual de empresa
 form.additional_work_tutor: Tutor/a dual de empresa adicional
 
+form.back: Volver
 form.delete: Eliminar estancias seleccionadas
 form.delete_confirm: Confirmar eliminación
+
+form.calendar: Calendario
 
 form.no_company: Seleccione una empresa u organismo equiparable
 form.no_workcenter: Seleccione una sede de la empresa u organismo equiparable

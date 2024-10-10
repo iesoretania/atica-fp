@@ -18,12 +18,16 @@
 
 namespace App\Controller\ItpModule;
 
+use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Grade;
+use App\Entity\Edu\Training;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgram;
 use App\Entity\Person;
 use App\Form\Type\ItpModule\StudentProgramType;
 use App\Repository\ItpModule\StudentProgramRepository;
+use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
 use Pagerfanta\Adapter\ArrayAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
@@ -133,7 +137,6 @@ class StudentProgramController extends AbstractController
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
 
         $form = $this->createForm(StudentProgramType::class, $studentProgram);
-        //$form->get('company')->setData($studentProgram->getWorkcenter()?->getCompany());
 
         $form->handleRequest($request);
 
@@ -183,61 +186,63 @@ class StudentProgramController extends AbstractController
             'form' => $form->createView()
         ]);
     }
-/*
-    #[Route(path: '/eliminar/{programGrade}', name: 'in_company_training_phase_company_operation', requirements: ['programGrade' => '\d+'], methods: ['POST'])]
+
+    #[Route(path: '/limpiar/{programGroup}', name: 'in_company_training_phase_student_program_operation', requirements: ['programGroup' => '\d+'], methods: ['POST'])]
     public function operation(
         Request                  $request,
         TranslatorInterface      $translator,
-        CompanyProgramRepository $companyProgramRepository,
-        ProgramGrade             $programGrade
+        StudentProgramRepository $studentProgramRepository,
+        ProgramGroup             $programGroup
     ): Response {
-        assert($programGrade->getGrade() instanceof Grade);
-        assert($programGrade->getGrade()->getTraining() instanceof Training);
-        $academicYear = $programGrade->getGrade()->getTraining()->getAcademicYear();
+        $grade = $programGroup->getProgramGrade()->getGrade();
+        assert($grade instanceof Grade);
+        assert($grade->getTraining() instanceof Training);
+        $academicYear = $grade->getTraining()->getAcademicYear();
         assert($academicYear instanceof AcademicYear);
         $organization = $academicYear->getOrganization();
 
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);
-        $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
+        $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGroup->getProgramGrade()->getTrainingProgram());
 
         $items = $request->request->all('items');
         if (count($items) === 0) {
-            return $this->redirectToRoute('in_company_training_phase_company_list', ['programGrade' => $programGrade->getId()]);
+            return $this->redirectToRoute('in_company_training_phase_student_program_list', ['programGroup' => $programGroup->getId()]);
         }
-        $selectedItems = $companyProgramRepository->findAllInListByIdAndProgramGrade($items, $programGrade);
+        $selectedItems = $studentProgramRepository->findAllInListByIdAndProgramGroup($items, $programGroup);
 
         if ($request->get('confirm', '') === 'ok') {
             try {
-                $companyProgramRepository->deleteFromList($selectedItems);
-                $companyProgramRepository->flush();
-                $this->addFlash('success', $translator->trans('message.deleted', [], 'itp_company'));
+                $studentProgramRepository->deleteFromList($selectedItems);
+                $studentProgramRepository->flush();
+                $this->addFlash('success', $translator->trans('message.cleaned', [], 'itp_student_program'));
             } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.delete_error', [], 'itp_company'));
+                $this->addFlash('error', $translator->trans('message.clean_error', [], 'itp_student_program'));
             }
-            return $this->redirectToRoute('in_company_training_phase_company_list', ['programGrade' => $programGrade->getId()]);
+            return $this->redirectToRoute('in_company_training_phase_student_program_list', ['programGroup' => $programGroup->getId()]);
         }
 
-        $title = $translator->trans('title.delete', [], 'itp_company');
+        $title = $translator->trans('title.clean', [], 'itp_student_program');
 
         $breadcrumb = [
             [
-                'fixed' => $programGrade->getTrainingProgram()->getTraining()->getName(),
+                'fixed' => $programGroup->getProgramGrade()->getTrainingProgram()->getTraining()->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
-                'routeParams' => ['trainingProgram' => $programGrade->getTrainingProgram()->getId()]
+                'routeParams' => ['trainingProgram' => $programGroup->getProgramGrade()->getTrainingProgram()->getId()]
             ],
             [
-                'fixed' => $programGrade->getGrade()->getName(),
-                'routeName' => 'in_company_training_phase_company_list',
-                'routeParams' => ['programGrade' => $programGrade->getId()]
+                'fixed' => $programGroup->getProgramGrade()->getGrade()->getName(),
+                'routeName' => 'in_company_training_phase_group_list',
+                'routeParams' => ['programGrade' => $programGroup->getProgramGrade()->getId()]
             ],
-            ['fixed' => $title]
+            ['fixed' => $programGroup->getGroup()->__toString()],
+            ['fixed' => $translator->trans('title.list', [], 'itp_student_program')]
         ];
 
-        return $this->render('itp/training_program/company/delete.html.twig', [
+        return $this->render('itp/training_program/student_program/clean.html.twig', [
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'items' => $selectedItems
         ]);
-    }*/
+    }
 }

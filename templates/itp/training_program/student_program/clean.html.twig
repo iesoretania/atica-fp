@@ -1,0 +1,32 @@
+{% trans_default_domain 'itp_student_program' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    <form method="post">
+        {% for item in items %}
+            <input type="hidden" name="items[]" value="{{ item.id }}">
+        {% endfor %}
+        <input type="hidden" name="confirm" value="ok">
+        <div class="alert alert-warning">{{ 'prompt.clean_confirm'|trans|nl2br }}</div>
+        <div id="table" class="col-md-12 table-responsive">
+            <table id="list" class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ 'header.student_name'|trans }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ item.studentEnrollment.person }}</td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('clean', 'broom', 'btn-danger', 'form.clean_confirm'|trans) }}
+    </form>
+{% endblock %}
