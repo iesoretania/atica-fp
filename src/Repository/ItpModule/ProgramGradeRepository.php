@@ -19,7 +19,10 @@ class ProgramGradeRepository extends ServiceEntityRepository
         ManagerRegistry                                        $registry,
         private readonly ProgramGradeLearningOutcomeRepository $programGradeLearningOutcomeRepository,
         private readonly ActivityRepository                    $activityRepository,
-        private readonly GradeRepository                       $gradeRepository, private readonly ProgramGroupRepository $programGroupRepository, private readonly CompanyProgramRepository $companyProgramRepository
+        private readonly GradeRepository                       $gradeRepository,
+        private readonly ProgramGroupRepository                $programGroupRepository,
+        private readonly CompanyProgramRepository              $companyProgramRepository,
+        private readonly StudentProgramRepository              $studentProgramWorkcenterRepository, private readonly StudentProgramRepository $studentProgramRepository
     )
     {
         parent::__construct($registry, ProgramGrade::class);
@@ -200,10 +203,11 @@ class ProgramGradeRepository extends ServiceEntityRepository
 
     private function deleteFromList(array $items): void
     {
+        $this->studentProgramRepository->deleteFromProgramGradeList($items);
         $this->activityRepository->deleteFromProgramGradeList($items);
+        $this->companyProgramRepository->deleteFromProgramGradeList($items);
         $this->programGradeLearningOutcomeRepository->deleteFromProgramGradeList($items);
         $this->programGroupRepository->deleteFromProgramGradeList($items);
-        $this->companyProgramRepository->deleteFromProgramGradeList($items);
 
         $this->createQueryBuilder('pg')
             ->delete()

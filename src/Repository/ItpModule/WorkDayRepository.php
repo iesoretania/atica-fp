@@ -200,4 +200,13 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function findByStudentProgramWorkcenters(array $items): array
+    {
+        return $this->createQueryBuilder('wd')
+            ->where('wd.studentProgramWorkcenter IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->getResult();
+    }
 }

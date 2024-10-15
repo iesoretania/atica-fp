@@ -132,4 +132,26 @@ class StudentProgramRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function deleteFromProgramGradeList(array $items)
+    {
+        $items = $this->findByProgramGradeList($items);
+        $this->studentProgramWorkcenterRepository->deleteFromStudentProgramList($items);
+        $this->createQueryBuilder('sp')
+            ->delete()
+            ->where('sp IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
+
+    private function findByProgramGradeList(array $items): array
+    {
+        return $this->createQueryBuilder('sp')
+            ->join('sp.programGroup', 'pg')
+            ->where('pg.programGrade IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->getResult();
+    }
 }

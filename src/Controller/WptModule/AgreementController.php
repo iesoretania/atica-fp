@@ -345,14 +345,14 @@ class AgreementController extends AbstractController
         }
 
         if ($request->get('confirm', '') === 'ok') {
-            //try {
+            try {
                 $agreementRepository->deleteFromList($agreements);
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wpt_agreement'));
-            //} catch (\Exception $e) {
-            //    $this->addFlash('error', $translator->trans('message.delete_error', [], 'wpt_agreement'));
-            //}
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('message.delete_error', [], 'wpt_agreement'));
+            }
             return $this->redirectToRoute(
                 'workplace_training_agreement_list',
                 ['id' => $shift->getId()]

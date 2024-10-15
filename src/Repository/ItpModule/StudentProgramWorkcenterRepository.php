@@ -20,6 +20,8 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
 
     public function deleteFromStudentProgramList(array $items): void
     {
+        $workDays = $this->workDayRepository->findByStudentProgramWorkcenters($items);
+        $this->workDayRepository->deleteFromList($workDays);
         $this->createQueryBuilder('spw')
             ->delete()
             ->where('spw.studentProgram IN (:items)')
