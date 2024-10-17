@@ -66,6 +66,20 @@ class ItpModule implements ModuleBuilderInterface
 
                 $menu1->addChild($menu2);
             }
+
+            if ($this->security->isGranted(OrganizationVoter::ITP_ACCESS_SECTION, $organization)) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('in_company_training_phase_tracking')
+                    ->setRouteName('in_company_training_phase_tracking_list')
+                    ->setCaption('menu.in_company_training_phase.tracking')
+                    ->setDescription('menu.in_company_training_phase.tracking.detail')
+                    ->setIcon('user-clock')
+                    ->setModule('itp')
+                    ->setPriority(2000);
+
+                $menu1->addChild($menu2);
+            }
         }
 
         return $root;

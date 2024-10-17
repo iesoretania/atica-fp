@@ -21,6 +21,9 @@ namespace App\Security\ItpModule;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Organization;
 use App\Entity\Person;
+use App\Repository\Edu\TeacherRepository;
+use App\Repository\ItpModule\ProgramGroupRepository;
+use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use App\Security\CachedVoter;
 use App\Security\Edu\OrganizationVoter as EduOrganizationVoter;
 use App\Security\OrganizationVoter as BaseOrganizationVoter;
@@ -37,7 +40,10 @@ class OrganizationVoter extends CachedVoter
     public function __construct(
         CacheItemPoolInterface                          $cacheItemPoolItemPool,
         private readonly AccessDecisionManagerInterface $decisionManager,
-        private readonly UserExtensionService           $userExtensionService
+        private readonly UserExtensionService           $userExtensionService,
+        private readonly StudentProgramWorkcenterRepository $studentProgramWorkcenterRepository,
+        private readonly ProgramGroupRepository $programGroupRepository,
+        private readonly TeacherRepository $teacherRepository,
     ) {
         parent::__construct($cacheItemPoolItemPool);
     }
@@ -90,11 +96,22 @@ class OrganizationVoter extends CachedVoter
         ) {
             return true;
         }
+
+        $teacher = $this->teacherRepository->findOneByPersonAndAcademicYear($user, $subject->getCurrentAcademicYear());
+        $isDepartmentHead = $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_DEPARTMENT_HEAD], $subject);
+        $isItpStudent = count($this->studentProgramWorkcenterRepository->findByStudentAndAcademicYear($user, $subject->getCurrentAcademicYear())) > 0;
+        $isItpManager = count($this->programGroupRepository->findByManager($teacher)) > 0;
+        $isGroupTutor = count($this->programGroupRepository->findByTutor($teacher)) > 0;
+        $isStudentProgramWorkcenterEducationalTutor = count($this->studentProgramWorkcenterRepository->findByEducationalTutorOrAdditionalEducationalTutor($teacher)) > 0;
+        $isStudentProgramWorkcenterWorkTutor = count($this->studentProgramWorkcenterRepository->findByWorkTutorOrAdditionalWorkTutorAndAcademicYear($user, $subject->getCurrentAcademicYear())) > 0;
+
         switch ($attribute) {
             case self::ITP_MANAGER:
+                // Si es jefe de algún departamento, permitir gestionar
+                return $isDepartmentHead || $isItpManager;
+            case self::ITP_ACCESS_SECTION:
                 // Si es jefe de algún departamento, permitir acceder
-                // Jefe de departamento
-                return $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_DEPARTMENT_HEAD], $subject);
+                return $isDepartmentHead || $isItpStudent || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor;
         }
 
         // denegamos en cualquier otro caso

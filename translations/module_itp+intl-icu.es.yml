@@ -6,3 +6,6 @@ menu.in_company_training_phase.detail: Actividades relacionadas con la Formació
 
 menu.in_company_training_phase.training_program: Plan de formación
 menu.in_company_training_phase.training_program.detail: Configuración de los planes de formación
+
+menu.in_company_training_phase.tracking: Seguimiento de actividad
+menu.in_company_training_phase.tracking.detail: Realizar el seguimiento de actividades durante la fase de formación en empresa

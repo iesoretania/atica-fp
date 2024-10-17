@@ -18,8 +18,11 @@
 
 namespace App\Repository\ItpModule;
 
+use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
+use App\Entity\Person;
 use App\Repository\Edu\GroupRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -99,5 +102,26 @@ class ProgramGroupRepository extends ServiceEntityRepository
     public function flush(): void
     {
         $this->getEntityManager()->flush();
+    }
+
+    public function findByManager(Teacher $teacher): array
+    {
+        return $this->createQueryBuilder('pg')
+            ->join('pg.managers', 'm')
+            ->andWhere('m = :teacher')
+            ->setParameter('teacher', $teacher)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByTutor(Teacher $teacher): array
+    {
+        return $this->createQueryBuilder('pg')
+            ->join('pg.group', 'g')
+            ->join('g.tutors', 't')
+            ->andWhere('t = :teacher')
+            ->setParameter('teacher', $teacher)
+            ->getQuery()
+            ->getResult();
     }
 }
