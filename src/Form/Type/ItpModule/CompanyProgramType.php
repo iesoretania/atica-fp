@@ -68,7 +68,7 @@ class CompanyProgramType extends AbstractType
                     },
                     'placeholder' => 'form.no_company',
                     'choices' => $companies,
-                    'disabled' => count($companies) === 1,
+                    'disabled' => $data->getId() !== null,
                     'required' => true
                 ])
                 ->add('agreementNumber', TextType::class, [
