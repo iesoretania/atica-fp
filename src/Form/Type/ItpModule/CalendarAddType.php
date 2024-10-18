@@ -22,9 +22,11 @@ use App\Form\Model\ItpModule\CalendarAdd;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Symfony\Component\Validator\Constraints\PositiveOrZero;
 
 class CalendarAddType extends AbstractType
 {
@@ -39,59 +41,83 @@ class CalendarAddType extends AbstractType
                 'widget' => 'single_text',
                 'required' => true
             ])
-            ->add('totalHours', null, [
+            ->add('totalHours', MoneyType::class, [
                 'label' => 'form.total_hours',
+                'currency' => false,
+                'divisor' => 100,
                 'constraints' => [
-                    new Range(['min' => 1, 'max' => 3000])
+                    new PositiveOrZero(),
+                    new LessThanOrEqual(['value' => 100000, 'message' => 'calendar.week_hours.max'])
                 ],
                 'required' => true
             ])
-            ->add('hoursMon', null, [
+            ->add('hoursMon', MoneyType::class, [
                 'label' => 'form.hours_mon',
+                'currency' => false,
+                'divisor' => 100,
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new PositiveOrZero(),
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
                 ],
                 'required' => true
             ])
-            ->add('hoursTue', null, [
+            ->add('hoursTue', MoneyType::class, [
                 'label' => 'form.hours_tue',
+                'currency' => false,
+                'divisor' => 100,
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new PositiveOrZero(),
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
                 ],
                 'required' => true
             ])
-            ->add('hoursWed', null, [
+            ->add('hoursWed', MoneyType::class, [
                 'label' => 'form.hours_wed',
+                'currency' => false,
+                'divisor' => 100,
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new PositiveOrZero(),
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
                 ],
                 'required' => true
             ])
-            ->add('hoursThu', null, [
+            ->add('hoursThu', MoneyType::class, [
                 'label' => 'form.hours_thu',
+                'currency' => false,
+                'divisor' => 100,
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new PositiveOrZero(),
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
                 ],
                 'required' => true
             ])
-            ->add('hoursFri', null, [
+            ->add('hoursFri', MoneyType::class, [
                 'label' => 'form.hours_fri',
+                'currency' => false,
+                'divisor' => 100,
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new PositiveOrZero(),
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
                 ],
                 'required' => true
             ])
-            ->add('hoursSat', null, [
+            ->add('hoursSat', MoneyType::class, [
                 'label' => 'form.hours_sat',
+                'currency' => false,
+                'divisor' => 100,
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new PositiveOrZero(),
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
                 ],
                 'required' => true
             ])
-            ->add('hoursSun', null, [
+            ->add('hoursSun', MoneyType::class, [
                 'label' => 'form.hours_sun',
+                'currency' => false,
+                'divisor' => 100,
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new PositiveOrZero(),
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
                 ],
                 'required' => true
             ])

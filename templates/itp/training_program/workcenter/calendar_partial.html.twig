@@ -30,7 +30,12 @@
                                 <td class="w-d{% if day %} workday{% endif %}">
                                     {% if day %}
                                         <b>{{ n }}</b><br/>
-                                        {{ 'caption.hours'|trans({'count': day.hours}) }}
+                                        {% if day.hours is divisible by 100 %}
+                                            {{ 'caption.hours'|trans({'count': day.hours / 100}) }}
+                                        {% else %}
+                                            {{ (day.hours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
+                                            {{ 'caption.hour_suffix'|trans({'count': day.hours / 100}) }}
+                                        {% endif %}
                                     {% elseif n > 0 %}
                                         {{ n }}
                                     {% endif %}

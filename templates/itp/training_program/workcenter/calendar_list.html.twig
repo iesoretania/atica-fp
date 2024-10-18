@@ -9,7 +9,12 @@
                 {% if day %}
                     {% set url = path('in_company_training_phase_student_program_workcenter_calendar_form', {'workDay': day.id}) %}
                     {% if not read_only %}<label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> {% endif %}<a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a></label><br/>
-                    {{ 'caption.hours'|trans({'count': day.hours}, 'calendar') }}
+                    {% if day.hours is divisible by 100 %}
+                        {{ 'caption.hours'|trans({'count': day.hours / 100}, 'calendar') }}
+                    {% else %}
+                        {{ (day.hours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
+                        {{ 'caption.hour_suffix'|trans({'count': day.hours / 100}, 'calendar') }}
+                    {% endif %}
                 {% elseif n > 0 %}
                     {{ n }}
                 {% endif %}

@@ -18,6 +18,7 @@ en las distintas versiones de la misma.
 * feat: Las escalas de valoración del desempeño ahora se establecen a nivel de centro educativo, permitiendo su reutilización
 * feat: Añadidos comandos para realizar copias de seguridad y restauraciones de la base de datos desde la consola
 * feat: Posibilidad de realizar una copia de seguridad antes de ejecutar una migración, restaurando los datos en caso de error
+* feat: El calendario de la fase de formación en empresa permite especificar hasta dos decimales en la asignación de horas
 
 6.2.1 (2024-07-28)
 ------------------

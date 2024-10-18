@@ -3,6 +3,7 @@
 namespace App\Repository\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\ItpModule\StudentProgram;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\WorkDay;
 use App\Repository\Edu\NonWorkingDayRepository;
@@ -208,5 +209,16 @@ class WorkDayRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->getQuery()
             ->getResult();
+    }
+
+    public function countHoursByStudentProgram(StudentProgramWorkcenter $studentProgramWorkcenter): int
+    {
+        $hours = $this->createQueryBuilder('wd')
+            ->select('SUM(wd.hours)')
+            ->where('wd.studentProgramWorkcenter = :student_program_workcenter')
+            ->setParameter('student_program_workcenter', $studentProgramWorkcenter)
+            ->getQuery()
+            ->getSingleScalarResult();
+        return $hours ?? 0;
     }
 }

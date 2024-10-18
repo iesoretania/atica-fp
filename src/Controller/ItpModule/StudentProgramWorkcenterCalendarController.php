@@ -115,6 +115,9 @@ class StudentProgramWorkcenterCalendarController extends AbstractController
         $title = $translator->trans('title.calendar.add', [], 'itp_student_program_workcenter');
 
         $calendarAdd = new CalendarAdd();
+        $hours = $programGrade->getTargetHours() - $workDayRepository->countHoursByStudentProgram($studentProgramWorkcenter);
+        if ($hours < 0) $hours = 0;
+        $calendarAdd->setTotalHours($hours);
         $form = $this->createForm(CalendarAddType::class, $calendarAdd);
 
         $form->handleRequest($request);
