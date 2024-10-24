@@ -19,8 +19,10 @@
 namespace App\Controller\Organization;
 
 use App\Entity\Edu\PerformanceScale;
+use App\Entity\Edu\PerformanceScaleValue;
 use App\Form\Type\Edu\PerformanceScaleType;
 use App\Repository\Edu\PerformanceScaleRepository;
+use App\Repository\Edu\PerformanceScaleValueRepository;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\Persistence\ManagerRegistry;
@@ -63,6 +65,8 @@ class PerformanceScaleController extends AbstractController
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
         UserExtensionService $userExtensionService,
+        PerformanceScaleRepository $performanceScaleRepository,
+        PerformanceScaleValueRepository $performanceScaleValueRepository,
         PerformanceScale $performanceScale
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -74,7 +78,23 @@ class PerformanceScaleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $managerRegistry->getManager()->flush();
+                // Comprobar si es necesario copiar de otra encuesta
+                if ($form->has('copyFrom') && $form->get('copyFrom')->getData()) {
+                    /** @var PerformanceScale $original */
+                    $original = $form->get('copyFrom')->getData();
+                    $values = $performanceScaleValueRepository->findByPerformanceScale($original);
+                    foreach ($values as $value) {
+                        $newQuestion = new PerformanceScaleValue();
+                        $newQuestion
+                            ->setPerformanceScale($performanceScale)
+                            ->setDescription($value->getDescription())
+                            ->setNotes($value->getNotes())
+                            ->setNumericGrade($value->getNumericGrade());
+                        $performanceScaleValueRepository->persist($newQuestion);
+                    }
+                    $performanceScaleValueRepository->flush();
+                }
+                $performanceScaleRepository->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'edu_performance_scale'));
                 return $this->redirectToRoute('organization_performance_scale_list');
             } catch (\Exception) {

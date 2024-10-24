@@ -19,8 +19,8 @@
 namespace App\Form\Type\Edu;
 
 use App\Entity\Edu\PerformanceScale;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -36,6 +36,13 @@ class PerformanceScaleType extends AbstractType
             ->add('description', TextType::class, [
                 'label' => 'form.description',
                 'required' => true
+            ])
+            ->add('copyFrom', EntityType::class, [
+                'mapped' => false,
+                'label' => 'form.copy_from',
+                'class' => PerformanceScale::class,
+                'choice_label' => 'description',
+                'required' => false
             ]);
     }
 

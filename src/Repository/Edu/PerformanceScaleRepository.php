@@ -72,4 +72,9 @@ class PerformanceScaleRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    final public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
 }
