@@ -7,7 +7,9 @@ use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\StudentProgram;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
+use App\Entity\ItpModule\WorkDay;
 use App\Entity\Person;
+use App\Form\Model\ItpModule\Agreement;
 use App\Repository\Edu\GroupRepository;
 use App\Repository\Edu\TeacherRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -90,6 +92,26 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    final public function findAllInListByIdAndProgramGrade(array $items, ProgramGrade $programGrade): array
+    {
+        return $this->createQueryBuilder('spw')
+            ->addSelect('spw', 'c', 'w', 'p', 'g', 'sp', 'se')
+            ->join('spw.studentProgram', 'sp')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('se.group', 'g')
+            ->join('spw.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->where('spw.id IN (:items)')
+            ->andWhere('g.grade = :grade')
+            ->setParameter('items', $items)
+            ->setParameter('grade', $programGrade->getGrade())
+            ->orderBy('c.name', 'ASC')
+            ->addOrderBy('w.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     final public function deleteFromList(array $selectedItems): void
     {
         $this->createQueryBuilder('spw')
@@ -108,6 +130,7 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
             $studentProgramWorkcenter->setStartDate(new \DateTimeImmutable($stats['startDate'], $timezone));
             $studentProgramWorkcenter->setEndDate(new \DateTimeImmutable($stats['endDate'], $timezone));
         }
+        $this->flush();
     }
 
     public function createTrackingQueryBuilder(
@@ -263,5 +286,62 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         }
 
         return $qb;
+    }
+
+    final public function findAllInListByNotIdAndProgramGrade(array $items, ProgramGrade $programGrade): array
+    {
+        return $this->createQueryBuilder('spw')
+            ->addSelect('spw', 'c', 'w', 'p', 'pg', 'g', 'sp', 'se')
+            ->join('spw.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->join('spw.studentProgram', 'sp')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('sp.programGroup', 'pg')
+            ->join('pg.group', 'g')
+            ->join('g.grade', 'gr')
+            ->where('spw.id NOT IN (:items)')
+            ->andWhere('gr.training = :training')
+            ->andWhere('SIZE(spw.workDays) > 0')
+            ->setParameter('items', $items)
+            ->setParameter('training', $programGrade->getTrainingProgram()->getTraining())
+            ->addOrderBy('g.name', 'ASC')
+            ->addOrderBy('p.lastName', 'ASC')
+            ->addOrderBy('p.firstName', 'ASC')
+            ->addOrderBy('c.name', 'ASC')
+            ->addOrderBy('w.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function cloneCalendarFromStudentProgramWorkcenter(
+        StudentProgramWorkcenter $target,
+        StudentProgramWorkcenter $source,
+        bool                     $overwrite)
+    {
+        $workDays = $source->getWorkDays();
+        if (count($workDays) === 0) {
+            return;
+        }
+
+        $utc = new \DateTimeZone('UTC');
+
+        /** @var WorkDay $workDay */
+        foreach ($workDays as $workDay) {
+            $newDate = new \DateTimeImmutable($workDay->getDate()->format('Y/m/d'), $utc);
+            $newWorkDay = $this->workDayRepository->findOneByStudentProgramWorkcenterAndDate($target, $newDate);
+            if (!$newWorkDay instanceof WorkDay) {
+                $newWorkDay = new WorkDay();
+                $newWorkDay
+                    ->setStudentProgramWorkcenter($target)
+                    ->setDate(new \DateTime($newDate->format('Y/m/d'), $utc))
+                    ->setHours($workDay->getHours());
+                $this->getEntityManager()->persist($newWorkDay);
+            } elseif ($overwrite) {
+                $newWorkDay->setHours($workDay->getHours());
+            } else {
+                $newWorkDay->setHours($newWorkDay->getHours() + $workDay->getHours());
+            }
+        }
     }
 }

@@ -17,11 +17,10 @@
 
 {% block table_body %}
     {% for item in pager %}
-        {% set url = path('in_company_training_phase_student_program_workcenter_edit', {'studentProgramWorkcenter': item.id}) %}
-        <tr class="clickable-row" data-href="{{ url }}">
+        <tr>
             <td>
                 <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
-                    <a href="{{ url }}">{{ item.studentProgram.studentEnrollment }}</a>
+                    {{ item.studentProgram.studentEnrollment }}
                 </label>
             </td>
             <td>
@@ -54,13 +53,13 @@
 {% endblock %}
 
 {% block before_table %}
-    <form action="" method="post">
+    <form action="{{ path('in_company_training_phase_student_program_workcenter_manage_operation', {'programGrade': program_grade.id}) }}" method="post">
 {% endblock %}
 
 {% block after_table %}
     <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
-    {{ m.submit_button('delete', 'clone', 'btn-warning enable-on-items', 'form.copy_calendars'|trans) }}
+    {{ m.submit_button('copy', 'clone', 'btn-info enable-on-items', 'form.copy_calendars'|trans) }}
 </form>
 {% endblock %}

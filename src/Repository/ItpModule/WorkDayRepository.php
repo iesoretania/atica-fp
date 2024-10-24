@@ -3,7 +3,6 @@
 namespace App\Repository\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
-use App\Entity\ItpModule\StudentProgram;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\WorkDay;
 use App\Repository\Edu\NonWorkingDayRepository;
@@ -202,7 +201,7 @@ class WorkDayRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findByStudentProgramWorkcenters(array $items): array
+    final public function findByStudentProgramWorkcenters(array $items): array
     {
         return $this->createQueryBuilder('wd')
             ->where('wd.studentProgramWorkcenter IN (:items)')
@@ -211,7 +210,7 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function countHoursByStudentProgram(StudentProgramWorkcenter $studentProgramWorkcenter): int
+    final public function countHoursByStudentProgram(StudentProgramWorkcenter $studentProgramWorkcenter): int
     {
         $hours = $this->createQueryBuilder('wd')
             ->select('SUM(wd.hours)')
@@ -220,5 +219,16 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
         return $hours ?? 0;
+    }
+
+    final public function findOneByStudentProgramWorkcenterAndDate(StudentProgramWorkcenter $target, \DateTimeImmutable $date): ?WorkDay
+    {
+        return $this->createQueryBuilder('wd')
+            ->where('wd.studentProgramWorkcenter = :student_program_workcenter')
+            ->andWhere('wd.date = :date')
+            ->setParameter('student_program_workcenter', $target)
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

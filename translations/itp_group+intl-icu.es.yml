@@ -16,6 +16,7 @@ form.save: Guardar cambios
 form.delete: Eliminar participaciones
 form.back: Volver
 form.delete_confirm: Confirmar borrado
+form.manage_student_programs: Gestionar planes de formación personales
 
 form.no_company: Seleccione una empresa u organismo equiparable
 form.no_activity: No hay actividades definidas en el plan de formación y debe seleccionarse al menos una
