@@ -4,6 +4,7 @@ namespace App\Repository\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
+use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\StudentProgram;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\Person;
@@ -228,5 +229,39 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
             ->setParameter('academic_year', $academicYear)
             ->getQuery()
             ->getResult();
+    }
+
+    public function createFindByProgramGradeAndFilterQueryBuilder(ProgramGrade $programGrade, ?string $q): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('spw')
+            ->addSelect('spw', 'c', 'w', 'p', 'pg', 'g', 'et', 'etp', 'wt', 'aet', 'aetp', 'sp', 'se')
+            ->join('spw.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->join('spw.educationalTutor', 'et')
+            ->join('et.person', 'etp')
+            ->leftJoin('spw.additionalEducationalTutor', 'aet')
+            ->leftJoin('aet.person', 'aetp')
+            ->join('spw.workTutor', 'wt')
+            ->leftJoin('spw.additionalWorkTutor', 'awt')
+            ->join('spw.studentProgram', 'sp')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('sp.programGroup', 'pg')
+            ->join('pg.group', 'g')
+            ->where('pg.programGrade = :program_grade')
+            ->setParameter('program_grade', $programGrade)
+            ->addOrderBy('g.name', 'ASC')
+            ->addOrderBy('p.lastName', 'ASC')
+            ->addOrderBy('p.firstName', 'ASC')
+            ->addOrderBy('c.name', 'ASC')
+            ->addOrderBy('w.name', 'ASC');
+
+        if ($q) {
+            $qb
+                ->andWhere('p.firstName LIKE :tq OR p.lastName LIKE :tq OR g.name LIKE :tq OR c.name LIKE :tq OR w.name LIKE :tq OR etp.firstName LIKE :tq OR etp.lastName LIKE :tq OR wt.firstName LIKE :tq OR wt.lastName LIKE :tq OR aetp.firstName LIKE :tq OR aetp.lastName LIKE :tq')
+                ->setParameter('tq', "%" . $q . "%");
+        }
+
+        return $qb;
     }
 }

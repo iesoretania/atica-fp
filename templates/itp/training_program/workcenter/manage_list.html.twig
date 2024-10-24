@@ -1,0 +1,66 @@
+{% trans_default_domain 'itp_student_program_workcenter' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th class="w-20"><label><input type="checkbox" id="select"> {{ 'header.student'|trans }}</label></th>
+    <th class="w-20">{{ 'header.workcenter'|trans }}</th>
+    <th class="w-30">{{ 'header.tutors'|trans }}</th>
+    <th class="w-10">{{ 'header.date_range'|trans }}</th>
+    <th class="w-5">{{ 'header.activities'|trans }}</th>
+    <th class="w-5">{{ 'header.learning_outcomes'|trans }}</th>
+    <th class="w-5">{{ 'header.criteria'|trans }}</th>
+    <th class="w-5">{{ 'header.hours'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+    {% for item in pager %}
+        {% set url = path('in_company_training_phase_student_program_workcenter_edit', {'studentProgramWorkcenter': item.id}) %}
+        <tr class="clickable-row" data-href="{{ url }}">
+            <td>
+                <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
+                    <a href="{{ url }}">{{ item.studentProgram.studentEnrollment }}</a>
+                </label>
+            </td>
+            <td>
+                {{ item.workcenter }}
+            </td>
+            <td>
+                <b>{{ 'header.educational_tutor'|trans }}: </b>{{ item.educationalTutor }}{% if item.additionalEducationalTutor %}, {{ item.additionalEducationalTutor }}{% endif %}
+                <br>
+                <b>{{ 'header.work_tutor'|trans }}</b>: {{ item.workTutor }}{% if item.additionalWorkTutor %}, {{ item.additionalWorkTutor }}{% endif %}
+            </td>
+            <td>
+                {% if item.startDate and item.endDate %}
+                    {{ item.startDate|date('format.date'|trans({}, 'general')) }} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}
+                {% endif %}
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="9">{{ 'table.no_items'|trans }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="" method="post">
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    {{ m.submit_button('delete', 'clone', 'btn-warning enable-on-items', 'form.copy_calendars'|trans) }}
+</form>
+{% endblock %}

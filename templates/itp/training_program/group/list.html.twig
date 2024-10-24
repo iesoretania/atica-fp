@@ -44,4 +44,5 @@
 {% block after_table %}
     <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.link_button(path('in_company_training_phase_student_program_workcenter_manage_list', {'programGrade': program_grade.id}), 'list-check', 'btn-warning', 'form.manage_student_programs'|trans) }}
 {% endblock %}

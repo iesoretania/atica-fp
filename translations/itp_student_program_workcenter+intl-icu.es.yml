@@ -10,6 +10,7 @@ form.end_date: Fecha de fin
 form.back: Volver
 form.delete: Eliminar estancias seleccionadas
 form.delete_confirm: Confirmar eliminación
+form.copy_calendars: Copiar calendario a las estancias seleccionadas
 
 form.calendar: Calendario
 
@@ -34,6 +35,7 @@ table.filter: Filtrar...
 
 header.student: Estudiante
 header.workcenter: Centro de trabajo
+header.tutors: Tutorías de seguimiento
 header.educational_tutor: Tutor/a docente de seguimiento
 header.work_tutor: Tutor/a dual de empresa
 header.date_range: Fecha de inicio y fin

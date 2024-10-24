@@ -18,12 +18,18 @@
 
 namespace App\Controller\ItpModule;
 
+use App\Entity\Edu\Grade;
+use App\Entity\Edu\Training;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
+use App\Entity\ItpModule\TrainingProgram;
 use App\Form\Type\ItpModule\ProgramGroupType;
 use App\Repository\ItpModule\ProgramGroupRepository;
+use App\Repository\ItpModule\StudentProgramRepository;
+use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use App\Security\ItpModule\TrainingProgramVoter;
 use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
