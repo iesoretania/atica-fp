@@ -19,24 +19,46 @@
 namespace App\Form\Type\Edu;
 
 use App\Entity\Edu\PerformanceScale;
+use App\Repository\Edu\PerformanceScaleRepository;
+use App\Service\UserExtensionService;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PerformanceScaleType extends AbstractType
 {
+    public function __construct(
+        private readonly UserExtensionService $userExtensionService,
+        private readonly PerformanceScaleRepository $performanceScaleRepository
+    )
+    {
+    }
+
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $performanceScales = $this->performanceScaleRepository->findByOrganization($this->userExtensionService->getCurrentOrganization());
         $builder
             ->add('description', TextType::class, [
                 'label' => 'form.description',
                 'required' => true
             ]);
+        if ($options['new']) {
+            $builder
+                ->add('copyFrom', EntityType::class, [
+                    'mapped' => false,
+                    'label' => 'form.copy_from',
+                    'class' => PerformanceScale::class,
+                    'choice_label' => 'description',
+                    'choices' => $performanceScales,
+                    'placeholder' => 'form.copy_from.none',
+                    'required' => false
+                ]);
+        }
     }
 
     /**
@@ -46,6 +68,7 @@ class PerformanceScaleType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PerformanceScale::class,
+            'new' => false,
             'translation_domain' => 'edu_performance_scale'
         ]);
     }

@@ -3,6 +3,9 @@ form.enabled: ¿Activa?
 form.enabled.yes: Sí, puede seleccionarse
 form.enabled.no: No, no puede seleccionarse
 
+form.copy_from: Copiar desde
+form.copy_from.none: Ninguna, crear desde cero
+
 form.save: Guardar cambios
 form.delete: Eliminar las escalas seleccionadas
 form.back: Volver

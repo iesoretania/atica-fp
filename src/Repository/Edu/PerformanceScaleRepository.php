@@ -63,7 +63,7 @@ class PerformanceScaleRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function deleteFromList(array $items)
+    final public function deleteFromList(array $items)
     {
         return $this->getEntityManager()->createQueryBuilder()
             ->delete(PerformanceScale::class, 'ps')
@@ -71,5 +71,15 @@ class PerformanceScaleRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();
+    }
+
+    final public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
+    final public function persist(PerformanceScale $performanceScale): void
+    {
+        $this->getEntityManager()->persist($performanceScale);
     }
 }

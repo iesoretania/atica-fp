@@ -19,8 +19,10 @@
 namespace App\Controller\Organization;
 
 use App\Entity\Edu\PerformanceScale;
+use App\Entity\Edu\PerformanceScaleValue;
 use App\Form\Type\Edu\PerformanceScaleType;
 use App\Repository\Edu\PerformanceScaleRepository;
+use App\Repository\Edu\PerformanceScaleValueRepository;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\Persistence\ManagerRegistry;
@@ -40,8 +42,9 @@ class PerformanceScaleController extends AbstractController
     public function new(
         Request $request,
         TranslatorInterface $translator,
-        ManagerRegistry $managerRegistry,
-        UserExtensionService $userExtensionService
+        UserExtensionService $userExtensionService,
+        PerformanceScaleRepository $performanceScaleRepository,
+        PerformanceScaleValueRepository $performanceScaleValueRepository
     ): Response
     {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -52,29 +55,49 @@ class PerformanceScaleController extends AbstractController
             ->setEnabled(true)
             ->setOrganization($organization);
 
-        $managerRegistry->getManager()->persist($performanceScale);
+        $performanceScaleRepository->persist($performanceScale);
 
-        return $this->form($request, $translator, $managerRegistry, $userExtensionService, $performanceScale);
+        return $this->form($request, $translator, $userExtensionService, $performanceScaleRepository, $performanceScaleValueRepository, $performanceScale);
     }
 
     #[Route(path: '/{id}', name: 'organization_performance_scale_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function form(
         Request $request,
         TranslatorInterface $translator,
-        ManagerRegistry $managerRegistry,
         UserExtensionService $userExtensionService,
+        PerformanceScaleRepository $performanceScaleRepository,
+        PerformanceScaleValueRepository $performanceScaleValueRepository,
         PerformanceScale $performanceScale
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
-        $form = $this->createForm(PerformanceScaleType::class, $performanceScale);
+        $new = $performanceScale->getId() === null;
+        $form = $this->createForm(PerformanceScaleType::class, $performanceScale, [
+            'new' => $new
+        ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $managerRegistry->getManager()->flush();
+                // Comprobar si es necesario copiar de otra encuesta
+                if ($new && $form->has('copyFrom') && $form->get('copyFrom')->getData()) {
+                    /** @var PerformanceScale $original */
+                    $original = $form->get('copyFrom')->getData();
+                    $values = $performanceScaleValueRepository->findByPerformanceScale($original);
+                    foreach ($values as $value) {
+                        $newQuestion = new PerformanceScaleValue();
+                        $newQuestion
+                            ->setPerformanceScale($performanceScale)
+                            ->setDescription($value->getDescription())
+                            ->setNotes($value->getNotes())
+                            ->setNumericGrade($value->getNumericGrade());
+                        $performanceScaleValueRepository->persist($newQuestion);
+                    }
+                    $performanceScaleValueRepository->flush();
+                }
+                $performanceScaleRepository->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'edu_performance_scale'));
                 return $this->redirectToRoute('organization_performance_scale_list');
             } catch (\Exception) {
