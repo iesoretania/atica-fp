@@ -16,7 +16,7 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace App\Form\Type;
+namespace App\Form\Type\Edu;
 
 use App\Entity\AnsweredSurvey;
 use Symfony\Component\Form\AbstractType;

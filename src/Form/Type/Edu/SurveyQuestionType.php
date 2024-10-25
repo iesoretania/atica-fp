@@ -16,7 +16,7 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace App\Form\Type;
+namespace App\Form\Type\Edu;
 
 use App\Entity\SurveyQuestion;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;

@@ -21,7 +21,7 @@ namespace App\Controller\Organization;
 use App\Entity\Organization;
 use App\Entity\Survey;
 use App\Entity\SurveyQuestion;
-use App\Form\Type\SurveyQuestionType;
+use App\Form\Type\Edu\SurveyQuestionType;
 use App\Repository\SurveyQuestionRepository;
 use App\Security\SurveyVoter;
 use App\Service\UserExtensionService;
