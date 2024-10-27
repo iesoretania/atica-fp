@@ -17,7 +17,7 @@
 
 {% block table_body %}
             {% for item in pager %}
-                {% set url = path('in_company_training_phase_student_program_workcenter_edit', {'studentProgramWorkcenter': item.id}) %}
+                {% set url = path('in_company_training_phase_tracking_calendar_list', {'studentProgramWorkcenter': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <a href="{{ url }}">{{ item.studentProgram.studentEnrollment }}</a>

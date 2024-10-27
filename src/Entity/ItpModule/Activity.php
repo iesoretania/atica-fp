@@ -43,6 +43,11 @@ class Activity
         $this->criteria = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->code . ' - ' . $this->name;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

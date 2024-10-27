@@ -19,21 +19,17 @@
 namespace App\Controller\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Person;
 use App\Repository\Edu\AcademicYearRepository;
-use App\Repository\Edu\TeacherRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
-use App\Repository\WptModule\GroupRepository as WptGroupRepository;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\OrganizationVoter;
-use App\Security\WptModule\OrganizationVoter as WptOrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -63,6 +59,7 @@ class TrackingController extends AbstractController
 
         $q = $request->get('q');
         $person = $this->getUser();
+        assert($person instanceof Person);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $studentProgramWorkcenterRepository->createTrackingQueryBuilder(
@@ -94,48 +91,4 @@ class TrackingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/api/v2/acuerdo/listar', name: 'api_workplace_training_agreement_list', methods: ['GET'])]
-    public function apiList(
-        UserExtensionService $userExtensionService,
-        WptGroupRepository   $groupRepository,
-        TeacherRepository    $teacherRepository,
-        ManagerRegistry      $managerRegistry
-    ): Response
-    {
-        $organization = $userExtensionService->getCurrentOrganization();
-        $academicYear = $organization->getCurrentAcademicYear();
-
-        $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_ACCESS, $organization);
-
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-        $person = $this->getUser();
-
-        $queryBuilder = self::generateAgreementQueryBuilder(
-            $groupRepository,
-            $teacherRepository,
-            $academicYear,
-            $queryBuilder,
-            $person,
-            $isManager,
-            ''
-        );
-
-        $agreements = $queryBuilder->getQuery()->getArrayResult();
-        $agreements2 = [
-            'agreements' => []
-        ];
-        foreach ($agreements as $agreement) {
-            $agreements2['agreements'][] = [
-                'agreement' => $agreement[0],
-                'horas_totales' => $agreement[1],
-                'horas_bloqueadas' => $agreement[2],
-                'jornadas_sin_asistir' => $agreement[3],
-                'faltas_justificadas' => $agreement[4]
-            ];
-        }
-        return new JsonResponse($agreements2);
-    }
 }

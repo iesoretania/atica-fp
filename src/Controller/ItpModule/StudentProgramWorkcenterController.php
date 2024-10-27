@@ -22,8 +22,10 @@ use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgram;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
+use App\Entity\ItpModule\StudentProgramWorkcenterActivity;
 use App\Entity\Person;
 use App\Form\Type\ItpModule\StudentProgramWorkcenterType;
+use App\Repository\ItpModule\StudentProgramWorkcenterActivityRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use App\Security\ItpModule\TrainingProgramVoter;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
@@ -134,6 +136,7 @@ class StudentProgramWorkcenterController extends AbstractController
         Request                            $request,
         TranslatorInterface                $translator,
         StudentProgramWorkcenterRepository $studentProgramWorkcenterRepository,
+        StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository,
         StudentProgramWorkcenter           $studentProgramWorkcenter
     ): Response {
         $studentProgram = $studentProgramWorkcenter->getStudentProgram();
@@ -146,11 +149,38 @@ class StudentProgramWorkcenterController extends AbstractController
 
         $form = $this->createForm(StudentProgramWorkcenterType::class, $studentProgramWorkcenter);
         $form->get('company')->setData($studentProgramWorkcenter->getWorkcenter()?->getCompany());
-
+        $currentActivities = $studentProgramWorkcenter->getActivities()->map(fn($activity) => $activity->getActivity())->toArray();
+        $form->get('selectedActivities')->setData($currentActivities);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                $selectedActivities = $form->get('selectedActivities')->getData();
+                $currentStudentProgramWorkcenterActivities = $studentProgramWorkcenter->getActivities()->toArray();
+                // Eliminar actividades deseleccionadas
+                foreach ($currentStudentProgramWorkcenterActivities as $activity) {
+                    if (!in_array($activity->getActivity(), $selectedActivities, true)) {
+                        $studentProgramWorkcenterActivityRepository->remove($activity);
+                    }
+                }
+                // Añadir nuevas actividades
+                foreach ($selectedActivities as $activity) {
+                    $found = false;
+                    foreach ($currentStudentProgramWorkcenterActivities as $currentActivity) {
+                        if ($currentActivity->getActivity() === $activity) {
+                            $found = true;
+                            break;
+                        }
+                    }
+                    if (!$found) {
+                        $studentProgramWorkcenterActivity = new StudentProgramWorkcenterActivity();
+                        $studentProgramWorkcenterActivity
+                            ->setStudentProgramWorkcenter($studentProgramWorkcenter)
+                            ->setActivity($activity)
+                            ->setDisabled(false);
+                        $studentProgramWorkcenterActivityRepository->persist($studentProgramWorkcenterActivity);
+                    }
+                }
                 $studentProgramWorkcenterRepository->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'itp_student_program_workcenter'));
                 return $this->redirectToRoute('in_company_training_phase_student_program_workcenter_list', ['studentProgram' => $studentProgram->getId()]);

@@ -7,6 +7,7 @@ use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\WorkDay;
 use App\Repository\Edu\NonWorkingDayRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,7 +22,8 @@ class WorkDayRepository extends ServiceEntityRepository
 
     final public function getCalendarByStudentProgramWorkcenter(StudentProgramWorkcenter $studentProgramWorkcenter): array
     {
-        return self::groupByMonthAndWeekNumber($this->getStatsByStudentProgramWorkcenter($studentProgramWorkcenter));
+        $data = $this->getStatsByStudentProgramWorkcenter($studentProgramWorkcenter);
+        return self::groupByMonthAndWeekNumber($data);
     }
 
     public static function groupByMonthAndWeekNumber(array $workDaysStats): array
@@ -230,5 +232,118 @@ class WorkDayRepository extends ServiceEntityRepository
             ->setParameter('date', $date)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    final public function hoursStatsByStudentProgram(StudentProgramWorkcenter $studentProgramWorkcenter): array
+    {
+        try {
+            return $this->createQueryBuilder('wd')
+                ->select('SUM(wd.hours)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked * wd.hours ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 1 THEN wd.hours ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN wd.hours ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.locked = 1 THEN wd.hours ELSE 0 END)')
+                ->addSelect('COUNT(wd)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 1 THEN 1 ELSE 0 END)')
+                ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN 1 ELSE 0 END)')
+                ->addSelect('SUM(wd.locked)')
+                ->where('wd.studentProgramWorkcenter = :student_program_workcenter')
+                ->setParameter('student_program_workcenter', $studentProgramWorkcenter)
+                ->groupBy('wd.studentProgramWorkcenter')
+                ->getQuery()
+                ->getSingleResult();
+        } catch (NoResultException) {
+            return [];
+        }
+    }
+
+    final public function findPrevious(WorkDay $workDay): ?WorkDay
+    {
+        return $this->createQueryBuilder('w')
+            ->where('w.studentProgramWorkcenter = :student_program_workcenter')
+            ->andWhere('w.date < :date AND w.id != :id')
+            ->setParameter('student_program_workcenter', $workDay->getStudentProgramWorkcenter())
+            ->setParameter('date', $workDay->getDate())
+            ->setParameter('id', $workDay->getId())
+            ->orderBy('w.date', 'DESC')
+            ->getQuery()
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
+    }
+
+    final public function findNext(WorkDay $workDay): ?Workday
+    {
+        return $this->createQueryBuilder('w')
+            ->where('w.studentProgramWorkcenter = :student_program_workcenter')
+            ->andWhere('w.date > :date AND w.id != :id')
+            ->setParameter('student_program_workcenter', $workDay->getStudentProgramWorkcenter())
+            ->setParameter('date', $workDay->getDate())
+            ->setParameter('id', $workDay->getId())
+            ->orderBy('w.date', 'ASC')
+            ->getQuery()
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
+    }
+
+    final public function findByYearWeekAndAgreement(int $year, int $week, StudentProgramWorkcenter $studentProgramWorkcenter): array
+    {
+        $startDate = new \DateTime();
+        $startDate->setTimestamp(strtotime($year . 'W'. ($week < 10 ? '0' . $week : $week)));
+        $endDate = clone $startDate;
+        $endDate->add(new \DateInterval('P7D'));
+        return $this->createQueryBuilder('wd')
+            ->where('wd.studentProgramWorkcenter = :student_program_workcenter')
+            ->andWhere('wd.date < :end_date')
+            ->andWhere('wd.date >= :start_date')
+            ->setParameter('student_program_workcenter', $studentProgramWorkcenter)
+            ->setParameter('start_date', $startDate)
+            ->setParameter('end_date', $endDate)
+            ->addOrderBy('wd.date', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    final public function updateLock(array $list, StudentProgramWorkcenter $studentProgramWorkcenter, bool $value): void
+    {
+        $this->getEntityManager()->createQueryBuilder()
+            ->update(WorkDay::class, 'wd')
+            ->set('wd.locked', ':value')
+            ->where('wd IN (:list)')
+            ->andWhere('wd.studentProgramWorkcenter = :student_program_workcenter')
+            ->setParameter('list', $list)
+            ->setParameter('value', $value)
+            ->setParameter('student_program_workcenter', $studentProgramWorkcenter)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function updateWeekLock(int $year, int $week, StudentProgramWorkcenter $studentProgramWorkcenter, bool $value): void
+    {
+        $items = $this->findByYearWeekAndAgreement($year, $week, $studentProgramWorkcenter);
+        $this->updateLock($items, $studentProgramWorkcenter, $value);
+    }
+
+    final public function updateAttendance(array $list, StudentProgramWorkcenter $studentProgramWorkcenter, int $value): void
+    {
+        if ($value !== WorkDay::ABSENCE_NONE) {
+            foreach ($list as $workDay) {
+                if (!$workDay->isLocked()) {
+                    $workDay->getActivities()->clear();
+                    $workDay->setOtherActivities(null);
+                }
+            }
+        }
+        $this->getEntityManager()->createQueryBuilder()
+            ->update(WorkDay::class, 'wd')
+            ->set('wd.absence', ':value')
+            ->where('wd IN (:list)')
+            ->andWhere('wd.locked = false')
+            ->andWhere('wd.studentProgramWorkcenter = :student_program_workcenter')
+            ->setParameter('list', $list)
+            ->setParameter('value', $value)
+            ->setParameter('student_program_workcenter', $studentProgramWorkcenter)
+            ->getQuery()
+            ->execute();
     }
 }

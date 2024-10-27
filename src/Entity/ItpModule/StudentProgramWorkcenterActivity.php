@@ -4,15 +4,15 @@ namespace App\Entity\ItpModule;
 
 use App\Entity\Edu\PerformanceScaleValue;
 use App\Entity\Person;
-use App\Repository\ItpModule\StudentProgramActivityRepository;
+use App\Repository\ItpModule\StudentProgramWorkcenterActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: StudentProgramActivityRepository::class)]
-#[ORM\Table(name: 'itp_student_program_activity')]
-class StudentProgramActivity
+#[ORM\Entity(repositoryClass: StudentProgramWorkcenterActivityRepository::class)]
+#[ORM\Table(name: 'itp_student_program_workcenter_activity')]
+class StudentProgramWorkcenterActivity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -23,8 +23,12 @@ class StudentProgramActivity
     #[ORM\JoinColumn(nullable: false)]
     private ?Activity $activity = null;
 
+    #[ORM\ManyToOne(inversedBy: 'activities')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?StudentProgramWorkcenter $studentProgramWorkcenter = null;
+
     #[ORM\Column]
-    private ?bool $locked = null;
+    private ?bool $disabled = null;
 
     #[ORM\ManyToOne]
     private ?PerformanceScaleValue $scaleValue = null;
@@ -33,9 +37,9 @@ class StudentProgramActivity
     private ?string $details = null;
 
     /**
-     * @var Collection<int, StudentProgramActivityComment>
+     * @var Collection<int, StudentProgramWorkcenterActivityComment>
      */
-    #[ORM\OneToMany(targetEntity: StudentProgramActivityComment::class, mappedBy: 'studentProgramActivity', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: StudentProgramWorkcenterActivityComment::class, mappedBy: 'studentProgramActivity', orphanRemoval: true)]
     private Collection $comments;
 
     #[ORM\ManyToOne]
@@ -56,21 +60,33 @@ class StudentProgramActivity
         return $this->activity;
     }
 
-    public function setActivity(?Activity $activity): static
+    public function setActivity(Activity $activity): static
     {
         $this->activity = $activity;
 
         return $this;
     }
 
-    public function isLocked(): ?bool
+    public function getStudentProgramWorkcenter(): ?StudentProgramWorkcenter
     {
-        return $this->locked;
+        return $this->studentProgramWorkcenter;
     }
 
-    public function setLocked(bool $locked): static
+    public function setStudentProgramWorkcenter(StudentProgramWorkcenter $studentProgramWorkcenter): static
     {
-        $this->locked = $locked;
+        $this->studentProgramWorkcenter = $studentProgramWorkcenter;
+
+        return $this;
+    }
+
+    public function isDisabled(): ?bool
+    {
+        return $this->disabled;
+    }
+
+    public function setDisabled(bool $disabled): static
+    {
+        $this->disabled = $disabled;
 
         return $this;
     }
@@ -100,7 +116,7 @@ class StudentProgramActivity
     }
 
     /**
-     * @return Collection<int, StudentProgramActivityComment>
+     * @return Collection<int, StudentProgramWorkcenterActivityComment>
      */
     public function getComments(): Collection
     {

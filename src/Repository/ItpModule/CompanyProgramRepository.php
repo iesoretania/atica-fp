@@ -2,6 +2,7 @@
 
 namespace App\Repository\ItpModule;
 
+use App\Entity\Company;
 use App\Entity\ItpModule\CompanyProgram;
 use App\Entity\ItpModule\ProgramGrade;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -105,5 +106,18 @@ class CompanyProgramRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();
+    }
+
+    final public function findOneByProgramGradeAndCompany(ProgramGrade $programGrade, Company $company): ?CompanyProgram
+    {
+        return $this->createQueryBuilder('cp')
+            ->addSelect('pa')
+            ->join('cp.programActivities', 'pa')
+            ->where('cp.programGrade = :programGrade')
+            ->andWhere('cp.company = :company')
+            ->setParameter('programGrade', $programGrade)
+            ->setParameter('company', $company)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

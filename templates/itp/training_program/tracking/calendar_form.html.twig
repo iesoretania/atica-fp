@@ -1,4 +1,4 @@
-{% trans_default_domain 'calendar' %}
+{% trans_default_domain 'itp_tracking' %}
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% form_theme form _self %}
@@ -33,18 +33,4 @@
     {% if next_work_day %}
         <a href="{{ path('in_company_training_phase_tracking_calendar_form', {'workDay': next_work_day.id}) }}" class="btn btn-sm btn-info" title="{{ 'form.next_work_day'|trans }}"><i class="fas fa-angle-right"></i></a>
     {% endif %}
-{% endblock %}
-
-{% block _work_day_tracking_activityRealizations_widget %}
-    <div {{ block('widget_container_attributes') }}>
-        {% for name, choices in form.vars.choices %}
-            <h5 class="checkbox-category">
-                {{ name }}
-            </h5>
-            {% for key, choice in choices %}
-                {{ form_widget(form[key], {translation_domain: false}) }}
-                {{ form_label(form[key]) }}
-            {% endfor %}
-        {% endfor %}
-    </div>
 {% endblock %}

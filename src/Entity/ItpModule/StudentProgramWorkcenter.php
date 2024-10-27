@@ -54,9 +54,18 @@ class StudentProgramWorkcenter
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $endDate = null;
 
+    #[ORM\OneToMany(targetEntity: StudentProgramWorkcenterActivity::class, mappedBy: 'studentProgramWorkcenter', orphanRemoval: true)]
+    private Collection $activities;
+
     public function __construct()
     {
         $this->workDays = new ArrayCollection();
+        $this->activities = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getStudentProgram()->getStudentEnrollment()->__toString() . ' - ' . $this->getWorkcenter()->__toString();
     }
 
     public function getId(): ?int
@@ -166,5 +175,13 @@ class StudentProgramWorkcenter
         $this->endDate = $endDate;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, StudentProgramWorkcenterActivity>
+     */
+    public function getActivities(): Collection
+    {
+        return $this->activities;
     }
 }

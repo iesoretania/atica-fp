@@ -20,6 +20,7 @@ namespace App\Form\Type\ItpModule;
 
 use App\Entity\Company;
 use App\Entity\Edu\Teacher;
+use App\Entity\ItpModule\Activity;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgram;
@@ -27,11 +28,14 @@ use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\Person;
 use App\Entity\Workcenter;
 use App\Repository\Edu\TeacherRepository;
+use App\Repository\ItpModule\ActivityRepository;
 use App\Repository\ItpModule\CompanyRepository;
+use App\Repository\ItpModule\StudentProgramWorkcenterActivityRepository;
 use App\Repository\WorkcenterRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -45,7 +49,10 @@ class StudentProgramWorkcenterType extends AbstractType
     public function __construct(
         private readonly CompanyRepository    $itpCompanyRepository,
         private readonly WorkcenterRepository $workcenterRepository,
-        private readonly CompanyRepository    $companyRepository, private readonly TeacherRepository $teacherRepository
+        private readonly CompanyRepository    $companyRepository,
+        private readonly TeacherRepository $teacherRepository,
+        private readonly ActivityRepository $activityRepository,
+        private readonly StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository
     )
     {
     }
@@ -67,35 +74,44 @@ class StudentProgramWorkcenterType extends AbstractType
             $companies = $this->itpCompanyRepository->findByProgramGrade($studentProgram->getProgramGroup()->getProgramGrade());
             $teachers = $this->teacherRepository->findByGroup($studentProgram->getProgramGroup()->getGroup());
 
+            $activities = [];
+
             if ($form->has('company') && $form->get('company')->getData() instanceof Company) {
                 $workcenters = $this->workcenterRepository->findByCompany($form->get('company')->getData());
             } elseif ($data->getWorkcenter() instanceof Workcenter) {
                 $workcenters = $this->workcenterRepository->findByCompany($data->getWorkcenter()->getCompany());
+                $activities = $this->activityRepository->findByProgramGradeAndCompany($data->getStudentProgram()->getProgramGroup()->getProgramGrade(), $data->getWorkcenter()->getCompany());
             } else {
                 $workcenters = [];
             }
-            $this->addElements($form, $companies, $workcenters, $teachers);
+            $this->addElements($form, $companies, $workcenters, $teachers, $activities);
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $formData = $event->getData();
             $data = $form->getData();
+            assert($data instanceof StudentProgramWorkcenter);
             $company = $this->companyRepository->find($formData['company']);
             $companies = $this->itpCompanyRepository->findByProgramGrade($data->getStudentProgram()->getProgramGroup()->getProgramGrade());
             $teachers = $this->teacherRepository->findByGroup($data->getStudentProgram()->getProgramGroup()->getGroup());
 
+            $activities = [];
+
             if ($company instanceof Company) {
                 $workcenters = $this->workcenterRepository->findByCompany($company);
+                if ($data->getWorkcenter() instanceof Workcenter) {
+                    $activities = $this->activityRepository->findByProgramGradeAndCompany($data->getStudentProgram()->getProgramGroup()->getProgramGrade(), $company);
+                }
             } else {
                 $workcenters = [];
             }
 
-            $this->addElements($form, $companies, $workcenters, $teachers);
+            $this->addElements($form, $companies, $workcenters, $teachers, $activities);
         });
     }
 
-    private function addElements(FormInterface $form, array $companies, array $workcenters, array $teachers): void
+    private function addElements(FormInterface $form, array $companies, array $workcenters, array $teachers, array $activities): void
     {
         $form
             ->add('company', EntityType::class, [
@@ -163,6 +179,18 @@ class StudentProgramWorkcenterType extends AbstractType
                 'label' => 'form.end_date',
                 'widget' => 'single_text',
                 'required' => false
+            ])
+            ->add('selectedActivities', ChoiceType::class, [
+                'mapped' => false,
+                'label' => 'form.activities',
+                'multiple' => true,
+                'expanded' => true,
+                'choices' => $activities,
+                'choice_label' => function (Activity $activity) {
+                    return $activity->getCode() . ' - ' . $activity->getName();
+                },
+                'choice_translation_domain' => false,
+                'required' => true
             ]);
     }
 

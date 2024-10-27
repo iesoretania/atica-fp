@@ -1,7 +1,19 @@
 $(function () {
+    function createSelectables()
+    {
+        $("button#select_all").click(function () {
+            $("input[name='student_program_workcenter[selectedActivities][]']").prop('checked', true);
+        });
+
+        $("button#select_none").click(function () {
+            $("input[name='student_program_workcenter[selectedActivities][]']").prop('checked', false);
+        });
+    }
+
     function companyChange()
     {
         var workcenter = $("#student_program_workcenter_workcenter");
+        var activities = $("#student_program_workcenter_selectedActivities");
 
         var form = $(this).closest('form');
         var data = {};
@@ -16,6 +28,7 @@ $(function () {
         var next = workcenter.next();
         workcenter.replaceWith('<div id="student_program_workcenter_workcenter"><span class="text-info"><i class="fa fa-circle-notch fa-spin fa-3x fa-fw"></i></span></div>');
         next.remove();
+        activities.replaceWith('<div id="student_program_workcenter_selectedActivities"><span class="text-info"><i class="fa fa-circle-notch fa-spin fa-3x fa-fw"></i></span></div>');
 
         $.ajax({
             url: form.attr('data-ajax'),
@@ -25,17 +38,24 @@ $(function () {
                 $('#student_program_workcenter_workcenter').replaceWith(
                     $(html).find('#student_program_workcenter_workcenter')
                 );
+                $('#student_program_workcenter_selectedActivities').replaceWith(
+                    $(html).find('#student_program_workcenter_selectedActivities')
+                );
                 $('select#student_program_workcenter_workcenter').select2({
                     theme: "bootstrap",
                     language: 'es'
                 }).val($("#student_program_workcenter_workcenter option:nth-child(2)").val()).trigger('change.select2');
+
+                createSelectables();
             },
             error: function () {
                 $('#student_program_workcenter_workcenter').replaceWith('<div id="student_program_workcenter"><span class="text-danger"><i class="fa fa-times-circle fa-3x"></i></span></div>')
+                $('#student_program_workcenter_selectedActivities').replaceWith('<div id="student_program_workcenter_selectedActivities"><span class="text-danger"><i class="fa fa-times-circle fa-3x"></i></span></div>')
             }
         });
     }
 
     var company = $("#student_program_workcenter_company");
     company.change(companyChange);
+    createSelectables();
 });

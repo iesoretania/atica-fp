@@ -2,8 +2,12 @@
 
 namespace App\Repository\ItpModule;
 
+use App\Entity\Company;
 use App\Entity\ItpModule\Activity;
+use App\Entity\ItpModule\CompanyProgram;
 use App\Entity\ItpModule\ProgramGrade;
+use App\Entity\ItpModule\StudentProgramWorkcenter;
+use App\Entity\ItpModule\StudentProgramWorkcenterActivity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -13,7 +17,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ActivityRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private readonly CompanyProgramRepository $companyProgramRepository)
     {
         parent::__construct($registry, Activity::class);
     }
@@ -82,5 +86,48 @@ class ActivityRepository extends ServiceEntityRepository
             ->setParameter('selectedItems', $items)
             ->getQuery()
             ->execute();
+    }
+
+    final public function findByProgramGradeAndCompany(ProgramGrade $programGrade, Company $company): array
+    {
+        $companyProgram = $this->companyProgramRepository->findOneByProgramGradeAndCompany($programGrade, $company);
+        if (!$companyProgram instanceof CompanyProgram) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('a')
+            ->where('a IN (:activities)')
+            ->setParameter('activities', $companyProgram->getProgramActivities())
+            ->orderBy('a.code', 'ASC')
+            ->addOrderBy('a.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    final public function findDisabledByStudentProgramWorkcenter(StudentProgramWorkcenter $studentProgramWorkcenter): array
+    {
+        return $this->createQueryBuilder('a')
+            ->distinct()
+            ->join(StudentProgramWorkcenterActivity::class, 'spwa', 'WITH', 'spwa.activity = a')
+            ->where('spwa.studentProgramWorkcenter = :studentProgramWorkcenter')
+            ->andWhere('spwa.disabled = true')
+            ->setParameter('studentProgramWorkcenter', $studentProgramWorkcenter)
+            ->addOrderBy('a.code', 'ASC')
+            ->addOrderBy('a.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    final public function findByStudentProgramWorkcenter(StudentProgramWorkcenter $studentProgramWorkcenter): array
+    {
+        return $this->createQueryBuilder('a')
+            ->distinct()
+            ->join(StudentProgramWorkcenterActivity::class, 'spwa', 'WITH', 'spwa.activity = a')
+            ->where('spwa.studentProgramWorkcenter = :studentProgramWorkcenter')
+            ->setParameter('studentProgramWorkcenter', $studentProgramWorkcenter)
+            ->addOrderBy('a.code', 'ASC')
+            ->addOrderBy('a.name', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 }
