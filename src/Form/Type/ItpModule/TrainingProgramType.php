@@ -133,6 +133,15 @@ class TrainingProgramType extends AbstractType
                 'placeholder' => 'form.no_template',
                 'required' => false
             ])
+            ->add('weeklyActivityReportTemplateType', ChoiceType::class, [
+                'label' => 'form.weekly_activity_report_template_type',
+                'expanded' => true,
+                'choices' => [
+                    'form.weekly_activity_report_template_type.5_days_week' => TrainingProgram::WEEK_5_DAYS,
+                    'form.weekly_activity_report_template_type.7_days_week' => TrainingProgram::WEEK_7_DAYS
+                ],
+                'required' => true
+            ])
             ->add('activitySummaryReportTemplate', EntityType::class, [
                 'label' => 'form.activity_summary_report_template',
                 'class' => ReportTemplate::class,

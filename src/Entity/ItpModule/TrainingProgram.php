@@ -18,6 +18,9 @@ class TrainingProgram
     public const MODE_GENERAL = 1;
     public const MODE_INTENSIVE = 2;
 
+    public const WEEK_5_DAYS = 0;
+    public const WEEK_7_DAYS = 1;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -74,6 +77,9 @@ class TrainingProgram
 
     #[ORM\Column]
     private ?bool $locked = false;
+
+    #[ORM\Column]
+    private ?int $weeklyActivityReportTemplateType = self::WEEK_5_DAYS;
 
     public function __construct()
     {
@@ -236,6 +242,18 @@ class TrainingProgram
     public function setActivitySummaryReportTemplate(?ReportTemplate $activitySummaryReportTemplate): static
     {
         $this->activitySummaryReportTemplate = $activitySummaryReportTemplate;
+        return $this;
+    }
+
+    public function getWeeklyActivityReportTemplateType(): ?int
+    {
+        return $this->weeklyActivityReportTemplateType;
+    }
+
+    public function setWeeklyActivityReportTemplateType(int $weeklyActivityReportTemplateType): static
+    {
+        $this->weeklyActivityReportTemplateType = $weeklyActivityReportTemplateType;
+
         return $this;
     }
 }

@@ -286,7 +286,7 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    final public function findByYearWeekAndAgreement(int $year, int $week, StudentProgramWorkcenter $studentProgramWorkcenter): array
+    final public function findByYearWeekAndStudentProgramWorkcenter(int $year, int $week, StudentProgramWorkcenter $studentProgramWorkcenter): array
     {
         $startDate = new \DateTime();
         $startDate->setTimestamp(strtotime($year . 'W'. ($week < 10 ? '0' . $week : $week)));
@@ -320,7 +320,7 @@ class WorkDayRepository extends ServiceEntityRepository
 
     public function updateWeekLock(int $year, int $week, StudentProgramWorkcenter $studentProgramWorkcenter, bool $value): void
     {
-        $items = $this->findByYearWeekAndAgreement($year, $week, $studentProgramWorkcenter);
+        $items = $this->findByYearWeekAndStudentProgramWorkcenter($year, $week, $studentProgramWorkcenter);
         $this->updateLock($items, $studentProgramWorkcenter, $value);
     }
 
@@ -345,5 +345,31 @@ class WorkDayRepository extends ServiceEntityRepository
             ->setParameter('student_program_workcenter', $studentProgramWorkcenter)
             ->getQuery()
             ->execute();
+    }
+
+    final public function getWeekInformation(WorkDay $firstWorkday): array
+    {
+        $total = 0;
+        $current = 0;
+
+        $oldNumWeek = NAN;
+
+        $workDays = $firstWorkday->getStudentProgramWorkcenter()->getWorkDays();
+
+        /** @var WorkDay $day */
+        foreach ($workDays as $day) {
+            $numWeek = $day->getDate()->format('W');
+
+            if ($numWeek !== $oldNumWeek) {
+                $total++;
+                $oldNumWeek = $numWeek;
+            }
+
+            if ($firstWorkday->getDate() === $day->getDate()) {
+                $current = $total;
+            }
+        }
+
+        return ['total' => $total, 'current' => $current];
     }
 }

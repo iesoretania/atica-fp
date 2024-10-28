@@ -73,6 +73,7 @@ form.end_time_1: Hora de salida (tramo inicial)
 form.start_time_2: Hora de entrada (segundo tramo)
 form.end_time_2: Hora de salida (segundo tramo)
 
+
 form.time.placeholder: "hh:mm"
 form.caption.locked_prefix: "BLOQUEADA PARA EL ESTUDIANTE: "
 form.caption.locked: " (ya evaluada o desactivada)"
@@ -83,6 +84,7 @@ table.activity_realization.graded.pending: "Por realizar"
 
 title.list: Estancias del plan de formación
 title.calendar: Seguimiento del plan de formación
+title.absence: Faltas injustificadas al centro de trabajo
 
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
 table.no_items: No hay elementos que mostrar
@@ -100,6 +102,8 @@ message.workday_save_error: Ha ocurrido un error al registrar los cambios a la j
 message.locked: Bloqueo de jornadas actualizado.
 message.locked_error: Error al actualizar el bloqueo.
 
+message.no_activities: Sin actividad registrada
+message.no_workday: No incluido en el programa formativo
 message.draft: BORRADOR
 
 header.student: Estudiante

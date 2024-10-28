@@ -14,6 +14,10 @@ form.student_survey: Modelo de encuesta de satisfacción de alumnado
 form.company_survey: Modelo de encuesta de satisfacción de empresa colaboradora
 form.educational_tutor_survey: Modelo de encuesta de satisfacción de tutoría docente
 
+form.weekly_activity_report_template_type: Tipo de plantilla semanal
+form.weekly_activity_report_template_type.5_days_week: Semana de 5 días
+form.weekly_activity_report_template_type.7_days_week: Semana de 7 días
+
 form.locked: Plan de formación bloqueado
 form.locked.no: Se pueden realizar cambios
 form.locked.yes: Sólo el equipo directivo puede realizar cambios

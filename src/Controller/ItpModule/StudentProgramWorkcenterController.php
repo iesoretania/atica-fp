@@ -113,6 +113,7 @@ class StudentProgramWorkcenterController extends AbstractController
         Request                            $request,
         TranslatorInterface                $translator,
         StudentProgramWorkcenterRepository $studentProgramWorkcenterRepository,
+        StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository,
         StudentProgram $studentProgram
     ): Response
     {
@@ -128,7 +129,7 @@ class StudentProgramWorkcenterController extends AbstractController
 
         $studentProgramWorkcenterRepository->persist($studentProgramWorkcenter);
 
-        return $this->edit($request, $translator, $studentProgramWorkcenterRepository, $studentProgramWorkcenter);
+        return $this->edit($request, $translator, $studentProgramWorkcenterRepository, $studentProgramWorkcenterActivityRepository, $studentProgramWorkcenter);
     }
 
     #[Route(path: '/{studentProgramWorkcenter}', name: 'in_company_training_phase_student_program_workcenter_edit', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET', 'POST'])]
