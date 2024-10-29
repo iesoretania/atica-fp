@@ -75,11 +75,6 @@ class ContactVoter extends CachedVoter
 
         $organization = $this->userExtensionService->getCurrentOrganization();
 
-        // Si no es de la organización actual, denegar
-        if ($subject->getTeacher()->getAcademicYear()->getOrganization() !== $organization) {
-            return false;
-        }
-
         // si el módulo está deshabilitado, denegar
         if (!$organization->getCurrentAcademicYear() instanceof AcademicYear ||
             !$organization->getCurrentAcademicYear()->hasModule('wlt')) {
@@ -94,6 +89,11 @@ class ContactVoter extends CachedVoter
         // Si es administrador de la organización, permitir siempre
         if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
             return true;
+        }
+
+        // Si no es de la organización actual, denegar
+        if ($subject->getTeacher()?->getAcademicYear()?->getOrganization() !== $organization) {
+            return false;
         }
 
         switch ($attribute) {
