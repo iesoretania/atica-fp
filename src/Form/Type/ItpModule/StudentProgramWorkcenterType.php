@@ -30,7 +30,6 @@ use App\Entity\Workcenter;
 use App\Repository\Edu\TeacherRepository;
 use App\Repository\ItpModule\ActivityRepository;
 use App\Repository\ItpModule\CompanyRepository;
-use App\Repository\ItpModule\StudentProgramWorkcenterActivityRepository;
 use App\Repository\WorkcenterRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -42,6 +41,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Count;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class StudentProgramWorkcenterType extends AbstractType
@@ -52,7 +52,6 @@ class StudentProgramWorkcenterType extends AbstractType
         private readonly CompanyRepository    $companyRepository,
         private readonly TeacherRepository $teacherRepository,
         private readonly ActivityRepository $activityRepository,
-        private readonly StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository
     )
     {
     }
@@ -96,14 +95,11 @@ class StudentProgramWorkcenterType extends AbstractType
             $companies = $this->itpCompanyRepository->findByProgramGrade($data->getStudentProgram()->getProgramGroup()->getProgramGrade());
             $teachers = $this->teacherRepository->findByGroup($data->getStudentProgram()->getProgramGroup()->getGroup());
 
-            $activities = [];
-
             if ($company instanceof Company) {
+                $activities = $this->activityRepository->findByProgramGradeAndCompany($data->getStudentProgram()->getProgramGroup()->getProgramGrade(), $company);
                 $workcenters = $this->workcenterRepository->findByCompany($company);
-                if ($data->getWorkcenter() instanceof Workcenter) {
-                    $activities = $this->activityRepository->findByProgramGradeAndCompany($data->getStudentProgram()->getProgramGroup()->getProgramGrade(), $company);
-                }
             } else {
+                $activities = [];
                 $workcenters = [];
             }
 
@@ -190,6 +186,9 @@ class StudentProgramWorkcenterType extends AbstractType
                     return $activity->getCode() . ' - ' . $activity->getName();
                 },
                 'choice_translation_domain' => false,
+                'constraints' => [
+                    new Count(['min' => 1, 'minMessage' => 'selection.count.invalid.min'])
+                ],
                 'required' => true
             ]);
     }

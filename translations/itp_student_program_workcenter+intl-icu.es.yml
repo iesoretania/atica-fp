@@ -10,6 +10,7 @@ form.activities: Actividades a desarrollar
 form.no_activity: No hay actividades asociadas a la empresa
 
 form.back: Volver
+form.save: Guardar cambios
 form.delete: Eliminar estancias seleccionadas
 form.delete_confirm: Confirmar eliminación
 form.copy_calendars: Copiar calendario a las estancias seleccionadas
@@ -70,5 +71,5 @@ prompt.delete_confirm: |
 prompt.copy_confirm: |
     Este proceso copiará el calendario completo de la estancia seleccionada en las estancias indicadas más abajo.
     Si ya existían jornadas no coincidentes con el calendario origen, se mantendrán.
-    
+
     Esta operación no se puede deshacer.
