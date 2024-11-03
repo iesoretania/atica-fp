@@ -6,13 +6,12 @@
 
 {% block table_header %}
     <th class="w-20"><label><input type="checkbox" id="select"> {{ 'header.workcenter'|trans }}</label></th>
-    <th class="w-25">{{ 'header.educational_tutor'|trans }}</th>
-    <th class="w-20">{{ 'header.work_tutor'|trans }}</th>
+    <th class="w-25">{{ 'header.tutors'|trans }}</th>
     <th class="w-10">{{ 'header.date_range'|trans }}</th>
-    <th class="w-5">{{ 'header.activities'|trans }}</th>
-    <th class="w-5">{{ 'header.learning_outcomes'|trans }}</th>
-    <th class="w-5">{{ 'header.criteria'|trans }}</th>
-    <th class="w-5">{{ 'header.hours'|trans }}</th>
+    <th class="w-10">{{ 'header.activities'|trans }}</th>
+    <th class="w-10">{{ 'header.learning_outcomes'|trans }}</th>
+    <th class="w-10">{{ 'header.criteria'|trans }}</th>
+    <th class="w-10">{{ 'header.hours'|trans }}</th>
     <th class="w-5"></th>
 {% endblock %}
 
@@ -26,10 +25,9 @@
                         </label>
                     </td>
                     <td>
-                        {{ item.educationalTutor }}
-                    </td>
-                    <td>
-                        {{ item.workTutor }}
+                        <b>{{ 'header.educational_tutor'|trans }}: </b>{{ item.educationalTutor }}{% if item.additionalEducationalTutor %}, {{ item.additionalEducationalTutor }}{% endif %}
+                        <br>
+                        <b>{{ 'header.work_tutor'|trans }}</b>: {{ item.workTutor }}{% if item.additionalWorkTutor %}, {{ item.additionalWorkTutor }}{% endif %}
                     </td>
                     <td>
                         {% if item.startDate and item.endDate %}
@@ -50,7 +48,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="11">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="8">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

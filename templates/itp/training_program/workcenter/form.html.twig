@@ -1,4 +1,4 @@
-{% trans_default_domain 'itp_student_program' %}
+{% trans_default_domain 'itp_student_program_workcenter' %}
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% form_theme form _self %}
@@ -46,7 +46,7 @@
             {{ form_label(item) }}
         {% else %}
             <h5 class="checkbox-category">
-                {{ 'form.no_activities'|trans }}
+                {{ 'form.no_activity'|trans }}
             </h5>
         {% endfor %}
     </div>

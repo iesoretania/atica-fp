@@ -7,6 +7,7 @@ form.additional_work_tutor: Tutor/a dual de empresa adicional
 form.start_date: Fecha de inicio
 form.end_date: Fecha de fin
 form.activities: Actividades a desarrollar
+form.no_activity: No hay actividades asociadas a la empresa
 
 form.back: Volver
 form.delete: Eliminar estancias seleccionadas

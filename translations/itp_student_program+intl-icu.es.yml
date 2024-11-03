@@ -41,6 +41,7 @@ header.workcenter: Centro de trabajo
 header.managers: Tutorías duales
 header.educational_tutor: Tutor/a docente de seguimiento
 header.work_tutor: Tutor/a dual de empresa
+header.tutors: Tutorías de seguimiento
 header.date_range: Fecha de inicio y fin
 header.hours: Horas
 header.activities: Actividades
