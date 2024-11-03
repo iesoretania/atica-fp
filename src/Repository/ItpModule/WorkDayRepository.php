@@ -372,4 +372,24 @@ class WorkDayRepository extends ServiceEntityRepository
 
         return ['total' => $total, 'current' => $current];
     }
+
+    public function deleteFromListByStudentProgramWorkcenter(array $selectedItems): void
+    {
+        $this->createQueryBuilder('wd')
+            ->delete()
+            ->where('wd.studentProgramWorkcenter IN (:selectedItems)')
+            ->setParameter('selectedItems', $selectedItems)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function findByStudentPrograms(array $items): array
+    {
+        return $this->createQueryBuilder('wd')
+            ->join('wd.studentProgramWorkcenter', 'spwc')
+            ->where('spwc.studentProgram IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->getResult();
+    }
 }

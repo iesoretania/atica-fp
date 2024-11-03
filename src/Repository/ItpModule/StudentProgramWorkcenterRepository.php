@@ -24,7 +24,10 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
     public function __construct(
         ManagerRegistry                         $registry,
         private readonly WorkDayRepository      $workDayRepository,
-        private readonly ProgramGroupRepository $programGroupRepository, private readonly TeacherRepository $teacherRepository, private readonly GroupRepository $groupRepository
+        private readonly ProgramGroupRepository $programGroupRepository,
+        private readonly TeacherRepository $teacherRepository,
+        private readonly GroupRepository $groupRepository,
+        private readonly StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository,
     )
     {
         parent::__construct($registry, StudentProgramWorkcenter::class);
@@ -32,12 +35,27 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
 
     public function deleteFromStudentProgramList(array $items): void
     {
-        $workDays = $this->workDayRepository->findByStudentProgramWorkcenters($items);
+        $workDays = $this->workDayRepository->findByStudentPrograms($items);
         $this->workDayRepository->deleteFromList($workDays);
+        $studentProgramWorkcenterActivities = $this->studentProgramWorkcenterActivityRepository->findByStudentPrograms($items);
+        dump($studentProgramWorkcenterActivities);
+        $this->studentProgramWorkcenterActivityRepository->deleteFromList($studentProgramWorkcenterActivities);
         $this->createQueryBuilder('spw')
             ->delete()
             ->where('spw.studentProgram IN (:items)')
             ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
+
+    final public function deleteFromList(array $selectedItems): void
+    {
+        $this->workDayRepository->deleteFromListByStudentProgramWorkcenter($selectedItems);
+        $this->studentProgramWorkcenterActivityRepository->deleteFromListByStudentProgramWorkcenter($selectedItems);
+        $this->createQueryBuilder('spw')
+            ->delete()
+            ->where('spw.id IN (:selectedItems)')
+            ->setParameter('selectedItems', $selectedItems)
             ->getQuery()
             ->execute();
     }
@@ -110,16 +128,6 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
             ->addOrderBy('w.name', 'ASC')
             ->getQuery()
             ->getResult();
-    }
-
-    final public function deleteFromList(array $selectedItems): void
-    {
-        $this->createQueryBuilder('spw')
-            ->delete()
-            ->where('spw.id IN (:selectedItems)')
-            ->setParameter('selectedItems', $selectedItems)
-            ->getQuery()
-            ->execute();
     }
 
     final public function updateDates(StudentProgramWorkcenter $studentProgramWorkcenter): void

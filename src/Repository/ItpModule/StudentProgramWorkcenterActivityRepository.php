@@ -52,4 +52,35 @@ class StudentProgramWorkcenterActivityRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($studentProgramWorkcenterActivity);
     }
+
+    public function deleteFromListByStudentProgramWorkcenter(array $selectedItems): void
+    {
+        $this->createQueryBuilder('spa')
+            ->delete()
+            ->where('spa.studentProgramWorkcenter IN (:selectedItems)')
+            ->setParameter('selectedItems', $selectedItems)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function findByStudentPrograms(array $items): array
+    {
+        return $this->createQueryBuilder('spa')
+            ->join('spa.studentProgramWorkcenter', 'spw')
+            ->join('spw.studentProgram', 'sp')
+            ->where('sp IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function deleteFromList(array $items): void
+    {
+        $this->createQueryBuilder('spa')
+            ->delete()
+            ->where('spa IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
 }
