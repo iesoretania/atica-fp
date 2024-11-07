@@ -36,6 +36,7 @@ class StudentProgramWorkcenterVoter extends CachedVoter
     public const LOCK = 'ITP_STUDENT_PROGRAM_WORKCENTER_LOCK';
     public const ATTENDANCE = 'ITP_STUDENT_PROGRAM_WORKCENTER_ATTENDANCE';
     public const GRADE = 'ITP_STUDENT_PROGRAM_WORKCENTER_GRADE';
+    public const VIEW_GRADE = 'ITP_STUDENT_PROGRAM_WORKCENTER_VIEW_GRADE';
 
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
@@ -59,7 +60,8 @@ class StudentProgramWorkcenterVoter extends CachedVoter
             self::FILL,
             self::LOCK,
             self::ATTENDANCE,
-            self::GRADE
+            self::GRADE,
+            self::VIEW_GRADE
         ], true);
     }
 
@@ -120,6 +122,7 @@ class StudentProgramWorkcenterVoter extends CachedVoter
             case self::LOCK:
             case self::ATTENDANCE:
             case self::GRADE:
+            case self::VIEW_GRADE:
                 return $isDepartmentHead;
         }
 

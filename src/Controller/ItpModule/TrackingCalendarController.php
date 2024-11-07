@@ -22,6 +22,7 @@ use App\Entity\Edu\ReportTemplate;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\ItpModule\WorkDay;
+use App\Entity\Person;
 use App\Form\Type\ItpModule\WorkDayTrackingType;
 use App\Repository\ItpModule\ActivityRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterActivityRepository;
@@ -63,7 +64,7 @@ class TrackingCalendarController extends AbstractController
             : $workDayRepository->hoursStatsByStudentProgram($studentProgramWorkcenter);
 
         $activities = $studentProgramActivityRepository->findByStudentProgramWorkcenterOrderByCode($studentProgramWorkcenter);
-        $submittedActivities = $studentProgramActivityRepository->findSubmittedByStudentProgramWorkcenter($studentProgramWorkcenter);
+        $submittedActivities = $studentProgramActivityRepository->findScaleValueSubmittedByStudentProgramWorkcenter($studentProgramWorkcenter);
 
         $title = $translator->trans('title.calendar', [], 'itp_tracking');
 
@@ -106,8 +107,10 @@ class TrackingCalendarController extends AbstractController
         $this->denyAccessUnlessGranted(WorkDayVoter::ACCESS, $workDay);
         $readOnly = !$this->isGranted(WorkDayVoter::FILL, $workDay);
 
-        $title = $translator->trans('dow' . ($workDay->getDate()->format('N') - 1), [], 'calendar');
-        $title .= ' - ' . $workDay->getDate()->format($translator->trans('format.date', [], 'general'));
+        $date = $workDay->getDate();
+        assert($date instanceof \DateTimeInterface);
+        $title = $translator->trans('dow' . ($date->format('N') - 1), [], 'calendar');
+        $title .= ' - ' . $date->format($translator->trans('format.date', [], 'general'));
         $title .= ' - ' . $translator->trans('caption.hours', ['count' => $workDay->getHours()], 'calendar');
 
         // precaching
@@ -360,7 +363,9 @@ class TrackingCalendarController extends AbstractController
                 if (!$workDay->isLocked()) {
                     $isLocked = false;
                 }
-                $day = $workDay->getDate()->format('N');
+                $date = $workDay->getDate();
+                assert($date instanceof \DateTimeInterface);
+                $day = $date->format('N');
                 $activities[$day] = '';
                 $hours[$day] = $translator->trans(
                     'form.r_hours',
@@ -391,12 +396,17 @@ class TrackingCalendarController extends AbstractController
             $first = reset($weekDays);
             $last = end($weekDays);
 
-            $this->pdfWriteFixedPosHTML($mpdf, $first->getDate()->format('j'), 54.5, 33.5 - $offset1, 8, 5, 'auto', 'center');
-            $this->pdfWriteFixedPosHTML($mpdf, $last->getDate()->format('j'), 67.5, 33.5 - $offset1, 10, 5, 'auto', 'center');
+            $firstDate = $first->getDate();
+            $lastDate = $last->getDate();
+            assert($firstDate instanceof \DateTimeInterface);
+            assert($lastDate instanceof \DateTimeInterface);
+
+            $this->pdfWriteFixedPosHTML($mpdf, $firstDate->format('j'), 54.5, 33.5 - $offset1, 8, 5, 'auto', 'center');
+            $this->pdfWriteFixedPosHTML($mpdf, $lastDate->format('j'), 67.5, 33.5 - $offset1, 10, 5, 'auto', 'center');
             $this->pdfWriteFixedPosHTML(
                 $mpdf,
                 $translator->trans(
-                    'r_month' . ($last->getDate()->format('n') - 1),
+                    'r_month' . ($lastDate->format('n') - 1),
                     [],
                     'calendar'
                 ),
@@ -407,7 +417,7 @@ class TrackingCalendarController extends AbstractController
                 'auto',
                 'center'
             );
-            $this->pdfWriteFixedPosHTML($mpdf, $last->getDate()->format('y'), 118.5, 33.5 - $offset1, 6, 5, 'auto', 'center');
+            $this->pdfWriteFixedPosHTML($mpdf, $lastDate->format('y'), 118.5, 33.5 - $offset1, 6, 5, 'auto', 'center');
 
             // añadir números de página
             $weekCounter = $workDayRepository->getWeekInformation($first);
@@ -429,6 +439,8 @@ class TrackingCalendarController extends AbstractController
                 5
             );
             $studentPerson = $studentProgramWorkcenter->getStudentProgram()?->getStudentEnrollment()?->getPerson();
+            assert($studentPerson instanceof Person);
+
             $this->pdfWriteFixedPosHTML($mpdf, $studentPerson?->__toString(), 63, 54 - $offset1, 80, 5);
 
             // añadir actividades semanales
@@ -466,8 +478,8 @@ class TrackingCalendarController extends AbstractController
                 53,
                 5
             );
-            $this->pdfWriteFixedPosHTML($mpdf, $studentProgramWorkcenter->getEducationalTutor()->__toString(), 136, 186.9 + $offset2, 53, 5);
-            $this->pdfWriteFixedPosHTML($mpdf, $studentProgramWorkcenter->getWorkTutor()->__toString(), 204, 184.9 + $offset2, 53, 5);
+            $this->pdfWriteFixedPosHTML($mpdf, $studentProgramWorkcenter->getEducationalTutor()?->__toString() ?? '', 136, 186.9 + $offset2, 53, 5);
+            $this->pdfWriteFixedPosHTML($mpdf, $studentProgramWorkcenter->getWorkTutor()?->__toString() ?? '', 204, 184.9 + $offset2, 53, 5);
 
             // si no está bloqueada la semana, agregar la marca de agua de borrador
             if (!$isLocked) {

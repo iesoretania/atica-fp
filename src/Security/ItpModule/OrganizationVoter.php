@@ -36,6 +36,7 @@ class OrganizationVoter extends CachedVoter
 {
     public const ITP_ACCESS_SECTION = 'ORGANIZATION_ACCESS_IN_COMPANY_TRAINING_PHASE';
     public const ITP_MANAGER = 'ORGANIZATION_MANAGE_IN_COMPANY_TRAINING_PHASE';
+    public const ITP_VIEW_GRADES = 'ORGANIZATION_VIEW_IN_COMPANY_TRAINING_PHASE_EVALUATION';
 
     public function __construct(
         CacheItemPoolInterface                          $cacheItemPoolItemPool,
@@ -59,6 +60,7 @@ class OrganizationVoter extends CachedVoter
         return in_array($attribute, [
             self::ITP_ACCESS_SECTION,
             self::ITP_MANAGER,
+            self::ITP_VIEW_GRADES
         ], true);
     }
 
@@ -109,8 +111,11 @@ class OrganizationVoter extends CachedVoter
             case self::ITP_MANAGER:
                 // Si es jefe de algún departamento, permitir gestionar
                 return $isDepartmentHead || $isItpManager;
+            case self::ITP_VIEW_GRADES:
+                // Si es jefe de departamento, tutor de grupo, tutor docente o tutor laboral, permitir ver evaluaciones
+                return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor;
             case self::ITP_ACCESS_SECTION:
-                // Si es jefe de algún departamento, permitir acceder
+                // Si es jefe de algún departamento, estudiante, tutor de grupo, tutor docente o laboral, permitir acceder
                 return $isDepartmentHead || $isItpStudent || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor;
         }
 

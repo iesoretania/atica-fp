@@ -4,6 +4,7 @@ namespace App\Repository\ItpModule;
 
 use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\StudentProgramWorkcenterActivity;
+use App\Entity\ItpModule\WorkDay;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -35,10 +36,22 @@ class StudentProgramWorkcenterActivityRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    final public function findSubmittedByStudentProgramWorkcenter(StudentProgramWorkcenter $studentProgramWorkcenter): array
+    final public function findScaleValueSubmittedByStudentProgramWorkcenter(StudentProgramWorkcenter $studentProgramWorkcenter): array
     {
         return $this->createFindByStudentProgramWorkcenterOrderByCodeQueryBuilder($studentProgramWorkcenter)
             ->andWhere('spa.scaleValue IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
+    final public function findSubmittedByStudentProgramWorkcenter(StudentProgramWorkcenter $studentProgramWorkcenter): array
+    {
+        return $this->createQueryBuilder('spa')
+            ->distinct()
+            ->join('spa.activity', 'a')
+            ->join(WorkDay::class, 'wd', 'WITH', 'a MEMBER OF wd.activities AND wd.studentProgramWorkcenter = spa.studentProgramWorkcenter')
+            ->where('spa.studentProgramWorkcenter = :studentProgramWorkcenter')
+            ->setParameter('studentProgramWorkcenter', $studentProgramWorkcenter)
             ->getQuery()
             ->getResult();
     }

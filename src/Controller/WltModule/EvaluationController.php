@@ -61,7 +61,8 @@ class EvaluationController extends AbstractController
         $this->denyAccessUnlessGranted(AgreementVoter::VIEW_GRADE, $agreement);
 
         $academicYear = $agreement->
-            getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getAcademicYear();
+            getStudentEnrollment()?->getGroup()?->getGrade()?->getTraining()?->getAcademicYear();
+        assert($academicYear instanceof AcademicYear);
 
         $em = $managerRegistry->getManager();
 
@@ -73,7 +74,7 @@ class EvaluationController extends AbstractController
 
         $form->handleRequest($request);
 
-        $grades = $performanceScaleValueRepository->findByPerformanceScale($agreement->getProject()->getPerformanceScale());
+        $grades = $performanceScaleValueRepository->findByPerformanceScale($agreement->getProject()?->getPerformanceScale());
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
@@ -265,6 +266,8 @@ class EvaluationController extends AbstractController
         AgreementActivityRealization $agreementActivityRealization
     ): Response {
         $agreement = $agreementActivityRealization->getAgreement();
+        assert($agreement instanceof Agreement);
+
         $this->denyAccessUnlessGranted(AgreementVoter::VIEW_GRADE, $agreement);
 
         $em = $managerRegistry->getManager();
@@ -281,14 +284,16 @@ class EvaluationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $newComment = null;
-                if (trim($form->get('newComment')->getData()->__toString()) !== '') {
+                if (trim($form->get('newComment')->getData()) !== '') {
+                    $person = $this->getUser();
+                    assert($person instanceof Person);
                     $newComment = new AgreementActivityRealizationComment();
                     $em->persist($newComment);
                     $newComment
                         ->setAgreementActivityRealization($agreementActivityRealization)
-                        ->setComment(trim($form->get('newComment')->getData()->__toString()))
+                        ->setComment(trim($form->get('newComment')->getData()))
                         ->setTimestamp(new \DateTime())
-                        ->setPerson($this->getUser());
+                        ->setPerson($person);
                 }
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [],
@@ -317,7 +322,7 @@ class EvaluationController extends AbstractController
                 'routeName' => 'work_linked_training_evaluation_form',
                 'routeParams' => ['id' => $agreement->getId()]
             ],
-            ['fixed' => $agreementActivityRealization->getActivityRealization()->__toString()],
+            ['fixed' => $agreementActivityRealization->getActivityRealization()?->__toString() ?? ''],
             ['fixed' => $title]
         ];
 
@@ -344,7 +349,8 @@ class EvaluationController extends AbstractController
 
         $em = $managerRegistry->getManager();
 
-        $agreement = $agreementActivityRealizationComment->getAgreementActivityRealization()->getAgreement();
+        $agreement = $agreementActivityRealizationComment->getAgreementActivityRealization()?->getAgreement();
+        assert($agreement instanceof Agreement);
 
         if ($request->get('confirm', '') === 'ok') {
             try {
@@ -357,7 +363,7 @@ class EvaluationController extends AbstractController
                     'wlt_agreement_activity_realization'));
             }
             return $this->redirectToRoute('work_linked_training_evaluation_comment_form', [
-                'id' => $agreementActivityRealizationComment->getAgreementActivityRealization()->getId()
+                'id' => $agreementActivityRealizationComment->getAgreementActivityRealization()?->getId()
             ]);
         }
 
@@ -371,10 +377,10 @@ class EvaluationController extends AbstractController
             ],
             [
                 'fixed' => $agreementActivityRealizationComment
-                    ->getAgreementActivityRealization()->getActivityRealization()->__toString(),
+                    ->getAgreementActivityRealization()?->getActivityRealization()?->__toString() ?? '',
                 'routeName' => 'work_linked_training_evaluation_comment_form',
                 'routeParams' => ['id' => $agreementActivityRealizationComment
-                    ->getAgreementActivityRealization()->getId()]
+                    ->getAgreementActivityRealization()?->getId()]
             ],
             [
                 'fixed' => $title

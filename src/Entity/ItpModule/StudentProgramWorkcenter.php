@@ -57,6 +57,9 @@ class StudentProgramWorkcenter
     #[ORM\OneToMany(targetEntity: StudentProgramWorkcenterActivity::class, mappedBy: 'studentProgramWorkcenter', orphanRemoval: true)]
     private Collection $activities;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $workTutorRemarks = null;
+
     public function __construct()
     {
         $this->workDays = new ArrayCollection();
@@ -65,7 +68,7 @@ class StudentProgramWorkcenter
 
     public function __toString(): string
     {
-        return $this->getStudentProgram()->getStudentEnrollment()->__toString() . ' - ' . $this->getWorkcenter()->__toString();
+        return ($this->getStudentProgram()?->getStudentEnrollment()?->__toString() . ' - ' . $this->getWorkcenter()?->__toString()) ?? '';
     }
 
     public function getId(): ?int
@@ -183,5 +186,17 @@ class StudentProgramWorkcenter
     public function getActivities(): Collection
     {
         return $this->activities;
+    }
+
+    public function getWorkTutorRemarks(): ?string
+    {
+        return $this->workTutorRemarks;
+    }
+
+    public function setWorkTutorRemarks(?string $workTutorRemarks): static
+    {
+        $this->workTutorRemarks = $workTutorRemarks;
+
+        return $this;
     }
 }

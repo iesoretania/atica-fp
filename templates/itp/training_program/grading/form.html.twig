@@ -1,0 +1,80 @@
+{% trans_default_domain 'itp_grading' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+    <h3>{{ student_program_workcenter }} {{ student_program_workcenter.startDate ? ' - ' ~ student_program_workcenter.startDate|date('format.date'|trans({}, 'general')) }} {{ student_program_workcenter.endDate ? ' - ' ~ student_program_workcenter.endDate|date('format.date'|trans({}, 'general')) }}</h3>
+    {% if grades %}
+    <table class="table table-sm table-bordered table-striped table-hover agreement-grading">
+        <thead>
+        <tr>
+            <th class="w-30">{{ 'header.grade'|trans }}</th>
+            <th class="w-70">{{ 'header.description'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for grade in grades %}
+            <tr>
+                <td>{{ grade.description }}</td>
+                <td>{{ grade.notes|nl2br }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    {{ form_start(form) }}
+    {{ form_label(form.activities) }}
+    {{ form_errors(form.activities) }}
+    {% set last_activity_id = 0 %}
+    {% for activity in form.activities %}
+        {% set current_activity_id = activity.vars.data.activity.id %}
+        {% if current_activity_id != last_activity_id %}
+            {% if not loop.first %}</tbody></table>{% endif %}
+            {% set last_activity_id = current_activity_id %}
+            <table class="table table-sm table-bordered table-striped table-hover agreement-grading">
+                <thead>
+                <tr>
+                    <th colspan="2"><h5>{{ activity.vars.data.activity }}</h5></th>
+                </tr>
+                </thead>
+                <tbody>
+        {% endif %}
+        <tr>
+            <td class="w-50">{{ activity.vars.data.activity }}
+                {%- if activity.vars.data.disabled %}
+                    <i class="fa fa-lock" title="{{ 'form.disabled.hint'|trans }}"></i>
+                {% endif -%}
+                {%- if activity.vars.data.comments.count() > 0 %}
+                    {% set target_id = 'id' ~ activity.vars.data.id %}
+                    <a data-toggle="collapse" href="#{{ target_id }}" role="button" aria-expanded="false" aria-controls="{{ target_id }}" class="badge badge-pill badge-dark" title="{{ 'form.comments.hint'|trans }}">
+                        <i class="fa fa-comments"></i> {{ activity.vars.data.comments.count() }}
+                    </a>
+                {% endif -%}
+                <a href="{{ path('in_company_training_phase_tracking_grading_comment_form', {'studentProgramWorkcenterActivity': activity.vars.data.id}) }}" target="_blank">
+                    <i class="fa fa-pen" title="{{ 'form.edit.hint'|trans }}"></i>
+                </a>
+            </td>
+            <td class="w-50">
+                {{ form_errors(activity) }}
+                {{ form_widget(activity) }}
+                {% if activity.vars.data.comments.count() > 0 %}
+                    <div class="collapse" id="{{ target_id }}">
+                        {% for comment in activity.vars.data.comments %}
+                            <div class="card">
+                                <div class="card-body">{{ comment.comment|nl2br }}</div>
+                                <div class="card-footer small"><b>{{ comment.timestamp|date('format.datetime'|trans({}, 'general')) }} - {{ comment.person }}</b></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    {% if last_activity_id != 0 %}</tbody></table>{% endif %}
+    <h4>{{ 'form.remarks'|trans }}</h4>
+    {{ form_widget(form.workTutorRemarks) }}
+    <hr/>
+    {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
+    {{ m.link_button(path('in_company_training_phase_tracking_grading_list', {'academicYear': student_program_workcenter.studentProgram.programGroup.programGrade.trainingProgram.training.academicYear.id}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ form_end(form) }}
+{% endblock %}

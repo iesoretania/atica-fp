@@ -3,7 +3,7 @@ form.grade: Nivel de desempeño
 form.numeric_grade: Calificación numérica
 form.notes: Notas
 
-form.disabled.hint: Concreción dehabilitada. No se podrá seleccionar por el estudiante
+form.disabled.hint: Concreción deshabilitada. No se podrá seleccionar por el estudiante
 form.edit.hint: Añadir comentarios o deshabilitar concreción
 form.comments.hint: Mostrar/ocultar comentarios
 

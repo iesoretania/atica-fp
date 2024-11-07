@@ -15,4 +15,19 @@ class StudentProgramWorkcenterActivityCommentRepository extends ServiceEntityRep
     {
         parent::__construct($registry, StudentProgramWorkcenterActivityComment::class);
     }
+
+    final public function persist(StudentProgramWorkcenterActivityComment $comment): void
+    {
+        $this->getEntityManager()->persist($comment);
+    }
+
+    final public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
+    final public function remove(StudentProgramWorkcenterActivityComment $studentProgramWorkcenterActivityComment): void
+    {
+        $this->getEntityManager()->remove($studentProgramWorkcenterActivityComment);
+    }
 }
