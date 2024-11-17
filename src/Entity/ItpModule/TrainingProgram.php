@@ -54,6 +54,7 @@ class TrainingProgram
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?PerformanceScale $performanceScale = null;
+
     #[ORM\ManyToOne(targetEntity: Survey::class)]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Survey $studentSurvey = null;

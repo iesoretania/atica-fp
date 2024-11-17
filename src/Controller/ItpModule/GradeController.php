@@ -23,11 +23,11 @@ use App\Entity\Edu\Training;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\TrainingProgram;
 use App\Form\Type\ItpModule\ProgramGradeType;
-use App\Repository\Edu\GradeRepository;
 use App\Repository\Edu\SubjectRepository;
 use App\Repository\Edu\TrainingRepository;
 use App\Repository\ItpModule\ProgramGradeLearningOutcomeRepository;
 use App\Repository\ItpModule\ProgramGradeRepository;
+use App\Repository\ItpModule\ProgramGroupRepository;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
 use Pagerfanta\Adapter\ArrayAdapter;
@@ -45,8 +45,8 @@ class GradeController extends AbstractController
     #[Route(path: '/listar/{trainingProgram}/{page}', name: 'in_company_training_phase_grade_list', requirements: ['trainingProgram' => '\d+', 'page' => '\d+'], methods: ['GET'])]
     public function list(
         TrainingRepository $trainingRepository,
-        GradeRepository $gradeRepository,
         ProgramGradeRepository $programGradeRepository,
+        ProgramGroupRepository $programGroupRepository,
         TranslatorInterface $translator,
         TrainingProgram $trainingProgram,
         int $page = 1

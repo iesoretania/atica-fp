@@ -24,7 +24,7 @@
                         <a href="{{ url }}">{{ program_grade.grade.name }}</a>
                     </td>
                     <td>
-                        {% for group in program_grade.grade.groups %}{{ group.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+                        {% for group in program_grade.grade.groups %}{{ group.name }} ({{ program_grade.grade.training.academicYear }}){% if not loop.last %}, {% endif %}{% endfor %}
                     </td>
                     <td>
                         {{ (program_grade.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
