@@ -2,7 +2,6 @@ form.student: Estudiante
 form.company: Empresa u organismo equiparable
 form.workcenter: Centro de trabajo
 form.modality: Modalidad
-form.modality.inherited: Por defecto según plan de formación
 form.modality.general: General
 form.modality.intensive: Intensiva
 form.authorization_needed: Necesita autorización

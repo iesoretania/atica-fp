@@ -18,11 +18,9 @@
 
 namespace App\Repository\ItpModule;
 
-use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
-use App\Entity\Person;
 use App\Repository\Edu\GroupRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -71,7 +69,6 @@ class ProgramGroupRepository extends ServiceEntityRepository
                     $changes = true;
                     $programGroup = new ProgramGroup();
                     $programGroup
-                        ->setModality(ProgramGroup::MODE_INHERITED)
                         ->setProgramGrade($programGrade)
                         ->setGroup($group);
                     if ($programGrade->getTargetHours()) {

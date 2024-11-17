@@ -27,13 +27,13 @@ use App\Entity\Organization;
 use App\Entity\Survey;
 use App\Repository\Edu\PerformanceScaleRepository;
 use App\Repository\Edu\ReportTemplateRepository;
-use App\Repository\ItpModule\TrainingRepository;
+use App\Repository\Edu\TrainingRepository;
 use App\Repository\SurveyRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
@@ -54,13 +54,11 @@ class TrainingProgramType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var AcademicYear $academicYear */
         $academicYear = $options['academic_year'];
+        assert($academicYear instanceof AcademicYear);
         $organization = $academicYear->getOrganization();
 
-        $trainings = $options['new']
-            ? $this->trainingRepository->findNotRegisteredByAcademicYear($academicYear)
-            : $this->trainingRepository->findByAcademicYear($academicYear);
+        $trainings = $this->trainingRepository->findByAcademicYear($academicYear);
 
         $scales = $this->scaleRepository->findByOrganization($organization);
 
@@ -70,6 +68,10 @@ class TrainingProgramType extends AbstractType
         $templates = $this->reportTemplateRepository->findByOrganization($organization);
 
         $builder
+            ->add('name', TextType::class, [
+                'label' => 'form.name',
+                'required' => true
+            ])
             ->add('training', EntityType::class, [
                 'label' => 'form.training',
                 'class' => Training::class,
@@ -80,11 +82,11 @@ class TrainingProgramType extends AbstractType
                 'disabled' => !$options['new'],
                 'required' => true
             ])
-            ->add('defaultModality', ChoiceType::class, [
-                'label' => 'form.default_modality',
+            ->add('modality', ChoiceType::class, [
+                'label' => 'form.modality',
                 'choices' => [
-                    'form.default_modality.general' => TrainingProgram::MODE_GENERAL,
-                    'form.default_modality.intensive' => TrainingProgram::MODE_INTENSIVE
+                    'form.modality.general' => TrainingProgram::MODE_GENERAL,
+                    'form.modality.intensive' => TrainingProgram::MODE_INTENSIVE
                 ],
                 'expanded' => true,
                 'required' => true
@@ -195,9 +197,6 @@ class TrainingProgramType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'constraints' => [
-                new UniqueEntity(['fields' => 'training']),
-            ],
             'data_class' => TrainingProgram::class,
             'lock_manager' => false,
             'academic_year' => null,

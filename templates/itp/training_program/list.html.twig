@@ -5,10 +5,10 @@
 {% block path_new %}{{ path('in_company_training_phase_training_program_new', {'academicYear': academic_year.id}) }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-30"><label><input type="checkbox" id="select"> {{ 'header.training'|trans }}</label></th>
-    <th class="w-20">{{ 'header.department'|trans }}</th>
-    <th class="w-10">{{ 'header.default_modality'|trans }}</th>
-    <th class="w-20">{{ 'header.groups'|trans }}</th>
+    <th class="w-25"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-25">{{ 'header.training'|trans }}</th>
+    <th class="w-10">{{ 'header.modality'|trans }}</th>
+    <th class="w-15">{{ 'header.groups'|trans }}</th>
     <th class="w-10">{{ 'header.target_hours'|trans }}</th>
     <th class="w-20"></th>
 {% endblock %}
@@ -19,14 +19,14 @@
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
-                            <a href="{{ url }}">{{ item.training.name }}</a>{% if item.locked %} <i class="fa fa-lock"></i>{% endif %}
+                            <a href="{{ url }}">{{ item.name }}</a>{% if item.locked %} <i class="fa fa-lock"></i>{% endif %}
                         </label>
                     </td>
                     <td>
-                        {{ item.training.department.name ?? '' }}
+                        {{ item.training.name }}
                     </td>
                     <td>
-                        {{ ('table.modality.' ~ item.defaultModality) | trans }}
+                        {{ ('table.modality.' ~ item.modality) | trans }}
                     </td>
                     <td>
                         {% for grade in item.training.grades %}{% for group in grade.groups %}{{ group.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% if not loop.last %}, {% endif %}{% endfor %}

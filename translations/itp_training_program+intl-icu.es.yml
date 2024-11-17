@@ -1,10 +1,11 @@
+form.name: Nombre del plan de formación
 form.training: Enseñanza
 form.grades: Niveles
 form.groups: Grupos asociados
 form.target_hours: Horas previstas
-form.default_modality: Modalidad por defecto
-form.default_modality.general: General
-form.default_modality.intensive: Intensiva
+form.modality: Modalidad
+form.modality.general: General
+form.modality.intensive: Intensiva
 form.performance_scale: Escala de valoración del desempeño
 form.attendance_report_template: Plantilla del informe de asistencia
 form.weekly_activity_report_template: Plantilla del informe semanal de actividades
@@ -65,7 +66,7 @@ header.department: Familia profesional
 header.grades: Cursos
 header.groups: Grupos asociados
 header.target_hours: Horas previstas
-header.default_modality: Modalidad por defecto
+header.modality: Modalidad
 header.training_program: Plan de formación
 
 message.saved: Datos actualizados con éxito.

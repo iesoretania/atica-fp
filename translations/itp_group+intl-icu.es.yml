@@ -6,10 +6,6 @@ form.program_activities: Actividades formativas
 form.edit: Modificar datos
 
 form.target_hours: Horas previstas
-form.modality: Modalidad
-form.modality.inherited: Por defecto según plan de formación
-form.modality.general: General
-form.modality.intensive: Intensiva
 form.managers: Tutorías duales de grupo
 
 form.save: Guardar cambios

@@ -18,7 +18,6 @@
 
 namespace App\Form\Type\ItpModule;
 
-use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgram;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -39,16 +38,6 @@ class StudentProgramType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('modality', ChoiceType::class, [
-                'label' => 'form.modality',
-                'choices' => [
-                    'form.modality.inherited' => ProgramGroup::MODE_INHERITED,
-                    'form.modality.general' => ProgramGroup::MODE_GENERAL,
-                    'form.modality.intensive' => ProgramGroup::MODE_INTENSIVE
-                ],
-                'expanded' => true,
-                'required' => true
-            ])
             ->add('authorizationNeeded', ChoiceType::class, [
                 'label' => 'form.authorization_needed',
                 'choices' => [

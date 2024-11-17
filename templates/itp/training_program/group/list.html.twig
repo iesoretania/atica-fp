@@ -5,9 +5,8 @@
 {% block new_action %}{% endblock %}
 
 {% block table_header %}
-    <th class="w-15">{{ 'header.name'|trans }}</th>
-    <th class="w-30">{{ 'header.managers'|trans }}</th>
-    <th class="w-10">{{ 'header.default_modality'|trans }}</th>
+    <th class="w-40">{{ 'header.name'|trans }}</th>
+    <th class="w-40">{{ 'header.managers'|trans }}</th>
     <th class="w-10">{{ 'header.target_hours'|trans }}</th>
     <th class="w-10"></th>
 {% endblock %}
@@ -23,9 +22,6 @@
                         {{ item.managers|join(', ') }}
                     </td>
                     <td>
-                        {{ ('table.modality.' ~ item.actualModality) | trans }}{% if item.modality == 0 %} {{ 'table.modality.inherited'|trans }}{% endif %}
-                    </td>
-                    <td>
                         {{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
                     </td>
                     <td>
@@ -34,7 +30,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

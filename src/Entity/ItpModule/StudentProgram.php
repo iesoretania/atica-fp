@@ -14,10 +14,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: 'itp_student_program')]
 class StudentProgram
 {
-    public const MODE_INHERITED = 0;
-    public const MODE_GENERAL = 1;
-    public const MODE_INTENSIVE = 2;
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -36,9 +32,6 @@ class StudentProgram
      */
     #[ORM\OneToMany(targetEntity: StudentProgramWorkcenter::class, mappedBy: 'studentProgram', orphanRemoval: true)]
     private Collection $studentProgramWorkcenters;
-
-    #[ORM\Column]
-    private ?int $modality = self::MODE_INHERITED;
 
     #[ORM\Column]
     private ?bool $authorizationNeeded = null;
@@ -100,25 +93,6 @@ class StudentProgram
     public function getStudentProgramWorkcenters(): Collection
     {
         return $this->studentProgramWorkcenters;
-    }
-
-    public function getModality(): ?int
-    {
-        return $this->modality;
-    }
-
-    public function setModality(int $modality): static
-    {
-        $this->modality = $modality;
-
-        return $this;
-    }
-
-    public function getActualModality(): ?int
-    {
-        return $this->modality === self::MODE_INHERITED ?
-            $this->getProgramGroup()->getActualModality() :
-            $this->modality;
     }
 
     public function isAuthorizationNeeded(): ?bool

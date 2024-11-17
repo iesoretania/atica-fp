@@ -30,9 +30,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'itp_program_group')]
 class ProgramGroup
 {
-    public const MODE_INHERITED = 0;
-    public const MODE_GENERAL = 1;
-    public const MODE_INTENSIVE = 2;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -59,9 +56,6 @@ class ProgramGroup
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
-
-    #[ORM\Column(type: Types::INTEGER, nullable: false)]
-    private ?int $modality = self::MODE_GENERAL;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $targetHours = null;
@@ -150,25 +144,6 @@ class ProgramGroup
     public function setLocked(bool $locked): static
     {
         $this->locked = $locked;
-
-        return $this;
-    }
-
-    public function getModality(): ?int
-    {
-        return $this->modality;
-    }
-
-    public function getActualModality(): ?int
-    {
-        return $this->modality === self::MODE_INHERITED ?
-            $this->getProgramGrade()->getTrainingProgram()->getDefaultModality() :
-            $this->modality;
-    }
-
-    public function setModality(int $modality): static
-    {
-        $this->modality = $modality;
 
         return $this;
     }

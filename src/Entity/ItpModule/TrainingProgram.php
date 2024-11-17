@@ -26,6 +26,9 @@ class TrainingProgram
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
+
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(unique: true, nullable: false)]
     private ?Training $training = null;
@@ -34,7 +37,7 @@ class TrainingProgram
     private ?int $targetHours = null;
 
     #[ORM\Column]
-    private ?int $defaultModality = self::MODE_GENERAL;
+    private ?int $modality = self::MODE_GENERAL;
 
     /**
      * @var Collection<int, SpecificTraining>
@@ -92,6 +95,18 @@ class TrainingProgram
         return $this->id;
     }
 
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
     public function getTraining(): ?Training
     {
         return $this->training;
@@ -116,14 +131,14 @@ class TrainingProgram
         return $this;
     }
 
-    public function getDefaultModality(): ?int
+    public function getModality(): ?int
     {
-        return $this->defaultModality;
+        return $this->modality;
     }
 
-    public function setDefaultModality(int $defaultModality): static
+    public function setModality(int $modality): static
     {
-        $this->defaultModality = $defaultModality;
+        $this->modality = $modality;
 
         return $this;
     }

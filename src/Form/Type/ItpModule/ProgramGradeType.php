@@ -4,7 +4,6 @@ namespace App\Form\Type\ItpModule;
 
 use App\Entity\ItpModule\ProgramGrade;
 use App\Repository\ItpModule\ProgramGradeLearningOutcomeRepository;
-use App\Repository\ItpModule\ProgramGradeRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -16,7 +15,7 @@ use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 class ProgramGradeType extends AbstractType
 {
-    public function __construct(private readonly ProgramGradeLearningOutcomeRepository $programGradeLearningOutcomeRepository, private readonly ProgramGradeRepository $programGradeRepository)
+    public function __construct(private readonly ProgramGradeLearningOutcomeRepository $programGradeLearningOutcomeRepository)
     {
     }
 

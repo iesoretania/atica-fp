@@ -118,7 +118,7 @@ class TrainingProgramController extends AbstractController
 
         $trainingProgram = new TrainingProgram();
         $trainingProgram
-            ->setDefaultModality(TrainingProgram::MODE_GENERAL)
+            ->setModality(TrainingProgram::MODE_GENERAL)
             ->setLocked(false);
 
         $managerRegistry->getManager()->persist($trainingProgram);

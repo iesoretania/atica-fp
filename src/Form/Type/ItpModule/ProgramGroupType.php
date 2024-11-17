@@ -23,7 +23,6 @@ use App\Entity\ItpModule\ProgramGroup;
 use App\Repository\Edu\TeacherRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -52,16 +51,6 @@ class ProgramGroupType extends AbstractType
                     new GreaterThanOrEqual(0)
                 ],
                 'required' => false
-            ])
-            ->add('modality', ChoiceType::class, [
-                'label' => 'form.modality',
-                'choices' => [
-                    'form.modality.inherited' => ProgramGroup::MODE_INHERITED,
-                    'form.modality.general' => ProgramGroup::MODE_GENERAL,
-                    'form.modality.intensive' => ProgramGroup::MODE_INTENSIVE
-                ],
-                'expanded' => true,
-                'required' => true
             ]);
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             $form = $event->getForm();

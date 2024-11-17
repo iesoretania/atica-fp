@@ -22,7 +22,6 @@ use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Training;
 use App\Entity\ItpModule\TrainingProgram;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 class TrainingRepository extends ServiceEntityRepository
@@ -32,18 +31,7 @@ class TrainingRepository extends ServiceEntityRepository
         parent::__construct($registry, Training::class);
     }
 
-    /**
-     * @return QueryBuilder
-     */
-    private function findByAcademicYearQueryBuilder(AcademicYear $academicYear)
-    {
-        return $this->createQueryBuilder('t')
-            ->where('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear)
-            ->orderBy('t.name');
-    }
-
-    public function findByAcademicYear(AcademicYear $academicYear)
+    public function findByAcademicYear(AcademicYear $academicYear): array
     {
         return $this->createQueryBuilder('t')
             ->select('t')
@@ -51,28 +39,6 @@ class TrainingRepository extends ServiceEntityRepository
             ->where('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear)
             ->getQuery()
-            ->getResult();
-    }
-
-    public function findNotRegisteredByAcademicYear(AcademicYear $academicYear)
-    {
-        $selected = $this->createQueryBuilder('t')
-            ->select('t')
-            ->join(TrainingProgram::class, 'tp', 'WITH', 'tp.training = t')
-            ->where('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear)
-            ->getQuery()
-            ->getResult();
-
-        $qb = $this->findByAcademicYearQueryBuilder($academicYear);
-
-        if (count($selected) !== 0) {
-            $qb
-                ->andWhere('t NOT IN (:selected)')
-                ->setParameter('selected', $selected);
-        }
-
-        return $qb->getQuery()
             ->getResult();
     }
 }

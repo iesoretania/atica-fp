@@ -30,11 +30,6 @@
                         {% if item.isAdaptationNeeded %}
                             <i class="fa fa-universal-access" title="{{ item.adaptationDescription }}"></i>
                         {% endif %}
-                            {% if item.actualModality == constant('App\\Entity\\ItpModule\\StudentProgram::MODE_GENERAL') %}
-                            <span class="badge badge-pill badge-info">{{ 'label.mode.general'|trans }}</span>
-                        {% else %}
-                            <span class="badge badge-pill badge-warning">{{ 'label.mode.intensive'|trans }}</span>
-                        {% endif %}
                         </span>
                     </td>
                     <td>
