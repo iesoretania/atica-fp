@@ -20,8 +20,10 @@ namespace App\Controller\ItpModule;
 
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
+use App\Entity\ItpModule\StudentProgram;
 use App\Form\Type\ItpModule\ProgramGroupType;
 use App\Repository\ItpModule\ProgramGroupRepository;
+use App\Repository\ItpModule\StudentProgramRepository;
 use App\Security\ItpModule\TrainingProgramVoter;
 use Pagerfanta\Adapter\ArrayAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
@@ -46,7 +48,7 @@ class GroupController extends AbstractController
         assert($programGrade instanceof ProgramGrade);
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
 
-        $programGrades = $programGroupRepository->findAllByProgramGrade($programGrade);
+        $programGrades = $programGroupRepository->findOrCreateAllByProgramGrade($programGrade);
 
         $adapter = new ArrayAdapter($programGrades);
         $pager = new Pagerfanta($adapter);
@@ -86,6 +88,7 @@ class GroupController extends AbstractController
         Request                $request,
         TranslatorInterface    $translator,
         ProgramGroupRepository $programGroupRepository,
+        StudentProgramRepository $studentProgramRepository,
         ProgramGroup           $programGroup
     ): Response {
         assert($programGroup->getProgramGrade() instanceof ProgramGrade);
@@ -93,10 +96,28 @@ class GroupController extends AbstractController
 
         $form = $this->createForm(ProgramGroupType::class, $programGroup);
 
+        $previousStudentEnrollments = [];
+        foreach ($programGroup->getStudentPrograms() as $studentProgram) {
+            $previousStudentEnrollments[] = $studentProgram->getStudentEnrollment();
+        }
+        $form->get('currentStudentPrograms')->setData($previousStudentEnrollments);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                $currentStudentEnrollments = $form->get('currentStudentPrograms')->getData();
+                $newStudentEnrollments = array_diff($currentStudentEnrollments, $previousStudentEnrollments);
+                foreach ($newStudentEnrollments as $studentEnrollment) {
+                    $studentProgram = new StudentProgram();
+                    $studentProgram
+                        ->setProgramGroup($programGroup)
+                        ->setStudentEnrollment($studentEnrollment)
+                        ->setAdaptationNeeded(false)
+                        ->setAuthorizationNeeded(false);
+                    $studentProgramRepository->persist($studentProgram);
+                }
+                $studentProgramRepository->flush();
                 $programGroupRepository->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'itp_group'));
                 return $this->redirectToRoute('in_company_training_phase_group_list', ['programGrade' => $programGroup->getProgramGrade()->getId()]);
@@ -121,7 +142,7 @@ class GroupController extends AbstractController
             ['fixed' => $programGroup->getGroup()->__toString()]
         ];
 
-        return $this->render('itp/training_program/company/form.html.twig', [
+        return $this->render('itp/training_program/group/form.html.twig', [
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,

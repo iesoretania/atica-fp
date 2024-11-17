@@ -1,4 +1,4 @@
-{% trans_default_domain 'itp_activity' %}
+{% trans_default_domain 'itp_group' %}
 {% extends 'layout.html.twig' %}
 {% import 'macros.html.twig' as m %}
 {% form_theme form _self %}
@@ -12,27 +12,24 @@
     {{ form_end(form) }}
 {% endblock %}
 
-{% block _activity_criteria_widget %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('itp_group') }}
+{% endblock %}
+
+{% block _program_group_currentStudentPrograms_widget %}
     <div {{ block('widget_container_attributes') }}>
-        {% set last_subject_id = null %}
-        {% set last_learning_outcome_id = null %}
-        {% for key, option in form.children %}
-            {% set item = form.vars.choices[key].data %}
-            {% if item.learningOutcome.subject.id != last_subject_id %}
-                {% set last_subject_id = item.learningOutcome.subject.id %}
-                <h4 class="checkbox-category">
-                    {{ item.learningOutcome.subject }}{% if item.learningOutcome.subject.code %} ({{ item.learningOutcome.subject.code }}){% endif %}
-                </h4>
-            {% endif %}
-            {% if item.learningOutcome.id != last_learning_outcome_id %}
-                {% set last_learning_outcome_id = item.learningOutcome.id %}
-                <h5 class="checkbox-category">
-                    {{ item.learningOutcome.code }}. {{ item.learningOutcome.description }}
-                </h5>
-            {% endif %}
-            {{ form_widget(option) }}
+        {% if form.children %}
+            <button type="button" id="select_all" class="btn btn-sm btn-secondary" title="{{ 'form.select_all'|trans }}"><i class="fa fa-check-square"></i></button>
+            <button type="button" id="select_none" class="btn btn-sm btn-secondary" title="{{ 'form.select_none'|trans }}"><i class="fa fa-square"></i></button>
+        {% endif %}
+        {% for item in form.children %}
+            {{ form_widget(item, {translation_domain: false}) }}
+            {{ form_label(item) }}
         {% else %}
-            <h5>{{ 'form.no_activity'|trans }}</h5>
+            <h5 class="checkbox-category">
+                {{ 'form.no_activity'|trans }}
+            </h5>
         {% endfor %}
     </div>
 {% endblock %}

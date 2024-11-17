@@ -17,8 +17,8 @@ form.save: Guardar cambios
 form.back: Volver
 form.edit: Modificar datos
 
-form.clean: Limpiar planes seleccinados
-form.clean_confirm: Confirmar limpiado
+form.delete: Eliminar planes de formación seleccionados
+form.delete_confirm: Confirmar eliminación
 
 form.no_student: Seleccione un estudiante
 form.fixed_student: No se puede modificar el estudiante
@@ -26,7 +26,7 @@ form.no_company: Seleccione una empresa u organismo equiparable
 form.no_workcenter: Seleccione una sede de la empresa u organismo equiparable
 
 title.list: Planes de formación individualizados
-title.clean: Eliminar estancias del plan de formación
+title.delete: Eliminar planes de formación individualizado
 title.manage_student_programs: Gestión de planes de formación individuales
 
 table.new: Registrar nueva estancia

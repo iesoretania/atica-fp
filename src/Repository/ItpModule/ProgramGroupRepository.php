@@ -34,7 +34,7 @@ class ProgramGroupRepository extends ServiceEntityRepository
         parent::__construct($registry, ProgramGroup::class);
     }
 
-    public function findAllByProgramGrade(ProgramGrade $programGrade): array
+    public function findOrCreateAllByProgramGrade(ProgramGrade $programGrade): array
     {
         do {
             $changes = false;

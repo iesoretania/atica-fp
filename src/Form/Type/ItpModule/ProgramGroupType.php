@@ -18,8 +18,10 @@
 
 namespace App\Form\Type\ItpModule;
 
+use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\ProgramGroup;
+use App\Repository\Edu\StudentEnrollmentRepository;
 use App\Repository\Edu\TeacherRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -33,7 +35,8 @@ use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 class ProgramGroupType extends AbstractType
 {
     public function __construct(
-        private readonly TeacherRepository $teacherRepository)
+        private readonly TeacherRepository $teacherRepository,
+        private readonly StudentEnrollmentRepository $studentEnrollmentRepository)
     {
     }
 
@@ -57,6 +60,15 @@ class ProgramGroupType extends AbstractType
             $data = $event->getData();
 
             $managers = $this->teacherRepository->findByGroup($data->getGroup());
+            $students = $this->studentEnrollmentRepository->findByGroup($data->getGroup());
+
+            $currentStudentPrograms = $data->getStudentPrograms();
+
+            $currentStudentEnrollments = [];
+            foreach ($currentStudentPrograms as $studentProgram) {
+                $currentStudentEnrollments[] = $studentProgram->getStudentEnrollment();
+            }
+
             $form
                 ->add('managers', EntityType::class, [
                     'label' => 'form.managers',
@@ -65,7 +77,20 @@ class ProgramGroupType extends AbstractType
                     'expanded' => false,
                     'multiple' => true,
                     'required' => false
-                ]);
+                ])
+                ->add('currentStudentPrograms', EntityType::class, [
+                    'mapped' => false,
+                    'label' => 'form.students',
+                    'class' => StudentEnrollment::class,
+                    'choices' => $students,
+                    'choice_attr' => fn(StudentEnrollment $se): array => (in_array($se, $currentStudentEnrollments, true)) ?
+                        ['disabled' => 'disabled'] :
+                        [],
+                    'expanded' => true,
+                    'multiple' => true,
+                    'required' => false
+                ])
+            ;
         });
     }
 

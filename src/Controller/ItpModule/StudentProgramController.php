@@ -24,16 +24,12 @@ use App\Entity\Edu\Training;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgram;
-use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\Person;
 use App\Form\Type\ItpModule\StudentProgramType;
-use App\Repository\ItpModule\ProgramGroupRepository;
 use App\Repository\ItpModule\StudentProgramRepository;
-use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
 use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -62,7 +58,7 @@ class StudentProgramController extends AbstractController
         /** @var Person $person */
         $person = $this->getUser();
 
-        $studentPrograms = $studentProgramRepository->findOrCreateAllByProgramGroup(
+        $studentPrograms = $studentProgramRepository->findByProgramGroupAndQuery(
             $programGroup,
             $q
         );
@@ -191,7 +187,7 @@ class StudentProgramController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/limpiar/{programGroup}', name: 'in_company_training_phase_student_program_operation', requirements: ['programGroup' => '\d+'], methods: ['POST'])]
+    #[Route(path: '/eliminar/{programGroup}', name: 'in_company_training_phase_student_program_operation', requirements: ['programGroup' => '\d+'], methods: ['POST'])]
     public function operation(
         Request                  $request,
         TranslatorInterface      $translator,
@@ -225,7 +221,7 @@ class StudentProgramController extends AbstractController
             return $this->redirectToRoute('in_company_training_phase_student_program_list', ['programGroup' => $programGroup->getId()]);
         }
 
-        $title = $translator->trans('title.clean', [], 'itp_student_program');
+        $title = $translator->trans('title.delete', [], 'itp_student_program');
 
         $breadcrumb = [
             [
@@ -242,7 +238,7 @@ class StudentProgramController extends AbstractController
             ['fixed' => $translator->trans('title.list', [], 'itp_student_program')]
         ];
 
-        return $this->render('itp/training_program/student_program/clean.html.twig', [
+        return $this->render('itp/training_program/student_program/delete.html.twig', [
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
