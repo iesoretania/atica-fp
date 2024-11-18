@@ -84,7 +84,7 @@ class ActivityController extends AbstractController
 
         $breadcrumb = [
             [
-                'fixed' => $programGrade->getTrainingProgram()->getTraining()->getName(),
+                'fixed' => $programGrade->getTrainingProgram()->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
                 'routeParams' => ['trainingProgram' => $programGrade->getTrainingProgram()->getId()]
             ],
@@ -160,7 +160,7 @@ class ActivityController extends AbstractController
 
         $breadcrumb = [
             [
-                'fixed' => $activity->getProgramGrade()->getTrainingProgram()->getTraining()->getName(),
+                'fixed' => $activity->getProgramGrade()->getTrainingProgram()->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
                 'routeParams' => ['trainingProgram' => $activity->getProgramGrade()->getTrainingProgram()->getId()]
             ],
@@ -218,7 +218,7 @@ class ActivityController extends AbstractController
 
         $breadcrumb = [
             [
-                'fixed' => $programGrade->getTrainingProgram()->getTraining()->getName(),
+                'fixed' => $programGrade->getTrainingProgram()->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
                 'routeParams' => ['trainingProgram' => $programGrade->getTrainingProgram()->getId()]
             ],

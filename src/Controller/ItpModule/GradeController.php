@@ -30,6 +30,7 @@ use App\Repository\ItpModule\ProgramGradeRepository;
 use App\Repository\ItpModule\ProgramGroupRepository;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
+use App\Service\UserExtensionService;
 use Pagerfanta\Adapter\ArrayAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -46,24 +47,15 @@ class GradeController extends AbstractController
     public function list(
         TrainingRepository $trainingRepository,
         ProgramGradeRepository $programGradeRepository,
-        ProgramGroupRepository $programGroupRepository,
         TranslatorInterface $translator,
+        UserExtensionService $userExtensionService,
         TrainingProgram $trainingProgram,
         int $page = 1
     ): Response {
-        assert($trainingProgram->getTraining() instanceof Training);
-        $academicYear = $trainingProgram->getTraining()->getAcademicYear();
-        assert($academicYear instanceof AcademicYear);
-        $organization = $academicYear->getOrganization();
+        $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $trainingProgram);
-
-        // Precargar grupos y enseñanzas
-        $trainingRepository->findByAcademicYearWithTrainingsAndGroups($academicYear);
-        $trainingRepository->findByTrainingsAndGroups($trainingProgram->getTraining());
-
-        $programGradeRepository->findAllByTrainingProgram($trainingProgram);
 
         $programGradeStats = $programGradeRepository->getStatsByTrainingProgram($trainingProgram);
 
@@ -78,10 +70,10 @@ class GradeController extends AbstractController
         }
 
         $title = $translator->trans('title.detail', [], 'itp_training_program')
-            . ' - ' . $trainingProgram->getTraining()->__toString();
+            . ' - ' . $trainingProgram->getName();
 
         $breadcrumb = [
-            ['fixed' => $trainingProgram->getTraining()->getName()],
+            ['fixed' => $trainingProgram->getName()],
             ['fixed' => $translator->trans('title.detail', [], 'itp_training_program')]
         ];
 
@@ -100,14 +92,12 @@ class GradeController extends AbstractController
         TranslatorInterface                   $translator,
         ProgramGradeLearningOutcomeRepository $programGradeLearningOutcomeRepository,
         SubjectRepository                     $subjectRepository,
+        UserExtensionService                  $userExtensionService,
         ProgramGrade                          $programGrade
     ): Response {
+        $organization = $userExtensionService->getCurrentOrganization();
         $trainingProgram = $programGrade->getTrainingProgram();
         assert($trainingProgram instanceof TrainingProgram);
-        assert($trainingProgram->getTraining() instanceof Training);
-        $academicYear = $trainingProgram->getTraining()->getAcademicYear();
-        assert($academicYear instanceof AcademicYear);
-        $organization = $academicYear->getOrganization();
 
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $trainingProgram);
@@ -154,7 +144,7 @@ class GradeController extends AbstractController
 
         $breadcrumb = [
             [
-                'fixed' => $trainingProgram->getTraining()->getName(),
+                'fixed' => $trainingProgram->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
                 'routeParams' => ['trainingProgram' => $trainingProgram->getId()]
             ],

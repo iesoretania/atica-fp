@@ -9,7 +9,6 @@ use App\Entity\ItpModule\StudentProgram;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\WorkDay;
 use App\Entity\Person;
-use App\Form\Model\ItpModule\Agreement;
 use App\Repository\Edu\GroupRepository;
 use App\Repository\Edu\TeacherRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -38,7 +37,6 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         $workDays = $this->workDayRepository->findByStudentPrograms($items);
         $this->workDayRepository->deleteFromList($workDays);
         $studentProgramWorkcenterActivities = $this->studentProgramWorkcenterActivityRepository->findByStudentPrograms($items);
-        dump($studentProgramWorkcenterActivities);
         $this->studentProgramWorkcenterActivityRepository->deleteFromList($studentProgramWorkcenterActivities);
         $this->createQueryBuilder('spw')
             ->delete()
@@ -312,7 +310,7 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
             ->andWhere('gr.training = :training')
             ->andWhere('SIZE(spw.workDays) > 0')
             ->setParameter('items', $items)
-            ->setParameter('training', $programGrade->getTrainingProgram()->getTraining())
+            ->setParameter('training', $programGrade->getGrade()->getTraining())
             ->addOrderBy('g.name', 'ASC')
             ->addOrderBy('p.lastName', 'ASC')
             ->addOrderBy('p.firstName', 'ASC')

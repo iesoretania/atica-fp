@@ -14,8 +14,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class StudentProgramWorkcenterActivityRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly StudentProgramWorkcenterActivityCommentRepository $studentProgramWorkcenterActivityCommentRepository
+    ) {
         parent::__construct($registry, StudentProgramWorkcenterActivity::class);
     }
 
@@ -68,6 +70,7 @@ class StudentProgramWorkcenterActivityRepository extends ServiceEntityRepository
 
     public function deleteFromListByStudentProgramWorkcenter(array $selectedItems): void
     {
+        $this->studentProgramWorkcenterActivityCommentRepository->deleteFromStudentProgramWorkcenterList($items);
         $this->createQueryBuilder('spa')
             ->delete()
             ->where('spa.studentProgramWorkcenter IN (:selectedItems)')
@@ -89,6 +92,7 @@ class StudentProgramWorkcenterActivityRepository extends ServiceEntityRepository
 
     public function deleteFromList(array $items): void
     {
+        $this->studentProgramWorkcenterActivityCommentRepository->deleteFromStudentProgramWorkcenterActivityList($items);
         $this->createQueryBuilder('spa')
             ->delete()
             ->where('spa IN (:items)')

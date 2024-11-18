@@ -1,5 +1,4 @@
 form.name: Nombre del plan de formación
-form.training: Enseñanza
 form.grades: Niveles
 form.groups: Grupos asociados
 form.target_hours: Horas previstas
@@ -23,7 +22,6 @@ form.locked: Plan de formación bloqueado
 form.locked.no: Se pueden realizar cambios
 form.locked.yes: Sólo el equipo directivo puede realizar cambios
 
-form.no_training: Escoja la enseñanza
 form.no_performance_scale: Seleccione una escala de valoración del desempeño
 form.no_template: Sin plantilla
 form.no_survey: Ninguna

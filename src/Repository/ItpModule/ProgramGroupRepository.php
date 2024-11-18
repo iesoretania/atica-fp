@@ -121,4 +121,9 @@ class ProgramGroupRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function persist(ProgramGroup $programGroup): void
+    {
+        $this->getEntityManager()->persist($programGroup);
+    }
 }

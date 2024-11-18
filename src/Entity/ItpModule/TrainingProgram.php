@@ -29,10 +29,6 @@ class TrainingProgram
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(unique: true, nullable: false)]
-    private ?Training $training = null;
-
     #[ORM\Column(nullable: true)]
     private ?int $targetHours = null;
 
@@ -104,18 +100,6 @@ class TrainingProgram
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getTraining(): ?Training
-    {
-        return $this->training;
-    }
-
-    public function setTraining(Training $training): static
-    {
-        $this->training = $training;
 
         return $this;
     }

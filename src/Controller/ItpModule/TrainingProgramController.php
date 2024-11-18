@@ -19,14 +19,15 @@
 namespace App\Controller\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
-use App\Entity\Edu\Training;
+use App\Entity\ItpModule\ProgramGrade;
+use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\Person;
 use App\Form\Type\ItpModule\TrainingProgramType;
 use App\Repository\Edu\AcademicYearRepository;
-use App\Repository\Edu\DepartmentRepository;
-use App\Repository\Edu\TeacherRepository;
 use App\Repository\Edu\TrainingRepository;
+use App\Repository\ItpModule\ProgramGradeRepository;
+use App\Repository\ItpModule\ProgramGroupRepository;
 use App\Repository\ItpModule\TrainingProgramRepository;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
@@ -107,9 +108,9 @@ class TrainingProgramController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        DepartmentRepository $departmentRepository,
-        TeacherRepository    $teacherRepository,
-        ManagerRegistry $managerRegistry,
+        TrainingProgramRepository $trainingProgramRepository,
+        ProgramGradeRepository $programGradeRepository,
+        ProgramGroupRepository $programGroupRepository,
         AcademicYear $academicYear
     ): Response
     {
@@ -121,55 +122,64 @@ class TrainingProgramController extends AbstractController
             ->setModality(TrainingProgram::MODE_GENERAL)
             ->setLocked(false);
 
-        $managerRegistry->getManager()->persist($trainingProgram);
+        $trainingProgramRepository->persist($trainingProgram);
 
-        return $this->edit($request, $userExtensionService, $translator, $managerRegistry, $trainingProgram, $departmentRepository, $teacherRepository, $academicYear);
+        return $this->edit($request, $userExtensionService, $translator, $trainingProgramRepository, $programGradeRepository, $programGroupRepository, $trainingProgram, $academicYear);
     }
 
-    #[Route(path: '/{id}', name: 'in_company_training_phase_training_program_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(path: '/{trainingProgram}/{academicYear}', name: 'in_company_training_phase_training_program_edit', requirements: ['trainingProgram' => '\d+', 'academicYear' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(
         Request              $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface  $translator,
-        ManagerRegistry      $managerRegistry,
+        TrainingProgramRepository $trainingProgramRepository,
+        ProgramGradeRepository $programGradeRepository,
+        ProgramGroupRepository $programGroupRepository,
         TrainingProgram      $trainingProgram,
-        DepartmentRepository $departmentRepository,
-        TeacherRepository    $teacherRepository,
         AcademicYear         $academicYear = null
     ): Response {
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $trainingProgram);
 
-        if ($trainingProgram->getTraining() instanceof Training
-            && $trainingProgram->getTraining()->getAcademicYear() instanceof AcademicYear) {
-            $academicYear = $trainingProgram->getTraining()->getAcademicYear();
-        }
-
         $organization = $userExtensionService->getCurrentOrganization();
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
-        $departments = [];
-        if ($academicYear instanceof AcademicYear && !$isManager) {
-            assert($this->getUser() instanceof Person);
-            $teacher = $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $this->getUser());
-            if ($teacher !== null) {
-                $departments = $departmentRepository->findByTeacher($teacher);
-            }
-        }
-        $em = $managerRegistry->getManager();
-
         $form = $this->createForm(TrainingProgramType::class, $trainingProgram, [
             'lock_manager' => !$isManager,
-            'academic_year' => $academicYear,
             'new' => $trainingProgram->getId() === null,
             'is_manager' => $isManager,
-            'departments' => $departments
         ]);
+
+        $oldGrades = [];
+        foreach ($trainingProgram->getTrainingProgramGrades() as $trainingProgramGrade) {
+            $oldGrades[] = $trainingProgramGrade->getGrade();
+        }
+
+        $form->get('grades')->setData($oldGrades);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $em->flush();
+                $currentGrades = $form->get('grades')->getData();
+                $newGrades = array_diff($currentGrades, $oldGrades);
+                $deletedGrades = array_diff($oldGrades, $currentGrades);
+                foreach ($newGrades as $grade) {
+                    $trainingProgramGrade = new ProgramGrade();
+                    $trainingProgramGrade
+                        ->setTrainingProgram($trainingProgram)
+                        ->setGrade($grade);
+                    $programGradeRepository->persist($trainingProgramGrade);
+                    foreach ($grade->getGroups() as $group) {
+                        $programGroup = new ProgramGroup();
+                        $programGroup
+                            ->setProgramGrade($trainingProgramGrade)
+                            ->setGroup($group);
+                        $programGroupRepository->persist($programGroup);
+                    }
+                }
+                $programGradeRepository->deleteFromList($deletedGrades);
+                $programGradeRepository->flush();
+                $trainingProgramRepository->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'itp_training_program'));
                 return $this->redirectToRoute('in_company_training_phase_training_program_list',
                     $academicYear !== null ? ['academicYear' => $academicYear->getId()] : []
@@ -187,7 +197,7 @@ class TrainingProgramController extends AbstractController
 
         $breadcrumb = [
             $trainingProgram->getId() !== null ?
-                ['fixed' => $academicYear->getDescription()] :
+                ['fixed' => $trainingProgram->getName()] :
                 ['fixed' => $translator->trans('title.new', [], 'itp_training_program')]
         ];
 

@@ -21,6 +21,7 @@ namespace App\Repository\Edu;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Grade;
 use App\Entity\Edu\Training;
+use App\Entity\Organization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\NonUniqueResultException;
@@ -138,5 +139,18 @@ class GradeRepository extends ServiceEntityRepository
             ->setParameter('items', $grades)
             ->getQuery()
             ->execute();
+    }
+
+    public function findByOrganizationOrderByAcademicYearDesc(Organization $organization)
+    {
+        return $this->createQueryBuilder('gr')
+            ->join('gr.training', 't')
+            ->join('t.academicYear', 'ay')
+            ->where('ay.organization = :organization')
+            ->setParameter('organization', $organization)
+            ->orderBy('ay.description', 'DESC')
+            ->addOrderBy('gr.name')
+            ->getQuery()
+            ->getResult();
     }
 }

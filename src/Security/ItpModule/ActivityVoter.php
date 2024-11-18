@@ -19,6 +19,7 @@
 namespace App\Security\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Grade;
 use App\Entity\Edu\Training;
 use App\Entity\ItpModule\Activity;
 use App\Entity\ItpModule\ProgramGrade;
@@ -88,11 +89,7 @@ class ActivityVoter extends CachedVoter
 
         // Si la enseñanza no es de la organización actual, denegar
         if (
-            !$subject->getProgramGrade() instanceof ProgramGrade ||
-            !$subject->getProgramGrade()->getTrainingProgram() instanceof TrainingProgram ||
-            !$subject->getProgramGrade()->getTrainingProgram()->getTraining() instanceof Training ||
-            !$subject->getProgramGrade()->getTrainingProgram()->getTraining()->getAcademicYear() instanceof AcademicYear ||
-            $subject->getProgramGrade()->getTrainingProgram()->getTraining()->getAcademicYear()->getOrganization() !== $organization) {
+            $subject->getProgramGrade()?->getGrade()?->getTraining()?->getAcademicYear()?->getOrganization() !== $organization) {
             return false;
         }
 
@@ -101,13 +98,12 @@ class ActivityVoter extends CachedVoter
             return true;
         }
 
-        $isCurrentAcademicYear = $subject->getProgramGrade()->getTrainingProgram()->getTraining()->getAcademicYear()
+        $isCurrentAcademicYear = $subject->getProgramGrade()?->getGrade()?->getTraining()?->getAcademicYear()
             === $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
 
         // El jefe de departamento de la familia profesional de proyecto también puede
-        $isDepartmentHead = $subject->getProgramGrade()->getTrainingProgram()->getTraining()->getDepartment()
-            && $subject->getProgramGrade()->getTrainingProgram()->getTraining()->getDepartment()->getHead()
-            && $subject->getProgramGrade()->getTrainingProgram()->getTraining()->getDepartment()->getHead()->getPerson() === $user;
+        $isDepartmentHead =
+            $subject->getProgramGrade()?->getGrade()?->getTraining()?->getDepartment()?->getHead()?->getPerson() === $user;
 
         switch ($attribute) {
             case self::MANAGE:

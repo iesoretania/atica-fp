@@ -78,7 +78,7 @@ class StudentProgramController extends AbstractController
 
         $breadcrumb = [
             [
-                'fixed' => $programGroup->getProgramGrade()->getTrainingProgram()->getTraining()->getName(),
+                'fixed' => $programGroup->getProgramGrade()->getTrainingProgram()->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
                 'routeParams' => ['trainingProgram' => $programGroup->getProgramGrade()->getTrainingProgram()->getId()]
             ],
@@ -158,7 +158,7 @@ class StudentProgramController extends AbstractController
 
         $breadcrumb = [
             [
-                'fixed' => $programGrade->getTrainingProgram()->getTraining()->getName(),
+                'fixed' => $programGrade->getTrainingProgram()->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
                 'routeParams' => ['trainingProgram' => $programGrade->getTrainingProgram()->getId()]
             ],
@@ -225,7 +225,7 @@ class StudentProgramController extends AbstractController
 
         $breadcrumb = [
             [
-                'fixed' => $programGroup->getProgramGrade()->getTrainingProgram()->getTraining()->getName(),
+                'fixed' => $programGroup->getProgramGrade()->getTrainingProgram()->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
                 'routeParams' => ['trainingProgram' => $programGroup->getProgramGrade()->getTrainingProgram()->getId()]
             ],

@@ -30,4 +30,36 @@ class StudentProgramWorkcenterActivityCommentRepository extends ServiceEntityRep
     {
         $this->getEntityManager()->remove($studentProgramWorkcenterActivityComment);
     }
+
+    public function deleteFromStudentProgramWorkcenterActivityList(array $items): void
+    {
+        $this->createQueryBuilder('spwac')
+            ->delete()
+            ->where('spwac.studentProgramActivity IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function deleteFromStudentProgramWorkcenterList(array $items): void
+    {
+        $comments = $this->createQueryBuilder('spwac')
+            ->join('spwac.studentProgramActivity', 'spa')
+            ->where('spa.studentProgramWorkcenter IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->getResult();
+
+        $this->deleteFromList($comments);
+    }
+
+    private function deleteFromList(array $comments): void
+    {
+        $this->createQueryBuilder('spwac')
+            ->delete()
+            ->where('spwac IN (:items)')
+            ->setParameter('items', $comments)
+            ->getQuery()
+            ->execute();
+    }
 }

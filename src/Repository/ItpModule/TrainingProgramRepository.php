@@ -34,9 +34,11 @@ class TrainingProgramRepository extends ServiceEntityRepository
     public function findAllInListByIdAndAcademicYear(array $items, AcademicYear $academicYear): array
     {
         return $this->createQueryBuilder('tp')
-            ->addSelect('tr')
+            ->addSelect('tpg', 'gr', 'tr')
             ->where('tp IN (:items)')
-            ->join('tp.training', 'tr')
+            ->join('tp.trainingProgramGrades', 'tpg')
+            ->join('tpg.grade', 'gr')
+            ->join('gr.training', 'tr')
             ->andWhere('tr.academicYear = :academic_year')
             ->setParameter('items', $items)
             ->setParameter('academic_year', $academicYear)
@@ -48,16 +50,19 @@ class TrainingProgramRepository extends ServiceEntityRepository
     public function createProgramRepositoryQueryBuilder(?AcademicYear $academicYear, bool $isManager, Person $person, $q): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('tp')
-            ->addSelect('tr')
+            ->addSelect('pg', 'pgg', 'gr', 'tr')
             ->distinct()
-            ->join('tp.training', 'tr')
+            ->join('tp.trainingProgramGrades', 'pg')
+            ->join('pg.trainingProgramGroups', 'pgg')
+            ->join('pg.grade', 'gr')
+            ->join('gr.training', 'tr')
             ->leftJoin('tr.department', 'd')
             ->leftJoin('d.head', 'h')
-            ->orderBy('tr.name');
+            ->orderBy('tp.name');
 
         if ($q) {
             $queryBuilder
-                ->where('tr.name LIKE :tq OR d.name LIKE :tq')
+                ->where('tp.name LIKE :tq OR pgg.name LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
 
@@ -83,5 +88,15 @@ class TrainingProgramRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
+    public function persist(TrainingProgram $trainingProgram): void
+    {
+        $this->getEntityManager()->persist($trainingProgram);
     }
 }

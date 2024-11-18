@@ -18,17 +18,19 @@
 
 namespace App\Form\Type\ItpModule;
 
-use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Grade;
 use App\Entity\Edu\PerformanceScale;
 use App\Entity\Edu\ReportTemplate;
 use App\Entity\Edu\Training;
 use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\Organization;
 use App\Entity\Survey;
+use App\Repository\Edu\GradeRepository;
 use App\Repository\Edu\PerformanceScaleRepository;
 use App\Repository\Edu\ReportTemplateRepository;
 use App\Repository\Edu\TrainingRepository;
 use App\Repository\SurveyRepository;
+use App\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -41,10 +43,10 @@ use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 class TrainingProgramType extends AbstractType
 {
     public function __construct(
-        private readonly TrainingRepository $trainingRepository,
-        private readonly SurveyRepository $surveyRepository,
-        private readonly ReportTemplateRepository $reportTemplateRepository,
-        private readonly PerformanceScaleRepository $scaleRepository
+        private readonly SurveyRepository           $surveyRepository,
+        private readonly ReportTemplateRepository   $reportTemplateRepository,
+        private readonly PerformanceScaleRepository $scaleRepository,
+        private readonly UserExtensionService       $userExtensionService, private readonly GradeRepository $gradeRepository
     )
     {
     }
@@ -54,11 +56,9 @@ class TrainingProgramType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $academicYear = $options['academic_year'];
-        assert($academicYear instanceof AcademicYear);
-        $organization = $academicYear->getOrganization();
+        $organization = $this->userExtensionService->getCurrentOrganization();
 
-        $trainings = $this->trainingRepository->findByAcademicYear($academicYear);
+        $grades = $this->gradeRepository->findByOrganizationOrderByAcademicYearDesc($organization);
 
         $scales = $this->scaleRepository->findByOrganization($organization);
 
@@ -72,14 +72,17 @@ class TrainingProgramType extends AbstractType
                 'label' => 'form.name',
                 'required' => true
             ])
-            ->add('training', EntityType::class, [
-                'label' => 'form.training',
-                'class' => Training::class,
+            ->add('grades', EntityType::class, [
+                'mapped' => false,
+                'label' => 'form.grades',
+                'class' => Grade::class,
                 'choice_translation_domain' => false,
-                'choice_label' => 'name',
-                'choices' => $trainings,
-                'placeholder' => 'form.no_training',
-                'disabled' => !$options['new'],
+                'choice_label' => function (Grade $g) {
+                    return $g->getName() . ' (' . $g->getTraining()->getAcademicYear() . ')';
+                },
+                'choices' => $grades,
+                'multiple' => true,
+                'expanded' => false,
                 'required' => true
             ])
             ->add('modality', ChoiceType::class, [
@@ -199,10 +202,8 @@ class TrainingProgramType extends AbstractType
         $resolver->setDefaults([
             'data_class' => TrainingProgram::class,
             'lock_manager' => false,
-            'academic_year' => null,
             'new' => false,
             'is_manager' => false,
-            'departments' => [],
             'translation_domain' => 'itp_training_program'
         ]);
     }

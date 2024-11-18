@@ -19,10 +19,9 @@ class ProgramGradeRepository extends ServiceEntityRepository
         ManagerRegistry                                        $registry,
         private readonly ProgramGradeLearningOutcomeRepository $programGradeLearningOutcomeRepository,
         private readonly ActivityRepository                    $activityRepository,
-        private readonly GradeRepository                       $gradeRepository,
         private readonly ProgramGroupRepository                $programGroupRepository,
         private readonly CompanyProgramRepository              $companyProgramRepository,
-        private readonly StudentProgramRepository              $studentProgramWorkcenterRepository, private readonly StudentProgramRepository $studentProgramRepository
+        private readonly StudentProgramRepository              $studentProgramRepository
     )
     {
         parent::__construct($registry, ProgramGrade::class);
@@ -146,62 +145,7 @@ class ProgramGradeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAllByTrainingProgram(TrainingProgram $trainingProgram): array
-    {
-        do {
-            $changes = false;
-            $actualProgramGrades = $this->createQueryBuilder('pg')
-                ->join('pg.grade', 'g')
-                ->where('pg.trainingProgram = :training_program')
-                ->setParameter('training_program', $trainingProgram)
-                ->orderBy('g.name', 'ASC')
-                ->getQuery()
-                ->getResult();
-
-            $grades = $this->gradeRepository->findByTraining($trainingProgram->getTraining());
-
-            $toDelete = [];
-            foreach ($actualProgramGrades as $actualProgramGrade) {
-                assert($actualProgramGrade instanceof ProgramGrade);
-                if (!in_array($actualProgramGrade->getGrade(), $grades)) {
-                    $changes = true;
-                    $toDelete[] = $actualProgramGrade;
-                }
-            }
-
-            if ($changes) {
-                $this->deleteFromList($toDelete);
-            }
-
-            $return = [];
-            foreach ($grades as $grade) {
-                $found = false;
-                foreach ($actualProgramGrades as $actualProgramGrade) {
-                    if ($actualProgramGrade->getGrade() === $grade) {
-                        $return[] = $actualProgramGrade;
-                        $found = true;
-                        break;
-                    }
-                }
-                if (!$found) {
-                    $changes = true;
-                    $programGrade = new ProgramGrade();
-                    $programGrade
-                        ->setTrainingProgram($trainingProgram)
-                        ->setGrade($grade);
-                    $this->getEntityManager()->persist($programGrade);
-                    $return[] = $programGrade;
-                }
-            }
-            if ($changes) {
-                $this->getEntityManager()->flush();
-            }
-        } while ($changes);
-
-        return $return;
-    }
-
-    private function deleteFromList(array $items): void
+    public function deleteFromList(array $items): void
     {
         $this->studentProgramRepository->deleteFromProgramGradeList($items);
         $this->activityRepository->deleteFromProgramGradeList($items);

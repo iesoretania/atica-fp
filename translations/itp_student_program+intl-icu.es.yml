@@ -25,6 +25,7 @@ form.fixed_student: No se puede modificar el estudiante
 form.no_company: Seleccione una empresa u organismo equiparable
 form.no_workcenter: Seleccione una sede de la empresa u organismo equiparable
 
+title.new: Nuevo plan de formación individualizado
 title.list: Planes de formación individualizados
 title.delete: Eliminar planes de formación individualizado
 title.manage_student_programs: Gestión de planes de formación individuales
