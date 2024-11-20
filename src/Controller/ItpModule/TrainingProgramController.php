@@ -25,7 +25,7 @@ use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\Person;
 use App\Form\Type\ItpModule\TrainingProgramType;
 use App\Repository\Edu\AcademicYearRepository;
-use App\Repository\Edu\TrainingRepository;
+use App\Repository\ItpModule\GroupRepository;
 use App\Repository\ItpModule\ProgramGradeRepository;
 use App\Repository\ItpModule\ProgramGroupRepository;
 use App\Repository\ItpModule\TrainingProgramRepository;
@@ -52,7 +52,7 @@ class TrainingProgramController extends AbstractController
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
         TrainingProgramRepository $trainingProgramRepository,
-        TrainingRepository $trainingRepository,
+        GroupRepository $groupRepository,
         TranslatorInterface $translator,
         AcademicYear $academicYear = null,
         int $page = 1
@@ -71,8 +71,8 @@ class TrainingProgramController extends AbstractController
         /** @var Person $person */
         $person = $this->getUser();
 
-        // Precargar grupos y enseñanzas
-        $trainingRepository->findByAcademicYearWithTrainingsAndGroups($academicYear);
+        // Precargar grupos y niveles de los programas formativos del curso académico
+        $groupRepository->findByAcademicYear($academicYear);
 
         $queryBuilder = $trainingProgramRepository->createProgramRepositoryQueryBuilder(
             $academicYear,

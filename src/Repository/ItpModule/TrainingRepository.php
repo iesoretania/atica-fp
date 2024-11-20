@@ -18,9 +18,7 @@
 
 namespace App\Repository\ItpModule;
 
-use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Training;
-use App\Entity\ItpModule\TrainingProgram;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -29,16 +27,5 @@ class TrainingRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Training::class);
-    }
-
-    public function findByAcademicYear(AcademicYear $academicYear): array
-    {
-        return $this->createQueryBuilder('t')
-            ->select('t')
-            ->join(TrainingProgram::class, 'tp', 'WITH', 'tp.training = t')
-            ->where('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear)
-            ->getQuery()
-            ->getResult();
     }
 }

@@ -25,7 +25,7 @@
                         {{ ('table.modality.' ~ item.modality) | trans }}
                     </td>
                     <td>
-                        {% for program_grade in item.trainingProgramGrades %}{% for group in program_grade.grade.groups %}{{ group.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% if not loop.last %}, {% endif %}{% endfor %}
+                        {% for program_grade in item.trainingProgramGrades %}{% for group in program_grade.grade.groups %}{{ group.name }} ({{ group.grade.training.academicYear }}){% if not loop.last %}, {% endif %}{% endfor %}{% if not loop.last %}, {% endif %}{% endfor %}
                     </td>
                     <td>
                         {{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}
