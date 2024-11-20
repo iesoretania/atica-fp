@@ -17,7 +17,7 @@ form.save: Guardar cambios
 form.back: Volver
 form.edit: Modificar datos
 
-form.delete: Eliminar planes de formación seleccionados
+form.delete: Eliminar estudiantes del plan de formación
 form.delete_confirm: Confirmar eliminación
 
 form.no_student: Seleccione un estudiante
@@ -27,7 +27,7 @@ form.no_workcenter: Seleccione una sede de la empresa u organismo equiparable
 
 title.new: Nuevo plan de formación individualizado
 title.list: Planes de formación individualizados
-title.delete: Eliminar planes de formación individualizado
+title.delete: Eliminar estudiantes del plan de formación
 title.manage_student_programs: Gestión de planes de formación individuales
 
 table.new: Registrar nueva estancia
@@ -53,10 +53,10 @@ label.mode.intensive: Intensiva
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
-message.cleaned: Planes eliminados con éxito.
-message.clean_error: Ha ocurrido un error al eliminar los planes.
+message.deleted: Estudiantes eliminados del plan de formación con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los estudiantes.
 
-prompt.clean_confirm: |
-    ¿Está seguro de que desea eliminar los planes de formación de los siguientes estudiantes? Se eliminarán todos los datos asociados, como los datos de seguimiento o el calendario.
+prompt.delete_confirm: |
+    ¿Está seguro de que desea eliminar los siguientes estudiantes del plan de formación? Se eliminarán todos los datos asociados, como sus estancias, los datos de seguimiento o el calendario.
 
     Cuidado: Esta operación no se puede deshacer.

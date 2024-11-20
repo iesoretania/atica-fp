@@ -214,9 +214,9 @@ class StudentProgramController extends AbstractController
             try {
                 $studentProgramRepository->deleteFromList($selectedItems);
                 $studentProgramRepository->flush();
-                $this->addFlash('success', $translator->trans('message.cleaned', [], 'itp_student_program'));
+                $this->addFlash('success', $translator->trans('message.deleted', [], 'itp_student_program'));
             } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.clean_error', [], 'itp_student_program'));
+                $this->addFlash('error', $translator->trans('message.delete_error', [], 'itp_student_program'));
             }
             return $this->redirectToRoute('in_company_training_phase_student_program_list', ['programGroup' => $programGroup->getId()]);
         }
