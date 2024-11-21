@@ -29,7 +29,7 @@
                     </td>
                     <td>
                         {{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}/{{ (item.totalHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
-                        ({{ (item.targetHours * 100 / item.totalHours)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
+                        {% if item.totalHours %}({{ (item.targetHours * 100 / item.totalHours)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %){% endif %}
                     </td>
                     <td>
                         {{ m.link_button(path('in_company_training_phase_training_program_edit', {'trainingProgram': item.id}), 'pencil', 'btn-info btn-sm btn-block', 'table.basic_data'|trans) }}
