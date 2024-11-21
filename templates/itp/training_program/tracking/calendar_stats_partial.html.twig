@@ -73,23 +73,23 @@
     {% set percentage_absence = 100 * work_day_stats[3] / work_day_stats[1] %}
     {% set percentage_justified_absence = 100 * work_day_stats[4] / work_day_stats[1] %}
     <div class="progress progress-stat collapse-zone" data-toggle="collapse" data-target="#hours_stats" aria-expanded="false">
-        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{ percentage_locked|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}"
+        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{ percentage_locked|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}"
              aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_locked }}%"
              title="{{ 'form.stats.hours_locked_hint' | trans({'count' : work_day_stats[2] / 100.0}) }}">
-            {{ 'form.stats.hours_bar' | trans({'count' : (work_day_stats[2] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general')), 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'))}) }}
+            {{ 'form.stats.hours_bar' | trans({'count' : (work_day_stats[2] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')), 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general'))}) }}
         </div>
         {% if work_day_stats[4] %}
-        <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="{{ percentage_justified_absence|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}"
+        <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="{{ percentage_justified_absence|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}"
              aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_justified_absence }}%"
              title="{{ 'form.stats.hours_justified_absence_hint' | trans({'count' : work_day_stats[4] / 100.0}) }}">
-            {{ 'form.stats.hours_bar' | trans({'count' : (work_day_stats[4] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general')), 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'))}) }}
+            {{ 'form.stats.hours_bar' | trans({'count' : (work_day_stats[4] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')), 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general'))}) }}
         </div>
         {% endif %}
         {% if work_day_stats[3] %}
-        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="{{ percentage_absence|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}"
+        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="{{ percentage_absence|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}"
              aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_absence }}%"
              title="{{ 'form.stats.hours_absence_hint' | trans({'count': work_day_stats[3] / 100.0}) }}">
-            {{ 'form.stats.hours_bar' | trans({'count': (work_day_stats[3] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general')), 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'))}) }}
+            {{ 'form.stats.hours_bar' | trans({'count': (work_day_stats[3] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')), 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general'))}) }}
         </div>
         {% endif %}
     </div>
@@ -105,22 +105,22 @@
                 <tr>
                     <td>{{ 'form.stats.hours.locked.caption'|trans }}</td>
                     <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[10], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[10]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[5] / 100.0, 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'))}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[5]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[5] / 100.0, 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general'))}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[5]/work_day_stats[1])|number_format }} %){% endif %}</td>
                 </tr>
                 <tr>
                     <td>{{ 'form.stats.hours.worked.caption'|trans }}</td>
                     <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[7], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[7]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[2] / 100.0, 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'))}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[2]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[2] / 100.0, 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general'))}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[2]/work_day_stats[1])|number_format }} %){% endif %}</td>
                 </tr>
                 <tr>
                     <td>{{ 'form.stats.hours.absence.caption'|trans }}</td>
                     <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[8], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[8]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[3] / 100.0, 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'))}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[3]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[3] / 100.0, 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general'))}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[3]/work_day_stats[1])|number_format }} %){% endif %}</td>
                 </tr>
                 <tr>
                     <td>{{ 'form.stats.hours.justified_absence.caption'|trans }}</td>
                     <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[9], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[9]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[4] / 100.0, 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'))}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[4]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[4] / 100.0, 'total': (work_day_stats[1] / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general'))}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[4]/work_day_stats[1])|number_format }} %){% endif %}</td>
                 </tr>
             </tbody>
         </table>
