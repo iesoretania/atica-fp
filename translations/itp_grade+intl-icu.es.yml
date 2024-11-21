@@ -24,6 +24,11 @@ table.modality.2: Intensiva
 
 table.basic_data: Datos básicos
 
+table.learning_outcomes: Horas y RAs
+table.activities: Actividades formativas
+table.companies: Empresas colaboradoras
+table.specific_training: Formación específica
+
 header.name: Nombre
 header.training: Enseñanza
 header.grade: Curso
@@ -35,8 +40,6 @@ header.learning_outcomes: RAs
 header.criteria: CEs
 header.weighted: RAs ponderados
 header.training_program: Plan de formación
-header.companies: Empresas colaboradoras
-header.specific_training: Formación específica
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.

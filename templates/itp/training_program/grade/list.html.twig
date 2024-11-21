@@ -28,6 +28,10 @@
                     </td>
                     <td>
                         {{ (program_grade.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
+                        {%- if program_grade.trainingProgram.targetHours -%}
+                            /{{ (program_grade.trainingProgram.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
+                            ({{ (program_grade.targetHours * 100 / program_grade.trainingProgram.targetHours)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
+                        {% endif %}
                     </td>
                     <td>
                         {{ item.total_subjects }}
@@ -39,16 +43,16 @@
                         {{ item.total_activities }}
                     </td>
                     <td>
-                        {{ m.link_toolbar_button(path('in_company_training_phase_grade_learning_outcome_edit', {'programGrade': program_grade.id}), 'list', 'btn-info btn-sm btn-block', 'header.learning_outcomes'|trans) }}
+                        {{ m.link_toolbar_button(path('in_company_training_phase_grade_learning_outcome_edit', {'programGrade': program_grade.id}), 'list', 'btn-info btn-sm btn-block', 'table.learning_outcomes'|trans) }}
                     </td>
                     <td>
-                        {{ m.link_toolbar_button(path('in_company_training_phase_activity_list', {'programGrade': program_grade.id}), 'book', 'btn-info btn-sm btn-block h-100', 'header.activities'|trans) }}
+                        {{ m.link_toolbar_button(path('in_company_training_phase_activity_list', {'programGrade': program_grade.id}), 'book', 'btn-info btn-sm btn-block h-100', 'table.activities'|trans) }}
                     </td>
                     <td>
-                        {{ m.link_toolbar_button(path('in_company_training_phase_company_list', {'programGrade': program_grade.id}), 'industry', 'btn-info btn-sm btn-block', 'header.companies'|trans) }}
+                        {{ m.link_toolbar_button(path('in_company_training_phase_company_list', {'programGrade': program_grade.id}), 'industry', 'btn-info btn-sm btn-block', 'table.companies'|trans) }}
                     </td>
                     <td>
-                        {{ m.link_toolbar_button('', 'thumbtack', 'btn-info btn-sm btn-block', 'header.specific_training'|trans) }}
+                        {{ m.link_toolbar_button('', 'thumbtack', 'btn-info btn-sm btn-block', 'table.specific_training'|trans) }}
                     </td>
                 </tr>
             {% else %}
