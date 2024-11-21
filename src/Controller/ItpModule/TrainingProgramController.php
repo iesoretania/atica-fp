@@ -120,7 +120,8 @@ class TrainingProgramController extends AbstractController
         $trainingProgram = new TrainingProgram();
         $trainingProgram
             ->setModality(TrainingProgram::MODE_GENERAL)
-            ->setLocked(false);
+            ->setLocked(false)
+            ->setTotalHours(200000);
 
         $trainingProgramRepository->persist($trainingProgram);
 

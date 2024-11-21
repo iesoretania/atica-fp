@@ -1,6 +1,7 @@
 form.name: Nombre del plan de formación
 form.grades: Niveles
 form.groups: Grupos asociados
+form.training_total_hours: Horas totales de la enseñanza
 form.target_hours: Horas previstas
 form.modality: Modalidad
 form.modality.general: General

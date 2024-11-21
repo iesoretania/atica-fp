@@ -28,7 +28,6 @@ use App\Entity\Survey;
 use App\Repository\Edu\GradeRepository;
 use App\Repository\Edu\PerformanceScaleRepository;
 use App\Repository\Edu\ReportTemplateRepository;
-use App\Repository\Edu\TrainingRepository;
 use App\Repository\SurveyRepository;
 use App\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -38,6 +37,7 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 class TrainingProgramType extends AbstractType
@@ -92,6 +92,15 @@ class TrainingProgramType extends AbstractType
                     'form.modality.intensive' => TrainingProgram::MODE_INTENSIVE
                 ],
                 'expanded' => true,
+                'required' => true
+            ])
+            ->add('totalHours', MoneyType::class, [
+                'label' => 'form.training_total_hours',
+                'currency' => false,
+                'divisor' => 100,
+                'constraints' => [
+                    new GreaterThan(0)
+                ],
                 'required' => true
             ])
             ->add('targetHours', MoneyType::class, [

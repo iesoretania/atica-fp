@@ -33,6 +33,9 @@ class TrainingProgram
     private ?int $targetHours = null;
 
     #[ORM\Column]
+    private ?int $totalHours = null;
+
+    #[ORM\Column]
     private ?int $modality = self::MODE_GENERAL;
 
     /**
@@ -112,6 +115,18 @@ class TrainingProgram
     public function setTargetHours(?int $targetHours): static
     {
         $this->targetHours = $targetHours;
+
+        return $this;
+    }
+
+    public function getTotalHours(): ?int
+    {
+        return $this->totalHours;
+    }
+
+    public function setTotalHours(int $totalHours): static
+    {
+        $this->totalHours = $totalHours;
 
         return $this;
     }
