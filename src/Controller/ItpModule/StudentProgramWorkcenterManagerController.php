@@ -56,11 +56,9 @@ class StudentProgramWorkcenterManagerController extends AbstractController
         $title = $translator->trans('title.manage_student_programs', [], 'itp_student_program')
             . ' - ' . $grade->__toString();
 
-        $training = $trainingProgram->getTraining();
-        assert($training instanceof Training);
         $breadcrumb = [
             [
-                'fixed' => $training->getName(),
+                'fixed' => $trainingProgram->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
                 'routeParams' => ['trainingProgram' => $trainingProgram->getId()]
             ],
