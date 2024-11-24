@@ -2,6 +2,7 @@
 
 namespace App\Repository\ItpModule;
 
+use App\Entity\Edu\StudentEnrollment;
 use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgram;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -103,5 +104,24 @@ class StudentProgramRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findOneOrNewByStudentEnrollmentAndProgramGroup(StudentEnrollment $studentEnrollment, ProgramGroup $programGroup): StudentProgram
+    {
+        $studentProgram = $this->createQueryBuilder('sp')
+            ->where('sp.studentEnrollment = :student_enrollment')
+            ->andWhere('sp.programGroup = :program_group')
+            ->setParameter('student_enrollment', $studentEnrollment)
+            ->setParameter('program_group', $programGroup)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if (!$studentProgram instanceof StudentProgram) {
+            $studentProgram = new StudentProgram();
+            $studentProgram->setStudentEnrollment($studentEnrollment);
+            $studentProgram->setProgramGroup($programGroup);
+            $this->persist($studentProgram);
+        }
+        return $studentProgram;
     }
 }

@@ -5,9 +5,11 @@
 {% block new_action %}{% endblock %}
 
 {% block table_header %}
-    <th class="w-40">{{ 'header.name'|trans }}</th>
+    <th class="w-20">{{ 'header.name'|trans }}</th>
     <th class="w-40">{{ 'header.managers'|trans }}</th>
     <th class="w-10">{{ 'header.target_hours'|trans }}</th>
+    <th class="w-10"></th>
+    <th class="w-10"></th>
     <th class="w-10"></th>
 {% endblock %}
 
@@ -25,12 +27,18 @@
                         {{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
                     </td>
                     <td>
+                        {{ m.link_button(path('in_company_training_phase_student_program_workcenter_manage_new', {'programGroup': item.id}), 'add', 'btn-info btn-sm btn-block', 'form.add'|trans) }}
+                    </td>
+                    <td>
                         {{ m.link_button(path('in_company_training_phase_group_edit', {'id': item.id}), 'edit', 'btn-info btn-sm btn-block', 'form.edit'|trans) }}
+                    </td>
+                    <td>
+                        {{ m.link_button(path('in_company_training_phase_student_program_list', {'programGroup': item.id}), 'person-chalkboard', 'btn-info btn-sm btn-block', 'form.programs'|trans) }}
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

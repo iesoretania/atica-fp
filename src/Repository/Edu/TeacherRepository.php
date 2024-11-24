@@ -19,6 +19,7 @@
 namespace App\Repository\Edu;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Group;
 use App\Entity\Edu\Teacher;
 use App\Entity\Edu\Teaching;
 use App\Entity\Organization;
@@ -100,7 +101,7 @@ class TeacherRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByGroup($group): array
+    public function findByGroup(Group $group): array
     {
         return $this->createQueryBuilder('t')
             ->join('t.person', 'p')

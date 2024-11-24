@@ -350,4 +350,9 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
             }
         }
     }
+
+    public function remove(StudentProgramWorkcenter $studentProgramWorkcenter): void
+    {
+        $this->getEntityManager()->remove($studentProgramWorkcenter);
+    }
 }

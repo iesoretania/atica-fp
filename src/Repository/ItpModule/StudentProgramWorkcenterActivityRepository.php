@@ -70,7 +70,7 @@ class StudentProgramWorkcenterActivityRepository extends ServiceEntityRepository
 
     public function deleteFromListByStudentProgramWorkcenter(array $selectedItems): void
     {
-        $this->studentProgramWorkcenterActivityCommentRepository->deleteFromStudentProgramWorkcenterList($items);
+        $this->studentProgramWorkcenterActivityCommentRepository->deleteFromStudentProgramWorkcenterList($selectedItems);
         $this->createQueryBuilder('spa')
             ->delete()
             ->where('spa.studentProgramWorkcenter IN (:selectedItems)')

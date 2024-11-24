@@ -3,6 +3,7 @@
 namespace App\Controller\ItpModule;
 
 use App\Entity\Edu\Grade;
+use App\Entity\Edu\StudentEnrollment;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgram;
@@ -11,7 +12,9 @@ use App\Entity\ItpModule\StudentProgramWorkcenterActivity;
 use App\Entity\ItpModule\TrainingProgram;
 use App\Form\Model\ItpModule\CalendarCopy;
 use App\Form\Type\ItpModule\CalendarCopyType;
+use App\Form\Type\ItpModule\StudentProgramWorkcenterBatchType;
 use App\Form\Type\ItpModule\StudentProgramWorkcenterType;
+use App\Repository\ItpModule\StudentProgramRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterActivityRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use App\Security\ItpModule\TrainingProgramVoter;
@@ -83,6 +86,95 @@ class StudentProgramWorkcenterManagerController extends AbstractController
             'q' => $q,
             'domain' => 'itp_student_program_workcenter',
             'program_grade' => $programGrade,
+        ]);
+    }
+
+    #[Route(path: '/nueva/{programGroup}', name: 'in_company_training_phase_student_program_workcenter_manage_new', requirements: ['programGroup' => '\d+'], methods: ['GET', 'POST'])]
+    public function new(
+        Request                            $request,
+        TranslatorInterface                $translator,
+        StudentProgramRepository           $studentProgramRepository,
+        StudentProgramWorkcenterRepository $studentProgramWorkcenterRepository,
+        StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository,
+        ProgramGroup $programGroup
+    ): Response
+    {
+        $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGroup->getProgramGrade()->getTrainingProgram());
+
+        $studentProgramWorkcenter = new StudentProgramWorkcenter();
+
+        $form = $this->createForm(StudentProgramWorkcenterBatchType::class, $studentProgramWorkcenter, [
+            'program_group' => $programGroup
+        ]);
+        $form->get('company')->setData($studentProgramWorkcenter->getWorkcenter()?->getCompany());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                foreach ($form->get('students')->getData() as $studentEnrollment) {
+                    assert($studentEnrollment instanceof StudentEnrollment);
+                    $studentProgram = $studentProgramRepository->findOneOrNewByStudentEnrollmentAndProgramGroup($studentEnrollment, $programGroup);
+                    $newStudentProgramWorkcenter = new StudentProgramWorkcenter();
+                    $studentProgramWorkcenterRepository->persist($newStudentProgramWorkcenter);
+                    $newStudentProgramWorkcenter
+                        ->setWorkcenter($studentProgramWorkcenter->getWorkcenter())
+                        ->setStudentProgram($studentProgram)
+                        ->setStartDate($studentProgramWorkcenter->getStartDate())
+                        ->setEndDate($studentProgramWorkcenter->getEndDate())
+                        ->setEducationalTutor($studentProgramWorkcenter->getEducationalTutor())
+                        ->setWorkTutor($studentProgramWorkcenter->getWorkTutor())
+                        ->setAdditionalEducationalTutor($studentProgramWorkcenter->getAdditionalEducationalTutor())
+                        ->setAdditionalWorkTutor($studentProgramWorkcenter->getAdditionalWorkTutor());
+
+                    // Añadir nuevas actividades
+                    $selectedActivities = $form->get('selectedActivities')->getData();
+                    foreach ($selectedActivities as $activity) {
+                        $studentProgramWorkcenterActivity = new StudentProgramWorkcenterActivity();
+                        $studentProgramWorkcenterActivity
+                            ->setStudentProgramWorkcenter($newStudentProgramWorkcenter)
+                            ->setActivity($activity)
+                            ->setDisabled(false);
+                        $studentProgramWorkcenterActivityRepository->persist($studentProgramWorkcenterActivity);
+                    }
+                }
+                $studentProgramWorkcenterRepository->flush();
+                $this->addFlash('success', $translator->trans('message.saved', [], 'itp_student_program_workcenter'));
+                return $this->redirectToRoute('in_company_training_phase_student_program_workcenter_manage_list', ['programGrade' => $programGroup->getProgramGrade()->getId()]);
+            } catch (\Exception) {
+                $this->addFlash('error', $translator->trans('message.error', [], 'itp_student_program_workcenter'));
+            }
+        }
+
+        $title = $programGroup->getGroup()->__toString() . ' - ' . $translator->trans('title.new', [], 'itp_student_program_workcenter');
+
+        $trainingProgram = $programGroup->getProgramGrade()->getTrainingProgram();
+        assert($trainingProgram instanceof TrainingProgram);
+
+        $grade = $programGroup->getProgramGrade()->getGrade();
+        assert($grade instanceof Grade);
+
+        $breadcrumb = [
+            [
+                'fixed' => $trainingProgram->getName(),
+                'routeName' => 'in_company_training_phase_grade_list',
+                'routeParams' => ['trainingProgram' => $trainingProgram->getId()]
+            ],
+            [
+                'fixed' => $grade->getName(),
+                'routeName' => 'in_company_training_phase_group_list',
+                'routeParams' => ['programGrade' => $programGroup->getId()]
+            ],
+            [
+                'fixed' => $title
+            ]
+        ];
+
+        return $this->render('itp/training_program/workcenter/batch_form.html.twig', [
+            'menu_path' => 'in_company_training_phase_training_program_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'student_program' => $studentProgramWorkcenter,
+            'form' => $form->createView()
         ]);
     }
 
@@ -235,7 +327,7 @@ class StudentProgramWorkcenterManagerController extends AbstractController
 
         $breadcrumb = [
             [
-                'fixed' => $trainingProgram->getTraining()->getName(),
+                'fixed' => $trainingProgram->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
                 'routeParams' => ['trainingProgram' => $trainingProgram->getId()]
             ],
@@ -305,7 +397,7 @@ class StudentProgramWorkcenterManagerController extends AbstractController
 
         $breadcrumb = [
             [
-                'fixed' => $trainingProgram->getTraining()->getName(),
+                'fixed' => $trainingProgram->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
                 'routeParams' => ['trainingProgram' => $trainingProgram->getId()]
             ],

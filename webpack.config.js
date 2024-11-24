@@ -34,6 +34,7 @@ Encore
     .addEntry('wpt_visit', './assets/js/wpt/visit.js')
     .addEntry('itp_learning_outcome', './assets/js/itp/learning_outcome.js')
     .addEntry('itp_workcenter', './assets/js/itp/workcenter.js')
+    .addEntry('itp_workcenter_batch', './assets/js/itp/workcenter_batch.js')
     .addEntry('itp_group', './assets/js/itp/group.js')
 
     // CKEditor
