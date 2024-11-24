@@ -3,11 +3,16 @@
 namespace App\Controller\ItpModule;
 
 use App\Entity\Edu\Grade;
-use App\Entity\Edu\Training;
 use App\Entity\ItpModule\ProgramGrade;
+use App\Entity\ItpModule\ProgramGroup;
+use App\Entity\ItpModule\StudentProgram;
+use App\Entity\ItpModule\StudentProgramWorkcenter;
+use App\Entity\ItpModule\StudentProgramWorkcenterActivity;
 use App\Entity\ItpModule\TrainingProgram;
 use App\Form\Model\ItpModule\CalendarCopy;
 use App\Form\Type\ItpModule\CalendarCopyType;
+use App\Form\Type\ItpModule\StudentProgramWorkcenterType;
+use App\Repository\ItpModule\StudentProgramWorkcenterActivityRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use App\Security\ItpModule\TrainingProgramVoter;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
@@ -81,6 +86,100 @@ class StudentProgramWorkcenterManagerController extends AbstractController
         ]);
     }
 
+    #[Route(path: '/detalle/{studentProgramWorkcenter}', name: 'in_company_training_phase_student_program_workcenter_manage_edit', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET', 'POST'])]
+    public function edit(
+        Request                            $request,
+        TranslatorInterface                $translator,
+        StudentProgramWorkcenterRepository $studentProgramWorkcenterRepository,
+        StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository,
+        StudentProgramWorkcenter           $studentProgramWorkcenter
+    ): Response {
+        $studentProgram = $studentProgramWorkcenter->getStudentProgram();
+        assert($studentProgram instanceof StudentProgram);
+        $programGroup = $studentProgram->getProgramGroup();
+        assert($programGroup instanceof ProgramGroup);
+        $programGrade = $programGroup->getProgramGrade();
+        assert($programGrade instanceof ProgramGrade);
+        $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
+
+        $form = $this->createForm(StudentProgramWorkcenterType::class, $studentProgramWorkcenter);
+        $form->get('company')->setData($studentProgramWorkcenter->getWorkcenter()?->getCompany());
+        $currentActivities = $studentProgramWorkcenter->getActivities()->map(fn($activity) => $activity->getActivity())->toArray();
+        $form->get('selectedActivities')->setData($currentActivities);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $selectedActivities = $form->get('selectedActivities')->getData();
+                $currentStudentProgramWorkcenterActivities = $studentProgramWorkcenter->getActivities()->toArray();
+                // Eliminar actividades deseleccionadas
+                foreach ($currentStudentProgramWorkcenterActivities as $activity) {
+                    if (!in_array($activity->getActivity(), $selectedActivities, true)) {
+                        $studentProgramWorkcenterActivityRepository->remove($activity);
+                    }
+                }
+                // Añadir nuevas actividades
+                foreach ($selectedActivities as $activity) {
+                    $found = false;
+                    foreach ($currentStudentProgramWorkcenterActivities as $currentActivity) {
+                        if ($currentActivity->getActivity() === $activity) {
+                            $found = true;
+                            break;
+                        }
+                    }
+                    if (!$found) {
+                        $studentProgramWorkcenterActivity = new StudentProgramWorkcenterActivity();
+                        $studentProgramWorkcenterActivity
+                            ->setStudentProgramWorkcenter($studentProgramWorkcenter)
+                            ->setActivity($activity)
+                            ->setDisabled(false);
+                        $studentProgramWorkcenterActivityRepository->persist($studentProgramWorkcenterActivity);
+                    }
+                }
+                $studentProgramWorkcenterRepository->flush();
+                $this->addFlash('success', $translator->trans('message.saved', [], 'itp_student_program_workcenter'));
+                return $this->redirectToRoute('in_company_training_phase_student_program_workcenter_manage_list', ['programGrade' => $programGrade->getId()]);
+            } catch (\Exception) {
+                $this->addFlash('error', $translator->trans('message.error', [], 'itp_student_program_workcenter'));
+            }
+        }
+
+        $title = ($studentProgramWorkcenter->getId() === null ? $translator->trans(
+                    'title.new',
+                    [],
+                    'itp_student_program_workcenter'
+                ) . ' - ' : '') . $studentProgram->getStudentEnrollment()->getPerson()->__toString() .  ' - ' . $programGroup->getGroup()->__toString();
+
+        $trainingProgram = $programGrade->getTrainingProgram();
+        assert($trainingProgram instanceof TrainingProgram);
+
+        $grade = $programGrade->getGrade();
+        assert($grade instanceof Grade);
+
+        $breadcrumb = [
+            [
+                'fixed' => $trainingProgram->getName(),
+                'routeName' => 'in_company_training_phase_grade_list',
+                'routeParams' => ['trainingProgram' => $trainingProgram->getId()]
+            ],
+            [
+                'fixed' => $grade->getName(),
+                'routeName' => 'in_company_training_phase_group_list',
+                'routeParams' => ['programGrade' => $programGrade->getId()]
+            ],
+            [
+                'fixed' => $title
+            ]
+        ];
+
+        return $this->render('itp/training_program/workcenter/form.html.twig', [
+            'menu_path' => 'in_company_training_phase_training_program_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'student_program' => $studentProgramWorkcenter,
+            'form' => $form->createView()
+        ]);
+    }
     #[Route(path: '/operacion/{programGrade}', name: 'in_company_training_phase_student_program_workcenter_manage_operation', requirements: ['programGrade' => '\d+'], methods: ['POST'])]
     public function operation(
         Request                            $request,

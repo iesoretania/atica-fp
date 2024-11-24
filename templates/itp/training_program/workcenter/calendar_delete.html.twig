@@ -20,7 +20,7 @@
                     {% for item in items %}
                         <tr>
                             <td>{{ item.date|date('format.date'|trans({}, 'general')) }}</td>
-                            <td>{{ 'caption.hours'|trans({'count': item.hours}) }}</td>
+                            <td>{{ 'caption.hours'|trans({'count': item.hours / 100}) }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

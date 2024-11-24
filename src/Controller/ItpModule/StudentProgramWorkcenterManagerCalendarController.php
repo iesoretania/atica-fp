@@ -18,10 +18,12 @@
 
 namespace App\Controller\ItpModule;
 
+use App\Entity\Edu\Grade;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgram;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
+use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\ItpModule\WorkDay;
 use App\Form\Model\ItpModule\CalendarAdd;
 use App\Form\Type\ItpModule\CalendarAddType;
@@ -35,10 +37,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route(path: '/formacion/plan/curso/grupo/estudiante/estancia/calendario')]
-class StudentProgramWorkcenterCalendarController extends AbstractController
+#[Route(path: '/formacion/plan/curso/grupo/gestion/estancia/calendario')]
+class StudentProgramWorkcenterManagerCalendarController extends AbstractController
 {
-    #[Route(path: '/{studentProgramWorkcenter}', name: 'in_company_training_phase_student_program_workcenter_calendar_list', requirements: ['studentProgramWorkcenter' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    #[Route(path: '/{studentProgramWorkcenter}', name: 'in_company_training_phase_student_program_workcenter_manage_calendar_list', requirements: ['studentProgramWorkcenter' => '\d+', 'page' => '\d+'], methods: ['GET'])]
     public function list(
         TranslatorInterface                $translator,
         WorkDayRepository                  $workDayRepository,
@@ -56,29 +58,25 @@ class StudentProgramWorkcenterCalendarController extends AbstractController
         $calendar = $workDayRepository->getCalendarByStudentProgramWorkcenter($studentProgramWorkcenter);
 
         $title = $translator->trans('title.calendar', [], 'itp_student_program_workcenter');
+
+        $trainingProgram = $programGrade->getTrainingProgram();
+        assert($trainingProgram instanceof TrainingProgram);
+        $grade = $programGrade->getGrade();
+        assert($grade instanceof Grade);
+
         $breadcrumb = [
             [
-                'fixed' => $programGrade->getTrainingProgram()->getName(),
+                'fixed' => $trainingProgram->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
-                'routeParams' => ['trainingProgram' => $programGrade->getTrainingProgram()->getId()]
+                'routeParams' => ['trainingProgram' => $trainingProgram->getId()]
             ],
             [
-                'fixed' => $programGrade->getGrade()->getName(),
-                'routeName' => 'in_company_training_phase_group_list',
-                'routeParams' => ['programGrade' => $programGroup->getProgramGrade()->getId()]
+                'fixed' => $grade->getName(),
+                'routeName' => 'in_company_training_phase_student_program_workcenter_manage_list',
+                'routeParams' => ['programGrade' => $programGrade->getId()]
             ],
             [
-                'fixed' => $studentProgram->getProgramGroup()->getGroup()->__toString(),
-                'routeName' => 'in_company_training_phase_student_program_list',
-                'routeParams' => ['programGroup' => $programGroup->getId()]
-            ],
-            [
-                'fixed' => $studentProgram->getStudentEnrollment()->getPerson()->__toString(),
-                'routeName' => 'in_company_training_phase_student_program_workcenter_list',
-                'routeParams' => ['studentProgram' => $studentProgram->getId()]
-            ],
-            [
-                'fixed' => $studentProgramWorkcenter->getWorkcenter()->__toString()
+                'fixed' => $studentProgramWorkcenter->__toString()
             ],
             ['fixed' => $title]
         ];
@@ -90,12 +88,12 @@ class StudentProgramWorkcenterCalendarController extends AbstractController
             'domain' => 'itp_student_program_workcenter',
             'calendar' => $calendar,
             'read_only' => false,
-            'add_route_name' => 'in_company_training_phase_student_program_workcenter_calendar_add',
+            'add_route_name' => 'in_company_training_phase_student_program_workcenter_manage_calendar_add',
             'student_program_workcenter' => $studentProgramWorkcenter
         ]);
     }
 
-    #[Route(path: '/incorporar/{studentProgramWorkcenter}', name: 'in_company_training_phase_student_program_workcenter_calendar_add', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(path: '/incorporar/{studentProgramWorkcenter}', name: 'in_company_training_phase_student_program_workcenter_manage_calendar_add', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET', 'POST'])]
     public function add(
         Request $request,
         TranslatorInterface $translator,
@@ -149,7 +147,7 @@ class StudentProgramWorkcenterCalendarController extends AbstractController
                     $workDayRepository->flush();
                     $studentProgramWorkcenterRepository->updateDates($studentProgramWorkcenter);
                     $this->addFlash('success', $translator->trans('message.added', [], 'calendar'));
-                    return $this->redirectToRoute('in_company_training_phase_student_program_workcenter_calendar_list', [
+                    return $this->redirectToRoute('in_company_training_phase_student_program_workcenter_manage_calendar_list', [
                         'studentProgramWorkcenter' => $studentProgramWorkcenter->getId()
                     ]);
                 } catch (\Exception) {
@@ -157,30 +155,25 @@ class StudentProgramWorkcenterCalendarController extends AbstractController
                 }
             }
         }
+        $trainingProgram = $programGrade->getTrainingProgram();
+        assert($trainingProgram instanceof TrainingProgram);
+        $grade = $programGrade->getGrade();
+        assert($grade instanceof Grade);
+
         $breadcrumb = [
             [
-                'fixed' => $programGrade->getTrainingProgram()->getName(),
+                'fixed' => $trainingProgram->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
-                'routeParams' => ['trainingProgram' => $programGrade->getTrainingProgram()->getId()]
+                'routeParams' => ['trainingProgram' => $trainingProgram->getId()]
             ],
             [
-                'fixed' => $programGrade->getGrade()->getName(),
-                'routeName' => 'in_company_training_phase_group_list',
-                'routeParams' => ['programGrade' => $programGroup->getProgramGrade()->getId()]
+                'fixed' => $grade->getName(),
+                'routeName' => 'in_company_training_phase_student_program_workcenter_manage_list',
+                'routeParams' => ['programGrade' => $programGrade->getId()]
             ],
             [
-                'fixed' => $studentProgram->getProgramGroup()->getGroup()->__toString(),
-                'routeName' => 'in_company_training_phase_student_program_list',
-                'routeParams' => ['programGroup' => $programGroup->getId()]
-            ],
-            [
-                'fixed' => $studentProgram->getStudentEnrollment()->getPerson()->__toString(),
-                'routeName' => 'in_company_training_phase_student_program_workcenter_list',
-                'routeParams' => ['studentProgram' => $studentProgram->getId()]
-            ],
-            [
-                'fixed' => $studentProgramWorkcenter->getWorkcenter()->__toString(),
-                'routeName' => 'in_company_training_phase_student_program_workcenter_calendar_list',
+                'fixed' => $studentProgramWorkcenter->__toString(),
+                'routeName' => 'in_company_training_phase_student_program_workcenter_manage_calendar_list',
                 'routeParams' => ['studentProgramWorkcenter' => $studentProgramWorkcenter->getId()]
             ],
             ['fixed' => $title]
@@ -195,7 +188,7 @@ class StudentProgramWorkcenterCalendarController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/jornada/{workDay}', name: 'in_company_training_phase_student_program_workcenter_calendar_form', requirements: ['workDay' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(path: '/jornada/{workDay}', name: 'in_company_training_phase_student_program_workcenter_manage_calendar_form', requirements: ['workDay' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(
         Request                            $request,
         TranslatorInterface                $translator,
@@ -229,37 +222,32 @@ class StudentProgramWorkcenterCalendarController extends AbstractController
                 $workDayRepository->flush();
                 $studentProgramWorkcenterRepository->updateDates($studentProgramWorkcenter);
                 $this->addFlash('success', $translator->trans('message.saved', [], 'calendar'));
-                return $this->redirectToRoute('in_company_training_phase_student_program_workcenter_calendar_list', [
+                return $this->redirectToRoute('in_company_training_phase_student_program_workcenter_manage_calendar_list', [
                     'studentProgramWorkcenter' => $studentProgramWorkcenter->getId()
                 ]);
             } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.save_error', [], 'calendar'));
             }
         }
+        $trainingProgram = $programGrade->getTrainingProgram();
+        assert($trainingProgram instanceof TrainingProgram);
+        $grade = $programGrade->getGrade();
+        assert($grade instanceof Grade);
+
         $breadcrumb = [
             [
-                'fixed' => $programGrade->getTrainingProgram()->getName(),
+                'fixed' => $trainingProgram->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
-                'routeParams' => ['trainingProgram' => $programGrade->getTrainingProgram()->getId()]
+                'routeParams' => ['trainingProgram' => $trainingProgram->getId()]
             ],
             [
-                'fixed' => $programGrade->getGrade()->getName(),
-                'routeName' => 'in_company_training_phase_group_list',
-                'routeParams' => ['programGrade' => $programGroup->getProgramGrade()->getId()]
+                'fixed' => $grade->getName(),
+                'routeName' => 'in_company_training_phase_student_program_workcenter_manage_list',
+                'routeParams' => ['programGrade' => $programGrade->getId()]
             ],
             [
-                'fixed' => $studentProgram->getProgramGroup()->getGroup()->__toString(),
-                'routeName' => 'in_company_training_phase_student_program_list',
-                'routeParams' => ['programGroup' => $programGroup->getId()]
-            ],
-            [
-                'fixed' => $studentProgram->getStudentEnrollment()->getPerson()->__toString(),
-                'routeName' => 'in_company_training_phase_student_program_workcenter_list',
-                'routeParams' => ['studentProgram' => $studentProgram->getId()]
-            ],
-            [
-                'fixed' => $studentProgramWorkcenter->getWorkcenter()->__toString(),
-                'routeName' => 'in_company_training_phase_student_program_workcenter_calendar_list',
+                'fixed' => $studentProgramWorkcenter->__toString(),
+                'routeName' => 'in_company_training_phase_student_program_workcenter_manage_calendar_list',
                 'routeParams' => ['studentProgramWorkcenter' => $studentProgramWorkcenter->getId()]
             ],
             ['fixed' => $title]
@@ -274,7 +262,7 @@ class StudentProgramWorkcenterCalendarController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/eliminar/{studentProgramWorkcenter}', name: 'in_company_training_phase_student_program_workcenter_calendar_delete', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['POST'])]
+    #[Route(path: '/eliminar/{studentProgramWorkcenter}', name: 'in_company_training_phase_student_program_workcenter_manage_calendar_delete', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['POST'])]
     public function delete(
         Request $request,
         TranslatorInterface $translator,
@@ -288,7 +276,8 @@ class StudentProgramWorkcenterCalendarController extends AbstractController
         assert($programGroup instanceof ProgramGroup);
         $programGrade = $programGroup->getProgramGrade();
         assert($programGrade instanceof ProgramGrade);
-        $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
+        $trainingProgram = $programGrade->getTrainingProgram();
+        $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $trainingProgram);
 
         $items = $request->request->all('items');
         if (count($items) === 0) {
@@ -311,7 +300,7 @@ class StudentProgramWorkcenterCalendarController extends AbstractController
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'calendar'));
             }
             return $this->redirectToRoute(
-                'in_company_training_phase_student_program_workcenter_calendar_list',
+                'in_company_training_phase_student_program_workcenter_manage_calendar_list',
                 ['studentProgramWorkcenter' => $studentProgramWorkcenter->getId()]
             );
         }
@@ -320,9 +309,9 @@ class StudentProgramWorkcenterCalendarController extends AbstractController
 
         $breadcrumb = [
             [
-                'fixed' => $programGrade->getTrainingProgram()->getName(),
+                'fixed' => $trainingProgram->getName(),
                 'routeName' => 'in_company_training_phase_grade_list',
-                'routeParams' => ['trainingProgram' => $programGrade->getTrainingProgram()->getId()]
+                'routeParams' => ['trainingProgram' => $trainingProgram->getId()]
             ],
             [
                 'fixed' => $programGrade->getGrade()->getName(),
