@@ -23,6 +23,7 @@ use App\Entity\ItpModule\Activity;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Repository\ItpModule\CriterionRepository as ItpCriterionRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -89,6 +90,9 @@ class ActivityType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Activity::class,
+            'constraints' => [
+                new UniqueEntity(['fields' => ['code', 'programGrade']])
+            ],
             'translation_domain' => 'itp_activity'
         ]);
     }

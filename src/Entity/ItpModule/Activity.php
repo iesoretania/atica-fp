@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ActivityRepository::class)]
+#[ORM\UniqueConstraint(name: 'itp_activity_code_unique', columns: ['code', 'program_grade_id'])]
 #[ORM\Table(name: 'itp_activity')]
 class Activity
 {
@@ -45,7 +46,7 @@ class Activity
 
     public function __toString()
     {
-        return $this->code . ' - ' . $this->name;
+        return $this->code . ': ' . $this->name;
     }
 
     public function getId(): ?int

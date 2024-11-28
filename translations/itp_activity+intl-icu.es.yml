@@ -10,7 +10,7 @@ form.delete: Eliminar actividades formativas
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
-form.no_activity: No hay actividades formativas en este curso
+form.no_learning_outcome: Hay que asignar previamente RAs al plan de formación
 
 title.list: Actividades del plan de formación
 title.detail: Plan de formación
