@@ -29,9 +29,9 @@ use App\Repository\WptModule\ActivityRepository;
 use App\Repository\WptModule\ActivityTrackingRepository;
 use App\Repository\WptModule\AgreementEnrollmentRepository;
 use App\Repository\WptModule\AgreementRepository;
+use App\Repository\WptModule\TeacherRepository;
 use App\Repository\WptModule\TrackedWorkDayRepository;
 use App\Repository\WptModule\WorkDayRepository;
-use App\Repository\WptModule\TeacherRepository;
 use App\Security\WptModule\AgreementEnrollmentVoter;
 use App\Security\WptModule\TrackedWorkDayVoter;
 use Doctrine\Persistence\ManagerRegistry;
@@ -181,14 +181,18 @@ class TrackingCalendarController extends AbstractController
                 $trackedActivities = $trackedWorkDay->getTrackedActivities();
                 if ($trackedWorkDay->getAbsence() !== TrackedWorkDay::NO_ABSENCE) {
                     foreach ($trackedActivities as $trackedActivity) {
-                        $managerRegistry->getManager()->remove($trackedActivity);
+                        if ($managerRegistry->getManager()->contains($trackedActivity)) {
+                            $managerRegistry->getManager()->remove($trackedActivity);
+                        }
                     }
                 } else {
                     foreach ($trackedActivities as $trackedActivity) {
                         if ($trackedActivity->getHours() === 0) {
                             $trackedActivities->removeElement($trackedActivity);
                             if ($trackedWorkDay->getId() !== null) {
-                                $managerRegistry->getManager()->remove($trackedActivity);
+                                if ($managerRegistry->getManager()->contains($trackedActivity)) {
+                                    $managerRegistry->getManager()->remove($trackedActivity);
+                                }
                             }
                         } else {
                             $managerRegistry->getManager()->persist($trackedActivity);
@@ -204,7 +208,8 @@ class TrackingCalendarController extends AbstractController
                 ]);
             } catch (AccessDeniedException $e) {
                 throw $e;
-            } catch (\Exception) {
+            } catch (\Exception $e) {
+                throw $e;
                 $this->addFlash('error', $translator->trans('message.workday_save_error', [], 'calendar'));
             }
         }
