@@ -185,6 +185,7 @@ class TrackingCalendarController extends AbstractController
                             $managerRegistry->getManager()->remove($trackedActivity);
                         }
                     }
+                    $trackedActivities->clear();
                 } else {
                     foreach ($trackedActivities as $trackedActivity) {
                         if ($trackedActivity->getHours() === 0) {

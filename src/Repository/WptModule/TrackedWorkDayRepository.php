@@ -106,7 +106,10 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
     {
         /** @var TrackedWorkDay $trackedWorkDay */
         foreach ($list as $trackedWorkDay) {
-            $trackedWorkDay->getTrackedActivities()->clear();
+            $trackedActivities = $trackedWorkDay->getTrackedActivities();
+            foreach ($trackedActivities as $trackedActivity) {
+                $this->getEntityManager()->remove($trackedActivity);
+            }
         }
 
         return $this->getEntityManager()->createQueryBuilder()
