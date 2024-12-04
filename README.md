@@ -67,6 +67,7 @@ Cuando se publique una nueva versión de la plataforma, se deberán seguir los s
 - Ejecutar `npm install`
 - Actualizar la base de datos (se sacará una copia de seguridad automáticamente):
   - `php bin/console app:safe-migrate -n`
+
     **IMPORTANTE:** Si fallara el comando anterior por la ausencia de algún comando en el sistema, se puede intentar
     con `php bin/console doctrine:migrations:migrate -n`, que realiza la migración sin copia de seguridad previa.
 - Ejecutar el comando `npm run build` para generar los assets.
