@@ -1,4 +1,4 @@
-password.min_length: La contraseña debe tener como mínimo {{ limit }} caracteres.
+password.min_length: La contraseña debe tener como mínimo { limit } caracteres.
 password.no_match: Las nuevas contraseñas no coinciden.
 
 user.id.not_found: Debe especificarse el nombre de usuario o bien el correo electrónico.
