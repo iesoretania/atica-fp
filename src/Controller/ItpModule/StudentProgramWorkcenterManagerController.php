@@ -162,7 +162,7 @@ class StudentProgramWorkcenterManagerController extends AbstractController
             [
                 'fixed' => $grade->getName(),
                 'routeName' => 'in_company_training_phase_group_list',
-                'routeParams' => ['programGrade' => $programGroup->getId()]
+                'routeParams' => ['programGrade' => $programGroup->getProgramGrade()?->getId()]
             ],
             [
                 'fixed' => $title
