@@ -118,8 +118,11 @@ class StudentProgramRepository extends ServiceEntityRepository
 
         if (!$studentProgram instanceof StudentProgram) {
             $studentProgram = new StudentProgram();
-            $studentProgram->setStudentEnrollment($studentEnrollment);
-            $studentProgram->setProgramGroup($programGroup);
+            $studentProgram
+                ->setAuthorizationNeeded(false)
+                ->setAdaptationNeeded(false)
+                ->setStudentEnrollment($studentEnrollment)
+                ->setProgramGroup($programGroup);
             $this->persist($studentProgram);
         }
         return $studentProgram;
