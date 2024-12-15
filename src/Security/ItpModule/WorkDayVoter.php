@@ -19,8 +19,12 @@
 namespace App\Security\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\WorkDay;
 use App\Entity\Person;
+use App\Repository\Edu\TeacherRepository;
+use App\Repository\ItpModule\ProgramGroupRepository;
+use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
@@ -35,6 +39,9 @@ class WorkDayVoter extends CachedVoter
 
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
+        private readonly TeacherRepository $teacherRepository,
+        private readonly StudentProgramWorkcenterRepository $studentProgramWorkcenterRepository,
+        private readonly ProgramGroupRepository $programGroupRepository,
         private readonly AccessDecisionManagerInterface $decisionManager,
         private readonly UserExtensionService $userExtensionService
     ) {
@@ -46,7 +53,6 @@ class WorkDayVoter extends CachedVoter
      */
     final public function supports($attribute, $subject): bool
     {
-
         if (!$subject instanceof WorkDay) {
             return false;
         }
@@ -98,13 +104,27 @@ class WorkDayVoter extends CachedVoter
             return true;
         }
 
+        $teacher = $this->teacherRepository->findOneByPersonAndAcademicYear($user, $academicYear);
+        $isItpStudent = count($this->studentProgramWorkcenterRepository->findByStudentAndAcademicYear($user, $academicYear)) > 0;
+        if ($teacher instanceof Teacher) {
+            $isItpManager =  count($this->programGroupRepository->findByManager($teacher)) > 0;
+            $isGroupTutor = count($this->programGroupRepository->findByTutor($teacher)) > 0;
+            $isStudentProgramWorkcenterEducationalTutor = count($this->studentProgramWorkcenterRepository->findByEducationalTutorOrAdditionalEducationalTutor($teacher)) > 0;
+        } else {
+            $isItpManager = false;
+            $isGroupTutor = false;
+            $isStudentProgramWorkcenterEducationalTutor = false;
+        }
+        $isStudentProgramWorkcenterWorkTutor = count($this->studentProgramWorkcenterRepository->findByWorkTutorOrAdditionalWorkTutorAndAcademicYear($user, $academicYear)) > 0;
+
         $isCurrentAcademicYear = $academicYear
             === $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
 
         // El jefe de departamento de la familia profesional de proyecto también puede
-        $isDepartmentHead = $training?->getDepartment()?->getHead()?->getPerson() === $user;
+        $isDepartmentHead = $training->getDepartment()?->getHead()?->getPerson() === $user;
 
-        $accessGranted = /*$isStudent || $isGroupTutor || $isTutor || $isManager || */$isDepartmentHead;
+        $accessGranted = $isItpStudent || $isStudentProgramWorkcenterEducationalTutor
+            || $isStudentProgramWorkcenterWorkTutor || $isGroupTutor || $isItpManager || $isDepartmentHead;
 
         return match ($attribute) {
             // Si se puede acceder al convenio, se puede visualizar la jornada
@@ -113,8 +133,8 @@ class WorkDayVoter extends CachedVoter
             // algún tutor (docente, laboral o de grupo) o puede administrar el
             // convenio
             self::FILL => $accessGranted
-                && $academicYear === $organization->getCurrentAcademicYear()
-                && (/*$isManager || $isStudent || $isTutor || $isGroupTutor || */$isDepartmentHead),
+                && $isCurrentAcademicYear
+                && ($isItpManager || $isItpStudent || $isStudentProgramWorkcenterWorkTutor || $isStudentProgramWorkcenterEducationalTutor || $isGroupTutor || $isDepartmentHead),
             // denegamos en cualquier otro caso
             default => false,
         };

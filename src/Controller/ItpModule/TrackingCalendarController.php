@@ -52,7 +52,8 @@ class TrackingCalendarController extends AbstractController
     {
         $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::ACCESS, $studentProgramWorkcenter);
 
-        $readOnly = !$this->isGranted(StudentProgramWorkcenterVoter::LOCK, $studentProgramWorkcenter);
+        $readOnly = !$this->isGranted(StudentProgramWorkcenterVoter::LOCK, $studentProgramWorkcenter) &&
+            !$this->isGranted(StudentProgramWorkcenterVoter::ATTENDANCE, $studentProgramWorkcenter);
 
         $workDaysData = $workDayRepository->getCalendarByStudentProgramWorkcenter($studentProgramWorkcenter);
 
@@ -205,7 +206,10 @@ class TrackingCalendarController extends AbstractController
         StudentProgramWorkcenter $studentProgramWorkcenter
     ): Response
     {
-        $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::ACCESS, $studentProgramWorkcenter);
+        if (!$this->isGranted(StudentProgramWorkcenterVoter::LOCK, $studentProgramWorkcenter)
+            && !$this->isGranted(StudentProgramWorkcenterVoter::ATTENDANCE, $studentProgramWorkcenter)) {
+            throw $this->createAccessDeniedException();
+        }
         if ($request->get('week_report')) {
             $year = floor($request->get('week_report') / 100);
             $week = $request->get('week_report') % 100;
@@ -214,8 +218,6 @@ class TrackingCalendarController extends AbstractController
                 ['studentProgramWorkcenter' => $studentProgramWorkcenter->getId(), 'year' => $year, 'week' => $week]
             );
         }
-
-        $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::LOCK, $studentProgramWorkcenter);
 
         if ($request->get('lock_week')) {
             $year = floor($request->get('lock_week') / 100);
