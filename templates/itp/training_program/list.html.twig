@@ -28,8 +28,8 @@
                         {% for program_grade in item.trainingProgramGrades %}{% for group in program_grade.grade.groups %}{{ group.name }} ({{ group.grade.training.academicYear }}){% if not loop.last %}, {% endif %}{% endfor %}{% if not loop.last %}, {% endif %}{% endfor %}
                     </td>
                     <td>
-                        {{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}/{{ (item.totalHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
-                        {% if item.totalHours %}({{ (item.targetHours * 100 / item.totalHours)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %){% endif %}
+                        {{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) -}}
+                        {%- if item.totalHours %}/{{ (item.totalHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} ({{ (item.targetHours * 100 / item.totalHours)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %){% endif %}
                     </td>
                     <td>
                         {{ m.link_button(path('in_company_training_phase_training_program_edit', {'trainingProgram': item.id}), 'pencil', 'btn-info btn-sm btn-block', 'table.basic_data'|trans) }}
