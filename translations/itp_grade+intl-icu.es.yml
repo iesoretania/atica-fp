@@ -24,7 +24,7 @@ table.modality.2: Intensiva
 
 table.basic_data: Datos básicos
 
-table.learning_outcomes: Horas y RAs
+table.target_hours: Horas previstas
 table.activities: Actividades formativas
 table.companies: Empresas colaboradoras
 table.specific_training: Formación específica
@@ -35,7 +35,7 @@ header.grade: Curso
 header.groups: Grupos asociados
 header.target_hours: Horas previstas
 header.activities: Actividades formativas
-header.subjects: Módulos profesionales
+header.subjects: Módulos prof.
 header.learning_outcomes: RAs
 header.criteria: CEs
 header.weighted: RAs ponderados

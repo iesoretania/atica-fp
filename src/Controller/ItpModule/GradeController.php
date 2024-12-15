@@ -18,16 +18,10 @@
 
 namespace App\Controller\ItpModule;
 
-use App\Entity\Edu\AcademicYear;
-use App\Entity\Edu\Training;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\TrainingProgram;
 use App\Form\Type\ItpModule\ProgramGradeType;
-use App\Repository\Edu\SubjectRepository;
-use App\Repository\Edu\TrainingRepository;
-use App\Repository\ItpModule\ProgramGradeLearningOutcomeRepository;
 use App\Repository\ItpModule\ProgramGradeRepository;
-use App\Repository\ItpModule\ProgramGroupRepository;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
 use App\Service\UserExtensionService;
@@ -45,7 +39,6 @@ class GradeController extends AbstractController
 {
     #[Route(path: '/listar/{trainingProgram}/{page}', name: 'in_company_training_phase_grade_list', requirements: ['trainingProgram' => '\d+', 'page' => '\d+'], methods: ['GET'])]
     public function list(
-        TrainingRepository $trainingRepository,
         ProgramGradeRepository $programGradeRepository,
         TranslatorInterface $translator,
         UserExtensionService $userExtensionService,
@@ -88,12 +81,11 @@ class GradeController extends AbstractController
     }
     #[Route(path: '/resultados/{programGrade}', name: 'in_company_training_phase_grade_learning_outcome_edit', requirements: ['programGrade' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(
-        Request                               $request,
-        TranslatorInterface                   $translator,
-        ProgramGradeLearningOutcomeRepository $programGradeLearningOutcomeRepository,
-        SubjectRepository                     $subjectRepository,
-        UserExtensionService                  $userExtensionService,
-        ProgramGrade                          $programGrade
+        Request                $request,
+        TranslatorInterface    $translator,
+        ProgramGradeRepository $programGradeRepository,
+        UserExtensionService   $userExtensionService,
+        ProgramGrade           $programGrade
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $trainingProgram = $programGrade->getTrainingProgram();
@@ -102,36 +94,13 @@ class GradeController extends AbstractController
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $trainingProgram);
 
-        $subjects = $subjectRepository->findByGrade($programGrade->getGrade());
+        $form = $this->createForm(ProgramGradeType::class, $programGrade);
 
-        $form = $this->createForm(ProgramGradeType::class, $programGrade, [
-            'subjects' => $subjects
-        ]);
-
-        $choices = $programGradeLearningOutcomeRepository->generateByProgramGradeAndSubjects($programGrade, $programGrade->getSubjects());
-        $form->get('currentProgramGradeLearningOutcomes')->setData($choices);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                foreach ($programGrade->getProgramGradeLearningOutcomes() as $programGradeLearningOutcome) {
-                    $programGradeLearningOutcomeRepository->remove($programGradeLearningOutcome);
-                }
-                foreach ($form->get('currentProgramGradeLearningOutcomes')->getData() as $customProgramGradeLearningOutcome) {
-                    switch ($customProgramGradeLearningOutcome->getSelected()) {
-                        case 1:
-                            $customProgramGradeLearningOutcome->getProgramGradeLearningOutcome()->setShared(true);
-                            $programGradeLearningOutcomeRepository->persist($customProgramGradeLearningOutcome->getProgramGradeLearningOutcome());
-                            break;
-                        case 2:
-                            $customProgramGradeLearningOutcome->getProgramGradeLearningOutcome()->setShared(false);
-                            $programGradeLearningOutcomeRepository->persist($customProgramGradeLearningOutcome->getProgramGradeLearningOutcome());
-                            break;
-                        default:
-                            $programGradeLearningOutcomeRepository->remove($customProgramGradeLearningOutcome->getProgramGradeLearningOutcome());
-                    }
-                }
-                $programGradeLearningOutcomeRepository->flush();
+                $programGradeRepository->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'itp_grade'));
                 return $this->redirectToRoute('in_company_training_phase_grade_list', ['trainingProgram' => $trainingProgram->getId()]);
             } catch (\Exception) {

@@ -3,7 +3,6 @@
 namespace App\Entity\ItpModule;
 
 use App\Entity\Edu\Grade;
-use App\Entity\Edu\Subject;
 use App\Repository\ItpModule\ProgramGradeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,42 +28,18 @@ class ProgramGrade
     #[ORM\Column(nullable: true)]
     private ?int $targetHours = null;
 
-    /**
-     * @var Collection<int, Activity>
-     */
     #[ORM\OneToMany(targetEntity: Activity::class, mappedBy: 'programGrade', orphanRemoval: true)]
     private Collection $activities;
 
-    /**
-     * @var Collection<int, ProgramGradeLearningOutcome>
-     */
-    #[ORM\OneToMany(targetEntity: ProgramGradeLearningOutcome::class, mappedBy: 'programGrade', orphanRemoval: true)]
-    private Collection $programGradeLearningOutcomes;
-
-    /**
-     * @var Collection<int, Subject>
-     */
-    #[ORM\ManyToMany(targetEntity: Subject::class)]
-    #[ORM\JoinTable(name: 'itp_program_grade_subject')]
-    private Collection $subjects;
-
-    /**
-     * @var Collection<int, ProgramGrade>
-     */
     #[ORM\OneToMany(targetEntity: CompanyProgram::class, mappedBy: 'programGrade', orphanRemoval: true)]
     private Collection $companyPrograms;
 
-    /**
-     * @var Collection<int, ProgramGroup>
-     */
     #[ORM\OneToMany(targetEntity: ProgramGroup::class, mappedBy: 'programGrade', orphanRemoval: true)]
     private Collection $trainingProgramGroups;
 
     public function __construct()
     {
         $this->activities = new ArrayCollection();
-        $this->programGradeLearningOutcomes = new ArrayCollection();
-        $this->subjects = new ArrayCollection();
         $this->companyPrograms = new ArrayCollection();
         $this->trainingProgramGroups = new ArrayCollection();
     }
@@ -119,43 +94,11 @@ class ProgramGrade
     }
 
     /**
-     * @return Collection<int, ProgramGradeLearningOutcome>
-     */
-    public function getProgramGradeLearningOutcomes(): Collection
-    {
-        return $this->programGradeLearningOutcomes;
-    }
-
-    /**
      * @return Collection<int, CompanyProgram>
      */
     public function getCompanyPrograms(): Collection
     {
         return $this->companyPrograms;
-    }
-
-    /**
-     * @return Collection<int, Subject>
-     */
-    public function getSubjects(): Collection
-    {
-        return $this->subjects;
-    }
-
-    public function addSubject(Subject $subject): static
-    {
-        if (!$this->subjects->contains($subject)) {
-            $this->subjects->add($subject);
-        }
-
-        return $this;
-    }
-
-    public function removeSubject(Subject $subject): static
-    {
-        $this->subjects->removeElement($subject);
-
-        return $this;
     }
 
     /**

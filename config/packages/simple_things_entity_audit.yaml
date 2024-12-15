@@ -11,7 +11,6 @@ simple_things_entity_audit:
         - App\Entity\ItpModule\Activity
         - App\Entity\ItpModule\CompanyProgram
         - App\Entity\ItpModule\ProgramGrade
-        - App\Entity\ItpModule\ProgramGradeLearningOutcome
         - App\Entity\ItpModule\ProgramGroup
         - App\Entity\ItpModule\SpecificTraining
         - App\Entity\ItpModule\StudentProgram

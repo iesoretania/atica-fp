@@ -92,6 +92,20 @@ class CriterionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByLearningOutcomes(array $learningOutcomes): array
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.learningOutcome', 'lo')
+            ->join('lo.subject', 's')
+            ->where('c.learningOutcome IN (:learning_outcomes)')
+            ->setParameter('learning_outcomes', $learningOutcomes)
+            ->addOrderBy('s.name')
+            ->addOrderBy('lo.code')
+            ->addOrderBy('c.code')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function copyFromLearningOutcome(LearningOutcome $destination, LearningOutcome $source): void
     {
         $criteria = $this->findByLearningOutcome($source);

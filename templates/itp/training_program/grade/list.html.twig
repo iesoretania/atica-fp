@@ -4,12 +4,11 @@
 
 {% block table_header %}
     <th class="w-25">{{ 'header.grade'|trans }}</th>
-    <th class="w-15">{{ 'header.groups'|trans }}</th>
+    <th class="w-25">{{ 'header.groups'|trans }}</th>
     <th class="w-5">{{ 'header.target_hours'|trans }}</th>
     <th class="w-5">{{ 'header.subjects'|trans }}</th>
     <th class="w-5">{{ 'header.learning_outcomes'|trans }}</th>
     <th class="w-5">{{ 'header.activities'|trans }}</th>
-    <th class="w-10"></th>
     <th class="w-10"></th>
     <th class="w-10"></th>
     <th class="w-10"></th>
@@ -43,7 +42,7 @@
                         {{ item.total_activities }}
                     </td>
                     <td>
-                        {{ m.link_toolbar_button(path('in_company_training_phase_grade_learning_outcome_edit', {'programGrade': program_grade.id}), 'list', 'btn-info btn-sm btn-block', 'table.learning_outcomes'|trans) }}
+                        {{ m.link_toolbar_button(path('in_company_training_phase_grade_learning_outcome_edit', {'programGrade': program_grade.id}), 'list-ol', 'btn-info btn-sm btn-block', 'table.target_hours'|trans) }}
                     </td>
                     <td>
                         {{ m.link_toolbar_button(path('in_company_training_phase_activity_list', {'programGrade': program_grade.id}), 'book', 'btn-info btn-sm btn-block h-100', 'table.activities'|trans) }}
@@ -51,13 +50,10 @@
                     <td>
                         {{ m.link_toolbar_button(path('in_company_training_phase_company_list', {'programGrade': program_grade.id}), 'industry', 'btn-info btn-sm btn-block', 'table.companies'|trans) }}
                     </td>
-                    <td>
-                        {{ m.link_toolbar_button('', 'thumbtack', 'btn-info btn-sm btn-block', 'table.specific_training'|trans) }}
-                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="10">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="9">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

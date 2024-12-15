@@ -2,7 +2,7 @@ form.code: Código
 form.name: Nombre
 form.description: Descripción
 form.subjects: Módulos profesionales
-form.learning_outcomes: Resultados de aprendizaje y criterios de evaluación
+form.learning_outcomes: Resultados de aprendizaje
 form.criteria: Criterios de evaluación
 
 form.save: Guardar cambios
@@ -10,7 +10,12 @@ form.delete: Eliminar actividades formativas
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
-form.no_learning_outcome: Hay que asignar previamente RAs al plan de formación
+form.no_learning_outcomes: No se han seleccionado módulos profesionales
+form.no_criteria: No se han seleccionado resultados de aprendizaje
+form.no_subjects: No hay módulos profesionales cargados en la enseñanza
+
+form.criteria.all: Todos
+form.criteria.none: Ninguno
 
 title.list: Actividades del plan de formación
 title.detail: Plan de formación

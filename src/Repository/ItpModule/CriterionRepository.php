@@ -18,8 +18,6 @@
 
 namespace App\Repository\ItpModule;
 
-use App\Entity\ItpModule\ProgramGrade;
-use App\Entity\ItpModule\ProgramGradeLearningOutcome;
 use App\Repository\Edu\CriterionRepository as EduCriterionRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -28,22 +26,5 @@ class CriterionRepository extends EduCriterionRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry);
-    }
-
-    public function findByProgramGrade(ProgramGrade $programGrade): array
-    {
-        return $this->createQueryBuilder('c')
-            ->join('c.learningOutcome', 'lo')
-            ->join('lo.subject', 's')
-            ->join(ProgramGradeLearningOutcome::class, 'pglo', 'WITH', 'pglo.learningOutcome = lo')
-            ->where('pglo.programGrade = :program_grade')
-            ->setParameter('program_grade',$programGrade)
-            ->addOrderBy('s.name')
-            ->addOrderBy('lo.code')
-            ->addOrderBy('lo.description')
-            ->addOrderBy('c.code')
-            ->addOrderBy('c.description')
-            ->getQuery()
-            ->getResult();
     }
 }

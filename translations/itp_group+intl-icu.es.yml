@@ -15,7 +15,7 @@ form.save: Guardar cambios
 form.delete: Eliminar participaciones
 form.back: Volver
 form.delete_confirm: Confirmar borrado
-form.manage_student_programs: Gestionar estancias
+form.manage_student_programs: Gestionar estancias de todo el curso
 
 form.select_all: Seleccionar todos
 form.select_none: Deseleccionar todos

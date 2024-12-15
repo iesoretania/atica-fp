@@ -12,6 +12,29 @@
     {{ form_end(form) }}
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('itp_activity') }}
+{% endblock %}
+
+{% block _activity_learningOutcomes_widget %}
+    <div {{ block('widget_container_attributes') }}>
+        {% set last_subject_id = null %}
+        {% for key, option in form.children %}
+            {% set item = form.vars.choices[key].data %}
+            {% if item.subject.id != last_subject_id %}
+                {% set last_subject_id = item.subject.id %}
+                <h4 class="checkbox-category">
+                    {{ item.subject }}{% if item.subject.code %} ({{ item.subject.code }}){% endif %}
+                </h4>
+            {% endif %}
+            {{ form_widget(option) }}
+        {% else %}
+            <h5>{{ 'form.no_learning_outcomes'|trans }}</h5>
+        {% endfor %}
+    </div>
+{% endblock %}
+
 {% block _activity_criteria_widget %}
     <div {{ block('widget_container_attributes') }}>
         {% set last_subject_id = null %}
@@ -29,10 +52,16 @@
                 <h5 class="checkbox-category">
                     {{ item.learningOutcome.code }}. {{ item.learningOutcome.description }}
                 </h5>
+                {% if item.learningOutcome.criteria|length > 1 %}
+                    <div class="col-sm-4">
+                        <button type="button" id="pselect_all" data-toggle="lo_{{ item.learningOutcome.id }}" class="btn btn-sm btn-secondary" title="{{ 'form.criteria.all'|trans }}"><i class="fa fa-square-check"></i> {{ 'form.criteria.all'|trans }}</button>
+                        <button type="button" id="pselect_none" data-toggle="lo_{{ item.learningOutcome.id }}" class="btn btn-sm btn-secondary" title="{{ 'form.criteria.none'|trans }}"><i class="fa fa-square"></i> {{ 'form.criteria.none'|trans }}</button>
+                    </div>
+                {% endif %}
             {% endif %}
             {{ form_widget(option) }}
         {% else %}
-            <h5>{{ 'form.no_learning_outcome'|trans }}</h5>
+            <h5>{{ 'form.no_criteria'|trans }}</h5>
         {% endfor %}
     </div>
 {% endblock %}

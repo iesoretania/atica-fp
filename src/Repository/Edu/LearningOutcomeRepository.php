@@ -45,6 +45,20 @@ class LearningOutcomeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findAllInListByIdAndSubjects($items, array $subjects): array
+    {
+        return $this->createQueryBuilder('l')
+            ->join('l.subject', 's')
+            ->where('l IN (:items)')
+            ->andWhere('l.subject IN (:subjects)')
+            ->setParameter('items', $items)
+            ->setParameter('subjects', $subjects)
+            ->addOrderBy('s.name')
+            ->addOrderBy('l.code')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findOneByCodeAndSubject($code, Subject $subject)
     {
         return $this->createQueryBuilder('l')

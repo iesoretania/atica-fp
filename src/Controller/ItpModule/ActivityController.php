@@ -20,11 +20,13 @@ namespace App\Controller\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Grade;
+use App\Entity\Edu\LearningOutcome;
 use App\Entity\Edu\Training;
 use App\Entity\ItpModule\Activity;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\Person;
 use App\Form\Type\ItpModule\ActivityType;
+use App\Repository\Edu\SubjectRepository;
 use App\Repository\ItpModule\ActivityRepository;
 use App\Security\ItpModule\ActivityVoter;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
@@ -107,6 +109,7 @@ class ActivityController extends AbstractController
     public function new(
         Request                               $request,
         TranslatorInterface                   $translator,
+        SubjectRepository                     $subjectRepository,
         ActivityRepository                    $activityRepository,
         ProgramGrade                          $programGrade
     ): Response
@@ -126,19 +129,32 @@ class ActivityController extends AbstractController
 
         $activityRepository->persist($activity);
 
-        return $this->edit($request, $translator, $activityRepository, $activity);
+        return $this->edit($request, $translator, $subjectRepository, $activityRepository, $activity);
     }
 
     #[Route(path: '/{id}', name: 'in_company_training_phase_activity_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(
         Request                               $request,
         TranslatorInterface                   $translator,
+        SubjectRepository                     $subjectRepository,
         ActivityRepository                    $activityRepository,
         Activity                              $activity
     ): Response {
         $this->denyAccessUnlessGranted(ActivityVoter::MANAGE, $activity);
 
-        $form = $this->createForm(ActivityType::class, $activity);
+        $form = $this->createForm(ActivityType::class, $activity, [
+            'program_grade' => $activity->getProgramGrade()
+        ]);
+
+        $subjects = [];
+        foreach ($activity->getCriteria() as $criterion) {
+            assert($criterion->getLearningOutcome() instanceof LearningOutcome);
+            if (!in_array($criterion->getLearningOutcome()->getSubject(), $subjects, true)) {
+                $subjects[] = $criterion->getLearningOutcome()->getSubject();
+            }
+        }
+
+        $form->get('subjects')->setData($subjects);
 
         $form->handleRequest($request);
 
