@@ -5,14 +5,14 @@
 {% block new_action %}{% endblock %}
 
 {% block table_header %}
-    <th class="w-15">{{ 'header.student'|trans }}</th>
+    <th class="w-20">{{ 'header.student'|trans }}</th>
     <th class="w-20">{{ 'header.workcenter'|trans }}</th>
     <th class="w-10">{{ 'header.educational_tutor'|trans }}</th>
     <th class="w-10">{{ 'header.work_tutor'|trans }}</th>
     <th class="w-10">{{ 'header.date_range'|trans }}</th>
     <th class="w-10">{{ 'header.activities'|trans }}</th>
     <th class="w-10">{{ 'header.hours'|trans }}</th>
-    <th class="w-15"></th>
+    <th class="w-10">{{ 'header.attendance'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
@@ -41,7 +41,7 @@
                     <td>
                     </td>
                     <td>
-                        {{ m.link_button(path('in_company_training_phase_training_program_edit', {'trainingProgram': item.id}), 'chart-line', 'btn-info btn-sm btn-block', 'table.training_program_status'|trans) }}
+
                     </td>
                 </tr>
             {% else %}

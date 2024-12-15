@@ -113,6 +113,7 @@ header.work_tutor: Tutor/a dual de empresa
 header.date_range: Fecha de inicio y fin
 header.date: Jornada
 header.hours: Horas
+header.attendance: Asistencia
 
 header.activities: Actividades
 header.learning_outcomes: RAs
