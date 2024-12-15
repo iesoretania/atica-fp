@@ -79,7 +79,7 @@ class GradeController extends AbstractController
             'training_program' => $trainingProgram
         ]);
     }
-    #[Route(path: '/resultados/{programGrade}', name: 'in_company_training_phase_grade_learning_outcome_edit', requirements: ['programGrade' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(path: '/resultados/{programGrade}', name: 'in_company_training_phase_grade_detail_edit', requirements: ['programGrade' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(
         Request                $request,
         TranslatorInterface    $translator,

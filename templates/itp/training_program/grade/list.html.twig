@@ -42,13 +42,13 @@
                         {{ item.total_activities }}
                     </td>
                     <td>
-                        {{ m.link_toolbar_button(path('in_company_training_phase_grade_learning_outcome_edit', {'programGrade': program_grade.id}), 'list-ol', 'btn-info btn-sm btn-block', 'table.target_hours'|trans) }}
-                    </td>
-                    <td>
                         {{ m.link_toolbar_button(path('in_company_training_phase_activity_list', {'programGrade': program_grade.id}), 'book', 'btn-info btn-sm btn-block h-100', 'table.activities'|trans) }}
                     </td>
                     <td>
                         {{ m.link_toolbar_button(path('in_company_training_phase_company_list', {'programGrade': program_grade.id}), 'industry', 'btn-info btn-sm btn-block', 'table.companies'|trans) }}
+                    </td>
+                    <td>
+                        {{ m.link_toolbar_button(path('in_company_training_phase_grade_detail_edit', {'programGrade': program_grade.id}), 'list-ol', 'btn-info btn-sm btn-block', 'table.target_hours'|trans) }}
                     </td>
                 </tr>
             {% else %}
