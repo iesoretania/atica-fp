@@ -95,7 +95,7 @@ class StudentProgramWorkcenterVoter extends CachedVoter
             return true;
         }
 
-        $training = $subject->getStudentProgram()?->getProgramGroup()?->getProgramGrade()?->getTrainingProgram()
+        $training = $subject->getStudentProgram()?->getProgramGroup()?->getProgramGrade()?->getGrade()
             ?->getTraining();
         $academicYear = $training?->getAcademicYear();
 

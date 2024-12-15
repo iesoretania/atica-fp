@@ -75,6 +75,6 @@
     {{ form_widget(form.workTutorRemarks) }}
     <hr/>
     {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
-    {{ m.link_button(path('in_company_training_phase_tracking_grading_list', {'academicYear': student_program_workcenter.studentProgram.programGroup.programGrade.trainingProgram.training.academicYear.id}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.link_button(path('in_company_training_phase_tracking_grading_list', {'academicYear': student_program_workcenter.studentProgram.programGroup.programGrade.grade.training.academicYear.id}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ form_end(form) }}
 {% endblock %}
