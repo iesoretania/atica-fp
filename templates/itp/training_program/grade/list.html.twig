@@ -3,11 +3,12 @@
 {% import 'macros.html.twig' as m %}
 
 {% block table_header %}
-    <th class="w-25">{{ 'header.grade'|trans }}</th>
+    <th class="w-20">{{ 'header.grade'|trans }}</th>
     <th class="w-25">{{ 'header.groups'|trans }}</th>
     <th class="w-5">{{ 'header.target_hours'|trans }}</th>
     <th class="w-5">{{ 'header.subjects'|trans }}</th>
     <th class="w-5">{{ 'header.learning_outcomes'|trans }}</th>
+    <th class="w-5">{{ 'header.criteria'|trans }}</th>
     <th class="w-5">{{ 'header.activities'|trans }}</th>
     <th class="w-10"></th>
     <th class="w-10"></th>
@@ -33,10 +34,13 @@
                         {% endif %}
                     </td>
                     <td>
-                        {{ item.total_subjects }}
+                        {{ item.activity_subjects }}/{{ item.total_subjects }}
                     </td>
                     <td>
-                        {{ item.total_learning_outcomes }}
+                        {{ item.activity_learning_outcomes }}/{{ item.total_learning_outcomes }}
+                    </td>
+                    <td>
+                        {{ item.activity_criteria }}/{{ item.total_criteria }}
                     </td>
                     <td>
                         {{ item.total_activities }}
@@ -53,7 +57,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="9">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="10">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

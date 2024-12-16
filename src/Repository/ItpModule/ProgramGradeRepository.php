@@ -2,6 +2,9 @@
 
 namespace App\Repository\ItpModule;
 
+use App\Entity\Edu\Criterion;
+use App\Entity\Edu\LearningOutcome;
+use App\Entity\Edu\Subject;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\TrainingProgram;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -85,10 +88,20 @@ class ProgramGradeRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('pg')
             ->select('pg as program_grade')
             ->addSelect('COUNT(DISTINCT a) AS total_activities')
-            ->addSelect('0 AS total_subjects')
-            ->addSelect('0 AS total_learning_outcomes')
+            ->addSelect('COUNT(DISTINCT s) AS total_subjects')
+            ->addSelect('COUNT(DISTINCT lo) AS total_learning_outcomes')
+            ->addSelect('COUNT(DISTINCT c) AS total_criteria')
+            ->addSelect('COUNT(DISTINCT ac) AS activity_criteria')
+            ->addSelect('COUNT(DISTINCT alo) AS activity_learning_outcomes')
+            ->addSelect('COUNT(DISTINCT asu) AS activity_subjects')
             ->join('pg.grade', 'g')
             ->leftJoin('pg.activities', 'a')
+            ->leftJoin('a.criteria', 'ac')
+            ->leftJoin('ac.learningOutcome', 'alo')
+            ->leftJoin('alo.subject', 'asu')
+            ->leftJoin(Subject::class, 's', 'WITH', 'g = s.grade')
+            ->leftJoin(LearningOutcome::class, 'lo', 'WITH', 's = lo.subject')
+            ->leftJoin(Criterion::class, 'c', 'WITH', 'lo = c.learningOutcome')
             ->andWhere('pg.trainingProgram = :trainingProgram')
             ->setParameter('trainingProgram', $trainingProgram)
             ->groupBy('pg')
