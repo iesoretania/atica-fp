@@ -3,6 +3,8 @@ form.agreement_number: Número de convenio de colaboración
 form.monitoring_instruments: Mecanismos de seguimiento
 form.monitoring_instruments.placeholder: Indique los mecanismos de seguimiento que se utilizarán en la empresa u organismo equiparable
 form.program_activities: Actividades formativas
+form.activities.all: Seleccionar todas
+form.activities.none: Ninguna
 
 form.save: Guardar cambios
 form.delete: Eliminar participaciones
