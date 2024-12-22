@@ -224,7 +224,8 @@ class ActivityController extends AbstractController
                 $activityRepository->deleteFromList($selectedItems);
                 $activityRepository->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'itp_activity'));
-            } catch (\Exception) {
+            } catch (\Exception $e) {
+                throw($e);
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'itp_activity'));
             }
             return $this->redirectToRoute('in_company_training_phase_activity_list', ['programGrade' => $programGrade->getId()]);

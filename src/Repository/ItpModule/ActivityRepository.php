@@ -17,7 +17,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ActivityRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, private readonly CompanyProgramRepository $companyProgramRepository)
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly CompanyProgramRepository $companyProgramRepository,
+        private readonly StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository
+    )
     {
         parent::__construct($registry, Activity::class);
     }
@@ -57,12 +61,12 @@ class ActivityRepository extends ServiceEntityRepository
 
     public function deleteFromProgramGradeList($items)
     {
-        $this->createQueryBuilder('a')
-            ->delete()
+        $activities = $this->createQueryBuilder('a')
             ->where('a.programGrade IN (:items)')
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();
+        $this->deleteFromList($activities);
     }
 
     public function findAllInListByIdAndProgramGrade(array $items, ProgramGrade $programGrade): array
@@ -80,6 +84,7 @@ class ActivityRepository extends ServiceEntityRepository
 
     public function deleteFromList(array $items): void
     {
+        $this->studentProgramWorkcenterActivityRepository->deleteFromActivityList($items);
         $this->createQueryBuilder('a')
             ->delete()
             ->where('a IN (:selectedItems)')

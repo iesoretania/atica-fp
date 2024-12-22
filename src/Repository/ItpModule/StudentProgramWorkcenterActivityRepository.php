@@ -100,4 +100,14 @@ class StudentProgramWorkcenterActivityRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function deleteFromActivityList(array $items): void
+    {
+        $this->createQueryBuilder('spa')
+            ->delete()
+            ->where('spa.activity IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
 }
