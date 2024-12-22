@@ -4,7 +4,6 @@ namespace App\Repository\ItpModule;
 
 use App\Entity\Edu\Criterion;
 use App\Entity\Edu\LearningOutcome;
-use App\Entity\Edu\Subject;
 use App\Entity\ItpModule\Activity;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\TrainingProgram;
@@ -120,6 +119,7 @@ class ProgramGradeRepository extends ServiceEntityRepository
             $learningOutcome = $learningOutcomeData['learning_outcome'];
             $subject = $learningOutcome->getSubject();
             if ($lastProgramGradeId !== $subject->getGrade()->getId()) {
+                $subjectWeightSum += $internalLearningOutcomesCount !== 0 ? $weightSum / $internalLearningOutcomesCount : 0;
                 if ($lastProgramGradeId !== null) {
                     $grades[$lastProgramGradeId] = [
                         'grade' => $subject->getGrade(),
@@ -143,7 +143,6 @@ class ProgramGradeRepository extends ServiceEntityRepository
                 $weightSum = 0;
                 $subjectWeightSum = 0;
                 $isSubjectSelected = false;
-                $isLearningOutcomeSelected = false;
             }
             if ($lastSubjectId !== $subject->getId()) {
                 $lastSubjectId = $subject->getId();
