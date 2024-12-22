@@ -10,43 +10,50 @@
     <th class="w-10">{{ 'header.educational_tutor'|trans }}</th>
     <th class="w-10">{{ 'header.work_tutor'|trans }}</th>
     <th class="w-10">{{ 'header.date_range'|trans }}</th>
-    <th class="w-10">{{ 'header.activities'|trans }}</th>
     <th class="w-10">{{ 'header.hours'|trans }}</th>
-    <th class="w-10">{{ 'header.attendance'|trans }}</th>
+    <th class="w-20">{{ 'header.attendance'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
             {% for item in pager %}
-                {% set url = path('in_company_training_phase_tracking_calendar_list', {'studentProgramWorkcenter': item.id}) %}
+                {% set spw = item[0] %}
+                {% set url = path('in_company_training_phase_tracking_calendar_list', {'studentProgramWorkcenter': spw.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <a href="{{ url }}">{{ item.studentProgram.studentEnrollment }}</a>
+                        <a href="{{ url }}">{{ spw.studentProgram.studentEnrollment }}</a>
                     </td>
                     <td>
-                        {{ item.workcenter }}
+                        {{ spw.workcenter }}
                     </td>
                     <td>
-                        {{ item.educationalTutor }}
+                        {{ spw.educationalTutor }}
                     </td>
                     <td>
-                        {{ item.workTutor }}
+                        {{ spw.workTutor }}
                     </td>
                     <td>
-                        {% if item.startDate and item.endDate %}
-                            {{ item.startDate|date('format.date'|trans({}, 'general')) }} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}
+                        {% if spw.startDate and spw.endDate %}
+                            {{ spw.startDate|date('format.date'|trans({}, 'general')) }} - {{ spw.endDate|date('format.date'|trans({}, 'general')) }}
                         {% endif %}
                     </td>
                     <td>
+                        {{ (item.hours / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
                     </td>
                     <td>
-                    </td>
-                    <td>
-
+                        {% if item.hours %}
+                            {{ item.locked_hours / 100 }}/{{ 'table.hours'|trans({'count': item.hours / 100}) }} ({{ (item.locked_hours*100/item.hours) | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
+                            {% if item.absences != 0 %}
+                                - {{ 'table.absences'|trans({'count': item.absences}) }}
+                                {% if item.justified_absences != 0 %}
+                                    - {{ 'table.justified_absences'|trans({'count': item.justified_absences}) }}
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="8">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="7">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

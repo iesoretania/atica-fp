@@ -171,6 +171,12 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         }
         $qb = $this->createQueryBuilder('spw')
             ->addSelect('spw', 'c', 'w', 'p', 'g', 'gr', 't', 'sp', 'se', 'et', 'etp', 'wt')
+            ->addSelect('SUM(wd.hours) AS hours')
+            ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked * wd.hours ELSE 0 END) AS locked_hours')
+            ->addSelect('SUM(CASE WHEN wd.absence != 0 THEN 1 ELSE 0 END) AS absences')
+            ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN 1 ELSE 0 END) AS justified_absences')
+            ->leftJoin('spw.workDays', 'wd')
+            ->addGroupBy('spw')
             ->join('spw.studentProgram', 'sp')
             ->join('spw.educationalTutor', 'et')
             ->join('et.person', 'etp')

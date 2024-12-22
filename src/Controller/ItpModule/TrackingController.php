@@ -69,7 +69,7 @@ class TrackingController extends AbstractController
             $q
         );
 
-        $adapter = new QueryAdapter($queryBuilder);
+        $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

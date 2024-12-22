@@ -79,7 +79,6 @@ class GradingController extends AbstractController
             $isManager,
             $q
         );
-
         $adapter = new QueryAdapter($queryBuilder);
         $pager = new Pagerfanta($adapter);
         try {

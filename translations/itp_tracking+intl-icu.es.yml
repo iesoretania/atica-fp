@@ -93,6 +93,8 @@ table.filter: Filtrar...
 table.training_program_status: Estado del plan de formación
 table.hours: "{count, plural, one {1 hora} other {# horas}}"
 table.ignored_by_lock: Jornada bloqueada. No se modificará.
+table.absences: "{count, plural, one {1 falta} other {# faltas}}"
+table.justified_absences: "{count, plural, one {1 justificada} other {# justificadas}}"
 
 message.attendance_updated: Asistencia de las jornadas actualizadas con éxito.
 message.attendance_error: Error al actualizar la asistencia de las jornadas.
