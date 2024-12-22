@@ -5,6 +5,7 @@ namespace App\Repository\ItpModule;
 use App\Entity\Edu\Criterion;
 use App\Entity\Edu\LearningOutcome;
 use App\Entity\Edu\Subject;
+use App\Entity\ItpModule\Activity;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\TrainingProgram;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -85,29 +86,107 @@ class ProgramGradeRepository extends ServiceEntityRepository
 
     public function getStatsByTrainingProgram(TrainingProgram $trainingProgram): array
     {
-        return $this->createQueryBuilder('pg')
-            ->select('pg as program_grade')
-            ->addSelect('COUNT(DISTINCT a) AS total_activities')
-            ->addSelect('COUNT(DISTINCT s) AS total_subjects')
-            ->addSelect('COUNT(DISTINCT lo) AS total_learning_outcomes')
-            ->addSelect('COUNT(DISTINCT c) AS total_criteria')
-            ->addSelect('COUNT(DISTINCT ac) AS activity_criteria')
-            ->addSelect('COUNT(DISTINCT alo) AS activity_learning_outcomes')
-            ->addSelect('COUNT(DISTINCT asu) AS activity_subjects')
-            ->join('pg.grade', 'g')
-            ->leftJoin('pg.activities', 'a')
-            ->leftJoin('a.criteria', 'ac')
-            ->leftJoin('ac.learningOutcome', 'alo')
-            ->leftJoin('alo.subject', 'asu')
-            ->leftJoin(Subject::class, 's', 'WITH', 'g = s.grade')
-            ->leftJoin(LearningOutcome::class, 'lo', 'WITH', 's = lo.subject')
-            ->leftJoin(Criterion::class, 'c', 'WITH', 'lo = c.learningOutcome')
-            ->andWhere('pg.trainingProgram = :trainingProgram')
+        $learningOutcomes = $this->getEntityManager()->createQueryBuilder()
+            ->select('s, g, lo AS learning_outcome, COUNT(DISTINCT c) AS total_criteria, COUNT(DISTINCT ac) AS selected_criteria, COUNT(DISTINCT ac) / COUNT(DISTINCT c) AS weight')
+            ->from(LearningOutcome::class, 'lo')
+            ->join('lo.subject', 's')
+            ->join('lo.criteria', 'c')
+            ->join('s.grade', 'g')
+            ->join(ProgramGrade::class, 'pg', 'WITH', 'pg.grade = g')
+            ->leftJoin(Activity::class, 'a', 'WITH', 'c MEMBER OF a.criteria AND a.programGrade = pg')
+            ->leftJoin(Criterion::class, 'ac', 'WITH', 'ac = c AND ac MEMBER OF a.criteria')
+            ->where('pg.trainingProgram = :trainingProgram')
             ->setParameter('trainingProgram', $trainingProgram)
-            ->groupBy('pg')
             ->orderBy('g.name', 'ASC')
+            ->addOrderBy('s.name', 'ASC')
+            ->addOrderBy('lo.code', 'ASC')
+            ->groupBy('lo')
             ->getQuery()
             ->getResult();
+        $grades = [];
+        $lastProgramGradeId = null;
+        $lastSubjectId = null;
+        $totalSubjectCount = 0;
+        $selectedSubjectCount = 0;
+        $totalLearningOutcomesCount = 0;
+        $selectedLearningOutcomesCount = 0;
+        $internalLearningOutcomesCount = 0;
+        $totalCriteriaCount = 0;
+        $selectedCriteriaCount = 0;
+        $weightSum = 0;
+        $subjectWeightSum = 0;
+        $isSubjectSelected = false;
+        foreach ($learningOutcomes as $learningOutcomeData) {
+            $learningOutcome = $learningOutcomeData['learning_outcome'];
+            $subject = $learningOutcome->getSubject();
+            if ($lastProgramGradeId !== $subject->getGrade()->getId()) {
+                if ($lastProgramGradeId !== null) {
+                    $grades[$lastProgramGradeId] = [
+                        'grade' => $subject->getGrade(),
+                        'total_subjects' => $totalSubjectCount,
+                        'total_learning_outcomes' => $totalLearningOutcomesCount,
+                        'total_criteria' => $totalCriteriaCount,
+                        'selected_subjects' => $selectedSubjectCount,
+                        'selected_learning_outcomes' => $selectedLearningOutcomesCount,
+                        'selected_criteria' => $selectedCriteriaCount,
+                        'weight' => $totalSubjectCount != 0 ? $subjectWeightSum / $totalSubjectCount : 0
+                    ];
+                }
+                $lastProgramGradeId = $subject->getGrade()->getId();
+                $totalSubjectCount = 0;
+                $selectedSubjectCount = 0;
+                $totalLearningOutcomesCount = 0;
+                $selectedLearningOutcomesCount = 0;
+                $internalLearningOutcomesCount = 0;
+                $totalCriteriaCount = 0;
+                $selectedCriteriaCount = 0;
+                $weightSum = 0;
+                $subjectWeightSum = 0;
+                $isSubjectSelected = false;
+                $isLearningOutcomeSelected = false;
+            }
+            if ($lastSubjectId !== $subject->getId()) {
+                $lastSubjectId = $subject->getId();
+                $subjectWeightSum += $internalLearningOutcomesCount != 0 ? $weightSum / $internalLearningOutcomesCount : 0;
+                $internalLearningOutcomesCount = 0;
+                $weightSum = 0;
+                $totalSubjectCount++;
+                $isSubjectSelected = false;
+            }
+            $totalCriteriaCount += $learningOutcomeData['total_criteria'];
+            $totalLearningOutcomesCount++;
+            $internalLearningOutcomesCount++;
+            if ($learningOutcomeData['selected_criteria'] > 0) {
+                $selectedLearningOutcomesCount++;
+                if (!$isSubjectSelected) {
+                    $selectedSubjectCount++;
+                    $isSubjectSelected = true;
+                }
+                $selectedCriteriaCount += $learningOutcomeData['selected_criteria'];
+                $weightSum += $learningOutcomeData['weight'];
+            }
+        }
+        if ($totalSubjectCount > 0 && !isset($grades[$subject->getGrade()->getId()])) {
+            $subjectWeightSum += $internalLearningOutcomesCount != 0 ? $weightSum / $internalLearningOutcomesCount : 0;
+            $grades[$subject->getGrade()->getId()] = [
+                'grade' => $subject->getGrade(),
+                'total_subjects' => $totalSubjectCount,
+                'total_learning_outcomes' => $totalLearningOutcomesCount,
+                'total_criteria' => $totalCriteriaCount,
+                'selected_subjects' => $selectedSubjectCount,
+                'selected_learning_outcomes' => $selectedLearningOutcomesCount,
+                'selected_criteria' => $selectedCriteriaCount,
+                'weight' => $totalSubjectCount != 0 ? $subjectWeightSum / $totalSubjectCount : 0
+            ];
+        }
+
+        foreach ($trainingProgram->getTrainingProgramGrades() as $trainingProgramGrade) {
+            $grade = $trainingProgramGrade->getGrade();
+            if (isset($grades[$grade->getId()])) {
+                $grades[$grade->getId()]['program_grade'] = $trainingProgramGrade;
+            }
+        }
+        return $grades;
     }
 
     public function deleteFromList(array $items): void
