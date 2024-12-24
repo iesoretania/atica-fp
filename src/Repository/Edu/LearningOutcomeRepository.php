@@ -18,6 +18,7 @@
 
 namespace App\Repository\Edu;
 
+use App\Entity\Edu\Grade;
 use App\Entity\Edu\LearningOutcome;
 use App\Entity\Edu\Subject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -149,6 +150,21 @@ class LearningOutcomeRepository extends ServiceEntityRepository
             ->join('lo.subject', 's')
             ->where('s IN (:subjects)')
             ->setParameter('subjects', $subjects)
+            ->orderBy('s.code')
+            ->addOrderBy('s.name')
+            ->addOrderBy('lo.code')
+            ->addOrderBy('lo.description')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByGrade(Grade $grade): array
+    {
+        return $this->createQueryBuilder('lo')
+            ->join('lo.subject', 's')
+            ->join('s.grade', 'g')
+            ->where('g = :grade')
+            ->setParameter('grade', $grade)
             ->orderBy('s.code')
             ->addOrderBy('s.name')
             ->addOrderBy('lo.code')

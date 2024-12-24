@@ -19,6 +19,7 @@
 namespace App\Repository\Edu;
 
 use App\Entity\Edu\Criterion;
+use App\Entity\Edu\Grade;
 use App\Entity\Edu\LearningOutcome;
 use App\Entity\Edu\Subject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -130,5 +131,20 @@ class CriterionRepository extends ServiceEntityRepository
             ->setParameter('item', $item)
             ->getQuery()
             ->execute();
+    }
+
+    public function findByGrade(Grade $grade): array
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.learningOutcome', 'lo')
+            ->join('lo.subject', 's')
+            ->join('s.grade', 'g')
+            ->where('g = :grade')
+            ->setParameter('grade', $grade)
+            ->orderBy('s.code')
+            ->addOrderBy('lo.code')
+            ->addOrderBy('c.code')
+            ->getQuery()
+            ->getResult();
     }
 }

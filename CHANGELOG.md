@@ -19,6 +19,7 @@ en las distintas versiones de la misma.
 * feat: Añadidos comandos para realizar copias de seguridad y restauraciones de la base de datos desde la consola
 * feat: Posibilidad de realizar una copia de seguridad antes de ejecutar una migración, restaurando los datos en caso de error
 * feat: El calendario de la fase de formación en empresa permite especificar hasta dos decimales en la asignación de horas
+* feat: Se puede importar el plan de formación inicial desde un fichero exportado de Séneca
 
 6.2.1 (2024-07-28)
 ------------------

@@ -135,4 +135,24 @@ class ActivityRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByProgramGradeAndCode(ProgramGrade $programGrade, string $activityCode): ?Activity
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.programGrade = :programGrade')
+            ->andWhere('a.code = :activityCode')
+            ->setParameter('programGrade', $programGrade)
+            ->setParameter('activityCode', $activityCode)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findByProgramGrade(ProgramGrade $programGrade): array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.programGrade = :programGrade')
+            ->setParameter('programGrade', $programGrade)
+            ->getQuery()
+            ->getResult();
+    }
 }
