@@ -16,15 +16,9 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-<<<<<<<< HEAD:src/Form/Type/WltModule/ActivityRealizationGradeType.php
-namespace App\Form\Type\WltModule;
-
-========
 namespace App\Form\Type\Edu;
 
 use App\Entity\Edu\PerformanceScaleValue;
->>>>>>>> itp-module:src/Form/Type/Edu/PerformanceScaleValueType.php
-use App\Entity\WltModule\ActivityRealizationGrade;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;

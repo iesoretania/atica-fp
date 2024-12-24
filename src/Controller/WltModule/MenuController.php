@@ -16,15 +16,9 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-<<<<<<<< HEAD:src/Controller/WptModule/MenuController.php
-namespace App\Controller\WptModule;
-
-use App\Security\WptModule\OrganizationVoter as WptOrganizationVoter;
-========
 namespace App\Controller\WltModule;
 
 use App\Security\WltModule\OrganizationVoter as WltOrganizationVoter;
->>>>>>>> itp-module:src/Controller/WltModule/MenuController.php
 use App\Service\UserExtensionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,19 +26,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class MenuController extends AbstractController
 {
-<<<<<<<< HEAD:src/Controller/WptModule/MenuController.php
-    #[Route(path: '/fct', name: 'workplace_training', methods: ['GET'])]
-    public function index(UserExtensionService $userExtensionService): Response
-    {
-        $this->denyAccessUnlessGranted(
-            WptOrganizationVoter::WPT_ACCESS_SECTION,
-========
     #[Route(path: '/dual', name: 'work_linked_training', methods: ['GET'])]
     public function index(UserExtensionService $userExtensionService): Response
     {
         $this->denyAccessUnlessGranted(
             WltOrganizationVoter::WLT_ACCESS,
->>>>>>>> itp-module:src/Controller/WltModule/MenuController.php
             $userExtensionService->getCurrentOrganization()
         );
         return $this->render(
