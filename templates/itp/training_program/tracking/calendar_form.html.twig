@@ -1,0 +1,36 @@
+{% trans_default_domain 'itp_tracking' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% form_theme form _self %}
+{% block content %}
+    {% if read_only %}
+        <div class="alert alert-warning">{{ 'prompt.read_only_warning'|trans|nl2br }}</div>
+    {% else %}
+        {% if work_day.locked %}
+            <div class="alert alert-warning">{{ 'prompt.locked_warning'|trans|nl2br }}</div>
+        {% endif %}
+    {% endif %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ m.start_button() }}
+        {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {% if previous_work_day %}
+            {{ m.link_button(path('in_company_training_phase_tracking_calendar_form', {'workDay': previous_work_day.id}), 'angle-left', 'btn-info', 'form.previous_work_day'|trans) }}
+        {% endif %}
+        {% if next_work_day %}
+            {{ m.link_button(path('in_company_training_phase_tracking_calendar_form', {'workDay': next_work_day.id}), 'angle-right', 'btn-info', 'form.next_work_day'|trans) }}
+        {% endif %}
+    {{ m.end_button() }}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block content_title %}
+    {% if previous_work_day %}
+        <a href="{{ path('in_company_training_phase_tracking_calendar_form', {'workDay': previous_work_day.id}) }}" class="btn btn-sm btn-info" title="{{ 'form.previous_work_day'|trans }}"><i class="fas fa-angle-left"></i></a>
+    {% endif %}
+    {{ parent() }}
+    {% if next_work_day %}
+        <a href="{{ path('in_company_training_phase_tracking_calendar_form', {'workDay': next_work_day.id}) }}" class="btn btn-sm btn-info" title="{{ 'form.next_work_day'|trans }}"><i class="fas fa-angle-right"></i></a>
+    {% endif %}
+{% endblock %}

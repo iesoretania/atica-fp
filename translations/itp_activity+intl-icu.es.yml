@@ -1,0 +1,63 @@
+form.code: Código
+form.name: Nombre
+form.description: Descripción
+form.subjects: Módulos profesionales
+form.learning_outcomes: Resultados de aprendizaje
+form.criteria: Criterios de evaluación
+
+form.save: Guardar cambios
+form.delete: Eliminar actividades formativas
+form.back: Volver
+form.delete_confirm: Confirmar borrado
+form.import: Importar desde Séneca
+form.do_import: Importar desde el fichero seleccionado
+form.file: "Fichero .CSV de Séneca"
+
+form.no_learning_outcomes: No se han seleccionado módulos profesionales
+form.no_criteria: No se han seleccionado resultados de aprendizaje
+form.no_subjects: No hay módulos profesionales cargados en la enseñanza
+
+form.criteria.all: Todos
+form.criteria.none: Ninguno
+
+title.list: Actividades del plan de formación
+title.detail: Plan de formación
+title.new: Nueva actividad formativa
+title.edit: Detalles de la actividad formativa
+title.delete: Eliminar actividades formativas
+title.import: Importar plan de formación inicial
+title.import_result: Resultado de la importación
+
+table.new: Nueva actividad formativa
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay actividades formativas
+table.filter: Filtrar...
+
+header.code: Código
+header.name: Nombre
+header.description: Descripción
+header.learning_outcomes_and_criteria: RAs y CEs
+
+report.stats: Estadísticas de la importación
+report.new_activities: Actividades formativas incorporadas
+report.updated_activities: Actividades formativas existentes
+report.unknown_criteria: Criterios de evaluación desconocidos que han sido ignorados
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Actividades formativas eliminadas con éxito.
+message.delete_error: Ha ocurrido un error al eliminar las actividades formativa del plan de formación.
+message.import_ok: Plan de formación importado con éxito.
+message.import_error_missing_columns: En el fichero faltan columnas que son necesarias para realizar la importación
+message.import_error_query: Han fallado las operaciones en la base de datos durante la importación
+message.import_error_wrong_subject_format: El formato del nombre del módulo profesional es incorrecto
+message.import_error_wrong_activity_format: El formato del nombre de una actividad es incorrecto (debe ser "AFx. "...)
+message.import_error_wrong_learning_outcome_format: El formato del resultado de aprendizaje es incorrecto (debe ser "R.A.x. "...)
+message.import_error_wrong_criterion_format: El formato del criterio de evaluación es incorrecto (debe ser "x. "...)
+
+prompt.delete_confirm: |
+    ¿Está seguro de que desea eliminar las siguientes actividades formativas? Se eliminarán todos los datos asociados.
+
+    Esta operación no se puede deshacer.
+
+instructions.path.activity: "Alumnado > FCT, FP Dual, FE y movilidad > Formación en Empresa > Planes de formación inicial > 'Seleccionar plan' > Detalle > Botón 'Exportar datos'"

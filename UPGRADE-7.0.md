@@ -10,9 +10,44 @@ de la plataforma y la 7.0.
 Actualización de los componentes internos
 -----------------------------------------
 Para soportar las últimas versiones de algunos componentes, se han tenido que modificar los requisitos
-mínimos de PHP y NodeJS. Ahora se requiere PHP ≥8.2 y NodeJS ≥20.
+mínimos de PHP y NodeJS. Ahora se requiere PHP ≥ 8.2 y NodeJS ≥ 20.
 
 Soporte de la fase de formación en empresa
 ------------------------------------------
 La aplicación incluye un nuevo módulo para gestionar la fase de formación en empresa de los estudiantes
 atendiendo a la nueva normativa de FP.
+
+Escalas de valoracion
+---------------------
+Las escalas de valoración del desempeño que se configuraban específicamente para los proyectos de FP dual
+ahora se especifican globalmente a nivel de centro educativo. Esto permite reutilizar las escalas de valoración
+entre diferentes proyectos de FP dual y planes de formación de la nueva fase de formación en empresa.
+
+Con este fin, se ha añadido una nueva sección en la configuración del centro educativo para gestionar las escalas.
+
+Las escalas de valoración individuales de los proyectos de FP dual se han migrado a la nueva sección de escalas
+de forma automática, asignándoles como descripción el nombre del proyecto.
+
+Copias de seguridad desde la consola
+------------------------------------
+Ahora es posible generar y recuperar copias de seguridad desde la consola de comandos. Los comandos son:
+- ```bin/console app:backup``` para generar una copia de seguridad. Parámetros:
+  * ```<nombre_del_fichero>``` (opcional): Permite establecer el nombre del fichero con que se guardará la copia de seguridad. Si se especifica, no pueden usarse opciones.
+  * ```--path <directorio>``` (opcional): Permite indicar el directorio donde se guardará la copia de seguridad. Por defecto será la carpeta ```/backups``` del despliegue.
+  * ```--filename <nombre_fichero>``` (opcional): Establecer el nombre del fichero con que se guardará la copia de seguridad. Por defecto será ```backup.sql```.
+  * ```--timestamp``` (opcional): Si se indica, se añadirá la fecha y hora al nombre del archivo de copia de seguridad. Es incompatible con la opción ```--filename```.
+- ```bin/console app:backup-restore``` para recuperar una copia de seguridad. Parámetros:
+  * ```<nombre_del_fichero>``` (opcional): Permite establecer el nombre del fichero desde el que se recuperará la copia de seguridad. Si se especifica, no pueden usarse opciones.
+  * ```--path <directorio>``` (opcional): Permite indicar el directorio donde se encuentra la copia de seguridad. Por defecto será la carpeta ```/backups``` del despliegue.
+  * ```--filename <nombre_fichero>``` (opcional): Establecer el nombre del fichero desde el que se restaurará la copia de seguridad. Por defecto será ```backup.sql```.
+  * ```--recreate-database```: Elimina la base de datos y la vuelve a crear al recuperar la copia de seguridad.
+
+Migraciones seguras
+-------------------
+Para evitar pérdidas de datos potenciales al realizar una migración, se puede realizar una migración segura desde la consola:
+- ```bin/console app:safe-migrate``` para realizarla. Parámetros opcionales:
+  * ```-n```: Realiza la migración sin pedir confirmación.
+  * ```--keep-backup```: Conserva la copia de seguridad generada durante la migración.
+  * ```--recreate-database```: Elimina la base de datos y la vuelve a crear si es necesario recuperar la copia de seguridad.
+
+Los parámetros son los mismos que con la migración habitual, incluyendo ```-n``` para realizarla sin pedir confirmación.

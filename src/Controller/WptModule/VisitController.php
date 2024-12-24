@@ -31,10 +31,9 @@ use App\Repository\WptModule\GroupRepository as WptGroupRepository;
 use App\Repository\WptModule\TeacherRepository as WptTeacherRepository;
 use App\Security\Edu\OrganizationVoter as EduOrganizationVoter;
 use App\Security\OrganizationVoter;
-use App\Security\WptModule\VisitVoter;
 use App\Security\WptModule\OrganizationVoter as WptOrganizationVoter;
+use App\Security\WptModule\VisitVoter;
 use App\Service\UserExtensionService;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Mpdf\Mpdf;
@@ -445,9 +444,6 @@ class VisitController extends AbstractController
         }
     }
 
-    /**
-     * @return Collection<int, Teacher>
-     */
     private function getTeachersByAcademicYearAndUser(
         TeacherRepository    $teacherRepository,
         WptTeacherRepository $wptTeacherRepository,
@@ -456,7 +452,7 @@ class VisitController extends AbstractController
         bool                 $isManager,
         bool                 $isDepartmentHead,
         bool                 $readOnly
-    ): Collection {
+    ): array {
         $groups = [];
         $teacher = null;
 

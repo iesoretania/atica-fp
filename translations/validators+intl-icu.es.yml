@@ -1,10 +1,15 @@
-password.min_length: La contraseña debe tener como mínimo {{ limit }} caracteres.
+password.min_length: La contraseña debe tener como mínimo { limit } caracteres.
 password.no_match: Las nuevas contraseñas no coinciden.
 
 user.id.not_found: Debe especificarse el nombre de usuario o bien el correo electrónico.
 login_username.invalid_chars: El nombre de usuario no puede contener espacios ni arrobas (@).
 
 calendar.week_hours.invalid: Debe especificarse al menos una hora a la semana
+calendar.week_hours.max: El número de horas es demasiado grande
 agreement.student_workcenter.unique: Este estudiante ya tiene un convenio en esta sede
 agreement.student_agreement.unique: Este estudiante ya pertenece al acuerdo de colaboración
 company_program.company_training.unique: Esta empresa ya tiene un programa asociado al proyecto
+student_program.enrollment.workcenter.unique: Este estudiante ya tiene una estancia en el centro de trabajo
+
+selection.count.invalid.min: Debe seleccionar al menos {limit, plural, one {# elemento} other {# elementos}}
+selection.count.invalid.max: Debe seleccionar como máximo {limit, plural, one {# elemento} other {# elementos}}

@@ -153,6 +153,7 @@ dow5: Sábado
 dow6: Domingo
 
 caption.hours: "{count, plural, =0 {Sin horas} one {1 hora} other {# horas}}"
+caption.hour_suffix: "{count, plural, one {hora} other {horas}}"
 
 prompt.empty: Aún no hay jornadas registradas en el calendario.
 

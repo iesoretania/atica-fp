@@ -1,0 +1,52 @@
+{% trans_default_domain 'itp_group' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th class="w-20">{{ 'header.name'|trans }}</th>
+    <th class="w-40">{{ 'header.managers'|trans }}</th>
+    <th class="w-10">{{ 'header.target_hours'|trans }}</th>
+    <th class="w-10"></th>
+    <th class="w-10"></th>
+    <th class="w-10"></th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('in_company_training_phase_student_program_list', {'programGroup': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">{{ item.group.name }}</a>
+                    </td>
+                    <td>
+                        {{ item.managers|join(', ') }}
+                    </td>
+                    <td>
+                        {{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
+                    </td>
+                    <td>
+                        {{ m.link_button(path('in_company_training_phase_student_program_workcenter_manage_new', {'programGroup': item.id}), 'add', 'btn-info btn-sm btn-block', 'form.add'|trans) }}
+                    </td>
+                    <td>
+                        {{ m.link_button(path('in_company_training_phase_group_edit', {'id': item.id}), 'edit', 'btn-info btn-sm btn-block', 'form.edit'|trans) }}
+                    </td>
+                    <td>
+                        {{ m.link_button(path('in_company_training_phase_student_program_list', {'programGroup': item.id}), 'person-chalkboard', 'btn-info btn-sm btn-block', 'form.programs'|trans) }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block filter %}{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.link_button(path('in_company_training_phase_student_program_workcenter_manage_list', {'programGrade': program_grade.id}), 'list-check', 'btn-warning', 'form.manage_student_programs'|trans) }}
+{% endblock %}

@@ -1,0 +1,62 @@
+{% trans_default_domain 'itp_training_program' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('in_company_training_phase_training_program_new', {'academicYear': academic_year.id}) }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-30"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
+    <th class="w-10">{{ 'header.modality'|trans }}</th>
+    <th class="w-30">{{ 'header.groups'|trans }}</th>
+    <th class="w-10">{{ 'header.target_hours'|trans }}</th>
+    <th class="w-20"></th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('in_company_training_phase_grade_list', {'trainingProgram': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
+                            <a href="{{ url }}">{{ item.name }}</a>{% if item.locked %} <i class="fa fa-lock"></i>{% endif %}
+                        </label>
+                    </td>
+                    <td>
+                        {{ ('table.modality.' ~ item.modality) | trans }}
+                    </td>
+                    <td>
+                        {% for program_grade in item.trainingProgramGrades %}{% for group in program_grade.grade.groups %}{{ group.name }} ({{ group.grade.training.academicYear }}){% if not loop.last %}, {% endif %}{% endfor %}{% if not loop.last %}, {% endif %}{% endfor %}
+                    </td>
+                    <td>
+                        {{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) -}}
+                        {%- if item.totalHours %}/{{ (item.totalHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} ({{ (item.targetHours * 100 / item.totalHours)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %){% endif %}
+                    </td>
+                    <td>
+                        {{ m.link_button(path('in_company_training_phase_training_program_edit', {'trainingProgram': item.id}), 'pencil', 'btn-info btn-sm btn-block', 'table.basic_data'|trans) }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('in_company_training_phase_training_program_operation', {'academicYear': academic_year.id}) }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    </form>
+{% endblock %}

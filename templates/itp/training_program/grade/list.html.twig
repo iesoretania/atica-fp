@@ -1,0 +1,119 @@
+{% trans_default_domain 'itp_grade' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block table_header %}
+    <th class="w-20">{{ 'header.grade'|trans }}</th>
+    <th class="w-25">{{ 'header.groups'|trans }}</th>
+    <th class="w-5">{{ 'header.target_hours'|trans }}</th>
+    <th class="w-5">{{ 'header.subjects'|trans }}</th>
+    <th class="w-5">{{ 'header.learning_outcomes'|trans }}</th>
+    <th class="w-5">{{ 'header.criteria'|trans }}</th>
+    <th class="w-5">{{ 'header.activities'|trans }}</th>
+    <th class="w-10"></th>
+    <th class="w-10"></th>
+    <th class="w-10"></th>
+{% endblock %}
+
+{% block table_body %}
+            {% set percentage_total = 0 %}
+            {% set percentage_sum = 0 %}
+            {% set hours_total = 0 %}
+            {% set hours_sum = 0 %}
+            {% set subjects_total = 0 %}
+            {% set subjects_sum = 0 %}
+            {% set learning_outcomes_total = 0 %}
+            {% set learning_outcomes_sum = 0 %}
+            {% set criteria_total = 0 %}
+            {% set criteria_sum = 0 %}
+            {% set activities_sum = 0 %}
+            {% for item in pager %}
+                {% set program_grade = item.program_grade %}
+                {% set hours_total = hours_total + program_grade.trainingProgram.targetHours %}
+                {% set hours_sum = hours_sum + program_grade.targetHours %}
+                {% set subjects_total = subjects_total + item.total_subjects %}
+                {% set subjects_sum = subjects_sum + item.selected_subjects %}
+                {% set learning_outcomes_total = learning_outcomes_total + item.total_learning_outcomes %}
+                {% set learning_outcomes_sum = learning_outcomes_sum + item.selected_learning_outcomes %}
+                {% set criteria_total = criteria_total + item.total_criteria %}
+                {% set criteria_sum = criteria_sum + item.selected_criteria %}
+                {% set activities_sum = activities_sum + program_grade.activities|length %}
+                {% set url = path('in_company_training_phase_group_list', {'programGrade': program_grade.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">{{ program_grade.grade.name }} ({{ program_grade.grade.training.academicYear }})</a>
+                    </td>
+                    <td>
+                        {% for group in program_grade.grade.groups %}{{ group.name }} ({{ program_grade.grade.training.academicYear }}){% if not loop.last %}, {% endif %}{% endfor %}
+                    </td>
+                    <td>
+                        {{ (program_grade.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
+                        {%- if program_grade.trainingProgram.targetHours -%}
+                            /{{ (program_grade.trainingProgram.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
+                            ({{ (program_grade.targetHours * 100 / program_grade.trainingProgram.targetHours)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ item.selected_subjects }}/{{ item.total_subjects }}
+                    </td>
+                    <td>
+                        {{ item.selected_learning_outcomes }}/{{ item.total_learning_outcomes }}
+                        {% if item.total_subjects %}
+                           <br>({{ (item.weight * 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
+                            {% set percentage_sum = percentage_sum + item.weight %}
+                            {% set percentage_total = percentage_total + 1 %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ item.selected_criteria }}/{{ item.total_criteria }}
+                    </td>
+                    <td>
+                        {{ program_grade.activities|length }}
+                    </td>
+                    <td>
+                        {{ m.link_toolbar_button(path('in_company_training_phase_activity_list', {'programGrade': program_grade.id}), 'book', 'btn-info btn-sm btn-block h-100', 'table.activities'|trans) }}
+                    </td>
+                    <td>
+                        {{ m.link_toolbar_button(path('in_company_training_phase_company_list', {'programGrade': program_grade.id}), 'industry', 'btn-info btn-sm btn-block', 'table.companies'|trans) }}
+                    </td>
+                    <td>
+                        {{ m.link_toolbar_button(path('in_company_training_phase_grade_detail_edit', {'programGrade': program_grade.id}), 'list-ol', 'btn-info btn-sm btn-block', 'table.target_hours'|trans) }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="10">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+            {% if pager.count > 1 %}
+                <tfoot>
+                    <tr>
+                        <td colspan="2" class="text-right">{{ 'header.stats'|trans }}</td>
+                        <td>
+                            {{ (hours_sum / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
+                            {%- if hours_total -%}
+                                /{{ (hours_total / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
+                                ({{ (hours_sum * 100 / hours_total)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
+                            {% endif %}
+                        </td>
+                        <td>{{ subjects_sum }}/{{ subjects_total }}</td>
+                        <td>
+                            {{ learning_outcomes_sum }}/{{ learning_outcomes_total }}
+                            {% if percentage_total %}
+                                <br>({{ (percentage_sum * 100 / percentage_total)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
+                            {% endif %}
+                        </td>
+                        <td>{{ criteria_sum }}/{{ criteria_total }}</td>
+                        <td>{{ activities_sum }}</td>
+                        <td colspan="3"></td>
+                    </tr>
+                </tfoot>
+            {% endif %}
+{% endblock %}
+
+{% block filter %}{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}

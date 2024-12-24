@@ -28,8 +28,8 @@ use App\Form\Type\WltModule\CalendarCopyType;
 use App\Repository\WltModule\AgreementActivityRealizationRepository;
 use App\Repository\WltModule\AgreementRepository;
 use App\Security\WltModule\AgreementVoter;
-use App\Security\WltModule\ProjectVoter;
 use App\Security\WltModule\OrganizationVoter;
+use App\Security\WltModule\ProjectVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -294,7 +294,7 @@ class AgreementController extends AbstractController
 
         $items = $request->request->all('items');
 
-        if ((is_countable($items) ? count($items) : 0) !== 0) {
+        if (count($items) !== 0) {
             if ('' === $request->get('delete')) {
                 return $this->delete($items, $request, $translator, $agreementRepository, $managerRegistry, $project);
             }

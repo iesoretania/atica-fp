@@ -18,6 +18,7 @@
 
 namespace App\Security\WltModule;
 
+use App\Entity\Edu\AcademicYear;
 use App\Entity\Person;
 use App\Entity\WltModule\Meeting;
 use App\Security\CachedVoter;
@@ -75,7 +76,8 @@ class MeetingVoter extends CachedVoter
         $organization = $this->userExtensionService->getCurrentOrganization();
 
         // si el módulo está deshabilitado, denegar
-        if (!$organization->getCurrentAcademicYear()->hasModule('wlt')) {
+        if (!$organization->getCurrentAcademicYear() instanceof AcademicYear ||
+            !$organization->getCurrentAcademicYear()->hasModule('wlt')) {
             return false;
         }
 

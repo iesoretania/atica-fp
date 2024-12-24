@@ -225,6 +225,17 @@ class EduModule implements ModuleBuilderInterface
 
             $menu1->addChild($menu2);
 
+            $menu2 = new MenuItem();
+            $menu2
+                ->setName('organization_performance_scale')
+                ->setRouteName('organization_performance_scale_list')
+                ->setCaption('menu.organization.performance_scale')
+                ->setDescription('menu.organization.performance_scale.detail')
+                ->setIcon('award')
+                ->setPriority(13800);
+
+            $menu1->addChild($menu2);
+
             if ($isLocalAdministrator) {
                 $menu2 = new MenuItem();
                 $menu2

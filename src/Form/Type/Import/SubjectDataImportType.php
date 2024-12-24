@@ -45,6 +45,9 @@ class SubjectDataImportType extends AbstractType
             ->add('grade', EntityType::class, [
                 'label' => 'form.criteria.grade',
                 'class' => Grade::class,
+                'choice_label' => function (Grade $grade) {
+                    return $grade->getName() . ' - ' . $grade->getTraining()->__toString();
+                },
                 'choice_translation_domain' => false,
                 'choices' => $grades,
                 'required' => true

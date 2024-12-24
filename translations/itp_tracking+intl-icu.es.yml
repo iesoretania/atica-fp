@@ -1,0 +1,133 @@
+form.back: Volver
+form.save: Guardar cambios
+form.attendance_confirm: Marcar jornadas con falta injustificada
+
+form.today: Ir a hoy
+form.previous_work_day: Jornada anterior
+form.next_work_day: Siguiente jornada
+
+form.student_email: Correo-e del estudiante
+form.work_tutor: Tutor laboral
+form.educational_tutor: Tutor docente
+form.work_center: Centro de trabajo
+form.work_center.address: Dirección
+form.work_center.email: Correo-e
+form.work_center.phone_number: Teléfono
+form.work_center.fax_number: FAX
+
+form.lock_action: Bloquear
+form.unlock_action: Desbloquear
+form.lock_week_action: Bloquear semana
+form.unlock_week_action: Desbloquear semana
+form.activity_report: Generar informe
+form.week_lock_action: Bloquear
+form.week_lock_print_action: Bloq. e imp.
+form.week_unlock_action: Desbloquear semana
+form.print: Imprimir hoja semanal
+form.select_deselect: Seleccionar/deseleccionar jornadas
+form.attendance: Falta injustificada
+
+form.stats.activities: Estado de las actividades
+form.stats.activities_bar: "{count}/{total} act."
+form.stats.activities_hint: "{count} evaluadas de un total de {total}"
+form.stats.activity.graded_hint: "Realizada y valorada"
+form.stats.activity.worked_hint: "Realizada"
+form.stats.activity.unworked_hint: "No realizada"
+form.stats.activity.locked_hint: "Bloqueada o deshabilitada"
+form.stats.hours: Estado de las jornadas
+form.stats.hours_bar: "{count}/{total} h."
+form.stats.hours_unlocked_hint: "{count, plural, one {1 hora} other {# horas}} sin confirmar en estancia"
+form.stats.hours_locked_hint: "{count, plural, one {1 hora confirmada} other {# horas confirmadas}} en estancia"
+form.stats.hours_absence_hint: "{count, plural, one {1 hora} other {# horas}} de ausencia"
+form.stats.hours_justified_absence_hint: "{count, plural, one {1 hora} other {# horas}} horas de ausencia justificada"
+
+form.stats.hours.total.caption: "Total del convenio"
+form.stats.hours.total.days: "{count, plural, one {1 jornada} other {# jornadas}}"
+form.stats.hours.total.hours: "{count, plural, one {1 hora} other {# horas}}"
+form.stats.hours.locked.days: "{count, plural, one {# jornada de {total}} other {# jornadas de {total}}}"
+form.stats.hours.locked.hours: "{count, plural, one {# hora de {total}} other {# horas de {total}}}"
+form.stats.hours.locked.caption: "Bloqueadas"
+form.stats.hours.unlocked.days: "{count, plural, one {# jornada de {total}} other {# jornadas de {total}}}"
+form.stats.hours.unlocked.hours: "{count, plural, one {# hora de {total}} other {# horas de {total}}}"
+form.stats.hours.unlocked.caption: "Presencia no confirmada"
+form.stats.hours.worked.caption: "Presencia confirmada"
+form.stats.hours.absence.caption: "Ausencias"
+form.stats.hours.justified_absence.caption: "Ausencias justificadas"
+
+form.activities: Actividades realizadas
+
+form.work_day.attendance: Asistencia
+form.work_day.attendance.no_absence: El estudiante ha acudido al centro de trabajo
+form.work_day.attendance.unjustified_absence: El estudiante no ha acudido al centro de trabajo (falta injustificada)
+form.work_day.attendance.justified_absence: El estudiante no ha acudido al centro de trabajo (falta justificada)
+
+form.locked: Bloqueo
+form.locked.no: Se pueden realizar cambios en la jornada
+form.locked.yes: La jornada está bloqueada y no se pueden realizar cambios
+
+form.other_activities: Otras actividades realizadas
+form.notes: Anotaciones sobre la jornada
+
+form.start_time_1: Hora de entrada (tramo inicial)
+form.end_time_1: Hora de salida (tramo inicial)
+form.start_time_2: Hora de entrada (segundo tramo)
+form.end_time_2: Hora de salida (segundo tramo)
+
+
+form.time.placeholder: "hh:mm"
+form.caption.locked_prefix: "BLOQUEADA PARA EL ESTUDIANTE: "
+form.caption.locked: " (ya evaluada o desactivada)"
+table.activity_realization.graded.yes: "Evaluada"
+table.activity_realization.graded.no: "Sin evaluar"
+table.activity_realization.graded.disabled: "Deshabilitada"
+table.activity_realization.graded.pending: "Por realizar"
+
+title.list: Estancias del plan de formación
+title.calendar: Seguimiento del plan de formación
+title.absence: Faltas injustificadas al centro de trabajo
+
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay elementos que mostrar
+table.filter: Filtrar...
+
+table.training_program_status: Estado del plan de formación
+table.hours: "{count, plural, one {1 hora} other {# horas}}"
+table.ignored_by_lock: Jornada bloqueada. No se modificará.
+table.absences: "{count, plural, one {1 falta} other {# faltas}}"
+table.justified_absences: "{count, plural, one {1 justificada} other {# justificadas}}"
+
+message.attendance_updated: Asistencia de las jornadas actualizadas con éxito.
+message.attendance_error: Error al actualizar la asistencia de las jornadas.
+message.workday_saved: Cambios guardados con éxito.
+message.workday_save_error: Ha ocurrido un error al registrar los cambios a la jornada.
+
+message.locked: Bloqueo de jornadas actualizado.
+message.locked_error: Error al actualizar el bloqueo.
+
+message.no_activities: Sin actividad registrada
+message.no_workday: No incluido en el programa formativo
+message.draft: BORRADOR
+
+header.student: Estudiante
+header.workcenter: Centro de trabajo
+header.educational_tutor: Tutor/a docente de seguimiento
+header.work_tutor: Tutor/a dual de empresa
+header.date_range: Fecha de inicio y fin
+header.date: Jornada
+header.hours: Horas
+header.attendance: Asistencia
+
+header.activities: Actividades
+header.learning_outcomes: RAs
+header.criteria: CEs
+
+prompt.locked_warning: >
+  ¡ATENCIÓN! La jornada está bloqueada. No se podrán realizar cambios en ella. Si existe alguna incidencia, póngase en contacto con el centro educativo.
+
+prompt.read_only_warning: >
+  ¡ATENCIÓN! No está autorizado a modificar la jornada.
+
+prompt.attendance_confirm: |
+    ¿Está seguro de que desea indicar que el estudiante no asistió las siguientes jornadas? Si el estudiante marcó alguna actividad en esas jornadas, serán eliminadas. Las jornadas bloqueadas no se verán afectadas por esta acción.
+
+    Esta operación no se puede deshacer.

@@ -1,0 +1,58 @@
+{% trans_default_domain 'itp_grading' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th class="w-15">{{ 'header.student'|trans }}</th>
+    <th class="w-25">{{ 'header.workcenter'|trans }}</th>
+    <th class="w-15">{{ 'header.educational_tutor'|trans }}</th>
+    <th class="w-15">{{ 'header.work_tutor'|trans }}</th>
+    <th class="w-10">{{ 'header.date_range'|trans }}</th>
+    <th class="w-10">{{ 'header.activities'|trans }}</th>
+    <th class="w-10">{{ 'header.hours'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('in_company_training_phase_tracking_grading_form', {'studentProgramWorkcenter': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">{{ item.studentProgram.studentEnrollment }}</a>
+                    </td>
+                    <td>
+                        {{ item.workcenter }}
+                    </td>
+                    <td>
+                        {{ item.educationalTutor }}
+                    </td>
+                    <td>
+                        {{ item.workTutor }}
+                    </td>
+                    <td>
+                        {% if item.startDate and item.endDate %}
+                            {{ item.startDate|date('format.date'|trans({}, 'general')) }} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}
+                        {% endif %}
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+</form>
+{% endblock %}

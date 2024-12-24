@@ -1,0 +1,29 @@
+{% trans_default_domain 'itp_company' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% form_theme form _self %}
+
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ m.start_button() }}
+        {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.end_button() }}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('itp_company') }}
+{% endblock %}
+
+{% block _company_program_programActivities_widget %}
+    {% if form.children is empty %}
+        <h5><b>{{ 'form.no_activity'|trans }}</b></h5>
+    {% else %}
+        <button type="button" id="select_all" class="btn btn-sm btn-secondary" title="{{ 'form.activities.all'|trans }}"><i class="fa fa-square-check"></i></button>
+        <button type="button" id="select_none" class="btn btn-sm btn-secondary" title="{{ 'form.activities.none'|trans }}"><i class="fa fa-square"></i></button>
+        {{ form_widget(form) }}
+    {% endif %}
+{% endblock %}

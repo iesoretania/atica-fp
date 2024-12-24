@@ -25,7 +25,7 @@
             </td>
             <td>
                 {%  if item[2] %}
-                {{ item[3] }}/{{ item[2] }} ({{ (item[3]*100/item[2]) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %)
+                {{ item[3] }}/{{ item[2] }} ({{ (item[3]*100/item[2]) | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
                 {% endif %}
             </td>
         </tr>

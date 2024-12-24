@@ -1,0 +1,62 @@
+form.student: Estudiante
+form.company: Empresa u organismo equiparable
+form.workcenter: Centro de trabajo
+form.modality: Modalidad
+form.modality.general: General
+form.modality.intensive: Intensiva
+form.authorization_needed: Necesita autorización
+form.authorization_needed.no: No
+form.authorization_needed.yes: Sí, se describe más abajo
+form.authorization_description: Descripción de la autorización requerida
+form.adaptation_needed: Necesita adaptación o medidas especiales
+form.adaptation_needed.no: No
+form.adaptation_needed.yes: Sí, se describen más abajo
+form.adaptation_description: Descripción de las adaptaciones y/o medidas necesarias
+
+form.save: Guardar cambios
+form.back: Volver
+form.edit: Modificar datos
+
+form.delete: Eliminar estudiantes del plan de formación
+form.delete_confirm: Confirmar eliminación
+
+form.no_student: Seleccione un estudiante
+form.fixed_student: No se puede modificar el estudiante
+form.no_company: Seleccione una empresa u organismo equiparable
+form.no_workcenter: Seleccione una sede de la empresa u organismo equiparable
+
+title.new: Nuevo plan de formación individualizado
+title.list: Planes de formación individualizados
+title.delete: Eliminar estudiantes del plan de formación
+title.manage_student_programs: Gestión de planes de formación individuales
+
+table.new: Registrar nueva estancia
+table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
+table.no_items: No hay elementos que mostrar
+table.filter: Filtrar...
+
+header.student_name: Estudiante
+header.modality: Modalidad
+header.workcenter: Centro de trabajo
+header.managers: Tutorías duales
+header.educational_tutor: Tutor/a docente de seguimiento
+header.work_tutor: Tutor/a dual de empresa
+header.tutors: Tutorías de seguimiento
+header.date_range: Fecha de inicio y fin
+header.hours: Horas
+header.activities: Actividades
+header.learning_outcomes: RAs
+header.criteria: CEs
+
+label.mode.general: General
+label.mode.intensive: Intensiva
+
+message.saved: Datos actualizados con éxito.
+message.error: No se han podido guardar los cambios.
+message.deleted: Estudiantes eliminados del plan de formación con éxito.
+message.delete_error: Ha ocurrido un error al eliminar los estudiantes.
+
+prompt.delete_confirm: |
+    ¿Está seguro de que desea eliminar los siguientes estudiantes del plan de formación? Se eliminarán todos los datos asociados, como sus estancias, los datos de seguimiento o el calendario.
+
+    Cuidado: Esta operación no se puede deshacer.

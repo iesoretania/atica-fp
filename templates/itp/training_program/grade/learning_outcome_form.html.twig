@@ -1,0 +1,13 @@
+{% trans_default_domain 'itp_grade' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% form_theme form _self %}
+
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <p></p>
+    {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ form_end(form) }}
+{% endblock %}

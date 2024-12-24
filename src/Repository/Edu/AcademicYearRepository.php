@@ -44,6 +44,21 @@ class AcademicYearRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+
+    /**
+     * @return AcademicYear[]
+     */
+    public function findLatestByOrganization(Organization $organization): ?AcademicYear
+    {
+        return $this->createQueryBuilder('ay')
+            ->andWhere('ay.organization = :organization')
+            ->setParameter('organization', $organization)
+            ->orderBy('ay.startDate', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     /**
      * @param $items
      * @return AcademicYear[]
@@ -51,7 +66,7 @@ class AcademicYearRepository extends ServiceEntityRepository
     public function findAllInListByIdAndOrganizationButCurrent(
         $items,
         Organization $organization,
-        AcademicYear $current
+        ?AcademicYear $current
     ) {
         return $this->createQueryBuilder('ay')
             ->where('ay.id IN (:items)')

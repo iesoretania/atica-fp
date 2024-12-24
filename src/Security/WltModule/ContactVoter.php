@@ -18,6 +18,7 @@
 
 namespace App\Security\WltModule;
 
+use App\Entity\Edu\AcademicYear;
 use App\Entity\Person;
 use App\Entity\WltModule\Contact;
 use App\Security\CachedVoter;
@@ -74,13 +75,9 @@ class ContactVoter extends CachedVoter
 
         $organization = $this->userExtensionService->getCurrentOrganization();
 
-        // Si no es de la organización actual, denegar
-        if ($subject->getTeacher()->getAcademicYear()->getOrganization() !== $organization) {
-            return false;
-        }
-
         // si el módulo está deshabilitado, denegar
-        if (!$organization->getCurrentAcademicYear()->hasModule('wlt')) {
+        if (!$organization->getCurrentAcademicYear() instanceof AcademicYear ||
+            !$organization->getCurrentAcademicYear()->hasModule('wlt')) {
             return false;
         }
 
@@ -92,6 +89,11 @@ class ContactVoter extends CachedVoter
         // Si es administrador de la organización, permitir siempre
         if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
             return true;
+        }
+
+        // Si no es de la organización actual, denegar
+        if ($subject->getTeacher()?->getAcademicYear()?->getOrganization() !== $organization) {
+            return false;
         }
 
         switch ($attribute) {

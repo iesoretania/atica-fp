@@ -14,6 +14,8 @@
             {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
         {{ m.end_button() }}
         {{ form_end(form) }}
+    {% elseif stats.error is defined %}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {% else %}
         <h4>{{ 'report.stats'|trans }}</h4>
         <ul>

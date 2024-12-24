@@ -1,0 +1,36 @@
+{% trans_default_domain 'itp_group' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% form_theme form _self %}
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ m.start_button() }}
+        {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.end_button() }}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('itp_group') }}
+{% endblock %}
+
+{% block _program_group_currentStudentPrograms_widget %}
+    <div {{ block('widget_container_attributes') }}>
+        {% if form.children %}
+            <button type="button" id="select_all" class="btn btn-sm btn-secondary" title="{{ 'form.select_all'|trans }}"><i class="fa fa-check-square"></i></button>
+            <button type="button" id="select_none" class="btn btn-sm btn-secondary" title="{{ 'form.select_none'|trans }}"><i class="fa fa-square"></i></button>
+        {% endif %}
+        {% for item in form.children %}
+            {{ form_widget(item, {translation_domain: false}) }}
+            {{ form_label(item) }}
+        {% else %}
+            <h5 class="checkbox-category">
+                {{ 'form.no_activity'|trans }}
+            </h5>
+        {% endfor %}
+    </div>
+{% endblock %}
+

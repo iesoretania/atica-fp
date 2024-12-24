@@ -32,6 +32,11 @@ Encore
     .addEntry('wpt_agreement', './assets/js/wpt/agreement.js')
     .addEntry('wpt_agreement_enrollment', './assets/js/wpt/agreement_enrollment.js')
     .addEntry('wpt_visit', './assets/js/wpt/visit.js')
+    .addEntry('itp_activity', './assets/js/itp/activity.js')
+    .addEntry('itp_company', './assets/js/itp/company.js')
+    .addEntry('itp_group', './assets/js/itp/group.js')
+    .addEntry('itp_workcenter', './assets/js/itp/workcenter.js')
+    .addEntry('itp_workcenter_batch', './assets/js/itp/workcenter_batch.js')
 
     // CKEditor
     .copyFiles([

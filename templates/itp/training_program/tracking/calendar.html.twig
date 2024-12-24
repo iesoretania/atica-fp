@@ -1,0 +1,52 @@
+{% trans_default_domain 'itp_tracking' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% block content %}
+<h1>
+    {{ title }}
+    {% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_GRADE', student_program_workcenter) %}
+        <a href="#" data-toggle="collapse" data-target="#tutor_info" aria-expanded="false"><i class="fas fa-info-circle fa-sm"></i></a>
+    {% endif %}
+    {% if work_day_today %} {{ m.link_button(path('work_linked_training_tracking_calendar_form', {'id': work_day_today.id}), 'calendar-day', 'btn-primary', 'form.today'|trans) }}{% endif %}
+    {% include 'itp/training_program/tracking/calendar_info_partial.html.twig' %}
+</h1>
+{% include 'itp/training_program/tracking/calendar_stats_partial.html.twig' %}
+
+<section id="exchange">
+    <form action="{{ path('in_company_training_phase_tracking_calendar_operation', {'id': student_program_workcenter.id}) }}" class="list" method="post">
+    {% embed 'itp/training_program/tracking/calendar_partial.html.twig' %}
+        {% block day %}
+            {% set url = day ? path('in_company_training_phase_tracking_calendar_form', {'workDay': day.id}) : '' %}
+            <td class="w-13{% if day %} clickable-row {{ day.absence ? (day.absence == 1 ? 'absence' : 'justified-absence') : ((dayData['activity_count'] == 0 and day.otherActivities is empty) ? 'workday' : 'submitted') }}" data-href="{{ url }}{% endif %}">
+                {% if day %}
+                    {% if not read_only|default(false) and selectable %}<label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> {% endif %}<a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a>{% if selectable %}</label>{% endif %}{% if day and day.locked %} <i class="fas fa-lock"></i>{% endif %}<br/>
+                    {% if day.hours is divisible by 100 %}
+                        {{ 'caption.hours'|trans({'count': day.hours / 100}, 'calendar') }}
+                    {% else %}
+                        {{ (day.hours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
+                        {{ 'caption.hour_suffix'|trans({'count': day.hours / 100}, 'calendar') }}
+                    {% endif %}
+                {% elseif n > 0 %}
+                    {{ n }}
+                {% endif %}
+            </td>
+        {% endblock %}
+    {% endembed %}
+
+    {{ m.link_button(back_url|default(last_url), 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {% if not read_only|default(false) %}
+        {% if selectable %}{{ m.link_button('', 'check-square', 'btn-primary', 'form.select_deselect'|trans, 'toggle') }}{% endif %}
+        {% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_LOCK', student_program_workcenter) %}
+            {{ m.submit_button('lock', 'lock', 'btn-danger enable-on-items', 'form.lock_action'|trans) }}
+            {{ m.submit_button('unlock', 'lock-open', 'btn-danger enable-on-items', 'form.unlock_action'|trans) }}
+        {% endif %}
+        {% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_ATTENDANCE', student_program_workcenter) %}{{ m.submit_button('attendance', 'user-slash', 'btn-danger enable-on-items', 'form.attendance'|trans) }}{% endif %}
+    {% endif %}
+    </form>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('list') }}
+{% endblock %}

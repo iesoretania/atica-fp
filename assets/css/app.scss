@@ -2,6 +2,7 @@ $breadcrumb-divider: quote(">");
 
 $sizes: (
     'd': (100%/7),
+    5: 5%,
     9: 9%,
     10: 10%,
     13: 13%,
@@ -184,7 +185,7 @@ label.required:after {
 
 /* Barra de búsqueda */
 input[type="search"] {
-    font-family: "Font Awesome 5 Free", $font-family-sans-serif;
+    font-family: $font-family-sans-serif, "Font Awesome 6 Free";
 }
 
 table#list th, table#list td {
@@ -310,9 +311,16 @@ table.calendar {
     }
 }
 
+h4.checkbox-category {
+    margin-top: 0.3em;
+    margin-bottom: 0.1em;
+    font-weight: bold;
+}
+
 h5.checkbox-category {
     margin-top: 0.3em;
     margin-bottom: 0.1em;
+    font-weight: bold;
 }
 
 div.progress.progress-stat {

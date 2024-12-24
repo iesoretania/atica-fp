@@ -1,0 +1,75 @@
+{% trans_default_domain 'itp_activity' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('in_company_training_phase_activity_new', {'programGrade': program_grade.id}) }}{% endblock %}
+
+{% block table_header %}
+    <th class="w-5"><label><input type="checkbox" id="select"> {{ 'header.code'|trans }}</label></th>
+    <th class="w-25">{{ 'header.name'|trans }}</th>
+    <th class="w-35">{{ 'header.description'|trans }}</th>
+    <th class="w-40">{{ 'header.learning_outcomes_and_criteria'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('in_company_training_phase_activity_edit', {'id': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
+                        <a href="{{ url }}">{{ item.code }}</a>
+                        </label>
+                    </td>
+                    <td>
+                        {{ item.name }}
+                    </td>
+                    <td>
+                        {{ item.description|nl2br }}
+                    </td>
+                    <td>
+                        {% if item.criteria %}
+                        <ul class="pl-3">
+                            {% set last_subject_id = null %}
+                            {% set last_learning_outcome_id = null %}
+                            {% set criteria_set = [] %}
+                            {% set criteria = item.criteria|sort((a,b) => a.learningOutcome.subject.name == b.learningOutcome.subject.name ? (a.learningOutcome.code == b.learningOutcome.code ? a.code <=> b.code : a.learningOutcome.code <=> b.learningOutcome.code) : (a.learningOutcome.subject.name <=> b.learningOutcome.subject.name)) %}
+                            {% for criterium in criteria %}
+                                {% if criteria_set is not empty and (last_learning_outcome_id != criterium.learningOutcome.id) %}
+                                    (<i>{{ criteria_set|join(', ') }}</i>)
+                                    {% set criteria_set = [] %}
+                                {%- endif -%}
+                                {% if last_subject_id != criterium.learningOutcome.subject.id %}
+                                    <li><strong>{{ criterium.learningOutcome.subject.code ? criterium.learningOutcome.subject.code ~ ' - ' }}{{ criterium.learningOutcome.subject }}</strong>:
+                                {% endif %}
+                                {% if last_learning_outcome_id != criterium.learningOutcome.id %}
+                                    {%- if last_subject_id == criterium.learningOutcome.subject.id %}, {% endif %}
+                                    {{ criterium.learningOutcome.code }}
+                                {%- endif -%}
+                                {% set last_learning_outcome_id = criterium.learningOutcome.id %}
+                                {% set last_subject_id = criterium.learningOutcome.subject.id %}
+                                {% set criteria_set = criteria_set | merge([criterium.code]) %}
+                            {% endfor %}
+                                        {% if criteria_set is not empty %}(<i>{{ criteria_set|join(', ') }}</i>){% endif %}
+                            {% if last_subject_id is not null %}</li>{% endif %}
+                        </ul>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_table %}
+    <form action="{{ path('in_company_training_phase_activity_operation', {'programGrade': program_grade.id}) }}" method="post">
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+    {{ m.link_button(path('in_company_training_phase_activity_import_form', {'programGrade': program_grade.id}), 'download', 'btn-warning', 'form.import'|trans) }}
+    </form>
+{% endblock %}

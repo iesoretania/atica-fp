@@ -20,6 +20,7 @@ namespace App\Repository\Edu;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Department;
+use App\Entity\Edu\Teacher;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -57,6 +58,16 @@ class DepartmentRepository extends ServiceEntityRepository
             ->andWhere('d.academicYear = :academic_year')
             ->setParameter('items', $items)
             ->setParameter('academic_year', $academicYear)
+            ->orderBy('d.name')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByTeacher(Teacher $teacher)
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.head = :teacher')
+            ->setParameter('teacher', $teacher)
             ->orderBy('d.name')
             ->getQuery()
             ->getResult();

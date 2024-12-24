@@ -304,7 +304,7 @@ class StudentImportController extends AbstractController
             while ($data = $importer->get(100)) {
                 foreach ($data as $studentData) {
                     $totalCount++;
-                    foreach (self::$columns as $columnData) {
+                    foreach (self::$loginColumns as $columnData) {
                         if ($columnData['mandatory'] && !isset($studentData[$columnData['column']])) {
                             return ['error' => '_missing_columns'];
                         }

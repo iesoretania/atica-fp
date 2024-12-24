@@ -117,6 +117,11 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface, \Stri
             ? $prefix . ' - ' . $this->getUniqueIdentifier() : $prefix;
     }
 
+    public function getLastFirstName(): string
+    {
+        return $this->getLastName() . ', ' . $this->getFirstName();
+    }
+
     /**
      * Convertir usuario en cadena con nombre de usuario
      */

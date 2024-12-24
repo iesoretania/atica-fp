@@ -19,7 +19,9 @@
 namespace App\Repository\Edu;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Grade;
 use App\Entity\Edu\Group;
+use App\Entity\Edu\Teacher;
 use App\Entity\Organization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -121,6 +123,38 @@ class GroupRepository extends ServiceEntityRepository
             ->setParameter('items', $items)
             ->setParameter('academic_year', $academicYear)
             ->orderBy('g.name')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByGrade(Grade $getGrade): array
+    {
+        return $this->createQueryBuilder('g')
+            ->where('g.grade = :grade')
+            ->setParameter('grade', $getGrade)
+            ->orderBy('g.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByDepartmentHead(Teacher $teacher): array
+    {
+        return $this->createQueryBuilder('g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->join('t.department', 'd')
+            ->where('d.head = :teacher')
+            ->setParameter('teacher', $teacher)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByTutor(Teacher $teacher): array
+    {
+        return $this->createQueryBuilder('g')
+            ->join('g.tutors', 't')
+            ->where('t = :teacher')
+            ->setParameter('teacher', $teacher)
             ->getQuery()
             ->getResult();
     }

@@ -22,9 +22,9 @@
                 <tr>
                     <td class="right">{{ answer[0].description|raw }}</td>
                     <td class="center">{{ answer[1]|default('report.no_data'|trans) }}</td>
-                    <td class="center">{{ answer[3] ? answer[3]|number_format(2, 'format.decimal_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
-                    <td class="center">{{ answer[4] ? answer[4]|number_format(2, 'format.decimal_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
-                    <td class="center">{{ answer[2] ? answer[2]|number_format(2, 'format.decimal_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
+                    <td class="center">{{ answer[3] ? answer[3]|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
+                    <td class="center">{{ answer[4] ? answer[4]|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
+                    <td class="center">{{ answer[2] ? answer[2]|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) : 'report.no_data'|trans }}</td>
                 </tr>
             {% endif %}
         {% endfor %}

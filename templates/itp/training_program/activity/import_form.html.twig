@@ -1,0 +1,26 @@
+{% trans_default_domain 'itp_activity' %}
+{% extends 'layout.html.twig' %}
+{% import 'macros.html.twig' as m %}
+{% import 'admin/organization/import/import_macros.html.twig' as im %}
+{% block content %}
+    {% if not stats %}
+        {{ im.show_import_instructions(columns, 'activity', 'itp_activity') }}
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ m.start_button() }}
+            {{ m.submit_button('submit', 'check', 'btn-success', 'form.do_import'|trans) }}
+            {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.end_button() }}
+        {{ form_end(form) }}
+    {% elseif stats.error is defined %}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {% else %}
+        <h4>{{ 'report.stats'|trans }}</h4>
+        <ul>
+            <li>{{ 'report.new_activities'|trans }}: {{ stats.new_items }}</li>
+            <li>{{ 'report.updated_activities'|trans }}: {{ stats.old_items }}</li>
+            <li>{{ 'report.unknown_criteria'|trans }}: {{ stats.unknown_items }}</li>
+        </ul>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {% endif %}
+{% endblock %}

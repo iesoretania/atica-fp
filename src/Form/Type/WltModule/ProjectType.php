@@ -19,12 +19,14 @@
 namespace App\Form\Type\WltModule;
 
 use App\Entity\Edu\Group;
+use App\Entity\Edu\PerformanceScale;
 use App\Entity\Edu\ReportTemplate;
 use App\Entity\Edu\Teacher;
 use App\Entity\Person;
 use App\Entity\Survey;
 use App\Entity\WltModule\Project;
 use App\Repository\Edu\GroupRepository;
+use App\Repository\Edu\PerformanceScaleRepository;
 use App\Repository\Edu\ReportTemplateRepository;
 use App\Repository\Edu\TeacherRepository;
 use App\Repository\SurveyRepository;
@@ -37,7 +39,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProjectType extends AbstractType
 {
-    public function __construct(private readonly TeacherRepository $teacherRepository, private readonly GroupRepository $groupRepository, private readonly SurveyRepository $surveyRepository, private readonly ReportTemplateRepository $reportTemplateRepository, private readonly UserExtensionService $userExtensionService)
+    public function __construct(private readonly TeacherRepository $teacherRepository, private readonly GroupRepository $groupRepository, private readonly SurveyRepository $surveyRepository, private readonly ReportTemplateRepository $reportTemplateRepository, private readonly UserExtensionService $userExtensionService, private readonly PerformanceScaleRepository $performanceScaleRepository)
     {
     }
 
@@ -56,6 +58,8 @@ class ProjectType extends AbstractType
         $surveys = $this->surveyRepository->findByOrganization($organization);
 
         $templates = $this->reportTemplateRepository->findByOrganization($organization);
+
+        $performanceScales = $this->performanceScaleRepository->findByOrganization($organization);
 
         $builder
             ->add('name', null, [
@@ -109,6 +113,15 @@ class ProjectType extends AbstractType
                 'choice_translation_domain' => false,
                 'choices' => $templates,
                 'placeholder' => 'form.no_template',
+                'required' => false
+            ])
+            ->add('performanceScale', EntityType::class, [
+                'label' => 'form.performance_scale',
+                'class' => PerformanceScale::class,
+                'choice_label' => 'description',
+                'choice_translation_domain' => false,
+                'choices' => $performanceScales,
+                'placeholder' => 'form.no_performance_scale',
                 'required' => false
             ])
             ->add('studentSurvey', EntityType::class, [

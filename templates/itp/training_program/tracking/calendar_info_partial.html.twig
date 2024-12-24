@@ -1,0 +1,26 @@
+{% trans_default_domain 'itp_tracking' %}
+{% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_ACCESS', student_program_workcenter) %}
+<div class="collapse alert alert-light" id="tutor_info">
+    <h4>{{ student_program_workcenter.studentProgram.studentEnrollment }}</h4>
+    {% if student_program_workcenter.studentProgram.studentEnrollment.person.emailAddress %}<b>{{ 'form.student_email'|trans }}: </b> {{ student_program_workcenter.studentProgram.studentEnrollment.person.emailAddress }}<br/>{% endif %}
+    <b>{{ 'form.work_center'|trans }}: </b>{{ student_program_workcenter.workcenter }}
+    {% if student_program_workcenter.workcenter.zipCode %} - {{ student_program_workcenter.workcenter.zipCode }}{% endif %}
+    {% if student_program_workcenter.workcenter.city %} - {{ student_program_workcenter.workcenter.city }}{% endif %}
+    {% if student_program_workcenter.workcenter.address %}<br/><b>{{ 'form.work_center.address'|trans }}: </b>{{ student_program_workcenter.workcenter.address }}{% endif %}
+    {% if student_program_workcenter.workcenter.phoneNumber %}<br/><b>{{ 'form.work_center.phone_number'|trans }}: </b>{{ student_program_workcenter.workcenter.phoneNumber }}{% endif %}
+    {% if student_program_workcenter.workcenter.faxNumber %}<br/><b>{{ 'form.work_center.fax_number'|trans }}: </b>{{ student_program_workcenter.workcenter.faxNumber }}{% endif %}
+    {% if student_program_workcenter.workcenter.emailAddress %}<br/><b>{{ 'form.work_center.email'|trans }}: </b>{{ student_program_workcenter.workcenter.emailAddress }}{% endif %}
+    <br/><b>{{ 'form.work_tutor'|trans }}: </b>{{ student_program_workcenter.workTutor }}
+    {% if student_program_workcenter.workTutor.emailAddress %} - {{ student_program_workcenter.workTutor.emailAddress }}{% endif %}
+    {% if student_program_workcenter.additionalWorkTutor %}
+        <br/><b>{{ 'form.work_tutor'|trans }}: </b>{{ student_program_workcenter.additionalWorkTutor }}
+        {% if student_program_workcenter.additionalWorkTutor.emailAddress %} - {{ student_program_workcenter.additionalWorkTutor.emailAddress }}{% endif %}
+    {% endif %}
+    <br/><b>{{ 'form.educational_tutor'|trans }}: </b>{{ student_program_workcenter.educationalTutor }}
+    {% if student_program_workcenter.educationalTutor.person.emailAddress %} - {{ student_program_workcenter.educationalTutor.person.emailAddress }}{% endif %}
+    {% if student_program_workcenter.additionalEducationalTutor %}
+        <br/><b>{{ 'form.educational_tutor'|trans }}: </b>{{ student_program_workcenter.additionalEducationalTutor }}
+        {% if student_program_workcenter.additionalEducationalTutor.person.emailAddress %} - {{ student_program_workcenter.additionalEducationalTutor.person.emailAddress }}{% endif %}
+    {% endif %}
+</div>
+{% endif %}

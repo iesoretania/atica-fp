@@ -1,0 +1,364 @@
+<?php
+
+namespace App\Repository\ItpModule;
+
+use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Teacher;
+use App\Entity\ItpModule\ProgramGrade;
+use App\Entity\ItpModule\StudentProgram;
+use App\Entity\ItpModule\StudentProgramWorkcenter;
+use App\Entity\ItpModule\WorkDay;
+use App\Entity\Person;
+use App\Repository\Edu\GroupRepository;
+use App\Repository\Edu\TeacherRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
+
+/**
+ * @extends ServiceEntityRepository<StudentProgram>
+ */
+class StudentProgramWorkcenterRepository extends ServiceEntityRepository
+{
+    public function __construct(
+        ManagerRegistry                         $registry,
+        private readonly WorkDayRepository      $workDayRepository,
+        private readonly ProgramGroupRepository $programGroupRepository,
+        private readonly TeacherRepository $teacherRepository,
+        private readonly GroupRepository $groupRepository,
+        private readonly StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository,
+    )
+    {
+        parent::__construct($registry, StudentProgramWorkcenter::class);
+    }
+
+    public function deleteFromStudentProgramList(array $items): void
+    {
+        $workDays = $this->workDayRepository->findByStudentPrograms($items);
+        $this->workDayRepository->deleteFromList($workDays);
+        $studentProgramWorkcenterActivities = $this->studentProgramWorkcenterActivityRepository->findByStudentPrograms($items);
+        $this->studentProgramWorkcenterActivityRepository->deleteFromList($studentProgramWorkcenterActivities);
+        $this->createQueryBuilder('spw')
+            ->delete()
+            ->where('spw.studentProgram IN (:items)')
+            ->setParameter('items', $items)
+            ->getQuery()
+            ->execute();
+    }
+
+    final public function deleteFromList(array $selectedItems): void
+    {
+        $this->workDayRepository->deleteFromListByStudentProgramWorkcenter($selectedItems);
+        $this->studentProgramWorkcenterActivityRepository->deleteFromListByStudentProgramWorkcenter($selectedItems);
+        $this->createQueryBuilder('spw')
+            ->delete()
+            ->where('spw.id IN (:selectedItems)')
+            ->setParameter('selectedItems', $selectedItems)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function createByStudentProgramQueryBuilder(StudentProgram $studentProgram, ?string $q): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('spw')
+            ->addSelect('spw', 'c', 'w')
+            ->join('spw.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->where('spw.studentProgram = :studentProgram')
+            ->setParameter('studentProgram', $studentProgram)
+            ->orderBy('c.name', 'ASC')
+            ->addOrderBy('w.name', 'ASC');
+
+        if ($q) {
+            $qb
+                ->andWhere('w.name LIKE :tq OR c.name LIKE :tq')
+                ->setParameter('tq', "%" . $q . "%");
+        }
+
+        return $qb;
+    }
+
+    public function persist(StudentProgramWorkcenter $studentProgramWorkcenter): void
+    {
+        $this->getEntityManager()->persist($studentProgramWorkcenter);
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
+    final public function findAllInListByIdAndStudentProgram(array $items, StudentProgram $studentProgram): array
+    {
+        return $this->createQueryBuilder('spw')
+            ->addSelect('spw', 'c', 'w', 'p', 'g', 'sp', 'se')
+            ->join('spw.studentProgram', 'sp')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('se.group', 'g')
+            ->join('spw.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->where('spw.id IN (:items)')
+            ->andWhere('spw.studentProgram = :studentProgram')
+            ->setParameter('items', $items)
+            ->setParameter('studentProgram', $studentProgram)
+            ->orderBy('c.name', 'ASC')
+            ->addOrderBy('w.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    final public function findAllInListByIdAndProgramGrade(array $items, ProgramGrade $programGrade): array
+    {
+        return $this->createQueryBuilder('spw')
+            ->addSelect('spw', 'c', 'w', 'p', 'g', 'sp', 'se')
+            ->join('spw.studentProgram', 'sp')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('se.group', 'g')
+            ->join('spw.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->where('spw.id IN (:items)')
+            ->andWhere('g.grade = :grade')
+            ->setParameter('items', $items)
+            ->setParameter('grade', $programGrade->getGrade())
+            ->orderBy('c.name', 'ASC')
+            ->addOrderBy('w.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    final public function updateDates(StudentProgramWorkcenter $studentProgramWorkcenter): void
+    {
+        static $timezone = new \DateTimeZone('UTC');
+        $stats = $this->workDayRepository->getStudentProgramWorkcenterStats($studentProgramWorkcenter);
+        if (isset($stats['endDate'], $stats['startDate'])) {
+            $studentProgramWorkcenter->setStartDate(new \DateTimeImmutable($stats['startDate'], $timezone));
+            $studentProgramWorkcenter->setEndDate(new \DateTimeImmutable($stats['endDate'], $timezone));
+        }
+        $this->flush();
+    }
+
+    public function createTrackingQueryBuilder(
+        AcademicYear $academicYear,
+        Person $person,
+        bool $isManager,
+        ?string $q): QueryBuilder
+    {
+        $teacher = $this->teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+        if (!$isManager && $teacher instanceof Teacher) {
+            // Grupos donde se es tutor dual
+            $programGroups = $this->programGroupRepository->findByManager($teacher);
+            $groups = array_map(fn($group) => $group->getGroup(), $programGroups);
+
+            // Si se es jefe de departamento
+            $departmentGroups = $this->groupRepository->findByDepartmentHead($teacher);
+            foreach ($departmentGroups as $group) {
+                if (!in_array($group, $groups)) {
+                    $groups[] = $group;
+                }
+            }
+
+            // Si son tutores del grupo
+            $tutorGroups = $this->groupRepository->findByTutor($teacher);
+            foreach ($tutorGroups as $group) {
+                if (!in_array($group, $groups)) {
+                    $groups[] = $group;
+                }
+            }
+        } else {
+            $groups = [];
+        }
+        $qb = $this->createQueryBuilder('spw')
+            ->addSelect('spw', 'c', 'w', 'p', 'g', 'gr', 't', 'sp', 'se', 'et', 'etp', 'wt')
+            ->addSelect('SUM(wd.hours) AS hours')
+            ->addSelect('SUM(CASE WHEN wd.absence = 0 THEN wd.locked * wd.hours ELSE 0 END) AS locked_hours')
+            ->addSelect('SUM(CASE WHEN wd.absence != 0 THEN 1 ELSE 0 END) AS absences')
+            ->addSelect('SUM(CASE WHEN wd.absence = 2 THEN 1 ELSE 0 END) AS justified_absences')
+            ->leftJoin('spw.workDays', 'wd')
+            ->addGroupBy('spw')
+            ->join('spw.studentProgram', 'sp')
+            ->join('spw.educationalTutor', 'et')
+            ->join('et.person', 'etp')
+            ->leftJoin('spw.additionalEducationalTutor', 'aet')
+            ->leftJoin('aet.person', 'aetp')
+            ->join('spw.workTutor', 'wt')
+            ->leftJoin('spw.additionalWorkTutor', 'awt')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('se.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->join('spw.workcenter', 'w')
+            ->join('w.company', 'c');
+
+        if ($isManager) {
+            $qb->
+                where('t.academicYear = :academicYear')
+                ->setParameter('academicYear', $academicYear);
+        } else {
+            $qb
+                ->where('t.academicYear = :academicYear AND (p = :person OR etp = :person OR wt = :person OR aetp = :person OR awt = :person'
+                    . (count($groups) ? ' OR g IN (:groups)' : '')
+                    . ')')
+                ->setParameter('academicYear', $academicYear)
+                ->setParameter('person', $person);
+            if (count($groups) > 0) {
+                $qb->setParameter('groups', $groups);
+            }
+        }
+
+        $qb
+            ->orderBy('p.lastName', 'ASC')
+            ->addOrderBy('p.firstName', 'ASC')
+            ->addOrderBy('c.name', 'ASC')
+            ->addOrderBy('w.name', 'ASC');
+
+        if ($q) {
+            $qb
+                ->andWhere('p.firstName LIKE :tq OR p.lastName LIKE :tq OR w.name LIKE :tq OR c.name LIKE :tq OR wt.firstName LIKE :tq OR wt.lastName LIKE :tq OR etp.firstName LIKE :tq OR etp.lastName LIKE :tq OR g.name LIKE :tq')
+                ->setParameter('tq', "%" . $q . "%");
+        }
+        return $qb;
+    }
+
+    public function findByStudentAndAcademicYear(Person $user, ?AcademicYear $academicYear): array
+    {
+        if (!$academicYear instanceof AcademicYear) {
+            return [];
+        }
+        return $this->createQueryBuilder('spw')
+            ->join('spw.studentProgram', 'sp')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->where('se.person = :person')
+            ->andWhere('t.academicYear = :academicYear')
+            ->setParameter('person', $user)
+            ->setParameter('academicYear', $academicYear)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByEducationalTutorOrAdditionalEducationalTutor(Teacher $teacher): array
+    {
+        return $this->createQueryBuilder('spw')
+            ->join('spw.educationalTutor', 'et')
+            ->leftJoin('spw.additionalEducationalTutor', 'aet')
+            ->where('et = :teacher OR aet = :teacher')
+            ->setParameter('teacher', $teacher)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByWorkTutorOrAdditionalWorkTutorAndAcademicYear(Person $person, AcademicYear $academicYear): array
+    {
+        return $this->createQueryBuilder('spw')
+            ->join('spw.educationalTutor', 'et')
+            ->join('spw.workTutor', 'wt')
+            ->leftJoin('spw.additionalWorkTutor', 'awt')
+            ->where('wt = :person OR awt = :person')
+            ->andWhere('et.academicYear = :academic_year')
+            ->setParameter('person', $person)
+            ->setParameter('academic_year', $academicYear)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function createFindByProgramGradeAndFilterQueryBuilder(ProgramGrade $programGrade, ?string $q): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('spw')
+            ->addSelect('spw', 'c', 'w', 'p', 'pg', 'g', 'et', 'etp', 'wt', 'aet', 'aetp', 'sp', 'se')
+            ->join('spw.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->join('spw.educationalTutor', 'et')
+            ->join('et.person', 'etp')
+            ->leftJoin('spw.additionalEducationalTutor', 'aet')
+            ->leftJoin('aet.person', 'aetp')
+            ->join('spw.workTutor', 'wt')
+            ->leftJoin('spw.additionalWorkTutor', 'awt')
+            ->join('spw.studentProgram', 'sp')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('sp.programGroup', 'pg')
+            ->join('pg.group', 'g')
+            ->where('pg.programGrade = :program_grade')
+            ->setParameter('program_grade', $programGrade)
+            ->addOrderBy('g.name', 'ASC')
+            ->addOrderBy('p.lastName', 'ASC')
+            ->addOrderBy('p.firstName', 'ASC')
+            ->addOrderBy('c.name', 'ASC')
+            ->addOrderBy('w.name', 'ASC');
+
+        if ($q) {
+            $qb
+                ->andWhere('p.firstName LIKE :tq OR p.lastName LIKE :tq OR g.name LIKE :tq OR c.name LIKE :tq OR w.name LIKE :tq OR etp.firstName LIKE :tq OR etp.lastName LIKE :tq OR wt.firstName LIKE :tq OR wt.lastName LIKE :tq OR aetp.firstName LIKE :tq OR aetp.lastName LIKE :tq')
+                ->setParameter('tq', "%" . $q . "%");
+        }
+
+        return $qb;
+    }
+
+    final public function findAllInListByNotIdAndProgramGrade(array $items, ProgramGrade $programGrade): array
+    {
+        return $this->createQueryBuilder('spw')
+            ->addSelect('spw', 'c', 'w', 'p', 'pg', 'g', 'sp', 'se')
+            ->join('spw.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->join('spw.studentProgram', 'sp')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('sp.programGroup', 'pg')
+            ->join('pg.group', 'g')
+            ->join('g.grade', 'gr')
+            ->where('spw.id NOT IN (:items)')
+            ->andWhere('gr.training = :training')
+            ->andWhere('SIZE(spw.workDays) > 0')
+            ->setParameter('items', $items)
+            ->setParameter('training', $programGrade->getGrade()->getTraining())
+            ->addOrderBy('g.name', 'ASC')
+            ->addOrderBy('p.lastName', 'ASC')
+            ->addOrderBy('p.firstName', 'ASC')
+            ->addOrderBy('c.name', 'ASC')
+            ->addOrderBy('w.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function cloneCalendarFromStudentProgramWorkcenter(
+        StudentProgramWorkcenter $target,
+        StudentProgramWorkcenter $source,
+        bool                     $overwrite)
+    {
+        $workDays = $source->getWorkDays();
+        if (count($workDays) === 0) {
+            return;
+        }
+
+        $utc = new \DateTimeZone('UTC');
+
+        /** @var WorkDay $workDay */
+        foreach ($workDays as $workDay) {
+            $newDate = new \DateTimeImmutable($workDay->getDate()->format('Y/m/d'), $utc);
+            $newWorkDay = $this->workDayRepository->findOneByStudentProgramWorkcenterAndDate($target, $newDate);
+            if (!$newWorkDay instanceof WorkDay) {
+                $newWorkDay = new WorkDay();
+                $newWorkDay
+                    ->setStudentProgramWorkcenter($target)
+                    ->setDate(new \DateTime($newDate->format('Y/m/d'), $utc))
+                    ->setHours($workDay->getHours());
+                $this->getEntityManager()->persist($newWorkDay);
+            } elseif ($overwrite) {
+                $newWorkDay->setHours($workDay->getHours());
+            } else {
+                $newWorkDay->setHours($newWorkDay->getHours() + $workDay->getHours());
+            }
+        }
+    }
+
+    public function remove(StudentProgramWorkcenter $studentProgramWorkcenter): void
+    {
+        $this->getEntityManager()->remove($studentProgramWorkcenter);
+    }
+}

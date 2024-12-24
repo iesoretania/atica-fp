@@ -20,6 +20,7 @@ namespace App\Repository\Edu;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Training;
+use App\Entity\Organization;
 use App\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
@@ -127,4 +128,23 @@ class TrainingRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByAcademicYearWithTrainingsAndGroups(?AcademicYear $academicYear)
+    {
+        return $this->findByAcademicYearQueryBuilder($academicYear)
+            ->addSelect('gr', 'g')
+            ->join('t.grades', 'gr')
+            ->join('gr.groups', 'g')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByTrainingsAndGroups(?Training $training)
+    {
+        return $this->createQueryBuilder('t')
+            ->addSelect('gr', 'g')
+            ->join('t.grades', 'gr')
+            ->join('gr.groups', 'g')
+            ->getQuery()
+            ->getResult();
+    }
 }

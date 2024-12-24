@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-7.x.x (xxxx-xx-xx)
+7.0.0 (2024-12-24)
 ------------------
 * chore: Actualización de los componentes internos
 * feat: Se muestra información útil adicional en las secciones de importación de datos
@@ -13,6 +13,12 @@ en las distintas versiones de la misma.
 * chore: Eliminar importación obsoleta de programas formativos desde un CSV
 * fix: No eliminar las concreciones marcadas en una jornada bloqueada si se intenta asignarle una falta de asistencia
 * fix: Bloqueada actualización de CKEditor4 a la versión 4.22.1 porque las posteriores son con licencia comercial
+* feat: Nuevo módulo para la gestión de la fase de formación en empresa
+* feat: Las escalas de valoración del desempeño ahora se establecen a nivel de centro educativo, permitiendo su reutilización
+* feat: Añadidos comandos para realizar copias de seguridad y restauraciones de la base de datos desde la consola
+* feat: Posibilidad de realizar una copia de seguridad antes de ejecutar una migración, restaurando los datos en caso de error
+* feat: El calendario de la fase de formación en empresa permite especificar hasta dos decimales en la asignación de horas
+* feat: Se puede importar el plan de formación inicial desde un fichero exportado de Séneca
 
 6.2.2 (2024-10-02)
 ------------------

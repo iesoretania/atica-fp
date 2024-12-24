@@ -19,6 +19,7 @@
 namespace App\Repository\Edu;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Group;
 use App\Entity\Edu\Teacher;
 use App\Entity\Edu\Teaching;
 use App\Entity\Organization;
@@ -96,6 +97,19 @@ class TeacherRepository extends ServiceEntityRepository
             ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
             ->andWhere('te.group IN (:groups)')
             ->setParameter('groups', $groups)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByGroup(Group $group): array
+    {
+        return $this->createQueryBuilder('t')
+            ->join('t.person', 'p')
+            ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
+            ->andWhere('te.group = :group')
+            ->setParameter('group', $group)
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
             ->getQuery()
             ->getResult();
     }

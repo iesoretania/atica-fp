@@ -18,9 +18,9 @@
 
 namespace App\Form\Type\WltModule;
 
-use App\Entity\WltModule\ActivityRealizationGrade;
+use App\Entity\Edu\PerformanceScaleValue;
 use App\Entity\WltModule\AgreementActivityRealization;
-use App\Repository\WltModule\ActivityRealizationGradeRepository;
+use App\Repository\Edu\PerformanceScaleValueRepository;
 use App\Repository\WltModule\AgreementActivityRealizationRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -36,7 +36,7 @@ class AgreementActivityRealizationType extends AbstractType
     private $grades;
     private $submittedAgreementActivityRealizations;
 
-    public function __construct(private readonly TranslatorInterface $translator, private readonly ActivityRealizationGradeRepository $activityRealizationGradeRepository, private readonly AgreementActivityRealizationRepository $agreementActivityRealizationRepository)
+    public function __construct(private readonly TranslatorInterface $translator, private readonly PerformanceScaleValueRepository $activityRealizationGradeRepository, private readonly AgreementActivityRealizationRepository $agreementActivityRealizationRepository)
     {
     }
 
@@ -52,8 +52,8 @@ class AgreementActivityRealizationType extends AbstractType
             $data = $event->getData();
 
             if (null === $this->grades) {
-                $this->grades = $this->activityRealizationGradeRepository->findByProject(
-                    $data->getAgreement()->getProject()
+                $this->grades = $this->activityRealizationGradeRepository->findByPerformanceScale(
+                    $data->getAgreement()->getProject()->getPerformanceScale()
                 );
                 $this->submittedAgreementActivityRealizations = $this->agreementActivityRealizationRepository
                     ->findSubmittedByAgreement($data->getAgreement());
@@ -63,7 +63,7 @@ class AgreementActivityRealizationType extends AbstractType
                     'label' => false,
                     'choice_translation_domain' => false,
                     'choices' => $this->grades,
-                    'class' => ActivityRealizationGrade::class,
+                    'class' => PerformanceScaleValue::class,
                     'disabled' => $data->isDisabled() ||
                         !in_array($data, $this->submittedAgreementActivityRealizations, true),
                     'expanded' => true,

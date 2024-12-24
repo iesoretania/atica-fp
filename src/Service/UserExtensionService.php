@@ -28,16 +28,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserExtensionService
 {
-    public function __construct(private readonly RequestStack                  $requestStack, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly OrganizationRepository        $organizationRepository)
+    public function __construct(private readonly RequestStack $requestStack, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly OrganizationRepository        $organizationRepository)
     {
     }
 
-    final public function getCurrentOrganization(): ?Organization
+    final public function getCurrentOrganization(): Organization
     {
         if ($this->requestStack->getSession()->has('organization_id')) {
             return $this->organizationRepository->find($this->requestStack->getSession()->get('organization_id'));
         }
-        return null;
+        throw new \RuntimeException('No organization selected');
     }
 
     final public function checkCurrentOrganization(UserInterface $user): bool
@@ -50,16 +50,17 @@ class UserExtensionService
             return true;
         }
 
-        return $this->requestStack->getSession()->has('organization_id')
-            && (is_countable($this->organizationRepository->getMembershipByPersonQueryBuilder($user)
+        if (!$this->requestStack->getSession()->has('organization_id')) {
+            return false;
+        }
+        $organization = $this->organizationRepository->find($this->requestStack->getSession()->get('organization_id'));
+        $filterUserOrganizations = $this->organizationRepository->getMembershipByPersonQueryBuilder($user)
                 ->andWhere('o = :organization')
-                ->setParameter('organization', $this->getCurrentOrganization())
+                ->setParameter('organization', $organization)
                 ->getQuery()
-                ->getResult()) || $this->organizationRepository->getMembershipByPersonQueryBuilder($user)
-                ->andWhere('o = :organization')
-                ->setParameter('organization', $this->getCurrentOrganization())
-                ->getQuery()
-                ->getResult());
+                ->getResult();
+
+        return count($filterUserOrganizations) > 0;
     }
 
     final public function isUserGlobalAdministrator(): bool

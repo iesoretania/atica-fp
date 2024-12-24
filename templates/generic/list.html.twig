@@ -3,6 +3,7 @@
 {% import 'macros.html.twig' as m %}
 
 {% block content %}
+    {% block filter %}
     {% block before_filter %}{% endblock %}
     <div class="row">
         <div class="form-group col-sm-5">
@@ -16,10 +17,11 @@
         </div>
         {% endblock %}
     </div>
+    {% endblock %}
     <section id="exchange">
     {% block before_table %}{% endblock %}
     <div id="table" class="w-100 table-responsive table-responsive-sm">
-        {% if pager and pager.count %}
+        {% if pager is defined %}
             <h4>{{ 'table.total'|trans({'count': pager.count}) }}</h4>
         {% endif %}
         <table id="list" class="table table-bordered table-hover table-striped table-sm">
@@ -31,8 +33,9 @@
             <tbody>
             {% block table_body %}{% endblock %}
             </tbody>
+            {% block table_footer %}{% endblock %}
         </table>
-        {% if pager and pager.haveToPaginate %}
+        {% if pager is defined and pager.haveToPaginate %}
             <div class="pagerfanta">
                 {% block pagerfanta %}
                 {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general')}) }}
