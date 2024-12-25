@@ -12,6 +12,22 @@ Actualización de los componentes internos
 Para soportar las últimas versiones de algunos componentes, se han tenido que modificar los requisitos
 mínimos de PHP y NodeJS. Ahora se requiere PHP ≥ 8.2 y NodeJS ≥ 20.
 
+Cambios en la configuración de envío de correos electrónicos
+------------------------------------------------------------
+Ahora se usa otro componente más moderno para enviar correos electrónicos. Si se está usando
+esta característica, se deberá modificar el fichero ```.env.local``` (o el que corresponda) ligeramente:
+```.dotenv
+# Antes: MAILER_URL=smtp://localhost
+MAILER_DSN=smtp://localhost
+```
+```.dotenv
+# Si se usa GMail o Google Workspace:
+# Antes: MAILER_URL=gmail://direccion_de_correo_completa:contraseña@localhost
+MAILER_DSN=gmail://direccion_de_correo_completa:contraseña@default
+```
+Por tanto, habría que cambiar la variable ```MAILER_URL``` por ```MAILER_DSN``` y, en el caso
+de usar GMail o Google Workspace, cambiar ```localhost``` por ```default```.
+
 Soporte de la fase de formación en empresa
 ------------------------------------------
 La aplicación incluye un nuevo módulo para gestionar la fase de formación en empresa de los estudiantes
