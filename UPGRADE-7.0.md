@@ -47,6 +47,20 @@ Soporte de la fase de formación en empresa
 La aplicación incluye un nuevo módulo para gestionar la fase de formación en empresa de los estudiantes
 atendiendo a la nueva normativa de FP.
 
+El funcionamiento es similar al de los proyectos de FP dual:
+- Se crea un plan de formación inicial, especificando los niveles de los ciclos formativos asociados
+  al mismo.
+- Para cada nivel (1º, 2º, etc) se crean las actividades formativas y los criterios de evaluación
+  de los módulos profesionales a los que estarán asociadas.
+- Se asocian empresas a los niveles, indicando qué actividad o actividades se pueden realizar en ellas.
+- Se crean planes de formación individuales, indicando el estudiante, la empresa, las actividades
+  formativas que se realizarán y un calendario de realización.
+
+Como novedades, el nuevo módulo de formación en empresa permite:
+- Especificar un número no entero de horas para las jornadas del calendario.
+- Crear planes de formación individuales con calendarios que incluyen sábado y domingo en la hoja de
+  seguimiento semanal.
+
 Escalas de valoracion
 ---------------------
 Las escalas de valoración del desempeño que se configuraban específicamente para los proyectos de FP dual
