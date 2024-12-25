@@ -7,6 +7,20 @@ a la nueva versión, no es posible revertir la migración a versiones anteriores
 Este documento contiene una lista de los cambios más relevantes entre la versión 6.x.x
 de la plataforma y la 7.0.
 
+Nueva política de ramas en el repositorio
+-----------------------------------------
+A partir de esta versión, se creará una rama específica para cada versión de la plataforma.
+En concreto, la rama ```v7``` contendrá la versión 7 de la plataforma y, permaneciendo en ella,
+no se modificarán los requisitos mínimos de PHP, NodeJS, etc.
+
+La versión anterior, ```v6```, seguirá existiendo pero en modo de mantenimiento, sin recibir
+nuevas características ni actualizaciones de seguridad salvo que sean solicitadas por algún
+centro educativo.
+
+La rama ```master``` dejará de ser la rama principal de desarrollo y se eliminará en un futuro.
+Dado que su funcionalidad se corresponde con la versión 6 de la plataforma, se recomienda que
+cambiar la rama de trabajo a ```v6``` si se está en ella y no se desea actualizar a la versión 7.
+
 Actualización de los componentes internos
 -----------------------------------------
 Para soportar las últimas versiones de algunos componentes, se han tenido que modificar los requisitos
