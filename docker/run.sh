@@ -36,11 +36,11 @@ sudo -u www-data php bin/console --no-interaction d:m:m
 sudo -u www-data node_modules/.bin/encore prod
 
 # Comprobar si hay usuarios en la base de datos
-RESULT=`MYSQL_PWD=atica mysql -h db --user=atica aticafp -N -s -r -e "SELECT COUNT(*) FROM person"`
+RESULT=$(MYSQL_PWD=atica mysql -h db --user=atica aticafp -N -s -r -e "SELECT COUNT(*) FROM person")
 if [ "$RESULT" == "0" ]; then
     echo "Configurando instancia..."
     # Si no es así, generar un secreto nuevo
-    SECRET="`hexdump -n 16 -e '4/4 "%08X" 1 "\n"' /dev/random`" && sudo -u www-data sed -i -e "s/APP_SECRET=:.*/APP_SECRET=$SECRET/" /var/www/symfony/.env.local
+    SECRET="$(hexdump -n 16 -e '4/4 "%08X" 1 "\n"' /dev/random)" && sudo -u www-data sed -i -e "s/APP_SECRET=:.*/APP_SECRET=$SECRET/" /var/www/symfony/.env.local
 
     # Si no se ha solicitado incluir datos de prueba, crear un centro y un usuario administrador por defecto
     if [ "$DEMO" != "1" ]; then
@@ -53,4 +53,8 @@ fi
 
 # Arrancar Apache2
 tail -F /var/log/apache2/* var/log/prod.log &
+
+echo "###########################################"
+echo "## Ya puedes acceder a la aplicación web ##"
+echo "###########################################"
 exec apache2 -D FOREGROUND

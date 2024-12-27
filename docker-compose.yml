@@ -1,4 +1,3 @@
-version: '2'
 services:
     db:
         image: mysql:8.4
@@ -12,12 +11,14 @@ services:
         restart: always
 
     app:
-        image: iesoretania/atica-fp-app:7.0.0
+        image: iesoretania/atica-fp-app:7.0.0beta
         build: .
         environment:
             - "DEMO=${DEMO}"
         ports:
            - 9999:80
         restart: always
+        volumes:
+            - ./backups:/var/www/symfony/backups
         depends_on:
            - db
