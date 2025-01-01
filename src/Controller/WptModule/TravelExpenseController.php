@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2024: Luis Ramón López López
+  Copyright (C) 2018-2025: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -27,12 +27,12 @@ use App\Form\Type\WptModule\TravelExpenseType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\TeacherRepository;
 use App\Repository\WptModule\AgreementRepository;
-use App\Repository\WptModule\TravelExpenseRepository;
 use App\Repository\WptModule\TeacherRepository as WptTeacherRepository;
+use App\Repository\WptModule\TravelExpenseRepository;
 use App\Security\Edu\OrganizationVoter as EduOrganizationVoter;
 use App\Security\OrganizationVoter;
-use App\Security\WptModule\TravelExpenseVoter;
 use App\Security\WptModule\OrganizationVoter as WptOrganizationVoter;
+use App\Security\WptModule\TravelExpenseVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;

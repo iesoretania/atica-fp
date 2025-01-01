@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2024: Luis Ramón López López
+  Copyright (C) 2018-2025: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -22,10 +22,8 @@ use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Training;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
-use App\Entity\ItpModule\StudentProgramWorkcenterActivity;
 use App\Entity\ItpModule\StudentProgramWorkcenterActivityComment;
 use App\Entity\Person;
-use App\Entity\WltModule\AgreementActivityRealizationComment;
 use App\Security\CachedVoter;
 use App\Security\Edu\GroupVoter;
 use App\Security\OrganizationVoter;

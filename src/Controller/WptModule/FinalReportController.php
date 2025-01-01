@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2024: Luis Ramón López López
+  Copyright (C) 2018-2025: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -25,8 +25,8 @@ use App\Entity\WptModule\Report;
 use App\Form\Type\WptModule\FinalReportType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\TeacherRepository;
-use App\Repository\WptModule\WorkDayRepository;
 use App\Repository\WptModule\GroupRepository;
+use App\Repository\WptModule\WorkDayRepository;
 use App\Security\OrganizationVoter;
 use App\Security\WptModule\AgreementEnrollmentVoter;
 use App\Security\WptModule\OrganizationVoter as WptOrganizationVoter;

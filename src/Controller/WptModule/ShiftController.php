@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2024: Luis Ramón López López
+  Copyright (C) 2018-2025: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -27,8 +27,8 @@ use App\Repository\WptModule\ActivityRepository;
 use App\Repository\WptModule\AgreementRepository;
 use App\Repository\WptModule\ShiftRepository;
 use App\Security\OrganizationVoter;
-use App\Security\WptModule\ShiftVoter;
 use App\Security\WptModule\OrganizationVoter as WptOrganizationVoter;
+use App\Security\WptModule\ShiftVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;

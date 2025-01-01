@@ -1,6 +1,6 @@
 <?php
 /*
-  Copyright (C) 2018-2024: Luis Ramón López López
+  Copyright (C) 2018-2025: Luis Ramón López López
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -24,9 +24,9 @@ use App\Entity\WltModule\Meeting;
 use App\Form\Type\WltModule\MeetingType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\TeacherRepository;
+use App\Repository\WltModule\GroupRepository as WltGroupRepository;
 use App\Repository\WltModule\MeetingRepository;
 use App\Repository\WltModule\ProjectRepository;
-use App\Repository\WltModule\GroupRepository as WltGroupRepository;
 use App\Repository\WltModule\TeacherRepository as WltTeacherRepository;
 use App\Security\Edu\OrganizationVoter as EduOrganizationVoter;
 use App\Security\OrganizationVoter;
