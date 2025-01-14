@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.x.x (2025-xx-xx)
+------------------
+* fix: Solucionado un problema al acceder a los planes de formación inicial
+
 7.0.0 (2024-12-24)
 ------------------
 * chore: Actualización de los componentes internos
