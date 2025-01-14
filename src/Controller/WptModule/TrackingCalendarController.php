@@ -527,6 +527,7 @@ class TrackingCalendarController extends AbstractController
             $activities = [];
             $hours = [];
             $notes = [];
+            $absence = htmlentities($translator->trans('form.absence', [], 'calendar'));
             $noActivity = htmlentities($translator->trans('form.no_activities', [], 'calendar'));
             $noWorkday = htmlentities($translator->trans('form.no_workday', [], 'calendar'));
 
@@ -566,7 +567,10 @@ class TrackingCalendarController extends AbstractController
                     $activities[$day] .= htmlentities((string) $trackedWorkDay->getOtherActivities()) . '<br/>';
                 }
 
-                if ('' === $activities[$day]) {
+                if ($trackedWorkDay->getAbsence() !== TrackedWorkDay::NO_ABSENCE) {
+                    $activities[$day] = '<i>' . $absence . '</i>';
+                    $hours[$day] = '';
+                } elseif ('' === $activities[$day]) {
                     $activities[$day] = '<i>' . $noActivity . '</i>';
                 }
                 $notes[$day] = $trackedWorkDay->getNotes();

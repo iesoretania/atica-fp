@@ -104,6 +104,7 @@ message.workday_save_error: Ha ocurrido un error al registrar los cambios a la j
 message.locked: Bloqueo de jornadas actualizado.
 message.locked_error: Error al actualizar el bloqueo.
 
+message.absence: Falta de asistencia
 message.no_activities: Sin actividad registrada
 message.no_workday: No incluido en el programa formativo
 message.draft: BORRADOR
