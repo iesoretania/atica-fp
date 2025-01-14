@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-7.x.x (2025-xx-xx)
+7.1.0 (2025-01-14)
 ------------------
 * fix: Solucionado un problema al acceder a los planes de formación inicial
 * fix: Solucionado enlace de próxima jornada y jornada anterior en el seguimiento de FP dual
