@@ -55,7 +55,7 @@ class ProgramGroupType extends AbstractType
                 ],
                 'required' => false
             ]);
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -74,6 +74,7 @@ class ProgramGroupType extends AbstractType
                     'label' => 'form.managers',
                     'class' => Teacher::class,
                     'choices' => $managers,
+                    'disabled' => !$options['can_manage_permissions'],
                     'expanded' => false,
                     'multiple' => true,
                     'required' => false
@@ -101,6 +102,7 @@ class ProgramGroupType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ProgramGroup::class,
+            'can_manage_permissions' => false,
             'translation_domain' => 'itp_group'
         ]);
     }

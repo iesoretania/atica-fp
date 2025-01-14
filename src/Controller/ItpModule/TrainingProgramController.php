@@ -25,6 +25,7 @@ use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\Person;
 use App\Form\Type\ItpModule\TrainingProgramType;
 use App\Repository\Edu\AcademicYearRepository;
+use App\Repository\Edu\TeacherRepository;
 use App\Repository\ItpModule\GroupRepository;
 use App\Repository\ItpModule\ProgramGradeRepository;
 use App\Repository\ItpModule\ProgramGroupRepository;
@@ -52,6 +53,7 @@ class TrainingProgramController extends AbstractController
         UserExtensionService $userExtensionService,
         AcademicYearRepository $academicYearRepository,
         TrainingProgramRepository $trainingProgramRepository,
+        TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
         TranslatorInterface $translator,
         AcademicYear $academicYear = null,
@@ -70,6 +72,7 @@ class TrainingProgramController extends AbstractController
 
         /** @var Person $person */
         $person = $this->getUser();
+        $teacher = $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
         // Precargar grupos y niveles de los programas formativos del curso académico
         $groupRepository->findByAcademicYear($academicYear);
@@ -78,6 +81,7 @@ class TrainingProgramController extends AbstractController
             $academicYear,
             $isManager,
             $person,
+            $teacher,
             $q
         );
 
@@ -143,11 +147,13 @@ class TrainingProgramController extends AbstractController
 
         $organization = $userExtensionService->getCurrentOrganization();
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+        $canManagePermissions = $this->isGranted(TrainingProgramVoter::MANAGE_PERMISSIONS, $trainingProgram);
 
         $form = $this->createForm(TrainingProgramType::class, $trainingProgram, [
             'lock_manager' => !$isManager,
             'new' => $trainingProgram->getId() === null,
             'is_manager' => $isManager,
+            'can_manage_permissions' => $canManagePermissions
         ]);
 
         $oldGrades = [];

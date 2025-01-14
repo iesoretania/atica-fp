@@ -94,7 +94,10 @@ class GroupController extends AbstractController
         assert($programGroup->getProgramGrade() instanceof ProgramGrade);
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGroup->getProgramGrade()->getTrainingProgram());
 
-        $form = $this->createForm(ProgramGroupType::class, $programGroup);
+        $canManagePermissions = $this->isGranted(TrainingProgramVoter::MANAGE_PERMISSIONS, $programGroup->getProgramGrade()->getTrainingProgram());
+        $form = $this->createForm(ProgramGroupType::class, $programGroup, [
+            'can_manage_permissions' => $canManagePermissions
+        ]);
 
         $previousStudentEnrollments = [];
         foreach ($programGroup->getStudentPrograms() as $studentProgram) {

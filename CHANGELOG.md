@@ -8,8 +8,9 @@ en las distintas versiones de la misma.
 ------------------
 * fix: Solucionado un problema al acceder a los planes de formación inicial
 * fix: Solucionado enlace de próxima jornada y jornada anterior en el seguimiento de FP dual
+* feat: Los tutores duales de grupo pueden modificar los planes de formación, pero no añadir o quitar niveles y asignar otros tutores
 
-7.0.0 (2024-12-24)
+* 7.0.0 (2024-12-24)
 ------------------
 * chore: Actualización de los componentes internos
 * feat: Se muestra información útil adicional en las secciones de importación de datos

@@ -80,6 +80,7 @@ class TrainingProgramType extends AbstractType
                     return $g->getName() . ' (' . $g->getTraining()->getAcademicYear() . ')';
                 },
                 'choices' => $grades,
+                'disabled' => !$options['can_manage_permissions'],
                 'multiple' => true,
                 'expanded' => false,
                 'required' => true
@@ -117,7 +118,8 @@ class TrainingProgramType extends AbstractType
                 'choices' => [
                     'form.locked.no' => false,
                     'form.locked.yes' => true
-                ]
+                ],
+                'disabled' => !$options['can_manage_permissions'],
             ])
             ->add('performanceScale', EntityType::class, [
                 'label' => 'form.performance_scale',
@@ -212,6 +214,7 @@ class TrainingProgramType extends AbstractType
             'lock_manager' => false,
             'new' => false,
             'is_manager' => false,
+            'can_manage_permissions' => false,
             'translation_domain' => 'itp_training_program'
         ]);
     }

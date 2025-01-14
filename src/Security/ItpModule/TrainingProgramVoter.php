@@ -19,9 +19,10 @@
 namespace App\Security\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
-use App\Entity\ItpModule\ProgramGrade;
+use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\Person;
+use App\Repository\ItpModule\TeacherRepository;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
@@ -32,12 +33,14 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 class TrainingProgramVoter extends CachedVoter
 {
     public const MANAGE = 'ITP_TRAINING_PROGRAM_MANAGE';
+    public const MANAGE_PERMISSIONS = 'ITP_TRAINING_PROGRAM_MANAGE_GRADES';
     public const ACCESS = 'ITP_TRAINING_PROGRAM_ACCESS';
 
     public function __construct(
-        CacheItemPoolInterface $cacheItemPoolItemPool,
+        CacheItemPoolInterface                          $cacheItemPoolItemPool,
         private readonly AccessDecisionManagerInterface $decisionManager,
-        private readonly UserExtensionService $userExtensionService
+        private readonly TeacherRepository              $itpTeacherRepository,
+        private readonly UserExtensionService           $userExtensionService
     ) {
         parent::__construct($cacheItemPoolItemPool);
     }
@@ -51,6 +54,7 @@ class TrainingProgramVoter extends CachedVoter
             return false;
         }
         return in_array($attribute, [
+            self::MANAGE_PERMISSIONS,
             self::MANAGE,
             self::ACCESS
         ], true);
@@ -91,16 +95,14 @@ class TrainingProgramVoter extends CachedVoter
             return false;
         }
 
-        $programGrade = $subject->getTrainingProgramGrades()->first();
-        if (!$programGrade instanceof ProgramGrade) {
-            return false;
-        }
-
-        $academicYear = $programGrade->getGrade()->getTraining()->getAcademicYear();
-
-        if (!$academicYear instanceof AcademicYear ||
-            $academicYear->getOrganization() !== $organization) {
-            return false;
+        $isDepartmentHead = false;
+        foreach ($subject->getTrainingProgramGrades() as $programGrade) {
+            if ($programGrade->getGrade()?->getTraining()?->getAcademicYear()?->getOrganization() !== $organization) {
+                return false;
+            }
+            if ($programGrade->getGrade()?->getTraining()?->getDepartment()?->getHead()?->getPerson() === $user) {
+                $isDepartmentHead = true;
+            }
         }
 
         // Si es administrador de la organización, permitir siempre
@@ -108,18 +110,23 @@ class TrainingProgramVoter extends CachedVoter
             return true;
         }
 
-        $isCurrentAcademicYear = $academicYear
-            === $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
+        $academicYear = $organization->getCurrentAcademicYear();
+        $teacher = $this->itpTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $user);
 
-        // El jefe de departamento de la familia profesional de proyecto también puede
-        $isDepartmentHead = $programGrade->getGrade()->getTraining()->getDepartment() &&
-            $programGrade->getGrade()->getTraining()->getDepartment()->getHead() &&
-            $programGrade->getGrade()->getTraining()->getDepartment()->getHead()->getPerson() === $user;
+        if ($teacher instanceof Teacher) {
+            // Si es tutor/a dual de algún grupo, también puede
+            $groupManagers = $this->itpTeacherRepository->findProgramGroupManagersByTrainingProgram($subject);
+            $isGroupManager = in_array($teacher, $groupManagers, true);
+        } else {
+            $isGroupManager = false;
+        }
 
         switch ($attribute) {
+            case self::MANAGE_PERMISSIONS:
+                return $isDepartmentHead;
             case self::MANAGE:
             case self::ACCESS:
-                return $isDepartmentHead;
+                return $isDepartmentHead || $isGroupManager;
         }
 
         // denegamos en cualquier otro caso

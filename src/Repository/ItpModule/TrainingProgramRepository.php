@@ -3,6 +3,7 @@
 namespace App\Repository\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -47,7 +48,7 @@ class TrainingProgramRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function createProgramRepositoryQueryBuilder(?AcademicYear $academicYear, bool $isManager, Person $person, $q): QueryBuilder
+    public function createProgramRepositoryQueryBuilder(?AcademicYear $academicYear, bool $isManager, Person $person, ?Teacher $teacher, $q): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('tp')
             ->addSelect('pg', 'pgg', 'gr', 'tr')
@@ -57,7 +58,6 @@ class TrainingProgramRepository extends ServiceEntityRepository
             ->join('pg.grade', 'gr')
             ->join('gr.training', 'tr')
             ->leftJoin('tr.department', 'd')
-            ->leftJoin('d.head', 'h')
             ->orderBy('tp.name');
 
         if ($q) {
@@ -66,10 +66,10 @@ class TrainingProgramRepository extends ServiceEntityRepository
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        if (!$isManager) {
+        if ($teacher instanceof Teacher && !$isManager) {
             $queryBuilder
-                ->andWhere('d.head IS NOT NULL AND h.person = :manager')
-                ->setParameter('manager', $person);
+                ->andWhere('(d.head IS NOT NULL AND d.head = :teacher) OR :teacher MEMBER OF pgg.managers')
+                ->setParameter('teacher', $teacher);
         }
 
         $queryBuilder
