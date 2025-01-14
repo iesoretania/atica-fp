@@ -7,6 +7,11 @@
 {% endblock title %}
 {% block body %}
     <section class="login-form">
+        {% if app_logo %}
+            <div class="text-center">
+                <img src="{{ asset(app_logo) }}" alt="{{ app_name }}" class="img-responsive" />
+            </div>
+        {% endif %}
         <div class="panel panel-default">
             <div class="panel-body">
                 <h1 class="text-center">

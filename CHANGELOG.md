@@ -10,6 +10,7 @@ en las distintas versiones de la misma.
 * fix: Solucionado enlace de próxima jornada y jornada anterior en el seguimiento de FP dual
 * feat: Los tutores duales de grupo pueden modificar los planes de formación, pero no añadir o quitar niveles y asignar otros tutores
 * feat: Mostrar faltas de asistencia en la ficha semanal de seguimiento (FCT, dual y FFE)
+* feat: Permitir añadir logos personalizados modificando APP_LOGO y APP_LOGO_NAVBAR
 
 * 7.0.0 (2024-12-24)
 ------------------

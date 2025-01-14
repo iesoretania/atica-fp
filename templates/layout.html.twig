@@ -12,7 +12,7 @@
 {% block body %}
 <div id="wrapper">
     <nav class="navbar header-top fixed-top navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="{{ path('frontpage') }}">{{ app_name }}</a>
+        <a class="navbar-brand" href="{{ path('frontpage') }}">{{ app_name }}{% if app_logo_navbar %}<img src="{{ asset(app_logo_navbar) }}" alt="{{ app_name }}"/>{% endif %}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText"
                 aria-expanded="false" aria-label="{{ 'hint.toggle'|trans }}">
             <span class="navbar-toggler-icon"></span>
