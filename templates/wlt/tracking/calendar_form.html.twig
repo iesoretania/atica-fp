@@ -16,10 +16,10 @@
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
         {% if previous_work_day %}
-            {{ m.link_button(path('work_linked_training_agreement_calendar_form', {'id': previous_work_day.id}), 'angle-left', 'btn-info', 'form.previous_work_day'|trans) }}
+            {{ m.link_button(path('work_linked_training_tracking_calendar_form', {'id': previous_work_day.id}), 'angle-left', 'btn-info', 'form.previous_work_day'|trans) }}
         {% endif %}
         {% if next_work_day %}
-            {{ m.link_button(path('work_linked_training_agreement_calendar_form', {'id': next_work_day.id}), 'angle-right', 'btn-info', 'form.next_work_day'|trans) }}
+            {{ m.link_button(path('work_linked_training_tracking_calendar_form', {'id': next_work_day.id}), 'angle-right', 'btn-info', 'form.next_work_day'|trans) }}
         {% endif %}
     {{ m.end_button() }}
     {{ form_end(form) }}
@@ -27,11 +27,11 @@
 
 {% block content_title %}
     {% if previous_work_day %}
-        <a href="{{ path('work_linked_training_agreement_calendar_form', {'id': previous_work_day.id}) }}" class="btn btn-sm btn-info" title="{{ 'form.previous_work_day'|trans }}"><i class="fas fa-angle-left"></i></a>
+        <a href="{{ path('work_linked_training_tracking_calendar_form', {'id': previous_work_day.id}) }}" class="btn btn-sm btn-info" title="{{ 'form.previous_work_day'|trans }}"><i class="fas fa-angle-left"></i></a>
     {% endif %}
     {{ parent() }}
     {% if next_work_day %}
-        <a href="{{ path('work_linked_training_agreement_calendar_form', {'id': next_work_day.id}) }}" class="btn btn-sm btn-info" title="{{ 'form.next_work_day'|trans }}"><i class="fas fa-angle-right"></i></a>
+        <a href="{{ path('work_linked_training_tracking_calendar_form', {'id': next_work_day.id}) }}" class="btn btn-sm btn-info" title="{{ 'form.next_work_day'|trans }}"><i class="fas fa-angle-right"></i></a>
     {% endif %}
 {% endblock %}
 

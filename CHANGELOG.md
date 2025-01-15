@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.1.1 (2025-01-15)
+------------------
+* fix: Corregido enlace incorrecto al cambiar de día en el seguimiento de FP dual
+
 7.1.0 (2025-01-14)
 ------------------
 * fix: Solucionado un problema al acceder a los planes de formación inicial
@@ -12,7 +16,7 @@ en las distintas versiones de la misma.
 * feat: Mostrar faltas de asistencia en la ficha semanal de seguimiento (FCT, dual y FFE)
 * feat: Permitir añadir logos personalizados modificando APP_LOGO y APP_LOGO_NAVBAR
 
-* 7.0.0 (2024-12-24)
+7.0.0 (2024-12-24)
 ------------------
 * chore: Actualización de los componentes internos
 * feat: Se muestra información útil adicional en las secciones de importación de datos
