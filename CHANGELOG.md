@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.x.x (2025-xx-xx)
+------------------
+* feat: Mostrar concreciones de actividad ordenadas por código en el seguimiento dual
+
 7.1.1 (2025-01-15)
 ------------------
 * fix: Corregido enlace incorrecto al cambiar de día en el seguimiento de FP dual

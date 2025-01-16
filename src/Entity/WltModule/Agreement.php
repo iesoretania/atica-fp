@@ -283,8 +283,16 @@ class Agreement implements \Stringable
     {
         $result = new ArrayCollection();
 
-        foreach ($this->getEvaluatedActivityRealizations() as $evaluatedActivityRealization) {
-            $result->add($evaluatedActivityRealization->getActivityRealization());
+        $items = [];
+        $evaluatedActivityRealizations = $this->getEvaluatedActivityRealizations();
+        foreach ($evaluatedActivityRealizations as $evaluatedActivityRealization) {
+            $activityRealization = $evaluatedActivityRealization->getActivityRealization();
+            assert($activityRealization instanceof ActivityRealization);
+            $items[$activityRealization->getActivity()->getCode() . '~' . $activityRealization->getCode()] = $activityRealization;
+        }
+        ksort($items);
+        foreach ($items as $activityRealization) {
+            $result->add($activityRealization);
         }
 
         return $result;
