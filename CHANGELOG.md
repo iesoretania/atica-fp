@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.x.x (xxxx-xx-xx)
+------------------
+* chore: Mejorada presentación de las actividades en la valoración del desempeño
+
 7.1.2 (2025-01-17)
 ------------------
 * feat: Mostrar concreciones de actividad ordenadas por código en el seguimiento dual

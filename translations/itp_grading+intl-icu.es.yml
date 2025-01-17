@@ -17,9 +17,9 @@ table.activity_realization.graded.no: "Sin evaluar"
 table.activity_realization.graded.disabled: "Deshabilitada"
 table.activity_realization.graded.pending: "Por realizar"
 
-form.disabled: Deshabilitar concreción no valorada
-form.disabled.false: El estudiante puede seleccionar la concreción
-form.disabled.true: El estudiante no puede seleccionar la concreción. Las jornadas que la tengan marcadas se mantienen
+form.disabled: Deshabilitar actividad no valorada
+form.disabled.false: El estudiante puede seleccionar la actividad
+form.disabled.true: El estudiante no puede seleccionar la actividad. Las jornadas que la tengan marcadas se mantienen
 
 title.list: Valoración del desempeño de una estacia del plan de formación
 title.comment: Comentarios de la actividad

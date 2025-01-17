@@ -26,19 +26,9 @@
     {{ form_label(form.activities) }}
     {{ form_errors(form.activities) }}
     {% set last_activity_id = 0 %}
+    <table class="table table-sm table-bordered table-striped table-hover agreement-grading">
+    <tbody>
     {% for activity in form.activities %}
-        {% set current_activity_id = activity.vars.data.activity.id %}
-        {% if current_activity_id != last_activity_id %}
-            {% if not loop.first %}</tbody></table>{% endif %}
-            {% set last_activity_id = current_activity_id %}
-            <table class="table table-sm table-bordered table-striped table-hover agreement-grading">
-                <thead>
-                <tr>
-                    <th colspan="2"><h5>{{ activity.vars.data.activity }}</h5></th>
-                </tr>
-                </thead>
-                <tbody>
-        {% endif %}
         <tr>
             <td class="w-50">{{ activity.vars.data.activity }}
                 {%- if activity.vars.data.disabled %}
@@ -70,7 +60,7 @@
             </td>
         </tr>
     {% endfor %}
-    {% if last_activity_id != 0 %}</tbody></table>{% endif %}
+    </tbody></table>
     <h4>{{ 'form.remarks'|trans }}</h4>
     {{ form_widget(form.workTutorRemarks) }}
     <hr/>
