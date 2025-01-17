@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-7.x.x (2025-xx-xx)
+7.1.2 (2025-01-17)
 ------------------
 * feat: Mostrar concreciones de actividad ordenadas por código en el seguimiento dual
 * fix: Arreglado listado de estancias de FFE para la valoración del desempeño
