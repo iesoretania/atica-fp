@@ -5,44 +5,46 @@
 {% block new_action %}{% endblock %}
 
 {% block table_header %}
-    <th class="w-15">{{ 'header.student'|trans }}</th>
-    <th class="w-25">{{ 'header.workcenter'|trans }}</th>
-    <th class="w-15">{{ 'header.educational_tutor'|trans }}</th>
-    <th class="w-15">{{ 'header.work_tutor'|trans }}</th>
+    <th class="w-20">{{ 'header.student'|trans }}</th>
+    <th class="w-20">{{ 'header.workcenter'|trans }}</th>
+    <th class="w-10">{{ 'header.educational_tutor'|trans }}</th>
+    <th class="w-10">{{ 'header.work_tutor'|trans }}</th>
     <th class="w-10">{{ 'header.date_range'|trans }}</th>
     <th class="w-10">{{ 'header.activities'|trans }}</th>
-    <th class="w-10">{{ 'header.hours'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
             {% for item in pager %}
-                {% set url = path('in_company_training_phase_tracking_grading_form', {'studentProgramWorkcenter': item.id}) %}
+                {% set spw = item[0] %}
+                {% set url = path('in_company_training_phase_tracking_grading_form', {'studentProgramWorkcenter': spw.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
-                        <a href="{{ url }}">{{ item.studentProgram.studentEnrollment }}</a>
+                        <a href="{{ url }}">{{ spw.studentProgram.studentEnrollment }}</a>
                     </td>
                     <td>
-                        {{ item.workcenter }}
+                        {{ spw.workcenter }}
                     </td>
                     <td>
-                        {{ item.educationalTutor }}
+                        {{ spw.educationalTutor }}
                     </td>
                     <td>
-                        {{ item.workTutor }}
+                        {{ spw.workTutor }}
                     </td>
                     <td>
-                        {% if item.startDate and item.endDate %}
-                            {{ item.startDate|date('format.date'|trans({}, 'general')) }} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}
+                        {% if spw.startDate and spw.endDate %}
+                            {{ spw.startDate|date('format.date'|trans({}, 'general')) }} - {{ spw.endDate|date('format.date'|trans({}, 'general')) }}
                         {% endif %}
                     </td>
                     <td>
-                    </td>
-                    <td>
+                        {{ item.graded_activities }}/{{ item.total_activities }}
+                        {% if item.total_activities != 0 %}
+                            ({{ (item.graded_activities * 100.0 / item.total_activities)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %)
+                        {% endif %}
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="7">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="6">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

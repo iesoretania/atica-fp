@@ -145,30 +145,7 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         bool $isManager,
         ?string $q): QueryBuilder
     {
-        $teacher = $this->teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
-        if (!$isManager && $teacher instanceof Teacher) {
-            // Grupos donde se es tutor dual
-            $programGroups = $this->programGroupRepository->findByManager($teacher);
-            $groups = array_map(fn($group) => $group->getGroup(), $programGroups);
-
-            // Si se es jefe de departamento
-            $departmentGroups = $this->groupRepository->findByDepartmentHead($teacher);
-            foreach ($departmentGroups as $group) {
-                if (!in_array($group, $groups)) {
-                    $groups[] = $group;
-                }
-            }
-
-            // Si son tutores del grupo
-            $tutorGroups = $this->groupRepository->findByTutor($teacher);
-            foreach ($tutorGroups as $group) {
-                if (!in_array($group, $groups)) {
-                    $groups[] = $group;
-                }
-            }
-        } else {
-            $groups = [];
-        }
+        $groups = $this->getManagedGroups($academicYear, $person, $isManager);
         $qb = $this->createQueryBuilder('spw')
             ->addSelect('spw', 'c', 'w', 'p', 'g', 'gr', 't', 'sp', 'se', 'et', 'etp', 'wt')
             ->addSelect('SUM(wd.hours) AS hours')
@@ -178,6 +155,64 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
             ->leftJoin('spw.workDays', 'wd')
             ->addGroupBy('spw')
             ->join('spw.studentProgram', 'sp')
+            ->join('spw.educationalTutor', 'et')
+            ->join('et.person', 'etp')
+            ->leftJoin('spw.additionalEducationalTutor', 'aet')
+            ->leftJoin('aet.person', 'aetp')
+            ->join('spw.workTutor', 'wt')
+            ->leftJoin('spw.additionalWorkTutor', 'awt')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('se.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->join('spw.workcenter', 'w')
+            ->join('w.company', 'c');
+
+        if ($isManager) {
+            $qb->
+                where('t.academicYear = :academicYear')
+                ->setParameter('academicYear', $academicYear);
+        } else {
+            $qb
+                ->where('t.academicYear = :academicYear AND (p = :person OR etp = :person OR wt = :person OR aetp = :person OR awt = :person'
+                    . (count($groups) ? ' OR g IN (:groups)' : '')
+                    . ')')
+                ->setParameter('academicYear', $academicYear)
+                ->setParameter('person', $person);
+            if (count($groups) > 0) {
+                $qb->setParameter('groups', $groups);
+            }
+        }
+
+        $qb
+            ->orderBy('p.lastName', 'ASC')
+            ->addOrderBy('p.firstName', 'ASC')
+            ->addOrderBy('c.name', 'ASC')
+            ->addOrderBy('w.name', 'ASC');
+
+        if ($q) {
+            $qb
+                ->andWhere('p.firstName LIKE :tq OR p.lastName LIKE :tq OR w.name LIKE :tq OR c.name LIKE :tq OR wt.firstName LIKE :tq OR wt.lastName LIKE :tq OR etp.firstName LIKE :tq OR etp.lastName LIKE :tq OR g.name LIKE :tq')
+                ->setParameter('tq', "%" . $q . "%");
+        }
+        return $qb;
+    }
+
+    public function createGradingQueryBuilder(
+        AcademicYear $academicYear,
+        Person $person,
+        bool $isManager,
+        ?string $q): QueryBuilder
+    {
+        $groups = $this->getManagedGroups($academicYear, $person, $isManager);
+        $qb = $this->createQueryBuilder('spw')
+            ->addSelect('spw', 'c', 'w', 'p', 'g', 'gr', 't', 'sp', 'se', 'et', 'etp', 'wt')
+            ->addSelect('COUNT(a) AS total_activities')
+            ->addSelect('SUM(CASE WHEN a.scaleValue IS NOT NULL THEN 1 ELSE 0 END) AS graded_activities')
+            ->addGroupBy('spw')
+            ->join('spw.studentProgram', 'sp')
+            ->leftJoin('spw.activities', 'a')
             ->join('spw.educationalTutor', 'et')
             ->join('et.person', 'etp')
             ->leftJoin('spw.additionalEducationalTutor', 'aet')
@@ -360,5 +395,34 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
     public function remove(StudentProgramWorkcenter $studentProgramWorkcenter): void
     {
         $this->getEntityManager()->remove($studentProgramWorkcenter);
+    }
+
+    private function getManagedGroups(AcademicYear $academicYear, Person $person, bool $isManager): array
+    {
+        $teacher = $this->teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+        if (!$isManager && $teacher instanceof Teacher) {
+            // Grupos donde se es tutor dual
+            $programGroups = $this->programGroupRepository->findByManager($teacher);
+            $groups = array_map(fn($group) => $group->getGroup(), $programGroups);
+
+            // Si se es jefe de departamento
+            $departmentGroups = $this->groupRepository->findByDepartmentHead($teacher);
+            foreach ($departmentGroups as $group) {
+                if (!in_array($group, $groups)) {
+                    $groups[] = $group;
+                }
+            }
+
+            // Si son tutores del grupo
+            $tutorGroups = $this->groupRepository->findByTutor($teacher);
+            foreach ($tutorGroups as $group) {
+                if (!in_array($group, $groups)) {
+                    $groups[] = $group;
+                }
+            }
+        } else {
+            $groups = [];
+        }
+        return $groups;
     }
 }

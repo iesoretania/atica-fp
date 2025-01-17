@@ -47,7 +47,7 @@ header.criteria: CEs
 
 prompt.delete_confirm: |
   ¿Está seguro de que desea eliminar el comentario?
-  
+
   Esta operación no se puede deshacer.
 
 message.saved: Datos actualizados con éxito.

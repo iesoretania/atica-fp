@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 7.x.x (2025-xx-xx)
 ------------------
 * feat: Mostrar concreciones de actividad ordenadas por código en el seguimiento dual
+* fix: Arreglado listado de estancias de FFE para la valoración del desempeño
 
 7.1.1 (2025-01-15)
 ------------------
