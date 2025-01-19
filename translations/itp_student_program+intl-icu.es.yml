@@ -15,7 +15,7 @@ form.adaptation_description: Descripción de las adaptaciones y/o medidas necesa
 
 form.save: Guardar cambios
 form.back: Volver
-form.edit: Modificar datos
+form.edit: Modificar autorizaciones y adaptaciones
 
 form.delete: Eliminar estudiantes del plan de formación
 form.delete_confirm: Confirmar eliminación
@@ -41,7 +41,8 @@ header.workcenter: Centro de trabajo
 header.managers: Tutorías duales
 header.educational_tutor: Tutor/a docente de seguimiento
 header.work_tutor: Tutor/a dual de empresa
-header.tutors: Tutorías de seguimiento
+header.tutors: Tutorías de seguimiento (de centro/de empresa)
+header.workcenters: Centros de trabajo
 header.date_range: Fecha de inicio y fin
 header.hours: Horas
 header.activities: Actividades

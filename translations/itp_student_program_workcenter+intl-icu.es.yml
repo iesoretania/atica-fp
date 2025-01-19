@@ -8,7 +8,7 @@ form.additional_work_tutor: Tutor/a dual de empresa adicional
 form.start_date: Fecha de inicio
 form.end_date: Fecha de fin
 form.activities: Actividades a desarrollar
-form.no_activity: No hay actividades asociadas a la empresa
+form.no_activity: No hay actividades asociadas a la empresa. Deben asociarse primero.
 
 form.back: Volver
 form.save: Guardar cambios
@@ -29,7 +29,8 @@ form.work_tutor.none: Seleccione el tutor/a dual de empresa
 form.additional_work_tutor.none: (Opcional) Seleccione un tutor/a dual de empresa adicional
 
 title.list: Estancias del plan de formación
-title.new: Nueva estancia en empresa
+title.batch_new: Registrar estancia de varios estudiantes en empresa
+title.new: Nueva estancia
 title.edit: Detalles de la estancia
 title.delete: Eliminar estancias del plan de formación
 title.calendar: Calendario de la estancia

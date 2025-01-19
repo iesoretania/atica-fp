@@ -18,11 +18,13 @@
 
 namespace App\Repository\ItpModule;
 
+use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
 use App\Repository\Edu\GroupRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 class ProgramGroupRepository extends ServiceEntityRepository
@@ -125,5 +127,44 @@ class ProgramGroupRepository extends ServiceEntityRepository
     public function persist(ProgramGroup $programGroup): void
     {
         $this->getEntityManager()->persist($programGroup);
+    }
+
+    public function getStudentEnrollmentWorkDaysStats(ProgramGroup $programGroup): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->from(StudentEnrollment::class, 'se')
+            ->select('se.id', 'SUM(wd.hours) AS total_hours')
+            ->addSelect('MIN(wd.date) AS min_start_date', 'MAX(wd.date) AS max_end_date')
+            ->distinct()
+            ->join('se.group', 'g')
+            ->join(ProgramGroup::class, 'pg', 'WITH', 'pg.group = g')
+            ->join('pg.studentPrograms', 'sp', Join::WITH, 'sp.studentEnrollment = se')
+            ->leftJoin('sp.studentProgramWorkcenters', 'spw')
+            ->leftJoin('spw.workDays', 'wd')
+            ->where('pg = :program_group')
+            ->setParameter('program_group', $programGroup)
+            ->groupBy('se.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getStudentEnrollmentActivitiesStats(ProgramGroup $programGroup): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->from(StudentEnrollment::class, 'se')
+            ->select('se.id', 'COUNT(DISTINCT ac) AS total_activities')
+            ->addSelect('SUM(CASE WHEN a.scaleValue IS NOT NULL THEN 1 ELSE 0 END) AS graded_activities')
+            ->distinct()
+            ->join('se.group', 'g')
+            ->join(ProgramGroup::class, 'pg', 'WITH', 'pg.group = g')
+            ->join('pg.studentPrograms', 'sp', Join::WITH, 'sp.studentEnrollment = se')
+            ->leftJoin('sp.studentProgramWorkcenters', 'spw')
+            ->leftJoin('spw.activities', 'a')
+            ->leftJoin('a.activity', 'ac')
+            ->where('pg = :program_group')
+            ->setParameter('program_group', $programGroup)
+            ->groupBy('se.id')
+            ->getQuery()
+            ->getResult();
     }
 }

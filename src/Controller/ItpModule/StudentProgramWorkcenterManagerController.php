@@ -145,7 +145,7 @@ class StudentProgramWorkcenterManagerController extends AbstractController
             }
         }
 
-        $title = $programGroup->getGroup()->__toString() . ' - ' . $translator->trans('title.new', [], 'itp_student_program_workcenter');
+        $title = $programGroup->getGroup()->__toString() . ' - ' . $translator->trans('title.batch_new', [], 'itp_student_program_workcenter');
 
         $trainingProgram = $programGroup->getProgramGrade()->getTrainingProgram();
         assert($trainingProgram instanceof TrainingProgram);

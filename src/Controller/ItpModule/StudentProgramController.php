@@ -26,6 +26,8 @@ use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgram;
 use App\Entity\Person;
 use App\Form\Type\ItpModule\StudentProgramType;
+use App\Repository\ItpModule\ProgramGradeRepository;
+use App\Repository\ItpModule\ProgramGroupRepository;
 use App\Repository\ItpModule\StudentProgramRepository;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
@@ -46,6 +48,8 @@ class StudentProgramController extends AbstractController
         Request                  $request,
         TranslatorInterface      $translator,
         StudentProgramRepository $studentProgramRepository,
+        ProgramGroupRepository   $programGroupRepository,
+        ProgramGradeRepository   $programGradeRepository,
         ProgramGroup             $programGroup,
         int                      $page = 1
     ): Response
@@ -58,12 +62,23 @@ class StudentProgramController extends AbstractController
         /** @var Person $person */
         $person = $this->getUser();
 
-        $studentPrograms = $studentProgramRepository->findByProgramGroupAndQuery(
+        $studentProgramsStats = $studentProgramRepository->getStatsByProgramGroupAndQuery(
             $programGroup,
             $q
         );
 
-        $adapter = new ArrayAdapter($studentPrograms);
+        $totalActivities = $programGradeRepository->countActivities($programGroup->getProgramGrade());
+        $workDaysStatsData = $programGroupRepository->getStudentEnrollmentWorkDaysStats($programGroup);
+        $activitiesStatsData = $programGroupRepository->getStudentEnrollmentActivitiesStats($programGroup);
+        $workDaysStats = [];
+        foreach ($workDaysStatsData as $workDayStatsDatum) {
+            $workDaysStats[$workDayStatsDatum['id']] = $workDayStatsDatum;
+        }
+        $activitiesStats = [];
+        foreach ($activitiesStatsData as $activityStatsDatum) {
+            $activitiesStats[$activityStatsDatum['id']] = $activityStatsDatum;
+        }
+        $adapter = new ArrayAdapter($studentProgramsStats);
         $pager = new Pagerfanta($adapter);
         try {
             $pager
@@ -98,7 +113,10 @@ class StudentProgramController extends AbstractController
             'pager' => $pager,
             'q' => $q,
             'domain' => 'itp_student_program',
-            'program_group' => $programGroup
+            'program_group' => $programGroup,
+            'work_days_stats' => $workDaysStats,
+            'activities_stats' => $activitiesStats,
+            'training_program_total_activities' => $totalActivities
         ]);
     }
 

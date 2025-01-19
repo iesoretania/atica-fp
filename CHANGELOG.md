@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * chore: Mejorada presentación de las actividades en la valoración del desempeño
 * feat: Implementación inicial del registro de contactos con empresas en FFE
+* feat: Mostrar información sobre el estudiante en los planes de formación individuales
 
 _ATENCIÓN: Hay actualización de la base de datos y de recursos de frontend_
 

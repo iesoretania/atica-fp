@@ -202,4 +202,14 @@ class ProgramGradeRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function countActivities(ProgramGrade $getProgramGrade): int
+    {
+        return $this->createQueryBuilder('pg')
+            ->select('SIZE(pg.activities)')
+            ->where('pg = :program_grade')
+            ->setParameter('program_grade', $getProgramGrade)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

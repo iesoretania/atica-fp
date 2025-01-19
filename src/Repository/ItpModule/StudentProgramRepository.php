@@ -23,11 +23,11 @@ class StudentProgramRepository extends ServiceEntityRepository
 
     public function createByProgramGroupQueryBuilder(ProgramGroup $programGroup, ?string $q): QueryBuilder
     {
-        $qb = $this->createQueryBuilder('slp')
+        $qb = $this->createQueryBuilder('sp')
             ->addSelect('se', 's', 'pg', 'g')
-            ->join('slp.studentEnrollment', 'se')
+            ->join('sp.studentEnrollment', 'se')
             ->join('se.person', 's')
-            ->join('slp.programGroup', 'pg')
+            ->join('sp.programGroup', 'pg')
             ->join('pg.group', 'g')
             ->where('pg = :programGroup')
             ->setParameter('programGroup', $programGroup);
@@ -48,6 +48,19 @@ class StudentProgramRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getStatsByProgramGroupAndQuery(ProgramGroup $programGroup, ?string $q): array
+    {
+        return $this->createByProgramGroupQueryBuilder($programGroup, $q)
+            ->distinct()
+            ->leftJoin('sp.studentProgramWorkcenters', 'spw')
+            ->leftJoin('spw.activities', 'a')
+            ->addSelect('MIN(spw.startDate) AS min_start_date', 'MAX(spw.endDate) AS max_end_date')
+            ->addSelect('COUNT(DISTINCT a) AS activities_count')
+            ->groupBy('sp')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function persist(StudentProgram $studentProgram): void
     {
         $this->getEntityManager()->persist($studentProgram);
@@ -61,9 +74,9 @@ class StudentProgramRepository extends ServiceEntityRepository
     final public function deleteFromList(array $items): void
     {
         $this->studentProgramWorkcenterRepository->deleteFromStudentProgramList($items);
-        $this->createQueryBuilder('slp')
+        $this->createQueryBuilder('sp')
             ->delete()
-            ->where('slp IN (:items)')
+            ->where('sp IN (:items)')
             ->setParameter('items', $items)
             ->getQuery()
             ->execute();
@@ -84,7 +97,7 @@ class StudentProgramRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function deleteFromProgramGradeList(array $items)
+    public function deleteFromProgramGradeList(array $items): void
     {
         $items = $this->findByProgramGradeList($items);
         $this->studentProgramWorkcenterRepository->deleteFromStudentProgramList($items);

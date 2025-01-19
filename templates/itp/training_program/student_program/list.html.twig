@@ -6,17 +6,16 @@
 
 {% block table_header %}
     <th class="w-20"><label><input type="checkbox" id="select"> {{ 'header.student_name'|trans }}</label></th>
-    <th class="w-20">{{ 'header.tutors'|trans }}</th>
+    <th class="w-40">{{ 'header.tutors'|trans }}</th>
     <th class="w-10">{{ 'header.date_range'|trans }}</th>
-    <th class="w-10">{{ 'header.activities'|trans }}</th>
-    <th class="w-10">{{ 'header.learning_outcomes'|trans }}</th>
-    <th class="w-10">{{ 'header.criteria'|trans }}</th>
-    <th class="w-10">{{ 'header.hours'|trans }}</th>
-    <th class="w-10"></th>
+    <th class="w-5">{{ 'header.activities'|trans }}</th>
+    <th class="w-5">{{ 'header.hours'|trans }}</th>
+    <th class="w-20"></th>
 {% endblock %}
 
 {% block table_body %}
-            {% for item in pager %}
+            {% for data in pager %}
+                {% set item = data[0] %}
                 {% set url = path('in_company_training_phase_student_program_workcenter_list', {'studentProgram': item.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
@@ -33,24 +32,35 @@
                         </span>
                     </td>
                     <td>
+                        {% set student_program_workcenters = item.studentProgramWorkcenters %}
+                        {% set list = student_program_workcenters | length > 1 %}
+                        {% if list %}<ul class="pl-3 mb-0">{% endif %}
+                        {% for student_program_workcenter in student_program_workcenters %}
+                            {% if list %}<li>{% endif %}
+                            <i>{{ student_program_workcenter.workcenter }}</i>:
+                            {{ student_program_workcenter.educationalTutor }} / {{ student_program_workcenter.workTutor }}
+                            {% if list %}</li>{% endif %}
+                        {% endfor %}
+                        {% if list %}</ul>{% endif %}
                     </td>
                     <td>
+                        {% if data.min_start_date and data.max_end_date %}
+                            {{ data.min_start_date|date('format.date'|trans({}, 'general')) }} - {{ data.max_end_date|date('format.date'|trans({}, 'general')) }}
+                        {% endif %}
                     </td>
                     <td>
+                        {{ activities_stats[item.studentEnrollment.id].total_activities }}/{{ training_program_total_activities }}
                     </td>
                     <td>
+                        {{ (work_days_stats[item.studentEnrollment.id].total_hours/100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
                     </td>
                     <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        {{ m.link_button(path('in_company_training_phase_student_program_edit', {'studentProgram': item.id}), 'edit', 'btn-info btn-sm btn-block', 'form.edit'|trans) }}
+                        {{ m.link_button(path('in_company_training_phase_student_program_edit', {'studentProgram': item.id}), 'info-circle', 'btn-info btn-sm btn-block', 'form.edit'|trans) }}
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="10">{{ 'table.no_items'|trans }}</td>
+                    <td colspan="8">{{ 'table.no_items'|trans }}</td>
                 </tr>
             {% endfor %}
 {% endblock %}

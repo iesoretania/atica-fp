@@ -3,9 +3,9 @@ form.monitoring_instruments: Mecanismos de seguimiento
 form.monitoring_instruments.placeholder: Indique los mecanismos de seguimiento que se utilizarán en la empresa u organismo equiparable
 form.program_activities: Actividades formativas
 
-form.add: Añadir estancias
-form.edit: Datos y estudiantes
-form.programs: Progr. individuales
+form.add: Añadir estancias en el mismo centro de trabajo
+form.edit: Datos y estudiantes del plan de formación
+form.programs: Programas formativos individuales
 
 form.target_hours: Horas previstas
 form.managers: Tutorías duales de grupo
@@ -39,7 +39,7 @@ table.modality.inherited: (heredada)
 header.name: Grupo
 header.managers: Tutorías duales de grupo
 header.default_modality: Modalidad por defecto
-header.target_hours: Horas previstas
+header.target_hours: Horas prev.
 
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
