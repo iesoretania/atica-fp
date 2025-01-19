@@ -408,14 +408,13 @@ class ContactRepository extends ServiceEntityRepository
         ?string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('c')
-            ->select('c')
+            ->select('c', 't', 'p', 'se', 'sep', 'w', 'co')
             ->distinct()
             ->join('c.teacher', 't')
             ->join('t.person', 'p')
             ->leftJoin('c.workcenter', 'w')
+            ->leftJoin('w.company', 'co')
             ->leftJoin('c.method', 'm')
-            ->leftJoin('c.workcenter', 'wc')
-            ->leftJoin('wc.company', 'co')
             ->leftJoin('c.trainingPrograms', 'tp')
             ->leftJoin('tp.trainingProgramGrades', 'tpg')
             ->leftJoin('tpg.trainingProgramGroups', 'tpgg')
