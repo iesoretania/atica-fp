@@ -37,6 +37,7 @@ Encore
     .addEntry('itp_group', './assets/js/itp/group.js')
     .addEntry('itp_workcenter', './assets/js/itp/workcenter.js')
     .addEntry('itp_workcenter_batch', './assets/js/itp/workcenter_batch.js')
+    .addEntry('itp_contact', './assets/js/itp/contact.js')
 
     // CKEditor
     .copyFiles([

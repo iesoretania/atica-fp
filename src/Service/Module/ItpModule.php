@@ -18,7 +18,6 @@
 
 namespace App\Service\Module;
 
-use App\Security\ItpModule\OrganizationVoter;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Service\UserExtensionService;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -53,7 +52,7 @@ class ItpModule implements ModuleBuilderInterface
 
             $root[] = $menu1;
 
-            if ($this->security->isGranted(OrganizationVoter::ITP_MANAGER, $organization)) {
+            if ($this->security->isGranted(ItpOrganizationVoter::ITP_MANAGER, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('in_company_training_phase_training_program')
@@ -67,7 +66,7 @@ class ItpModule implements ModuleBuilderInterface
                 $menu1->addChild($menu2);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::ITP_ACCESS_SECTION, $organization)) {
+            if ($this->security->isGranted(ItpOrganizationVoter::ITP_ACCESS_SECTION, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('in_company_training_phase_tracking')
@@ -81,7 +80,7 @@ class ItpModule implements ModuleBuilderInterface
                 $menu1->addChild($menu2);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::ITP_VIEW_GRADES, $organization)) {
+            if ($this->security->isGranted(ItpOrganizationVoter::ITP_VIEW_GRADES, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('in_company_training_phase_grading')
@@ -91,6 +90,20 @@ class ItpModule implements ModuleBuilderInterface
                     ->setIcon('award')
                     ->setModule('itp')
                     ->setPriority(6000);
+
+                $menu1->addChild($menu2);
+            }
+
+            if ($this->security->isGranted(ItpOrganizationVoter::ITP_ACCESS_VISIT, $organization)) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('in_company_training_phase_contact')
+                    ->setRouteName('in_company_training_phase_contact_list')
+                    ->setCaption('menu.in_company_training_phase.contact')
+                    ->setDescription('menu.in_company_training_phase.contact.detail')
+                    ->setIcon('broadcast-tower')
+                    ->setModule('itp')
+                    ->setPriority(8000);
 
                 $menu1->addChild($menu2);
             }

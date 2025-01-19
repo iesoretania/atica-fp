@@ -1,0 +1,88 @@
+{% trans_default_domain 'itp_contact' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block path_new %}{{ path('in_company_training_phase_contact_new') }}{% endblock %}
+
+{% block new_action %}{% if allow_new %}{{ parent() }}{% endif %}{% endblock %}
+
+{% block table_header %}
+    <th><label><input type="checkbox" id="select"> {{ 'header.datetime'|trans }}</label></th>
+    <th>{{ 'header.teacher'|trans }}</th>
+    <th>{{ 'header.method'|trans }}</th>
+    <th>{{ 'header.workcenter'|trans }}</th>
+    <th>{{ 'header.training_programs'|trans }}</th>
+    <th>{{ 'header.student_enrollments'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('in_company_training_phase_contact_edit', {'id': item.id}) %}
+                {% set read_only = not is_granted('ITP_CONTACT_MANAGE', item) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <label><input type="checkbox" name="items[]" value="{{ item.id }}"{% if not read_only %} class="selectable"{% else %} disabled="disabled"{% endif %}> <a href="{{ url }}">{{ item.datetime|date('format.datetime'|trans({}, 'general')) }}</a></label>
+                    </td>
+                    <td>
+                        {{ item.teacher }}
+                    </td>
+                    <td>
+                        {{ item.method | default('form.on-site' | trans) }}
+                    </td>
+                    <td>
+                        {{ item.workcenter }}
+                    </td>
+                    <td>
+                        {{ item.trainingPrograms|join(', ') }}
+                    </td>
+                    <td>
+                        {{ item.studentEnrollments|join(', ') }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block before_filter %}
+    {% include 'organization/partial_academic_year.html.twig' %}
+{% endblock %}
+
+{% block before_table %}
+    <div class="form-group" id="mfilter_list">
+    {% if methods | length > 1 %}
+        <div class="custom-control custom-switch custom-control-inline">
+            {% set all = not active_methods or (active_methods | length == 1 + methods | length) %}
+            <input type="checkbox" class="custom-control-input" name="mfilterall" value="1" id="all" {% if all %}checked{% endif %}>
+            <label class="custom-control-label" for="all">{{ 'form.all_methods'|trans }}</label>
+        </div>
+        <div class="custom-control custom-switch custom-control-inline">
+            <input type="checkbox" class="custom-control-input" name="mfilter[]" value="0" id="method0" {% if not all and null in active_methods %}checked{% endif %}>
+            <label class="custom-control-label" for="method0">{{ 'form.on-site'|trans }}</label>
+        </div>
+        {% for method in methods %}
+            {% set active = not all and method in active_methods %}
+            <div class="custom-control custom-switch custom-control-inline text-center">
+                <input type="checkbox" class="custom-control-input" name="mfilter[]" value="{{ method.id }}" id="method{{ method.id }}" {% if active %}checked{% endif %}>
+                <label class="custom-control-label" for="method{{ method.id }}">{{ method.description }}</label>
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+    <form action="{{ path('in_company_training_phase_contact_operation', {'academicYear': academic_year.id}) }}" method="post">
+{% endblock %}
+
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
+{% block after_table %}
+        <div class="clearfix"></div>
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
+        {# m.link_button(path('work_linked_training_contact_educational_tutor_report_list'), 'book-reader', 'btn-info', 'form.educational_tutor_contact_report'|trans) #}
+        {# m.link_button(path('work_linked_training_contact_workcenter_report_list'), 'book-open', 'btn-info', 'form.workcenter_contact_report'|trans) #}
+    </form>
+{% endblock %}

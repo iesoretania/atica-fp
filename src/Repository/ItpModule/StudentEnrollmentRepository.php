@@ -16,14 +16,15 @@
   along with this program.  If not, see [http://www.gnu.org/licenses/].
 */
 
-namespace App\Repository\WltModule;
+namespace App\Repository\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\StudentEnrollment;
-use App\Entity\WltModule\Agreement;
-use App\Entity\WltModule\Project;
+use App\Entity\ItpModule\StudentProgram;
+use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\Workcenter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 class StudentEnrollmentRepository extends ServiceEntityRepository
@@ -34,19 +35,19 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
         parent::__construct($registry, StudentEnrollment::class);
     }
 
-    public function findByProjectsQueryBuilder(
-        $projects
-    ) {
+    public function findByTrainingProgramQueryBuilder(array $trainingPrograms): QueryBuilder
+    {
         return $this->createQueryBuilder('se')
+            ->join(StudentProgram::class, 'sp', 'WITH', 'se = sp.studentEnrollment')
+            ->join('sp.studentProgramWorkcenters', 'spw')
             ->join('se.person', 's')
-            ->join('se.group', 'g')
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 't')
-            ->join('t.academicYear', 'a')
-            ->join(Project::class, 'p', 'WITH', 'se MEMBER OF p.studentEnrollments')
-            ->andWhere('p IN (:projects)')
-            ->setParameter('projects', $projects)
-            ->addOrderBy('a.description')
+            ->join('sp.programGroup', 'pg')
+            ->join('pg.group', 'g')
+            ->join('pg.programGrade', 'pgg')
+            ->join('pgg.trainingProgram', 'tp')
+            ->andWhere('tp IN (:training_programs)')
+            ->setParameter('training_programs', $trainingPrograms)
+            ->addOrderBy('tp.name')
             ->addOrderBy('g.name')
             ->addOrderBy('s.lastName')
             ->addOrderBy('s.firstName');
@@ -55,11 +56,12 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
     /**
      * @param \DateTime|\DateTimeImmutable $dateTime
      */
-    public function findByProjectsAndAgreementDateQueryBuilder(
-        $projects,
+    public function findByTrainingProgramAndAgreementDateQueryBuilder(
+        $trainingPrograms,
         \DateTimeInterface $dateTime = null
-    ) {
-        $qb = $this->findByProjectsQueryBuilder($projects);
+    )
+    {
+        $qb = $this->findByTrainingProgramQueryBuilder($trainingPrograms);
         if ($dateTime instanceof \DateTimeInterface) {
             $startDate = clone $dateTime;
             $startDate->setTime(0, 0);
@@ -67,9 +69,8 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
             $endDate->add(new \DateInterval('P1D'));
 
             $qb
-                ->join(Agreement::class, 'ag', 'WITH', 'ag.studentEnrollment = se')
-                ->andWhere('ag.startDate <= :start_date_time')
-                ->andWhere('ag.endDate >= :end_date_time')
+                ->andWhere('spw.startDate <= :start_date_time')
+                ->andWhere('spw.endDate >= :end_date_time')
                 ->setParameter('start_date_time', $startDate)
                 ->setParameter('end_date_time', $endDate);
         }
@@ -77,33 +78,34 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
         return $qb;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $dateTime
-     */
-    public function findByWorkcenterProjectsAndAgreementDate(
-        Workcenter $workcenter,
-        $projects,
+    public function findByWorkcenterTrainingProgramsAndAgreementDate(
+        Workcenter         $workcenter,
+        array              $trainingPrograms,
         \DateTimeInterface $dateTime = null
-    ) {
-        return $this->findByProjectsAndAgreementDateQueryBuilder($projects, $dateTime)
-            ->andWhere('ag.workcenter = :workcenter')
+    ): array
+    {
+        return $this->findByTrainingProgramAndAgreementDateQueryBuilder($trainingPrograms, $dateTime)
+            ->andWhere('spw.workcenter = :workcenter')
             ->setParameter('workcenter', $workcenter)
             ->getQuery()
             ->getResult();
     }
 
-    public function findByProjectAndAcademicYearDate(Project $project, \DateTimeInterface $dateTime = null)
+    public function findByTrainingProgramAndAcademicYearDate(
+        TrainingProgram    $trainingProgram,
+        \DateTimeInterface $dateTime = null
+    ): array
     {
+        $qb = $this->findByTrainingProgramQueryBuilder([$trainingProgram]);
 
         if ($dateTime instanceof \DateTimeInterface) {
             $startDate = \DateTime::createFromInterface($dateTime);
             $startDate->setTime(0, 0);
             $endDate = clone $startDate;
             $startDate->add(new \DateInterval('P1D'));
-            $qb = $this->findByProjectsQueryBuilder([$project]);
             $qb
-                ->andWhere('a.startDate < :end_date_time')
-                ->andWhere('a.endDate >= :start_date_time')
+                ->andWhere('spw.startDate < :end_date_time')
+                ->andWhere('spw.endDate >= :start_date_time')
                 ->setParameter('start_date_time', $startDate)
                 ->setParameter('end_date_time', $endDate);
         }
@@ -112,13 +114,15 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByProjectAndAcademicYear(Project $project, ?AcademicYear $academicYear)
+    public function findByTrainingProgramAndAcademicYear(TrainingProgram $trainingProgram, ?AcademicYear $academicYear)
     {
-        $qb = $this->findByProjectsQueryBuilder([$project]);
+        $qb = $this->findByTrainingProgramQueryBuilder([$trainingProgram]);
 
         if ($academicYear instanceof AcademicYear) {
             $qb
-                ->andWhere('a = :academic_year')
+                ->join('pgg.grade', 'g')
+                ->join('g.training', 't')
+                ->andWhere('t = :academic_year')
                 ->setParameter('academic_year', $academicYear);
         }
 

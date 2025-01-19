@@ -7,6 +7,9 @@ en las distintas versiones de la misma.
 7.x.x (xxxx-xx-xx)
 ------------------
 * chore: Mejorada presentación de las actividades en la valoración del desempeño
+* feat: Implementación inicial del registro de contactos con empresas en FFE
+
+_ATENCIÓN: Hay actualización de la base de datos y de recursos de frontend_
 
 7.1.2 (2025-01-17)
 ------------------

@@ -250,7 +250,7 @@ class OrganizationVoter extends CachedVoter
                     return true;
                 }
                 return
-                    $this->WLTGroupRepository->countAcademicYearAndWLTTeacherPerson(
+                    $this->WLTGroupRepository->countAcademicYearAndWltTeacherPerson(
                         $subject->getCurrentAcademicYear(),
                         $user
                     ) > 0;

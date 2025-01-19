@@ -31,9 +31,8 @@ use App\Form\Type\WltModule\ContactType;
 use App\Form\Type\WltModule\ContactWorkcenterReportType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\ContactMethodRepository;
-use App\Repository\Edu\TeacherRepository;
 use App\Repository\WltModule\ContactRepository;
-use App\Repository\WltModule\GroupRepository;
+use App\Repository\WltModule\GroupRepository as WltGroupRepository;
 use App\Repository\WltModule\ProjectRepository;
 use App\Repository\WltModule\TeacherRepository as WltTeacherRepository;
 use App\Security\Edu\OrganizationVoter as EduOrganizationVoter;
@@ -65,8 +64,7 @@ class ContactController extends AbstractController
         TranslatorInterface  $translator,
         UserExtensionService $userExtensionService,
         Security             $security,
-        TeacherRepository    $teacherRepository,
-        GroupRepository      $wltGroupRepository,
+        WltGroupRepository   $wltGroupRepository,
         WltTeacherRepository $wltTeacherRepository,
         ManagerRegistry      $managerRegistry
     ): Response
@@ -77,7 +75,7 @@ class ContactController extends AbstractController
         $academicYear = $organization->getCurrentAcademicYear();
         /** @var Person $person */
         $person = $this->getUser();
-        $teacher = $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+        $teacher = $wltTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
         $visit = new Contact();
         $visit
@@ -94,7 +92,6 @@ class ContactController extends AbstractController
             $translator,
             $userExtensionService,
             $security,
-            $teacherRepository,
             $wltGroupRepository,
             $wltTeacherRepository,
             $managerRegistry,
@@ -108,8 +105,7 @@ class ContactController extends AbstractController
         TranslatorInterface  $translator,
         UserExtensionService $userExtensionService,
         Security             $security,
-        TeacherRepository    $teacherRepository,
-        GroupRepository      $wltGroupRepository,
+        WltGroupRepository   $wltGroupRepository,
         WltTeacherRepository $wltTeacherRepository,
         ManagerRegistry      $managerRegistry,
         Contact              $visit
@@ -140,7 +136,7 @@ class ContactController extends AbstractController
                 // no es administrador ni coordinador de FP:
                 // puede ser jefe de departamento, tutor de grupo o profesor -> ver sólo sus grupos
                 $teacher =
-                    $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+                    $wltTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
                 if ($teacher) {
                     $groups = $wltGroupRepository->findByAcademicYearAndWltTeacherPerson($academicYear, $person);
@@ -149,7 +145,7 @@ class ContactController extends AbstractController
                 $groups = $wltGroupRepository->findByAcademicYearAndWltTeacherPerson($academicYear, $person);
             }
         } else {
-            $groups = $wltGroupRepository->findByOrganizationAndAcademicYear($organization, $academicYear);
+            $groups = $wltGroupRepository->findByAcademicYear($academicYear);
         }
         $teachers = [];
         if (!$isManager && !$isDepartmentHead && $teacher && !$readOnly) {
@@ -199,8 +195,8 @@ class ContactController extends AbstractController
     public function list(
         Request                 $request,
         UserExtensionService    $userExtensionService,
-        TeacherRepository       $teacherRepository,
-        GroupRepository         $groupRepository,
+        WltTeacherRepository    $wltTeacherRepository,
+        WltGroupRepository      $wltGroupRepository,
         ProjectRepository       $projectRepository,
         Security                $security,
         TranslatorInterface     $translator,
@@ -267,7 +263,7 @@ class ContactController extends AbstractController
             // no es administrador ni coordinador de FP ni jefe de familia profesional:
             // puede ser tutor de grupo -> ver solo visitas de los
             // estudiantes de sus grupos
-            $groups = $groupRepository->findByAcademicYearAndGroupTutorOrDepartmentHeadPerson($academicYear, $person);
+            $groups = $wltGroupRepository->findByAcademicYearAndGroupTutorOrDepartmentHeadPerson($academicYear, $person);
         } elseif ($isWltManager) {
             $projects = $projectRepository->findByManager($person);
         } elseif ($isDepartmentHead) {
@@ -292,7 +288,7 @@ class ContactController extends AbstractController
         /** @var Person $user */
         $user = $this->getUser();
         $teacher =
-            $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $user);
+            $wltTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $user);
 
         if ($groups) {
             $queryBuilder
@@ -410,9 +406,8 @@ class ContactController extends AbstractController
     private function getAllowedTeachers(
         Security             $security,
         Organization         $organization,
-        TeacherRepository    $teacherRepository,
         AcademicYear         $academicYear,
-        GroupRepository      $wltGroupRepository,
+        WltGroupRepository   $wltGroupRepository,
         WltTeacherRepository $wltTeacherRepository
     ) {
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
@@ -430,7 +425,7 @@ class ContactController extends AbstractController
                 // no es administrador ni coordinador de FP:
                 // puede ser jefe de departamento, tutor de grupo o profesor -> ver sólo sus grupos
                 $currentUserTeacher =
-                    $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+                    $wltTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
                 if ($currentUserTeacher) {
                     $groups = $wltGroupRepository->findByAcademicYearAndWltTeacherPerson($academicYear, $person);
@@ -439,7 +434,7 @@ class ContactController extends AbstractController
                 $groups = $wltGroupRepository->findByAcademicYearAndWltTeacherPerson($academicYear, $person);
             }
         } else {
-            $groups = $wltGroupRepository->findByOrganizationAndAcademicYear($organization, $academicYear);
+            $groups = $wltGroupRepository->findByAcademicYear($academicYear);
         }
         $teachers = [];
         if (!$isManager && !$isDepartmentHead && $currentUserTeacher) {
@@ -455,8 +450,7 @@ class ContactController extends AbstractController
         Request                $request,
         UserExtensionService   $userExtensionService,
         Security               $security,
-        TeacherRepository      $teacherRepository,
-        GroupRepository        $wltGroupRepository,
+        WltGroupRepository     $wltGroupRepository,
         WltTeacherRepository   $wltTeacherRepository,
         AcademicYearRepository $academicYearRepository,
         ContactRepository      $contactRepository,
@@ -474,7 +468,6 @@ class ContactController extends AbstractController
         $teachers = $this->getAllowedTeachers(
             $security,
             $organization,
-            $teacherRepository,
             $academicYear,
             $wltGroupRepository,
             $wltTeacherRepository
@@ -522,8 +515,7 @@ class ContactController extends AbstractController
         Request                 $request,
         UserExtensionService    $userExtensionService,
         Security                $security,
-        TeacherRepository       $teacherRepository,
-        GroupRepository         $wltGroupRepository,
+        WltGroupRepository      $wltGroupRepository,
         WltTeacherRepository    $wltTeacherRepository,
         ProjectRepository       $projectRepository,
         ContactRepository       $contactRepository,
@@ -536,10 +528,10 @@ class ContactController extends AbstractController
         $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_ACCESS_VISIT, $organization);
 
         $academicYear = $teacher->getAcademicYear();
+        assert($academicYear instanceof AcademicYear);
         $teachers = $this->getAllowedTeachers(
             $security,
             $organization,
-            $teacherRepository,
             $academicYear,
             $wltGroupRepository,
             $wltTeacherRepository
@@ -605,7 +597,7 @@ class ContactController extends AbstractController
         ContactEducationalTutorReport $contactEducationalTutorReport
     ) {
         $teacher = $contactEducationalTutorReport->getTeacher();
-
+        assert($teacher instanceof Teacher);
         $contactStats = $contactRepository->getContactMethodStatsByTeacherWorkcenterProjectsAndMethods(
             $teacher,
             $contactEducationalTutorReport->getWorkcenter(),
@@ -643,9 +635,8 @@ class ContactController extends AbstractController
         Request                $request,
         UserExtensionService   $userExtensionService,
         Security               $security,
-        TeacherRepository      $teacherRepository,
-        GroupRepository        $wltGroupRepository,
-        TeacherRepository      $wltTeacherRepository,
+        WltGroupRepository     $wltGroupRepository,
+        WltTeacherRepository   $wltTeacherRepository,
         AcademicYearRepository $academicYearRepository,
         ContactRepository      $contactRepository,
         TranslatorInterface    $translator,
@@ -662,7 +653,6 @@ class ContactController extends AbstractController
         $teachers = $this->getAllowedTeachers(
             $security,
             $organization,
-            $teacherRepository,
             $academicYear,
             $wltGroupRepository,
             $wltTeacherRepository
@@ -712,9 +702,8 @@ class ContactController extends AbstractController
         Request                 $request,
         UserExtensionService    $userExtensionService,
         Security                $security,
-        TeacherRepository       $teacherRepository,
-        GroupRepository         $wltGroupRepository,
-        TeacherRepository       $wltTeacherRepository,
+        WltGroupRepository      $wltGroupRepository,
+        WltTeacherRepository    $wltTeacherRepository,
         ProjectRepository       $projectRepository,
         ContactRepository       $contactRepository,
         ContactMethodRepository $contactMethodRepository,
@@ -729,7 +718,6 @@ class ContactController extends AbstractController
         $teachers = $this->getAllowedTeachers(
             $security,
             $organization,
-            $teacherRepository,
             $academicYear,
             $wltGroupRepository,
             $wltTeacherRepository

@@ -7,10 +7,10 @@ form.workcenter.all: Todos los centros de trabajo
 form.method: Tipo de contacto
 form.methods: Tipos de contacto a incluir
 form.method.on-site: Presencial
-form.projects: Proyectos asociados
-form.projects.to_report: Proyectos a incluir (sin marcas = todo)
-form.projects.none: No hay proyectos asociados al centro de trabajo
-form.projects.not_specified: Contactos no asociados a un proyecto
+form.training_programs: Programas formativos
+form.training_programs.to_report: Programas formativos a incluir (sin marcas = todo)
+form.training_programs.none: No hay programas formativos asociados al centro de trabajo
+form.training_programs.not_specified: Contactos no asociados a un programa formativo
 form.student_enrollments: Estudiantes relacionados
 form.student_enrollments.none: Ninguno disponible
 form.detail: Observaciones
@@ -53,7 +53,7 @@ table.filter: Filtrar...
 header.datetime: Fecha y hora
 header.teacher: Docente
 header.workcenter: Centro de trabajo
-header.projects: Proyectos
+header.training_programs: Planes de formación
 header.student_enrollments: Estudiantes relacionados
 header.method: Tipo
 header.on_site_count: Visitas presenciales

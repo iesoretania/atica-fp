@@ -65,9 +65,6 @@ class TeacherRepository extends EduTeacherRepository
      */
     public function findByGroupsOrEducationalTutor($groups, AcademicYear $academicYear)
     {
-        /**
-         * @var Collection<int, Teacher>
-         */
         $teachers = $this->createQueryBuilder('t')
             ->distinct()
             ->join('t.teachings', 'te')

@@ -117,7 +117,7 @@ class ContactMethodController extends AbstractController
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
         $q = $request->get('q');
-        $queryBuilder = $contactMethodRepository->getFilteredAndByAcademicYear($academicYear, $q);
+        $queryBuilder = $contactMethodRepository->createFilteredAndByAcademicYearQueryBuilder($academicYear, $q);
 
         $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);

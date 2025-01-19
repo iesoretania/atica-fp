@@ -38,6 +38,8 @@ class OrganizationVoter extends CachedVoter
     public const ITP_ACCESS_SECTION = 'ORGANIZATION_ACCESS_IN_COMPANY_TRAINING_PHASE';
     public const ITP_MANAGER = 'ORGANIZATION_MANAGE_IN_COMPANY_TRAINING_PHASE';
     public const ITP_VIEW_GRADES = 'ORGANIZATION_VIEW_IN_COMPANY_TRAINING_PHASE_EVALUATION';
+    public const ITP_ACCESS_VISIT = 'WLT_ORGANIZATION_ACCESS_VISIT';
+    public const ITP_CREATE_VISIT = 'WLT_ORGANIZATION_CREATE_VISIT';
 
     public function __construct(
         CacheItemPoolInterface                          $cacheItemPoolItemPool,
@@ -61,7 +63,9 @@ class OrganizationVoter extends CachedVoter
         return in_array($attribute, [
             self::ITP_ACCESS_SECTION,
             self::ITP_MANAGER,
-            self::ITP_VIEW_GRADES
+            self::ITP_VIEW_GRADES,
+            self::ITP_ACCESS_VISIT,
+            self::ITP_CREATE_VISIT
         ], true);
     }
 
@@ -115,6 +119,10 @@ class OrganizationVoter extends CachedVoter
         $isStudentProgramWorkcenterWorkTutor = count($this->studentProgramWorkcenterRepository->findByWorkTutorOrAdditionalWorkTutorAndAcademicYear($user, $subject->getCurrentAcademicYear())) > 0;
 
         switch ($attribute) {
+            case self::ITP_ACCESS_VISIT:
+            case self::ITP_CREATE_VISIT:
+                // profesorado responsable de seguimiento, siempre
+                return $isStudentProgramWorkcenterEducationalTutor || $isItpManager || $isDepartmentHead;
             case self::ITP_MANAGER:
                 // Si es jefe de algún departamento, permitir gestionar
                 return $isDepartmentHead || $isItpManager;

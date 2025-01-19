@@ -4,7 +4,6 @@ namespace App\Entity\ItpModule;
 
 use App\Entity\Edu\PerformanceScale;
 use App\Entity\Edu\ReportTemplate;
-use App\Entity\Edu\Training;
 use App\Entity\Survey;
 use App\Repository\ItpModule\TrainingProgramRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -88,6 +87,11 @@ class TrainingProgram
     {
         $this->specificTrainings = new ArrayCollection();
         $this->trainingProgramGrades = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName();
     }
 
     public function getId(): ?int

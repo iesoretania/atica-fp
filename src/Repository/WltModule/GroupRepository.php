@@ -78,7 +78,7 @@ class GroupRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function countAcademicYearAndWLTTeacherPerson(AcademicYear $academicYear, Person $person)
+    public function countAcademicYearAndWltTeacherPerson(AcademicYear $academicYear, Person $person)
     {
         return $this->findByAcademicYearAndWLTTeacherPersonQueryBuilder($academicYear, $person)
             ->select('COUNT(DISTINCT g)')
@@ -216,5 +216,22 @@ class GroupRepository extends ServiceEntityRepository
                 $groups->add($group);
             }
         }
+    }
+
+    public function findByAcademicYear(AcademicYear $academicYear): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('g')
+            ->distinct(true)
+            ->from(Group::class, 'g')
+            ->join(Project::class, 'p', 'WITH', 'g MEMBER OF p.groups')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 'tr')
+            ->join('tr.academicYear', 'ay')
+            ->where('tr.academicYear = :academic_year')
+            ->setParameter('academic_year', $academicYear)
+            ->addOrderBy('g.name')
+            ->getQuery()
+            ->getResult();
     }
 }

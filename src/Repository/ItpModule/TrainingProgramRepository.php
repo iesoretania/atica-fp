@@ -6,6 +6,7 @@ use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\Person;
+use App\Entity\Workcenter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -98,5 +99,26 @@ class TrainingProgramRepository extends ServiceEntityRepository
     public function persist(TrainingProgram $trainingProgram): void
     {
         $this->getEntityManager()->persist($trainingProgram);
+    }
+
+    public function findByAcademicYearAndWorkcenter(AcademicYear $academicYear, Workcenter $workcenter): array
+    {
+        return $this->createQueryBuilder('tp')
+            ->distinct()
+            ->addSelect('pg', 'pgg', 'gr', 'tr')
+            ->join('tp.trainingProgramGrades', 'pg')
+            ->join('pg.trainingProgramGroups', 'pgg')
+            ->join('pg.grade', 'gr')
+            ->join('gr.training', 'tr')
+            ->join('pgg.studentPrograms', 'sp')
+            ->join('sp.studentProgramWorkcenters', 'spw')
+            ->join('spw.workcenter', 'w')
+            ->where('tr.academicYear = :academic_year')
+            ->andWhere('w = :workcenter')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('workcenter', $workcenter)
+            ->orderBy('tp.name')
+            ->getQuery()
+            ->getResult();
     }
 }

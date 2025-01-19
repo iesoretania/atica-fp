@@ -18,7 +18,10 @@
 
 namespace App\Repository\ItpModule;
 
+use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\StudentEnrollment;
 use App\Entity\ItpModule\ProgramGroup;
+use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\TrainingProgram;
 use App\Repository\Edu\TeacherRepository as EduTeacherRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -39,5 +42,40 @@ class TeacherRepository extends EduTeacherRepository
             ->setParameter('trainingProgram', $trainingProgram)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findByGroupsOrEducationalTutor(array $groups, AcademicYear $academicYear): array
+    {
+        $teachers = $this->createQueryBuilder('t')
+            ->distinct()
+            ->join('t.teachings', 'te')
+            ->andWhere('te.group IN (:groups)')
+            ->setParameter('groups', $groups)
+            ->getQuery()
+            ->getResult();
+
+        $educationalTutors = $this->createQueryBuilder('t')
+            ->distinct()
+            ->join(
+                StudentProgramWorkcenter::class,
+                'spw',
+                'WITH',
+                'spw.educationalTutor = t OR spw.additionalEducationalTutor = t'
+            )
+            ->join(StudentEnrollment::class, 'se')
+            ->andWhere('se.group IN (:groups)')
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('groups', $groups)
+            ->setParameter('academic_year', $academicYear)
+            ->getQuery()
+            ->getResult();
+
+        foreach ($educationalTutors as $educationalTutor) {
+            if (!in_array($educationalTutor, $teachers)) {
+                array_unshift($teachers, $educationalTutor);
+            }
+        }
+
+        return $teachers;
     }
 }
