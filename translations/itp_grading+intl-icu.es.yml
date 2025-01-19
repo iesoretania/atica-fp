@@ -45,6 +45,11 @@ header.activities: Actividades
 header.learning_outcomes: RAs
 header.criteria: CEs
 
+prompt.tracking_info: |
+    Solamente se podrán valorar las actividades que el estudiante haya marcado como realizadas en alguna jornada de la estancia. Si no se ha marcado ninguna jornada, no se podrá valorar ninguna actividad.
+    Una vez valorada una actividad, el estudiante no podrá marcarla como realizada en otras jornadas.
+    Existe la posibilidad de comentar una actividad o bien deshabilitarla para que el estudiante no pueda seleccionarla haciendo clic en el lápiz.
+
 prompt.delete_confirm: |
   ¿Está seguro de que desea eliminar el comentario?
 

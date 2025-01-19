@@ -4,6 +4,13 @@
 {% import 'macros.html.twig' as m %}
 {% block content %}
     <h3>{{ student_program_workcenter }} {{ student_program_workcenter.startDate ? ' - ' ~ student_program_workcenter.startDate|date('format.date'|trans({}, 'general')) }} {{ student_program_workcenter.endDate ? ' - ' ~ student_program_workcenter.endDate|date('format.date'|trans({}, 'general')) }}</h3>
+    <div class="alert alert-light pb-0 pl-0">
+        <ul>
+            {% for line in 'prompt.tracking_info'|trans|split('\n') %}
+                {% if line is not empty %}<li>{{ line }}</li>{% endif %}
+            {% endfor %}
+        </ul>
+    </div>
     {% if grades %}
     <table class="table table-sm table-bordered table-striped table-hover agreement-grading">
         <thead>
