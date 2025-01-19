@@ -77,7 +77,7 @@ class TrackingCalendarController extends AbstractController
         $selectable = $this->isGranted(StudentProgramWorkcenterVoter::LOCK, $studentProgramWorkcenter) ||
             $this->isGranted(StudentProgramWorkcenterVoter::ATTENDANCE, $studentProgramWorkcenter);
 
-        return $this->render('itp/training_program/tracking/calendar.html.twig', [
+        return $this->render('itp/tracking/calendar.html.twig', [
             'menu_path' => 'in_company_training_phase_tracking_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
@@ -186,7 +186,7 @@ class TrackingCalendarController extends AbstractController
             ['fixed' => $title]
         ];
 
-        return $this->render('itp/training_program/tracking/calendar_form.html.twig', [
+        return $this->render('itp/tracking/calendar_form.html.twig', [
             'menu_path' => 'in_company_training_phase_tracking_list',
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
@@ -294,7 +294,7 @@ class TrackingCalendarController extends AbstractController
             ['fixed' => $title]
         ];
 
-        return $this->render('itp/training_program/tracking/calendar_attendance.html.twig', [
+        return $this->render('itp/tracking/calendar_attendance.html.twig', [
             'menu_path' => 'in_company_training_phase_tracking_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,

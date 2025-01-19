@@ -81,7 +81,7 @@ class TrackingController extends AbstractController
 
         $title = $translator->trans('title.list', [], 'itp_tracking');
 
-        return $this->render('itp/training_program/tracking/list.html.twig', [
+        return $this->render('itp/tracking/list.html.twig', [
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
