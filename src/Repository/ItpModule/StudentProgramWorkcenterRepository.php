@@ -257,12 +257,13 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         return $qb;
     }
 
-    public function findByStudentAndAcademicYear(Person $user, ?AcademicYear $academicYear): array
+    public function countByStudentAndAcademicYear(Person $user, ?AcademicYear $academicYear): int
     {
         if (!$academicYear instanceof AcademicYear) {
-            return [];
+            return 0;
         }
         return $this->createQueryBuilder('spw')
+            ->select('COUNT(spw)')
             ->join('spw.studentProgram', 'sp')
             ->join('sp.studentEnrollment', 'se')
             ->join('se.group', 'g')
@@ -273,7 +274,7 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
             ->setParameter('person', $user)
             ->setParameter('academicYear', $academicYear)
             ->getQuery()
-            ->getResult();
+            ->getSingleScalarResult();
     }
 
     public function findByEducationalTutorOrAdditionalEducationalTutor(Teacher $teacher): array

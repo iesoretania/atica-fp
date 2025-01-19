@@ -110,4 +110,17 @@ class StudentProgramWorkcenterActivityRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function findByStudentProgramWorkcenter(StudentProgramWorkcenter $studentProgramWorkcenter): array
+    {
+        return $this->createQueryBuilder('spa')
+            ->addSelect('a', 'sv', 'c')
+            ->join('spa.activity', 'a')
+            ->leftJoin('spa.scaleValue', 'sv')
+            ->leftJoin('spa.comments', 'c')
+            ->where('spa.studentProgramWorkcenter = :studentProgramWorkcenter')
+            ->setParameter('studentProgramWorkcenter', $studentProgramWorkcenter)
+            ->getQuery()
+            ->getResult();
+    }
 }

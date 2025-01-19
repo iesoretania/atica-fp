@@ -117,7 +117,7 @@ class StudentProgramWorkcenterVoter extends CachedVoter
         }
 
         $teacher = $this->teacherRepository->findOneByPersonAndAcademicYear($user, $academicYear);
-        $isItpStudent = count($this->studentProgramWorkcenterRepository->findByStudentAndAcademicYear($user, $academicYear)) > 0;
+        $isItpStudent = $this->studentProgramWorkcenterRepository->countByStudentAndAcademicYear($user, $academicYear) > 0;
         if ($teacher instanceof Teacher) {
             $isItpManager = count($this->programGroupRepository->findByManager($teacher)) > 0;
             $isGroupTutor = count($this->programGroupRepository->findByTutor($teacher)) > 0;

@@ -106,7 +106,7 @@ class OrganizationVoter extends CachedVoter
 
         $teacher = $this->teacherRepository->findOneByPersonAndAcademicYear($user, $subject->getCurrentAcademicYear());
         $isDepartmentHead = $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_DEPARTMENT_HEAD], $subject);
-        $isItpStudent = count($this->studentProgramWorkcenterRepository->findByStudentAndAcademicYear($user, $subject->getCurrentAcademicYear())) > 0;
+        $isItpStudent = $this->studentProgramWorkcenterRepository->countByStudentAndAcademicYear($user, $subject->getCurrentAcademicYear()) > 0;
         if ($teacher instanceof Teacher) {
             $isItpManager =  count($this->programGroupRepository->findByManager($teacher)) > 0;
             $isGroupTutor = count($this->programGroupRepository->findByTutor($teacher)) > 0;

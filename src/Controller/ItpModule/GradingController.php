@@ -30,6 +30,7 @@ use App\Form\Type\ItpModule\StudentProgramWorkcenterGradeType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\PerformanceScaleValueRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterActivityCommentRepository;
+use App\Repository\ItpModule\StudentProgramWorkcenterActivityRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\StudentProgramWorkcenterActivityCommentVoter;
@@ -103,17 +104,21 @@ class GradingController extends AbstractController
 
     #[Route(path: '/{studentProgramWorkcenter}', name: 'in_company_training_phase_tracking_grading_form', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET', 'POST'])]
     public function index(
-        Request                         $request,
-        TranslatorInterface             $translator,
-        PerformanceScaleValueRepository $performanceScaleValueRepository,
-        StudentProgramWorkcenterRepository $studentProgramWorkcenterRepository,
-        StudentProgramWorkcenter        $studentProgramWorkcenter
+        Request                                    $request,
+        TranslatorInterface                        $translator,
+        PerformanceScaleValueRepository            $performanceScaleValueRepository,
+        StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository,
+        StudentProgramWorkcenterRepository         $studentProgramWorkcenterRepository,
+        StudentProgramWorkcenter                   $studentProgramWorkcenter
     ): Response {
         $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::VIEW_GRADE, $studentProgramWorkcenter);
 
         $academicYear = $studentProgramWorkcenter
             ->getStudentProgram()?->getStudentEnrollment()?->getGroup()?->getGrade()?->getTraining()?->getAcademicYear();
         assert($academicYear instanceof AcademicYear);
+
+        // Pre-caching
+        $studentProgramWorkcenterActivityRepository->findByStudentProgramWorkcenter($studentProgramWorkcenter);
 
         $readOnly = !$this->isGranted(StudentProgramWorkcenterVoter::GRADE, $studentProgramWorkcenter);
 
