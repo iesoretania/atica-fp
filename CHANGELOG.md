@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-7.x.x (xxxx-xx-xx)
+7.2.0 (2025-01-20)
 ------------------
 * chore: Mejorada presentación de las actividades en la valoración del desempeño
 * feat: Implementación inicial del registro de contactos con empresas en FFE
