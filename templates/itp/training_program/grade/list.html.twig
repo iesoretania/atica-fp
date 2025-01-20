@@ -27,6 +27,7 @@
             {% set criteria_total = 0 %}
             {% set criteria_sum = 0 %}
             {% set activities_sum = 0 %}
+            {% set grade_hours_total = training_program.totalHours %}
             {% for item in pager %}
                 {% set program_grade = item.program_grade %}
                 {% set hours_total = hours_total + program_grade.trainingProgram.targetHours %}
@@ -48,9 +49,9 @@
                     </td>
                     <td>
                         {{ (program_grade.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
-                        {%- if program_grade.trainingProgram.targetHours -%}
-                            /{{ (program_grade.trainingProgram.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
-                            ({{ (program_grade.targetHours * 100 / program_grade.trainingProgram.targetHours)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
+                        {%- if grade_hours_total -%}
+                            /{{ (grade_hours_total / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
+                            ({{ (program_grade.targetHours * 100 / grade_hours_total)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
                         {% endif %}
                     </td>
                     <td>
@@ -91,9 +92,9 @@
                         <td colspan="2" class="text-right">{{ 'header.stats'|trans }}</td>
                         <td>
                             {{ (hours_sum / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
-                            {%- if hours_total -%}
-                                /{{ (hours_total / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
-                                ({{ (hours_sum * 100 / hours_total)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
+                            {%- if grade_hours_total -%}
+                                /{{ (grade_hours_total / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
+                                ({{ (hours_sum * 100 / grade_hours_total)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
                             {% endif %}
                         </td>
                         <td>{{ subjects_sum }}/{{ subjects_total }}</td>
