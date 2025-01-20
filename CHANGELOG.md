@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.x.x (xxxx-xx-xx)
+------------------
+* fix: Mostrar horas correcta al cumplimentar una jornada de FFE
+
 7.2.0 (2025-01-20)
 ------------------
 * chore: Mejorada presentación de las actividades en la valoración del desempeño

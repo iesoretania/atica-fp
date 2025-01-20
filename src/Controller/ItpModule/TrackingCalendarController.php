@@ -112,7 +112,7 @@ class TrackingCalendarController extends AbstractController
         assert($date instanceof \DateTimeInterface);
         $title = $translator->trans('dow' . ($date->format('N') - 1), [], 'calendar');
         $title .= ' - ' . $date->format($translator->trans('format.date', [], 'general'));
-        $title .= ' - ' . $translator->trans('caption.hours', ['count' => $workDay->getHours()], 'calendar');
+        $title .= ' - ' . $translator->trans('caption.hours', ['count' => $workDay->getHours() / 100], 'calendar');
 
         // precaching
         $activityRepository->findByStudentProgramWorkcenter($studentProgramWorkcenter);
@@ -399,8 +399,10 @@ class TrackingCalendarController extends AbstractController
             $mpdf->AddPage('L');
 
             // añadir fecha a la ficha
-            $first = reset($weekDays);
-            $last = end($weekDays);
+            // obtener primer elemento del array
+            $first = $weekDays[0];
+            // obtener último elemento del array
+            $last = $weekDays[count($weekDays) - 1];
 
             $firstDate = $first->getDate();
             $lastDate = $last->getDate();

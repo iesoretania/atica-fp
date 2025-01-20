@@ -50,8 +50,9 @@ class WorkDayTrackingType extends AbstractType
     ): void {
         $activities = [];
         foreach ($studentProgramWorkcenter->getActivities() as $studentWorkcenterActivity) {
-            $activities[] = $studentWorkcenterActivity->getActivity();
+            $activities[$studentWorkcenterActivity->getActivity()->getCode()] = $studentWorkcenterActivity->getActivity();
         }
+        ksort($activities);
 
         $locked = $workDay->isLocked();
         $absence = $workDay->getAbsence() !== WorkDay::ABSENCE_NONE;
