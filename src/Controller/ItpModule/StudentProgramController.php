@@ -68,16 +68,9 @@ class StudentProgramController extends AbstractController
         );
 
         $totalActivities = $programGradeRepository->countActivities($programGroup->getProgramGrade());
-        $workDaysStatsData = $programGroupRepository->getStudentEnrollmentWorkDaysStats($programGroup);
-        $activitiesStatsData = $programGroupRepository->getStudentEnrollmentActivitiesStats($programGroup);
-        $workDaysStats = [];
-        foreach ($workDaysStatsData as $workDayStatsDatum) {
-            $workDaysStats[$workDayStatsDatum['id']] = $workDayStatsDatum;
-        }
-        $activitiesStats = [];
-        foreach ($activitiesStatsData as $activityStatsDatum) {
-            $activitiesStats[$activityStatsDatum['id']] = $activityStatsDatum;
-        }
+        $workDaysStats = $programGroupRepository->getStudentEnrollmentWorkDaysStats($programGroup);
+        $activitiesStats = $programGroupRepository->getStudentEnrollmentActivitiesStats($programGroup);
+
         $adapter = new ArrayAdapter($studentProgramsStats);
         $pager = new Pagerfanta($adapter);
         try {

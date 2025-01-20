@@ -78,6 +78,27 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         return $qb;
     }
 
+    public function getActivityAndHoursStatsByStudentProgramAndFilter(StudentProgram $studentProgram, ?string $q): array
+    {
+        $qb = $this->createByStudentProgramQueryBuilder($studentProgram, $q)
+            ->addSelect('SUM(wd.hours) AS total_hours')
+            ->addSelect('SIZE(spw.activities) AS total_activities')
+            ->leftJoin('spw.workDays', 'wd')
+            ->groupBy('spw');
+
+        $data = $qb
+            ->getQuery()
+            ->getResult();
+
+        $return = [];
+
+        foreach ($data as $item) {
+            $return[$item[0]->getId()] = $item;
+        }
+
+        return $return;
+    }
+
     public function persist(StudentProgramWorkcenter $studentProgramWorkcenter): void
     {
         $this->getEntityManager()->persist($studentProgramWorkcenter);
@@ -425,5 +446,26 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
             $groups = [];
         }
         return $groups;
+    }
+
+    public function getStatsByProgramGradeAndFilter(ProgramGrade $programGrade, ?string $q): array
+    {
+        $qb = $this->createFindByProgramGradeAndFilterQueryBuilder($programGrade, $q)
+            ->addSelect('SUM(wd.hours) AS total_hours')
+            ->addSelect('SIZE(spw.activities) AS total_activities')
+            ->leftJoin('spw.workDays', 'wd')
+            ->groupBy('spw');
+
+        $data = $qb
+            ->getQuery()
+            ->getResult();
+
+        $return = [];
+
+        foreach ($data as $item) {
+            $return[$item[0]->getId()] = $item;
+        }
+
+        return $return;
     }
 }

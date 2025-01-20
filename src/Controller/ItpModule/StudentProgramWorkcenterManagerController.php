@@ -48,6 +48,7 @@ class StudentProgramWorkcenterManagerController extends AbstractController
         $q = $request->get('q');
 
         $qb = $studentProgramWorkcenterRepository->createFindByProgramGradeAndFilterQueryBuilder($programGrade, $q);
+        $stats = $studentProgramWorkcenterRepository->getStatsByProgramGradeAndFilter($programGrade, $q);
 
         $adapter = new QueryAdapter($qb);
         $pager = new Pagerfanta($adapter);
@@ -86,6 +87,7 @@ class StudentProgramWorkcenterManagerController extends AbstractController
             'q' => $q,
             'domain' => 'itp_student_program_workcenter',
             'program_grade' => $programGrade,
+            'stats' => $stats
         ]);
     }
 

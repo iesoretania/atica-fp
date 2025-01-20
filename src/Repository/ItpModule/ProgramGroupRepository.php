@@ -131,7 +131,7 @@ class ProgramGroupRepository extends ServiceEntityRepository
 
     public function getStudentEnrollmentWorkDaysStats(ProgramGroup $programGroup): array
     {
-        return $this->getEntityManager()->createQueryBuilder()
+        $data = $this->getEntityManager()->createQueryBuilder()
             ->from(StudentEnrollment::class, 'se')
             ->select('se.id', 'SUM(wd.hours) AS total_hours')
             ->addSelect('MIN(wd.date) AS min_start_date', 'MAX(wd.date) AS max_end_date')
@@ -146,11 +146,16 @@ class ProgramGroupRepository extends ServiceEntityRepository
             ->groupBy('se.id')
             ->getQuery()
             ->getResult();
+        $return = [];
+        foreach ($data as $item) {
+            $return[$item['id']] = $item;
+        }
+        return $return;
     }
 
     public function getStudentEnrollmentActivitiesStats(ProgramGroup $programGroup): array
     {
-        return $this->getEntityManager()->createQueryBuilder()
+        $data = $this->getEntityManager()->createQueryBuilder()
             ->from(StudentEnrollment::class, 'se')
             ->select('se.id', 'COUNT(DISTINCT ac) AS total_activities')
             ->addSelect('SUM(CASE WHEN a.scaleValue IS NOT NULL THEN 1 ELSE 0 END) AS graded_activities')
@@ -166,5 +171,10 @@ class ProgramGroupRepository extends ServiceEntityRepository
             ->groupBy('se.id')
             ->getQuery()
             ->getResult();
+        $return = [];
+        foreach ($data as $item) {
+            $return[$item['id']] = $item;
+        }
+        return $return;
     }
 }

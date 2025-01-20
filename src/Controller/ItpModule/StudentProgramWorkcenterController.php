@@ -65,6 +65,8 @@ class StudentProgramWorkcenterController extends AbstractController
             $q
         );
 
+        $stats = $studentProgramWorkcenterRepository->getActivityAndHoursStatsByStudentProgramAndFilter($studentProgram, $q);
+
         $adapter = new QueryAdapter($queryBuilder, true);
         $pager = new Pagerfanta($adapter);
         try {
@@ -104,7 +106,8 @@ class StudentProgramWorkcenterController extends AbstractController
             'pager' => $pager,
             'q' => $q,
             'domain' => 'itp_student_program',
-            'student_program' => $studentProgram
+            'student_program' => $studentProgram,
+            'stats' => $stats
         ]);
     }
 

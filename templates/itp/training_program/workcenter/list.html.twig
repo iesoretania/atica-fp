@@ -5,14 +5,12 @@
 {% block path_new %}{{ path('in_company_training_phase_student_program_workcenter_new', {'studentProgram': student_program.id}) }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-20"><label><input type="checkbox" id="select"> {{ 'header.workcenter'|trans }}</label></th>
-    <th class="w-25">{{ 'header.tutors'|trans }}</th>
+    <th class="w-30"><label><input type="checkbox" id="select"> {{ 'header.workcenter'|trans }}</label></th>
+    <th class="w-40">{{ 'header.tutors'|trans }}</th>
     <th class="w-10">{{ 'header.date_range'|trans }}</th>
-    <th class="w-10">{{ 'header.activities'|trans }}</th>
-    <th class="w-10">{{ 'header.learning_outcomes'|trans }}</th>
-    <th class="w-10">{{ 'header.criteria'|trans }}</th>
-    <th class="w-10">{{ 'header.hours'|trans }}</th>
-    <th class="w-5"></th>
+    <th class="w-5">{{ 'header.activities'|trans }}</th>
+    <th class="w-5">{{ 'header.hours'|trans }}</th>
+    <th class="w-10"></th>
 {% endblock %}
 
 {% block table_body %}
@@ -35,12 +33,10 @@
                         {% endif %}
                     </td>
                     <td>
+                        {{ stats[item.id].total_activities }}
                     </td>
                     <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
+                        {{ (stats[item.id].total_hours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
                     </td>
                     <td>
                         {{ m.link_button(path('in_company_training_phase_student_program_workcenter_calendar_list', {'studentProgramWorkcenter': item.id}), 'calendar', 'btn-info btn-sm btn-block', 'form.calendar'|trans) }}
