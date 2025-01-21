@@ -384,10 +384,10 @@ class SurveyController extends AbstractController
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(
-            [OrganizationVoter::WPT_EDUCATIONAL_TUTOR, OrganizationVoter::WPT_MANAGER],
-            $organization
-        );
+        if (!$this->isGranted(OrganizationVoter::WPT_EDUCATIONAL_TUTOR, $organization) &&
+            !$this->isGranted(OrganizationVoter::WPT_MANAGER, $organization)) {
+            throw $this->createAccessDeniedException();
+        }
 
         $title = $translator->trans('title.survey.educational_tutor.list', [], 'wpt_survey');
 

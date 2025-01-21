@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 7.x.x (xxxx-xx-xx)
 ------------------
 * fix: Mostrar horas correcta al cumplimentar una jornada de FFE
+* fix: Solucionado un problema de permisos al acceder a la encuesta de tutor docente de FCT
 
 7.2.0 (2025-01-20)
 ------------------
