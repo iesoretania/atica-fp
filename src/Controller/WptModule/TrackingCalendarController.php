@@ -157,6 +157,8 @@ class TrackingCalendarController extends AbstractController
         $trackedActivities = $trackedWorkDay->getTrackedActivities();
         $activities = clone $agreementEnrollment->getActivities();
 
+        $previousLockState = $trackedWorkDay->isLocked();
+
         foreach ($trackedActivities as $trackedActivity) {
             $trackedWorkDay->getTrackedActivities()->removeElement($trackedActivity->getActivity());
         }
@@ -186,6 +188,9 @@ class TrackingCalendarController extends AbstractController
                         }
                     }
                     $trackedActivities->clear();
+                    if ($previousLockState === false) {
+                        $trackedWorkDay->setLocked(true);
+                    }
                 } else {
                     foreach ($trackedActivities as $trackedActivity) {
                         if ($trackedActivity->getHours() === 0) {
@@ -210,7 +215,6 @@ class TrackingCalendarController extends AbstractController
             } catch (AccessDeniedException $e) {
                 throw $e;
             } catch (\Exception $e) {
-                throw $e;
                 $this->addFlash('error', $translator->trans('message.workday_save_error', [], 'calendar'));
             }
         }
@@ -310,7 +314,7 @@ class TrackingCalendarController extends AbstractController
 
         if ($request->get('confirm', '') === 'ok') {
             try {
-                $trackedWorkDayRepository->updateAttendance($trackedWorkDays, true);
+                $trackedWorkDayRepository->updateAttendance($trackedWorkDays, TrackedWorkDay::UNJUSTIFIED_ABSENCE);
                 $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.attendance_updated', [], 'calendar'));
             } catch (\Exception) {

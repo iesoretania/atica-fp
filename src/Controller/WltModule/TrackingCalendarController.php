@@ -125,6 +125,8 @@ class TrackingCalendarController extends AbstractController
         $previousWorkDay = $workDayRepository->findPrevious($workDay);
         $nextWorkDay = $workDayRepository->findNext($workDay);
 
+        $previousLockState = $workDay->isLocked();
+
         // precaching
         $activityRealizationRepository->findByAgreement($agreement);
 
@@ -163,6 +165,9 @@ class TrackingCalendarController extends AbstractController
                     }
                 } else {
                     $workDay->getActivityRealizations()->clear();
+                    if ($previousLockState === false) {
+                        $workDay->setLocked(true);
+                    }
                 }
                 $managerRegistry->getManager()->flush();
 
@@ -274,7 +279,7 @@ class TrackingCalendarController extends AbstractController
 
         if ($request->get('confirm', '') === 'ok') {
             try {
-                $workDayRepository->updateAttendance($workDays, true);
+                $workDayRepository->updateAttendance($workDays, WorkDay::UNJUSTIFIED_ABSENCE);
                 $managerRegistry->getManager()->flush();
                 $agreementRepository->updateDates($agreement);
                 $this->addFlash('success', $translator->trans('message.attendance_updated', [], 'calendar'));

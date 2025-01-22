@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * fix: Mostrar horas correcta al cumplimentar una jornada de FFE
 * fix: Solucionado un problema de permisos al acceder a la encuesta de tutor docente de FCT
+* feat: Marcar una jornada con una falta de asistencia bloquea automáticamente la jornada
 
 7.2.0 (2025-01-20)
 ------------------

@@ -329,6 +329,7 @@ class WorkDayRepository extends ServiceEntityRepository
         if ($value !== WorkDay::ABSENCE_NONE) {
             foreach ($list as $workDay) {
                 if (!$workDay->isLocked()) {
+                    $workDay->setLocked(true);
                     $workDay->getActivities()->clear();
                     $workDay->setOtherActivities(null);
                 }

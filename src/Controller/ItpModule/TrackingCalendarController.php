@@ -122,6 +122,7 @@ class TrackingCalendarController extends AbstractController
         $nextWorkDay = $workDayRepository->findNext($workDay);
 
         $oldActivities = clone $workDay->getActivities();
+        $previousLockStatus = $workDay->isLocked();
 
         $form = $this->createForm(WorkDayTrackingType::class, $workDay, [
             'work_day' => $workDay,
@@ -162,6 +163,9 @@ class TrackingCalendarController extends AbstractController
                         }
                     }
                 } else {
+                    if (!$previousLockStatus) {
+                        $workDay->setLocked(true);
+                    }
                     $workDay->getActivities()->clear();
                     $workDay->setOtherActivities(null);
                 }

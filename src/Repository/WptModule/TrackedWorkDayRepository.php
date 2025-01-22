@@ -112,14 +112,20 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
             }
         }
 
-        return $this->getEntityManager()->createQueryBuilder()
+        $qb = $this->getEntityManager()->createQueryBuilder()
             ->update(TrackedWorkDay::class, 'w')
             ->set('w.absence', ':value')
             ->where('w IN (:list)')
             ->andWhere('w.locked = :locked')
             ->setParameter('list', $list)
             ->setParameter('value', $value)
-            ->setParameter('locked', false)
+            ->setParameter('locked', false);
+
+        if ($value !== TrackedWorkDay::NO_ABSENCE) {
+            $qb->set('w.locked', true);
+        }
+
+        return $qb
             ->getQuery()
             ->execute();
     }

@@ -47,7 +47,7 @@ title.edit: Modificar plan de formación
 title.new: Nuevo plan de formación
 title.delete: Eliminar plan de formación
 
-title.list: Fase de Formación en Empresa
+title.list: Planes de formación
 title.detail: Plan de formación inicial
 
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
