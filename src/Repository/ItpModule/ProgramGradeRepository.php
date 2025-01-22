@@ -194,7 +194,6 @@ class ProgramGradeRepository extends ServiceEntityRepository
         $this->activityRepository->deleteFromProgramGradeList($items);
         $this->companyProgramRepository->deleteFromProgramGradeList($items);
         $this->programGroupRepository->deleteFromProgramGradeList($items);
-
         $this->createQueryBuilder('pg')
             ->delete()
             ->where('pg IN (:items)')
@@ -211,5 +210,18 @@ class ProgramGradeRepository extends ServiceEntityRepository
             ->setParameter('program_grade', $getProgramGrade)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function deleteFromGradeListAndTrainingProgram(array $deletedGrades, TrainingProgram $trainingProgram): void
+    {
+        $programGrades = $this->createQueryBuilder('pg')
+            ->where('pg.trainingProgram = :trainingProgram')
+            ->andWhere('pg.grade IN (:grades)')
+            ->setParameter('trainingProgram', $trainingProgram)
+            ->setParameter('grades', $deletedGrades)
+            ->getQuery()
+            ->getResult();
+
+        $this->deleteFromList($programGrades);
     }
 }
