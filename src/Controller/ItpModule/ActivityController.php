@@ -21,6 +21,7 @@ namespace App\Controller\ItpModule;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Grade;
 use App\Entity\Edu\LearningOutcome;
+use App\Entity\Edu\ReportTemplate;
 use App\Entity\Edu\Training;
 use App\Entity\ItpModule\Activity;
 use App\Entity\ItpModule\ProgramGrade;
@@ -31,6 +32,7 @@ use App\Repository\ItpModule\ActivityRepository;
 use App\Security\ItpModule\ActivityVoter;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
+use Mpdf\Output\Destination;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -39,6 +41,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use TFox\MpdfPortBundle\Service\MpdfService;
+use Twig\Environment;
 
 #[Route(path: '/formacion/plan/actividad')]
 class ActivityController extends AbstractController
@@ -253,5 +257,72 @@ class ActivityController extends AbstractController
             'title' => $title,
             'items' => $selectedItems
         ]);
+    }
+
+
+    #[Route(path: '/descargar/{programGrade}', name: 'in_company_training_phase_activity_report', requirements: ['programGrade' => '\d+'], methods: ['GET'])]
+    public function downloadTeachingProgramReport(
+        TranslatorInterface $translator,
+        ActivityRepository $activityRepository,
+        Environment $twig,
+        ProgramGrade $programGrade
+    ): Response {
+        assert($programGrade->getGrade() instanceof Grade);
+        assert($programGrade->getGrade()->getTraining() instanceof Training);
+        $academicYear = $programGrade->getGrade()->getTraining()->getAcademicYear();
+        assert($academicYear instanceof AcademicYear);
+        $organization = $academicYear->getOrganization();
+
+        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);
+        $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
+
+        $activities = $activityRepository->getStatsByProgramGrade($programGrade);
+        $title = $translator->trans('title.training_program', [], 'itp_activity')
+            . ' - ' . $programGrade->getTrainingProgram()?->__toString() . ' - '
+            . $programGrade->getGrade()->__toString();
+
+        $mpdfService = new MpdfService();
+        $mpdfService->setAddDefaultConstructorArgs(false);
+        ini_set("pcre.backtrack_limit", "5000000");
+
+        $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4-L']]);
+        assert($mpdf instanceof \Mpdf\Mpdf);
+        $tmp = '';
+
+        try {
+            $template = $programGrade->getGrade()
+                ->getTraining()->getAcademicYear()->getDefaultLandscapeTemplate();
+
+            if ($template instanceof ReportTemplate) {
+                $tmp = tempnam('.', 'tpl');
+                file_put_contents($tmp, $template->getData());
+                $mpdf->SetDocTemplate($tmp, true);
+            }
+
+            $mpdf->SetFont('DejaVuSansCondensed');
+            $mpdf->SetFontSize(9);
+
+            $mpdf->WriteHTML($twig->render('itp/training_program/activity/training_program_report.html.twig', [
+                'program_grade' => $programGrade,
+                'activities' => $activities,
+                'title' => $title
+            ]));
+
+            $fileName = $title . '.pdf';
+
+            $mpdf->SetTitle($title);
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->setContent($mpdf->Output($fileName, Destination::STRING_RETURN));
+
+            $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+            return $response;
+        } finally {
+            if ($tmp) {
+                unlink($tmp);
+            }
+        }
     }
 }

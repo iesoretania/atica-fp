@@ -71,5 +71,6 @@
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
     {{ m.link_button(path('in_company_training_phase_activity_import_form', {'programGrade': program_grade.id}), 'download', 'btn-warning', 'form.import'|trans) }}
+    {{ m.link_button(path('in_company_training_phase_activity_report', {'programGrade': program_grade.id}), 'file-lines', 'btn-info', 'form.generate'|trans) }}
     </form>
 {% endblock %}

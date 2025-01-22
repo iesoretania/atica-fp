@@ -155,4 +155,41 @@ class ActivityRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getStatsByProgramGrade(ProgramGrade $programGrade): array
+    {
+        $data = $this->createQueryBuilder('a')
+            ->select('a, lo, c')
+            ->join('a.criteria', 'c')
+            ->join('c.learningOutcome', 'lo')
+            ->where('a.programGrade = :programGrade')
+            ->setParameter('programGrade', $programGrade)
+            ->orderBy('a.code', 'ASC')
+            ->addOrderBy('lo.code', 'ASC')
+            ->addOrderBy('c.code', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $return = [];
+        foreach ($data as $datum) {
+            $return[$datum->getCode()] = [
+                'activity' => $datum,
+                'learning_outcomes' => [],
+                'total' => 0
+            ];
+            foreach ($datum->getCriteria() as $criterion) {
+                if (!isset($return[$datum->getCode()]['learning_outcomes'][$criterion->getLearningOutcome()->getCode()])) {
+                    $return[$datum->getCode()]['learning_outcomes'][$criterion->getLearningOutcome()->getCode()] = [
+                        'learning_outcome' => $criterion->getLearningOutcome(),
+                        'criteria' => [],
+                        'total' => 0
+                    ];
+                }
+                $return[$datum->getCode()]['learning_outcomes'][$criterion->getLearningOutcome()->getCode()]['criteria'][$criterion->getCode() . $criterion->getId()] = $criterion;
+                $return[$datum->getCode()]['learning_outcomes'][$criterion->getLearningOutcome()->getCode()]['total']++;
+                $return[$datum->getCode()]['total']++;
+            }
+        }
+        return $return;
+    }
 }

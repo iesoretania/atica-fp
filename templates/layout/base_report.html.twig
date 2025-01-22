@@ -1,0 +1,76 @@
+<html>
+<head>
+    <title>{% block title %}{% endblock%}</title>
+    {% block style %}
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        table {
+            font-family: dejavusanscondensed, sans-serif;
+            border-style: solid;
+            border-width: 1px;
+            border-collapse: collapse;
+        }
+
+        table td {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        table th {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        table.data {
+            width: 100%;
+        }
+
+        table.data td {
+            padding: 0.3em;
+        }
+
+        table.data td.info {
+            font-family: dejavusanscondensed, sans-serif;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        table.survey {
+            margin-top: 1em;
+            width: 100%;
+        }
+
+        table.survey td {
+            padding: 0.3em;
+        }
+
+        table.survey th {
+            background-color: #cccccc;
+            padding: 0.3em;
+        }
+
+        table.survey {
+            font-size: 80%;
+        }
+
+        table.survey tfoot th {
+            font-size: 120%;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+    </style>
+    {% endblock style %}
+</head>
+<body>
+    {% block body %}{% endblock %}
+</body>
+</html>

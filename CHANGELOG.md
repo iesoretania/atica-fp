@@ -10,6 +10,7 @@ en las distintas versiones de la misma.
 * fix: Solucionado un problema de permisos al acceder a la encuesta de tutor docente de FCT
 * feat: Marcar una jornada con una falta de asistencia bloquea automáticamente la jornada
 * fix: Eliminar correctamente los niveles cuando se quitan de un plan de formación inicial
+* feat: Generación de informe con el plan de formación inicial en la FFE
 
 7.2.0 (2025-01-20)
 ------------------

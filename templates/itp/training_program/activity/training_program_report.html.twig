@@ -1,0 +1,86 @@
+{% trans_default_domain 'itp_activity' %}
+{% extends 'layout/base_report.html.twig' %}
+
+{% block title %}{{ 'title.training_program'|trans }} - {{ program_grade.trainingProgram.name }} - {{ program_grade.grade }}{% endblock %}
+
+{% block style %}
+    {{ parent() }}
+    <style>
+        @page {
+            margin-top: 2.65cm;
+            margin-left: 4.1cm;
+            margin-right: 3.55cm;
+            margin-bottom: 1cm;
+            odd-header-name: html_header;
+            even-header-name: html_header;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <htmlpageheader name="header">
+        <div style="padding-top: 0.2cm; margin-left: 0.1cm; font-size: 13px">
+            <div style="float: right; text-align: right; width: 8cm;">{{ 'report.council'|trans }}</div>
+            <br />
+            <div style="float: right; text-align: right; width: 5cm;">
+                {{ 'report.page'|trans({'page': '{PAGENO}', 'total': '{nbpg}'}) }}
+            </div>
+            {{ 'report.title'|trans }}
+        </div>
+    </htmlpageheader>
+
+    <table style="border: 1px solid; border-spacing: 0; width: 100%; vertical-align: top; margin-bottom: 0.1cm">
+        <tr>
+            <td colspan="2" style="border: 1px solid; padding: 0.1cm">
+                <b>{{ 'report.academic_year'|trans }}:</b> {{ program_grade.grade.training.academicYear }} - {{ program_grade.grade.training.academicYear.organization }}<br />
+                <b>{{ 'report.department'|trans }}:</b> {{ program_grade.grade.training.department }}<br />
+                <b>{{ 'report.training'|trans }}:</b> {{ program_grade.grade.training }}<br />
+                <b>{{ 'report.grade'|trans }}:</b> {{ program_grade.grade }}
+            </td>
+        </tr>
+    </table>
+    <table style="border: 1px solid; border-spacing: 0; width: 99.92%; vertical-align: top">
+        <thead>
+        <tr style="background-color: lightgray">
+            <th style="width: 30%; border: 1px solid; padding: 0.1cm">
+                {{ 'report.activity'|trans }}
+            </th>
+            <th style="width: 30%; border: 1px solid; padding: 0.1cm">
+                {{ 'report.learning_outcome'|trans }}
+            </th>
+            <th style="width: 40%; border: 1px solid; padding: 0.1cm">
+                {{ 'report.criterium'|trans }}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in activities %}
+            {% set activity = item.activity %}
+            <tr>
+            <td style="border: 1px solid; padding: 0.1cm" rowspan="{{ item.total }}">
+                <b>{{ activity.code }}: </b>{{ activity.name }}
+                {% if activity.description %}{{ activity.description | nl2br }}{% endif %}
+            </td>
+            {% for learning_outcome_item in item.learning_outcomes %}
+                {% set learning_outcome = learning_outcome_item.learning_outcome %}
+                {% if not loop.first %}
+                    <tr>
+                {% endif %}
+                <td style="border: 1px solid; padding: 0.1cm" rowspan="{{ learning_outcome_item.total }}">
+                    <b>{{ learning_outcome.code }}: </b>{{ learning_outcome.description|nl2br }}
+                </td>
+                {% for criterion in learning_outcome_item.criteria %}
+                    {% if not loop.first %}
+                        <tr>
+                    {% endif %}
+                    <td style="border: 1px solid; padding: 0.1cm">
+                        <b>{{ criterion.code }}: </b>{{ criterion.name|nl2br }}
+                    </td>
+                {% endfor %}
+                </tr>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
