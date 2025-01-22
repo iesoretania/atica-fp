@@ -14,7 +14,7 @@ Este proyecto está desarrollado en PHP utilizando [Symfony] 6.4 y otros muchos 
 - Servidor web Apache2 (podría funcionar con nginx, pero no se ha probado aún).
 - Servidor de base de datos MySQL 8.0.28 o superior, o bien algún derivado equivalente (como MariaDB 11, Percona, etc).
 - PHP [Composer].
-- [Node.js] ≥ 20.
+- [Node.js] ≥ 18 y ≤ 20.
 
 ## Prueba rápida mediante Docker Compose
 
