@@ -184,12 +184,16 @@ class ActivityRepository extends ServiceEntityRepository
                         'criteria' => [],
                         'total' => 0
                     ];
+                    ksort($return[$datum->getCode()]['learning_outcomes'][$criterion->getLearningOutcome()->getCode()], SORT_NATURAL);
                 }
                 $return[$datum->getCode()]['learning_outcomes'][$criterion->getLearningOutcome()->getCode()]['criteria'][$criterion->getCode() . $criterion->getId()] = $criterion;
                 $return[$datum->getCode()]['learning_outcomes'][$criterion->getLearningOutcome()->getCode()]['total']++;
                 $return[$datum->getCode()]['total']++;
+
+                ksort($return[$datum->getCode()]['learning_outcomes'][$criterion->getLearningOutcome()->getCode()]['criteria'], SORT_NATURAL);
             }
         }
+        ksort($return, SORT_NATURAL);
         return $return;
     }
 }

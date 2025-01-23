@@ -104,7 +104,7 @@ class ActivityRepository extends ServiceEntityRepository
                 $result[$code]['data'][$activity->getCode()]['length']++;
             }
         }
-        ksort($result);
+        ksort($result, SORT_NATURAL);
         return $result;
     }
 

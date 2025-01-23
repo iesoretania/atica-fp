@@ -290,7 +290,7 @@ class Agreement implements \Stringable
             assert($activityRealization instanceof ActivityRealization);
             $items[$activityRealization->getActivity()->getCode() . '~' . $activityRealization->getCode()] = $activityRealization;
         }
-        ksort($items);
+        ksort($items, SORT_NATURAL);
         foreach ($items as $activityRealization) {
             $result->add($activityRealization);
         }
