@@ -6,6 +6,10 @@
 {% block style %}
     {{ parent() }}
     <style>
+        body {
+            font-size: 10px;
+        }
+
         @page {
             margin-top: 2.65cm;
             margin-left: 4.1cm;
@@ -29,7 +33,7 @@
         </div>
     </htmlpageheader>
 
-    <table style="border: 1px solid; border-spacing: 0; width: 100%; vertical-align: top; margin-bottom: 0.1cm">
+    <table style="border: 1px solid; border-spacing: 0; width: 100%; vertical-align: top; margin-bottom: 0.1cm; font-size: 12px">
         <tr>
             <td colspan="2" style="border: 1px solid; padding: 0.1cm">
                 <b>{{ 'report.academic_year'|trans }}:</b> {{ program_grade.grade.training.academicYear }} - {{ program_grade.grade.training.academicYear.organization }}<br />
