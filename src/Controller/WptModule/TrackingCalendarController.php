@@ -214,7 +214,7 @@ class TrackingCalendarController extends AbstractController
                 ]);
             } catch (AccessDeniedException $e) {
                 throw $e;
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.workday_save_error', [], 'calendar'));
             }
         }

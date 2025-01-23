@@ -350,7 +350,7 @@ class AgreementController extends AbstractController
 
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.deleted', [], 'wpt_agreement'));
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->addFlash('error', $translator->trans('message.delete_error', [], 'wpt_agreement'));
             }
             return $this->redirectToRoute(
