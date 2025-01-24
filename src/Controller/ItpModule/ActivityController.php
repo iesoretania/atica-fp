@@ -32,6 +32,7 @@ use App\Repository\ItpModule\ActivityRepository;
 use App\Security\ItpModule\ActivityVoter;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
+use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
@@ -285,7 +286,7 @@ class ActivityController extends AbstractController
         ini_set("pcre.backtrack_limit", "5000000");
 
         $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4-L']]);
-        assert($mpdf instanceof \Mpdf\Mpdf);
+        assert($mpdf instanceof Mpdf);
         $tmp = '';
 
         try {

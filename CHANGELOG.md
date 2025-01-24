@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* fix: Mostrar el módulo profesional en el informe de plan de formación inicial
+
 7.2.1 (2025-01-22)
 ------------------
 * fix: Mostrar horas correcta al cumplimentar una jornada de FFE

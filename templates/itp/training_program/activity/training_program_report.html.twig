@@ -71,6 +71,7 @@
                     <tr>
                 {% endif %}
                 <td style="border: 1px solid; padding: 0.1cm" rowspan="{{ learning_outcome_item.total }}">
+                    <b>{{ learning_outcome.subject }}</b><br>
                     <b>{{ learning_outcome.code }}: </b>{{ learning_outcome.description|nl2br }}
                 </td>
                 {% for criterion in learning_outcome_item.criteria %}
