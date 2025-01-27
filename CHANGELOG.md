@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * fix: Mostrar el módulo profesional en el informe de plan de formación inicial
+* fix: Solucionado un problema de permisos al generar el informe semanal de seguimiento de la FFE
 
 7.2.1 (2025-01-22)
 ------------------

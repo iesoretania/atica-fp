@@ -210,11 +210,8 @@ class TrackingCalendarController extends AbstractController
         StudentProgramWorkcenter $studentProgramWorkcenter
     ): Response
     {
-        if (!$this->isGranted(StudentProgramWorkcenterVoter::LOCK, $studentProgramWorkcenter)
-            && !$this->isGranted(StudentProgramWorkcenterVoter::ATTENDANCE, $studentProgramWorkcenter)) {
-            throw $this->createAccessDeniedException();
-        }
         if ($request->get('week_report')) {
+            $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::ACCESS, $studentProgramWorkcenter);
             $year = floor($request->get('week_report') / 100);
             $week = $request->get('week_report') % 100;
             return $this->redirectToRoute(
@@ -223,7 +220,9 @@ class TrackingCalendarController extends AbstractController
             );
         }
 
+        // El resto de operaciones requieren permisos de bloqueo o asistencia
         if ($request->get('lock_week')) {
+            $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::LOCK, $studentProgramWorkcenter);
             $year = floor($request->get('lock_week') / 100);
             $week = $request->get('lock_week') % 100;
             $workDayRepository->updateWeekLock($year, $week, $studentProgramWorkcenter, true);
@@ -234,6 +233,7 @@ class TrackingCalendarController extends AbstractController
         }
 
         if ($request->get('unlock_week')) {
+            $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::LOCK, $studentProgramWorkcenter);
             $year = floor($request->get('unlock_week') / 100);
             $week = $request->get('unlock_week') % 100;
             $workDayRepository->updateWeekLock($year, $week, $studentProgramWorkcenter, false);
