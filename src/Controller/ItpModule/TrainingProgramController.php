@@ -184,7 +184,9 @@ class TrainingProgramController extends AbstractController
                         $programGroupRepository->persist($programGroup);
                     }
                 }
-                $programGradeRepository->deleteFromGradeListAndTrainingProgram($deletedGrades, $trainingProgram);
+                if ($trainingProgram->getId() !== null) {
+                    $programGradeRepository->deleteFromGradeListAndTrainingProgram($deletedGrades, $trainingProgram);
+                }
                 $programGradeRepository->flush();
                 $trainingProgramRepository->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'itp_training_program'));
