@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+7.2.2 (2025-01-28)
 ------------------
 * fix: Mostrar el módulo profesional en el informe de plan de formación inicial
 * fix: Solucionado un problema de permisos al generar el informe semanal de seguimiento de la FFE
