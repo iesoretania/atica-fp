@@ -23,11 +23,11 @@
 
         <!-- ###+ symfony/framework-bundle ### -->
         <env name="APP_ENV" value="dev"/>
-        <env name="APP_SECRET" value="2dfc7de8ac79596dfcee073aeb8a1878"/>
+        <env name="APP_SECRET" value="a7b0c4817b875c64b50497f3e636258a"/>
         <!-- ###- symfony/framework-bundle ### -->
 
         <!-- ###+ symfony/mailer ### -->
-        <!-- MAILER_DSN=null://null -->
+        <env name="MAILER_DSN" value="null://null"/>
         <!-- ###- symfony/mailer ### -->
 
         <!-- ###+ symfony/google-mailer ### -->

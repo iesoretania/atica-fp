@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.x.x (xxxx-xx-xx)
+------------------
+* chore: Actualizados componentes a la última versión
+
 7.2.2 (2025-01-28)
 ------------------
 * fix: Mostrar el módulo profesional en el informe de plan de formación inicial
