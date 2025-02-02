@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-7.x.x (xxxx-xx-xx)
+7.2.3 (2025-01-02)
 ------------------
 * chore: Actualizados componentes a la última versión
 * fix: Eliminada selección de la plantilla de informe del tutor en FFE
