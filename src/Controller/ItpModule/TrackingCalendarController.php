@@ -62,7 +62,7 @@ class TrackingCalendarController extends AbstractController
         $workDayToday = $workDayRepository->findOneByStudentProgramWorkcenterAndDate($studentProgramWorkcenter, $today);
         $workDayStats = $studentProgramWorkcenter->getWorkDays()->isEmpty()
             ? []
-            : $workDayRepository->hoursStatsByStudentProgram($studentProgramWorkcenter);
+            : $workDayRepository->getHoursStatsByStudentProgram($studentProgramWorkcenter);
 
         $activities = $studentProgramActivityRepository->findByStudentProgramWorkcenterOrderByCode($studentProgramWorkcenter);
         $submittedActivities = $studentProgramActivityRepository->findScaleValueSubmittedByStudentProgramWorkcenter($studentProgramWorkcenter);

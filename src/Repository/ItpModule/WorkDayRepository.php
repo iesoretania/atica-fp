@@ -234,7 +234,7 @@ class WorkDayRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    final public function hoursStatsByStudentProgram(StudentProgramWorkcenter $studentProgramWorkcenter): array
+    final public function getHoursStatsByStudentProgram(StudentProgramWorkcenter $studentProgramWorkcenter): array
     {
         try {
             return $this->createQueryBuilder('wd')

@@ -41,7 +41,7 @@ class StudentProgramWorkcenterActivityRepository extends ServiceEntityRepository
     final public function findScaleValueSubmittedByStudentProgramWorkcenter(StudentProgramWorkcenter $studentProgramWorkcenter): array
     {
         return $this->createFindByStudentProgramWorkcenterOrderByCodeQueryBuilder($studentProgramWorkcenter)
-            ->andWhere('spa.scaleValue IS NOT NULL')
+            ->join(WorkDay::class, 'wd', 'WITH', 'a MEMBER OF wd.activities AND wd.studentProgramWorkcenter = spa.studentProgramWorkcenter')
             ->getQuery()
             ->getResult();
     }
