@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 7.x.x (xxxx-xx-xx)
 ------------------
 * chore: Actualizados componentes a la última versión
+* fix: Eliminada selección de la plantilla de informe del tutor en FFE
 
 7.2.2 (2025-01-28)
 ------------------
