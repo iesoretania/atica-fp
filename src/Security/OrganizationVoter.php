@@ -24,6 +24,7 @@ use App\Entity\Role;
 use App\Repository\OrganizationRepository;
 use App\Repository\RoleRepository;
 use App\Security\Edu\OrganizationVoter as EduOrganizationVoter;
+use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\WltModule\OrganizationVoter as WltOrganizationVoter;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -110,8 +111,10 @@ class OrganizationVoter extends CachedVoter
                     return true;
                 }
 
-                // 2) Coordinador de FP dual
-                return $this->decisionManager->decide($token, [WltOrganizationVoter::WLT_MANAGER], $subject);
+                // 2) Coordinador de FP dual o de FFE
+                return
+                    $this->decisionManager->decide($token, [WltOrganizationVoter::WLT_MANAGER], $subject) ||
+                    $this->decisionManager->decide($token, [ItpOrganizationVoter::ITP_MANAGER], $subject);
 
             case self::ACCESS:
                 // Si es permiso de acceso, comprobar que pertenece actualmente a la organización
