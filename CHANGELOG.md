@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* chore: Ordenar de forma natural las actividades formativas en el plan de formación inicial
+
 7.2.4 (2025-02-05)
 ------------------
 * fix: Solucionado un problema que impedía crear planes de formación a las jefaturas de FP

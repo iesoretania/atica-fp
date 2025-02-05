@@ -34,7 +34,8 @@ class ActivityRepository extends ServiceEntityRepository
             ->leftJoin('a.criteria', 'c')
             ->leftJoin('c.learningOutcome', 'lo')
             ->setParameter('programGrade', $programGrade)
-            ->orderBy('a.code', 'ASC')
+            ->orderBy('LENGTH(a.code)', 'ASC')
+            ->addOrderBy('a.code', 'ASC')
             ->addOrderBy('lo.code', 'ASC')
             ->addOrderBy('c.code', 'ASC');
 
@@ -103,7 +104,8 @@ class ActivityRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->where('a IN (:activities)')
             ->setParameter('activities', $companyProgram->getProgramActivities())
-            ->orderBy('a.code', 'ASC')
+            ->orderBy('LENGTH(a.code)', 'ASC')
+            ->addOrderBy('a.code', 'ASC')
             ->addOrderBy('a.name', 'ASC')
             ->getQuery()
             ->getResult();

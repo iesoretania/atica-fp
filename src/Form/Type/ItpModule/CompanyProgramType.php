@@ -99,6 +99,7 @@ class CompanyProgramType extends AbstractType
                         return $er->createQueryBuilder('a')
                             ->join('a.programGrade', 'pg')
                             ->where('pg = :programGrade')
+                            ->addOrderBy('LENGTH(a.code)', 'ASC')
                             ->addOrderBy('a.code', 'ASC')
                             ->addOrderBy('a.name', 'ASC')
                             ->setParameter('programGrade', $data->getProgramGrade());
