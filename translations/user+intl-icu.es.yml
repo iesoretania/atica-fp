@@ -50,7 +50,7 @@ form.change_password: Guardar cambios y cambiar la contraseña
 
 message.saved: Datos personales actualizados con éxito.
 message.password_changed: Datos personales y contraseña actualizados con éxito.
-message.email_change.info: ¡Atención! Para que la nueva dirección de correo electrónico entre en vigor debe confirmarla mediante un mensaje que le acaba de ser enviado a '{email}'.
+message.email_change.info: ¡Atención! Para que la nueva dirección de correo electrónico entre en vigor debe confirmarla mediante un mensaje que le acaba de ser enviado a {email}.
 message.email_change.error: Ha ocurrido un error enviando la petición de confirmación de cambio de dirección de correo electrónico. Contacte con el administrador.
 message.error: No se han podido actualizar los datos personales.
 message.deleted: Los usuarios seleccionados han sido eliminados con éxito.
