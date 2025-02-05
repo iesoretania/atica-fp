@@ -8,6 +8,7 @@ x.x.x (xxxx-xx-xx)
 ------------------
 * fix: Solucionado un problema que impedía crear planes de formación a las jefaturas de FP
 * fix: Permitir a los tutores de grupo de FP dual buscar tutores duales de centro y las empresas
+* fix: Bloquear de forma efectiva las actividades formativas valoradas en la FFE
 
 7.2.3 (2025-01-02)
 ------------------

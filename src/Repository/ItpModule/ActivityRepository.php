@@ -115,7 +115,7 @@ class ActivityRepository extends ServiceEntityRepository
             ->distinct()
             ->join(StudentProgramWorkcenterActivity::class, 'spwa', 'WITH', 'spwa.activity = a')
             ->where('spwa.studentProgramWorkcenter = :studentProgramWorkcenter')
-            ->andWhere('spwa.disabled = true')
+            ->andWhere('spwa.disabled = true OR spwa.scaleValue IS NOT NULL')
             ->setParameter('studentProgramWorkcenter', $studentProgramWorkcenter)
             ->addOrderBy('a.code', 'ASC')
             ->addOrderBy('a.name', 'ASC')
