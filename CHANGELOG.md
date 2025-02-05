@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* fix: Solucionado un problema que impedía crear planes de formación a las jefaturas de FP
+
 7.2.3 (2025-01-02)
 ------------------
 * chore: Actualizados componentes a la última versión

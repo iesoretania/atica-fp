@@ -143,11 +143,14 @@ class TrainingProgramController extends AbstractController
         TrainingProgram      $trainingProgram,
         AcademicYear         $academicYear = null
     ): Response {
-        $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $trainingProgram);
+        if ($trainingProgram->getId()) {
+            $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $trainingProgram);
+        }
 
         $organization = $userExtensionService->getCurrentOrganization();
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-        $canManagePermissions = $this->isGranted(TrainingProgramVoter::MANAGE_PERMISSIONS, $trainingProgram);
+        $canManagePermissions = $this->isGranted(TrainingProgramVoter::MANAGE_PERMISSIONS, $trainingProgram)
+            || $trainingProgram->getId() === null;
 
         $form = $this->createForm(TrainingProgramType::class, $trainingProgram, [
             'lock_manager' => !$isManager,

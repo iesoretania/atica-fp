@@ -91,10 +91,6 @@ class TrainingProgramVoter extends CachedVoter
         }
 
         // Si la enseñanza no es de la organización actual, denegar
-        if ($subject->getTrainingProgramGrades()->count() === 0) {
-            return false;
-        }
-
         $isDepartmentHead = false;
         foreach ($subject->getTrainingProgramGrades() as $programGrade) {
             if ($programGrade->getGrade()?->getTraining()?->getAcademicYear()?->getOrganization() !== $organization) {
@@ -113,7 +109,7 @@ class TrainingProgramVoter extends CachedVoter
         $academicYear = $organization->getCurrentAcademicYear();
         $teacher = $this->itpTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $user);
 
-        if ($teacher instanceof Teacher) {
+        if ($teacher instanceof Teacher && $subject->getId() !== null) {
             // Si es tutor/a dual de algún grupo, también puede
             $groupManagers = $this->itpTeacherRepository->findProgramGroupManagersByTrainingProgram($subject);
             $isGroupManager = in_array($teacher, $groupManagers, true);
