@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * chore: Ordenar de forma natural las actividades formativas en el plan de formación inicial
+* fix: Arreglada la paginación del listado de seguimiento de actividad en la FFE
 
 7.2.4 (2025-02-05)
 ------------------
