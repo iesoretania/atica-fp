@@ -13,3 +13,5 @@ student_program.enrollment.workcenter.unique: Este estudiante ya tiene una estan
 
 selection.count.invalid.min: Debe seleccionar al menos {limit, plural, one {# elemento} other {# elementos}}
 selection.count.invalid.max: Debe seleccionar como máximo {limit, plural, one {# elemento} other {# elementos}}
+
+company.code.unique: Ya existe una empresa u organismo equiparado con este código

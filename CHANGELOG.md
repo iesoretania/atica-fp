@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* fix: Mostrar un error más comprensible si se intenta registrar una empresa ya existe
+
 7.2.5 (2025-02-08)
 ------------------
 * chore: Ordenar de forma natural las actividades formativas en el plan de formación inicial

@@ -1,5 +1,5 @@
 form.name: Nombre de la empresa
-form.code: CIF
+form.code: CIF o código de centro
 form.email_address: Correo electrónico
 form.address: Dirección postal
 form.city: Ciudad

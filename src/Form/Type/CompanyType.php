@@ -20,6 +20,7 @@ namespace App\Form\Type;
 
 use App\Entity\Company;
 use App\Entity\Person;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -80,7 +81,10 @@ class CompanyType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Company::class,
-            'translation_domain' => 'company'
+            'translation_domain' => 'company',
+            'constraints' => [
+                new UniqueEntity('code', message: 'company.code.unique')
+            ]
         ]);
     }
 }
