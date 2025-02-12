@@ -30,6 +30,14 @@ class CompanyRepository extends ServiceEntityRepository
         parent::__construct($registry, Company::class);
     }
 
+    public function findAllOrderByName(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->orderBy('c.name')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllInListById(
         $items
     ) {

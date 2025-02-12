@@ -60,4 +60,10 @@ class CompanyRepository extends BaseRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findAllInProgramGrade(ProgramGrade $getProgramGrade): array
+    {
+        $existant = $getProgramGrade->getCompanyPrograms()->toArray();
+        return array_map(fn(CompanyProgram $cp) => $cp->getCompany(), $existant);
+    }
 }

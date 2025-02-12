@@ -33,11 +33,13 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CompanyProgramType extends AbstractType
 {
     public function __construct(
         private readonly CompanyRepository $itpCompanyRepository,
+        private readonly TranslatorInterface $translator
     )
     {
     }
@@ -54,17 +56,27 @@ class CompanyProgramType extends AbstractType
             assert($data->getProgramGrade() instanceof ProgramGrade);
 
             if ($data->getId() === null) {
-                $companies = $this->itpCompanyRepository->findAllButInProgramGrade($data->getProgramGrade());
+                $companies = $this->itpCompanyRepository->findAllOrderByName();
+                $included = $this->itpCompanyRepository->findAllInProgramGrade($data->getProgramGrade());
             } else {
                 $companies = [$data->getCompany()];
+                $included = [];
             }
 
             $form
                 ->add('company', EntityType::class, [
                     'label' => 'form.company',
                     'class' => Company::class,
-                    'choice_label' => function (Company $company) {
-                        return $company->getCode() . ' - ' . $company->getName();
+                    'choice_label' => function (Company $company) use ($included) {
+                        $label = $company->getCode() . ' - ' . $company->getName();
+                        if (in_array($company, $included, true)) {
+                            $label .= ' ' . $this->translator->trans('form.company.already_added', [], 'itp_company');
+                        }
+                        return $label;
+                    },
+                    'choice_attr' => function(Company $company) use ($included) {
+                        $disabled = in_array($company, $included, true);
+                        return $disabled ? ['disabled' => 'disabled'] : [];
                     },
                     'placeholder' => 'form.no_company',
                     'choices' => $companies,
