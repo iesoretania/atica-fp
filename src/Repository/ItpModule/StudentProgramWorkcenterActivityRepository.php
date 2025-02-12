@@ -27,7 +27,8 @@ class StudentProgramWorkcenterActivityRepository extends ServiceEntityRepository
             ->join('spa.activity', 'a')
             ->where('spa.studentProgramWorkcenter = :studentProgramWorkcenter')
             ->setParameter('studentProgramWorkcenter', $studentProgramWorkcenter)
-            ->orderBy('a.code', 'ASC')
+            ->orderBy('LENGTH(a.code)', 'ASC')
+            ->addOrderBy('a.code', 'ASC')
             ->addOrderBy('a.name', 'ASC');
     }
 

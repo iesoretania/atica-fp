@@ -8,6 +8,7 @@ x.x.x (xxxx-xx-xx)
 ------------------
 * fix: Mostrar un error más comprensible si se intenta registrar una empresa ya existe
 * feat: Indicar si una empresa ya ha sido incorporada a un plan de formación en el formulario de inclusión
+* fix: Ordenar estadísticas de actividades formativas correctamente
 
 7.2.5 (2025-02-08)
 ------------------
