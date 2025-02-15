@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+7.2.6 (2025-02-15)
 ------------------
 * fix: Mostrar un error más comprensible si se intenta registrar una empresa ya existe
 * feat: Indicar si una empresa ya ha sido incorporada a un plan de formación en el formulario de inclusión
