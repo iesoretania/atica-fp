@@ -10,6 +10,7 @@ x.x.x (xxxx-xx-xx)
 * feat: Indicar si una empresa ya ha sido incorporada a un plan de formación en el formulario de inclusión
 * fix: Ordenar estadísticas de actividades formativas correctamente
 * fix: El filtrado de planes de formación inicial ahora funciona correctamente
+* fix: Crear convenios de colaboración de FP dual antiguos requiere especificar el tutor laboral
 
 7.2.5 (2025-02-08)
 ------------------

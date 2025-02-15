@@ -137,7 +137,7 @@ class AgreementType extends AbstractType
                 'remote_route' => 'api_person_query',
                 'placeholder' => 'form.work_tutor.none',
                 'attr' => ['class' => 'person'],
-                'required' => false
+                'required' => true
             ])
             ->add('additionalWorkTutor', Select2EntityType::class, [
                 'label' => 'form.additional_work_tutor',
