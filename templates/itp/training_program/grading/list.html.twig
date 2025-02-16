@@ -53,6 +53,10 @@
     {% include 'organization/partial_academic_year.html.twig' %}
 {% endblock %}
 
+{% block pagerfanta %}
+    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
+{% endblock %}
+
 {% block after_table %}
     <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}

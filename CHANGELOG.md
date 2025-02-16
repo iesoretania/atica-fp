@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* fix: Arreglada la paginación de la valoración del desempeño en la FFE
+
 7.2.6 (2025-02-15)
 ------------------
 * fix: Mostrar un error más comprensible si se intenta registrar una empresa ya existe
