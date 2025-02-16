@@ -8,6 +8,9 @@ Puedes seguir el desarrollo de esta herramienta vía X (antes Twitter) siguiendo
 Este proyecto está desarrollado en PHP utilizando [Symfony] 6.4 y otros muchos componentes que se instalan usando
 [Composer] y [npmjs].
 
+**IMPORTANTE: Si vas a actualizar desde la versión 6.x a la 7.x, por favor, lee el fichero [`UPGRADE-7.0.md`](UPGRADE-7.0.md) para
+conocer los cambios necesarios.**
+
 ## Requisitos
 
 - PHP 8.2 o superior.

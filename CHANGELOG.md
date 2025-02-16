@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * fix: Arreglada la paginación de la valoración del desempeño en la FFE
+* chore: Añadida advertencia sobre actualizaciones de versiones 6.x en el README.md
 
 7.2.6 (2025-02-15)
 ------------------
