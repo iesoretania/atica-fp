@@ -64,6 +64,7 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
         $qb = $this->findByTrainingProgramQueryBuilder($trainingPrograms);
         if ($dateTime instanceof \DateTimeInterface) {
             $startDate = clone $dateTime;
+            $startDate->setTimezone(new \DateTimeZone('UTC'));
             $startDate->setTime(0, 0);
             $endDate = clone $startDate;
             $endDate->add(new \DateInterval('P1D'));

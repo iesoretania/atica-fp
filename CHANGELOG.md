@@ -8,6 +8,7 @@ x.x.x (xxxx-xx-xx)
 ------------------
 * fix: Arreglada la paginación de la valoración del desempeño en la FFE
 * chore: Añadida advertencia sobre actualizaciones de versiones 6.x en el README.md
+* fix: La zona horaria no influye a la hora de listar el alumnado de un contacto en la FFE
 
 7.2.6 (2025-02-15)
 ------------------
