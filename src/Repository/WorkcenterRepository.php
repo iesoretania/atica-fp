@@ -70,6 +70,7 @@ class WorkcenterRepository extends ServiceEntityRepository
     public function findAllSorted(): array
     {
         return $this->createQueryBuilder('w')
+            ->addSelect('c')
             ->join('w.company', 'c')
             ->orderBy('c.name')
             ->addOrderBy('w.name')
@@ -81,6 +82,7 @@ class WorkcenterRepository extends ServiceEntityRepository
     public function findByCompanies(array $companies): array
     {
         return $this->createQueryBuilder('w')
+            ->addSelect('c')
             ->join('w.company', 'c')
             ->where('c IN (:companies)')
             ->setParameter('companies', $companies)
