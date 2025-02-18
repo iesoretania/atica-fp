@@ -20,7 +20,7 @@
         <tr class="clickable-row" data-href="{{ url }}">
             <td>
                 <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
-                    <a href="{{ url }}">{{ item.studentProgram.studentEnrollment }}</a>
+                    <a href="{{ url }}">{{ item.studentProgram.studentEnrollment.person.lastFirstName }} ({{ item.studentProgram.studentEnrollment.group }})</a>
                 </label>
             </td>
             <td>

@@ -57,6 +57,8 @@ class StudentProgramRepository extends ServiceEntityRepository
             ->addSelect('MIN(spw.startDate) AS min_start_date', 'MAX(spw.endDate) AS max_end_date')
             ->addSelect('COUNT(DISTINCT a) AS activities_count')
             ->groupBy('sp')
+            ->orderBy('s.lastName')
+            ->addOrderBy('s.firstName')
             ->getQuery()
             ->getResult();
     }

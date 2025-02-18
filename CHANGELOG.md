@@ -10,6 +10,7 @@ x.x.x (xxxx-xx-xx)
 * chore: Añadida advertencia sobre actualizaciones de versiones 6.x en el README.md
 * fix: La zona horaria no influye a la hora de listar el alumnado de un contacto en la FFE
 * feat: Mostrar advertencia si se especifican tramos horarios en una jornada y no coincide con el total asignado
+* chore: Listar siempre "apellidos, nombre" en las estancias y ordenar correctamente
 
 7.2.6 (2025-02-15)
 ------------------
