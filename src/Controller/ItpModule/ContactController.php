@@ -26,7 +26,6 @@ use App\Form\Type\ItpModule\ContactType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\ContactMethodRepository;
 use App\Repository\ItpModule\ContactRepository;
-use App\Repository\ItpModule\GroupRepository as ItpGroupRepository;
 use App\Repository\ItpModule\TeacherRepository as ItpTeacherRepository;
 use App\Security\ItpModule\ContactVoter;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
@@ -51,7 +50,6 @@ class ContactController extends AbstractController
         TranslatorInterface  $translator,
         UserExtensionService $userExtensionService,
         Security             $security,
-        ItpGroupRepository   $itpGroupRepository,
         ItpTeacherRepository $itpTeacherRepository,
         ContactRepository    $contactRepository
     ): Response
@@ -67,25 +65,24 @@ class ContactController extends AbstractController
 
         $teacher = $itpTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
-        $visit = new Contact();
-        $visit
+        $contact = new Contact();
+        $contact
             ->setDateTime(new \DateTime());
 
         if ($teacher) {
-            $visit->setTeacher($teacher);
+            $contact->setTeacher($teacher);
         }
 
-        $contactRepository->persist($visit);
+        $contactRepository->persist($contact);
 
         return $this->index(
             $request,
             $translator,
             $userExtensionService,
             $security,
-            $itpGroupRepository,
             $itpTeacherRepository,
             $contactRepository,
-            $visit
+            $contact
         );
     }
 
@@ -95,21 +92,20 @@ class ContactController extends AbstractController
         TranslatorInterface  $translator,
         UserExtensionService $userExtensionService,
         Security             $security,
-        ItpGroupRepository   $itpGroupRepository,
         ItpTeacherRepository $itpTeacherRepository,
         ContactRepository    $contactRepository,
-        Contact              $visit
+        Contact              $contact
     ): Response {
-        $this->denyAccessUnlessGranted(ContactVoter::ACCESS, $visit);
+        $this->denyAccessUnlessGranted(ContactVoter::ACCESS, $contact);
 
         $organization = $userExtensionService->getCurrentOrganization();
-        $academicYear = $visit->getTeacher() instanceof Teacher
-            ? $visit->getTeacher()->getAcademicYear()
+        $academicYear = $contact->getTeacher() instanceof Teacher
+            ? $contact->getTeacher()->getAcademicYear()
             : $organization->getCurrentAcademicYear();
 
         assert($academicYear instanceof AcademicYear);
 
-        $readOnly = !$this->isGranted(ContactVoter::MANAGE, $visit);
+        $readOnly = !$this->isGranted(ContactVoter::MANAGE, $contact);
         $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
 
         $person = $this->getUser();
@@ -127,7 +123,11 @@ class ContactController extends AbstractController
             $teachers = $itpTeacherRepository->findByAcademicYear($academicYear);
         }
 
-        $form = $this->createForm(ContactType::class, $visit, [
+        if ($readOnly && $contact->getTeacher() instanceof Teacher) {
+            $teachers = [$contact->getTeacher()];
+        }
+
+        $form = $this->createForm(ContactType::class, $contact, [
             'disabled' => $readOnly,
             'teachers' => $teachers
         ]);
@@ -145,7 +145,7 @@ class ContactController extends AbstractController
         }
 
         $title = $translator->trans(
-            $visit->getId() !== null ? 'title.edit' : 'title.new',
+            $contact->getId() !== null ? 'title.edit' : 'title.new',
             [],
             'itp_contact'
         );
