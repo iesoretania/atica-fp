@@ -107,7 +107,7 @@ class ContactVoter extends CachedVoter
                 if ($subject->getTeacher()->getPerson() === $user) {
                     return true;
                 }
-                // Puede acceder el coordinador de cualquier proyecto asociado a las visitas, el jefe/a de departamento
+                // Puede acceder el tutor dual de grupo asociado a las visitas, el jefe/a de departamento
                 // de los grupos de los proyectos
                 foreach ($subject->getTrainingPrograms() as $trainingProgram) {
                     foreach ($trainingProgram->getTrainingProgramGrades() as $trainingProgramGrade) {
@@ -116,8 +116,10 @@ class ContactVoter extends CachedVoter
                             return true;
                         }
                         foreach ($trainingProgramGrade->getTrainingProgramGroups() as $trainingProgramGroup) {
-                            if ($trainingProgramGroup->getManagers()->contains($teacher)) {
-                                return true;
+                            foreach ($trainingProgramGroup->getManagers() as $manager) {
+                                if ($manager->getPerson() === $user) {
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -125,7 +127,7 @@ class ContactVoter extends CachedVoter
                 // Puede acceder el tutor de los estudiantes visitados
                 foreach ($subject->getStudentEnrollments() as $studentEnrollment) {
                     foreach ($studentEnrollment->getGroup()->getTutors() as $tutor) {
-                        if ($tutor === $teacher) {
+                        if ($tutor->getPerson() === $user) {
                             return true;
                         }
                     }

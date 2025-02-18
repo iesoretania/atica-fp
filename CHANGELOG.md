@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * feat: Ordenar contactos de FFE de más recientes a más antiguos
+* fix: Permitir visualizar detalles de las visitas relacionadas con los estudiantes tutorizados de FFE
 
 7.2.7 (2025-02-18)
 ------------------
