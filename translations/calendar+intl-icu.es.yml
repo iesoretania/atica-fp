@@ -153,6 +153,7 @@ dow4: Viernes
 dow5: Sábado
 dow6: Domingo
 
+caption.actual_hours: "{count, plural, =0 {0} one {1} other {#}}"
 caption.hours: "{count, plural, =0 {Sin horas} one {1 hora} other {# horas}}"
 caption.hour_suffix: "{count, plural, one {hora} other {horas}}"
 

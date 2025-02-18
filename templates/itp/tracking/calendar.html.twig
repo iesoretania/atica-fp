@@ -17,15 +17,11 @@
     {% embed 'itp/tracking/calendar_partial.html.twig' %}
         {% block day %}
             {% set url = day ? path('in_company_training_phase_tracking_calendar_form', {'workDay': day.id}) : '' %}
-            <td class="w-13{% if day %} clickable-row {{ day.absence ? (day.absence == 1 ? 'absence' : 'justified-absence') : ((dayData['activity_count'] == 0 and day.otherActivities is empty) ? 'workday' : 'submitted') }}" data-href="{{ url }}{% endif %}">
+            {% set error = day ? day.timeHours != day.hours : false %}
+            <td class="w-13{% if day %} clickable-row {{ day.absence ? (day.absence == 1 ? 'absence' : 'justified-absence') : ((dayData['activity_count'] == 0 and day.otherActivities is empty) ? 'workday' : (error ? 'submitted-warning' : 'submitted')) }}" data-href="{{ url }}{% endif %}">
                 {% if day %}
                     {% if not read_only|default(false) and selectable %}<label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> {% endif %}<a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a>{% if selectable %}</label>{% endif %}{% if day and day.locked %} <i class="fas fa-lock"></i>{% endif %}<br/>
-                    {% if day.hours is divisible by 100 %}
-                        {{ 'caption.hours'|trans({'count': day.hours / 100}, 'calendar') }}
-                    {% else %}
-                        {{ (day.hours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
-                        {{ 'caption.hour_suffix'|trans({'count': day.hours / 100}, 'calendar') }}
-                    {% endif %}
+                    {% if error %}{{ 'caption.actual_hours'|trans({'count': day.timeHours / 100}, 'calendar') }}/{% endif %}{{ 'caption.hours'|trans({'count': day.hours / 100}, 'calendar') }}
                 {% elseif n > 0 %}
                     {{ n }}
                 {% endif %}

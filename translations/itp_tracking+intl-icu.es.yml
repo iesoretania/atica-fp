@@ -74,7 +74,7 @@ form.start_time_2: Hora de entrada (segundo tramo)
 form.end_time_2: Hora de salida (segundo tramo)
 
 
-form.time.placeholder: "hh:mm"
+form.time.placeholder: "hh:mm (bloques de 15 minutos)"
 form.caption.locked_prefix: "BLOQUEADA PARA EL ESTUDIANTE: "
 form.caption.locked: " (ya evaluada o desactivada)"
 table.activity_realization.graded.yes: "Evaluada"

@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContext;
 
 #[ORM\Entity(repositoryClass: WorkDayRepository::class)]
 #[ORM\Table(name: 'itp_work_day')]
@@ -226,5 +228,64 @@ class WorkDay
         $this->endTime2 = $endTime2;
 
         return $this;
+    }
+
+    #[Assert\Callback]
+    public function validate(ExecutionContext $context, $payload): void
+    {
+        if (!empty($this->getStartTime1()) && empty($this->getEndTime1())) {
+            $context->buildViolation('calendar.end_time_needed')
+                ->atPath('endTime1')
+                ->addViolation();
+        }
+        if (empty($this->getStartTime1()) && !empty($this->getEndTime1())) {
+            $context->buildViolation('calendar.start_time_needed')
+                ->atPath('startTime1')
+                ->addViolation();
+        }
+        if (!empty($this->getStartTime2()) && empty($this->getEndTime2())) {
+            $context->buildViolation('calendar.end_time_needed')
+                ->atPath('endTime2')
+                ->addViolation();
+        }
+        if (empty($this->getStartTime2()) && !empty($this->getEndTime2())) {
+            $context->buildViolation('calendar.start_time_needed')
+                ->atPath('startTime2')
+                ->addViolation();
+        }
+        if (empty($this->getStartTime1()) && !empty($this->getStartTime2())) {
+            $context->buildViolation('calendar.first_start_time_needed')
+                ->atPath('startTime2')
+                ->addViolation();
+        }
+    }
+
+    public function getTimeHours(): int
+    {
+        if (empty($this->getStartTime1())) {
+            return $this->getHours();
+        }
+        $startTime1 = $this->convertTimeToHours($this->getStartTime1());
+        $endTime1 = $this->convertTimeToHours($this->getEndTime1());
+        $time1 = $endTime1 - $startTime1;
+        if ($time1 < 0) {
+            $time1 += 2400;
+        }
+        if (empty($this->getStartTime2())) {
+            return (int) $time1;
+        }
+        $startTime2 = $this->convertTimeToHours($this->getStartTime2());
+        $endTime2 = $this->convertTimeToHours($this->getEndTime2());
+        $time2 = $endTime2 - $startTime2;
+        if ($time2 < 0) {
+            $time2 += 2400;
+        }
+        return (int) ($time1 + $time2);
+    }
+
+    private function convertTimeToHours(string $time): int
+    {
+        $timeArray = explode(':', $time);
+        return (int) ($timeArray[0] * 100.0) + (int) ($timeArray[1] * 100.0 / 60.0);
     }
 }

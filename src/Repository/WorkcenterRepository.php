@@ -82,7 +82,6 @@ class WorkcenterRepository extends ServiceEntityRepository
     public function findByCompanies(array $companies): array
     {
         return $this->createQueryBuilder('w')
-            ->addSelect('c')
             ->join('w.company', 'c')
             ->where('c IN (:companies)')
             ->setParameter('companies', $companies)
