@@ -408,7 +408,7 @@ class ContactRepository extends ServiceEntityRepository
         ?string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('c')
-            ->select('c', 't', 'p', 'se', 'sep', 'w', 'co')
+            ->select('c', 't', 'tp', 'p', 'se', 'sep', 'w', 'co')
             ->distinct()
             ->join('c.teacher', 't')
             ->join('t.person', 'p')
@@ -429,7 +429,10 @@ class ContactRepository extends ServiceEntityRepository
             ->leftJoin('se.person', 'sep')
             ->leftJoin('se.group', 'seg')
             ->where('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
+            ->setParameter('academic_year', $academicYear)
+            ->addOrderBy('c.dateTime', 'DESC')
+            ->addOrderBy('p.lastName')
+            ->addOrderBy('p.firstName');
 
         if (!$isManager) {
             $qb
