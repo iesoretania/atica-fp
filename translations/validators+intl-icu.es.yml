@@ -6,6 +6,10 @@ login_username.invalid_chars: El nombre de usuario no puede contener espacios ni
 
 calendar.week_hours.invalid: Debe especificarse al menos una hora a la semana
 calendar.week_hours.max: El número de horas es demasiado grande
+calendar.start_time_needed: Debe especificarse la hora de inicio
+calendar.end_time_needed: Debe especificarse la hora de finalización
+calendar.first_start_time_needed: Debe especificarse el primer tramo
+
 agreement.student_workcenter.unique: Este estudiante ya tiene un convenio en esta sede
 agreement.student_agreement.unique: Este estudiante ya pertenece al acuerdo de colaboración
 company_program.company_training.unique: Esta empresa ya tiene un programa asociado al proyecto
