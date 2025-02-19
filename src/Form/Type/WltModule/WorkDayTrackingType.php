@@ -31,6 +31,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WorkDayTrackingType extends AbstractType
@@ -121,24 +122,36 @@ class WorkDayTrackingType extends AbstractType
                 'label' => 'form.start_time_1',
                 'required' => false,
                 'attr' => ['placeholder' => 'form.time.placeholder'],
+                'constraints' => [
+                    new Regex('/([01]\d|2[0-3]):(00|15|30|45)/')
+                ],
                 'disabled' => $absence || $locked
             ])
             ->add('endTime1', null, [
                 'label' => 'form.end_time_1',
                 'required' => false,
                 'attr' => ['placeholder' => 'form.time.placeholder'],
+                'constraints' => [
+                    new Regex('/([01]\d|2[0-3]):(00|15|30|45)/')
+                ],
                 'disabled' => $absence || $locked
             ])
             ->add('startTime2', null, [
                 'label' => 'form.start_time_2',
                 'required' => false,
                 'attr' => ['placeholder' => 'form.time.placeholder'],
+                'constraints' => [
+                    new Regex('/([01]\d|2[0-3]):(00|15|30|45)/')
+                ],
                 'disabled' => $absence || $locked
             ])
             ->add('endTime2', null, [
                 'label' => 'form.end_time_2',
                 'required' => false,
                 'attr' => ['placeholder' => 'form.time.placeholder'],
+                'constraints' => [
+                    new Regex('/([01]\d|2[0-3]):(00|15|30|45)/')
+                ],
                 'disabled' => $absence || $locked
             ])
             ->add('notes', null, [
