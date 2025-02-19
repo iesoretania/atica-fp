@@ -11,6 +11,7 @@ x.x.x (xxxx-xx-xx)
 * chore: Mostrar correctamente el docente del contacto en la vista de solo lectura
 * feat: Gestionar la validación de los tramos de entrada/salida también en el módulo de FP dual
 * feat: Ahora se pueden marcar jornadas con ausencias justificadas directamente desde el calendario (FFE)
+* chore: Marcar una ausencia en una jornada elimina los tramos horarios si se especificaron (FFE)
 
 7.2.7 (2025-02-18)
 ------------------
