@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * feat: Implementado el informe de valoración del desempeño del tutor dual de empresa (FFE)
+* chore: Abrir el informe de valoración del desempeño en una nueva ventana
 
 7.2.8 (2025-02-19)
 ------------------

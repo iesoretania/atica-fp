@@ -43,7 +43,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if item.graded_activities > 0 %}{{ m.link_button(path('in_company_training_phase_tracking_grading_report', {'studentProgramWorkcenter': spw.id}), 'file-alt', 'btn-info btn-sm btn-block', 'form.report'|trans) }}{% endif %}
+                        {% if item.graded_activities > 0 %}{{ m.link_button(path('in_company_training_phase_tracking_grading_report', {'studentProgramWorkcenter': spw.id}), 'file-alt', 'btn-info btn-sm btn-block', 'form.report'|trans, new_window: true) }}{% endif %}
                     </td>
                 </tr>
             {% else %}
