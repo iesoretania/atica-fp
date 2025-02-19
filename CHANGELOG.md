@@ -10,6 +10,7 @@ x.x.x (xxxx-xx-xx)
 * fix: Permitir visualizar detalles de las visitas relacionadas con los estudiantes tutorizados de FFE
 * chore: Mostrar correctamente el docente del contacto en la vista de solo lectura
 * feat: Gestionar la validación de los tramos de entrada/salida también en el módulo de FP dual
+* feat: Ahora se pueden marcar jornadas con ausencias justificadas directamente desde el calendario (FFE)
 
 7.2.7 (2025-02-18)
 ------------------

@@ -33,10 +33,11 @@
     {% if not read_only|default(false) %}
         {% if selectable %}{{ m.link_button('', 'check-square', 'btn-primary', 'form.select_deselect'|trans, 'toggle') }}{% endif %}
         {% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_LOCK', student_program_workcenter) %}
-            {{ m.submit_button('lock', 'lock', 'btn-danger enable-on-items', 'form.lock_action'|trans) }}
-            {{ m.submit_button('unlock', 'lock-open', 'btn-danger enable-on-items', 'form.unlock_action'|trans) }}
+            {{ m.submit_button('lock', 'lock', 'btn-info enable-on-items', 'form.lock_action'|trans) }}
+            {{ m.submit_button('unlock', 'lock-open', 'btn-info enable-on-items', 'form.unlock_action'|trans) }}
+            {{ m.submit_button('justified-absence', 'user-check', 'btn-warning enable-on-items', 'form.justify_action'|trans) }}
         {% endif %}
-        {% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_ATTENDANCE', student_program_workcenter) %}{{ m.submit_button('attendance', 'user-slash', 'btn-danger enable-on-items', 'form.attendance'|trans) }}{% endif %}
+        {% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_ATTENDANCE', student_program_workcenter) %}{{ m.submit_button('unjustified-absence', 'user-slash', 'btn-danger enable-on-items', 'form.attendance'|trans) }}{% endif %}
     {% endif %}
     </form>
 </section>

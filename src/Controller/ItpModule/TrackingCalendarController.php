@@ -270,12 +270,22 @@ class TrackingCalendarController extends AbstractController
             );
         }
 
-        // marcar en las jornadas que estudiante no ha estado en el centro de trabajo
-        $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::ATTENDANCE, $studentProgramWorkcenter);
+        $updateAttendance = false;
+        if ($request->get('submit-justified') === '') {
+            // marcar en las jornadas que estudiante no ha estado en el centro de trabajo de forma justificada
+            $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::LOCK, $studentProgramWorkcenter);
+            $value = WorkDay::ABSENCE_JUSTIFIED;
+            $updateAttendance = true;
+        } elseif ($request->get('submit-unjustified') === '') {
+            // marcar en las jornadas que estudiante no ha estado en el centro de trabajo
+            $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::ATTENDANCE, $studentProgramWorkcenter);
+            $value = WorkDay::ABSENCE_UNJUSTIFIED;
+            $updateAttendance = true;
+        }
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($updateAttendance) {
             try {
-                $workDayRepository->updateAttendance($workDays, $studentProgramWorkcenter, WorkDay::ABSENCE_UNJUSTIFIED);
+                $workDayRepository->updateAttendance($workDays, $studentProgramWorkcenter, $value);
                 $workDayRepository->flush();
                 $this->addFlash('success', $translator->trans('message.attendance_updated', [], 'itp_tracking'));
             } catch (\Exception) {
@@ -302,6 +312,7 @@ class TrackingCalendarController extends AbstractController
             'menu_path' => 'in_company_training_phase_tracking_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
+            'type' => $request->get('justified-absence') === '' ? "justified" : "unjustified",
             'student_program_workcenter' => $studentProgramWorkcenter,
             'items' => $workDays
         ]);
