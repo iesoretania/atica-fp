@@ -174,4 +174,4 @@ form.end_time_1: Hora de salida (tramo inicial)
 form.start_time_2: Hora de entrada (segundo tramo)
 form.end_time_2: Hora de salida (segundo tramo)
 
-form.time.placeholder: "hh:mm"
+form.time.placeholder: "hh:mm (tramos de 15 minutos)"
