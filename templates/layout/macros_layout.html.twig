@@ -1,10 +1,13 @@
 {% trans_default_domain 'layout' %}
 
-{% macro flash_message(type, class) %}
+{% macro flash_message(type, class, icon = null) %}
     {% for flashMessage in app.session.flashbag.get(type) %}
-        <div class="alert alert-{{ class }} alert-dismissable" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="{{ 'hint.close'|trans }}"><span aria-hidden="true">&times;</span></button>
+        <div class="alert alert-{{ class }} alert-dismissible fade show" role="alert">
+            {% if icon %}<i class="fa fa-{{ icon }}"></i> {% endif %}
             {{ flashMessage }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="{{ 'hint.close'|trans }}">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     {% endfor %}
 {% endmacro %}

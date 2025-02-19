@@ -1,5 +1,5 @@
 {% import 'layout/macros_layout.html.twig' as ml %}
 
-{% for key, type in {'info': 'info', 'error': 'danger', 'success': 'success'} %}
-{{ ml.flash_message(key, type) }}
+{% for key, data in {'info': {'type': 'info', 'icon': 'circle-info'}, 'error': {'type': 'danger', 'icon': 'circle-exclamation'}, 'success': {'type': 'success', 'icon': 'check-circle'}} %}
+{{ ml.flash_message(key, data.type, data.icon) }}
 {% endfor %}
