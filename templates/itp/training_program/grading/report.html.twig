@@ -1,0 +1,142 @@
+{% trans_default_domain 'itp_grading' %}
+{% extends 'layout/base_report.html.twig' %}
+
+{% block title %}{{ 'title.report'|trans }} - {{ student_program_workcenter }}{% endblock %}
+
+{% block style %}
+    {{ parent() }}
+    <style>
+        body {
+            font-size: 10px;
+        }
+
+        @page {
+            margin-top: 2.65cm;
+            margin-left: 2cm;
+            margin-right: 2cm;
+            margin-bottom: 6.5cm;
+            odd-header-name: html_header;
+            even-header-name: html_header;
+            odd-footer-name: html_footer;
+            even-footer-name: html_footer;
+        }
+        
+        td, th {
+            border: 1px solid;
+            padding: 0.1cm;
+        }
+
+        tr.title {
+            background-color: lightgray;
+        }
+
+        td.center {
+            text-align: center;
+            vertical-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <htmlpageheader name="header">
+        <div style="padding-top: 0.2cm; font-size: 12px">
+            <div style="float: right; text-align: right; width: 8cm;">{{ 'report.council'|trans }}</div>
+            <br />
+            <div style="float: right; text-align: right; width: 5cm;">
+                {{ 'report.page'|trans({'page': '{PAGENO}', 'total': '{nbpg}'}) }}
+            </div>
+            {{ 'report.title'|trans }}
+        </div>
+    </htmlpageheader>
+
+    <htmlpagefooter name="footer">
+        <div style="page-break-inside: avoid; text-align: center; padding-bottom: 1cm; font-weight: bold">
+            <div>{{ 'report.signature'|trans({
+                    'city': student_program_workcenter.workCenter.city,
+                    'day': student_program_workcenter.endDate|date('j', false),
+                    'month_string': ('r_month' ~ (student_program_workcenter.endDate|date('m', false) - 1))|trans({}, 'calendar'),
+                    'year': student_program_workcenter.endDate|date('Y', false)
+                }) }}</div>
+            <table style="margin-top: 0.5cm; vertical-align: top; margin-left: auto; margin-right: auto; width: 70%">
+                <tr style="width: 100%">
+                    <td style="width: 70%; text-align: left">
+                        {{ 'report.work_tutor.signature'|trans }}<br /><br /><br /><br /><br /><br /><br /><br />
+                    </td>
+                    <td style="width: 30%; text-align: center">
+                        {{ 'report.work_tutor.stamp'|trans }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">{{ 'report.signed'|trans }} {{ student_program_workcenter.workTutor }}</td>
+                </tr>
+            </table>
+        </div>
+    </htmlpagefooter>
+
+    <table class="big">
+        <tr>
+            <td colspan="2">
+                <b>{{ 'report.student_enrollment'|trans }}:</b> {{ student_program_workcenter }}<br />
+                <b>{{ 'report.academic_year'|trans }}:</b> {{ academic_year }} - {{ academic_year.organization }}<br />
+                <b>{{ 'report.department'|trans }}:</b> {{ student_program_workcenter.studentProgram.programGroup.programGrade.grade.training.department }}<br />
+                <b>{{ 'report.training'|trans }}:</b> {{ student_program_workcenter.studentProgram.programGroup.programGrade.grade.training }}<br />
+                <b>{{ 'report.grade'|trans }}:</b> {{ student_program_workcenter.studentProgram.programGroup.programGrade.grade }}
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr class="title">
+            <th style="width: 20%;">
+                {{ 'report.grade_value'|trans }}
+            </th>
+            <th style="width: 80%;">
+                {{ 'report.grade_description'|trans }}
+            </th>
+        </tr>
+        {% for grade in grades %}
+        <tr>
+            <td><b>{{ grade.description }}</b></td>
+            <td>{{ grade.notes }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <table>
+        <thead>
+        <tr class="title">
+            <th style="width: 80%;">
+                {{ 'report.activity'|trans }}
+            </th>
+            <th style="width: 20%;">
+                {{ 'report.grade_value'|trans }}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for graded_activity in student_program_workcenter.activities %}
+            {% set activity = graded_activity.activity %}
+            <tr>
+                <td><b>{{ activity.code }}</b>: {{ activity.name }}</td>
+                <td class="center">{{ graded_activity.scaleValue ?? 'report.no_grade'|trans }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if student_program_workcenter.workTutorRemarks %}
+    <table>
+        <thead>
+        <tr class="title">
+            <th>
+                {{ 'report.work_tutor_remarks'|trans }}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ student_program_workcenter.workTutorRemarks|nl2br }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% endif %}
+{% endblock %}

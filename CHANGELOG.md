@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* feat: Implementado el informe de valoración del desempeño del tutor dual de empresa (FFE)
+
 7.2.8 (2025-02-19)
 ------------------
 * feat: Ordenar contactos de FFE de más recientes a más antiguos

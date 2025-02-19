@@ -157,6 +157,15 @@ class TrainingProgramType extends AbstractType
                 ],
                 'required' => true
             ])
+            ->add('finalReportTemplate', EntityType::class, [
+                'label' => 'form.final_report_template',
+                'class' => ReportTemplate::class,
+                'choice_label' => 'description',
+                'choice_translation_domain' => false,
+                'choices' => $templates,
+                'placeholder' => 'form.no_template',
+                'required' => false
+            ])
             ->add('activitySummaryReportTemplate', EntityType::class, [
                 'label' => 'form.activity_summary_report_template',
                 'class' => ReportTemplate::class,

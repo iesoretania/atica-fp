@@ -21,9 +21,12 @@ form.disabled: Deshabilitar actividad no valorada
 form.disabled.false: El estudiante puede seleccionar la actividad
 form.disabled.true: El estudiante no puede seleccionar la actividad. Las jornadas que la tengan marcadas se mantienen
 
-title.list: Valoración del desempeño de una estacia del plan de formación
+form.report: Generar informe
+
+title.list: Valoración del desempeño de una estancia del plan de formación
 title.comment: Comentarios de la actividad
 title.delete_comment: Eliminar comentario
+title.report: Informe de valoración del desempeño
 
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
 table.no_items: No hay elementos que mostrar
@@ -60,3 +63,26 @@ message.error: No se han podido guardar los cambios.
 
 message.comment_deleted: Comentario eliminado.
 message.comment_delete_error: No se ha podido eliminar el comentario.
+
+report.council: CONSEJERÍA DE DESARROLLO EDUCATIVO Y FP
+report.page: (Hoja {page} de {total})
+report.title: INFORME DE VALORACIÓN DEL DESEMPEÑO. FORMACIÓN EN EMPRESA U ORGANISMO EQUIPARADO
+
+report.signature: En {city}, a {day} de {month_string} de {year}
+report.educational_tutor.signature: EL/LA PROFESOR/A RESPONSABLE DEL SEGUIMIENTO
+report.work_tutor.signature: EL/LA TUTOR DUAL DE EMPRESA
+report.signed: Fdo.
+
+report.student_enrollment: Estudiante
+report.academic_year: "Curso académico"
+report.department: "Familia profesional"
+report.training: "Enseñanza"
+report.grade: "Curso"
+
+report.activity: "Actividad formativa"
+report.grade_value: "Valoración"
+report.no_grade: "Sin valorar"
+report.grade_description: "Descripción de la valoración"
+report.work_tutor_remarks: "Comentario del tutor dual de empresa"
+
+report.work_tutor.stamp: (Sello de la empresa)

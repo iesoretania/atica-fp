@@ -10,7 +10,7 @@ form.performance_scale: Escala de valoración del desempeño
 form.attendance_report_template: Plantilla del informe de asistencia
 form.weekly_activity_report_template: Plantilla del informe semanal de actividades
 form.activity_summary_report_template: Plantilla del registro resumen de actividades
-form.final_report_template: Plantilla del informe del tutor/a laboral
+form.final_report_template: Plantilla de valoración del tutor/a dual de empresa
 form.student_survey: Modelo de encuesta de satisfacción de alumnado
 form.company_survey: Modelo de encuesta de satisfacción de empresa colaboradora
 form.educational_tutor_survey: Modelo de encuesta de satisfacción de tutoría docente

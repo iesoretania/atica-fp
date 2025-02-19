@@ -20,6 +20,7 @@ namespace App\Controller\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\PerformanceScaleValue;
+use App\Entity\Edu\ReportTemplate;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\StudentProgramWorkcenterActivity;
 use App\Entity\ItpModule\StudentProgramWorkcenterActivityComment;
@@ -38,6 +39,8 @@ use App\Security\ItpModule\StudentProgramWorkcenterVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
+use Mpdf\Mpdf;
+use Mpdf\Output\Destination;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PagerFanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
@@ -46,12 +49,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use TFox\MpdfPortBundle\Service\MpdfService;
+use Twig\Environment;
 
 #[Route(path: '/formacion/valoracion')]
 class GradingController extends AbstractController
 {
     #[Route(path: '/listar/{academicYear}/{page}', name: 'in_company_training_phase_tracking_grading_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
-    public function list(
+    final public function list(
         Request                             $request,
         UserExtensionService                $userExtensionService,
         TranslatorInterface                 $translator,
@@ -73,13 +78,14 @@ class GradingController extends AbstractController
         $person = $this->getUser();
         assert($person instanceof Person);
 
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $studentProgramWorkcenterRepository->createGradingQueryBuilder(
             $academicYear,
             $person,
             $isManager,
             $q
         );
+        assert($queryBuilder instanceof QueryBuilder);
+
         $adapter = new QueryAdapter($queryBuilder, false);
         $pager = new Pagerfanta($adapter);
         try {
@@ -103,7 +109,7 @@ class GradingController extends AbstractController
     }
 
     #[Route(path: '/{studentProgramWorkcenter}', name: 'in_company_training_phase_tracking_grading_form', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET', 'POST'])]
-    public function index(
+    final public function index(
         Request                                    $request,
         TranslatorInterface                        $translator,
         PerformanceScaleValueRepository            $performanceScaleValueRepository,
@@ -163,7 +169,7 @@ class GradingController extends AbstractController
     }
 
     #[Route(path: '/comentarios/{studentProgramWorkcenterActivity}', name: 'in_company_training_phase_tracking_grading_comment_form', requirements: ['student_program_workcenter_activity' => '\d+'], methods: ['GET', 'POST'])]
-    public function comment(
+    final public function comment(
         Request $request,
         TranslatorInterface $translator,
         StudentProgramWorkcenterActivityCommentRepository $studentProgramWorkcenterActivityCommentRepository,
@@ -239,7 +245,7 @@ class GradingController extends AbstractController
     }
 
     #[Route(path: '/comentarios/eliminar/{activityComment}', name: 'in_company_training_phase_tracking_grading_comment_delete', requirements: ['activityComment' => '\d+'], methods: ['GET', 'POST'])]
-    public function deleteComment(
+    final public function deleteComment(
         Request $request,
         TranslatorInterface $translator,
         StudentProgramWorkcenterActivityCommentRepository $studentProgramWorkcenterActivityCommentRepository,
@@ -288,4 +294,74 @@ class GradingController extends AbstractController
             'comment' => $activityComment
         ]);
     }
+
+    #[Route(path: '/informe/{studentProgramWorkcenter}', name: 'in_company_training_phase_tracking_grading_report', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET'])]
+    final public function gradingReport(
+        TranslatorInterface         $translator,
+        Environment                 $engine,
+        PerformanceScaleValueRepository $performanceScaleValueRepository,
+        StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository,
+        StudentProgramWorkcenter    $studentProgramWorkcenter
+    ): Response {
+        $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::VIEW_GRADE, $studentProgramWorkcenter);
+
+        $academicYear = $studentProgramWorkcenter
+            ->getStudentProgram()?->getStudentEnrollment()?->getGroup()?->getGrade()?->getTraining()?->getAcademicYear();
+        assert($academicYear instanceof AcademicYear);
+
+        // Pre-caching
+        $studentProgramWorkcenterActivityRepository->findByStudentProgramWorkcenter($studentProgramWorkcenter);
+
+        $grades = $performanceScaleValueRepository->findByPerformanceScale($studentProgramWorkcenter
+            ->getStudentProgram()?->getProgramGroup()?->getProgramGrade()
+            ?->getTrainingProgram()?->getPerformanceScale());
+
+        $title = $translator->trans('title.report', [], 'itp_grading')
+            . ' - ' . $studentProgramWorkcenter->__toString();
+
+        $fileName = $title . '.pdf';
+
+        $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
+
+        $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4-L']]);
+        assert($mpdf instanceof Mpdf);
+        $tmp = '';
+
+        try {
+            $template = $studentProgramWorkcenter->getStudentProgram()?->getProgramGroup()?->getProgramGrade()?->getTrainingProgram()?->getFinalReportTemplate() ??
+                $studentProgramWorkcenter->getStudentProgram()
+                ?->getStudentEnrollment()?->getGroup()?->getGrade()?->getTraining()?->getAcademicYear()?->getDefaultPortraitTemplate();
+
+            if ($template instanceof ReportTemplate) {
+                $tmp = tempnam('.', 'tpl');
+                file_put_contents($tmp, $template->getData());
+                $mpdf->SetDocTemplate($tmp, true);
+            }
+
+            $mpdf->SetFont('DejaVuSansCondensed');
+            $mpdf->SetFontSize(9);
+
+            $mpdf->WriteHTML($engine->render('itp/training_program/grading/report.html.twig', [
+                'student_program_workcenter' => $studentProgramWorkcenter,
+                'academic_year' => $academicYear,
+                'grades' => $grades
+            ]));
+
+            $mpdf->SetTitle($title);
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->setContent($mpdf->Output($fileName, Destination::STRING_RETURN));
+
+            $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+            return $response;
+        } finally {
+            if ($tmp) {
+                unlink($tmp);
+            }
+        }
+    }
+
 }
