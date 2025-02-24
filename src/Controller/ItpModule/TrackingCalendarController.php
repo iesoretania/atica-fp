@@ -512,7 +512,8 @@ class TrackingCalendarController extends AbstractController
             }
 
             $title = $translator->trans('title.weekly_activities', [], 'wlt_report')
-                . ' - ' . $weekCounter['current'] . ' - ' . $studentProgramWorkcenter->getStudentProgram()?->getStudentEnrollment()?->__toString() . ' - '
+                . ' - ' . $studentProgramWorkcenter->getStudentProgram()?->getStudentEnrollment()?->getGroup()?->getName() . ' - ' . $studentProgramWorkcenter->getStudentProgram()?->getStudentEnrollment()?->getPerson()->getLastFirstName() . ' - '
+                . sprintf("%02d", $weekCounter['current']) . ' - '
                 . $studentProgramWorkcenter->getWorkcenter()?->__toString();
 
             $fileName = $title . '.pdf';
