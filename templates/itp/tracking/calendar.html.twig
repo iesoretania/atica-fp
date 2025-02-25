@@ -39,6 +39,7 @@
         {% endif %}
         {% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_ATTENDANCE', student_program_workcenter) %}{{ m.submit_button('unjustified-absence', 'user-slash', 'btn-danger enable-on-items', 'form.attendance'|trans) }}{% endif %}
     {% endif %}
+    {{ m.link_button_new(path('in_company_training_phase_tracking_calendar_attendance_report', {'studentProgramWorkcenter': student_program_workcenter.id}), 'file-alt', 'btn-primary', 'form.attendance_report'|trans, null, null) }}
     </form>
 </section>
 {% endblock %}

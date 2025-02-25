@@ -28,6 +28,7 @@ form.print: Imprimir hoja semanal
 form.select_deselect: Seleccionar/deseleccionar jornadas
 form.justify_action: Falta justificada
 form.attendance: Falta injustificada
+form.attendance_report: Informe de acreditación de asistencia
 
 form.stats.activities: Estado de las actividades
 form.stats.activities_bar: "{count}/{total} act."
@@ -87,6 +88,7 @@ table.activity_realization.graded.pending: "Por realizar"
 title.list: Estancias del plan de formación
 title.calendar: Seguimiento del plan de formación
 title.absence: Faltas de asistencia al centro de trabajo
+title.attendance: Resumen de asistencia
 
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
 table.no_items: No hay elementos que mostrar

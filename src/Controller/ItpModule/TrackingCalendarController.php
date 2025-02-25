@@ -38,6 +38,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
+use Twig\Environment;
 
 #[Route(path: '/formacion/seguimiento/calendario')]
 class TrackingCalendarController extends AbstractController
@@ -318,6 +319,55 @@ class TrackingCalendarController extends AbstractController
         ]);
     }
 
+    #[Route(path: '/{studentProgramWorkcenter}/asistencia', name: 'in_company_training_phase_tracking_calendar_attendance_report', methods: ['GET'])]
+    public function attendanceReport(
+        Environment $engine,
+        TranslatorInterface $translator,
+        StudentProgramWorkcenter $studentProgramWorkcenter
+    ): Response {
+        $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::ACCESS, $studentProgramWorkcenter);
+        $mpdfService = new MpdfService();
+        $mpdfService->setAddDefaultConstructorArgs(false);
+        ini_set("pcre.backtrack_limit", "5000000");
+
+        /** @var Mpdf $mpdf */
+        $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4-L']]);
+        $tmp = '';
+
+        $trainingProgram = $studentProgramWorkcenter->getStudentProgram()->getProgramGroup()->getProgramGrade()->getTrainingProgram();
+        try {
+            if ($trainingProgram->getAttendanceReportTemplate() instanceof ReportTemplate) {
+                $tmp = tempnam('.', 'tpl');
+                file_put_contents($tmp, $trainingProgram->getAttendanceReportTemplate()->getData());
+                $mpdf->SetDocTemplate($tmp, true);
+            }
+
+            $title = $translator->trans('title.attendance', [], 'itp_tracking')
+                . ' - ' . $studentProgramWorkcenter->getStudentProgram()?->getStudentEnrollment()?->getGroup()?->getName()
+                . ' - ' . $studentProgramWorkcenter->getStudentProgram()?->getStudentEnrollment()?->getPerson()->getLastFirstName() . ' - '
+                . $studentProgramWorkcenter->getWorkcenter()?->__toString();
+
+            $fileName = $title . '.pdf';
+
+            $html = $engine->render('itp/tracking/attendance_report.html.twig', [
+                'student_program_workcenter' => $studentProgramWorkcenter,
+                'academic_year' => $studentProgramWorkcenter->getStudentProgram()->getProgramGroup()->getGroup()->getGrade()->getTraining()->getAcademicYear(),
+                'title' => $title
+            ]);
+
+            $response = $mpdfService->generatePdfResponse(
+                $html,
+                ['mpdf' => $mpdf]
+            );
+            $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+            return $response;
+        } finally {
+            if ($tmp) {
+                unlink($tmp);
+            }
+        }
+    }
     #[Route(path: '/informe/descargar/{studentProgramWorkcenter}/{year}/{week}', name: 'in_company_training_phase_tracking_calendar_activity_report', requirements: ['studentProgramWorkcenter' => '\d+', 'year' => '\d+', 'week' => '\d+'], methods: ['GET'])]
     public function activityReport(
         TranslatorInterface $translator,
