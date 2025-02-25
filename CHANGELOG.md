@@ -10,6 +10,7 @@ x.x.x (xxxx-xx-xx)
 * chore: Abrir el informe de valoración del desempeño en una nueva ventana
 * chore: Incluir icono en las notificaciones de resultado de la operación
 * feat: Generar un nombre de informe descargable que sea más fácil de organizar
+* fix: No considerar tramos incompletos a la hora de calcular la duración de la jornada
 
 7.2.8 (2025-02-19)
 ------------------

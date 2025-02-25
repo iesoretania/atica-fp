@@ -261,7 +261,7 @@ class WorkDay
 
     public function getTimeHours(): int
     {
-        if (empty($this->getStartTime1())) {
+        if (empty($this->getStartTime1()) || empty($this->getEndTime1())) {
             return $this->getHours();
         }
         $startTime1 = $this->convertTimeToHours($this->getStartTime1());
@@ -270,7 +270,7 @@ class WorkDay
         if ($time1 < 0) {
             $time1 += 2400;
         }
-        if (empty($this->getStartTime2())) {
+        if (empty($this->getStartTime2()) || empty($this->getEndTime2())) {
             return $time1 / 100;
         }
         $startTime2 = $this->convertTimeToHours($this->getStartTime2());
