@@ -19,6 +19,7 @@
 namespace App\Form\Type\ItpModule;
 
 use App\Entity\ItpModule\WorkDay;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -84,7 +85,10 @@ class WorkDayType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => WorkDay::class,
-            'translation_domain' => 'calendar'
+            'translation_domain' => 'calendar',
+            'constraints' => [
+                new UniqueEntity(['fields' => ['date', 'studentProgramWorkcenter']])
+            ]
         ]);
     }
 }

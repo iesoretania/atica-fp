@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* feat: Impedir cambiar la fecha de una jornada que coincida con otra existente
+
 7.2.9 (2025-02-25)
 ------------------
 * feat: Implementado el informe de valoración del desempeño del tutor dual de empresa (FFE)
