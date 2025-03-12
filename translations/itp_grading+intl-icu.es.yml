@@ -28,6 +28,9 @@ title.comment: Comentarios de la actividad
 title.delete_comment: Eliminar comentario
 title.report: Informe de valoración del desempeño
 
+title.group_list: Resumen de evaluación del grupo
+title.group_student_list: Resumen de evaluación de estudiantes
+
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
 table.no_items: No hay elementos que mostrar
 table.filter: Filtrar...
@@ -43,6 +46,11 @@ header.date: Jornada
 header.hours: Horas
 header.grade: Valoración
 header.description: Descripción
+
+header.group: Grupo
+header.group_grade: Curso
+header.department: Familia profesional
+header.managers: Tutorías duales de grupo
 
 header.activities: Actividades
 header.learning_outcomes: RAs

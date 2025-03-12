@@ -17,7 +17,7 @@
 {% block table_body %}
             {% for item in pager %}
                 {% set spw = item[0] %}
-                {% set url = path('in_company_training_phase_tracking_grading_form', {'studentProgramWorkcenter': spw.id}) %}
+                {% set url = path(url_path, {'studentProgramWorkcenter': spw.id}) %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <a href="{{ url }}">{{ spw.studentProgram.studentEnrollment }}</a>
@@ -43,7 +43,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if item.graded_activities > 0 %}{{ m.link_button(path('in_company_training_phase_tracking_grading_report', {'studentProgramWorkcenter': spw.id}), 'file-alt', 'btn-info btn-sm btn-block', 'form.report'|trans, new_window: true) }}{% endif %}
+                        {% if item.graded_activities > 0 %}{{ m.link_button_new(path(report_path, {'studentProgramWorkcenter': spw.id}), 'file-alt', 'btn-info btn-sm btn-block', 'form.report'|trans) }}{% endif %}
                     </td>
                 </tr>
             {% else %}
@@ -54,11 +54,17 @@
 {% endblock %}
 
 {% block before_filter %}
-    {% include 'organization/partial_academic_year.html.twig' %}
+    {% if academic_years is defined %}
+        {% include 'organization/partial_academic_year.html.twig' %}
+    {% endif %}
 {% endblock %}
 
 {% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
+    {% if academic_years is defined %}
+        {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
+    {% else %}
+        {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general')}) }}
+    {% endif %}
 {% endblock %}
 
 {% block after_table %}

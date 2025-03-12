@@ -5,6 +5,7 @@ namespace App\Repository\ItpModule;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\ProgramGrade;
+use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgram;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\WorkDay;
@@ -278,6 +279,32 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         return $qb;
     }
 
+    public function findByAcademicYearPersonManagerAndQuery(
+        AcademicYear $academicYear,
+        Person $person,
+        bool $isManager,
+        ?string $q): array
+    {
+        return $this->createGradingQueryBuilder($academicYear, $person, $isManager, $q)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function createGradingProgramGroupQueryBuilder(
+        ProgramGroup $programGroup,
+        Person $person,
+        bool $isManager,
+        ?string $q): QueryBuilder
+    {
+        $group = $programGroup->getGroup();
+        $academicYear = $group->getGrade()->getTraining()->getAcademicYear();
+        $qb = $this->createGradingQueryBuilder($academicYear, $person, $isManager, $q)
+            ->andWhere('g = :group')
+            ->setParameter('group', $group);
+
+        return $qb;
+    }
+
     public function countByStudentAndAcademicYear(Person $user, ?AcademicYear $academicYear): int
     {
         if (!$academicYear instanceof AcademicYear) {
@@ -419,7 +446,7 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($studentProgramWorkcenter);
     }
 
-    private function getManagedGroups(AcademicYear $academicYear, Person $person, bool $isManager): array
+    public function getManagedGroups(AcademicYear $academicYear, Person $person, bool $isManager): array
     {
         $teacher = $this->teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
         if (!$isManager && $teacher instanceof Teacher) {

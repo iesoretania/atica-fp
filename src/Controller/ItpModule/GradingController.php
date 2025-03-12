@@ -21,6 +21,7 @@ namespace App\Controller\ItpModule;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\PerformanceScaleValue;
 use App\Entity\Edu\ReportTemplate;
+use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\StudentProgramWorkcenterActivity;
 use App\Entity\ItpModule\StudentProgramWorkcenterActivityComment;
@@ -30,6 +31,7 @@ use App\Form\Type\ItpModule\StudentProgramWorkcenterActivityNewCommentType;
 use App\Form\Type\ItpModule\StudentProgramWorkcenterGradeType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\PerformanceScaleValueRepository;
+use App\Repository\ItpModule\ProgramGroupRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterActivityCommentRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterActivityRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
@@ -52,10 +54,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use TFox\MpdfPortBundle\Service\MpdfService;
 use Twig\Environment;
 
-#[Route(path: '/formacion/valoracion')]
+#[Route(path: '/formacion/valoracion', name: 'in_company_training_phase_tracking_grading_')]
 class GradingController extends AbstractController
 {
-    #[Route(path: '/listar/{academicYear}/{page}', name: 'in_company_training_phase_tracking_grading_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
     final public function list(
         Request                             $request,
         UserExtensionService                $userExtensionService,
@@ -100,6 +102,8 @@ class GradingController extends AbstractController
 
         return $this->render('itp/training_program/grading/list.html.twig', [
             'title' => $title,
+            'url_path' => 'in_company_training_phase_tracking_grading_form',
+            'report_path' => 'in_company_training_phase_tracking_grading_report',
             'pager' => $pager,
             'q' => $q,
             'domain' => 'itp_tracking',
@@ -108,7 +112,7 @@ class GradingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{studentProgramWorkcenter}', name: 'in_company_training_phase_tracking_grading_form', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(path: '/{studentProgramWorkcenter}', name: 'form', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET', 'POST'])]
     final public function index(
         Request                                    $request,
         TranslatorInterface                        $translator,
@@ -168,7 +172,7 @@ class GradingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/comentarios/{studentProgramWorkcenterActivity}', name: 'in_company_training_phase_tracking_grading_comment_form', requirements: ['student_program_workcenter_activity' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(path: '/comentarios/{studentProgramWorkcenterActivity}', name: 'comment_form', requirements: ['student_program_workcenter_activity' => '\d+'], methods: ['GET', 'POST'])]
     final public function comment(
         Request $request,
         TranslatorInterface $translator,
@@ -244,7 +248,7 @@ class GradingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/comentarios/eliminar/{activityComment}', name: 'in_company_training_phase_tracking_grading_comment_delete', requirements: ['activityComment' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(path: '/comentarios/eliminar/{activityComment}', name: 'comment_delete', requirements: ['activityComment' => '\d+'], methods: ['GET', 'POST'])]
     final public function deleteComment(
         Request $request,
         TranslatorInterface $translator,
@@ -295,7 +299,7 @@ class GradingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/informe/{studentProgramWorkcenter}', name: 'in_company_training_phase_tracking_grading_report', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET'])]
+    #[Route(path: '/informe/{studentProgramWorkcenter}', name: 'report', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET'])]
     final public function gradingReport(
         TranslatorInterface         $translator,
         Environment                 $engine,
@@ -364,4 +368,117 @@ class GradingController extends AbstractController
         }
     }
 
+    #[Route(path: '/evaluacion/{academicYear}/{page}', name: 'group_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    public function groupList(
+        Request                $request,
+        TranslatorInterface    $translator,
+        UserExtensionService   $userExtensionService,
+        ProgramGroupRepository $programGroupRepository,
+        StudentProgramWorkcenterRepository  $studentProgramWorkcenterRepository,
+        AcademicYear           $academicYear = null,
+        int                    $page = 1
+    ): Response
+    {
+        $organization = $userExtensionService->getCurrentOrganization();
+        if (!$academicYear instanceof AcademicYear) {
+            $academicYear = $organization->getCurrentAcademicYear();
+        }
+
+        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_SECTION, $organization);
+
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+
+        $q = $request->get('q');
+        $person = $this->getUser();
+        assert($person instanceof Person);
+
+        $studentProgramWorkcenters = $studentProgramWorkcenterRepository->findByAcademicYearPersonManagerAndQuery($academicYear, $person, $isManager, null);
+
+        $queryBuilder = $programGroupRepository->createGroupsFromStudentProgramWorkcenterStatsQueryBuilder($studentProgramWorkcenters, $q);
+
+        $adapter = new QueryAdapter($queryBuilder);
+        $pager = new Pagerfanta($adapter);
+        try {
+            $pager
+                ->setMaxPerPage($this->getParameter('page.size'))
+                ->setCurrentPage($page);
+        } catch (OutOfRangeCurrentPageException) {
+            $pager->setCurrentPage(1);
+        }
+
+        $title = $translator->trans('title.group_list', [], 'itp_grading');
+
+        $breadcrumb = [
+            ['fixed' => $translator->trans('title.group_list', [], 'itp_grading')]
+        ];
+
+        return $this->render('itp/training_program/grading/group_list.html.twig', [
+            'menu_path' => 'in_company_training_phase_tracking_grading_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'pager' => $pager,
+            'q' => $q,
+            'domain' => 'itp_grading'
+        ]);
+    }
+
+    #[Route(path: '/evaluacion/grupo/{programGroup}/{page}', name: 'group_student_list', requirements: ['programGroup' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    final public function groupStudentList(
+        Request                             $request,
+        UserExtensionService                $userExtensionService,
+        TranslatorInterface                 $translator,
+        StudentProgramWorkcenterRepository  $studentProgramWorkcenterRepository,
+        ProgramGroup                        $programGroup,
+        int                                 $page = 1
+    ): Response {
+        $organization = $userExtensionService->getCurrentOrganization();
+
+        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_SECTION, $organization);
+
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+
+        $q = $request->get('q');
+        $person = $this->getUser();
+        assert($person instanceof Person);
+
+        $queryBuilder = $studentProgramWorkcenterRepository->createGradingProgramGroupQueryBuilder(
+            $programGroup,
+            $person,
+            $isManager,
+            $q
+        );
+        assert($queryBuilder instanceof QueryBuilder);
+
+        $adapter = new QueryAdapter($queryBuilder, false);
+        $pager = new Pagerfanta($adapter);
+        try {
+            $pager
+                ->setMaxPerPage($this->getParameter('page.size'))
+                ->setCurrentPage($page);
+        } catch (OutOfRangeCurrentPageException) {
+            $pager->setCurrentPage(1);
+        }
+
+        $breadcrumb = [
+            [
+                'fixed' => $translator->trans('title.group_list', [], 'itp_grading'),
+                'routeName' => 'in_company_training_phase_tracking_grading_group_list',
+                'routeParams' => ['academicYear' => $programGroup->getGroup()->getGrade()->getTraining()->getAcademicYear()->getId()]
+            ],
+            ['fixed' => $programGroup->getGroup()->__toString()]
+        ];
+
+        $title = $translator->trans('title.group_student_list', [], 'itp_grading') . ' - ' . $programGroup->getGroup()->__toString();
+
+        return $this->render('itp/training_program/grading/list.html.twig', [
+            'menu_path' => 'in_company_training_phase_tracking_grading_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'url_path' => 'in_company_training_phase_tracking_grading_form',
+            'report_path' => 'in_company_training_phase_tracking_grading_report',
+            'pager' => $pager,
+            'q' => $q,
+            'domain' => 'itp_tracking'
+        ]);
+    }
 }

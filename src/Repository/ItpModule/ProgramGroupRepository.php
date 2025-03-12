@@ -22,9 +22,12 @@ use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
+use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Repository\Edu\GroupRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 class ProgramGroupRepository extends ServiceEntityRepository
@@ -176,5 +179,41 @@ class ProgramGroupRepository extends ServiceEntityRepository
             $return[$item['id']] = $item;
         }
         return $return;
+    }
+
+    public function createGroupsFromStudentProgramWorkcenterStatsQueryBuilder(array $studentProgramWorkcenters, ?string $q): QueryBuilder
+    {
+        $groups = new ArrayCollection();
+        foreach ($studentProgramWorkcenters as $data) {
+            $spw = $data[0];
+            assert($spw instanceof StudentProgramWorkcenter);
+            if ($spw->getStudentProgram()?->getProgramGroup() instanceof ProgramGroup) {
+                $group = $spw->getStudentProgram()->getProgramGroup()->getGroup();
+                if ($groups->contains($group) === false) {
+                    $groups->add($group);
+                }
+            }
+        }
+        $qb = $this->createQueryBuilder('pg')
+            ->select('pg', 'g', 'gr', 't', 'd', 'm', 'p')
+            ->leftJoin('pg.managers', 'm')
+            ->leftJoin('m.person', 'p')
+            ->join('pg.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->leftJoin('t.department', 'd')
+            ->orderBy('d.name')
+            ->addOrderBy('t.name')
+            ->addOrderBy('gr.name')
+            ->addOrderBy('g.name')
+            ->andWhere('g IN (:groups)')
+            ->setParameter('groups', $groups);
+
+        if ($q) {
+            $qb->andWhere('g.name LIKE :tq OR gr.name LIKE :tq OR t.name LIKE :tq OR d.name LIKE :tq')
+                ->setParameter('tq', '%' . $q . '%');
+        }
+
+        return $qb;
     }
 }

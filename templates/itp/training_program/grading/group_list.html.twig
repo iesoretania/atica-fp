@@ -1,0 +1,41 @@
+{% trans_default_domain 'itp_grading' %}
+{% extends 'generic/list.html.twig' %}
+{% import 'macros.html.twig' as m %}
+
+{% block new_action %}{% endblock %}
+
+{% block table_header %}
+    <th class="w-10">{{ 'header.group'|trans }}</th>
+    <th class="w-30">{{ 'header.group_grade'|trans }}</th>
+    <th class="w-20">{{ 'header.department'|trans }}</th>
+    <th class="w-40">{{ 'header.managers'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
+            {% for item in pager %}
+                {% set url = path('in_company_training_phase_tracking_grading_group_student_list', {'programGroup': item.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td>
+                        <a href="{{ url }}">{{ item.group.name }}</a>
+                    </td>
+                    <td>
+                        {{ item.group.grade.name }}
+                    </td>
+                    <td>
+                        {{ item.group.grade.training.department }}
+                    </td>
+                    <td>
+                        {{ item.managers|join(', ') }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
+                </tr>
+            {% endfor %}
+{% endblock %}
+
+{% block after_table %}
+    <div class="clearfix"></div>
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}
