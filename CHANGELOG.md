@@ -4,6 +4,11 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* feat: Impedir cambiar la fecha de una jornada que coincida con otra existente
+* feat: Ignorar actividades del plan de formación inicial importadas no asociadas a CEs
+
 7.3.0 (2025-03-13)
 ------------------
 * feat: Impedir cambiar la fecha de una jornada que coincida con otra existente

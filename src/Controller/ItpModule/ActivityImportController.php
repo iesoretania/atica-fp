@@ -175,6 +175,10 @@ class ActivityImportController extends AbstractController
                             return ['error' => '_missing_columns'];
                         }
                     }
+                    $subjectDescription = trim((string) $subjectData['Módulo']);
+                    if (empty($subjectDescription)) {
+                        continue;
+                    }
 
                     // Actividad
                     $activityName = trim((string) $subjectData['Actividad']);
@@ -199,7 +203,6 @@ class ActivityImportController extends AbstractController
                     $activity->setName($activityDescription);
 
                     // Módulo profesional
-                    $subjectDescription = trim((string) $subjectData['Módulo']);
                     $matchResult = preg_match('/.*\(.*\) \/ (.*)$/', $subjectDescription, $matches);
                     if ($matchResult === 0) {
                         return ['error' => '_wrong_subject_format'];
