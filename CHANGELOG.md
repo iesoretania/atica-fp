@@ -7,6 +7,9 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * feat: Impedir cambiar la fecha de una jornada que coincida con otra existente
+* feat: Permitir jornadas de FCT con un número no entero de horas
+
+_ATENCIÓN: Hay actualización de la base de datos_
 
 7.2.9 (2025-02-25)
 ------------------

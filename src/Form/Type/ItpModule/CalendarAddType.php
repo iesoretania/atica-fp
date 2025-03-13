@@ -47,7 +47,7 @@ class CalendarAddType extends AbstractType
                 'divisor' => 100,
                 'constraints' => [
                     new PositiveOrZero(),
-                    new LessThanOrEqual(['value' => 100000, 'message' => 'calendar.week_hours.max'])
+                    new LessThanOrEqual(['value' => 100000, 'message' => 'calendar.hours.max'])
                 ],
                 'required' => true
             ])
@@ -57,7 +57,7 @@ class CalendarAddType extends AbstractType
                 'divisor' => 100,
                 'constraints' => [
                     new PositiveOrZero(),
-                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.hours.max'])
                 ],
                 'required' => true
             ])
@@ -67,7 +67,7 @@ class CalendarAddType extends AbstractType
                 'divisor' => 100,
                 'constraints' => [
                     new PositiveOrZero(),
-                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.hours.max'])
                 ],
                 'required' => true
             ])
@@ -77,7 +77,7 @@ class CalendarAddType extends AbstractType
                 'divisor' => 100,
                 'constraints' => [
                     new PositiveOrZero(),
-                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.hours.max'])
                 ],
                 'required' => true
             ])
@@ -87,7 +87,7 @@ class CalendarAddType extends AbstractType
                 'divisor' => 100,
                 'constraints' => [
                     new PositiveOrZero(),
-                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.hours.max'])
                 ],
                 'required' => true
             ])
@@ -97,7 +97,7 @@ class CalendarAddType extends AbstractType
                 'divisor' => 100,
                 'constraints' => [
                     new PositiveOrZero(),
-                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.hours.max'])
                 ],
                 'required' => true
             ])
@@ -107,7 +107,7 @@ class CalendarAddType extends AbstractType
                 'divisor' => 100,
                 'constraints' => [
                     new PositiveOrZero(),
-                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.hours.max'])
                 ],
                 'required' => true
             ])
@@ -117,7 +117,7 @@ class CalendarAddType extends AbstractType
                 'divisor' => 100,
                 'constraints' => [
                     new PositiveOrZero(),
-                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.week_hours.max'])
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.hours.max'])
                 ],
                 'required' => true
             ])

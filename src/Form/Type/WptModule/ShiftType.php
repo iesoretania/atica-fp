@@ -29,10 +29,12 @@ use App\Repository\SurveyRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Symfony\Component\Validator\Constraints\Positive;
 
 class ShiftType extends AbstractType
 {
@@ -74,8 +76,17 @@ class ShiftType extends AbstractType
                 'label' => 'form.type',
                 'required' => true
             ])
-            ->add('hours', IntegerType::class, [
+            ->add('hours', MoneyType::class, [
                 'label' => 'form.hours',
+                'currency' => false,
+                'divisor' => 100,
+                'constraints' => [
+                    new Positive(),
+                    new LessThanOrEqual(['value' => 1000000, 'message' => 'calendar.hours.max'])
+                ],
+                'attr' => [
+                    'min' => 0
+                ],
                 'required' => true
             ])
             ->add('quarter', ChoiceType::class, [

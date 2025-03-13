@@ -79,12 +79,12 @@ class TrackingCalendarController extends AbstractController
         $today->setTime(0, 0);
         $workDayToday = $workDayRepository->findOneByAgreementAndDate($agreement, $today);
 
-        $workDayStats = count($agreement->getWorkDays()) > 0
+        $workDayStats = $agreement->getWorkDays()->count() > 0
             ? $trackedWorkDayRepository->hoursStatsByAgreementEnrollment($agreementEnrollment)
             : [];
 
-        $workDayRealStats = count($agreement->getWorkDays()) > 0
-            ? $trackedWorkDayRepository->realHoursByAgreementEnrollment($agreementEnrollment) / 100
+        $workDayRealStats = $agreement->getWorkDays()->count() > 0
+            ? $trackedWorkDayRepository->realHoursByAgreementEnrollment($agreementEnrollment)
             : 0;
 
         $title = $translator->trans('title.calendar', [], 'wpt_tracking');

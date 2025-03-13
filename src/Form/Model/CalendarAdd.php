@@ -173,7 +173,7 @@ class CalendarAdd
         return $this;
     }
 
-    #[Assert\GreaterThan(value: 0, message: 'calendar.week_hours.invalid')]
+    #[Assert\GreaterThan(value: 0, message: 'calendar.hours.invalid')]
     public function getWeekHours(): int
     {
         return $this->getHoursMon() + $this->getHoursTue() + $this->getHoursWed() + $this->getHoursThu() +

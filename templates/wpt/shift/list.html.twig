@@ -29,7 +29,7 @@
                         {{ item.type }}
                     </td>
                     <td>
-                        {{ item.hours }}
+                        {{ (item.hours / 100) | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
                     </td>
                     <td>
                         {{ item.agreements.count() }}

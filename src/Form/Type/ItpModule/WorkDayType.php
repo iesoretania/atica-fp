@@ -25,7 +25,8 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Symfony\Component\Validator\Constraints\Positive;
 
 class WorkDayType extends AbstractType
 {
@@ -45,10 +46,8 @@ class WorkDayType extends AbstractType
                 'currency' => false,
                 'divisor' => 100,
                 'constraints' => [
-                    new Range(['min' => 0])
-                ],
-                'attr' => [
-                    'min' => 0
+                    new Positive(),
+                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.hours.max'])
                 ],
                 'required' => true
             ])

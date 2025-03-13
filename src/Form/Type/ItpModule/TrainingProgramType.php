@@ -77,7 +77,7 @@ class TrainingProgramType extends AbstractType
                 'class' => Grade::class,
                 'choice_translation_domain' => false,
                 'choice_label' => function (Grade $g) {
-                    return $g->getName() . ' (' . $g->getTraining()->getAcademicYear() . ')';
+                    return $g->getName() . ' (' . $g->getTraining()?->getAcademicYear()?->__toString() . ')';
                 },
                 'choices' => $grades,
                 'disabled' => !$options['can_manage_permissions'],

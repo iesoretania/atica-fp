@@ -4,8 +4,8 @@ password.no_match: Las nuevas contraseñas no coinciden.
 user.id.not_found: Debe especificarse el nombre de usuario o bien el correo electrónico.
 login_username.invalid_chars: El nombre de usuario no puede contener espacios ni arrobas (@).
 
-calendar.week_hours.invalid: Debe especificarse al menos una hora a la semana
-calendar.week_hours.max: El número de horas es demasiado grande
+calendar.hours.invalid: Debe especificarse más de cero horas
+calendar.hours.max: El número de horas es demasiado grande
 calendar.start_time_needed: Debe especificarse la hora de inicio
 calendar.end_time_needed: Debe especificarse la hora de finalización
 calendar.first_start_time_needed: Debe especificarse el primer tramo

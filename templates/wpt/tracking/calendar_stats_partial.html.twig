@@ -7,21 +7,21 @@
     <div class="progress progress-stat collapse-zone" data-toggle="collapse" data-target="#hours_stats" aria-expanded="false">
         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{ percentage_locked }}"
              aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_locked }}%"
-             title="{{ 'form.stats.hours_locked_hint' | trans({'count' : work_day_real_stats}) }}">
-            {{ 'form.stats.hours_bar' | trans({'count' : work_day_real_stats, 'total' :work_day_stats[1]}) }}
+             title="{{ 'form.stats.hours_locked_hint' | trans({'count' : work_day_real_stats / 100}) }}">
+            {{ 'form.stats.hours_bar' | trans({'count' : work_day_real_stats / 100, 'total': work_day_stats[1] / 100}) }}
         </div>
         {% if work_day_stats[4] %}
         <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="{{ percentage_justified_absence }}"
              aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_justified_absence }}%"
-             title="{{ 'form.stats.hours_justified_absence_hint' | trans({'count' : work_day_stats[4]}) }}">
-            {{ 'form.stats.hours_bar' | trans({'count' : work_day_stats[4], 'total' :work_day_stats[1]}) }}
+             title="{{ 'form.stats.hours_justified_absence_hint' | trans({'count' : work_day_stats[4] / 100}) }}">
+            {{ 'form.stats.hours_bar' | trans({'count' : work_day_stats[4] / 100, 'total' : work_day_stats[1] / 100}) }}
         </div>
         {% endif %}
         {% if work_day_stats[3] %}
         <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="{{ percentage_absence }}"
              aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_absence }}%"
-             title="{{ 'form.stats.hours_absence_hint' | trans({'count' : work_day_stats[3]}) }}">
-            {{ 'form.stats.hours_bar' | trans({'count' : work_day_stats[3], 'total' :work_day_stats[1]}) }}
+             title="{{ 'form.stats.hours_absence_hint' | trans({'count' : work_day_stats[3] / 100}) }}">
+            {{ 'form.stats.hours_bar' | trans({'count' : work_day_stats[3] / 100, 'total' :work_day_stats[1] / 100}) }}
         </div>
         {% endif %}
     </div>
@@ -32,27 +32,27 @@
                 <tr>
                     <th>{{ 'form.stats.hours.total.caption'|trans }}</th>
                     <th>{{ 'form.stats.hours.total.days'|trans({'count': work_day_stats[6]}) }}</th>
-                    <th>{{ 'form.stats.hours.total.hours'|trans({'count': work_day_stats[1]}) }}</th>
+                    <th>{{ 'form.stats.hours.total.hours'|trans({'count': work_day_stats[1] / 100}) }}</th>
                 </tr>
                 <tr>
                     <td>{{ 'form.stats.hours.locked.caption'|trans }}</td>
                     <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[10] ?: 0, 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[10]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_real_locked_stats, 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_real_locked_stats/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_real_locked_stats / 100, 'total': work_day_stats[1] / 100}) }}{% if work_day_stats[1] %} ({{ (100*work_day_real_locked_stats/work_day_stats[1])|number_format }} %){% endif %}</td>
                 </tr>
                 <tr>
                     <td>{{ 'form.stats.hours.worked.caption'|trans }}</td>
                     <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[7], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[7]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_real_stats, 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_real_stats/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_real_stats / 100, 'total': work_day_stats[1] / 100}) }}{% if work_day_stats[1] %} ({{ (100*work_day_real_stats/work_day_stats[1])|number_format }} %){% endif %}</td>
                 </tr>
                 <tr>
                     <td>{{ 'form.stats.hours.absence.caption'|trans }}</td>
                     <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[8], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[8]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[3], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[3]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[3] / 100, 'total': work_day_stats[1] / 100}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[3]/work_day_stats[1])|number_format }} %){% endif %}</td>
                 </tr>
                 <tr>
                     <td>{{ 'form.stats.hours.justified_absence.caption'|trans }}</td>
                     <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[9], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[9]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[4], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[4]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[4] / 100, 'total': work_day_stats[1] / 100}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[4]/work_day_stats[1])|number_format }} %){% endif %}</td>
                 </tr>
             </tbody>
         </table>

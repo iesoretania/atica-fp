@@ -41,10 +41,10 @@
     {% embed 'wpt/tracking/calendar_partial.html.twig' %}
         {% block day %}
             {% set url = day ? path('workplace_training_tracking_calendar_form', {'workDay': day.id, 'agreementEnrollment': agreement_enrollment.id}) : '' %}
-            <td class="w-13{% if day %} clickable-row {{ tracked_day and tracked_day.absence ? (tracked_day.absence == 1 ? 'absence' : 'justified-absence') : ((dayData[2] is not null or (tracked_day and tracked_day.otherActivities is not empty)) ? (dayData[2] == day.hours * 100 ? 'submitted-ok' : 'submitted-warning') : 'workday') }}" data-href="{{ url }}{% endif %}">
+            <td class="w-13{% if day %} clickable-row {{ tracked_day and tracked_day.absence ? (tracked_day.absence == 1 ? 'absence' : 'justified-absence') : ((dayData[2] is not null or (tracked_day and tracked_day.otherActivities is not empty)) ? (dayData[2] == day.hours ? 'submitted-ok' : 'submitted-warning') : 'workday') }}" data-href="{{ url }}{% endif %}">
                 {% if day %}
                     {% if not read_only|default(false) and selectable %}<label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> {% endif %}<a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a>{% if selectable %}</label>{% endif %}{% if tracked_day and tracked_day.locked %} <i class="fas fa-lock"></i>{% endif %}<br/>
-                    {{ dayData[2] ? dayData[2]/100.0 : '0' }}/{{ 'caption.hours'|trans({'count': day.hours}, 'calendar') }}
+                    {{ dayData[2] ? 'caption.number'|trans({'count': dayData[2] / 100}, 'calendar') : '0' }}/{{ 'caption.hours'|trans({'count': day.hours / 100}, 'calendar') }}
                 {% elseif n > 0 %}
                     {{ n }}
                 {% endif %}
