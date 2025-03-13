@@ -132,6 +132,7 @@ class ActivityRepository extends ServiceEntityRepository
             ->join(StudentProgramWorkcenterActivity::class, 'spwa', 'WITH', 'spwa.activity = a')
             ->where('spwa.studentProgramWorkcenter = :studentProgramWorkcenter')
             ->setParameter('studentProgramWorkcenter', $studentProgramWorkcenter)
+            ->addOrderBy('LENGTH(a.code)', 'ASC')
             ->addOrderBy('a.code', 'ASC')
             ->addOrderBy('a.name', 'ASC')
             ->getQuery()

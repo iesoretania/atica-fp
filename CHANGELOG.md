@@ -9,6 +9,7 @@ x.x.x (xxxx-xx-xx)
 * feat: Impedir cambiar la fecha de una jornada que coincida con otra existente
 * feat: Ignorar actividades del plan de formación inicial importadas no asociadas a CEs
 * feat: Pantallas iniciales de informes de evaluación en FFE
+* feat: Informe resumen individual de evaluación en FFE
 
 7.3.0 (2025-03-13)
 ------------------

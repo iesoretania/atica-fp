@@ -1,0 +1,165 @@
+{% trans_default_domain 'itp_grading' %}
+{% extends 'layout/base_report.html.twig' %}
+
+{% block title %}{{ 'title.evaluation_report'|trans }} - {{ student_program_workcenter }}{% endblock %}
+
+{% block style %}
+    {{ parent() }}
+    <style>
+        body {
+            font-size: 10px;
+        }
+
+        @page {
+            margin-top: 2.65cm;
+            margin-left: 2cm;
+            margin-right: 2cm;
+            margin-bottom: 6.5cm;
+            odd-header-name: html_header;
+            even-header-name: html_header;
+            odd-footer-name: html_footer;
+            even-footer-name: html_footer;
+        }
+        
+        td, th {
+            border: 1px solid;
+            padding: 0.1cm;
+        }
+
+        tr.title {
+            background-color: lightgray;
+        }
+
+        td.center {
+            text-align: center;
+            vertical-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <htmlpageheader name="header">
+        <div style="padding-top: 0.2cm; font-size: 12px">
+            <div style="float: right; text-align: right; width: 8cm;">{{ 'report.council'|trans }}</div>
+            <br />
+            <div style="float: right; text-align: right; width: 5cm;">
+                {{ 'report.page'|trans({'page': '{PAGENO}', 'total': '{nbpg}'}) }}
+            </div>
+            {{ 'report.evaluation_title'|trans }}
+        </div>
+    </htmlpageheader>
+
+    <htmlpagefooter name="footer">
+        <div style="page-break-inside: avoid; text-align: center; padding-bottom: 1cm; font-weight: bold">
+            <div>{{ 'report.signature'|trans({
+                    'city': student_program_workcenter.educationalTutor.academicYear.organization.city,
+                    'day': student_program_workcenter.endDate|date('j', false),
+                    'month_string': ('r_month' ~ (student_program_workcenter.endDate|date('m', false) - 1))|trans({}, 'calendar'),
+                    'year': student_program_workcenter.endDate|date('Y', false)
+                }) }}</div>
+            <table style="margin-top: 0.5cm; vertical-align: top; margin-left: auto; margin-right: auto; width: 70%">
+                <tr style="width: 100%">
+                    <td style="width: 70%; text-align: left">
+                        {{ 'report.educational_tutor.signature'|trans }}<br /><br /><br /><br /><br /><br /><br /><br />
+                    </td>
+                    <td style="width: 30%; text-align: center">
+                        {{ 'report.organization.stamp'|trans }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">{{ 'report.signed'|trans }} {{ student_program_workcenter.educationalTutor }}</td>
+                </tr>
+            </table>
+        </div>
+    </htmlpagefooter>
+
+    <table class="big">
+        <tr>
+            <td colspan="2">
+                <b>{{ 'report.student_enrollment'|trans }}:</b> {{ student_program_workcenter }}<br />
+                <b>{{ 'report.work_tutor'|trans }}:</b> {{ student_program_workcenter.workTutor }}<br />
+                <b>{{ 'report.academic_year'|trans }}:</b> {{ academic_year }} - {{ academic_year.organization }}<br />
+                <b>{{ 'report.department'|trans }}:</b> {{ student_program_workcenter.studentProgram.programGroup.programGrade.grade.training.department }}<br />
+                <b>{{ 'report.training'|trans }}:</b> {{ student_program_workcenter.studentProgram.programGroup.programGrade.grade.training }}<br />
+                <b>{{ 'report.grade'|trans }}:</b> {{ student_program_workcenter.studentProgram.programGroup.programGrade.grade }}
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr class="title">
+            <th style="width: 50%;">
+                {{ 'report.activity'|trans }}
+            </th>
+            <th style="width: 50%;">
+                {{ 'report.criteria'|trans }}
+            </th>
+        </tr>
+        {% for activity in activities %}
+        <tr>
+            <td><b>{{ activity.code }}: </b>{{ activity.name }}</td>
+            <td>
+                <ul>
+                    {% set last_subject_id = null %}
+                    {% set last_learning_outcome_id = null %}
+                    {% set criteria_set = [] %}
+                    {% set criteria = activity.criteria|sort((a,b) => a.learningOutcome.subject.name == b.learningOutcome.subject.name ? (a.learningOutcome.code == b.learningOutcome.code ? a.code <=> b.code : a.learningOutcome.code <=> b.learningOutcome.code) : (a.learningOutcome.subject.name <=> b.learningOutcome.subject.name)) %}
+                    {% for criterium in criteria %}
+                    {% if criteria_set is not empty and (last_learning_outcome_id != criterium.learningOutcome.id) %}
+                        (<i>{{ criteria_set|join(', ') }}</i>)
+                        {% set criteria_set = [] %}
+                    {%- endif -%}
+                    {% if last_subject_id != criterium.learningOutcome.subject.id %}
+                    <li><strong>{{ criterium.learningOutcome.subject.code ? criterium.learningOutcome.subject.code ~ ' - ' }}{{ criterium.learningOutcome.subject }}</strong>:
+                        {% endif %}
+                        {% if last_learning_outcome_id != criterium.learningOutcome.id %}
+                            {%- if last_subject_id == criterium.learningOutcome.subject.id %}, {% endif %}
+                            {{ criterium.learningOutcome.code }}
+                        {%- endif -%}
+                        {% set last_learning_outcome_id = criterium.learningOutcome.id %}
+                        {% set last_subject_id = criterium.learningOutcome.subject.id %}
+                        {% set criteria_set = criteria_set | merge([criterium.code]) %}
+                        {% endfor %}
+                        {% if criteria_set is not empty %}(<i>{{ criteria_set|join(', ') }}</i>){% endif %}
+                        {% if last_subject_id is not null %}</li>{% endif %}
+                </ul>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% set last_subject_id = null %}
+    {% for criterion_data in stats %}
+    {% set criterion = criterion_data[0] %}
+    {% if criterion.learningOutcome.subject.id != last_subject_id %}
+    {% if last_subject_id != null %}
+        </tbody>
+    </table>
+    {% endif %}
+    {% set last_subject_id = criterion.learningOutcome.subject.id %}
+    <table>
+        <thead>
+        <tr class="title">
+            <th colspan="2">{{ criterion.learningOutcome.subject.name }}</th>
+        </tr>
+        <tr class="title">
+            <th style="width: 85%;">
+                {{ 'report.criterion'|trans }}
+            </th>
+            <th style="width: 15%;">
+                {{ 'report.grade_value'|trans }}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+    {% endif %}
+        <tr>
+            <td><b>{{ criterion.learningOutcome.code }}{{ criterion.code }}</b>: {{ criterion.name }}</td>
+            <td class="center">{{ criterion_data[1] ? (criterion_data[1]|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general'))) : '---' }}</td>
+        </tr>
+    {% endfor %}
+    {% if last_subject_id != null %}
+        </tbody>
+    </table>
+    {% endif %}
+{% endblock %}

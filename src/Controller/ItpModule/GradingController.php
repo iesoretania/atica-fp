@@ -31,6 +31,8 @@ use App\Form\Type\ItpModule\StudentProgramWorkcenterActivityNewCommentType;
 use App\Form\Type\ItpModule\StudentProgramWorkcenterGradeType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\PerformanceScaleValueRepository;
+use App\Repository\ItpModule\ActivityRepository;
+use App\Repository\ItpModule\CriterionRepository;
 use App\Repository\ItpModule\ProgramGroupRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterActivityCommentRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterActivityRepository;
@@ -375,6 +377,7 @@ class GradingController extends AbstractController
         UserExtensionService   $userExtensionService,
         ProgramGroupRepository $programGroupRepository,
         StudentProgramWorkcenterRepository  $studentProgramWorkcenterRepository,
+        AcademicYearRepository $academicYearRepository,
         AcademicYear           $academicYear = null,
         int                    $page = 1
     ): Response
@@ -384,7 +387,7 @@ class GradingController extends AbstractController
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_SECTION, $organization);
+        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_VIEW_EVALUATION, $organization);
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -393,7 +396,6 @@ class GradingController extends AbstractController
         assert($person instanceof Person);
 
         $studentProgramWorkcenters = $studentProgramWorkcenterRepository->findByAcademicYearPersonManagerAndQuery($academicYear, $person, $isManager, null);
-
         $queryBuilder = $programGroupRepository->createGroupsFromStudentProgramWorkcenterStatsQueryBuilder($studentProgramWorkcenters, $q);
 
         $adapter = new QueryAdapter($queryBuilder);
@@ -413,12 +415,14 @@ class GradingController extends AbstractController
         ];
 
         return $this->render('itp/training_program/grading/group_list.html.twig', [
-            'menu_path' => 'in_company_training_phase_tracking_grading_list',
+            'menu_path' => 'in_company_training_phase_tracking_grading_group_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'domain' => 'itp_grading'
+            'domain' => 'itp_grading',
+            'academic_year' => $academicYear,
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
     }
 
@@ -474,11 +478,82 @@ class GradingController extends AbstractController
             'menu_path' => 'in_company_training_phase_tracking_grading_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'url_path' => 'in_company_training_phase_tracking_grading_form',
-            'report_path' => 'in_company_training_phase_tracking_grading_report',
+            'url_path' => '',
+            'report_path' => 'in_company_training_phase_tracking_grading_evaluation_report',
             'pager' => $pager,
             'q' => $q,
             'domain' => 'itp_tracking'
         ]);
+    }
+
+    #[Route(path: '/evaluacion/informe/{studentProgramWorkcenter}', name: 'evaluation_report', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET'])]
+    final public function evaluationReport(
+        TranslatorInterface                        $translator,
+        Environment                                $engine,
+        PerformanceScaleValueRepository            $performanceScaleValueRepository,
+        CriterionRepository                        $criterionRepository,
+        StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository,
+        ActivityRepository                         $activityRepository,
+        StudentProgramWorkcenter                   $studentProgramWorkcenter
+    ): Response {
+        $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::VIEW_EVALUATION, $studentProgramWorkcenter);
+
+        $academicYear = $studentProgramWorkcenter
+            ->getStudentProgram()?->getStudentEnrollment()?->getGroup()?->getGrade()?->getTraining()?->getAcademicYear();
+        assert($academicYear instanceof AcademicYear);
+
+        // Pre-caching
+        $activities = $activityRepository->findByStudentProgramWorkcenter($studentProgramWorkcenter);
+        $studentProgramWorkcenterActivityRepository->findByStudentProgramWorkcenter($studentProgramWorkcenter);
+
+        $stats = $criterionRepository->getStudentProgramWorkcenterStats($studentProgramWorkcenter);
+
+        $title = $translator->trans('title.evaluation_report', [], 'itp_grading')
+            . ' - ' . $studentProgramWorkcenter->__toString();
+
+        $fileName = $title . '.pdf';
+
+        $mpdfService = new MpdfService();
+        ini_set("pcre.backtrack_limit", "5000000");
+
+        $mpdf = $mpdfService->getMpdf([['mode' => 'utf-8', 'format' => 'A4-L']]);
+        assert($mpdf instanceof Mpdf);
+        $tmp = '';
+
+        try {
+            $template = $studentProgramWorkcenter->getStudentProgram()?->getProgramGroup()?->getProgramGrade()?->getTrainingProgram()?->getFinalReportTemplate() ??
+                $studentProgramWorkcenter->getStudentProgram()
+                    ?->getStudentEnrollment()?->getGroup()?->getGrade()?->getTraining()?->getAcademicYear()?->getDefaultPortraitTemplate();
+
+            if ($template instanceof ReportTemplate) {
+                $tmp = tempnam('.', 'tpl');
+                file_put_contents($tmp, $template->getData());
+                $mpdf->SetDocTemplate($tmp, true);
+            }
+
+            $mpdf->SetFont('DejaVuSansCondensed');
+            $mpdf->SetFontSize(9);
+
+            $mpdf->WriteHTML($engine->render('itp/training_program/grading/evaluation_report.html.twig', [
+                'student_program_workcenter' => $studentProgramWorkcenter,
+                'academic_year' => $academicYear,
+                'stats' => $stats,
+                'activities' => $activities
+            ]));
+
+            $mpdf->SetTitle($title);
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->setContent($mpdf->Output($fileName, Destination::STRING_RETURN));
+
+            $response->headers->set('Content-disposition', 'inline; filename="' . $fileName . '"');
+
+            return $response;
+        } finally {
+            if ($tmp) {
+                unlink($tmp);
+            }
+        }
     }
 }

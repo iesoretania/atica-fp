@@ -216,4 +216,23 @@ class ProgramGroupRepository extends ServiceEntityRepository
 
         return $qb;
     }
+
+    public function createTeacherQueryBuilder(Teacher $teacher): QueryBuilder
+    {
+        return $this->createQueryBuilder('pg')
+            ->distinct()
+            ->join('pg.group', 'g')
+            ->join('g.teachings', 'te')
+            ->join('te.teacher', 't')
+            ->andWhere('t = :teacher')
+            ->setParameter('teacher', $teacher);
+    }
+
+    public function countByTeacher(Teacher $teacher): int
+    {
+        return $this->createTeacherQueryBuilder($teacher)
+            ->select('COUNT(pg)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

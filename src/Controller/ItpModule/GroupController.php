@@ -91,7 +91,6 @@ class GroupController extends AbstractController
         StudentProgramRepository $studentProgramRepository,
         ProgramGroup           $programGroup
     ): Response {
-        dump($studentProgramRepository->getStudentProgramGradesSummary($programGroup));
         assert($programGroup->getProgramGrade() instanceof ProgramGrade);
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGroup->getProgramGrade()->getTrainingProgram());
 

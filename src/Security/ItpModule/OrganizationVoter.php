@@ -37,7 +37,8 @@ class OrganizationVoter extends CachedVoter
 {
     public const ITP_ACCESS_SECTION = 'ORGANIZATION_ACCESS_IN_COMPANY_TRAINING_PHASE';
     public const ITP_MANAGER = 'ORGANIZATION_MANAGE_IN_COMPANY_TRAINING_PHASE';
-    public const ITP_VIEW_GRADES = 'ORGANIZATION_VIEW_IN_COMPANY_TRAINING_PHASE_EVALUATION';
+    public const ITP_VIEW_GRADES = 'ORGANIZATION_VIEW_IN_COMPANY_TRAINING_PHASE_GRADING';
+    public const ITP_VIEW_EVALUATION = 'ORGANIZATION_VIEW_IN_COMPANY_TRAINING_PHASE_EVALUATION';
     public const ITP_ACCESS_VISIT = 'WLT_ORGANIZATION_ACCESS_VISIT';
     public const ITP_CREATE_VISIT = 'WLT_ORGANIZATION_CREATE_VISIT';
 
@@ -64,6 +65,7 @@ class OrganizationVoter extends CachedVoter
             self::ITP_ACCESS_SECTION,
             self::ITP_MANAGER,
             self::ITP_VIEW_GRADES,
+            self::ITP_VIEW_EVALUATION,
             self::ITP_ACCESS_VISIT,
             self::ITP_CREATE_VISIT
         ], true);
@@ -111,10 +113,12 @@ class OrganizationVoter extends CachedVoter
             $isItpManager =  count($this->programGroupRepository->findByManager($teacher)) > 0;
             $isGroupTutor = count($this->programGroupRepository->findByTutor($teacher)) > 0;
             $isStudentProgramWorkcenterEducationalTutor = count($this->studentProgramWorkcenterRepository->findByEducationalTutorOrAdditionalEducationalTutor($teacher)) > 0;
+            $isItpTeacher = $this->programGroupRepository->countByTeacher($teacher) > 0;
         } else {
             $isItpManager = false;
             $isGroupTutor = false;
             $isStudentProgramWorkcenterEducationalTutor = false;
+            $isItpTeacher = false;
         }
         $isStudentProgramWorkcenterWorkTutor = count($this->studentProgramWorkcenterRepository->findByWorkTutorOrAdditionalWorkTutorAndAcademicYear($user, $subject->getCurrentAcademicYear())) > 0;
 
@@ -129,9 +133,12 @@ class OrganizationVoter extends CachedVoter
             case self::ITP_VIEW_GRADES:
                 // Si es jefe de departamento, tutor de grupo, tutor docente o tutor laboral, permitir ver evaluaciones
                 return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor;
+            case self::ITP_VIEW_EVALUATION:
+                // Si es jefe de departamento, tutor de grupo, tutor docente o tutor laboral, permitir ver evaluaciones
+                return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isItpTeacher;
             case self::ITP_ACCESS_SECTION:
                 // Si es jefe de algún departamento, estudiante, tutor de grupo, tutor docente o laboral, permitir acceder
-                return $isDepartmentHead || $isItpStudent || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor;
+                return $isDepartmentHead || $isItpStudent || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor || $isItpTeacher;
         }
 
         // denegamos en cualquier otro caso

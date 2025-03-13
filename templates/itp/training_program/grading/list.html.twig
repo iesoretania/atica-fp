@@ -17,7 +17,7 @@
 {% block table_body %}
             {% for item in pager %}
                 {% set spw = item[0] %}
-                {% set url = path(url_path, {'studentProgramWorkcenter': spw.id}) %}
+                {% set url = url_path ? path(url_path, {'studentProgramWorkcenter': spw.id}) : '#' %}
                 <tr class="clickable-row" data-href="{{ url }}">
                     <td>
                         <a href="{{ url }}">{{ spw.studentProgram.studentEnrollment }}</a>

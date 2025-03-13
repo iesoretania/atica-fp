@@ -13,5 +13,8 @@ menu.in_company_training_phase.tracking.detail: Realizar el seguimiento de activ
 menu.in_company_training_phase.grading: Valoración del desempeño de actividades
 menu.in_company_training_phase.grading.detail: Valorar el desempeño en las distintas actividades formativas de los convenios
 
+menu.in_company_training_phase.evaluation_summary: Resumen de evaluación
+menu.in_company_training_phase.evaluation_summary.detail: Obtener un resumen de evaluación de las actividades formativas de los convenios
+
 menu.in_company_training_phase.contact: Contactos con empresas
 menu.in_company_training_phase.contact.detail: Registrar los contactos con empresas por parte de los docentes de FP dual

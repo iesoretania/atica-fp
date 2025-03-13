@@ -41,6 +41,7 @@ class StudentProgramWorkcenterVoter extends CachedVoter
     public const ATTENDANCE = 'ITP_STUDENT_PROGRAM_WORKCENTER_ATTENDANCE';
     public const GRADE = 'ITP_STUDENT_PROGRAM_WORKCENTER_GRADE';
     public const VIEW_GRADE = 'ITP_STUDENT_PROGRAM_WORKCENTER_VIEW_GRADE';
+    public const VIEW_EVALUATION = 'ITP_STUDENT_PROGRAM_WORKCENTER_VIEW_EVALUATION';
 
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
@@ -68,7 +69,8 @@ class StudentProgramWorkcenterVoter extends CachedVoter
             self::LOCK,
             self::ATTENDANCE,
             self::GRADE,
-            self::VIEW_GRADE
+            self::VIEW_GRADE,
+            self::VIEW_EVALUATION
         ], true);
     }
 
@@ -122,10 +124,12 @@ class StudentProgramWorkcenterVoter extends CachedVoter
             $isItpManager = count($this->programGroupRepository->findByManager($teacher)) > 0;
             $isGroupTutor = count($this->programGroupRepository->findByTutor($teacher)) > 0;
             $isStudentProgramWorkcenterEducationalTutor = count($this->studentProgramWorkcenterRepository->findByEducationalTutorOrAdditionalEducationalTutor($teacher)) > 0;
+            $isItpTeacher = $this->programGroupRepository->countByTeacher($teacher) > 0;
         } else {
             $isItpManager = false;
             $isGroupTutor = false;
             $isStudentProgramWorkcenterEducationalTutor = false;
+            $isItpTeacher = false;
         }
         $isStudentProgramWorkcenterWorkTutor = count($this->studentProgramWorkcenterRepository->findByWorkTutorOrAdditionalWorkTutorAndAcademicYear($user, $academicYear)) > 0;
 
@@ -133,7 +137,7 @@ class StudentProgramWorkcenterVoter extends CachedVoter
             === $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
 
         // El jefe de departamento de la familia profesional del ciclo formativo
-        $isDepartmentHead = $training->getDepartment()?->getHead()?->getPerson() === $user;
+        $isDepartmentHead = $training?->getDepartment()?->getHead()?->getPerson() === $user;
 
         switch ($attribute) {
             case self::MANAGE:
@@ -148,6 +152,8 @@ class StudentProgramWorkcenterVoter extends CachedVoter
             case self::GRADE:
             case self::VIEW_GRADE:
                 return $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isDepartmentHead || $isItpManager || $isStudentProgramWorkcenterWorkTutor;
+            case self::VIEW_EVALUATION:
+                return $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isDepartmentHead || $isItpManager || $isItpTeacher;
         }
 
         // denegamos en cualquier otro caso

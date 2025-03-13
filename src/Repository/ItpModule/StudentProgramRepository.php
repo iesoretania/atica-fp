@@ -142,24 +142,4 @@ class StudentProgramRepository extends ServiceEntityRepository
         }
         return $studentProgram;
     }
-
-    public function getStudentProgramGradesSummary(ProgramGroup $programGroup): array
-    {
-        return $this->createQueryBuilder('sp')
-            ->addSelect('AVG(sv.numericGrade) AS average_grade')
-            ->addSelect('COUNT(ga) AS count')
-            ->addSelect('SUM(CASE WHEN ga.scaleValue IS NULL THEN 0 ELSE 1 END) AS graded')
-            ->join('sp.studentEnrollment', 'se')
-            ->join('se.person', 's')
-            ->join('sp.studentProgramWorkcenters', 'spw')
-            ->join('spw.activities', 'ga')
-            ->leftJoin('ga.scaleValue', 'sv')
-            ->where('sp.programGroup = :program_group')
-            ->setParameter('program_group', $programGroup)
-            ->orderBy('s.lastName')
-            ->addOrderBy('s.firstName')
-            ->groupBy('se')
-            ->getQuery()
-            ->getResult();
-    }
 }
