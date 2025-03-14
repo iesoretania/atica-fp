@@ -410,13 +410,8 @@ class GradingController extends AbstractController
 
         $title = $translator->trans('title.group_list', [], 'itp_grading');
 
-        $breadcrumb = [
-            ['fixed' => $translator->trans('title.group_list', [], 'itp_grading')]
-        ];
-
         return $this->render('itp/training_program/grading/group_list.html.twig', [
             'menu_path' => 'in_company_training_phase_tracking_grading_group_list',
-            'breadcrumb' => $breadcrumb,
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
