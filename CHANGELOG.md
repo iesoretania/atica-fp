@@ -10,6 +10,7 @@ x.x.x (xxxx-xx-xx)
 * feat: Ignorar actividades del plan de formación inicial importadas no asociadas a CEs
 * feat: Pantallas iniciales de informes de evaluación en FFE
 * feat: Informe resumen individual de evaluación en FFE
+* feat: Añadidas estadísticas en el informe resumen de evaluación individual
 
 7.3.0 (2025-03-13)
 ------------------

@@ -98,5 +98,8 @@ report.no_grade: "Sin valorar"
 report.grade_description: "Descripción de la valoración"
 report.work_tutor_remarks: "Comentario del tutor dual de empresa"
 
+report.subject_average: Promedio del módulo profesional
+report.learning_outcome_average: Promedio del resultado de aprendizaje
+
 report.work_tutor.stamp: (Sello de la empresa)
 report.organization.stamp: (Sello del centro educativo)
