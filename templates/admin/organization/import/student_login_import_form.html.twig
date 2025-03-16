@@ -39,15 +39,25 @@
                 {% for item in stats.conflicts %}
                     <li><b>{{ item.username }}</b> - {{ item.name }}
                         {% if item.student_enrollments %}
-                            - <i>Hay varios estudiantes en el curso académico con exactamente el mismo nombre y apellidos:</i>
+                            - <i>{{ 'report.student_login.conflicts.same_name'|trans }}</i>
                             <ul>
                             {% for student_enrollment in item.student_enrollments %}
                                 <li><a href="{{ path('admin_user_form_edit', {'id': student_enrollment.person.id }) }}" target="_blank">{{ student_enrollment }}</a></li>
                             {% endfor %}
                             </ul>
                         {% else %}
-                            - <i>Hay varios usuarios PASEN asociados al mismo nombre y apellidos</i>
+                            - <i>{{ 'report.student_login.conflicts.same_username'|trans }}</i>
                         {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if stats.existing %}
+            <h4>{{ 'report.student_login.existing'|trans }}</h4>
+            <ul>
+                {% for person in stats.renamed %}
+                    <li><a href="{{ path('admin_user_form_edit', {'id': person.id }) }}" target="_blank">{{ person }}</a> - {{ person.loginUsername }}
+                        - <i>{{ 'report.student_login.existing.info'|trans }}</i>
                     </li>
                 {% endfor %}
             </ul>

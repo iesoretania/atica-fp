@@ -130,4 +130,14 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
     {
         return is_a($class, Person::class);
     }
+
+    final public function findByLoginUsernameAndNotPerson(string $username, Person $person): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.loginUsername = :q AND p != :person')
+            ->setParameter('q', $username)
+            ->setParameter('person', $person)
+            ->getQuery()
+            ->getResult();
+    }
 }

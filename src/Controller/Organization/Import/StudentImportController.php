@@ -239,6 +239,7 @@ class StudentImportController extends AbstractController
     public function login(
         UserExtensionService $userExtensionService,
         StudentEnrollmentRepository $studentEnrollmentRepository,
+        PersonRepository $personRepository,
         TranslatorInterface $translator,
         EntityManagerInterface $entityManager,
         Request $request
@@ -260,6 +261,7 @@ class StudentImportController extends AbstractController
                 $formData->getFile()->getPathname(),
                 $formData->getAcademicYear(),
                 $studentEnrollmentRepository,
+                $personRepository,
                 $entityManager
             );
 
@@ -285,6 +287,7 @@ class StudentImportController extends AbstractController
         $file,
         AcademicYear $academicYear,
         StudentEnrollmentRepository $studentEnrollmentRepository,
+        PersonRepository $personRepository,
         EntityManagerInterface $entityManager
     ): array {
         $updatedCount = 0;
@@ -295,6 +298,8 @@ class StudentImportController extends AbstractController
         $collection = [];
 
         $conflicts = [];
+
+        $existing = [];
 
         $lastName = '';
         $lastUsername = '';
@@ -361,8 +366,24 @@ class StudentImportController extends AbstractController
                         continue;
                     }
 
-                    /** @var StudentEnrollment $studentEnrollment */
                     $studentEnrollment = $studentEnrollments[0];
+                    assert($studentEnrollment instanceof StudentEnrollment);
+
+                    $person = $studentEnrollment->getPerson();
+                    assert($person instanceof Person);
+
+                    // Comprobar si hay otra persona con el mismo usuario IdEA
+                    $otherPersons = $personRepository->findByLoginUsernameAndNotPerson($username, $person);
+
+                    if (count($otherPersons) > 0) {
+                        foreach ($otherPersons as $otherPerson) {
+                            // Avisar de que hay un conflicto
+                            $existing[] = $otherPerson;
+                        }
+                        // Saltarnos el usuario
+                        continue;
+                    }
+
                     $studentEnrollment->getPerson()->setLoginUsername($username);
                     $studentEnrollment->getPerson()->setAllowExternalCheck(true);
                     $studentEnrollment->getPerson()->setExternalCheck(true);
@@ -387,7 +408,8 @@ class StudentImportController extends AbstractController
             'updated_items' => $updatedCount,
             'total_items' => $totalCount,
             'collection' => $collection,
-            'conflicts' => $conflicts
+            'conflicts' => $conflicts,
+            'existing' => $existing
         ];
     }
 }

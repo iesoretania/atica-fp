@@ -12,6 +12,7 @@ x.x.x (xxxx-xx-xx)
 * feat: Informe resumen individual de evaluación en FFE
 * feat: Añadidas estadísticas en el informe resumen de evaluación individual
 * fix: No mostrar promedios si no hay datos
+* fix: Considerar el caso de que al importar usuarios PASEN haya personas antiguas con el mismo usuario
 
 7.3.0 (2025-03-13)
 ------------------

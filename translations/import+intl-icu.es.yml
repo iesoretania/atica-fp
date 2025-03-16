@@ -113,6 +113,10 @@ instructions.path.student_login: "Utilidades > Panel de control Pasen > Gestión
 report.student_login.list: Nombres de usuario procesados
 report.student_login.updated: Estudiantes actualizados con el nombre de usuario
 report.student_login.conflicts: Conflictos
+report.student_login.conflicts.same_name: "Hay varios estudiantes en el curso académico con exactamente el mismo nombre y apellidos:"
+report.student_login.conflicts.same_username: "Hay varios usuarios PASEN asociados al mismo nombre y apellidos."
+report.student_login.existing: Estudiantes antiguos que entran en conflicto con un usuario actual
+report.student_login.existing.info: "Este usuario antiguo tiene asignado un usuario PASEN actual. Es necesario cambiarlo para poder asignarlo correctamente al actual."
 
 warning.student_login.conflicts: |
   ¡Atención! Se han detectado conflictos en la importación que habrá que resolver
