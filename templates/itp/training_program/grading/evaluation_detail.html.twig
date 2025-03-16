@@ -1,0 +1,10 @@
+{% trans_default_domain 'itp_grading' %}
+{% import 'macros.html.twig' as m %}
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ 'title.evaluation_report'|trans }} - {{ student_program_workcenter }}{% endblock %}
+
+{% block content %}
+    {% include 'itp/training_program/grading/evaluation_data_partial.html.twig' %}
+    {{ m.link_button(path('in_company_training_phase_tracking_grading_group_list', {'studentProgramGroup': student_program_workcenter.studentProgram.programGroup.id}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{% endblock %}

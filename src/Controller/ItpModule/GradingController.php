@@ -473,7 +473,7 @@ class GradingController extends AbstractController
             'menu_path' => 'in_company_training_phase_tracking_grading_group_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'url_path' => '',
+            'url_path' => 'in_company_training_phase_tracking_grading_evaluation_detail',
             'report_path' => 'in_company_training_phase_tracking_grading_evaluation_report',
             'pager' => $pager,
             'q' => $q,
@@ -481,11 +481,56 @@ class GradingController extends AbstractController
         ]);
     }
 
+    #[Route(path: '/evaluacion/grupo/detalle/{studentProgramWorkcenter}', name: 'evaluation_detail', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET'])]
+    final public function evaluationDetail(
+        TranslatorInterface                        $translator,
+        Environment                                $engine,
+        CriterionRepository                        $criterionRepository,
+        StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository,
+        ActivityRepository                         $activityRepository,
+        StudentProgramWorkcenter                   $studentProgramWorkcenter
+    ): Response {
+        $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::VIEW_EVALUATION, $studentProgramWorkcenter);
+
+        $academicYear = $studentProgramWorkcenter
+            ->getStudentProgram()?->getStudentEnrollment()?->getGroup()?->getGrade()?->getTraining()?->getAcademicYear();
+        assert($academicYear instanceof AcademicYear);
+
+        // Pre-caching
+        $activities = $activityRepository->findByStudentProgramWorkcenter($studentProgramWorkcenter);
+        $studentProgramWorkcenterActivityRepository->findByStudentProgramWorkcenter($studentProgramWorkcenter);
+
+        $stats = $criterionRepository->getStudentProgramWorkcenterStats($studentProgramWorkcenter);
+
+        $breadcrumb = [
+            [
+                'fixed' => $translator->trans('title.group_list', [], 'itp_grading'),
+                'routeName' => 'in_company_training_phase_tracking_grading_group_list',
+                'routeParams' => ['academicYear' => $studentProgramWorkcenter->getStudentProgram()->getProgramGroup()->getGroup()->getGrade()->getTraining()->getAcademicYear()->getId()]
+            ],
+            [
+                'fixed' => $studentProgramWorkcenter->getStudentProgram()->getProgramGroup()->getGroup()->__toString()
+            ],
+            ['fixed' => $studentProgramWorkcenter->__toString()]
+        ];
+
+        $title = $translator->trans('title.evaluation_report', [], 'itp_grading') . ' - ' . $studentProgramWorkcenter->__toString();
+
+        return $this->render('itp/training_program/grading/evaluation_detail.html.twig', [
+            'menu_path' => 'in_company_training_phase_tracking_grading_group_list',
+            'breadcrumb' => $breadcrumb,
+            'title' => $title,
+            'student_program_workcenter' => $studentProgramWorkcenter,
+            'academic_year' => $academicYear,
+            'stats' => $stats,
+            'activities' => $activities
+        ]);
+    }
+
     #[Route(path: '/evaluacion/informe/{studentProgramWorkcenter}', name: 'evaluation_report', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET'])]
     final public function evaluationReport(
         TranslatorInterface                        $translator,
         Environment                                $engine,
-        PerformanceScaleValueRepository            $performanceScaleValueRepository,
         CriterionRepository                        $criterionRepository,
         StudentProgramWorkcenterActivityRepository $studentProgramWorkcenterActivityRepository,
         ActivityRepository                         $activityRepository,

@@ -1,0 +1,141 @@
+{% trans_default_domain 'itp_grading' %}
+<table class="table table-bordered big">
+    <tr>
+        <td>
+            <b>{{ 'report.student_enrollment'|trans }}:</b> {{ student_program_workcenter }}<br />
+            <b>{{ 'report.work_tutor'|trans }}:</b> {{ student_program_workcenter.workTutor }}<br />
+            <b>{{ 'report.academic_year'|trans }}:</b> {{ academic_year }} - {{ academic_year.organization }}<br />
+            <b>{{ 'report.department'|trans }}:</b> {{ student_program_workcenter.studentProgram.programGroup.programGrade.grade.training.department }}<br />
+            <b>{{ 'report.training'|trans }}:</b> {{ student_program_workcenter.studentProgram.programGroup.programGrade.grade.training }}<br />
+            <b>{{ 'report.grade'|trans }}:</b> {{ student_program_workcenter.studentProgram.programGroup.programGrade.grade }}
+        </td>
+    </tr>
+</table>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr class="title">
+            <th style="width: 50%;">
+                {{ 'report.activity'|trans }}
+            </th>
+            <th style="width: 50%;">
+                {{ 'report.criteria'|trans }}
+            </th>
+        </tr>
+    </thead>
+    {% for activity in activities %}
+        <tr>
+            <td><b>{{ activity.code }}: </b>{{ activity.name }}</td>
+            <td>
+                <ul>
+                    {% set last_subject_id = null %}
+                    {% set last_learning_outcome_id = null %}
+                    {% set criteria_set = [] %}
+                    {% set criteria = activity.criteria|sort((a,b) => a.learningOutcome.subject.name == b.learningOutcome.subject.name ? (a.learningOutcome.code == b.learningOutcome.code ? a.code <=> b.code : a.learningOutcome.code <=> b.learningOutcome.code) : (a.learningOutcome.subject.name <=> b.learningOutcome.subject.name)) %}
+                    {% for criterium in criteria %}
+                    {% if criteria_set is not empty and (last_learning_outcome_id != criterium.learningOutcome.id) %}
+                        (<i>{{ criteria_set|join(', ') }}</i>)
+                        {% set criteria_set = [] %}
+                    {%- endif -%}
+                    {% if last_subject_id != criterium.learningOutcome.subject.id %}
+                    <li><strong>{{ criterium.learningOutcome.subject.code ? criterium.learningOutcome.subject.code ~ ' - ' }}{{ criterium.learningOutcome.subject }}</strong>:
+                        {% endif %}
+                        {% if last_learning_outcome_id != criterium.learningOutcome.id %}
+                            {%- if last_subject_id == criterium.learningOutcome.subject.id %}, {% endif %}
+                            {{ criterium.learningOutcome.code }}
+                        {%- endif -%}
+                        {% set last_learning_outcome_id = criterium.learningOutcome.id %}
+                        {% set last_subject_id = criterium.learningOutcome.subject.id %}
+                        {% set criteria_set = criteria_set | merge([criterium.code]) %}
+                        {% endfor %}
+                        {% if criteria_set is not empty %}(<i>{{ criteria_set|join(', ') }}</i>){% endif %}
+                        {% if last_subject_id is not null %}</li>{% endif %}
+                </ul>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+
+{% set last_subject_id = null %}
+    {% set last_learning_outcome_id = null %}
+    {% set learning_outcomes_sum = 0 %}
+    {% set learning_outcomes_count = 0 %}
+    {% set criteria_sum = 0 %}
+    {% set criteria_count = 0 %}
+    {% for criterion_data in stats %}
+        {% set criterion = criterion_data[0] %}
+        {% if last_learning_outcome_id != criterion.learningOutcome.id %}
+            {% if criteria_count > 0 %}
+                <tr>
+                    <td class="title"><b>{{ 'report.learning_outcome_average'|trans }}</b></td>
+                    <td class="center"><b>{{ (criteria_sum / criteria_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</b></td>
+                    {% set learning_outcomes_count = learning_outcomes_count + 1 %}
+                    {% set learning_outcomes_sum = learning_outcomes_sum + criteria_sum / criteria_count %}
+                </tr>
+            {% endif %}
+        {% endif %}
+        {% if criterion.learningOutcome.subject.id != last_subject_id %}
+            {% if last_subject_id != null %}
+                </tbody>
+                {% if learning_outcomes_count > 0 %}
+                    <tfoot>
+                    <tr class="table-dark">
+                        <td><b>{{ 'report.subject_average'|trans }}</b></td>
+                        <td class="center"><b>{{ (learning_outcomes_sum / learning_outcomes_count) |number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</b></td>
+                    </tr>
+                    </tfoot>
+                {% endif %}
+                {% set learning_outcomes_sum = 0 %}
+                {% set learning_outcomes_count = 0 %}
+                </table>
+            {% endif %}
+            {% set last_subject_id = criterion.learningOutcome.subject.id %}
+            {% set criteria_sum = 0 %}
+            {% set criteria_count = 0 %}
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr class="table-primary title">
+        <th colspan="2" class="big-title">{{ criterion.learningOutcome.subject.name }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% endif %}
+    {% if last_learning_outcome_id != criterion.learningOutcome.id %}
+        {% set last_learning_outcome_id = criterion.learningOutcome.id %}
+        {% set criteria_count = 0 %}
+        {% set criteria_sum = 0 %}
+        <tr class="title">
+            <th colspan="2" class="left">{{ criterion.learningOutcome.code }} : {{ criterion.learningOutcome.description }}</th>
+        </tr>
+    {% endif %}
+    <tr>
+        {% if criterion_data[1] %}
+            {% set criteria_count = criteria_count + 1 %}
+            {% set criteria_sum = criteria_sum + criterion_data[1] %}
+        {% endif %}
+        <td style="width: 85%"><b>{{ criterion.code }}</b>. {{ criterion.name }}</td>
+        <td style="width: 15%" class="center">{{ criterion_data[1] ? (criterion_data[1]|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general'))) : 'report.no_grade'|trans }}</td>
+    </tr>
+    {% endfor %}
+    {% if last_subject_id != null %}
+    {% if last_learning_outcome_id != null %}
+        {% if criteria_count > 0 %}
+            <tr>
+                <td class="title"><b>{{ 'report.learning_outcome_average'|trans }}</b></td>
+                <td class="center"><b>{{ (criteria_sum / criteria_count) |number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</b></td>
+                {% set learning_outcomes_count = learning_outcomes_count + 1 %}
+                {% set learning_outcomes_sum = learning_outcomes_sum + criteria_sum / criteria_count %}
+            </tr>
+        {% endif %}
+    {% endif %}
+    </tbody>
+    {% if learning_outcomes_count > 0 %}
+        <tfoot>
+        <tr class="table-dark">
+            <td class="title"><b>{{ 'report.subject_average'|trans }}</b></td>
+            <td class="center"><b>{{ (learning_outcomes_sum / learning_outcomes_count) |number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</b></td>
+        </tr>
+        </tfoot>
+    {% endif %}
+</table>
+{% endif %}
