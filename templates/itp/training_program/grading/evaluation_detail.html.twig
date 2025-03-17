@@ -6,5 +6,5 @@
 
 {% block content %}
     {% include 'itp/training_program/grading/evaluation_data_partial.html.twig' %}
-    {{ m.link_button(path('in_company_training_phase_tracking_grading_group_list', {'studentProgramGroup': student_program_workcenter.studentProgram.programGroup.id}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
 {% endblock %}

@@ -509,7 +509,9 @@ class GradingController extends AbstractController
                 'routeParams' => ['academicYear' => $studentProgramWorkcenter->getStudentProgram()->getProgramGroup()->getGroup()->getGrade()->getTraining()->getAcademicYear()->getId()]
             ],
             [
-                'fixed' => $studentProgramWorkcenter->getStudentProgram()->getProgramGroup()->getGroup()->__toString()
+                'fixed' => $studentProgramWorkcenter->getStudentProgram()->getProgramGroup()->getGroup()->__toString(),
+                'routeName' => 'in_company_training_phase_tracking_grading_group_student_list',
+                'routeParams' => ['programGroup' => $studentProgramWorkcenter->getStudentProgram()->getProgramGroup()->getId()]
             ],
             ['fixed' => $studentProgramWorkcenter->__toString()]
         ];
