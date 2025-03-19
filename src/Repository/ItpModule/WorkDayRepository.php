@@ -360,7 +360,7 @@ class WorkDayRepository extends ServiceEntityRepository
 
         $oldNumWeek = NAN;
 
-        $workDays = $firstWorkday->getStudentProgramWorkcenter()->getWorkDays();
+        $workDays = $this->findByStudentProgramWorkcenter($firstWorkday->getStudentProgramWorkcenter());
 
         /** @var WorkDay $day */
         foreach ($workDays as $day) {

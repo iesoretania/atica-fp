@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * fix: Volver del resumen de evaluación de FFE lleva al sitio correcto
+* fix: Mostrar número de página correcto en el informe semanal de seguimiento de la FFE
 
 7.3.1 (2025-03-16)
 ------------------
