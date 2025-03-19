@@ -139,3 +139,20 @@
     {% endif %}
 </table>
 {% endif %}
+
+{% if student_program_workcenter.workTutorRemarks %}
+    <table class="table table-bordered">
+        <thead>
+        <tr class="title table-primary">
+            <th class="big-title">
+                {{ 'report.work_tutor_remarks'|trans }}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ student_program_workcenter.workTutorRemarks|nl2br }}</td>
+        </tr>
+        </tbody>
+    </table>
+{% endif %}

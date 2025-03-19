@@ -43,7 +43,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if item.graded_activities > 0 %}{{ m.link_button_new(path(report_path, {'studentProgramWorkcenter': spw.id}), 'file-alt', 'btn-info btn-sm btn-block', 'form.report'|trans) }}{% endif %}
+                        {% if item.graded_activities > 0 or item[0].workTutorRemarks %}{{ m.link_button_new(path(report_path, {'studentProgramWorkcenter': spw.id}), 'file-alt', 'btn-info btn-sm btn-block', 'form.report'|trans) }}{% endif %}
                     </td>
                 </tr>
             {% else %}
