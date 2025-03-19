@@ -61,17 +61,16 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
     ) {
         $qb = $this->findByProjectsQueryBuilder($projects);
         if ($dateTime instanceof \DateTimeInterface) {
-            $startDate = clone $dateTime;
+            $startDate = \DateTime::createFromInterface($dateTime);
+            $startDate->setTimezone(new \DateTimeZone('UTC'));
             $startDate->setTime(0, 0);
-            $endDate = clone $startDate;
-            $endDate->add(new \DateInterval('P1D'));
 
             $qb
                 ->join(Agreement::class, 'ag', 'WITH', 'ag.studentEnrollment = se')
                 ->andWhere('ag.startDate <= :start_date_time')
                 ->andWhere('ag.endDate >= :end_date_time')
                 ->setParameter('start_date_time', $startDate)
-                ->setParameter('end_date_time', $endDate);
+                ->setParameter('end_date_time', $startDate);
         }
 
         return $qb;
@@ -97,15 +96,14 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
 
         if ($dateTime instanceof \DateTimeInterface) {
             $startDate = \DateTime::createFromInterface($dateTime);
+            $startDate->setTimezone(new \DateTimeZone('UTC'));
             $startDate->setTime(0, 0);
-            $endDate = clone $startDate;
-            $startDate->add(new \DateInterval('P1D'));
             $qb = $this->findByProjectsQueryBuilder([$project]);
             $qb
-                ->andWhere('a.startDate < :end_date_time')
+                ->andWhere('a.startDate <= :end_date_time')
                 ->andWhere('a.endDate >= :start_date_time')
                 ->setParameter('start_date_time', $startDate)
-                ->setParameter('end_date_time', $endDate);
+                ->setParameter('end_date_time', $startDate);
         }
         return $qb
             ->getQuery()

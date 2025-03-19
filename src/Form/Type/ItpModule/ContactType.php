@@ -57,7 +57,7 @@ class ContactType extends AbstractType
         FormInterface      $form,
         AcademicYear       $academicYear,
         ?Workcenter        $workcenter,
-                           $selectedTrainingPrograms,
+        array              $selectedTrainingPrograms,
         array              $teachers,
         \DateTimeInterface $dateTime
     ): void {

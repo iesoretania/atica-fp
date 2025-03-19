@@ -66,14 +66,12 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
             $startDate = clone $dateTime;
             $startDate->setTimezone(new \DateTimeZone('UTC'));
             $startDate->setTime(0, 0);
-            $endDate = clone $startDate;
-            $endDate->add(new \DateInterval('P1D'));
 
             $qb
                 ->andWhere('spw.startDate <= :start_date_time')
                 ->andWhere('spw.endDate >= :end_date_time')
                 ->setParameter('start_date_time', $startDate)
-                ->setParameter('end_date_time', $endDate);
+                ->setParameter('end_date_time', $startDate);
         }
 
         return $qb;

@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * feat: Permitir generar informe de valoración del desempeño y de evaluación si se añaden observaciones
+* fix: Ahora los estudiantes salen en el listado de contactos en su último día
 
 7.3.2 (2025-03-19)
 ------------------
