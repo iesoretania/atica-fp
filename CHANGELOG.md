@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+7.3.2 (2025-03-19)
 ------------------
 * fix: Volver del resumen de evaluación de FFE lleva al sitio correcto
 * fix: Mostrar número de página correcto en el informe semanal de seguimiento de la FFE
