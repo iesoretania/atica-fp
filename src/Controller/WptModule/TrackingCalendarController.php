@@ -159,16 +159,21 @@ class TrackingCalendarController extends AbstractController
 
         $previousLockState = $trackedWorkDay->isLocked();
 
-        foreach ($trackedActivities as $trackedActivity) {
-            $trackedWorkDay->getTrackedActivities()->removeElement($trackedActivity->getActivity());
-        }
         foreach ($activities as $newActivity) {
-            $newTrackedActivity = new ActivityTracking();
-            $newTrackedActivity
-                ->setActivity($newActivity)
-                ->setTrackedWorkDay($trackedWorkDay)
-                ->setHours(0);
-            $trackedWorkDay->getTrackedActivities()->add($newTrackedActivity);
+            $skip = false;
+            foreach ($trackedActivities as $trackedActivity) {
+                if ($trackedActivity->getActivity() === $newActivity) {
+                    $skip = true;
+                }
+            }
+            if (!$skip) {
+                $newTrackedActivity = new ActivityTracking();
+                $newTrackedActivity
+                    ->setActivity($newActivity)
+                    ->setTrackedWorkDay($trackedWorkDay)
+                    ->setHours(0);
+                $trackedWorkDay->getTrackedActivities()->add($newTrackedActivity);
+            }
         }
 
         $form = $this->createForm(WorkDayTrackingType::class, $trackedWorkDay, [
