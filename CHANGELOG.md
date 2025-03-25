@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+7.3.4 (2025-03-25)
 ------------------
 * fix: Mostrar número de horas correcto al cumplimentar una jornada de FCT
 * chore: Mostrar informe del tutor laboral de FCT en otra ventana/pestaña
