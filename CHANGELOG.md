@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * fix: Mostrar número de horas correcto al cumplimentar una jornada de FCT
+* chore: Mostrar informe del tutor laboral de FCT en otra ventana/pestaña
 
 7.3.3 (2025-03-23)
 ------------------
