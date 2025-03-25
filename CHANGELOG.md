@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* fix: Mostrar número de horas correcto al cumplimentar una jornada de FCT
+
 7.3.3 (2025-03-23)
 ------------------
 * feat: Permitir generar informe de valoración del desempeño y de evaluación si se añaden observaciones

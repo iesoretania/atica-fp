@@ -149,7 +149,7 @@ class TrackingCalendarController extends AbstractController
 
         $title = $translator->trans('dow' . ($workDay->getDate()->format('N') - 1), [], 'calendar');
         $title .= ' - ' . $workDay->getDate()->format($translator->trans('format.date', [], 'general'));
-        $title .= ' - ' . $translator->trans('caption.hours', ['count' => $workDay->getHours()], 'calendar');
+        $title .= ' - ' . $translator->trans('caption.hours', ['count' => $workDay->getHours() / 100], 'calendar');
 
         $previousWorkDay = $workDayRepository->findPrevious($workDay);
         $nextWorkDay = $workDayRepository->findNext($workDay);
