@@ -23,8 +23,10 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 
 class FinalReportType extends AbstractType
 {
@@ -70,6 +72,40 @@ class FinalReportType extends AbstractType
                 'expanded' => true,
                 'choices' => $aspects,
                 'required' => true
+            ])
+            ->add('otherDescription1', TextType::class, [
+                'label' => 'form.other1_description',
+                'constraints' => [
+                    new Length(max: 60)
+                ],
+                'attr' => [
+                    'placeholder' => 'form.other_description.placeholder',
+                ],
+                'required' => false
+            ])
+            ->add('other1', ChoiceType::class, [
+                'label' => 'form.other1',
+                'expanded' => true,
+                'choices' => $aspects,
+                'placeholder' => 'form.none',
+                'required' => false
+            ])
+            ->add('otherDescription2', TextType::class, [
+                'label' => 'form.other2_description',
+                'constraints' => [
+                    new Length(max: 60)
+                ],
+                'attr' => [
+                    'placeholder' => 'form.other_description.placeholder',
+                ],
+                'required' => false
+            ])
+            ->add('other2', ChoiceType::class, [
+                'label' => 'form.other2',
+                'expanded' => true,
+                'choices' => $aspects,
+                'placeholder' => 'form.none',
+                'required' => false
             ])
             ->add('proposedChanges', TextareaType::class, [
                 'label' => 'form.proposed_changes',

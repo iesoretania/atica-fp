@@ -200,6 +200,40 @@ class FinalReportController extends AbstractController
             $mpdf->WriteText(108 + $agreementEnrollment->getReport()->getRelationalCompetence() * 35.0, 149.5, 'X');
             $mpdf->WriteText(108 + $agreementEnrollment->getReport()->getContingencyResponse() * 35.0, 155.5, 'X');
 
+            if (!empty($agreementEnrollment->getReport()->getOtherDescription1()) && $agreementEnrollment->getReport()->getOther1() !== null) {
+                $mpdf->WriteText(108 + $agreementEnrollment->getReport()->getOther1() * 35.0, 167.5, 'X');
+            }
+
+            if (!empty($agreementEnrollment->getReport()->getOtherDescription2()) && $agreementEnrollment->getReport()->getOther2() !== null) {
+                $mpdf->WriteText(108 + $agreementEnrollment->getReport()->getOther2() * 35.0, 173.5, 'X');
+            }
+
+            if (!empty($agreementEnrollment->getReport()->getOtherDescription1()) && $agreementEnrollment->getReport()->getOther1() !== null) {
+                TrackingCalendarController::pdfWriteFixedPosHTML(
+                    $mpdf,
+                    $agreementEnrollment->getReport()->getOtherDescription1(),
+                    19.5,
+                    164.5,
+                    76.5,
+                    5,
+                    'auto',
+                    'left'
+                );
+            }
+
+            if (!empty($agreementEnrollment->getReport()->getOtherDescription2()) && $agreementEnrollment->getReport()->getOther2() !== null) {
+                TrackingCalendarController::pdfWriteFixedPosHTML(
+                    $mpdf,
+                    $agreementEnrollment->getReport()->getOtherDescription2(),
+                    19.5,
+                    170.5,
+                    76.5,
+                    5,
+                    'auto',
+                    'left'
+                );
+            }
+
             $mpdf->WriteText(104.6, 247.6, $agreementEnrollment->getReport()->getSignDate()->format('d'));
             $mpdf->WriteText(154.4, 247.6, $agreementEnrollment->getReport()->getSignDate()->format('y'));
             $mpdf->WriteText(89, 275.6, $agreementEnrollment->getWorkTutor()->__toString());

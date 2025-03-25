@@ -19,9 +19,17 @@ form.professional_competence: Valoración de la competencia profesional
 form.organizational_competence: Valoración de la competencia organizacional
 form.relational_competence: Valoración de la competencia relacional
 form.contingency_response: Valoración de la capacidad de respuesta ante contingencias
+form.other_description.placeholder: Descripción corta (opcional, máx. 60 caracteres)
+form.other1: Valoración del aspecto adicional 1
+form.other1_description: Descripción del aspecto adicional 1
+form.other2: Valoración del aspecto adicional 2
+form.other2_description: Descripción del aspecto adicional 2
+form.other3: Valoración del aspecto adicional 3
+form.other3_description: Descripción del aspecto adicional 3
 form.proposed_changes: Modificaciones a introducir en el programa formativo (opcional)
 form.sign_date: Fecha del informe
 
+form.none: Sin valorar
 form.grade_negative: Negativo
 form.grade_positive: Positivo
 form.grade_excellent: Excelente
