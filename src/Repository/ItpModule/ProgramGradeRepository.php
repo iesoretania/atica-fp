@@ -3,6 +3,7 @@
 namespace App\Repository\ItpModule;
 
 use App\Entity\Edu\Criterion;
+use App\Entity\Edu\Grade;
 use App\Entity\Edu\LearningOutcome;
 use App\Entity\ItpModule\Activity;
 use App\Entity\ItpModule\ProgramGrade;
@@ -106,6 +107,7 @@ class ProgramGradeRepository extends ServiceEntityRepository
         $lastProgramGradeId = null;
         $lastSubjectId = null;
         $totalSubjectCount = 0;
+        $subject = null;
         $selectedSubjectCount = 0;
         $totalLearningOutcomesCount = 0;
         $selectedLearningOutcomesCount = 0;
@@ -129,7 +131,7 @@ class ProgramGradeRepository extends ServiceEntityRepository
                         'selected_subjects' => $selectedSubjectCount,
                         'selected_learning_outcomes' => $selectedLearningOutcomesCount,
                         'selected_criteria' => $selectedCriteriaCount,
-                        'weight' => $totalSubjectCount != 0 ? $subjectWeightSum / $totalSubjectCount : 0
+                        'weight' => $totalSubjectCount !== 0 ? $subjectWeightSum / $totalSubjectCount : 0
                     ];
                 }
                 $lastProgramGradeId = $subject->getGrade()->getId();
@@ -166,7 +168,7 @@ class ProgramGradeRepository extends ServiceEntityRepository
             }
         }
         if ($totalSubjectCount > 0 && !isset($grades[$subject->getGrade()->getId()])) {
-            $subjectWeightSum += $internalLearningOutcomesCount != 0 ? $weightSum / $internalLearningOutcomesCount : 0;
+            $subjectWeightSum += $internalLearningOutcomesCount !== 0 ? $weightSum / $internalLearningOutcomesCount : 0;
             $grades[$subject->getGrade()->getId()] = [
                 'grade' => $subject->getGrade(),
                 'total_subjects' => $totalSubjectCount,
@@ -175,13 +177,13 @@ class ProgramGradeRepository extends ServiceEntityRepository
                 'selected_subjects' => $selectedSubjectCount,
                 'selected_learning_outcomes' => $selectedLearningOutcomesCount,
                 'selected_criteria' => $selectedCriteriaCount,
-                'weight' => $totalSubjectCount != 0 ? $subjectWeightSum / $totalSubjectCount : 0
+                'weight' => $subjectWeightSum / $totalSubjectCount
             ];
         }
 
         foreach ($trainingProgram->getTrainingProgramGrades() as $trainingProgramGrade) {
             $grade = $trainingProgramGrade->getGrade();
-            if (isset($grades[$grade->getId()])) {
+            if ($grade instanceof Grade && isset($grades[$grade->getId()])) {
                 $grades[$grade->getId()]['program_grade'] = $trainingProgramGrade;
             }
         }
