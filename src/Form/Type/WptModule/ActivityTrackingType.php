@@ -43,7 +43,10 @@ class ActivityTrackingType extends AbstractType
                 'currency' => false,
                 'divisor' => 100,
                 'translation_domain' => false,
-                'required' => true
+                'required' => true,
+                'attr' => [
+                    'required' => 'required'
+                ]
             ]);
         });
     }
