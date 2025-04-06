@@ -23,7 +23,6 @@ use App\Repository\OrganizationRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
@@ -65,7 +64,7 @@ class SecurityListener implements EventSubscriberInterface
 
         switch ($organizationsCount) {
             case 0:
-                throw new CustomUserMessageAuthenticationException('form.login.error.no_membership');
+                break;
             case 1:
                 $organization = $this->organizationRepository->findFirstByUserOrNull($user);
                 $this->requestStack->getSession()->set('organization_id', $organization->getId());
