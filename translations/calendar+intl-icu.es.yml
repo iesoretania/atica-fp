@@ -76,13 +76,16 @@ form.activity_report: Generar informe
 form.week_lock_action: Bloquear
 form.week_lock_print_action: Bloq. e imp.
 form.week_unlock_action: Desbloquear semana
+form.absence_action: Falta injustificada
+form.justify_action: Falta justificada
 form.print: Imprimir hoja semanal
 form.select_deselect: Seleccionar/deseleccionar jornadas
 
 form.attendance: Falta injustificada
 form.attendance_justify: Falta justificada
-form.attendance_confirm: Confirmar faltas de asistencia
 form.attendance_report: Informe de acreditación de asistencia
+form.unjustified_absence_confirm: Marcar jornadas con falta injustificada
+form.justified_absence_confirm: Marcar jornadas con falta justificada
 
 form.activity_summary_report: Registro de actividades
 
@@ -96,6 +99,10 @@ form.today: Ir a hoy
 header.date: Fecha
 header.hours: Horas asignadas
 header.locked: BLOQUEADA, no cambiará
+header.absence_type: Tipo de ausencia
+
+table.type_unjustified: Injustificada
+table.type_justified: Justificada
 
 message.saved: Cambios guardados con éxito.
 message.added: Jornadas añadidas al calendario del acuerdo.

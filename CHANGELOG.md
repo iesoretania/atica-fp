@@ -8,6 +8,7 @@ x.x.x (xxxx-xx-xx)
 ------------------
 * chore: Concretar mensaje de error si se accede a un plan de formación con niveles sin RAs definidos
 * fix: Impedir que se dejen en blanco las horas de una actividad formativa en el seguimiento FCT
+* feat: Ahora se pueden marcar jornadas con ausencias justificadas directamente desde el calendario (FCT)
 
 7.3.4 (2025-03-25)
 ------------------

@@ -14,6 +14,7 @@
                 <tr>
                     <th>{{ 'header.date'|trans }}</th>
                     <th>{{ 'header.hours'|trans }}</th>
+                    <th>{{ 'header.absence_type'|trans }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -21,7 +22,8 @@
                 {% for item in items %}
                     <tr {% if item.locked %}class="bg-danger"{% endif %}>
                         <td>{{ item.workDay.date|date('format.date'|trans({}, 'general')) }}</td>
-                        <td>{{ 'caption.hours'|trans({'count': item.workDay.hours}) }}</td>
+                        <td>{{ 'caption.hours'|trans({'count': item.workDay.hours / 100}) }}</td>
+                        <td>{{ ('table.type_'~type)|trans }}</td>
                         <td>{{ item.locked ? 'header.locked'|trans }}</td>
                     </tr>
                 {% endfor %}
@@ -29,6 +31,10 @@
             </table>
         </div>
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-        {{ m.submit_button('submit', 'user-slash', 'btn-danger', 'form.attendance_confirm'|trans) }}
+        {% if type == 'unjustified' %}
+            {{ m.submit_button('submit-unjustified', 'user-slash', 'btn-danger', 'form.unjustified_absence_confirm'|trans) }}
+        {% else %}
+            {{ m.submit_button('submit-justified', 'user-check', 'btn-warning', 'form.justified_absence_confirm'|trans) }}
+        {% endif %}
     </form>
 {% endblock %}

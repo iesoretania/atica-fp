@@ -287,7 +287,7 @@ class TrackingCalendarController extends AbstractController
         }
 
         $items = $request->request->all('items');
-        if ((is_countable($items) ? count($items) : 0) === 0) {
+        if (count($items) === 0) {
             return $this->redirectToRoute(
                 'workplace_training_tracking_calendar_list',
                 ['id' => $agreementEnrollment->getId()]
@@ -317,9 +317,24 @@ class TrackingCalendarController extends AbstractController
         // marcar en las jornadas que estudiante no ha estado en el centro de trabajo
         $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::ATTENDANCE, $agreementEnrollment);
 
-        if ($request->get('confirm', '') === 'ok') {
+        $updateAttendance = false;
+        if ($request->get('submit-justified') === '') {
+            // marcar en las jornadas que estudiante no ha estado en el centro de trabajo de forma justificada
+            $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::LOCK, $agreementEnrollment);
+            $value = TrackedWorkDay::JUSTIFIED_ABSENCE;
+            $updateAttendance = true;
+        } elseif ($request->get('submit-unjustified') === '') {
+            // marcar en las jornadas que estudiante no ha estado en el centro de trabajo
+            $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::ATTENDANCE, $agreementEnrollment);
+            $value = TrackedWorkDay::UNJUSTIFIED_ABSENCE;
+            $updateAttendance = true;
+        } else {
+            $value = TrackedWorkDay::NO_ABSENCE;
+        }
+
+        if ($updateAttendance) {
             try {
-                $trackedWorkDayRepository->updateAttendance($trackedWorkDays, TrackedWorkDay::UNJUSTIFIED_ABSENCE);
+                $trackedWorkDayRepository->updateAttendance($trackedWorkDays, $value);
                 $managerRegistry->getManager()->flush();
                 $this->addFlash('success', $translator->trans('message.attendance_updated', [], 'calendar'));
             } catch (\Exception) {
@@ -346,6 +361,7 @@ class TrackingCalendarController extends AbstractController
             'menu_path' => 'workplace_training_tracking_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
+            'type' => $request->get('justified-absence') === '' ? "justified" : "unjustified",
             'agreement' => $agreementEnrollment,
             'items' => $trackedWorkDays
         ]);

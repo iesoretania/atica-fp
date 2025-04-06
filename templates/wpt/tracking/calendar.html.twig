@@ -56,10 +56,11 @@
     {% if not read_only|default(false) %}
         {% if selectable %}{{ m.link_button('', 'check-square', 'btn-primary', 'form.select_deselect'|trans, 'toggle') }}{% endif %}
         {% if is_granted('WPT_AGREEMENT_ENROLLMENT_LOCK', agreement_enrollment) %}
-            {{ m.submit_button('lock', 'lock', 'btn-danger enable-on-items', 'form.lock_action'|trans) }}
-            {{ m.submit_button('unlock', 'lock-open', 'btn-danger enable-on-items', 'form.unlock_action'|trans) }}
+            {{ m.submit_button('lock', 'lock', 'btn-info enable-on-items', 'form.lock_action'|trans) }}
+            {{ m.submit_button('unlock', 'lock-open', 'btn-info enable-on-items', 'form.unlock_action'|trans) }}
+            {{ m.submit_button('justified-absence', 'user-check', 'btn-warning enable-on-items', 'form.justify_action'|trans) }}
         {% endif %}
-        {% if is_granted('WPT_AGREEMENT_ENROLLMENT_ATTENDANCE', agreement_enrollment) %}{{ m.submit_button('attendance', 'user-slash', 'btn-danger enable-on-items', 'form.attendance'|trans) }}{% endif %}
+        {% if is_granted('WPT_AGREEMENT_ENROLLMENT_ATTENDANCE', agreement_enrollment) %}{{ m.submit_button('unjustified-absence', 'user-slash', 'btn-danger enable-on-items', 'form.absence_action'|trans) }}{% endif %}
     {% endif %}
     {{ m.link_button_new(path('workplace_training_tracking_calendar_attendance_report', {'id': agreement_enrollment.id}), 'file-alt', 'btn-primary', 'form.attendance_report'|trans) }}
     {% if is_granted('WPT_AGREEMENT_ENROLLMENT_VIEW_ACTIVITY_REPORT', agreement_enrollment) %}
