@@ -4,6 +4,12 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.4.0 (xxxx-xx-xx)
+------------------
+* feat: El modelo de datos soporta ahora encuestas de satisfacción para la FFE
+
+_ATENCIÓN: Hay actualización de la base de datos_
+
 7.3.5 (2025-04-06)
 ------------------
 * chore: Concretar mensaje de error si se accede a un plan de formación con niveles sin RAs definidos

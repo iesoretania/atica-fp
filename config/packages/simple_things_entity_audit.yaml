@@ -11,15 +11,18 @@ simple_things_entity_audit:
         - App\Entity\ItpModule\Activity
         - App\Entity\ItpModule\CompanyProgram
         - App\Entity\ItpModule\Contact
+        - App\Entity\ItpModule\EducationalTutorAnsweredSurvey
         - App\Entity\ItpModule\ProgramGrade
         - App\Entity\ItpModule\ProgramGroup
         - App\Entity\ItpModule\SpecificTraining
+        - App\Entity\ItpModule\StudentAnsweredSurvey
         - App\Entity\ItpModule\StudentProgram
         - App\Entity\ItpModule\StudentProgramWorkcenter
         - App\Entity\ItpModule\StudentProgramWorkcenterActivity
         - App\Entity\ItpModule\StudentProgramWorkcenterActivityComment
         - App\Entity\ItpModule\TrainingProgram
         - App\Entity\ItpModule\WorkDay
+        - App\Entity\ItpModule\WorkTutorAnsweredSurvey
         - App\Entity\WltModule\AgreementActivityRealization
         - App\Entity\WltModule\AgreementActivityRealizationComment
         - App\Entity\WltModule\Contact
