@@ -18,3 +18,16 @@ menu.in_company_training_phase.evaluation_summary.detail: Obtener un resumen de 
 
 menu.in_company_training_phase.contact: Contactos con empresas
 menu.in_company_training_phase.contact.detail: Registrar los contactos con empresas por parte de los docentes de FP dual
+
+menu.in_company_training_phase.survey: Encuestas
+menu.in_company_training_phase.survey.detail: Encuestas de satisfacción sobre la FFE
+
+menu.in_company_training_phase.survey.student: Satisfacción de alumnado
+menu.in_company_training_phase.survey.student.detail: Cumplimentar la encuesta de satisfacción de estudiante de FFE
+
+menu.in_company_training_phase.survey.work_tutor: Satisfacción del tutor laboral
+menu.in_company_training_phase.survey.work_tutor.detail: Cumplimentar la encuesta de satisfacción del tutor dual de empresa de FFE
+
+menu.in_company_training_phase.survey.educational_tutor: Satisfacción del tutor docente
+menu.in_company_training_phase.survey.educational_tutor.detail: Cumplimentar la encuesta de satisfacción del tutor docente de FFE
+

@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 7.4.0 (xxxx-xx-xx)
 ------------------
 * feat: El modelo de datos soporta ahora encuestas de satisfacción para la FFE
+* feat: Implementación inicial de encuestas de satisfacción del alumnado de FFE
 
 _ATENCIÓN: Hay actualización de la base de datos_
 

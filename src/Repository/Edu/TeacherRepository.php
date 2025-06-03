@@ -133,7 +133,7 @@ class TeacherRepository extends ServiceEntityRepository
     public function findOneByPersonAndAcademicYear(
         Person $person,
         AcademicYear $academicYear
-    ) {
+    ): ?Teacher {
         try {
             return $this->createQueryBuilder('t')
                 ->where('t.person = :person')

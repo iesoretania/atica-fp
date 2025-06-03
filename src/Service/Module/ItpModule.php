@@ -18,6 +18,7 @@
 
 namespace App\Service\Module;
 
+use App\Security\ItpModule\OrganizationVoter;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Service\UserExtensionService;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -120,6 +121,68 @@ class ItpModule implements ModuleBuilderInterface
                     ->setPriority(8000);
 
                 $menu1->addChild($menu2);
+                $menu2 = new MenuItem();
+
+                $menu2
+                    ->setName('in_company_training_phase_survey')
+                    ->setRouteName('in_company_training_phase_survey')
+                    ->setCaption('menu.in_company_training_phase.survey')
+                    ->setDescription('menu.in_company_training_phase.survey.detail')
+                    ->setIcon('chart-pie')
+                    ->setModule('itp')
+                    ->setPriority(10000);
+
+                $menu1->addChild($menu2);
+
+                if ($this->security->isGranted(OrganizationVoter::ITP_MANAGER, $organization) ||
+                    $this->security->isGranted(OrganizationVoter::ITP_STUDENT, $organization) ||
+                    $this->security->isGranted(OrganizationVoter::ITP_GROUP_TUTOR, $organization)
+                ) {
+                    $menu3 = new MenuItem();
+                    $menu3
+                        ->setName('in_company_training_phase_survey_student')
+                        ->setRouteName('in_company_training_phase_survey_student_list')
+                        ->setCaption('menu.in_company_training_phase.survey.student')
+                        ->setDescription('menu.in_company_training_phase.survey.student.detail')
+                        ->setIcon('child')
+                        ->setModule('itp')
+                        ->setPriority(1000);
+
+                    $menu2->addChild($menu3);
+                }
+
+                if ($this->security->isGranted(OrganizationVoter::ITP_MANAGER, $organization) ||
+                    $this->security->isGranted(OrganizationVoter::ITP_WORK_TUTOR, $organization) ||
+                    $this->security->isGranted(OrganizationVoter::ITP_GROUP_TUTOR, $organization)
+                ) {
+                    $menu3 = new MenuItem();
+                    $menu3
+                        ->setName('in_company_training_phase_survey_work_tutor')
+                        ->setRouteName('in_company_training_phase_survey_work_tutor_list')
+                        ->setCaption('menu.in_company_training_phase.survey.work_tutor')
+                        ->setDescription('menu.in_company_training_phase.survey.work_tutor.detail')
+                        ->setIcon('industry')
+                        ->setModule('itp')
+                        ->setPriority(2000);
+
+                    $menu2->addChild($menu3);
+                }
+
+                if ($this->security->isGranted(OrganizationVoter::ITP_MANAGER, $organization) ||
+                    $this->security->isGranted(OrganizationVoter::ITP_EDUCATIONAL_TUTOR, $organization)
+                ) {
+                    $menu3 = new MenuItem();
+                    $menu3
+                        ->setName('in_company_training_phase_survey_educational_tutor')
+                        ->setRouteName('in_company_training_phase_survey_educational_tutor_list')
+                        ->setCaption('menu.in_company_training_phase.survey.educational_tutor')
+                        ->setDescription('menu.in_company_training_phase.survey.educational_tutor.detail')
+                        ->setIcon('user-clock')
+                        ->setModule('itp')
+                        ->setPriority(3000);
+
+                    $menu2->addChild($menu3);
+                }
             }
         }
 

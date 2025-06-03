@@ -43,6 +43,11 @@ class StudentProgramWorkcenterVoter extends CachedVoter
     public const VIEW_GRADE = 'ITP_STUDENT_PROGRAM_WORKCENTER_VIEW_GRADE';
     public const VIEW_EVALUATION = 'ITP_STUDENT_PROGRAM_WORKCENTER_VIEW_EVALUATION';
 
+    public const VIEW_STUDENT_SURVEY = 'ITP_STUDENT_PROGRAM_WORKCENTER_VIEW_STUDENT_SURVEY';
+    public const FILL_STUDENT_SURVEY = 'ITP_STUDENT_PROGRAM_WORKCENTER_FILL_STUDENT_SURVEY';
+    public const VIEW_COMPANY_SURVEY = 'ITP_STUDENT_PROGRAM_WORKCENTER_VIEW_WORK_TUTOR_SURVEY';
+    public const FILL_COMPANY_SURVEY = 'ITP_STUDENT_PROGRAM_WORKCENTER_FILL_COMPANY_SURVEY';
+
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
         private readonly AccessDecisionManagerInterface $decisionManager,
@@ -70,7 +75,11 @@ class StudentProgramWorkcenterVoter extends CachedVoter
             self::ATTENDANCE,
             self::GRADE,
             self::VIEW_GRADE,
-            self::VIEW_EVALUATION
+            self::VIEW_EVALUATION,
+            self::VIEW_STUDENT_SURVEY,
+            self::FILL_STUDENT_SURVEY,
+            self::VIEW_COMPANY_SURVEY,
+            self::FILL_COMPANY_SURVEY,
         ], true);
     }
 
@@ -154,6 +163,12 @@ class StudentProgramWorkcenterVoter extends CachedVoter
                 return $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isDepartmentHead || $isItpManager || $isStudentProgramWorkcenterWorkTutor;
             case self::VIEW_EVALUATION:
                 return $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isDepartmentHead || $isItpManager || $isItpTeacher;
+            case self::VIEW_STUDENT_SURVEY:
+            case self::FILL_STUDENT_SURVEY:
+                return $isItpStudent || $isDepartmentHead || $isItpManager || $isGroupTutor;
+            case self::VIEW_COMPANY_SURVEY:
+            case self::FILL_COMPANY_SURVEY:
+                return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterWorkTutor;
         }
 
         // denegamos en cualquier otro caso
