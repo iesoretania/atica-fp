@@ -117,11 +117,10 @@ class StudentAnsweredSurveyRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByAcademicYearAndPersonFilterQueryBuilder(
+    public function createStatsByAcademicYearAndPersonFilterQueryBuilder(
         ?AcademicYear $academicYear,
         bool $isManager,
         Person $person,
-        ?Teacher $teacher,
         ?string $q,
     ): QueryBuilder {
         $queryBuilder = $this->studentProgramWorkcenterRepository->createGradingQueryBuilder(

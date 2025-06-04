@@ -57,7 +57,7 @@ table.filter: Filtrar...
 table.modality.1: General
 table.modality.2: Intensiva
 
-table.basic_data: Datos básicos
+table.basic_data: Datos básicos y configuración
 
 header.name: Nombre
 header.training: Enseñanza

@@ -22,7 +22,7 @@ table.no_items: No hay cursos con resultados de aprendizaje registrados
 table.modality.1: General
 table.modality.2: Intensiva
 
-table.basic_data: Datos básicos
+table.basic_data: Datos básicos y configuración
 
 table.target_hours: Horas previstas
 table.activities: Actividades formativas

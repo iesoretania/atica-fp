@@ -27,6 +27,7 @@ use App\Form\Type\Edu\AnsweredSurveyType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\ItpModule\StudentAnsweredSurveyRepository;
 use App\Repository\ItpModule\TeacherRepository;
+use App\Repository\ItpModule\WorkTutorAnsweredSurveyRepository;
 use App\Security\ItpModule\OrganizationVoter;
 use App\Security\ItpModule\StudentProgramWorkcenterVoter;
 use App\Service\UserExtensionService;
@@ -152,49 +153,48 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    #[IsGranted(AgreementVoter::VIEW_COMPANY_SURVEY, subject: 'agreement')]
+    #[IsGranted(StudentProgramWorkcenterVoter::VIEW_COMPANY_SURVEY, subject: 'studentProgramWorkcenter')]
     #[Route(path: '/empresa/cumplimentar/{id}/{workTutor}', name: '_work_tutor_form')]
     public function workTutorFill(
-        Request $request,
-        TranslatorInterface $translator,
+        Request                           $request,
+        TranslatorInterface               $translator,
         WorkTutorAnsweredSurveyRepository $workTutorAnsweredSurveyRepository,
-        Agreement $agreement,
-        ManagerRegistry $managerRegistry,
-        Person $workTutor
+        StudentProgramWorkcenter          $studentProgramWorkcenter,
+        ManagerRegistry                   $managerRegistry,
+        Person                            $workTutor
     ): Response {
         // solo pueden rellenar la encuesta en nombre del responsable laboral titular o adicional
-        if ($workTutor !== $agreement->getWorkTutor() && $workTutor !== $agreement->getAdditionalWorkTutor()) {
+        if ($workTutor !== $studentProgramWorkcenter->getWorkTutor() && $workTutor !== $studentProgramWorkcenter->getAdditionalWorkTutor()) {
             throw $this->createAccessDeniedException();
         }
 
         $person = $this->getUser();
 
-        $readOnly = !$this->isGranted(AgreementVoter::FILL_COMPANY_SURVEY, $agreement);
+        $readOnly = !$this->isGranted(StudentProgramWorkcenterVoter::FILL_COMPANY_SURVEY, $studentProgramWorkcenter);
 
         if (!$readOnly
-            && !$this->isGranted(AgreementVoter::MANAGE, $agreement)
-            && $workTutor === $agreement->getWorkTutor() && $person !== $agreement->getWorkTutor()
+            && !$this->isGranted(StudentProgramWorkcenterVoter::MANAGE, $studentProgramWorkcenter)
+            && $workTutor === $studentProgramWorkcenter->getWorkTutor() && $person !== $studentProgramWorkcenter->getWorkTutor()
         ) {
             $readOnly = true;
         }
 
-        $project = $agreement->getProject();
-        $academicYear = $agreement->getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getAcademicYear();
-        $workTutorAnsweredSurvey = $workTutorAnsweredSurveyRepository->findOneByProjectAcademicYearAndWorkTutor(
-            $project,
+        $trainingProgram = $studentProgramWorkcenter->getStudentProgram()->getProgramGroup()->getProgramGrade()->getTrainingProgram();
+        $academicYear = $studentProgramWorkcenter->getStudentProgram()->getStudentEnrollment()->getGroup()->getGrade()->getTraining()->getAcademicYear();
+        $workTutorAnsweredSurvey = $workTutorAnsweredSurveyRepository->findOneByTrainingProgramAcademicYearAndWorkTutor(
+            $trainingProgram,
             $academicYear,
             $workTutor
         );
 
-        $survey = $agreement
-            ->getProject()
+        $survey = $trainingProgram
             ->getCompanySurvey();
 
         if ($survey instanceof Survey) {
             if ($workTutorAnsweredSurvey === null) {
                 $workTutorAnsweredSurvey = $workTutorAnsweredSurveyRepository->createNewAnsweredSurvey(
                     $survey,
-                    $project,
+                    $trainingProgram,
                     $academicYear,
                     $workTutor
                 );
@@ -215,7 +215,7 @@ class SurveyController extends AbstractController
                     $answeredSurvey->setTimestamp(new \DateTime());
                     $em->flush();
                     $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
-                    return $this->redirectToRoute('work_linked_training_survey_work_tutor_list', [
+                    return $this->redirectToRoute('in_company_training_phase_survey_work_tutor_list', [
                         'academicYear' => $academicYear->getId()
                     ]);
                 } catch (\Exception) {
@@ -228,18 +228,18 @@ class SurveyController extends AbstractController
             ]);
         }
 
-        $title = $translator->trans('title.fill', [], 'wlt_survey');
+        $title = $translator->trans('title.fill', [], 'itp_survey');
 
         $breadcrumb = [
-            ['fixed' => $project->__toString()],
+            ['fixed' => $trainingProgram->__toString()],
             ['fixed' => $title]
         ];
 
-        return $this->render('wlt/survey/form.html.twig', [
-            'menu_path' => 'work_linked_training_survey_work_tutor_list',
+        return $this->render('itp/survey/form.html.twig', [
+            'menu_path' => 'in_company_training_phase_survey_work_tutor_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'project' => $project,
+            'training_program' => $trainingProgram,
             'read_only' => $readOnly,
             'survey' => $survey,
             'person' => $workTutor,
@@ -364,14 +364,12 @@ class SurveyController extends AbstractController
         $q = $request->get('q');
 
         $isManager = $this->isGranted(OrganizationVoter::ITP_MANAGER, $organization);
-        $teacher = $teacherRepository->findOneByPersonAndAcademicYear($person, $academicYear);
 
-        $queryBuilder = $studentAnsweredSurveyRepository->findByAcademicYearAndPersonFilterQueryBuilder(
+        $queryBuilder = $studentAnsweredSurveyRepository->createStatsByAcademicYearAndPersonFilterQueryBuilder(
             $academicYear,
             $isManager,
             $person,
-            $teacher,
-            $q,
+            $q
         );
 
         $pageSize = $this->getParameter('page.size');
@@ -391,59 +389,46 @@ class SurveyController extends AbstractController
 
     #[Route(path: '/empresa/{academicYear}/{page}', name: '_work_tutor_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
     public function workTutorList(
-        Request $request,
-        UserExtensionService $userExtensionService,
-        TranslatorInterface $translator,
-        AgreementRepository $agreementRepository,
-        AcademicYearRepository $academicYearRepository,
-        int $page = 1,
-        AcademicYear $academicYear = null
+        Request                           $request,
+        UserExtensionService              $userExtensionService,
+        TranslatorInterface               $translator,
+        WorkTutorAnsweredSurveyRepository $workTutorAnsweredSurveyRepository,
+        AcademicYearRepository            $academicYearRepository,
+        int                               $page = 1,
+        AcademicYear                      $academicYear = null
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
-        $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_ACCESS, $organization);
+        $this->denyAccessUnlessGranted(OrganizationVoter::ITP_WORK_TUTOR, $organization);
 
-        $title = $translator->trans('title.survey.work_tutor.list', [], 'wlt_survey');
+        $title = $translator->trans('title.survey.work_tutor.list', [], 'itp_survey');
 
-        /** @var Person $person */
         $person = $this->getUser();
+        assert($person instanceof Person);
 
         $q = $request->get('q');
 
-        $queryBuilder = $agreementRepository->findByAcademicYearAndPersonFilterQueryBuilder(
-            $q,
-            $academicYear,
-            $person
-        );
+        $isManager = $this->isGranted(OrganizationVoter::ITP_MANAGER, $organization);
 
-        $queryBuilder
-            ->leftJoin(
-                WorkTutorAnsweredSurvey::class,
-                'was',
-                'WITH',
-                '(was.workTutor = wt OR was.workTutor = awt) AND ' .
-                'was.project = pro AND was.academicYear = :academic_year'
-            )
-            ->addSelect('COUNT(was), awt')
-            ->addGroupBy('a')
-            ->addOrderBy('wt.lastName')
-            ->addOrderBy('wt.firstName')
-            ->addOrderBy('wt.id')
-            ->addOrderBy('awt.id', 'DESC')
-            ->addOrderBy('pro.name');
+        $queryBuilder = $workTutorAnsweredSurveyRepository->createStatsByAcademicYearAndPersonFilterQueryBuilder(
+            $academicYear,
+            $isManager,
+            $person,
+            $q
+        );
 
         $pageSize = $this->getParameter('page.size');
 
         $pager = $this->getPager($queryBuilder, $pageSize, $page);
 
-        return $this->render('wlt/survey/work_tutor_list.html.twig', [
+        return $this->render('itp/survey/work_tutor_list.html.twig', [
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'domain' => 'wlt_survey',
-            'route_name' => 'work_linked_training_survey_student_form',
+            'domain' => 'itp_survey',
+            'route_name' => 'in_company_training_phase_survey_work_tutor_form',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);

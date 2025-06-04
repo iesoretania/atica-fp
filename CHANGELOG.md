@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * feat: El modelo de datos soporta ahora encuestas de satisfacción para la FFE
 * feat: Implementación inicial de encuestas de satisfacción del alumnado de FFE
+* feat: Implementación inicial de encuestas de satisfacción de tutor dual de empresa de FFE
 
 _ATENCIÓN: Hay actualización de la base de datos_
 
