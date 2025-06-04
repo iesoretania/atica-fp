@@ -121,4 +121,18 @@ class TrainingProgramRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function createByManagerQueryBuilder(?AcademicYear $academicYear, bool $isManager, Person $person, ?string $q): QueryBuilder
+    {
+        $queryBuilder = $this->createProgramRepositoryQueryBuilder($academicYear, $isManager, $person, null, $q);
+
+        if (!$isManager) {
+            $queryBuilder
+                ->join('pgg.managers', 'm')
+                ->andWhere('m = :person')
+                ->setParameter('person', $person);
+        }
+
+        return $queryBuilder;
+    }
 }

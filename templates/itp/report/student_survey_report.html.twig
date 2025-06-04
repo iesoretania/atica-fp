@@ -1,0 +1,97 @@
+{% trans_default_domain 'itp_report' %}
+
+{% extends 'itp/report/base_survey.twig' %}
+
+{% block title %}{{ 'title.student_survey'|trans }} - {{ training_program }} ({{ academic_year }}){% endblock %}
+
+{% macro row(data, additional) %}
+    {% for datum in data %}
+        <tr>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}">
+                    {{ datum.studentProgram.studentEnrollment }}
+                </td>
+            {% endif %}
+            <td>
+                {{ datum.workcenter }}
+            </td>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}" style="text-align: center">
+                    {{ (additional ? 'report.status.answered' : 'report.status.unanswered')|trans }}
+                </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+{% endmacro %}
+
+{% block body %}
+    <h1>{{ organization }} - {{ training_program }} ({{ academic_year }})</h1>
+    <h2>{{ 'title.student_survey'|trans }}</h2>
+    <h3>{{ 'title.student_survey.summary'|trans }}</h3>
+    <table class="survey">
+        <thead>
+        <tr>
+            <th width="40%">{{ 'header.student'|trans }}</th>
+            <th width="40%">{{ 'header.workcenter'|trans }}</th>
+            <th width="20%">{{ 'header.status'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set total = 0 %}
+        {% set answered = 0 %}
+        {% set last_id = 0 %}
+        {% set data = [] %}
+        {% set additional = 0 %}
+        {% for item in student_enrollment_stats %}
+            {% if last_id != item[0].studentProgram.id %}
+                {% if last_id != 0 %}{{ _self.row(data, additional) }}{% endif %}
+                {% set last_id = item[0].studentProgram.id  %}
+                {% set data = [item[0]] %}
+                {% set answered = answered + additional %}
+                {% set additional = item[1] %}
+                {% set total = total + 1 %}
+            {% else %}
+                {% set data = data|merge([item[0]]) %}
+                {% set additional = additional + item[1] %}
+            {% endif %}
+        {% else %}
+            <tr>
+                <td colspan="4">{{ 'report.no_surveys'|trans }}</td>
+            </tr>
+        {% endfor %}
+        {% if last_id != 0 %}
+            {{ _self.row(data, additional) }}
+            {% set answered = answered + additional %}
+        {% endif %}
+        </tbody>
+        {% if total %}
+            <tfoot>
+                <tr>
+                    <td class="right" colspan="4"><b>{{ 'report.answered_surveys'|trans }}  {{ answered }}/{{ total }} ({{ (answered*100/total)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}%)</b></td>
+                </tr>
+            </tfoot>
+        {% endif %}
+    </table>
+
+    {% include 'itp/report/survey_stats_partial.html.twig' %}
+
+    {% for student_survey in student_answered_surveys %}
+        <pagebreak></pagebreak>
+
+        <h1>{{ organization }} - {{ training_program }} ({{ academic_year }})</h1>
+        <h2>{{ 'title.student_survey'|trans }}</h2>
+        <table class="data">
+            <tr>
+                <td class="info">{{ 'report.student'|trans }}</td>
+                <td>{{ student_survey.studentEnrollment }}</td>
+            </tr>
+            <tr>
+                <td class="info">{{ 'report.answered_on'|trans }}</td>
+                <td>{{ student_survey.answeredSurvey.timestamp|date('format.datetime'|trans({}, 'general')) }}</td>
+            </tr>
+        </table>
+
+        {% set answered_survey = student_survey.answeredSurvey %}
+        {% include 'itp/report/answered_survey_responses_partial.html.twig' %}
+    {% endfor %}
+{% endblock %}

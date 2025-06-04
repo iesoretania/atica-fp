@@ -23,6 +23,7 @@ use App\Entity\AnsweredSurveyQuestion;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\EducationalTutorAnsweredSurvey;
+use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\Person;
 use App\Entity\Survey;
@@ -37,10 +38,26 @@ class EducationalTutorAnsweredSurveyRepository extends ServiceEntityRepository
         parent::__construct($registry, EducationalTutorAnsweredSurvey::class);
     }
 
+    public function findByTrainingProgramAndAcademicYear(
+        TrainingProgram $trainingProgram,
+        AcademicYear $academicYear
+    ): array {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('etas')
+            ->from(EducationalTutorAnsweredSurvey::class, 'etas')
+            ->join('etas.teacher', 't')
+            ->where('etas.trainingProgram = :training_program')
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('training_program', $trainingProgram)
+            ->setParameter('academic_year', $academicYear)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findOneByTrainingProgramAndTeacher(
         TrainingProgram $trainingProgram,
         Teacher         $teacher
-    ) {
+    ): ?EducationalTutorAnsweredSurvey {
         return $this->getEntityManager()->createQueryBuilder()
             ->select('etas')
             ->from(EducationalTutorAnsweredSurvey::class, 'etas')
@@ -51,7 +68,6 @@ class EducationalTutorAnsweredSurveyRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
-
 
     public function createNewAnsweredSurvey(
         Survey $survey,
@@ -118,5 +134,40 @@ class EducationalTutorAnsweredSurveyRepository extends ServiceEntityRepository
                 ->setParameter('person', $person);
         }
         return $queryBuilder;
+    }
+
+    public function getStatsByTrainingProgramAndAcademicYear(TrainingProgram $trainingProgram, AcademicYear $academicYear): array
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder()
+            ->select('spw', 'c', 'w', 'p', 'g', 'gr', 't', 'sp', 'se', 'et', 'awt', 'aet', 'wt', 'pg', 'pgr', 'tp', 'etp')
+            ->from(StudentProgramWorkcenter::class, 'spw')
+            ->join('spw.studentProgram', 'sp')
+            ->join('sp.programGroup', 'pg')
+            ->join('pg.programGrade', 'pgr')
+            ->join('pgr.trainingProgram', 'tp')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('spw.workTutor', 'wt')
+            ->join('spw.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->leftJoin('spw.additionalWorkTutor', 'awt')
+            ->join('spw.educationalTutor', 'et')
+            ->join('et.person', 'etp')
+            ->leftJoin('spw.additionalEducationalTutor', 'aet')
+            ->join('se.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->where('tp = :training_program')
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('training_program', $trainingProgram)
+            ->setParameter('academic_year', $academicYear)
+            ->leftJoin(EducationalTutorAnsweredSurvey::class, 'etas', 'WITH', '(etas.teacher = et OR etas.teacher = aet) AND etas.trainingProgram = tp')
+            ->addSelect('COUNT(etas)')
+            ->addGroupBy('spw')
+            ->addOrderBy('etp.lastName')
+            ->addOrderBy('etp.firstName')
+            ->addOrderBy('etp.id');
+
+        return $queryBuilder->getQuery()->getResult();
     }
 }

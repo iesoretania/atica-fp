@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (2025-06-04)
+------------------
+* feat: Generación de informes de encuestas de satisfacción de FFE
+
 7.4.0 (2025-06-04)
 ------------------
 * feat: El modelo de datos soporta ahora encuestas de satisfacción para la FFE

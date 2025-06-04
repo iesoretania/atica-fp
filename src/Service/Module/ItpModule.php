@@ -186,6 +186,57 @@ class ItpModule implements ModuleBuilderInterface
                     $menu2->addChild($menu3);
                 }
             }
+
+            if ($this->security->isGranted(ItpOrganizationVoter::ITP_MANAGER, $organization)
+            ) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('in_company_training_phase_report')
+                    ->setRouteName('in_company_training_phase_report')
+                    ->setCaption('menu.in_company_training_phase.report')
+                    ->setDescription('menu.in_company_training_phase.report.detail')
+                    ->setIcon('file-alt')
+                    ->setModule('itp')
+                    ->setPriority(11000);
+
+                $menu1->addChild($menu2);
+
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('in_company_training_phase_report_student_survey')
+                    ->setRouteName('in_company_training_phase_report_student_survey_list')
+                    ->setCaption('menu.in_company_training_phase.report.student_survey')
+                    ->setDescription('menu.in_company_training_phase.report.student_survey.detail')
+                    ->setIcon('chart-pie')
+                    ->setModule('itp')
+                    ->setPriority(1000);
+
+                $menu2->addChild($menu3);
+
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('in_company_training_phase_report_work_tutor_survey')
+                    ->setRouteName('in_company_training_phase_report_work_tutor_survey_list')
+                    ->setCaption('menu.in_company_training_phase.report.company_survey')
+                    ->setDescription('menu.in_company_training_phase.report.company_survey.detail')
+                    ->setIcon('chart-pie')
+                    ->setModule('itp')
+                    ->setPriority(2000);
+
+                $menu2->addChild($menu3);
+
+                $menu3 = new MenuItem();
+                $menu3
+                    ->setName('in_company_training_phase_report_educational_tutor_survey')
+                    ->setRouteName('in_company_training_phase_report_educational_tutor_survey_list')
+                    ->setCaption('menu.in_company_training_phase.report.educational_tutor_survey')
+                    ->setDescription('menu.in_company_training_phase.report.educational_tutor_survey.detail')
+                    ->setIcon('chart-pie')
+                    ->setModule('itp')
+                    ->setPriority(3000);
+
+                $menu2->addChild($menu3);
+            }
         }
 
         return $root;

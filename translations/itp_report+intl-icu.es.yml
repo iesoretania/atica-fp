@@ -1,0 +1,61 @@
+title.student_survey: Encuestas de satisfacción del alumnado con la FFE
+title.student_survey.summary: Resumen por estudiante
+
+title.work_tutor_survey: Encuestas de satisfacción de las empresas con la FFE
+title.work_tutor_survey.summary: Resumen por tutor/a dual de empresa
+
+title.educational_tutor_survey: Encuestas de satisfacción de responsables de seguimiento
+title.educational_tutor_survey.summary: Resumen por responsable de seguimiento
+
+title.company: Empresa u organismo equiparado
+
+report.academic_year: "Curso académico:"
+report.student: "Estudiante:"
+report.workcenter: "Centro de trabajo:"
+report.work_tutor: "Tutor/a dual de empresa:"
+report.educational_tutor: "Responsable de seguimiento:"
+report.dates: "Fechas del convenio:"
+report.answered_on: "Contestada el:"
+
+report.page: "Página {page} de {total}"
+
+report.no_survey: Encuesta no cumplimentada
+report.no_surveys: No hay encuestas cumplimentadas
+report.no_answer: Sin respuesta
+report.no_data: "---"
+
+report.empty_report: "No hay datos que mostrar"
+
+title.survey.summary: Resumen de resultados
+
+header.question: Pregunta
+header.answer: Respuesta
+header.count: Núm. resp.
+header.average: Media
+header.min: Mín.
+header.max: Máx.
+
+header.student: Estudiante
+header.students: Estudiantes
+header.workcenter: Centro de trabajo
+header.work_tutor: Tutor/a dual de empresa
+header.dates: Fechas convenio
+header.status: ¿Cumplimentada?
+header.educational_tutor: Responsable de seguimiento
+header.academic_year: Curso académico
+
+header.datetime: Fecha y hora
+header.teachers: Profesorado
+header.info: Información
+
+report.no_training_program: No hay planes de formación
+
+report.status.answered: Sí
+report.status.unanswered: No
+report.answered_surveys: Contestadas
+
+prompt.no_survey_warning: |
+  No se ha definido cuál es la encuesta que tiene que cumplimentarse.
+  Configúrela para que los usuarios tengan acceso a la misma y pueda generarse el informe.
+
+form.back: Volver

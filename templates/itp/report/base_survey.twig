@@ -1,0 +1,128 @@
+{% trans_default_domain 'itp_report' %}
+
+{% extends 'layout/base_report.html.twig' %}
+
+{% block style %}
+    {{ parent() }}
+    <style>
+        @page {
+            margin-top: 2.65cm;
+            margin-left: 2cm;
+            margin-right: 2cm;
+            margin-bottom: 2.65cm;
+            odd-header-name: html_header;
+            even-header-name: html_header;
+            odd-footer-name: html_footer;
+            even-footer-name: html_footer;
+        }
+
+        td, th {
+            border: 1px solid;
+            padding: 0.1cm;
+        }
+
+        tr.title {
+            background-color: lightgray;
+        }
+
+        td.center {
+            text-align: center;
+        }
+
+        body {
+            font-family: sans-serif;
+        }
+
+        table {
+            font-family: dejavusanscondensed, sans-serif;
+            border-style: solid;
+            border-width: 1px;
+            border-collapse: collapse;
+        }
+
+        table td {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        table th {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        table.data {
+            width: 100%;
+        }
+
+        table.data td {
+            padding: 0.3em;
+        }
+
+        table.data td.info {
+            font-family: dejavusanscondensed, sans-serif;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        table.survey {
+            margin-top: 1em;
+            width: 100%;
+        }
+
+        table.survey td {
+            padding: 0.3em;
+        }
+
+        table.survey th {
+            background-color: #cccccc;
+            padding: 0.3em;
+        }
+
+        table.survey {
+            font-size: 80%;
+        }
+
+        table.survey tfoot th {
+            font-size: 120%;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        @page {
+            margin-top: 2.65cm;
+            margin-left: 2cm;
+            margin-right: 2cm;
+            margin-bottom: 2.65cm;
+            odd-header-name: html_header;
+            even-header-name: html_header;
+            odd-footer-name: html_footer;
+            even-footer-name: html_footer;
+        }
+    </style>
+{% endblock %}
+
+{% block before_body %}
+    <htmlpageheader name="header">
+        <div style="padding-top: 0.2cm; font-size: 12px">
+            <div style="float: left; text-align: left; width: 75%;">{{ block('title') }}</div>
+            <div style="float: right; text-align: right; width: 25%;">{{ app_name }}</div>
+            <hr>
+        </div>
+    </htmlpageheader>
+
+    <htmlpagefooter name="footer">
+        <hr>
+        <div style="padding-top: 0cm; font-size: 12px">
+            <div style="float: left; text-align: left; width: 50%;">{{ ''|date('format.date'|trans({}, 'general')) }}</div>
+            <div style="float: right; text-align: right; width: 5cm;">
+                {{ 'report.page'|trans({'page': '{PAGENO}', 'total': '{nbpg}'}) }}
+            </div>
+        </div>
+    </htmlpagefooter>
+{% endblock %}

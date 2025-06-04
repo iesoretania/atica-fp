@@ -22,7 +22,6 @@ use App\Entity\AnsweredSurvey;
 use App\Entity\AnsweredSurveyQuestion;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\StudentEnrollment;
-use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\StudentAnsweredSurvey;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\TrainingProgram;
@@ -142,5 +141,39 @@ class StudentAnsweredSurveyRepository extends ServiceEntityRepository
             ->addOrderBy('tp.name');
 
         return $queryBuilder;
+    }
+
+    public function getStatsByTrainingProgramAndAcademicYear(TrainingProgram $trainingProgram, AcademicYear $academicYear): array
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder()
+            ->select('spw', 'c', 'w', 'p', 'g', 'gr', 't', 'sp', 'se', 'et', 'awt', 'aet', 'wt', 'pg', 'pgr', 'tp')
+            ->from(StudentProgramWorkcenter::class, 'spw')
+            ->join('spw.studentProgram', 'sp')
+            ->join('sp.programGroup', 'pg')
+            ->join('pg.programGrade', 'pgr')
+            ->join('pgr.trainingProgram', 'tp')
+            ->join('sp.studentEnrollment', 'se')
+            ->join('se.person', 'p')
+            ->join('spw.workTutor', 'wt')
+            ->join('spw.workcenter', 'w')
+            ->join('w.company', 'c')
+            ->leftJoin('spw.additionalWorkTutor', 'awt')
+            ->join('spw.educationalTutor', 'et')
+            ->leftJoin('spw.additionalEducationalTutor', 'aet')
+            ->join('se.group', 'g')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 't')
+            ->where('tp = :training_program')
+            ->andWhere('t.academicYear = :academic_year')
+            ->setParameter('training_program', $trainingProgram)
+            ->setParameter('academic_year', $academicYear)
+            ->leftJoin(StudentAnsweredSurvey::class, 'sas', 'WITH', 'sas.studentEnrollment = se AND sas.studentProgramWorkcenter = spw')
+            ->addSelect('COUNT(sas)')
+            ->addGroupBy('spw')
+            ->addOrderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->addOrderBy('p.id');
+
+        return $queryBuilder->getQuery()->getResult();
     }
 }

@@ -1,9 +1,9 @@
-{% trans_default_domain 'wpt_report' %}
+{% trans_default_domain 'itp_report' %}
 
 {% if stats[0] %}
     <pagebreak></pagebreak>
 
-    <h1>{{ app_name }} - {{ organization }} - {{ grade }} - {{ shift }}</h1>
+    <h1>{{ app_name }} - {{ organization }} - {{ training_program }} - {{ academic_year }}</h1>
     <h2>{{ 'title.survey.summary'|trans }}</h2>
 
     <table class="survey">

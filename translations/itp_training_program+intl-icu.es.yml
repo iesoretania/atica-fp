@@ -32,6 +32,8 @@ form.delete: Eliminar los planes de formación seleccionados
 form.back: Volver
 form.delete_confirm: Confirmar borrado
 
+form.report: Generar informe
+
 form.grade: Curso
 form.program_grades: Horas previstas por curso
 form.total_hours: Total de horas previstas

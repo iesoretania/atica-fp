@@ -36,6 +36,10 @@ class TrainingProgramVoter extends CachedVoter
     public const MANAGE_PERMISSIONS = 'ITP_TRAINING_PROGRAM_MANAGE_GRADES';
     public const ACCESS = 'ITP_TRAINING_PROGRAM_ACCESS';
 
+    public const REPORT_STUDENT_SURVEY = 'ITP_TRAINING_PROGRAM_REPORT_STUDENT_SURVEY';
+    public const REPORT_WORK_TUTOR_SURVEY = 'ITP_TRAINING_PROGRAM_REPORT_WORK_TUTOR_SURVEY';
+    public const REPORT_EDUCATIONAL_TUTOR_SURVEY = 'ITP_TRAINING_PROGRAM_REPORT_EDUCATIONAL_TUTOR_SURVEY';
+
     public function __construct(
         CacheItemPoolInterface                          $cacheItemPoolItemPool,
         private readonly AccessDecisionManagerInterface $decisionManager,
@@ -56,7 +60,10 @@ class TrainingProgramVoter extends CachedVoter
         return in_array($attribute, [
             self::MANAGE_PERMISSIONS,
             self::MANAGE,
-            self::ACCESS
+            self::ACCESS,
+            self::REPORT_STUDENT_SURVEY,
+            self::REPORT_WORK_TUTOR_SURVEY,
+            self::REPORT_EDUCATIONAL_TUTOR_SURVEY
         ], true);
     }
 
@@ -122,6 +129,9 @@ class TrainingProgramVoter extends CachedVoter
                 return $isDepartmentHead;
             case self::MANAGE:
             case self::ACCESS:
+            case self::REPORT_STUDENT_SURVEY:
+            case self::REPORT_WORK_TUTOR_SURVEY:
+            case self::REPORT_EDUCATIONAL_TUTOR_SURVEY:
                 return $isDepartmentHead || $isGroupManager;
         }
 
