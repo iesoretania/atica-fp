@@ -44,6 +44,8 @@ class OrganizationVoter extends CachedVoter
     public const ITP_ACCESS_VISIT = 'ORGANIZATION_ITP_ACCESS_VISIT';
     public const ITP_CREATE_VISIT = 'ORGANIZATION_ITP_CREATE_VISIT';
 
+    public const ITP_ACCESS_SURVEY = 'ORGANIZATION_ITP_ACCESS_SURVEY';
+
     public const ITP_STUDENT = 'ORGANIZATION_ITP_STUDENT';
     public const ITP_WORK_TUTOR = 'ORGANIZATION_ITP_WORK_TUTOR';
     public const ITP_EDUCATIONAL_TUTOR = 'ORGANIZATION_ITP_EDUCATIONAL_TUTOR';
@@ -75,6 +77,7 @@ class OrganizationVoter extends CachedVoter
             self::ITP_VIEW_EVALUATION,
             self::ITP_ACCESS_VISIT,
             self::ITP_CREATE_VISIT,
+            self::ITP_ACCESS_SURVEY,
             self::ITP_STUDENT,
             self::ITP_WORK_TUTOR,
             self::ITP_EDUCATIONAL_TUTOR,
@@ -136,20 +139,23 @@ class OrganizationVoter extends CachedVoter
         switch ($attribute) {
             case self::ITP_STUDENT:
                 // Si es estudiante de FFE, permitir
-                return $isItpStudent;
+                return $isDepartmentHead || $isItpManager || $isItpStudent;
             case self::ITP_WORK_TUTOR:
                 // Si es tutor dual de empresa, permitir
-                return $isStudentProgramWorkcenterWorkTutor;
+                return $isDepartmentHead || $isItpManager || $isStudentProgramWorkcenterWorkTutor;
             case self::ITP_EDUCATIONAL_TUTOR:
                 // Si es responsable de seguimiento de un centor educativo, permitir
-                return $isStudentProgramWorkcenterEducationalTutor;
+                return $isDepartmentHead || $isItpManager || $isStudentProgramWorkcenterEducationalTutor;
             case self::ITP_GROUP_TUTOR:
                 // Si es tutor de grupo, permitir
-                return $isGroupTutor;
+                return $isDepartmentHead || $isItpManager || $isGroupTutor;
             case self::ITP_ACCESS_VISIT:
             case self::ITP_CREATE_VISIT:
                 // profesorado responsable de seguimiento, siempre
                 return $isStudentProgramWorkcenterEducationalTutor || $isItpManager || $isDepartmentHead;
+            case self::ITP_ACCESS_SURVEY:
+                // Si es responsable de seguimiento, tutor de grupo, tutor docente o tutor laboral, permitir acceder
+                return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor;
             case self::ITP_MANAGER:
                 // Si es jefe de algún departamento, permitir gestionar
                 return $isDepartmentHead || $isItpManager;

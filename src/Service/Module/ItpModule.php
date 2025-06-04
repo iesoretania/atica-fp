@@ -121,8 +121,10 @@ class ItpModule implements ModuleBuilderInterface
                     ->setPriority(8000);
 
                 $menu1->addChild($menu2);
-                $menu2 = new MenuItem();
+            }
 
+            if ($this->security->isGranted(ItpOrganizationVoter::ITP_ACCESS_SURVEY, $organization)) {
+                $menu2 = new MenuItem();
                 $menu2
                     ->setName('in_company_training_phase_survey')
                     ->setRouteName('in_company_training_phase_survey')

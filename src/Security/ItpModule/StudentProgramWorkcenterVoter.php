@@ -45,8 +45,10 @@ class StudentProgramWorkcenterVoter extends CachedVoter
 
     public const VIEW_STUDENT_SURVEY = 'ITP_STUDENT_PROGRAM_WORKCENTER_VIEW_STUDENT_SURVEY';
     public const FILL_STUDENT_SURVEY = 'ITP_STUDENT_PROGRAM_WORKCENTER_FILL_STUDENT_SURVEY';
-    public const VIEW_COMPANY_SURVEY = 'ITP_STUDENT_PROGRAM_WORKCENTER_VIEW_WORK_TUTOR_SURVEY';
-    public const FILL_COMPANY_SURVEY = 'ITP_STUDENT_PROGRAM_WORKCENTER_FILL_COMPANY_SURVEY';
+    public const VIEW_WORK_TUTOR_SURVEY = 'ITP_STUDENT_PROGRAM_WORKCENTER_VIEW_WORK_TUTOR_SURVEY';
+    public const FILL_WORK_TUTOR_SURVEY = 'ITP_STUDENT_PROGRAM_WORKCENTER_FILL_WORK_TUTOR_SURVEY';
+    public const VIEW_EDUCATIONAL_TUTOR_SURVEY = 'ITP_STUDENT_PROGRAM_WORKCENTER_VIEW_EDUCATIONAL_TUTOR_SURVEY';
+    public const FILL_EDUCATIONAL_TUTOR_SURVEY = 'ITP_STUDENT_PROGRAM_WORKCENTER_FILL_EDUCATIONAL_TUTOR_SURVEY';
 
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
@@ -78,8 +80,10 @@ class StudentProgramWorkcenterVoter extends CachedVoter
             self::VIEW_EVALUATION,
             self::VIEW_STUDENT_SURVEY,
             self::FILL_STUDENT_SURVEY,
-            self::VIEW_COMPANY_SURVEY,
-            self::FILL_COMPANY_SURVEY,
+            self::VIEW_WORK_TUTOR_SURVEY,
+            self::FILL_WORK_TUTOR_SURVEY,
+            self::VIEW_EDUCATIONAL_TUTOR_SURVEY,
+            self::FILL_EDUCATIONAL_TUTOR_SURVEY,
         ], true);
     }
 
@@ -166,9 +170,12 @@ class StudentProgramWorkcenterVoter extends CachedVoter
             case self::VIEW_STUDENT_SURVEY:
             case self::FILL_STUDENT_SURVEY:
                 return $isItpStudent || $isDepartmentHead || $isItpManager || $isGroupTutor;
-            case self::VIEW_COMPANY_SURVEY:
-            case self::FILL_COMPANY_SURVEY:
+            case self::VIEW_WORK_TUTOR_SURVEY:
+            case self::FILL_WORK_TUTOR_SURVEY:
                 return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterWorkTutor;
+            case self::VIEW_EDUCATIONAL_TUTOR_SURVEY:
+            case self::FILL_EDUCATIONAL_TUTOR_SURVEY:
+                return $isDepartmentHead || $isItpManager || $isItpTeacher;
         }
 
         // denegamos en cualquier otro caso

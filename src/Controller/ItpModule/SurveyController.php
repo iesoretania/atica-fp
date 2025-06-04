@@ -25,11 +25,12 @@ use App\Entity\Person;
 use App\Entity\Survey;
 use App\Form\Type\Edu\AnsweredSurveyType;
 use App\Repository\Edu\AcademicYearRepository;
+use App\Repository\ItpModule\EducationalTutorAnsweredSurveyRepository;
 use App\Repository\ItpModule\StudentAnsweredSurveyRepository;
-use App\Repository\ItpModule\TeacherRepository;
 use App\Repository\ItpModule\WorkTutorAnsweredSurveyRepository;
-use App\Security\ItpModule\OrganizationVoter;
+use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\StudentProgramWorkcenterVoter;
+use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -64,7 +65,7 @@ class SurveyController extends AbstractController
     public function index(UserExtensionService $userExtensionService): Response
     {
         $this->denyAccessUnlessGranted(
-            OrganizationVoter::ITP_ACCESS_SECTION,
+            ItpOrganizationVoter::ITP_ACCESS_SECTION,
             $userExtensionService->getCurrentOrganization()
         );
         return $this->render(
@@ -153,7 +154,7 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    #[IsGranted(StudentProgramWorkcenterVoter::VIEW_COMPANY_SURVEY, subject: 'studentProgramWorkcenter')]
+    #[IsGranted(StudentProgramWorkcenterVoter::VIEW_WORK_TUTOR_SURVEY, subject: 'studentProgramWorkcenter')]
     #[Route(path: '/empresa/cumplimentar/{id}/{workTutor}', name: '_work_tutor_form')]
     public function workTutorFill(
         Request                           $request,
@@ -170,7 +171,7 @@ class SurveyController extends AbstractController
 
         $person = $this->getUser();
 
-        $readOnly = !$this->isGranted(StudentProgramWorkcenterVoter::FILL_COMPANY_SURVEY, $studentProgramWorkcenter);
+        $readOnly = !$this->isGranted(StudentProgramWorkcenterVoter::FILL_WORK_TUTOR_SURVEY, $studentProgramWorkcenter);
 
         if (!$readOnly
             && !$this->isGranted(StudentProgramWorkcenterVoter::MANAGE, $studentProgramWorkcenter)
@@ -247,45 +248,35 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/centro/cumplimentar/{id}/{teacher}', name: '_educational_tutor_form', requirements: ['project' => '\d+', 'id' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(path: '/centro/cumplimentar/{id}/{teacher}', name: '_educational_tutor_form', requirements: ['studentProgramWorkcenter' => '\d+', 'id' => '\d+'], methods: ['GET', 'POST'])]
     public function educationalTutorFill(
-        Request $request,
-        TranslatorInterface $translator,
+        Request                                  $request,
+        TranslatorInterface                      $translator,
         EducationalTutorAnsweredSurveyRepository $educationalTutorAnsweredSurveyRepository,
-        AgreementRepository $agreementRepository,
-        ManagerRegistry $managerRegistry,
-        Project $project,
-        Teacher $teacher
+        ManagerRegistry                          $managerRegistry,
+        StudentProgramWorkcenter                 $studentProgramWorkcenter,
+        Teacher                                  $teacher
     ): Response {
         $em = $managerRegistry->getManager();
 
-        $this->denyAccessUnlessGranted(ProjectVoter::ACCESS_EDUCATIONAL_TUTOR_SURVEY, $project);
-        $readOnly = !$this->isGranted(ProjectVoter::FILL_EDUCATIONAL_TUTOR_SURVEY, $project);
+        $trainingProgram = $studentProgramWorkcenter->getStudentProgram()->getProgramGroup()->getProgramGrade()->getTrainingProgram();
 
-        $agreementCount = $agreementRepository->countAcademicYearAndEducationalTutorPersonAndProject(
-            $teacher->getAcademicYear(),
-            $teacher->getPerson(),
-            $project
-        );
+        $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::VIEW_EDUCATIONAL_TUTOR_SURVEY, $studentProgramWorkcenter);
+        $readOnly = !$this->isGranted(StudentProgramWorkcenterVoter::FILL_EDUCATIONAL_TUTOR_SURVEY, $studentProgramWorkcenter);
 
-        // solo pueden rellenar la encuesta de tutores docentes (titulares o adicionales)
-        if ($agreementCount === 0) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $survey = $project->getEducationalTutorSurvey();
+        $survey = $trainingProgram->getEducationalTutorSurvey();
 
         if ($survey instanceof Survey) {
             $answeredSurvey =
-                $educationalTutorAnsweredSurveyRepository->findOneByProjectAndTeacher(
-                    $project,
+                $educationalTutorAnsweredSurveyRepository->findOneByTrainingProgramAndTeacher(
+                    $trainingProgram,
                     $teacher
                 );
 
             if ($answeredSurvey === null) {
                 $answeredSurvey = $educationalTutorAnsweredSurveyRepository->createNewAnsweredSurvey(
                     $survey,
-                    $project,
+                    $trainingProgram,
                     $teacher
                 );
             }
@@ -303,7 +294,7 @@ class SurveyController extends AbstractController
                     $teacherSurvey->setTimestamp(new \DateTime());
                     $em->flush();
                     $this->addFlash('success', $translator->trans('message.saved', [], 'wlt_survey'));
-                    return $this->redirectToRoute('work_linked_training_survey_educational_tutor_list', [
+                    return $this->redirectToRoute('in_company_training_phase_survey_educational_tutor_list', [
                         'academicYear' => $teacher->getAcademicYear()->getId()
                     ]);
                 } catch (\Exception) {
@@ -316,23 +307,23 @@ class SurveyController extends AbstractController
             ]);
         }
 
-        $title = $translator->trans('title.fill', [], 'wlt_survey');
+        $title = $translator->trans('title.fill', [], 'itp_survey');
 
         $breadcrumb = [
             ['fixed' => $teacher],
-            ['fixed' => $project],
+            ['fixed' => $trainingProgram],
             ['fixed' => $title]
         ];
-        $backUrl = $this->generateUrl('work_linked_training_survey_educational_tutor_list', [
+        $backUrl = $this->generateUrl('in_company_training_phase_survey_educational_tutor_list', [
             'academicYear' => $teacher->getId()
         ]);
         return $this->render('wlt/survey/form.html.twig', [
-            'menu_path' => 'work_linked_training_survey_educational_tutor_list',
+            'menu_path' => 'in_company_training_phase_survey_educational_tutor_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
-            'project' => $project,
-            'survey' => $project->getEducationalTutorSurvey(),
+            'project' => $trainingProgram,
+            'survey' => $trainingProgram->getEducationalTutorSurvey(),
             'person' => $teacher->getPerson(),
             'form' => $form->createView(),
             'back_url' => $backUrl
@@ -345,7 +336,6 @@ class SurveyController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         AcademicYearRepository $academicYearRepository,
-        TeacherRepository $teacherRepository,
         StudentAnsweredSurveyRepository $studentAnsweredSurveyRepository,
         int $page = 1,
         AcademicYear $academicYear = null
@@ -354,7 +344,7 @@ class SurveyController extends AbstractController
         if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
-        $this->denyAccessUnlessGranted(OrganizationVoter::ITP_VIEW_EVALUATION, $organization);
+        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_VIEW_EVALUATION, $organization);
 
         $title = $translator->trans('title.survey.student_program_workcenter.list', [], 'itp_survey');
 
@@ -363,7 +353,7 @@ class SurveyController extends AbstractController
 
         $q = $request->get('q');
 
-        $isManager = $this->isGranted(OrganizationVoter::ITP_MANAGER, $organization);
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         $queryBuilder = $studentAnsweredSurveyRepository->createStatsByAcademicYearAndPersonFilterQueryBuilder(
             $academicYear,
@@ -401,7 +391,7 @@ class SurveyController extends AbstractController
         if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
-        $this->denyAccessUnlessGranted(OrganizationVoter::ITP_WORK_TUTOR, $organization);
+        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_WORK_TUTOR, $organization);
 
         $title = $translator->trans('title.survey.work_tutor.list', [], 'itp_survey');
 
@@ -410,7 +400,7 @@ class SurveyController extends AbstractController
 
         $q = $request->get('q');
 
-        $isManager = $this->isGranted(OrganizationVoter::ITP_MANAGER, $organization);
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         $queryBuilder = $workTutorAnsweredSurveyRepository->createStatsByAcademicYearAndPersonFilterQueryBuilder(
             $academicYear,
@@ -436,41 +426,46 @@ class SurveyController extends AbstractController
 
     #[Route(path: '/centro/{academicYear}/{page}', name: '_educational_tutor_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
     public function educationalTutorList(
-        Request                $request,
-        UserExtensionService   $userExtensionService,
-        TranslatorInterface    $translator,
-        AcademicYearRepository $academicYearRepository,
-        TeacherRepository      $wltTeacherRepository,
-        int                    $page = 1,
-        AcademicYear           $academicYear = null
+        Request                                  $request,
+        UserExtensionService                     $userExtensionService,
+        TranslatorInterface                      $translator,
+        AcademicYearRepository                   $academicYearRepository,
+        EducationalTutorAnsweredSurveyRepository $educationalTutorAnsweredSurveyRepository,
+        int                                      $page = 1,
+        AcademicYear                             $academicYear = null
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization);
+        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_EDUCATIONAL_TUTOR, $organization);
 
-        $title = $translator->trans('title.survey.educational_tutor.list', [], 'wlt_survey');
+        $title = $translator->trans('title.survey.educational_tutor.list', [], 'itp_survey');
 
-        /** @var Person $person */
         $person = $this->getUser();
+        assert($person instanceof Person);
 
         $q = $request->get('q');
 
-        $queryBuilder = $wltTeacherRepository->findTeachersDataByProjectGroupByProjectAndPersonFilteredQueryBuilder(
-            $q,
+        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
+        $isItpManager = $this->isGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);
+
+        $queryBuilder = $educationalTutorAnsweredSurveyRepository->createStatsByAcademicYearAndPersonFilterQueryBuilder(
             $academicYear,
-            $person
+            $isManager,
+            $isItpManager,
+            $person,
+            $q
         );
 
         $pager = $this->getPager($queryBuilder, $this->getParameter('page.size'), $page);
 
-        return $this->render('wlt/survey/educational_tutor_list.html.twig', [
+        return $this->render('itp/survey/educational_tutor_list.html.twig', [
             'title' => $title,
             'pager' => $pager,
             'q' => $q,
-            'domain' => 'wlt_survey',
+            'domain' => 'itp_survey',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
