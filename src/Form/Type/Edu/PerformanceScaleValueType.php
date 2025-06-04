@@ -20,12 +20,13 @@ namespace App\Form\Type\Edu;
 
 use App\Entity\Edu\PerformanceScaleValue;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Symfony\Component\Validator\Constraints\PositiveOrZero;
 
 class PerformanceScaleValueType extends AbstractType
 {
@@ -39,9 +40,13 @@ class PerformanceScaleValueType extends AbstractType
                 'label' => 'form.grade',
                 'required' => true
             ])
-            ->add('numericGrade', IntegerType::class, [
-                'label' => 'form.numeric_grade','constraints' => [
-                    new Range(['min' => 0, 'max' => 10])
+            ->add('numericGrade', MoneyType::class, [
+                'label' => 'form.numeric_grade',
+                'currency' => false,
+                'divisor' => 100,
+                'constraints' => [
+                    new PositiveOrZero(),
+                    new LessThanOrEqual(['value' => 1000, 'message' => 'grading.max'])
                 ],
                 'required' => true
             ])

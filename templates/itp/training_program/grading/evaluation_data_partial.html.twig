@@ -111,10 +111,10 @@
     <tr>
         {% if criterion_data[1] %}
             {% set criteria_count = criteria_count + 1 %}
-            {% set criteria_sum = criteria_sum + criterion_data[1] %}
+            {% set criteria_sum = criteria_sum + criterion_data[1] / 100.0 %}
         {% endif %}
         <td style="width: 85%"><b>{{ criterion.code }}</b>. {{ criterion.name }}</td>
-        <td style="width: 15%" class="center">{{ criterion_data[1] ? (criterion_data[1]|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general'))) : 'report.no_grade'|trans }}</td>
+        <td style="width: 15%" class="center">{{ criterion_data[1] ? ((criterion_data[1] / 100.0) |number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general'))) : 'report.no_grade'|trans }}</td>
     </tr>
     {% endfor %}
     {% if last_subject_id != null %}

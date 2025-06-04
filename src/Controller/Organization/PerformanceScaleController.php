@@ -128,7 +128,6 @@ class PerformanceScaleController extends AbstractController
     #[Route(path: '/listar/{page}/', name: 'organization_performance_scale_list', requirements: ['page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]    public function list(
         Request $request,
         TranslatorInterface $translator,
-        ManagerRegistry $managerRegistry,
         UserExtensionService $userExtensionService,
         PerformanceScaleRepository $performanceScaleRepository,
         int $page = 1

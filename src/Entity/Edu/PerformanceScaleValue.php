@@ -41,6 +41,9 @@ class PerformanceScaleValue implements \Stringable
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $numericGrade = null;
 
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $negativeGrade = false;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
@@ -95,6 +98,17 @@ class PerformanceScaleValue implements \Stringable
     public function setNotes(?string $notes): static
     {
         $this->notes = $notes;
+        return $this;
+    }
+
+    public function isNegativeGrade(): ?bool
+    {
+        return $this->negativeGrade;
+    }
+
+    public function setNegativeGrade(?bool $negativeGrade): PerformanceScaleValue
+    {
+        $this->negativeGrade = $negativeGrade;
         return $this;
     }
 }

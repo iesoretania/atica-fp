@@ -18,7 +18,7 @@
                 <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.description }}</a></label>
             </td>
             <td>
-                {{ item.numericGrade }}
+                {{ (item.numericGrade/ 100.0) | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
             </td>
             <td>
                 {{ item.notes|nl2br }}

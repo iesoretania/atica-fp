@@ -10,6 +10,8 @@ calendar.start_time_needed: Debe especificarse la hora de inicio
 calendar.end_time_needed: Debe especificarse la hora de finalización
 calendar.first_start_time_needed: Debe especificarse el primer tramo
 
+grading.max: La calificación no puede ser mayor que 10
+
 agreement.student_workcenter.unique: Este estudiante ya tiene un convenio en esta sede
 agreement.student_agreement.unique: Este estudiante ya pertenece al acuerdo de colaboración
 company_program.company_training.unique: Esta empresa ya tiene un programa asociado al proyecto
