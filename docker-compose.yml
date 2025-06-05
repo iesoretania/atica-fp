@@ -11,7 +11,7 @@ services:
         restart: always
 
     app:
-        image: iesoretania/atica-fp-app:7.4.1
+        image: iesoretania/atica-fp-app:7.5.0
         build: .
         environment:
             - "DEMO=${DEMO}"
