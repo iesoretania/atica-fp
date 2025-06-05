@@ -19,6 +19,9 @@ menu.in_company_training_phase.evaluation_summary.detail: Obtener un resumen de 
 menu.in_company_training_phase.contact: Contactos con empresas
 menu.in_company_training_phase.contact.detail: Registrar los contactos con empresas por parte de los docentes de FP dual
 
+menu.in_company_training_phase.travel_expense: Dietas de desplazamiento
+menu.in_company_training_phase.travel_expense.detail: Registrar los desplazamientos y dietas de los responsables de seguimiento
+
 menu.in_company_training_phase.survey: Encuestas
 menu.in_company_training_phase.survey.detail: Encuestas de satisfacción sobre la FFE
 

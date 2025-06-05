@@ -4,6 +4,13 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* feat: Implementada gestión de dietas de desplazamiento en la FFE
+* fix: Mostrar los planes de formación inicial en los informes de encuesta a las jefaturas de FP
+
+* _ATENCIÓN: Hay actualización de la base de datos_
+
 7.4.1 (2025-06-04)
 ------------------
 * feat: Generación de informes de encuestas de satisfacción de FFE

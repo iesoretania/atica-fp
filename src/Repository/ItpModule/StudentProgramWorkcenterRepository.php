@@ -8,6 +8,7 @@ use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgram;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
+use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\ItpModule\WorkDay;
 use App\Entity\Person;
 use App\Repository\Edu\GroupRepository;
@@ -288,6 +289,33 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         return $this->createGradingQueryBuilder($academicYear, $person, $isManager, $q)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findRelatedTrainingProgramsByAcademicYearPersonManagerAndQuery(
+        AcademicYear $academicYear,
+        Person $person,
+        bool $isManager,
+        ?string $q): array
+    {
+        $studentProgramWorkcenters = $this->createGradingQueryBuilder($academicYear, $person, $isManager, $q)
+            ->getQuery()
+            ->getResult();
+
+        $trainingPrograms = $this->getEntityManager()->createQueryBuilder()
+            ->select('tp')
+            ->distinct()
+            ->from(TrainingProgram::class, 'tp')
+            ->join('tp.trainingProgramGrades', 'pgr')
+            ->join('pgr.trainingProgramGroups', 'pgg')
+            ->join('pgg.studentPrograms', 'sp')
+            ->join('sp.studentProgramWorkcenters', 'spw')
+            ->where('spw IN (:student_program_workcenters)')
+            ->setParameter('student_program_workcenters', $studentProgramWorkcenters)
+            ->orderBy('tp.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return $trainingPrograms;
     }
 
     public function createGradingProgramGroupQueryBuilder(

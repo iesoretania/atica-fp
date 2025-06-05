@@ -123,6 +123,19 @@ class ItpModule implements ModuleBuilderInterface
                 $menu1->addChild($menu2);
             }
 
+            if ($this->security->isGranted(ItpOrganizationVoter::ITP_ACCESS_EXPENSE, $organization)) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('in_company_training_phase_travel_expense')
+                    ->setRouteName('in_company_training_phase_travel_expense_teacher_list')
+                    ->setCaption('menu.in_company_training_phase.travel_expense')
+                    ->setDescription('menu.in_company_training_phase.travel_expense.detail')
+                    ->setIcon('road')
+                    ->setModule('itp')
+                    ->setPriority(9000);
+
+                $menu1->addChild($menu2);
+            }
             if ($this->security->isGranted(ItpOrganizationVoter::ITP_ACCESS_SURVEY, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2

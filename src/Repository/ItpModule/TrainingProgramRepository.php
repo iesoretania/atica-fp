@@ -80,6 +80,18 @@ class TrainingProgramRepository extends ServiceEntityRepository
         return $queryBuilder;
     }
 
+    public function findByPersonAndQuery(
+        ?AcademicYear $academicYear,
+        bool $isManager,
+        Person $person,
+        ?Teacher $teacher = null,
+        ?string $q = null
+    ): array {
+        return $this->createProgramRepositoryQueryBuilder($academicYear, $isManager, $person, $teacher, $q)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function deleteFromList($items)
     {
         $this->programGradeRepository->deleteFromTrainingProgramList($items);
@@ -128,8 +140,9 @@ class TrainingProgramRepository extends ServiceEntityRepository
 
         if (!$isManager) {
             $queryBuilder
+                ->leftJoin('d.head', 'h')
                 ->join('pgg.managers', 'm')
-                ->andWhere('m = :person')
+                ->andWhere('m = :person OR h.person = :person')
                 ->setParameter('person', $person);
         }
 

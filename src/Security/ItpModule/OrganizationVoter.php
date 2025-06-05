@@ -51,6 +51,9 @@ class OrganizationVoter extends CachedVoter
     public const ITP_EDUCATIONAL_TUTOR = 'ORGANIZATION_ITP_EDUCATIONAL_TUTOR';
     public const ITP_GROUP_TUTOR = 'ORGANIZATION_ITP_GROUP_TUTOR';
 
+    public const ITP_ACCESS_EXPENSE = 'ORGANIZATION_ITP_ACCESS_EXPENSE';
+    public const ITP_CREATE_EXPENSE = 'ORGANIZATION_ITP_CREATE_EXPENSE';
+
     public function __construct(
         CacheItemPoolInterface                          $cacheItemPoolItemPool,
         private readonly AccessDecisionManagerInterface $decisionManager,
@@ -81,7 +84,9 @@ class OrganizationVoter extends CachedVoter
             self::ITP_STUDENT,
             self::ITP_WORK_TUTOR,
             self::ITP_EDUCATIONAL_TUTOR,
-            self::ITP_GROUP_TUTOR
+            self::ITP_GROUP_TUTOR,
+            self::ITP_ACCESS_EXPENSE,
+            self::ITP_CREATE_EXPENSE
         ], true);
     }
 
@@ -149,6 +154,8 @@ class OrganizationVoter extends CachedVoter
             case self::ITP_GROUP_TUTOR:
                 // Si es tutor de grupo, permitir
                 return $isDepartmentHead || $isItpManager || $isGroupTutor;
+            case self::ITP_CREATE_EXPENSE:
+            case self::ITP_ACCESS_EXPENSE:
             case self::ITP_ACCESS_VISIT:
             case self::ITP_CREATE_VISIT:
                 // profesorado responsable de seguimiento, siempre

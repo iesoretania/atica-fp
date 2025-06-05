@@ -21,6 +21,7 @@ simple_things_entity_audit:
         - App\Entity\ItpModule\StudentProgramWorkcenterActivity
         - App\Entity\ItpModule\StudentProgramWorkcenterActivityComment
         - App\Entity\ItpModule\TrainingProgram
+        - App\Entity\ItpModule\TravelExpense
         - App\Entity\ItpModule\WorkDay
         - App\Entity\ItpModule\WorkTutorAnsweredSurvey
         - App\Entity\WltModule\AgreementActivityRealization
