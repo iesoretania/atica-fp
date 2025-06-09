@@ -191,7 +191,7 @@ class FinalReportController extends AbstractController
                 ->getGrade()->getTraining()->__toString());
             $mpdf->WriteText(179, 53, $agreementEnrollment->getAgreement()->getShift()->getType());
             $mpdf->WriteText(40, 59.1, $agreementEnrollment->getAgreement()->getWorkcenter()->__toString());
-            $mpdf->WriteText(165, 59.1, (string) $workDayRepository->getAgreementTrackedHours($agreementEnrollment->getAgreement()));
+            $mpdf->WriteText(165, 59.1, (string) ($workDayRepository->getAgreementTrackedHours($agreementEnrollment->getAgreement()) / 100.0));
             $mpdf->WriteText(82, 65.1, $agreementEnrollment->getWorkTutor()->__toString());
             $mpdf->WriteText(68, 71.5, $agreementEnrollment->getEducationalTutor()->__toString());
 
