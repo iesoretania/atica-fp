@@ -162,7 +162,7 @@ class OrganizationVoter extends CachedVoter
                 return $isStudentProgramWorkcenterEducationalTutor || $isItpManager || $isDepartmentHead;
             case self::ITP_ACCESS_SURVEY:
                 // Si es responsable de seguimiento, tutor de grupo, tutor docente o tutor laboral, permitir acceder
-                return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor;
+                return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor || $isItpStudent;
             case self::ITP_MANAGER:
                 // Si es jefe de algún departamento, permitir gestionar
                 return $isDepartmentHead || $isItpManager;

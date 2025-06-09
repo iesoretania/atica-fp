@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* fix: Solucionado un problema por el que los estudiantes de FFE no podían acceder a las encuestas
+
 7.5.0 (2024-06-05)
 ------------------
 * feat: Implementada gestión de dietas de desplazamiento en la FFE

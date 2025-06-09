@@ -344,7 +344,7 @@ class SurveyController extends AbstractController
         if (!$academicYear instanceof AcademicYear) {
             $academicYear = $organization->getCurrentAcademicYear();
         }
-        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_VIEW_EVALUATION, $organization);
+        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_STUDENT, $organization);
 
         $title = $translator->trans('title.survey.student_program_workcenter.list', [], 'itp_survey');
 
