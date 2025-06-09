@@ -168,14 +168,17 @@ class StudentProgramWorkcenterVoter extends CachedVoter
             case self::VIEW_EVALUATION:
                 return $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isDepartmentHead || $isItpManager || $isItpTeacher;
             case self::VIEW_STUDENT_SURVEY:
-            case self::FILL_STUDENT_SURVEY:
                 return $isItpStudent || $isDepartmentHead || $isItpManager || $isGroupTutor;
+            case self::FILL_STUDENT_SURVEY:
+                return $isCurrentAcademicYear && ($isItpStudent || $isDepartmentHead || $isItpManager || $isGroupTutor);
             case self::VIEW_WORK_TUTOR_SURVEY:
-            case self::FILL_WORK_TUTOR_SURVEY:
                 return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterWorkTutor;
+            case self::FILL_WORK_TUTOR_SURVEY:
+                return $isCurrentAcademicYear && ($isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterWorkTutor);
             case self::VIEW_EDUCATIONAL_TUTOR_SURVEY:
-            case self::FILL_EDUCATIONAL_TUTOR_SURVEY:
                 return $isDepartmentHead || $isItpManager || $isItpTeacher;
+            case self::FILL_EDUCATIONAL_TUTOR_SURVEY:
+                return $isCurrentAcademicYear && ($isDepartmentHead || $isItpManager || $isItpTeacher);
         }
 
         // denegamos en cualquier otro caso

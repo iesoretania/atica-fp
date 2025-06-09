@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * fix: Solucionado un problema por el que los estudiantes de FFE no podían acceder a las encuestas
+* fix: Desactivar cumplimentación de encuestas de otros cursos académicos
 
 7.5.0 (2024-06-05)
 ------------------
