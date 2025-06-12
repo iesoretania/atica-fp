@@ -43,8 +43,8 @@
                 {% endif %}
                 {% if activityRealizationData[1] is not null %}
                     <td class="w-10">{{ activityRealizationData[2] ? activityRealizationData[2]|date('format.date'|trans({}, 'general')) }}</td>
-                    <td class="w-10">{{ activityRealizationData[1] | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</td>
-                    {% set activity_sum = activity_sum + activityRealizationData[1] %}
+                    <td class="w-10">{{ (activityRealizationData[1] / 100.0) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</td>
+                    {% set activity_sum = activity_sum + (activityRealizationData[1] / 100.0) %}
                     {% set activity_count = activity_count + 1 %}
                 {% else %}
                     <td class="w-10"></td>

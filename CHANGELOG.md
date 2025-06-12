@@ -9,6 +9,7 @@ x.x.x (xxxx-xx-xx)
 * fix: Solucionado un problema por el que los estudiantes de FFE no podían acceder a las encuestas
 * fix: Desactivar cumplimentación de encuestas de otros cursos académicos
 * fix: Mostrar correctamente el número de horas en el informe del tutor laboral de FCT
+* fix: Solucionado problema al mostrar el resumen de evaluación de FP dual tras la inclusión de decimales
 
 7.5.0 (2024-06-05)
 ------------------
