@@ -41,7 +41,7 @@
         </td>
         <td style="width: 40%; border: 1px solid; padding: 0.1cm">
             {{ 'report.quarter'|trans }} {{ ('report.quarter' ~ shift.quarter)|trans }}<br />
-            {{ 'report.program_hours'|trans }} {{ total_hours }}
+            {{ 'report.program_hours'|trans }} {{ (total_hours / 100) | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}<br />
         </td>
     </tr>
     <tr>
