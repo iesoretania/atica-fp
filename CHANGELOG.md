@@ -11,6 +11,7 @@ x.x.x (xxxx-xx-xx)
 * fix: Mostrar correctamente el número de horas en el informe del tutor laboral de FCT
 * fix: Solucionado problema al mostrar el resumen de evaluación de FP dual tras la inclusión de decimales
 * fix: Solucionado problema al mostrar el resumen de actividades de FCT
+* fix: Arreglada errata al comprobar los accesos de los registros de desplazamientos de FFE
 
 7.5.0 (2024-06-05)
 ------------------

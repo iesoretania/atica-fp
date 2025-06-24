@@ -78,7 +78,7 @@ class TravelExpenseVoter extends CachedVoter
 
         // si el módulo está deshabilitado, denegar
         if (!$organization instanceof Organization ||
-            !$organization->getCurrentAcademicYear()->hasModule('ipt')) {
+            !$organization->getCurrentAcademicYear()->hasModule('itp')) {
             return false;
         }
 
