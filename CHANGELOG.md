@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+7.5.1 (2025-06-24)
 ------------------
 * fix: Solucionado un problema por el que los estudiantes de FFE no podían acceder a las encuestas
 * fix: Desactivar cumplimentación de encuestas de otros cursos académicos
@@ -13,7 +13,7 @@ x.x.x (xxxx-xx-xx)
 * fix: Solucionado problema al mostrar el resumen de actividades de FCT
 * fix: Arreglada errata al comprobar los accesos de los registros de desplazamientos de FFE
 
-7.5.0 (2024-06-05)
+7.5.0 (2025-06-05)
 ------------------
 * feat: Implementada gestión de dietas de desplazamiento en la FFE
 * fix: Mostrar los planes de formación inicial en los informes de encuesta a las jefaturas de FP
