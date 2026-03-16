@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.x.x (xxxx-xx-xx)
+------------------
+* fix (security): Solucionado un problema de seguridad que permitía a usuarios no autorizados acceder a datos de otros usuarios
+
 7.5.1 (2025-06-24)
 ------------------
 * fix: Solucionado un problema por el que los estudiantes de FFE no podían acceder a las encuestas

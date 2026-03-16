@@ -24,7 +24,6 @@ use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\Person;
 use App\Repository\Edu\TeacherRepository;
 use App\Repository\ItpModule\ProgramGroupRepository;
-use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
@@ -54,7 +53,6 @@ class StudentProgramWorkcenterVoter extends CachedVoter
         CacheItemPoolInterface $cacheItemPoolItemPool,
         private readonly AccessDecisionManagerInterface $decisionManager,
         private readonly TeacherRepository $teacherRepository,
-        private readonly StudentProgramWorkcenterRepository $studentProgramWorkcenterRepository,
         private readonly ProgramGroupRepository $programGroupRepository,
         private readonly UserExtensionService $userExtensionService
     ) {
@@ -132,19 +130,30 @@ class StudentProgramWorkcenterVoter extends CachedVoter
         }
 
         $teacher = $this->teacherRepository->findOneByPersonAndAcademicYear($user, $academicYear);
-        $isItpStudent = $this->studentProgramWorkcenterRepository->countByStudentAndAcademicYear($user, $academicYear) > 0;
+        $isItpStudent = $subject->getStudentProgram()->getStudentEnrollment()->getPerson() === $user;
+        $isItpManager = false;
+
         if ($teacher instanceof Teacher) {
-            $isItpManager = count($this->programGroupRepository->findByManager($teacher)) > 0;
-            $isGroupTutor = count($this->programGroupRepository->findByTutor($teacher)) > 0;
-            $isStudentProgramWorkcenterEducationalTutor = count($this->studentProgramWorkcenterRepository->findByEducationalTutorOrAdditionalEducationalTutor($teacher)) > 0;
-            $isItpTeacher = $this->programGroupRepository->countByTeacher($teacher) > 0;
+            $programGroup = $subject->getStudentProgram()->getProgramGroup();
+            foreach ($programGroup->getManagers() as $manager) {
+                if ($manager->getPerson() === $user) {
+                    $isItpStudent = true;
+                    break;
+                }
+            }
+            $isGroupTutor = false;
+            foreach ($programGroup->getGroup()->getTutors() as $tutor) {
+                if ($tutor->getPerson() === $user) {
+                    $isGroupTutor = true;
+                    break;
+                }
+            }
+            $isStudentProgramWorkcenterEducationalTutor = $subject->getEducationalTutor() === $teacher || $subject->getAdditionalEducationalTutor() === $teacher;
         } else {
-            $isItpManager = false;
             $isGroupTutor = false;
             $isStudentProgramWorkcenterEducationalTutor = false;
-            $isItpTeacher = false;
         }
-        $isStudentProgramWorkcenterWorkTutor = count($this->studentProgramWorkcenterRepository->findByWorkTutorOrAdditionalWorkTutorAndAcademicYear($user, $academicYear)) > 0;
+        $isStudentProgramWorkcenterWorkTutor = $subject->getWorkTutor() === $user || $subject->getAdditionalWorkTutor() === $user;
 
         $isCurrentAcademicYear = $academicYear
             === $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
@@ -155,6 +164,7 @@ class StudentProgramWorkcenterVoter extends CachedVoter
         switch ($attribute) {
             case self::MANAGE:
                 return $isDepartmentHead && $isItpManager;
+            case self::VIEW_STUDENT_SURVEY:
             case self::FILL:
                 return $isItpStudent || $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor;
             case self::ACCESS:
@@ -166,19 +176,17 @@ class StudentProgramWorkcenterVoter extends CachedVoter
             case self::VIEW_GRADE:
                 return $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isDepartmentHead || $isItpManager || $isStudentProgramWorkcenterWorkTutor;
             case self::VIEW_EVALUATION:
-                return $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isDepartmentHead || $isItpManager || $isItpTeacher;
-            case self::VIEW_STUDENT_SURVEY:
-                return $isItpStudent || $isDepartmentHead || $isItpManager || $isGroupTutor;
+                return $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isDepartmentHead || $isItpManager;
             case self::FILL_STUDENT_SURVEY:
-                return $isCurrentAcademicYear && ($isItpStudent || $isDepartmentHead || $isItpManager || $isGroupTutor);
+                return $isCurrentAcademicYear && ($isItpStudent || $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor);
             case self::VIEW_WORK_TUTOR_SURVEY:
-                return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterWorkTutor;
+                return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor;
             case self::FILL_WORK_TUTOR_SURVEY:
-                return $isCurrentAcademicYear && ($isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterWorkTutor);
+                return $isCurrentAcademicYear && ($isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor);
             case self::VIEW_EDUCATIONAL_TUTOR_SURVEY:
-                return $isDepartmentHead || $isItpManager || $isItpTeacher;
+                return $isDepartmentHead || $isItpManager || $isStudentProgramWorkcenterEducationalTutor;
             case self::FILL_EDUCATIONAL_TUTOR_SURVEY:
-                return $isCurrentAcademicYear && ($isDepartmentHead || $isItpManager || $isItpTeacher);
+                return $isCurrentAcademicYear && ($isDepartmentHead || $isItpManager || $isStudentProgramWorkcenterEducationalTutor);
         }
 
         // denegamos en cualquier otro caso
