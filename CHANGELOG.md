@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+7.6.1 (2026-03-16)
 ------------------
 * fix (security): Mejorada la solución del problema de seguridad para cubrir todos los casos
 
