@@ -23,8 +23,6 @@ use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\WorkDay;
 use App\Entity\Person;
 use App\Repository\Edu\TeacherRepository;
-use App\Repository\ItpModule\ProgramGroupRepository;
-use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use App\Security\CachedVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
@@ -40,8 +38,6 @@ class WorkDayVoter extends CachedVoter
     public function __construct(
         CacheItemPoolInterface $cacheItemPoolItemPool,
         private readonly TeacherRepository $teacherRepository,
-        private readonly StudentProgramWorkcenterRepository $studentProgramWorkcenterRepository,
-        private readonly ProgramGroupRepository $programGroupRepository,
         private readonly AccessDecisionManagerInterface $decisionManager,
         private readonly UserExtensionService $userExtensionService
     ) {
@@ -104,24 +100,39 @@ class WorkDayVoter extends CachedVoter
             return true;
         }
 
+        $studentProgramWorkcenter = $subject->getStudentProgramWorkcenter();
+
         $teacher = $this->teacherRepository->findOneByPersonAndAcademicYear($user, $academicYear);
-        $isItpStudent = $this->studentProgramWorkcenterRepository->countByStudentAndAcademicYear($user, $academicYear) > 0;
+        $isItpStudent = $studentProgramWorkcenter->getStudentProgram()->getStudentEnrollment()->getPerson() === $user;
+        $isItpManager = false;
+
         if ($teacher instanceof Teacher) {
-            $isItpManager =  count($this->programGroupRepository->findByManager($teacher)) > 0;
-            $isGroupTutor = count($this->programGroupRepository->findByTutor($teacher)) > 0;
-            $isStudentProgramWorkcenterEducationalTutor = count($this->studentProgramWorkcenterRepository->findByEducationalTutorOrAdditionalEducationalTutor($teacher)) > 0;
+            $programGroup = $studentProgramWorkcenter->getStudentProgram()->getProgramGroup();
+            foreach ($programGroup->getManagers() as $manager) {
+                if ($manager->getPerson() === $user) {
+                    $isItpStudent = true;
+                    break;
+                }
+            }
+            $isGroupTutor = false;
+            foreach ($programGroup->getGroup()->getTutors() as $tutor) {
+                if ($tutor->getPerson() === $user) {
+                    $isGroupTutor = true;
+                    break;
+                }
+            }
+            $isStudentProgramWorkcenterEducationalTutor = $studentProgramWorkcenter->getEducationalTutor() === $teacher || $studentProgramWorkcenter->getAdditionalEducationalTutor() === $teacher;
         } else {
-            $isItpManager = false;
             $isGroupTutor = false;
             $isStudentProgramWorkcenterEducationalTutor = false;
         }
-        $isStudentProgramWorkcenterWorkTutor = count($this->studentProgramWorkcenterRepository->findByWorkTutorOrAdditionalWorkTutorAndAcademicYear($user, $academicYear)) > 0;
+        $isStudentProgramWorkcenterWorkTutor = $studentProgramWorkcenter->getWorkTutor() === $user || $studentProgramWorkcenter->getAdditionalWorkTutor() === $user;
 
         $isCurrentAcademicYear = $academicYear
             === $this->userExtensionService->getCurrentOrganization()->getCurrentAcademicYear();
 
-        // El jefe de departamento de la familia profesional de proyecto también puede
-        $isDepartmentHead = $training->getDepartment()?->getHead()?->getPerson() === $user;
+        // El jefe de departamento de la familia profesional del ciclo formativo
+        $isDepartmentHead = $training?->getDepartment()?->getHead()?->getPerson() === $user;
 
         $accessGranted = $isItpStudent || $isStudentProgramWorkcenterEducationalTutor
             || $isStudentProgramWorkcenterWorkTutor || $isGroupTutor || $isItpManager || $isDepartmentHead;
