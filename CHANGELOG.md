@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-7.x.x (xxxx-xx-xx)
+7.6.2 (2026-05-03)
 ------------------
 * fix: Ya se pueden eliminar desplazamientos en la FFE
 * fix: Los tutores duales de empresa de la FFE pueden acceder a las encuestas de los tutores de empresa
