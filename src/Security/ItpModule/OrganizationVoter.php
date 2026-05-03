@@ -147,7 +147,7 @@ class OrganizationVoter extends CachedVoter
                 return $isDepartmentHead || $isItpManager || $isItpStudent;
             case self::ITP_WORK_TUTOR:
                 // Si es tutor dual de empresa, permitir
-                return $isDepartmentHead || $isItpManager || $isStudentProgramWorkcenterWorkTutor;
+                return $isDepartmentHead || $isItpManager || $isStudentProgramWorkcenterWorkTutor || $isStudentProgramWorkcenterEducationalTutor;
             case self::ITP_EDUCATIONAL_TUTOR:
                 // Si es responsable de seguimiento de un centor educativo, permitir
                 return $isDepartmentHead || $isItpManager || $isStudentProgramWorkcenterEducationalTutor;

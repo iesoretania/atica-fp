@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 7.x.x (xxxx-xx-xx)
 ------------------
 * fix: Ya se pueden eliminar desplazamientos en la FFE
+* fix: Los tutores duales de empresa de la FFE pueden acceder a las encuestas de los tutores de empresa
 
 7.6.1 (2026-03-16)
 ------------------
