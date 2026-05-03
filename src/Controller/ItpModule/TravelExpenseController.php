@@ -127,12 +127,12 @@ class TravelExpenseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.saved', [], 'wpt_visit'));
+                $this->addFlash('success', $translator->trans('message.saved', [], 'itp_contact'));
                 return $this->redirectToRoute('in_company_training_phase_travel_expense_detail_list', [
                     'id' => $teacher->getId()
                 ]);
             } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.error', [], 'wpt_visit'));
+                $this->addFlash('error', $translator->trans('message.error', [], 'itp_contact'));
             }
         }
 
@@ -252,7 +252,7 @@ class TravelExpenseController extends AbstractController
             $pager->setCurrentPage(1);
         }
 
-        $title = $translator->trans('title.teacher_list', [], 'wpt_travel_expense');
+        $title = $translator->trans('title.teacher_list', [], 'itp_travel_expense');
 
         return $this->render('itp/travel_expense/teacher_list.html.twig', [
             'title' => $title,
@@ -275,7 +275,7 @@ class TravelExpenseController extends AbstractController
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_ACCESS_EXPENSE, $organization);
+        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_EXPENSE, $organization);
 
         $em = $managerRegistry->getManager();
 
@@ -296,14 +296,14 @@ class TravelExpenseController extends AbstractController
                     $em->remove($travelExpense);
                 }
                 $em->flush();
-                $this->addFlash('success', $translator->trans('message.deleted', [], 'wpt_travel_expense'));
+                $this->addFlash('success', $translator->trans('message.deleted', [], 'itp_travel_expense'));
             } catch (\Exception) {
-                $this->addFlash('error', $translator->trans('message.delete_error', [], 'wpt_travel_expense'));
+                $this->addFlash('error', $translator->trans('message.delete_error', [], 'itp_travel_expense'));
             }
             return $this->redirectToRoute('in_company_training_phase_travel_expense_detail_list', ['id' => $teacher->getId()]);
         }
 
-        $title = $translator->trans('title.delete', [], 'wpt_travel_expense');
+        $title = $translator->trans('title.delete', [], 'itp_travel_expense');
         $breadcrumb = [
             ['fixed' => $title]
         ];

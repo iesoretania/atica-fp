@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.x.x (xxxx-xx-xx)
+------------------
+* fix: Ya se pueden eliminar desplazamientos en la FFE
+
 7.6.1 (2026-03-16)
 ------------------
 * fix (security): Mejorada la solución del problema de seguridad para cubrir todos los casos
