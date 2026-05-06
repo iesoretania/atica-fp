@@ -106,7 +106,7 @@ class StudentProgramWorkcenterActivityCommentVoter extends CachedVoter
             return true;
         }
 
-        $training = $subject->getStudentProgramActivity()?->getStudentProgramWorkcenter()?->getStudentProgram()?->getProgramGroup()?->getProgramGrade()?->getTrainingProgram()
+        $training = $subject->getStudentProgramActivity()?->getStudentProgramWorkcenter()?->getStudentProgram()?->getStudentEnrollment()?->getGroup()?->getGrade()
             ?->getTraining();
         assert($training instanceof Training);
 

@@ -8,6 +8,7 @@ en las distintas versiones de la misma.
 ------------------
 * fix: El resumen de desplazamientos de la FFE calcula el kilometraje correcto
 * fix: Los tutores duales docentes y de grupo pueden acceder a las encuestas de satisfacción de alumnado
+* fix: Arreglado un problema a la hora añadir comentarios en una valoración del desempeño de la FFE
 
 7.6.2 (2026-05-03)
 ------------------
