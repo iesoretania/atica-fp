@@ -144,7 +144,7 @@ class OrganizationVoter extends CachedVoter
         switch ($attribute) {
             case self::ITP_STUDENT:
                 // Si es estudiante de FFE, permitir
-                return $isDepartmentHead || $isItpManager || $isItpStudent;
+                return $isDepartmentHead || $isItpManager || $isItpStudent || $isStudentProgramWorkcenterEducationalTutor || $isGroupTutor;
             case self::ITP_WORK_TUTOR:
                 // Si es tutor dual de empresa, permitir
                 return $isDepartmentHead || $isItpManager || $isStudentProgramWorkcenterWorkTutor || $isStudentProgramWorkcenterEducationalTutor;

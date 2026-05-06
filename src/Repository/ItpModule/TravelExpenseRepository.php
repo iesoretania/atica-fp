@@ -108,20 +108,27 @@ class TravelExpenseRepository extends ServiceEntityRepository
             $q
         );
 
-        $qb = $this->getEntityManager()->createQueryBuilder()
+        $em = $this->getEntityManager();
+
+        $subQb = $em->createQueryBuilder()
+            ->select('1')
+            ->from(StudentProgramWorkcenter::class, 'spw')
+            ->where('spw.educationalTutor = t OR spw.additionalEducationalTutor = t')
+            ->andWhere('spw IN (:student_program_workcenters)');
+
+        $qb = $em->createQueryBuilder()
             ->select('t')
             ->addSelect('p')
             ->addSelect('COUNT(DISTINCT te)')
             ->addSelect('SUM(tr.distance)')
             ->addSelect('SUM(tr.verified)')
-            ->addSelect('SUM(te.otherExpenses)')
+            ->addSelect('SUM(DISTINCT te.otherExpenses)')
             ->from(Teacher::class, 't')
             ->join('t.person', 'p')
             ->leftJoin(TravelExpense::class, 'te', 'WITH', 'te.teacher = t')
             ->leftJoin('te.travelRoute', 'tr')
-            ->leftJoin(StudentProgramWorkcenter::class, 'spw', 'WITH', 'spw.educationalTutor = t OR spw.additionalEducationalTutor = t')
             ->where('t.academicYear = :academicYear')
-            ->andWhere('spw IN (:student_program_workcenters)')
+            ->andWhere($em->createQueryBuilder()->expr()->exists($subQb->getDQL()))
             ->setParameter('academicYear', $academicYear)
             ->setParameter('student_program_workcenters', $studentProgramWorkcenters)
             ->groupBy('t')

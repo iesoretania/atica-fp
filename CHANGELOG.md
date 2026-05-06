@@ -4,6 +4,11 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.x.x (xxxx-xx-xx)
+------------------
+* fix: El resumen de desplazamientos de la FFE calcula el kilometraje correcto
+* fix: Los tutores duales docentes y de grupo pueden acceder a las encuestas de satisfacción de alumnado
+
 7.6.2 (2026-05-03)
 ------------------
 * fix: Ya se pueden eliminar desplazamientos en la FFE
