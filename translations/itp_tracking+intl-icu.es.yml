@@ -3,6 +3,8 @@ form.save: Guardar cambios
 form.unjustified_absence_confirm: Marcar jornadas con falta injustificada
 form.justified_absence_confirm: Marcar jornadas con falta justificada
 
+form.export: Exportar todo a CSV
+
 form.today: Ir a hoy
 form.previous_work_day: Jornada anterior
 form.next_work_day: Siguiente jornada

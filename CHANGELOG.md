@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+x.x.x (xxxx-xx-xx)
+------------------
+* feat: Permitir exportar estado de estancias de FFEOE en formato CSV
+
 7.6.3 (2026-05-06)
 ------------------
 * fix: El resumen de desplazamientos de la FFE calcula el kilometraje correcto

@@ -69,5 +69,6 @@
 {% block after_table %}
     <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.link_button(path('in_company_training_phase_tracking_export', {'academicYear': academic_year.id, 'q': q}), 'file-alt', 'btn-primary', 'form.export'|trans) }}
 </form>
 {% endblock %}
