@@ -17,6 +17,7 @@ x.x.x (xxxx-xx-xx)
 * fix: El responsable económico ya puede consultar los gastos de desplazamiento de la FFE
 * fix (security): Un administrador de una organización ya no puede borrar visitas ni comentarios de valoración de otra organización en la FFE y en la FP dual
 * fix: Ya no se produce un error al vaciar un campo obligatorio en un formulario de edición, sino que se muestra el error de validación
+* fix: Ya no se produce un error al dar de alta una empresa sin rellenar sus datos obligatorios
 
 7.6.3 (2026-05-06)
 ------------------

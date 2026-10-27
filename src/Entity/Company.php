@@ -36,15 +36,18 @@ class Company implements \Stringable
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING)]
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::STRING, unique: true)]
+    #[Assert\NotBlank]
     private ?string $code = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $address = null;
 
     #[ORM\Column(type: Types::STRING)]
+    #[Assert\NotBlank]
     private ?string $city = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
