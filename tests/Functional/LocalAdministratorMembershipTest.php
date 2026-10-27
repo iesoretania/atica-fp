@@ -11,11 +11,6 @@ use App\Tests\Fixtures\DemoData;
  */
 class LocalAdministratorMembershipTest extends AppWebTestCase
 {
-    private function uniqueIp(): string
-    {
-        return '10.' . random_int(1, 250) . '.' . random_int(1, 250) . '.' . random_int(1, 250);
-    }
-
     /**
      * @return iterable<string, array{string, string}>
      */

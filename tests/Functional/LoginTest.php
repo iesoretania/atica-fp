@@ -4,15 +4,6 @@ namespace App\Tests\Functional;
 
 class LoginTest extends AppWebTestCase
 {
-    /**
-     * El limitador de intentos guarda su estado en la caché durante 15 minutos: cada test usa una
-     * IP distinta para no depender de ejecuciones anteriores.
-     */
-    private function uniqueIp(): string
-    {
-        return '10.' . random_int(1, 250) . '.' . random_int(1, 250) . '.' . random_int(1, 250);
-    }
-
     public function testLoginFormHasCsrfToken(): void
     {
         $crawler = $this->client->request('GET', '/entrar');

@@ -70,4 +70,31 @@ abstract class AppWebTestCase extends WebTestCase
             $session->save();
         }
     }
+
+    /**
+     * Dirección IP distinta en cada llamada: el limitador de intentos de entrada guarda su estado en la caché
+     * durante 15 minutos, y los tests no deben depender de ejecuciones anteriores.
+     */
+    protected function uniqueIp(): string
+    {
+        return '10.' . random_int(1, 250) . '.' . random_int(1, 250) . '.' . random_int(1, 250);
+    }
+
+    /**
+     * Entra en la aplicación por la pantalla de acceso, con las credenciales y la cadena de redirecciones reales
+     * (a diferencia de login(), que crea la sesión directamente), y devuelve la última respuesta como página.
+     */
+    protected function signIn(string $username, string $password = DemoData::PASSWORD): void
+    {
+        $crawler = $this->client->request('GET', '/entrar');
+        $this->client->request('POST', '/comprobar', [
+            '_username' => $username,
+            '_password' => $password,
+            '_csrf_token' => $crawler->filter('input[name=_csrf_token]')->attr('value'),
+        ], [], ['REMOTE_ADDR' => $this->uniqueIp()]);
+
+        for ($i = 0; $i < 4 && $this->client->getResponse()->isRedirect(); $i++) {
+            $this->client->followRedirect();
+        }
+    }
 }
