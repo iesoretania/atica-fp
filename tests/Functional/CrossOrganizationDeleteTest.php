@@ -20,6 +20,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class CrossOrganizationDeleteTest extends AppWebTestCase
 {
+    use ResolvesUrlParametersTrait;
+
     /** Identificadores candidatos para los parámetros de URL "id" y para el contenido de items[] */
     private const MAX_CANDIDATE_ID = 1500;
     private const MAX_URL_ID = 60;
@@ -93,47 +95,6 @@ class CrossOrganizationDeleteTest extends AppWebTestCase
     }
 
     /**
-     * Parámetros de URL de una ruta con los datos de la organización indicada
-     *
-     * @param list<string> $variables
-     * @return list<array<string, int>> posibles combinaciones de parámetros
-     */
-    private function urlParameters(array $variables, string $organizationCode): array
-    {
-        $organization = $this->getOrganization($organizationCode);
-        $connection = $this->em->getConnection();
-        $firstId = fn (string $sql): ?int => ($id = $connection->fetchOne($sql, [$organization->getId()])) === false ? null : (int) $id;
-
-        $known = [
-            'academicYear' => $organization->getCurrentAcademicYear()->getId(),
-            'shift' => $firstId('SELECT s.id FROM wpt_shift s JOIN edu_subject su ON su.id = s.subject_id JOIN edu_grade g ON g.id = su.grade_id JOIN edu_training t ON t.id = g.training_id JOIN edu_academic_year a ON a.id = t.academic_year_id WHERE a.organization_id = ? LIMIT 1'),
-            'project' => $firstId('SELECT id FROM wlt_project WHERE organization_id = ? LIMIT 1'),
-            'trainingProgram' => $firstId('SELECT tp.id FROM itp_training_program tp JOIN itp_program_grade pg ON pg.training_program_id = tp.id JOIN edu_grade g ON g.id = pg.grade_id JOIN edu_training t ON t.id = g.training_id JOIN edu_academic_year a ON a.id = t.academic_year_id WHERE a.organization_id = ? LIMIT 1'),
-            'programGrade' => $firstId('SELECT pg.id FROM itp_program_grade pg JOIN edu_grade g ON g.id = pg.grade_id JOIN edu_training t ON t.id = g.training_id JOIN edu_academic_year a ON a.id = t.academic_year_id WHERE a.organization_id = ? LIMIT 1'),
-            'programGroup' => $firstId('SELECT pgr.id FROM itp_program_group pgr JOIN itp_program_grade pg ON pg.id = pgr.program_grade_id JOIN edu_grade g ON g.id = pg.grade_id JOIN edu_training t ON t.id = g.training_id JOIN edu_academic_year a ON a.id = t.academic_year_id WHERE a.organization_id = ? LIMIT 1'),
-            'studentProgram' => $firstId('SELECT sp.id FROM itp_student_program sp JOIN itp_program_group pgr ON pgr.id = sp.program_group_id JOIN itp_program_grade pg ON pg.id = pgr.program_grade_id JOIN edu_grade g ON g.id = pg.grade_id JOIN edu_training t ON t.id = g.training_id JOIN edu_academic_year a ON a.id = t.academic_year_id WHERE a.organization_id = ? LIMIT 1'),
-            'studentProgramWorkcenter' => $firstId('SELECT spw.id FROM itp_student_program_workcenter spw JOIN itp_student_program sp ON sp.id = spw.student_program_id JOIN itp_program_group pgr ON pgr.id = sp.program_group_id JOIN itp_program_grade pg ON pg.id = pgr.program_grade_id JOIN edu_grade g ON g.id = pg.grade_id JOIN edu_training t ON t.id = g.training_id JOIN edu_academic_year a ON a.id = t.academic_year_id WHERE a.organization_id = ? LIMIT 1'),
-        ];
-
-        $combinations = [[]];
-        foreach ($variables as $variable) {
-            $candidates = $variable === 'id' ? range(1, self::MAX_URL_ID) : [$known[$variable] ?? null];
-            if ($candidates === [null]) {
-                return [];
-            }
-            $next = [];
-            foreach ($combinations as $combination) {
-                foreach ($candidates as $candidate) {
-                    $next[] = $combination + [$variable => $candidate];
-                }
-            }
-            $combinations = $next;
-        }
-
-        return $combinations;
-    }
-
-    /**
      * Intenta borrar con todos los identificadores en todas las rutas de borrado.
      *
      * @return array{int, list<string>} rutas probadas y filas desaparecidas que no eran de la organización
@@ -148,7 +109,7 @@ class CrossOrganizationDeleteTest extends AppWebTestCase
         $deletedAnywhere = 0;
 
         foreach ($this->deleteRoutes() as [$name, $variables]) {
-            $combinations = $this->urlParameters($variables, $ownCode);
+            $combinations = $this->urlParameters($variables, $ownCode, self::MAX_URL_ID);
             if ($combinations === []) {
                 continue;
             }
