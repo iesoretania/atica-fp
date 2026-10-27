@@ -115,7 +115,13 @@ class CrossOrganizationDeleteTest extends AppWebTestCase
             }
             $before = $this->snapshot();
             foreach ($combinations as $parameters) {
-                $this->client->request('POST', $router->generate($name, $parameters), ['items' => $items, 'confirm' => 'ok']);
+                // los controladores leen los identificadores de "items" y, en administración, de "users" y "organizations"
+                $this->client->request('POST', $router->generate($name, $parameters), [
+                    'items' => $items,
+                    'users' => $items,
+                    'organizations' => $items,
+                    'confirm' => 'ok',
+                ]);
                 $this->em->clear();
             }
             $tested++;
