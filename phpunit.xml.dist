@@ -1,39 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
+<!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          backupGlobals="false"
          colors="true"
-         bootstrap="vendor/autoload.php"
+         failOnWarning="false"
+         bootstrap="tests/bootstrap.php"
+         cacheDirectory=".phpunit.cache"
 >
     <php>
+        <ini name="display_errors" value="1" />
         <ini name="error_reporting" value="-1" />
-        <server name="KERNEL_CLASS" value="AppKernel" />
-
-        <!-- ###+ doctrine/doctrine-bundle ### -->
-        <!-- Format described at https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#connecting-using-a-url -->
-        <!-- IMPORTANT: You MUST configure your server version, either here or in config/packages/doctrine.yaml -->
-        <!--  -->
-        <!-- DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db" -->
-        <!-- DATABASE_URL="mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=8.0.32&charset=utf8mb4" -->
-        <!-- DATABASE_URL="mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=10.11.2-MariaDB&charset=utf8mb4" -->
-        <env name="DATABASE_URL" value="postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&amp;charset=utf8"/>
-        <!-- ###- doctrine/doctrine-bundle ### -->
-
-        <!-- ###+ symfony/framework-bundle ### -->
-        <env name="APP_ENV" value="dev"/>
-        <env name="APP_SECRET" value="a7b0c4817b875c64b50497f3e636258a"/>
-        <!-- ###- symfony/framework-bundle ### -->
-
-        <!-- ###+ symfony/mailer ### -->
-        <env name="MAILER_DSN" value="null://null"/>
-        <!-- ###- symfony/mailer ### -->
-
-        <!-- ###+ symfony/google-mailer ### -->
-        <!-- Gmail SHOULD NOT be used on production, use it in development only. -->
-        <!-- MAILER_DSN=gmail://USERNAME:PASSWORD@default -->
-        <!-- ###- symfony/google-mailer ### -->
+        <ini name="memory_limit" value="1G" />
+        <server name="APP_ENV" value="test" force="true" />
+        <server name="SHELL_VERBOSITY" value="-1" />
+        <server name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" force="true" />
     </php>
 
     <testsuites>
@@ -42,14 +24,13 @@
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist>
+    <source ignoreSuppressionOfDeprecations="true" restrictNotices="true" restrictWarnings="true">
+        <include>
             <directory>src</directory>
-            <exclude>
-                <directory>src/*Bundle/Resources</directory>
-                <directory>src/*/*Bundle/Resources</directory>
-                <directory>src/*/Bundle/*Bundle/Resources</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+        </include>
+    </source>
+
+    <extensions>
+        <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
+    </extensions>
 </phpunit>

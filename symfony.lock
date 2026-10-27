@@ -2,6 +2,18 @@
     "babdev/pagerfanta-bundle": {
         "version": "v4.4.0"
     },
+    "dama/doctrine-test-bundle": {
+        "version": "8.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "8.3",
+            "ref": "dfc51177476fb39d014ed89944cde53dc3326d23"
+        },
+        "files": [
+            "config/packages/dama_doctrine_test_bundle.yaml"
+        ]
+    },
     "doctrine/cache": {
         "version": "2.1.1"
     },
@@ -124,6 +136,20 @@
     },
     "phpstan/phpstan": {
         "version": "1.4.9"
+    },
+    "phpunit/phpunit": {
+        "version": "10.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "10.0",
+            "ref": "bb22cf8d8c554a623b427d5f3416b538f5525233"
+        },
+        "files": [
+            ".env.test",
+            "phpunit.dist.xml",
+            "tests/bootstrap.php"
+        ]
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -317,6 +343,21 @@
     },
     "symfony/options-resolver": {
         "version": "v4.4.30"
+    },
+    "symfony/phpunit-bridge": {
+        "version": "6.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.3",
+            "ref": "a411a0480041243d97382cac7984f7dce7813c08"
+        },
+        "files": [
+            ".env.test",
+            "bin/phpunit",
+            "phpunit.xml.dist",
+            "tests/bootstrap.php"
+        ]
     },
     "symfony/polyfill-intl-icu": {
         "version": "v1.24.0"
