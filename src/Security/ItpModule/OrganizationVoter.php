@@ -154,8 +154,11 @@ class OrganizationVoter extends CachedVoter
             case self::ITP_GROUP_TUTOR:
                 // Si es tutor de grupo, permitir
                 return $isDepartmentHead || $isItpManager || $isGroupTutor;
-            case self::ITP_CREATE_EXPENSE:
             case self::ITP_ACCESS_EXPENSE:
+                // profesorado responsable de seguimiento y responsable económico, siempre
+                return $isStudentProgramWorkcenterEducationalTutor || $isItpManager || $isDepartmentHead
+                    || $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $subject);
+            case self::ITP_CREATE_EXPENSE:
             case self::ITP_ACCESS_VISIT:
             case self::ITP_CREATE_VISIT:
                 // profesorado responsable de seguimiento, siempre
@@ -173,8 +176,10 @@ class OrganizationVoter extends CachedVoter
                 // Si es jefe de departamento, tutor de grupo, tutor docente o tutor laboral, permitir ver evaluaciones
                 return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isItpTeacher;
             case self::ITP_ACCESS_SECTION:
-                // Si es jefe de algún departamento, estudiante, tutor de grupo, tutor docente o laboral, permitir acceder
-                return $isDepartmentHead || $isItpStudent || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor || $isItpTeacher;
+                // Si es jefe de algún departamento, estudiante, tutor de grupo, tutor docente o laboral, permitir acceder.
+                // El responsable económico también, para poder consultar los gastos de desplazamiento
+                return $isDepartmentHead || $isItpStudent || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor || $isItpTeacher
+                    || $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $subject);
         }
 
         // denegamos en cualquier otro caso

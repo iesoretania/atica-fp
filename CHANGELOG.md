@@ -14,6 +14,7 @@ x.x.x (xxxx-xx-xx)
 * fix (security): Los permisos que se guardan temporalmente en caché ya no se comparten entre usuarios distintos
 * fix: Ya no se produce un error al gestionar una enseñanza cuyo departamento no tiene jefe
 * fix (security): Un usuario de una organización ya no puede acceder a datos de otra organización modificando los identificadores de la dirección web
+* fix: El responsable económico ya puede consultar los gastos de desplazamiento de la FFE
 
 7.6.3 (2026-05-06)
 ------------------
