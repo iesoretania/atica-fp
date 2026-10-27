@@ -12,6 +12,7 @@ x.x.x (xxxx-xx-xx)
 * fix (security): Limitado el número de intentos de inicio de sesión fallidos y protegido el formulario de entrada con token CSRF
 * fix: Ya no se produce un error al consultar las rutas de desplazamiento sin indicar un término de búsqueda
 * fix (security): Los permisos que se guardan temporalmente en caché ya no se comparten entre usuarios distintos
+* fix: Ya no se produce un error al gestionar una enseñanza cuyo departamento no tiene jefe
 
 7.6.3 (2026-05-06)
 ------------------

@@ -94,7 +94,7 @@ class TrainingVoter extends CachedVoter
         }
 
         // Si es el jefe de departamento de la enseñanza, permitir siempre
-        if ($subject->getDepartment() && $subject->getDepartment()->getHead()->getPerson() === $user) {
+        if ($subject->getDepartment()?->getHead()?->getPerson() === $user) {
             return true;
         }
 
