@@ -11,6 +11,7 @@
         "ext-iconv": "*",
         "ext-libxml": "*",
         "babdev/pagerfanta-bundle": "^4.4",
+        "doctrine/dbal": "^3.9",
         "doctrine/doctrine-bundle": "^2",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^3.2",
