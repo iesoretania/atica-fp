@@ -6,13 +6,22 @@ on:
 
 jobs:
   tests:
-    name: PHPUnit (PHP ${{ matrix.php }}, MySQL 8.4)
+    name: ${{ matrix.suite.name }} (PHP ${{ matrix.php }}, MySQL 8.4)
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         php: ['8.3']
+        # Las pruebas de intrusión entre organizaciones (grupo "slow") tardan varios minutos:
+        # se ejecutan en un trabajo aparte, en paralelo con el resto
+        suite:
+          - name: Tests
+            phpunit: '--exclude-group slow'
+            extras: true
+          - name: Tests de intrusión entre organizaciones
+            phpunit: '--group slow'
+            extras: false
 
     services:
       mysql:
@@ -62,11 +71,13 @@ jobs:
         run: composer test:reset-db
 
       - name: Ejecutar los tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit ${{ matrix.suite.phpunit }}
 
       - name: Análisis estático (PHPStan)
+        if: matrix.suite.extras
         run: vendor/bin/phpstan analyse src --no-progress --memory-limit=2G
 
       - name: Auditoría de seguridad de las dependencias
+        if: matrix.suite.extras
         run: composer audit --locked
         continue-on-error: true
