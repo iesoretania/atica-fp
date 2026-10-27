@@ -109,10 +109,11 @@ class WorkDayVoter extends CachedVoter
         return match ($attribute) {
             // Si se puede acceder al convenio, se puede visualizar la jornada
             self::ACCESS => $accessGranted,
-            // Solo si pertenece al curso académico activo y es el estudiante,
-            // algún tutor (docente, laboral o de grupo) o puede administrar el
-            // convenio
+            // Solo si el proyecto no está cerrado, pertenece al curso académico activo
+            // y es el estudiante, algún tutor (docente, laboral o de grupo) o puede
+            // administrar el convenio
             self::FILL => $accessGranted
+                && !$subject->getAgreement()->getProject()->isLocked()
                 && $subject
                     ->getAgreement()
                     ->getStudentEnrollment()

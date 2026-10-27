@@ -224,7 +224,10 @@ class TrackingCalendarController extends AbstractController
             );
         }
 
-        $this->denyAccessUnlessGranted(AgreementVoter::LOCK, $agreement);
+        // bloquear jornadas solo corresponde a quien puede bloquear; el tutor laboral solo registra asistencia
+        if ($request->get('lock_week') || $request->get('unlock_week')) {
+            $this->denyAccessUnlessGranted(AgreementVoter::LOCK, $agreement);
+        }
 
         if ($request->get('lock_week')) {
             $year = floor($request->get('lock_week') / 100);

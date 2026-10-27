@@ -31,6 +31,8 @@ x.x.x (xxxx-xx-xx)
 * fix (security): La API del seguimiento diario de FCT ya no permite modificar jornadas bloqueadas ni justificar faltas a quien no puede bloquear, y una consulta denegada ya no crea la jornada
 * fix: El tutor laboral ya puede marcar la asistencia de las jornadas de FCT sin necesitar permiso para bloquearlas
 * fix: Ya no se pueden guardar en el seguimiento diario de FCT horas de actividad negativas o superiores a un día
+* fix: El tutor laboral ya puede marcar la asistencia de las jornadas de FP dual sin necesitar permiso para bloquearlas
+* fix (security): Las jornadas de un proyecto de FP dual cerrado ya no se pueden modificar desde el seguimiento diario
 
 7.6.3 (2026-05-06)
 ------------------
