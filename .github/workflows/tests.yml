@@ -1,0 +1,72 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    name: PHPUnit (PHP ${{ matrix.php }}, MySQL 8.4)
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3']
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    env:
+      APP_ENV: test
+      # Doctrine añade el sufijo "_test" al nombre de la base de datos (aticafp_test)
+      DATABASE_URL: "mysql://root:root@127.0.0.1:3306/aticafp?serverVersion=8.4.0&charset=utf8mb4"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ctype, curl, dom, gd, iconv, intl, libxml, mbstring, pdo_mysql, xml, zip
+          ini-values: memory_limit=1G
+          coverage: none
+          tools: composer:v2
+
+      - name: Obtener la caché de Composer
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ matrix.php }}-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-${{ matrix.php }}-
+
+      # Sin scripts: no hace falta descargar CKEditor ni instalar assets para ejecutar los tests
+      - name: Instalar dependencias
+        run: composer install --prefer-dist --no-progress --no-interaction --no-scripts
+
+      - name: Crear la base de datos de tests, migrarla y cargar las fixtures
+        run: composer test:reset-db
+
+      - name: Ejecutar los tests
+        run: vendor/bin/phpunit
+
+      - name: Análisis estático (PHPStan)
+        run: vendor/bin/phpstan analyse src --no-progress --memory-limit=2G
+
+      - name: Auditoría de seguridad de las dependencias
+        run: composer audit --locked
+        continue-on-error: true

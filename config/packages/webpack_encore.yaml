@@ -43,3 +43,8 @@ framework:
 #when@test:
 #    webpack_encore:
 #        strict_mode: false
+
+# En los tests (y en CI) no se compilan los assets: no fallar si faltan los ficheros de Webpack
+when@test:
+    webpack_encore:
+        strict_mode: false
