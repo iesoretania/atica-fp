@@ -11,7 +11,7 @@
     {% for answer in answered_survey.answers %}
         {% if answer.surveyQuestion.type != "fixed" %}
             <tr>
-                <td class="right">{{ answer.surveyQuestion.description|raw }}</td>
+                <td class="right">{{ answer.surveyQuestion.description|sanitize_html }}</td>
                 <td>{{ answer.numericValue|default(answer.textValue)|default('report.no_answer'|trans) }}</td>
             </tr>
         {% endif %}

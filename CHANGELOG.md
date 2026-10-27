@@ -8,6 +8,7 @@ x.x.x (xxxx-xx-xx)
 ------------------
 * feat: Permitir exportar estado de estancias de FFEOE en formato CSV
 * fix (security): Solucionado un problema por el que no se comprobaba el rol de administrador en la gestión de usuarios
+* fix (security): Se elimina el contenido peligroso del texto enriquecido de las encuestas y de los informes de visitas antes de mostrarlo
 
 7.6.3 (2026-05-06)
 ------------------

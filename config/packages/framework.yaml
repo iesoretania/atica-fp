@@ -19,6 +19,16 @@ framework:
     php_errors:
         log: true
 
+    # Saneamiento del HTML escrito por los usuarios con el editor enriquecido (filtro Twig "sanitize_html")
+    html_sanitizer:
+        sanitizers:
+            app.rich_text:
+                allow_safe_elements: true
+                allow_relative_links: true
+                allow_relative_medias: true
+                allowed_link_schemes: ['http', 'https', 'mailto']
+                allowed_media_schemes: ['http', 'https']
+
 when@test:
     framework:
         test: true

@@ -165,7 +165,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    {{ contact.detail | raw }}
+                    {{ contact.detail|sanitize_html }}
                 </td>
             </tr>
         {% endif %}

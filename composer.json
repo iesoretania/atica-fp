@@ -30,6 +30,7 @@
         "symfony/form": "6.4.*",
         "symfony/framework-bundle": "6.4.*",
         "symfony/google-mailer": "6.4.*",
+        "symfony/html-sanitizer": "6.4.*",
         "symfony/mailer": "6.4.*",
         "symfony/monolog-bundle": "^3.7",
         "symfony/proxy-manager-bridge": "6.4.*",
