@@ -1,0 +1,43 @@
+<?php
+/*
+  Copyright (C) 2018-2025: Luis Ramón López López
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see [http://www.gnu.org/licenses/].
+*/
+
+namespace App\Form\Extension;
+
+use App\Form\DataMapper\TypeErrorTolerantDataMapper;
+use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\FormBuilderInterface;
+
+/**
+ * Aplica TypeErrorTolerantDataMapper a todos los formularios compuestos de la aplicación
+ */
+class TypeErrorTolerantFormExtension extends AbstractTypeExtension
+{
+    public static function getExtendedTypes(): iterable
+    {
+        return [FormType::class];
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $mapper = $builder->getDataMapper();
+        if ($options['compound'] && $mapper !== null && !$mapper instanceof TypeErrorTolerantDataMapper) {
+            $builder->setDataMapper(new TypeErrorTolerantDataMapper($mapper));
+        }
+    }
+}
