@@ -26,7 +26,8 @@ form.reset.password_old: Introduzca la contraseña actual
 form.reset.password_new: Introduzca la nueva contraseña (mín. 8 caracteres)
 form.reset.password_repeat: Vuelva a introducir la nueva contraseña
 form.reset.submit_set: CONFIGURAR NUEVA CONTRASEÑA
-form.reset.sent: Se han enviado instrucciones a la dirección {email}.
+form.reset.sent: Si la dirección {email} corresponde a una cuenta, se han enviado instrucciones para restablecer la contraseña.
+form.reset.too_many: Se han hecho demasiadas solicitudes. Inténtelo de nuevo dentro de unos minutos.
 form.reset.error: No se han podido enviar las instrucciones a la dirección indicada.
 form.reset.external_login.error: El usuario tiene activada la autenticación en Séneca, no puede restablecerse su contraseña.
 form.reset.wait: Debe esperar al menos {expiry} minutos entre solicitudes.

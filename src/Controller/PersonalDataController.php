@@ -133,7 +133,7 @@ class PersonalDataController extends AbstractController
                     'parameters' => [
                         '%name%' => $user->getFirstName(),
                         '%link%' => $this->generateUrl(
-                            'email_reset_do',
+                            'login_email_reset_do',
                             ['userId' => $user->getId(), 'token' => $token],
                             UrlGeneratorInterface::ABSOLUTE_URL
                         ),

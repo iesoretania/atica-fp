@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -71,7 +72,8 @@ class SecurityController extends AbstractController
         Session $session,
         TranslatorInterface $translator,
         PersonRepository $personRepository,
-        ManagerRegistry $managerRegistry
+        ManagerRegistry $managerRegistry,
+        RateLimiterFactory $passwordResetLimiter
     ): Response {
 
         $data = [
@@ -86,13 +88,31 @@ class SecurityController extends AbstractController
         $email = $data['email'];
         $error = '';
 
+        // limitar las solicitudes por dirección IP
+        if ($form->isSubmitted()) {
+            $limit = $passwordResetLimiter->create($request->getClientIp() ?? 'desconocida')->consume();
+            if (!$limit->isAccepted()) {
+                return $this->render(
+                    'security/login_password_reset.html.twig',
+                    [
+                        'last_username' => '',
+                        'form' => $form->createView(),
+                        'error' => $translator->trans('form.reset.too_many', [], 'security')
+                    ],
+                    new Response('', Response::HTTP_TOO_MANY_REQUESTS, [
+                        'Retry-After' => max(1, $limit->getRetryAfter()->getTimestamp() - time())
+                    ])
+                );
+            }
+        }
+
         // ¿se ha enviado una dirección?
         if ($form->isSubmitted() && $form->isValid()) {
-            $error = $this->doPasswordResetRequest((string) $email, $mailerService, $translator, $request->getSession(), $personRepository, $managerRegistry);
+            $this->doPasswordResetRequest((string) $email, $mailerService, $request->getSession(), $personRepository, $managerRegistry);
 
-            if (!is_string($error)) {
-                return $error;
-            }
+            // la respuesta es la misma exista o no la cuenta, para no revelar qué direcciones están registradas
+            $this->addFlash('success', $translator->trans('form.reset.sent', ['%email%' => $email], 'security'));
+            return $this->redirectToRoute('login');
         }
 
         return $this->render(
@@ -105,7 +125,8 @@ class SecurityController extends AbstractController
         );
     }
 
-    #[Route(path: '/restablecer/correo/{userId}/{token}', name: 'email_reset_do', methods: ['GET', 'POST'])]
+    // el nombre empieza por "login_" para que, como el de restablecer la contraseña, sea accesible sin haber elegido centro
+    #[Route(path: '/restablecer/correo/{userId}/{token}', name: 'login_email_reset_do', methods: ['GET', 'POST'])]
     public function emailReset(
         Request $request,
         PersonRepository $personRepositoryRepository,
@@ -361,77 +382,66 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * Envía, si procede, el correo de restablecimiento. El resultado no se comunica a quien lo solicita: la respuesta
+     * debe ser idéntica exista o no la cuenta, se pueda o no restablecer su contraseña y haya o no un enlace pendiente.
+     *
      * @throws \Exception
      */
     private function doPasswordResetRequest(
         string $email,
         MailerService $mailerService,
-        TranslatorInterface $translator,
         Session $session,
         PersonRepository $personRepository,
         ManagerRegistry $managerRegistry
-    ) {
+    ): void {
+        // almacenar como último correo electrónico el indicado, exista o no la cuenta
+        $session->set('_security.last_username', $email);
+
         /** @var Person|null $user */
-        // comprobar que está asociada a un usuario
         $user = $personRepository->findOneBy(['emailAddress' => $email]);
 
-        $error = '';
-
-        if (null === $user) {
-            $error = $translator->trans('form.reset.notfound', [], 'security');
-        } else {
-            // almacenar como último correo electrónico el indicado
-            $session->set('_security.last_username', $user->getEmailAddress());
-
-            // obtener tiempo de expiración del token
-            $expire = (int) $this->getParameter('password_reset.expire');
-
-            if ($this->getParameter('external.enabled') && $user->getExternalCheck()) {
-                $this->addFlash('error', $translator->
-                    trans('form.reset.external_login.error', [], 'security'));
-            } elseif ($user->getToken() && $user->getTokenExpiration() > new \DateTime()) {
-                $error = $translator->trans('form.reset.wait', ['%expiry%' => $expire], 'security');
-            } else {
-                // generar un nuevo token
-                $token = bin2hex(random_bytes(16));
-                $user->setToken($token);
-
-                // calcular fecha de expiración del token
-                $validity = new \DateTime();
-                $validity->add(new \DateInterval('PT'.$expire.'M'));
-                $user->setTokenExpiration($validity)->setTokenType('password');
-
-                // enviar correo
-                if (0 === $mailerService->sendEmail(
-                    [$user],
-                    ['id' => 'form.reset.email.subject', 'parameters' => []],
-                    [
-                        'id' => 'form.reset.email.body',
-                        'parameters' => [
-                            '%name%' => $user->getFirstName(),
-                            '%link%' => $this->generateUrl(
-                                'login_password_reset_do',
-                                ['userId' => $user->getId(), 'token' => $token],
-                                UrlGeneratorInterface::ABSOLUTE_URL
-                            ),
-                            '%expiry%' => $expire
-                        ]
-                    ],
-                    'security'
-                )) {
-                    $this->addFlash('error', $translator->trans('form.reset.error', [], 'security'));
-                } else {
-                    // guardar token
-                    $managerRegistry->getManager()->flush();
-
-                    $this->addFlash(
-                        'success',
-                        $translator->trans('form.reset.sent', ['%email%' => $email], 'security')
-                    );
-                    return $this->redirectToRoute('login');
-                }
-            }
+        // sin cuenta, con la autenticación externa (Séneca) activada o con un enlace todavía vigente no se envía nada
+        if (null === $user
+            || ($this->getParameter('external.enabled') && $user->getExternalCheck())
+            || ($user->getToken() && $user->getTokenExpiration() > new \DateTime())) {
+            return;
         }
-        return $error;
+
+        // obtener tiempo de expiración del token
+        $expire = (int) $this->getParameter('password_reset.expire');
+
+        // generar un nuevo token
+        $token = bin2hex(random_bytes(16));
+
+        // calcular fecha de expiración del token
+        $validity = new \DateTime();
+        $validity->add(new \DateInterval('PT'.$expire.'M'));
+        $user->setToken($token)->setTokenExpiration($validity)->setTokenType('password');
+
+        // enviar correo
+        if (0 === $mailerService->sendEmail(
+            [$user],
+            ['id' => 'form.reset.email.subject', 'parameters' => []],
+            [
+                'id' => 'form.reset.email.body',
+                'parameters' => [
+                    '%name%' => $user->getFirstName(),
+                    '%link%' => $this->generateUrl(
+                        'login_password_reset_do',
+                        ['userId' => $user->getId(), 'token' => $token],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    ),
+                    '%expiry%' => $expire
+                ]
+            ],
+            'security'
+        )) {
+            // no se ha podido enviar: el enlace no sirve de nada
+            $user->setToken(null)->setTokenExpiration(null)->setTokenType(null);
+            return;
+        }
+
+        // guardar token
+        $managerRegistry->getManager()->flush();
     }
 }

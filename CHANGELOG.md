@@ -26,6 +26,8 @@ x.x.x (xxxx-xx-xx)
 * fix (security): La contraseña de la base de datos ya no se muestra en la lista de procesos ni en los mensajes de error al hacer o restaurar copias de seguridad, y una contraseña vacía ya no deja la operación esperando una entrada por teclado
 * feat: Los datos de demostración de la prueba rápida con Docker incluyen dos centros con datos de FCT, FP dual y FFE y usuarios de ejemplo para cada rol
 * fix: Las personas con el rol de administrador local ya pueden entrar en la aplicación aunque no sean profesorado ni alumnado del centro que administran
+* fix (security): El restablecimiento de la contraseña ya no revela qué direcciones de correo tienen cuenta, y se limita el número de solicitudes por dirección IP
+* fix: El enlace de confirmación del cambio de correo electrónico ya funciona sin haber iniciado sesión, igual que el de restablecer la contraseña
 
 7.6.3 (2026-05-06)
 ------------------

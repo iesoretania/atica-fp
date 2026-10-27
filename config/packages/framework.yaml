@@ -16,6 +16,17 @@ framework:
         cookie_httponly: true
         cookie_samesite: lax
 
+    # Límite de solicitudes de restablecimiento de contraseña por dirección IP: sin él se podrían probar
+    # direcciones de correo sin freno. Es holgado porque un centro suele salir a internet por una sola IP
+    # (si la aplicación está detrás de un proxy inverso, hay que configurar framework.trusted_proxies)
+    rate_limiter:
+        password_reset:
+            policy: sliding_window
+            limit: 20
+            interval: '15 minutes'
+            # sin bloqueo (no hace falta symfony/lock): contar dos peticiones simultáneas a la vez no tiene importancia
+            lock_factory: null
+
     #esi: true
     #fragments: true
     php_errors:
