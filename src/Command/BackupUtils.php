@@ -33,23 +33,30 @@ class BackupUtils
             }
         }
 
-        // Command to dump MySQL database
-        $command = [
-            'mysqldump',
-            '-P' . $databasePort,
-            '-h' . $databaseHost,
-            '-u' . $databaseUser,
-            '-p' . $databasePassword,
-            $databaseName,
-            '--result-file=' . $backupFilePath, // Store output in the backup file
-        ];
+        $credentialsFile = self::createCredentialsFile($io, $translator, $databasePassword);
+        if ($credentialsFile === null) {
+            return false;
+        }
 
-        $commandCopy = $command;
-        $commandCopy[4] = '-p*****'; // Hide password in the command output
+        try {
+            // Command to dump MySQL database. The password is not passed in the command line (it would be visible
+            // to other users in the process list and in error messages) but in a temporary options file
+            $command = [
+                'mysqldump',
+                '--defaults-extra-file=' . $credentialsFile, // it must be the first option
+                '-P' . $databasePort,
+                '-h' . $databaseHost,
+                '-u' . $databaseUser,
+                $databaseName,
+                '--result-file=' . $backupFilePath, // Store output in the backup file
+            ];
 
-        $io->text($translator->trans('message.backup.info.run', ['%command%' => implode(' ', $commandCopy)], 'command') );
+            $io->text($translator->trans('message.backup.info.run', ['%command%' => implode(' ', $command)], 'command') );
 
-        return self::runCommand($io, $translator, $command);
+            return self::runCommand($io, $translator, $command);
+        } finally {
+            @unlink($credentialsFile);
+        }
     }
 
 
@@ -63,24 +70,52 @@ class BackupUtils
         string              $databasePort,
         string              $backupFilePath): bool
     {
-        // Command to restore MySQL database
-        $command = [
-            'mysql',
-            '-P' . $databasePort,
-            '-h' . $databaseHost,
-            '-u' . $databaseUser,
-            '-p' . $databasePassword,
-            $databaseName,
-            '-e',
-            'source ' . $backupFilePath,
-        ];
+        $credentialsFile = self::createCredentialsFile($io, $translator, $databasePassword);
+        if ($credentialsFile === null) {
+            return false;
+        }
 
-        $commandCopy = $command;
-        $commandCopy[4] = '-p*****'; // Hide password in the command output
+        try {
+            // Command to restore MySQL database (see createDatabaseBackup() about the password)
+            $command = [
+                'mysql',
+                '--defaults-extra-file=' . $credentialsFile, // it must be the first option
+                '-P' . $databasePort,
+                '-h' . $databaseHost,
+                '-u' . $databaseUser,
+                $databaseName,
+                '-e',
+                'source ' . $backupFilePath,
+            ];
 
-        $io->text($translator->trans('message.restore.info.run', ['%command%' => implode(' ', $commandCopy)], 'command') );
+            $io->text($translator->trans('message.restore.info.run', ['%command%' => implode(' ', $command)], 'command') );
 
-        return self::runCommand($io, $translator, $command);
+            return self::runCommand($io, $translator, $command);
+        } finally {
+            @unlink($credentialsFile);
+        }
+    }
+
+    /**
+     * Creates a temporary MySQL options file (readable only by the current user) with the password, so it is
+     * not needed in the command line. An empty password is written as empty, so the client never asks for it.
+     *
+     * @return string|null path of the file, which the caller must delete, or null if it could not be created
+     */
+    private static function createCredentialsFile(SymfonyStyle $io, TranslatorInterface $translator, string $password): ?string
+    {
+        $path = tempnam(sys_get_temp_dir(), 'atica-my-'); // created with 0600 permissions
+
+        if ($path === false
+            || file_put_contents($path, "[client]\npassword=\"" . addcslashes($password, "\\\"") . "\"\n") === false) {
+            if ($path !== false) {
+                @unlink($path);
+            }
+            $io->error($translator->trans('message.run_error', ['%error%' => 'credentials file'], 'command'));
+            return null;
+        }
+
+        return $path;
     }
 
     public static function runCommand(SymfonyStyle $io, TranslatorInterface $translator, array $command): bool

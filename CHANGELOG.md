@@ -23,6 +23,7 @@ x.x.x (xxxx-xx-xx)
 * fix (security): Toda la aplicación exige haber iniciado sesión por defecto y la administración global exige ser administrador global, con independencia de las comprobaciones de cada pantalla
 * fix (security): La cookie de sesión se marca explícitamente como no accesible desde JavaScript
 * fix: La descarga de las plantillas de informe ya no interrumpe el proceso del servidor al terminar
+* fix (security): La contraseña de la base de datos ya no se muestra en la lista de procesos ni en los mensajes de error al hacer o restaurar copias de seguridad, y una contraseña vacía ya no deja la operación esperando una entrada por teclado
 
 7.6.3 (2026-05-06)
 ------------------
