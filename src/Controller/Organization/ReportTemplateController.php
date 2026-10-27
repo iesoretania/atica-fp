@@ -114,7 +114,6 @@ class ReportTemplateController extends AbstractController
 
         return new StreamedResponse(function () use ($template): void {
             fpassthru($template->getData());
-            exit();
         },
         Response::HTTP_OK,
         [
