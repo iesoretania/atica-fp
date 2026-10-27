@@ -110,7 +110,7 @@ class WorkDayVoter extends CachedVoter
             $programGroup = $studentProgramWorkcenter->getStudentProgram()->getProgramGroup();
             foreach ($programGroup->getManagers() as $manager) {
                 if ($manager->getPerson() === $user) {
-                    $isItpStudent = true;
+                    $isItpManager = true;
                     break;
                 }
             }

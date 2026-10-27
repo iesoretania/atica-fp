@@ -211,8 +211,9 @@ class TrackingCalendarController extends AbstractController
         StudentProgramWorkcenter $studentProgramWorkcenter
     ): Response
     {
+        $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::ACCESS, $studentProgramWorkcenter);
+
         if ($request->get('week_report')) {
-            $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::ACCESS, $studentProgramWorkcenter);
             $year = floor($request->get('week_report') / 100);
             $week = $request->get('week_report') % 100;
             return $this->redirectToRoute(

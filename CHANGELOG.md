@@ -33,6 +33,8 @@ x.x.x (xxxx-xx-xx)
 * fix: Ya no se pueden guardar en el seguimiento diario de FCT horas de actividad negativas o superiores a un día
 * fix: El tutor laboral ya puede marcar la asistencia de las jornadas de FP dual sin necesitar permiso para bloquearlas
 * fix (security): Las jornadas de un proyecto de FP dual cerrado ya no se pueden modificar desde el seguimiento diario
+* fix (security): Ya no se pueden consultar las jornadas de cualquier alumno de la FFE a través de las operaciones del seguimiento diario sin tener acceso a su estancia
+* fix: El gestor de la FFE ya puede bloquear jornadas, pasar lista y evaluar en las estancias de su grupo
 
 7.6.3 (2026-05-06)
 ------------------
