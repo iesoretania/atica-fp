@@ -1,0 +1,56 @@
+<?php
+
+namespace App\Tests\Functional;
+
+use App\Entity\Company;
+use App\Entity\Organization;
+use App\Entity\Person;
+use App\Entity\Workcenter;
+use App\Listener\OrganizationOwnershipSubscriber;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+
+/**
+ * Toda entidad con datos debe poder asociarse a una organización para que
+ * OrganizationOwnershipSubscriber pueda proteger las URL que la reciben como argumento.
+ * Si se añade una entidad nueva sin la cadena de pertenencia (por ejemplo, un getter nuevo hacia
+ * su "padre"), este test falla y obliga a ampliar PARENT_GETTERS o a justificar que es global.
+ */
+class OwnershipCoverageTest extends AppWebTestCase
+{
+    /** Entidades que no pertenecen a ninguna organización */
+    private const GLOBAL_ENTITIES = [Person::class, Company::class, Workcenter::class];
+
+    public function testEveryEntityWithDataResolvesToAnOrganization(): void
+    {
+        $em = static::getContainer()->get('doctrine')->getManager();
+        $subscriber = new OrganizationOwnershipSubscriber($this->createStub(AuthorizationCheckerInterface::class));
+        $finder = new \ReflectionMethod($subscriber, 'findOrganization');
+
+        $unresolved = [];
+        $checked = 0;
+        foreach ($em->getMetadataFactory()->getAllMetadata() as $metadata) {
+            if ($metadata->isMappedSuperclass || $metadata->isEmbeddedClass) {
+                continue;
+            }
+            $entities = $em->getRepository($metadata->getName())->findBy([], null, 5);
+            if ($entities === []) {
+                continue;
+            }
+            $checked++;
+            $resolved = false;
+            foreach ($entities as $entity) {
+                $resolved = $resolved || $finder->invoke($subscriber, $entity) instanceof Organization;
+            }
+            if (!$resolved) {
+                $unresolved[] = $metadata->getName();
+            }
+            $em->clear();
+        }
+
+        self::assertGreaterThan(40, $checked, 'Se han comprobado muy pocas entidades');
+        sort($unresolved);
+        $expected = self::GLOBAL_ENTITIES;
+        sort($expected);
+        self::assertSame($expected, $unresolved, 'Entidades que no se pueden asociar a una organización');
+    }
+}
