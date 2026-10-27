@@ -25,7 +25,7 @@ use App\Repository\Edu\PerformanceScaleValueRepository;
 use App\Security\Edu\PerformanceScaleVoter;
 use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use PagerFanta\Exception\OutOfRangeCurrentPageException;
+use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

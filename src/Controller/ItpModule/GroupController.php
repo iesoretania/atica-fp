@@ -26,7 +26,7 @@ use App\Repository\ItpModule\ProgramGroupRepository;
 use App\Repository\ItpModule\StudentProgramRepository;
 use App\Security\ItpModule\TrainingProgramVoter;
 use Pagerfanta\Adapter\ArrayAdapter;
-use PagerFanta\Exception\OutOfRangeCurrentPageException;
+use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

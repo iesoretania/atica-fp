@@ -29,7 +29,7 @@ use App\Repository\ItpModule\StudentProgramWorkcenterActivityRepository;
 use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use App\Security\ItpModule\TrainingProgramVoter;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use PagerFanta\Exception\OutOfRangeCurrentPageException;
+use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

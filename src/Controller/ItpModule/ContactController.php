@@ -32,7 +32,7 @@ use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use PagerFanta\Exception\OutOfRangeCurrentPageException;
+use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;

@@ -38,7 +38,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use PagerFanta\Exception\OutOfRangeCurrentPageException;
+use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
