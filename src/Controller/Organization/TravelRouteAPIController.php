@@ -79,7 +79,7 @@ class TravelRouteAPIController extends AbstractController
         TranslatorInterface $translator
     ): Response
     {
-        $term = $request->get('q');
+        $term = (string) $request->query->get('q', '');
 
         $organization = $userExtensionService->getCurrentOrganization();
 
