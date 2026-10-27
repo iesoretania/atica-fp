@@ -60,6 +60,10 @@ class OrganizationOwnershipSubscriber implements EventSubscriberInterface
         'getProgramGroup',
         'getStudentProgram',
         'getStudentProgramWorkcenter',
+        'getStudentProgramActivity',
+        'getAgreementActivityRealization',
+        'getActivity',
+        'getPerformanceScale',
         'getAnsweredSurvey',
         'getSurvey',
     ];

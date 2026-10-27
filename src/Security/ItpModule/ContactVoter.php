@@ -86,14 +86,15 @@ class ContactVoter extends CachedVoter
             return true;
         }
 
+        // Si no es de la organización actual, denegar (antes de nada, para que un administrador de otra
+        // organización no pueda acceder a las visitas de esta)
+        if ($subject->getTeacher()?->getAcademicYear()?->getOrganization() !== $organization) {
+            return false;
+        }
+
         // Si es administrador de la organización, permitir siempre
         if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
             return true;
-        }
-
-        // Si no es de la organización actual, denegar
-        if ($subject->getTeacher()?->getAcademicYear()?->getOrganization() !== $organization) {
-            return false;
         }
 
         switch ($attribute) {

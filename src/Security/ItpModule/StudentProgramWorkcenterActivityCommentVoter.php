@@ -96,17 +96,12 @@ class StudentProgramWorkcenterActivityCommentVoter extends CachedVoter
             return true;
         }
 
-        // Si es administrador de la organización, permitir siempre
-        if ($this->decisionManager->decide($token, [OrganizationVoter::MANAGE], $organization)) {
-            return true;
-        }
-
         // los administradores globales siempre tienen permiso
         if ($this->decisionManager->decide($token, ['ROLE_ADMIN'])) {
             return true;
         }
 
-        $training = $subject->getStudentProgramActivity()?->getStudentProgramWorkcenter()?->getStudentProgram()?->getStudentEnrollment()?->getGroup()?->getGrade()
+        $training =$subject->getStudentProgramActivity()?->getStudentProgramWorkcenter()?->getStudentProgram()?->getStudentEnrollment()?->getGroup()?->getGrade()
             ?->getTraining();
         assert($training instanceof Training);
 
