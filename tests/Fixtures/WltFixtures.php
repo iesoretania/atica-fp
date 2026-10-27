@@ -197,7 +197,7 @@ class WltFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
                 $workDay
                     ->setAgreement($agreement)
                     ->setDate(\DateTime::createFromImmutable($date))
-                    ->setHours(6)
+                    ->setHours(600) // las horas se guardan en centésimas: 600 son 6 horas
                     ->setLocked(false)
                     ->setAbsence(WorkDay::NO_ABSENCE)
                     ->setActivityRealizations(new ArrayCollection([$realizations[0], $realizations[1]]));

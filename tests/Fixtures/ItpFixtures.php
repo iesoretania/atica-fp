@@ -194,7 +194,7 @@ class ItpFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
                 $workDay
                     ->setStudentProgramWorkcenter($spw)
                     ->setDate($date)
-                    ->setHours(5)
+                    ->setHours(500) // las horas se guardan en centésimas: 500 son 5 horas
                     ->setLocked(false)
                     ->setAbsence(WorkDay::ABSENCE_NONE)
                     ->addActivity($activities[0]);

@@ -63,7 +63,7 @@ class WptFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
         $shift = new Shift();
         $shift
             ->setName('Formación en centros de trabajo')
-            ->setHours(410)
+            ->setHours(41000) // 410 horas, en centésimas
             ->setType('FCT')
             ->setQuarter(Shift::QUARTER_THIRD)
             ->setLocked(false)
@@ -115,7 +115,8 @@ class WptFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
         foreach ([$agreement1, $agreement2] as $agreement) {
             foreach ($this->weekdays($start, $end) as $date) {
                 $workDay = new WorkDay();
-                $workDay->setAgreement($agreement)->setDate(\DateTime::createFromImmutable($date))->setHours(5);
+                // las horas se guardan en centésimas: 500 son 5 horas
+                $workDay->setAgreement($agreement)->setDate(\DateTime::createFromImmutable($date))->setHours(500);
                 $manager->persist($workDay);
 
                 if ($date > $today) {
@@ -209,7 +210,7 @@ class WptFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
             return;
         }
         $tracking = new ActivityTracking();
-        $tracking->setTrackedWorkDay($tracked)->setActivity($activities[0])->setHours(5)->setNotes('Trabajo realizado');
+        $tracking->setTrackedWorkDay($tracked)->setActivity($activities[0])->setHours(500)->setNotes('Trabajo realizado');
         $manager->persist($tracking);
     }
 
