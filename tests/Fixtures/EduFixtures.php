@@ -169,6 +169,8 @@ class EduFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
             DemoData::ROLE_STUDENT_4 => $group1,
             DemoData::ROLE_STUDENT_5 => $group2,
             DemoData::ROLE_STUDENT_6 => $group2,
+            DemoData::ROLE_STUDENT_7 => $group2,
+            DemoData::ROLE_STUDENT_8 => $group2,
         ] as $role => $group) {
             $person = $this->createPerson(
                 $manager,

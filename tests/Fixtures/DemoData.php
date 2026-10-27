@@ -41,7 +41,10 @@ final class DemoData
     public const ROLE_STUDENT_4 = 'alumno4';
     public const ROLE_STUDENT_5 = 'alumno5';
     public const ROLE_STUDENT_6 = 'alumno6';
+    public const ROLE_STUDENT_7 = 'alumno7';
+    public const ROLE_STUDENT_8 = 'alumno8';
     public const ROLE_PROJECT_MANAGER = 'coordinador';
+    public const ROLE_ITP_MANAGER = 'gestorffe';
 
     // Atajos para la organización A
     public const USER_A_LOCAL_ADMIN = 'alfa.admin';
