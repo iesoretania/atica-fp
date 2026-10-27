@@ -18,6 +18,7 @@
 
 namespace App\Security;
 
+use App\Entity\Person;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -36,6 +37,10 @@ abstract class CachedVoter extends Voter
     public function vote(TokenInterface $token, $subject, array $attributes): int
     {
         $hash = $subject ? spl_object_hash($subject) . '_' : '';
+        $user = $token->getUser();
+        $userKey = $user === null
+            ? 'anon'
+            : md5(($user instanceof Person ? (string) $user->getId() : $user->getUserIdentifier()) . '|' . spl_object_hash($user));
 
         // abstain vote by default in case none of the attributes are supported
         $vote = self::ACCESS_ABSTAIN;
@@ -46,7 +51,8 @@ abstract class CachedVoter extends Voter
             }
 
             // check cache
-            $key = 'voter_' . $hash . $attribute;
+            // la clave incluye al usuario para no compartir votos entre usuarios distintos
+            $key = 'voter_' . $userKey . '_' . $hash . $attribute;
             try {
                 $cachedItem = $this->cacheItemPool->getItem($key);
             } catch (InvalidArgumentException) {
