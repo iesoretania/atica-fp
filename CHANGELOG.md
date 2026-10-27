@@ -7,6 +7,7 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * feat: Permitir exportar estado de estancias de FFEOE en formato CSV
+* fix (security): Solucionado un problema por el que no se comprobaba el rol de administrador en la gestión de usuarios
 
 7.6.3 (2026-05-06)
 ------------------
