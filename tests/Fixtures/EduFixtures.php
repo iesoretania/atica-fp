@@ -13,6 +13,7 @@ use App\Entity\Edu\LearningOutcome;
 use App\Entity\Edu\NonWorkingDay;
 use App\Entity\Edu\PerformanceScale;
 use App\Entity\Edu\PerformanceScaleValue;
+use App\Entity\Edu\ReportTemplate;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Subject;
 use App\Entity\Edu\Teacher;
@@ -44,6 +45,11 @@ class EduFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
     public const REF_LEARNING_OUTCOME = 'learning-outcome.';
     public const REF_PERFORMANCE_SCALE_VALUE = 'performance-scale-value.';
     public const REF_PERFORMANCE_SCALE = 'performance-scale.';
+    public const REF_REPORT_TEMPLATE = 'report-template.';
+
+    /** Contenido de la plantilla de informe de las fixtures (la descarga debe devolverlo íntegro) */
+    public const MINIMAL_PDF = "%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n"
+        . "3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 200 200]>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF\n";
     public const REF_CONTACT_METHOD = 'contact-method.';
     public const REF_TRAVEL_ROUTE = 'travel-route.';
 
@@ -202,6 +208,15 @@ class EduFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
                 $this->addReference(self::REF_CONTACT_METHOD . $prefix, $method);
             }
         }
+
+        // plantilla de informe: un PDF mínimo válido
+        $template = new ReportTemplate();
+        $template
+            ->setOrganization($organization)
+            ->setDescription('Plantilla de informe de prueba')
+            ->setData(self::MINIMAL_PDF);
+        $manager->persist($template);
+        $this->addReference(self::REF_REPORT_TEMPLATE . $prefix, $template);
 
         $scale = new PerformanceScale();
         $scale->setOrganization($organization)->setDescription('Escala de desempeño')->setEnabled(true);
