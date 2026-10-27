@@ -105,6 +105,12 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "test:reset-db": [
+            "@php -d memory_limit=1G bin/console doctrine:database:drop --force --if-exists --env=test",
+            "@php -d memory_limit=1G bin/console doctrine:database:create --env=test",
+            "@php -d memory_limit=1G bin/console doctrine:migrations:migrate --no-interaction --env=test",
+            "@php -d memory_limit=1G bin/console doctrine:fixtures:load --append --no-interaction --env=test"
         ]
     },
     "conflict": {
@@ -116,5 +122,8 @@
             "require": "6.4.*",
             "docker": false
         }
+    },
+    "scripts-descriptions": {
+        "test:reset-db": "Recrea la base de datos de tests (*_test), la migra desde cero y carga las fixtures"
     }
 }

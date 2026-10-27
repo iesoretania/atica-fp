@@ -6,12 +6,13 @@ use App\Entity\Organization;
 use App\Entity\Person;
 use App\Repository\OrganizationRepository;
 use App\Repository\PersonRepository;
+use App\Tests\Fixtures\DemoData;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
- * Clase base de los tests funcionales. Usa los datos de demostración (docker/demo.sql)
- * cargados en la base de datos `*_test`. Cada test se ejecuta dentro de una transacción
+ * Clase base de los tests funcionales. Usa los datos de las fixtures (tests/Fixtures)
+ * cargados en la base de datos `*_test` con `composer test:reset-db`. Cada test se ejecuta dentro de una transacción
  * que se revierte al terminar (DAMA).
  */
 abstract class AppWebTestCase extends WebTestCase
@@ -26,27 +27,27 @@ abstract class AppWebTestCase extends WebTestCase
 
     protected function getAdmin(): Person
     {
-        $person = static::getContainer()->get(PersonRepository::class)->findOneBy(['loginUsername' => 'admin']);
-        self::assertInstanceOf(Person::class, $person, 'No existe el usuario "admin" en los datos de prueba');
-        return $person;
+        return $this->getUser(DemoData::USER_ADMIN);
     }
 
     /**
-     * Devuelve una persona habilitada que no es administradora global
+     * Profesor de la organización A sin permisos de administración
      */
     protected function getRegularUser(): Person
     {
-        $person = static::getContainer()->get(PersonRepository::class)->findOneBy([
-            'globalAdministrator' => false,
-            'enabled' => true
-        ]);
-        self::assertInstanceOf(Person::class, $person);
+        return $this->getUser(DemoData::USER_A_TEACHER);
+    }
+
+    protected function getUser(string $username): Person
+    {
+        $person = static::getContainer()->get(PersonRepository::class)->findOneBy(['loginUsername' => $username]);
+        self::assertInstanceOf(Person::class, $person, sprintf('No existe el usuario "%s" en los datos de prueba', $username));
         return $person;
     }
 
-    protected function getOrganization(): Organization
+    protected function getOrganization(string $code = DemoData::ORG_A_CODE): Organization
     {
-        $organization = static::getContainer()->get(OrganizationRepository::class)->findOneBy([]);
+        $organization = static::getContainer()->get(OrganizationRepository::class)->findOneBy(['code' => $code]);
         self::assertInstanceOf(Organization::class, $organization);
         return $organization;
     }
@@ -54,7 +55,7 @@ abstract class AppWebTestCase extends WebTestCase
     /**
      * Inicia sesión como el usuario indicado y selecciona la organización de la sesión
      */
-    protected function login(Person $person, bool $withOrganization = true): void
+    protected function login(Person $person, bool $withOrganization = true, string $organizationCode = DemoData::ORG_A_CODE): void
     {
         $this->client->loginUser($person);
 
@@ -65,7 +66,7 @@ abstract class AppWebTestCase extends WebTestCase
             self::assertNotNull($cookie, 'loginUser() no ha creado la cookie de sesión');
             $session->setId($cookie->getValue());
             $session->start();
-            $session->set('organization_id', $this->getOrganization()->getId());
+            $session->set('organization_id', $this->getOrganization($organizationCode)->getId());
             $session->save();
         }
     }

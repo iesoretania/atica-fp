@@ -1,0 +1,9 @@
+# Servicios que solo existen en el entorno de tests (las fixtures dependen de paquetes de desarrollo)
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\Tests\Fixtures\:
+        resource: '../tests/Fixtures/'
+        exclude: '../tests/Fixtures/DemoData.php'
