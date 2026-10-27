@@ -13,6 +13,8 @@ use Doctrine\Persistence\ObjectManager;
  */
 class CompanyFixtures extends AbstractDemoFixture implements DependentFixtureInterface
 {
+    public const REF_COMPANY_SOUTH = 'company.south';
+    public const REF_COMPANY_NORTH = 'company.north';
     public const REF_WORKCENTER_MAIN = 'workcenter.main';
     public const REF_WORKCENTER_BRANCH = 'workcenter.branch';
     public const REF_WORKCENTER_UBEDA = 'workcenter.ubeda';
@@ -26,19 +28,19 @@ class CompanyFixtures extends AbstractDemoFixture implements DependentFixtureInt
     public function load(ObjectManager $manager): void
     {
         $companies = [
-            ['Tecnologías del Sur S.L.', 'B23000001', 'Linares', '23700', [
+            ['Tecnologías del Sur S.L.', 'B23000001', 'Linares', '23700', self::REF_COMPANY_SOUTH, [
                 [self::REF_WORKCENTER_MAIN, 'Sede central', 'Linares'],
                 [self::REF_WORKCENTER_BRANCH, 'Delegación de Jaén', 'Jaén'],
             ]],
-            ['Consultoría del Norte S.A.', 'A23000002', 'Úbeda', '23400', [
+            ['Consultoría del Norte S.A.', 'A23000002', 'Úbeda', '23400', self::REF_COMPANY_NORTH, [
                 [self::REF_WORKCENTER_UBEDA, 'Oficina de Úbeda', 'Úbeda'],
             ]],
-            ['Desarrollos de la Sierra S.L.', 'B23000003', 'Baeza', '23440', [
+            ['Desarrollos de la Sierra S.L.', 'B23000003', 'Baeza', '23440', null, [
                 [self::REF_WORKCENTER_BAEZA, 'Taller de Baeza', 'Baeza'],
             ]],
         ];
 
-        foreach ($companies as [$name, $code, $city, $zip, $workcenters]) {
+        foreach ($companies as [$name, $code, $city, $zip, $companyReference, $workcenters]) {
             $company = new Company();
             // los setters de Company no son fluidos
             $company->setName($name);
@@ -49,6 +51,9 @@ class CompanyFixtures extends AbstractDemoFixture implements DependentFixtureInt
             $company->setPhoneNumber('953000000');
             $company->setEmailAddress(strtolower($code) . '@example.com');
             $manager->persist($company);
+            if ($companyReference !== null) {
+                $this->addReference($companyReference, $company);
+            }
 
             foreach ($workcenters as [$reference, $workcenterName, $workcenterCity]) {
                 $workcenter = new Workcenter();

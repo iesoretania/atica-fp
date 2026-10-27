@@ -40,6 +40,10 @@ class EduFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
     public const REF_TEACHER = 'teacher.';
     public const REF_STUDENT = 'student.';
     public const REF_CRITERION = 'criterion.';
+    public const REF_COMPETENCY = 'competency.';
+    public const REF_LEARNING_OUTCOME = 'learning-outcome.';
+    public const REF_PERFORMANCE_SCALE_VALUE = 'performance-scale-value.';
+    public const REF_PERFORMANCE_SCALE = 'performance-scale.';
     public const REF_CONTACT_METHOD = 'contact-method.';
     public const REF_TRAVEL_ROUTE = 'travel-route.';
 
@@ -106,6 +110,7 @@ class EduFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
         $competency = new Competency();
         $competency->setTraining($training)->setCode('CG1')->setDescription('Configurar y explotar sistemas informáticos');
         $manager->persist($competency);
+        $this->addReference(self::REF_COMPETENCY . $prefix, $competency);
 
         $grade1 = new Grade();
         $grade1->setTraining($training)->setInternalCode('1DAM')->setName('1º DAM');
@@ -137,6 +142,7 @@ class EduFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
             $outcome = new LearningOutcome();
             $outcome->setSubject($subject)->setCode('RA1')->setDescription('Resultado de aprendizaje de ' . $name);
             $manager->persist($outcome);
+            $this->addReference(self::REF_LEARNING_OUTCOME . $prefix . '.' . $code, $outcome);
             $criterion = new Criterion();
             $criterion->setLearningOutcome($outcome)->setCode('a')->setName('Criterio a')
                 ->setDescription('Criterio de evaluación de ' . $name);
@@ -161,6 +167,8 @@ class EduFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
             DemoData::ROLE_STUDENT_2 => $group2,
             DemoData::ROLE_STUDENT_3 => $group2,
             DemoData::ROLE_STUDENT_4 => $group1,
+            DemoData::ROLE_STUDENT_5 => $group2,
+            DemoData::ROLE_STUDENT_6 => $group2,
         ] as $role => $group) {
             $person = $this->createPerson(
                 $manager,
@@ -196,11 +204,13 @@ class EduFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
         $scale = new PerformanceScale();
         $scale->setOrganization($organization)->setDescription('Escala de desempeño')->setEnabled(true);
         $manager->persist($scale);
+        $this->addReference(self::REF_PERFORMANCE_SCALE . $prefix, $scale);
         foreach ([[0, 'Insuficiente', true], [1, 'Suficiente', false], [2, 'Notable', false]] as [$grade, $description, $negative]) {
             $value = new PerformanceScaleValue();
             $value->setPerformanceScale($scale)->setDescription($description)->setNumericGrade($grade)
                 ->setNegativeGrade($negative);
             $manager->persist($value);
+            $this->addReference(self::REF_PERFORMANCE_SCALE_VALUE . $prefix . '.' . $grade, $value);
         }
 
         foreach ([['Linares - Jaén', 52.5], ['Linares - Úbeda', 28.0]] as [$description, $distance]) {

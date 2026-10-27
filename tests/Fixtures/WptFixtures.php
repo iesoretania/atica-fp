@@ -31,6 +31,8 @@ class WptFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
     public const REF_SHIFT = 'wpt.shift.';
     public const REF_AGREEMENT_1 = 'wpt.agreement1.';
     public const REF_AGREEMENT_2 = 'wpt.agreement2.';
+    public const REF_WORK_TUTOR_1 = 'person.work-tutor1.';
+    public const REF_WORK_TUTOR_2 = 'person.work-tutor2.';
 
     public function getDependencies(): array
     {
@@ -81,6 +83,9 @@ class WptFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
         // Tutores laborales (no son profesores ni alumnos del centro)
         $workTutor1 = $this->createPerson($manager, DemoData::username($prefix, DemoData::ROLE_WORK_TUTOR), 'Tutor', 'Laboral Uno ' . ucfirst($prefix));
         $workTutor2 = $this->createPerson($manager, DemoData::username($prefix, DemoData::ROLE_WORK_TUTOR_2), 'Tutora', 'Laboral Dos ' . ucfirst($prefix));
+
+        $this->addReference(self::REF_WORK_TUTOR_1 . $prefix, $workTutor1);
+        $this->addReference(self::REF_WORK_TUTOR_2 . $prefix, $workTutor2);
 
         // Convenios
         [$start, $end] = DemoData::trainingPeriod();
