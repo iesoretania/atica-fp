@@ -5,7 +5,7 @@
         "@fortawesome/fontawesome-free": "^6.6.0",
         "@hotwired/stimulus": "^3.0.0",
         "@symfony/stimulus-bridge": "^3.2.0",
-        "@symfony/webpack-encore": "^4.0.0",
+        "@symfony/webpack-encore": "^5.3.1",
         "autoprefixer": "^10.4.19",
         "bootstrap": "^4.6.1",
         "bootswatch": "^4.6.1",
@@ -18,12 +18,23 @@
         "popper.js": "^1.16.1",
         "postcss-loader": "^7.3.4",
         "regenerator-runtime": "^0.13.9",
-        "sass-loader": "^14.2.1",
+        "sass-loader": "^16.0.8",
         "select2": "^4.0.13",
         "select2-theme-bootstrap4": "^1.0.0",
         "webpack": "~5.111.1",
-        "webpack-cli": "^4.10.0",
+        "webpack-cli": "^5.1.4",
         "webpack-notifier": "^1.15.0"
+    },
+    "overrides": {
+        "webpack": {
+            "schema-utils": "4.7.0"
+        },
+        "css-minimizer-webpack-plugin": {
+            "schema-utils": "4.7.0"
+        },
+        "minimizer-webpack-plugin": {
+            "schema-utils": "4.7.0"
+        }
     },
     "browserslist": [
         "Android 2.3",
