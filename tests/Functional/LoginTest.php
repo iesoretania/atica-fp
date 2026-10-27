@@ -4,6 +4,15 @@ namespace App\Tests\Functional;
 
 class LoginTest extends AppWebTestCase
 {
+    /**
+     * El limitador de intentos guarda su estado en la caché durante 15 minutos: cada test usa una
+     * IP distinta para no depender de ejecuciones anteriores.
+     */
+    private function uniqueIp(): string
+    {
+        return '10.' . random_int(1, 250) . '.' . random_int(1, 250) . '.' . random_int(1, 250);
+    }
+
     public function testLoginFormHasCsrfToken(): void
     {
         $crawler = $this->client->request('GET', '/entrar');
@@ -21,7 +30,7 @@ class LoginTest extends AppWebTestCase
             '/comprobar',
             ['_username' => 'admin', '_password' => 'admin'],
             [],
-            ['REMOTE_ADDR' => '10.20.1.1']
+            ['REMOTE_ADDR' => $this->uniqueIp()]
         );
         $this->client->followRedirect();
 
@@ -32,8 +41,7 @@ class LoginTest extends AppWebTestCase
     {
         $crawler = $this->client->request('GET', '/entrar');
         $token = $crawler->filter('input[name=_csrf_token]')->attr('value');
-        // IP única por ejecución para no depender del estado del limitador
-        $ip = '10.30.' . random_int(1, 250) . '.' . random_int(1, 250);
+        $ip = $this->uniqueIp();
 
         $messages = [];
         foreach (['nadie-existe', 'admin'] as $username) {
