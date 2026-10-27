@@ -39,6 +39,9 @@ class EduFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
     public const REF_SUBJECT = 'subject.';
     public const REF_TEACHER = 'teacher.';
     public const REF_STUDENT = 'student.';
+    public const REF_CRITERION = 'criterion.';
+    public const REF_CONTACT_METHOD = 'contact-method.';
+    public const REF_TRAVEL_ROUTE = 'travel-route.';
 
     public function getDependencies(): array
     {
@@ -138,6 +141,7 @@ class EduFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
             $criterion->setLearningOutcome($outcome)->setCode('a')->setName('Criterio a')
                 ->setDescription('Criterio de evaluación de ' . $name);
             $manager->persist($criterion);
+            $this->addReference(self::REF_CRITERION . $prefix . '.' . $code, $criterion);
         }
 
         // Docencia
@@ -183,6 +187,10 @@ class EduFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
             $method = new ContactMethod();
             $method->setAcademicYear($academicYear)->setDescription($description)->setEnabled(true);
             $manager->persist($method);
+            // se referencia solo la primera vía de contacto
+            if (!$this->hasReference(self::REF_CONTACT_METHOD . $prefix, ContactMethod::class)) {
+                $this->addReference(self::REF_CONTACT_METHOD . $prefix, $method);
+            }
         }
 
         $scale = new PerformanceScale();
@@ -199,6 +207,9 @@ class EduFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
             $route = new TravelRoute();
             $route->setOrganization($organization)->setDescription($description)->setVerified(true)->setDistance($distance);
             $manager->persist($route);
+            if (!$this->hasReference(self::REF_TRAVEL_ROUTE . $prefix, TravelRoute::class)) {
+                $this->addReference(self::REF_TRAVEL_ROUTE . $prefix, $route);
+            }
         }
 
         $this->addReference(self::REF_DEPARTMENT . $prefix, $informatica);

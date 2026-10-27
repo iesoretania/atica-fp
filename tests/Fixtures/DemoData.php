@@ -33,6 +33,8 @@ final class DemoData
     public const ROLE_DEPARTMENT_HEAD = 'jefe';
     public const ROLE_GROUP_TUTOR = 'tutor';
     public const ROLE_TEACHER = 'profesor';
+    public const ROLE_WORK_TUTOR = 'tutorlaboral';
+    public const ROLE_WORK_TUTOR_2 = 'tutorlaboral2';
     public const ROLE_STUDENT_1 = 'alumno1';
     public const ROLE_STUDENT_2 = 'alumno2';
     public const ROLE_STUDENT_3 = 'alumno3';
@@ -51,6 +53,24 @@ final class DemoData
         self::ORG_A => ['code' => self::ORG_A_CODE, 'name' => self::ORG_A_NAME, 'city' => 'Linares'],
         self::ORG_B => ['code' => self::ORG_B_CODE, 'name' => self::ORG_B_NAME, 'city' => 'Úbeda'],
     ];
+
+    /**
+     * Período de prácticas de las fixtures: desde hace seis semanas hasta dentro de cuatro,
+     * acotado al curso académico actual.
+     *
+     * @return array{\DateTimeImmutable, \DateTimeImmutable}
+     */
+    public static function trainingPeriod(?\DateTimeImmutable $today = null): array
+    {
+        $today ??= new \DateTimeImmutable('today');
+        $yearStart = self::currentSchoolYearStart($today);
+        $yearEnd = $yearStart->modify('+1 year -1 day');
+
+        return [
+            max($yearStart, $today->modify('-6 weeks')),
+            min($yearEnd, $today->modify('+4 weeks')),
+        ];
+    }
 
     public static function username(string $prefix, string $role): string
     {
