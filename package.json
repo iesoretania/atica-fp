@@ -21,7 +21,7 @@
         "sass-loader": "^14.2.1",
         "select2": "^4.0.13",
         "select2-theme-bootstrap4": "^1.0.0",
-        "webpack": "^5.74.0",
+        "webpack": "~5.111.1",
         "webpack-cli": "^4.10.0",
         "webpack-notifier": "^1.15.0"
     },
