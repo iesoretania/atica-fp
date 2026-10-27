@@ -12,6 +12,8 @@ framework:
         name: '%session_name%'
         handler_id: null
         cookie_secure: auto
+        # la cookie de sesión no debe ser accesible desde JavaScript (es el valor predeterminado, pero se deja explícito)
+        cookie_httponly: true
         cookie_samesite: lax
 
     #esi: true

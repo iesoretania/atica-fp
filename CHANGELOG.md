@@ -21,6 +21,7 @@ x.x.x (xxxx-xx-xx)
 * fix: Ya no se produce un error al intentar crear una reunión de FP dual sin ser profesorado del curso académico
 * fix: La eliminación de usuarios ya no incluye al usuario que la realiza aunque se envíe la petición directamente
 * fix (security): Toda la aplicación exige haber iniciado sesión por defecto y la administración global exige ser administrador global, con independencia de las comprobaciones de cada pantalla
+* fix (security): La cookie de sesión se marca explícitamente como no accesible desde JavaScript
 
 7.6.3 (2026-05-06)
 ------------------
