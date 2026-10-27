@@ -28,6 +28,8 @@ security:
         main:
             custom_authenticators:
                 - App\Security\FormAuthenticator
+            # a quien no ha iniciado sesión y pide una página protegida se le lleva a la pantalla de entrada
+            entry_point: App\Security\FormAuthenticator
 
             logout:
                 path: logout
@@ -45,11 +47,16 @@ security:
                 max_attempts: 5
                 interval: '15 minutes'
 
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
+    # Solo se aplica la primera regla que coincida. Denegación por defecto: cualquier ruta nueva queda
+    # protegida sin que haya que acordarse de añadir una comprobación en su controlador.
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # páginas públicas: entrada, cierre de sesión y restablecimiento de la contraseña
+        - { path: '^/(entrar|comprobar|salir|restablecer)(/|$)', roles: PUBLIC_ACCESS }
+        # la administración global es solo para administradores globales (los controladores la comprueban
+        # también, esto es una segunda barrera por si a alguno se le olvida)
+        - { path: '^/admin(/|$)', roles: ROLE_ADMIN }
+        # el resto exige haber iniciado sesión
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

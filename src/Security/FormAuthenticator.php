@@ -37,14 +37,24 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuthenticatorInterface
+class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuthenticatorInterface, AuthenticationEntryPointInterface
 {
     /**
      * Constructor
      */
     public function __construct(private readonly RouterInterface $router, private readonly UserPasswordHasherInterface $encoder, private readonly SenecaAuthenticatorService $senecaAuthenticator, private readonly PersonRepository $personRepository, private readonly ManagerRegistry $managerRegistry)
     {
+    }
+
+    /**
+     * Qué hacer cuando un usuario no identificado pide una página protegida: llevarlo a la pantalla de entrada
+     * (el firewall guarda la dirección pedida para volver a ella tras iniciar sesión)
+     */
+    final public function start(Request $request, ?AuthenticationException $authException = null): Response
+    {
+        return new RedirectResponse($this->router->generate('login'));
     }
 
     final public function supports(Request $request): bool
