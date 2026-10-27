@@ -3,7 +3,13 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            string $projectDir: '%kernel.project_dir%'
 
     App\Tests\Fixtures\:
         resource: '../tests/Fixtures/'
         exclude: '../tests/Fixtures/DemoData.php'
+
+    # comandos de consola que solo existen en los tests (por ejemplo, la exportación de los datos de demostración)
+    App\Tests\Command\:
+        resource: '../tests/Command/'

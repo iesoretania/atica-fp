@@ -111,6 +111,10 @@
             "@php -d memory_limit=1G bin/console doctrine:database:create --env=test",
             "@php -d memory_limit=1G bin/console doctrine:migrations:migrate --no-interaction --env=test",
             "@php -d memory_limit=1G bin/console doctrine:fixtures:load --append --no-interaction --env=test"
+        ],
+        "demo:regenerate": [
+            "@test:reset-db",
+            "@php -d memory_limit=1G bin/console app:demo:export --env=test"
         ]
     },
     "conflict": {
@@ -124,6 +128,7 @@
         }
     },
     "scripts-descriptions": {
-        "test:reset-db": "Recrea la base de datos de tests (*_test), la migra desde cero y carga las fixtures"
+        "test:reset-db": "Recrea la base de datos de tests (*_test), la migra desde cero y carga las fixtures",
+        "demo:regenerate": "Regenera docker/demo.sql (datos de demostración) a partir de las fixtures"
     }
 }
