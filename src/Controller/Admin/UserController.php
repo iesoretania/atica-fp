@@ -175,7 +175,7 @@ class UserController extends AbstractController
                 $em->createQueryBuilder()
                     ->delete(Person::class, 'p')
                     ->where('p IN (:items)')
-                    ->setParameter('items', $items)
+                    ->setParameter('items', $users)
                     ->getQuery()
                     ->execute();
 

@@ -19,6 +19,7 @@ x.x.x (xxxx-xx-xx)
 * fix: Ya no se produce un error al vaciar un campo obligatorio en un formulario de edición, sino que se muestra el error de validación
 * fix: Ya no se produce un error al dar de alta una empresa sin rellenar sus datos obligatorios
 * fix: Ya no se produce un error al intentar crear una reunión de FP dual sin ser profesorado del curso académico
+* fix: La eliminación de usuarios ya no incluye al usuario que la realiza aunque se envíe la petición directamente
 
 7.6.3 (2026-05-06)
 ------------------
