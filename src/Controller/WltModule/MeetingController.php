@@ -19,6 +19,7 @@
 namespace App\Controller\WltModule;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Teacher;
 use App\Entity\Person;
 use App\Entity\WltModule\Meeting;
 use App\Form\Type\WltModule\MeetingType;
@@ -72,6 +73,11 @@ class MeetingController extends AbstractController
         $person = $this->getUser();
         $teacher =
             $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+
+        // solo el profesorado del curso académico puede crear reuniones (el creador es obligatorio)
+        if (!$teacher instanceof Teacher) {
+            throw $this->createAccessDeniedException();
+        }
 
         $meeting = new Meeting();
         $meeting
