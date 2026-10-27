@@ -24,6 +24,7 @@ x.x.x (xxxx-xx-xx)
 * fix (security): La cookie de sesión se marca explícitamente como no accesible desde JavaScript
 * fix: La descarga de las plantillas de informe ya no interrumpe el proceso del servidor al terminar
 * fix (security): La contraseña de la base de datos ya no se muestra en la lista de procesos ni en los mensajes de error al hacer o restaurar copias de seguridad, y una contraseña vacía ya no deja la operación esperando una entrada por teclado
+* feat: Los datos de demostración de la prueba rápida con Docker incluyen dos centros con datos de FCT, FP dual y FFE y usuarios de ejemplo para cada rol
 
 7.6.3 (2026-05-06)
 ------------------

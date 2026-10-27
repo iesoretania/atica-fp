@@ -28,6 +28,10 @@ conocer los cambios necesarios.**
     * Si usas Linux, con el comando `DEMO=1 docker-compose up -d`
     * Si usas Windows, abre un PowerShell y ejecuta `$env:DEMO=1;  docker-compose up -d`
     * En estos caso, el usuario será `admin` y la contraseña `aticafp`
+    * Los datos de prueba incluyen dos centros (I.E.S. Alfa e I.E.S. Beta) con datos de los tres módulos (FCT, FP dual
+      y FFE). Cada centro tiene usuarios de ejemplo con todos los roles (`alfa.admin`, `alfa.jefe`, `alfa.tutor`,
+      `alfa.profesor`, `alfa.alumno1`, `alfa.tutorlaboral`... y los equivalentes `beta.*`), todos con la contraseña
+      `demo1234`. Las fechas de las prácticas son las del día en que se generaron los datos.
 - Esperar... (bastante tiempo)
 - Acceder desde el navegador a la dirección http://127.0.0.1:9999
   * Si usas Docker Toolbox usa esta dirección en su lugar: http://192.168.99.100:9999
@@ -74,6 +78,23 @@ Cuando se publique una nueva versión de la plataforma, se deberán seguir los s
     **IMPORTANTE:** Si fallara el comando anterior por la ausencia de algún comando en el sistema, se puede intentar
     con `php bin/console doctrine:migrations:migrate -n`, que realiza la migración sin copia de seguridad previa.
 - Ejecutar el comando `npm run build` para generar los assets.
+
+## Desarrollo y tests
+
+Los tests usan una base de datos propia, cuyo nombre es el de la aplicación más el sufijo `_test`, y nunca la de
+desarrollo ni la de producción.
+
+- Crear `.env.test.local` (no se sube al repositorio) con la línea `DATABASE_URL` de tu `.env.local`. El usuario debe
+  poder crear bases de datos. Los programas `mysql` y `mysqldump` deben estar instalados para los tests de las copias de
+  seguridad.
+- `composer test:reset-db` recrea la base de datos de tests, la migra desde cero y carga los datos de prueba
+  (`tests/Fixtures`: dos centros con datos de los tres módulos).
+- `vendor/bin/phpunit --exclude-group slow` ejecuta los tests habituales. `vendor/bin/phpunit --group slow` ejecuta las
+  pruebas de intrusión entre centros y de robustez de los formularios, que tardan varios minutos.
+- Cada test se revierte al terminar, por lo que no hace falta recrear la base de datos entre ejecuciones.
+- En GitHub Actions se ejecutan automáticamente (`.github/workflows/tests.yml`), con MySQL 8.4.
+- `composer demo:regenerate` regenera `docker/demo.sql` (los datos de la prueba rápida con Docker) a partir de esos
+  mismos datos de prueba.
 
 ## Licencia
 Esta aplicación se ofrece bajo licencia [AGPL versión 3].
