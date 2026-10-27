@@ -28,6 +28,9 @@ x.x.x (xxxx-xx-xx)
 * fix: Las personas con el rol de administrador local ya pueden entrar en la aplicación aunque no sean profesorado ni alumnado del centro que administran
 * fix (security): El restablecimiento de la contraseña ya no revela qué direcciones de correo tienen cuenta, y se limita el número de solicitudes por dirección IP
 * fix: El enlace de confirmación del cambio de correo electrónico ya funciona sin haber iniciado sesión, igual que el de restablecer la contraseña
+* fix (security): La API del seguimiento diario de FCT ya no permite modificar jornadas bloqueadas ni justificar faltas a quien no puede bloquear, y una consulta denegada ya no crea la jornada
+* fix: El tutor laboral ya puede marcar la asistencia de las jornadas de FCT sin necesitar permiso para bloquearlas
+* fix: Ya no se pueden guardar en el seguimiento diario de FCT horas de actividad negativas o superiores a un día
 
 7.6.3 (2026-05-06)
 ------------------

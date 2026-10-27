@@ -21,6 +21,7 @@ namespace App\Entity\WptModule;
 use App\Repository\WptModule\ActivityTrackingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ActivityTrackingRepository::class)]
 #[ORM\Table(name: 'wpt_activity_tracking')]
@@ -39,9 +40,10 @@ class ActivityTracking
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
+    // horas en centésimas: como máximo un día completo (24 horas)
     #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\Range(min: 0, max: 2400)]
     private ?int $hours = 0;
-
 
     public function getTrackedWorkDay(): ?TrackedWorkDay
     {

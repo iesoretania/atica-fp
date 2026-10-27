@@ -41,6 +41,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -264,7 +265,10 @@ class TrackingCalendarController extends AbstractController
             );
         }
 
-        $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::LOCK, $agreementEnrollment);
+        // bloquear jornadas solo corresponde a quien puede bloquear; el tutor laboral solo registra asistencia
+        if ($request->get('lock_week') || $request->get('unlock_week')) {
+            $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::LOCK, $agreementEnrollment);
+        }
 
         if ($request->get('lock_week')) {
             $year = floor($request->get('lock_week') / 100);
@@ -911,8 +915,6 @@ class TrackingCalendarController extends AbstractController
                 $workDay,
                 $agreementEnrollment
             );
-
-            $managerRegistry->getManager()->flush();
         } catch (\Exception) {
             return new JsonResponse([
                                         'result' => 'error'
@@ -923,7 +925,17 @@ class TrackingCalendarController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        // la jornada nueva solo se guarda si se tiene permiso: una consulta denegada no debe dejar rastro
         $this->denyAccessUnlessGranted(TrackedWorkDayVoter::ACCESS, $trackedWorkDay);
+
+        try {
+            $managerRegistry->getManager()->flush();
+        } catch (\Exception) {
+            return new JsonResponse([
+                                        'result' => 'error'
+                                    ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
         $readOnly = !$this->isGranted(TrackedWorkDayVoter::FILL, $trackedWorkDay);
 
         $trackedActivities = $trackedWorkDay->getTrackedActivities();
@@ -973,11 +985,17 @@ class TrackingCalendarController extends AbstractController
     #[Route(path: '/api/v2/jornada/modificar/{trackedWorkDay}', name: 'api_workplace_training_tracking_calendar_edit', requirements: ['trackedWorkDay' => '\d+'], methods: ['POST'])]
     public function apiEditPost(
         ManagerRegistry $managerRegistry,
+        ValidatorInterface $validator,
         Request $request,
         TrackedWorkDay $trackedWorkDay
     ): Response
     {
         $this->denyAccessUnlessGranted(TrackedWorkDayVoter::FILL, $trackedWorkDay);
+
+        // una jornada bloqueada no se modifica: en el formulario web todos sus campos están deshabilitados
+        if ($trackedWorkDay->isLocked()) {
+            throw $this->createAccessDeniedException();
+        }
 
         if ($request->get('absence') !== null) {
             $this->denyAccessUnlessGranted(
@@ -990,6 +1008,13 @@ class TrackingCalendarController extends AbstractController
                 && $absence !== TrackedWorkDay::UNJUSTIFIED_ABSENCE) {
                 throw $this->createAccessDeniedException();
             }
+            // justificar una falta es cosa de quien puede bloquear la jornada, igual que en el formulario web
+            if ($absence === TrackedWorkDay::JUSTIFIED_ABSENCE) {
+                $this->denyAccessUnlessGranted(
+                    AgreementEnrollmentVoter::LOCK,
+                    $trackedWorkDay->getAgreementEnrollment()
+                );
+            }
             $trackedWorkDay->setAbsence($absence);
         }
         $trackedWorkDay->setNotes($request->get('notes'));
@@ -998,6 +1023,19 @@ class TrackingCalendarController extends AbstractController
         $trackedWorkDay->setStartTime2($request->get('start_time2'));
         $trackedWorkDay->setEndTime1($request->get('end_time1'));
         $trackedWorkDay->setEndTime2($request->get('end_time2'));
+
+        // las mismas validaciones que el formulario web (por ejemplo, el formato de las horas de entrada y salida)
+        $violations = $validator->validate($trackedWorkDay);
+        if (count($violations) > 0) {
+            $managerRegistry->getManager()->refresh($trackedWorkDay);
+            return new JsonResponse([
+                                        'result' => 'error',
+                                        'errors' => array_map(
+                                            static fn ($violation): string => $violation->getPropertyPath() . ': ' . $violation->getMessage(),
+                                            iterator_to_array($violations)
+                                        )
+                                    ], Response::HTTP_BAD_REQUEST);
+        }
 
         $em = $managerRegistry->getManager();
 
@@ -1017,14 +1055,25 @@ class TrackingCalendarController extends AbstractController
     public function apiEditActivityPost(
         Request $request,
         ManagerRegistry $managerRegistry,
+        ValidatorInterface $validator,
         TrackedWorkDay $trackedWorkDay,
         Activity $activity
     ): Response
     {
         $this->denyAccessUnlessGranted(TrackedWorkDayVoter::FILL, $trackedWorkDay);
 
+        // una jornada bloqueada no se modifica: en el formulario web todos sus campos están deshabilitados
+        if ($trackedWorkDay->isLocked()) {
+            throw $this->createAccessDeniedException();
+        }
+
         if ($request->get('hours') === null) {
             throw $this->createAccessDeniedException();
+        }
+
+        // las horas se envían en centésimas: solo números enteros (el rango lo valida la entidad)
+        if (preg_match('/^-?\d{1,9}$/', (string) $request->get('hours')) !== 1) {
+            return new JsonResponse(['result' => 'error', 'errors' => ['hours: valor no válido']], Response::HTTP_BAD_REQUEST);
         }
 
         $trackedActivities = $trackedWorkDay->getTrackedActivities();
@@ -1049,6 +1098,10 @@ class TrackingCalendarController extends AbstractController
             if ($trackedActivity->getActivity() === $activity) {
                 $trackedActivity->setHours((int)$request->get('hours'));
                 $found = true;
+
+                if (count($validator->validate($trackedActivity)) > 0) {
+                    return new JsonResponse(['result' => 'error', 'errors' => ['hours: fuera de rango']], Response::HTTP_BAD_REQUEST);
+                }
             }
             if ($trackedActivity->getHours() === 0) {
                 $trackedActivities->removeElement($trackedActivity);
