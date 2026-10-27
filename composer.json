@@ -34,6 +34,7 @@
         "symfony/mailer": "6.4.*",
         "symfony/monolog-bundle": "^3.7",
         "symfony/proxy-manager-bridge": "6.4.*",
+        "symfony/rate-limiter": "6.4.*",
         "symfony/runtime": "6.4.*",
         "symfony/security-bundle": "6.4.*",
         "symfony/translation": "6.4.*",

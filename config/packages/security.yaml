@@ -14,7 +14,7 @@ security:
     role-hierarchy:
         ROLE_ADMIN: [ROLE_ALLOWED_TO_SWITCH]
 
-    hide_user_not_found: false
+    hide_user_not_found: true
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -39,6 +39,11 @@ security:
             lazy: true
 
             user_checker: App\Security\UserChecker
+
+            # limitar los intentos de entrada fallidos (por usuario+IP y por IP)
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used

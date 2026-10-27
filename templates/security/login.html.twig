@@ -7,6 +7,7 @@
 
 {% block login_content %}
 <form method="post" action="{{ path('login_check') }}" role="form">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
     <div class="form-group">
         <input type="text" name="_username" id="email" required="" class="form-control" tabindex="1"
                autocorrect="off" autocapitalize="none" value="{{ last_username | default('') }}"

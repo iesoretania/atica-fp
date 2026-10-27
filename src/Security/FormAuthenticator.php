@@ -30,14 +30,13 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
-use Symfony\Component\Security\Core\Exception\UserNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
+use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
-use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
 class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuthenticatorInterface
 {
@@ -80,46 +79,45 @@ class FormAuthenticator extends AbstractAuthenticator implements InteractiveAuth
      */
     public function authenticate(Request $request): Passport
     {
-        $username = $request->request->get('_username');
-        $plainPassword = $request->request->get('_password');
+        $username = (string) $request->request->get('_username');
+        $plainPassword = (string) $request->request->get('_password');
 
-        $user = $this->personRepository->findOneByUniqueIdentifierOrUsernameOrEmailAddress($username);
+        // La contraseña se comprueba al validar las credenciales, es decir, después de
+        // verificar el token CSRF y de aplicar la limitación de intentos de entrada
+        return new Passport(
+            new UserBadge($username, $this->personRepository->findOneByUniqueIdentifierOrUsernameOrEmailAddress(...)),
+            new CustomCredentials($this->checkCredentials(...), $plainPassword),
+            [new CsrfTokenBadge('authenticate', (string) $request->request->get('_csrf_token'))]
+        );
+    }
 
+    private function checkCredentials(string $plainPassword, UserInterface $user): bool
+    {
         if (!$user instanceof Person) {
-            throw new UserNotFoundException();
+            return false;
         }
 
         // ¿Comprobación de contraseña desde Séneca?
-        if ($user->getExternalCheck()) {
-            $result = $this->senecaAuthenticator->checkUserCredentials($user->getLoginUsername(), $plainPassword);
-
-            if ($result) {
-                // contraseña correcta, actualizar en local por si perdemos la conectividad
-                if (!$this->encoder->isPasswordValid($user, $plainPassword) || $this->encoder->needsRehash($user)) {
-                    $user->setPassword($this->encoder->hashPassword($user, $plainPassword));
-                    $em = $this->managerRegistry->getManager();
-                    $em->flush();
-                }
-                return new SelfValidatingPassport(new UserBadge($user->getUserIdentifier()));
+        if ($user->getExternalCheck() && $this->senecaAuthenticator->checkUserCredentials($user->getLoginUsername(), $plainPassword)) {
+            // contraseña correcta, actualizar en local por si perdemos la conectividad
+            if (!$this->encoder->isPasswordValid($user, $plainPassword) || $this->encoder->needsRehash($user)) {
+                $user->setPassword($this->encoder->hashPassword($user, $plainPassword));
+                $this->managerRegistry->getManager()->flush();
             }
-            // intentar en local
+            return true;
         }
 
         // comprobación local
         if (!$this->encoder->isPasswordValid($user, $plainPassword)) {
-            throw new BadCredentialsException();
+            return false;
         }
 
         if ($this->encoder->needsRehash($user)) {
             $user->setPassword($this->encoder->hashPassword($user, $plainPassword));
-            $em = $this->managerRegistry->getManager();
-            $em->flush();
+            $this->managerRegistry->getManager()->flush();
         }
 
-        return new Passport(
-            new UserBadge($username, $this->personRepository->findOneByUniqueIdentifierOrUsernameOrEmailAddress(...)),
-            new PasswordCredentials($plainPassword)
-        );
+        return true;
     }
 
     /**
