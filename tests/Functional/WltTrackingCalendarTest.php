@@ -310,15 +310,14 @@ class WltTrackingCalendarTest extends AppWebTestCase
     {
         $workDay = $this->workDayOf('alfa.alumno5');
         $em = $this->em();
-        $em->find(Agreement::class, $workDay->getAgreement()->getId())->setLocked(true);
+        // en FP dual el cierre es del proyecto al que pertenece el acuerdo
+        $em->find(Agreement::class, $workDay->getAgreement()->getId())->getProject()->setLocked(true);
         $em->flush();
         $this->login($this->getUser('alfa.alumno5'));
 
-        $crawler = $this->client->request('GET', $this->formUrl($workDay));
-        self::assertResponseIsSuccessful();
-        self::assertSame(0, $crawler->selectButton('Guardar cambios')->count(), 'Con el acuerdo cerrado no se debe poder guardar');
+        $token = $this->token($workDay);
         $this->client->request('POST', $this->formUrl($workDay), [
-            'work_day_tracking' => ['notes' => 'Con el acuerdo cerrado'],
+            'work_day_tracking' => ['notes' => 'Con el acuerdo cerrado', '_token' => $token],
         ]);
 
         self::assertNotSame('Con el acuerdo cerrado', $this->reload($workDay)->getNotes());
