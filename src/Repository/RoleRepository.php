@@ -54,6 +54,25 @@ class RoleRepository extends ServiceEntityRepository
         ]);
     }
 
+    /**
+     * Organizaciones en las que la persona tiene el rol indicado
+     *
+     * @return Organization[]
+     */
+    public function findOrganizationsByPersonAndRole(Person $person, string $roleName): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('o')
+            ->from(Organization::class, 'o')
+            ->join(Role::class, 'r', 'WITH', 'r.organization = o')
+            ->where('r.person = :person')
+            ->andWhere('r.role = :role')
+            ->setParameter('person', $person)
+            ->setParameter('role', $roleName)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function updateOrganizationRoles(Organization $organization, $rolesData): void
     {
         foreach ($rolesData as $roleName => $roleData) {

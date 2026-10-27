@@ -1,0 +1,39 @@
+<?php
+/*
+  Copyright (C) 2018-2025: Luis Ramón López López
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see [http://www.gnu.org/licenses/].
+*/
+
+namespace App\Service\Organization;
+
+use App\Entity\Person;
+use App\Entity\Role;
+use App\Repository\RoleRepository;
+
+/**
+ * Las personas con el rol de administrador local pertenecen a la organización que administran,
+ * aunque no sean profesorado ni alumnado de ella
+ */
+class LocalAdministratorOrganization implements OrganizationBuilderInterface
+{
+    public function __construct(private readonly RoleRepository $roleRepository)
+    {
+    }
+
+    public function getOrganizations(Person $person): array
+    {
+        return $this->roleRepository->findOrganizationsByPersonAndRole($person, Role::ROLE_LOCAL_ADMIN);
+    }
+}
