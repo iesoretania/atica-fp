@@ -58,17 +58,22 @@ class NonWorkingDayImportController extends AbstractController
         $breadcrumb = [];
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $stats = $this->importFromCsv(
-                $formData->getFile()->getPathname(),
-                $formData->getAcademicYear(),
-                $nonWorkingDayRepository,
-                $entityManager,
-                $iCalService
-            );
+            try {
+                $stats = $this->importFromCsv(
+                    $formData->getFile()->getPathname(),
+                    $formData->getAcademicYear(),
+                    $nonWorkingDayRepository,
+                    $entityManager,
+                    $iCalService
+                );
 
-            $this->addFlash('success', $translator->trans('message.import_ok', [], 'import'));
-            $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
-
+                $this->addFlash('success', $translator->trans('message.import_ok', [], 'import'));
+                $breadcrumb[] = ['fixed' => $translator->trans('title.import_result', [], 'import')];
+            } catch (\Exception) {
+                // el fichero no es un calendario que se pueda leer
+                $stats = null;
+                $this->addFlash('error', $translator->trans('message.import_error', [], 'import'));
+            }
         }
         $title = $translator->trans('title.non_working_day.import', [], 'import');
 
@@ -107,16 +112,23 @@ class NonWorkingDayImportController extends AbstractController
 
         /** @var Event $event */
         foreach ($events as $event) {
-            $index = substr($event->dtstart, 0, 8);
+            $index = substr((string) $event->dtstart, 0, 8);
+            // los eventos sin una fecha válida no se importan
+            if (preg_match('/^\d{8}$/', $index) !== 1
+                || !checkdate((int) substr($index, 4, 2), (int) substr($index, 6, 2), (int) substr($index, 0, 4))) {
+                continue;
+            }
             if (!isset($currentData[$index])) {
                 $newCount++;
                 $nonWorkingDay = new NonWorkingDay();
                 $nonWorkingDay
                     ->setAcademicYear($academicYear)
-                    ->setDescription($event->description)
-                    ->setDate(new \DateTime($event->dtstart));
+                    ->setDescription(mb_substr((string) $event->description, 0, 255))
+                    ->setDate(new \DateTime($index));
 
                 $entityManager->persist($nonWorkingDay);
+                // dos eventos del mismo día solo crean un día no lectivo
+                $currentData[$index] = $nonWorkingDay;
             } else {
                 $oldCount++;
             }

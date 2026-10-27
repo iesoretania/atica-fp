@@ -31,7 +31,6 @@ use App\Utils\CsvImporter;
 use Doctrine\ORM\Query\QueryException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -105,6 +104,30 @@ class TeacherImportController extends AbstractController
     }
 
     /**
+     * Datos obligatorios rellenos, con una longitud que cabe en la base de datos, usuario sin espacios ni arrobas
+     * y nombre con el formato "Apellidos, Nombre"
+     *
+     * @param array<string, string> $personData
+     */
+    private function isValidRow(array $personData): bool
+    {
+        foreach (self::$columns as $columnData) {
+            $value = $personData[$columnData['column']];
+            if (trim($value) === '' || mb_strlen($value) > 255) {
+                return false;
+            }
+        }
+
+        if (preg_match('/[@\s]/', (string) $personData['Usuario IdEA']) === 1) {
+            return false;
+        }
+
+        $fullName = explode(', ', (string) $personData['Empleado/a']);
+
+        return count($fullName) >= 2 && trim($fullName[0]) !== '' && trim($fullName[1]) !== '';
+    }
+
+    /**
      * @param string $file
      */
     private function importTeachersFromCsv(
@@ -122,6 +145,21 @@ class TeacherImportController extends AbstractController
         $existingUsers = 0;
 
         $em = $managerRegistry->getManager();
+
+        // se valida todo el fichero antes de modificar nada, para no dejar la importación a medias
+        $validator = new CsvImporter($file, true);
+        while ($data = $validator->get(100)) {
+            foreach ($data as $personData) {
+                foreach (self::$columns as $columnData) {
+                    if ($columnData['mandatory'] && !isset($personData[$columnData['column']])) {
+                        return ['error' => '_missing_columns'];
+                    }
+                }
+                if (!$this->isValidRow($personData)) {
+                    return ['error' => '_invalid_data'];
+                }
+            }
+        }
 
         $importer = new CsvImporter($file, true);
 
@@ -201,7 +239,7 @@ class TeacherImportController extends AbstractController
             $em->flush();
         } catch (QueryException) {
             return ['error' => '_query'];
-        } catch (Exception) {
+        } catch (\Exception) {
             return ['error' => ''];
         }
 

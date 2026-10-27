@@ -38,7 +38,7 @@ class ImportParser
             // Si no, dejarlo tal cual
             if (str_contains($gradeName, 'º ')) {
                 preg_match('/º (.*)/u', $calculatedGradeName, $matches);
-                $trainingName = $matches[1];
+                $trainingName = $matches[1] ?? $calculatedGradeName;
             } else {
                 $trainingName = $calculatedGradeName;
             }
@@ -46,7 +46,10 @@ class ImportParser
             // Nivel: coger los dos primeros caracteres + texto entre paréntesis
             // '1º F.P.I.G.S. (Desarrollo de Aplicaciones Web)' ->
             // '1º Desarrollo de Aplicaciones Web'
-            preg_match('/º *(.*)\(([^)(]*)\)/u', $gradeName, $matches);
+            if (preg_match('/º *(.*)\(([^)(]*)\)/u', $gradeName, $matches) !== 1) {
+                // sin el texto entre paréntesis no se puede separar nivel y enseñanza: se usa el nombre completo
+                return [$gradeName, $gradeName];
+            }
             $calculatedGradeName = mb_substr($gradeName, 0, 2) . ' ' . $matches[2];
             // Enseñanza: Coger el texto que empieza por F.P. + texto entre paréntesis
             // 'F.P.I.G.S. Desarrollo de Aplicaciones Web'
@@ -55,7 +58,9 @@ class ImportParser
             // Nivel: simplemente texto entre paréntesis
             // 'O.C.C.E.G.S. (Inteligencia Artificial y Big Data)' ->
             // 'Inteligencia Artificial y Big Data'
-            preg_match('/(.*)\(([^)(]*)\)/u', $gradeName, $matches);
+            if (preg_match('/(.*)\(([^)(]*)\)/u', $gradeName, $matches) !== 1) {
+                return [$gradeName, $gradeName];
+            }
             $calculatedGradeName = $matches[2];
             // Enseñanza: Coger el texto que empieza por F.P. + texto entre paréntesis
             // 'F.P.I.G.S. Desarrollo de Aplicaciones Web'

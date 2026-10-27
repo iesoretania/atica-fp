@@ -33,7 +33,8 @@ class CsvImporter
         $this->fp = fopen($fileName, 'rb');
 
         if ($this->parse_header) {
-            $this->header = fgetcsv($this->fp, $this->length, $this->delimiter);
+            // un fichero vacío no tiene cabecera
+            $this->header = fgetcsv($this->fp, $this->length, $this->delimiter, '"', '\\') ?: [];
             foreach ($this->header as $key => $data) {
                 $this->header[$key] = iconv('ISO-8859-1', 'UTF-8', (string) $data);
             }
@@ -62,7 +63,15 @@ class CsvImporter
             $line_count = -1; // so loop limit is ignored
         }
 
-        while ($line_count < $max_lines && ($row = fgetcsv($this->fp, $this->length, $this->delimiter)) !== false) {
+        while (
+            $line_count < $max_lines
+            && ($row = fgetcsv($this->fp, $this->length, $this->delimiter, '"', '\\')) !== false
+        ) {
+            // las líneas en blanco no son filas de datos
+            if ($row === [null]) {
+                continue;
+            }
+
             foreach ($row as $key => $key_data) {
                 $row[$key] = iconv('ISO-8859-1', 'UTF-8', (string) $key_data);
             }
@@ -70,7 +79,8 @@ class CsvImporter
             if ($this->parse_header) {
                 $row_new = [];
                 foreach ($this->header as $i => $heading_i) {
-                    $row_new[$heading_i] = $row[$i];
+                    // las filas más cortas que la cabecera se completan con valores vacíos
+                    $row_new[$heading_i] = $row[$i] ?? '';
                 }
 
                 $data[] = $row_new;
