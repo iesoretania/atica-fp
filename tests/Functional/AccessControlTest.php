@@ -127,6 +127,22 @@ class AccessControlTest extends AppWebTestCase
         self::assertStringEndsWith('/entrar', (string) $this->client->getResponse()->headers->get('Location'));
     }
 
+    public function testSessionCookieIsNotAccessibleFromJavaScript(): void
+    {
+        $options = static::getContainer()->getParameter('session.storage.options');
+
+        self::assertTrue($options['cookie_httponly'], 'La cookie de sesión debe ser HttpOnly');
+        self::assertSame('lax', $options['cookie_samesite']);
+
+        // y la respuesta que la establece lleva el atributo
+        $this->client->request('GET', '/entrar');
+        foreach ($this->client->getResponse()->headers->getCookies() as $cookie) {
+            if ($cookie->getName() === static::getContainer()->getParameter('session_name')) {
+                self::assertTrue($cookie->isHttpOnly());
+            }
+        }
+    }
+
     public function testWrongPasswordDoesNotLogIn(): void
     {
         $ip = '10.' . random_int(1, 250) . '.' . random_int(1, 250) . '.' . random_int(1, 250);
