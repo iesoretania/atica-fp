@@ -126,6 +126,7 @@ class StudentProgramWorkcenterActivityCommentVoter extends CachedVoter
         assert($studentProgramWorkcenter instanceof StudentProgramWorkcenter);
 
         $isDepartmentHead = false;
+        $isManager = false;
         $isGroupTutor = false;
         $isTeacher = false;
         $academicYearIsCurrent = false;

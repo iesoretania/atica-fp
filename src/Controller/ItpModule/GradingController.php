@@ -263,7 +263,8 @@ class GradingController extends AbstractController
         $studentProgramWorkcenterActivity = $activityComment->getStudentProgramActivity();
         assert($studentProgramWorkcenterActivity instanceof StudentProgramWorkcenterActivity);
 
-        if ($request->get('confirm', '') === 'ok') {
+        // la confirmación solo se admite en el cuerpo de una petición POST, no con un enlace
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $studentProgramWorkcenterActivityCommentRepository->remove($activityComment);
                 $studentProgramWorkcenterActivityCommentRepository->flush();

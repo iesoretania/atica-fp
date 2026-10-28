@@ -301,7 +301,8 @@ class SubjectController extends AbstractController
 
         $em = $managerRegistry->getManager();
 
-        if ($request->get('confirm', '') === 'ok') {
+        // la confirmación solo se admite en el cuerpo de una petición POST, no con un enlace
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $em->remove($teaching);
                 $em->flush();

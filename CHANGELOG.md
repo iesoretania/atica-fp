@@ -37,6 +37,8 @@ x.x.x (xxxx-xx-xx)
 * fix: El gestor de la FFE ya puede bloquear jornadas, pasar lista y evaluar en las estancias de su grupo
 * fix: Ya no se produce un error al importar ficheros con filas incompletas, líneas en blanco, cursos con un formato inesperado o calendarios con fechas no válidas
 * fix: La importación de profesorado valida todo el fichero antes de guardar nada y muestra un aviso en lugar de importar a medias cuando hay filas con datos vacíos o con formato no válido
+* fix (security): Los comentarios de evaluación de la FP dual y de la FFE y las asignaciones docentes ya no se pueden borrar abriendo un enlace, sino solo confirmando el borrado en la pantalla correspondiente
+* fix: Ya no se genera un aviso interno al comprobar el permiso para borrar un comentario de evaluación de la FFE
 
 7.6.3 (2026-05-06)
 ------------------

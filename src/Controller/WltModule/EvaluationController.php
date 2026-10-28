@@ -352,7 +352,8 @@ class EvaluationController extends AbstractController
         $agreement = $agreementActivityRealizationComment->getAgreementActivityRealization()?->getAgreement();
         assert($agreement instanceof Agreement);
 
-        if ($request->get('confirm', '') === 'ok') {
+        // la confirmación solo se admite en el cuerpo de una petición POST, no con un enlace
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $em->remove($agreementActivityRealizationComment);
                 $em->flush();
