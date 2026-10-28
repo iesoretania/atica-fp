@@ -115,7 +115,7 @@ class ShiftVoter extends CachedVoter
         }
 
         $isCurrentAcademicYear = $subject->getGrade()->getTraining()
-                ->getAcademicYear() === $this->userExtensionService->getCurrentOrganization();
+                ->getAcademicYear() === $organization->getCurrentAcademicYear();
 
         // El jefe de departamento de la familia profesional de proyecto también puede
         $isDepartmentHead = $subject->getGrade()->getTraining()->getDepartment() && $subject->getGrade()->getTraining(
