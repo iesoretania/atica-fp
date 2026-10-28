@@ -48,34 +48,6 @@ class ProgramGradeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getProgramGradesStatsByTrainingProgram(TrainingProgram $trainingProgram): array
-    {
-        return $this->createQueryBuilder('pg')
-            ->addSelect('COUNT(DISTINCT a) AS total_activities')
-            ->addSelect('COUNT(DISTINCT s) AS total_subjects')
-            ->addSelect('COUNT(DISTINCT lo) AS total_learning_outcomes')
-            ->addSelect('COUNT(DISTINCT c) AS total_criteria')
-            ->addSelect('COUNT(DISTINCT xs) AS subjects')
-            ->addSelect('COUNT(DISTINCT xlo) AS learning_outcomes')
-            ->addSelect('COUNT(DISTINCT xc) AS criteria')
-            ->andWhere('pg.trainingProgram = :trainingProgram')
-            ->join('pg.trainingProgram', 'tp')
-            ->join('pg.grade', 'g')
-            ->leftJoin('pg.activities', 'a')
-            ->leftJoin('a.assignedLearningOutcomes', 'xc')
-            ->leftJoin('xc.learningOutcome', 'xlo')
-            ->leftJoin('xlo.subject', 'xs')
-            ->leftJoin('g.subjects', 's')
-            ->leftJoin('s.learningOutcomes', 'lo')
-            ->leftJoin('lo.criteria', 'c')
-            ->leftJoin('c.learningOutcome', 'ac')
-            ->setParameter('trainingProgram', $trainingProgram)
-            ->groupBy('pg')
-            ->orderBy('g.name', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
-
     public function deleteFromTrainingProgramList(array $items): void
     {
         foreach ($items as $item) {

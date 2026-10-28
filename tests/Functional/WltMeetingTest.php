@@ -59,6 +59,34 @@ class WltMeetingTest extends AppWebTestCase
         self::assertResponseIsSuccessful();
     }
 
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function invalidDateProvider(): iterable
+    {
+        yield 'fecha vacía' => ['', ''];
+        yield 'fecha sin sentido' => ['no es una fecha', 'tampoco una hora'];
+        yield 'mes inexistente' => ['2026-13-45', '99:99'];
+    }
+
+    /**
+     * @dataProvider invalidDateProvider
+     */
+    public function testMeetingFormWithAnInvalidDateIsRejectedWithoutFailing(string $date, string $time): void
+    {
+        $count = static::getContainer()->get('doctrine')->getConnection()->fetchOne('SELECT COUNT(*) FROM wlt_meeting');
+        $this->login($this->getUser('alfa.tutor'));
+        $crawler = $this->client->request('GET', '/dual/reunion/nueva/' . $this->getOrganization()->getCurrentAcademicYear()->getId());
+        $values = $crawler->selectButton('Guardar cambios')->form()->getPhpValues();
+        $values['meeting']['dateTime'] = ['date' => $date, 'time' => $time];
+        $values['meeting']['project'] = (string) static::getContainer()->get('doctrine')->getConnection()->fetchOne('SELECT id FROM wlt_project LIMIT 1');
+
+        $this->client->request('POST', '/dual/reunion/nueva/' . $this->getOrganization()->getCurrentAcademicYear()->getId(), $values);
+
+        self::assertLessThan(500, $this->client->getResponse()->getStatusCode());
+        self::assertSame($count, static::getContainer()->get('doctrine')->getConnection()->fetchOne('SELECT COUNT(*) FROM wlt_meeting'));
+    }
+
     public function testStudentCannotOpenTheMeetingForms(): void
     {
         $this->login($this->getUser('alfa.alumno5'));

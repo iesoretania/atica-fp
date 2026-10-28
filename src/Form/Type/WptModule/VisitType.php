@@ -213,7 +213,8 @@ class VisitType extends AbstractType
                 $teacher,
                 $selectedAgreements,
                 $options['teachers'],
-                date_create($data['dateTime']['date'] . ' ' . $data['dateTime']['time'])
+                // una fecha inválida o ausente se trata como "sin fecha": la validación del formulario la rechaza
+                date_create(($data['dateTime']['date'] ?? '') . ' ' . ($data['dateTime']['time'] ?? '')) ?: null
             );
         });
     }

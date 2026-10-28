@@ -201,7 +201,8 @@ class ContactType extends AbstractType
                 $workcenter,
                 $selectedProjects,
                 $options['teachers'],
-                date_create($data['dateTime']['date'] . ' ' . $data['dateTime']['time'])
+                // con una fecha inválida o ausente se filtra por hoy: la validación del formulario rechaza el campo
+                date_create(($data['dateTime']['date'] ?? '') . ' ' . ($data['dateTime']['time'] ?? '')) ?: new \DateTime()
             );
         });
     }

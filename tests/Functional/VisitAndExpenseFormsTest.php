@@ -172,6 +172,45 @@ class VisitAndExpenseFormsTest extends AppWebTestCase
     }
 
     /**
+     * @return iterable<string, array{string, string, string}>
+     */
+    public static function invalidDateProvider(): iterable
+    {
+        foreach (array_keys(self::kinds()) as $kind) {
+            yield "$kind: fecha sin sentido" => [$kind, 'no es una fecha', 'tampoco una hora'];
+            yield "$kind: fecha inexistente" => [$kind, '2026-13-45', '99:99'];
+            yield "$kind: fecha vacía" => [$kind, '', ''];
+        }
+    }
+
+    /**
+     * @dataProvider invalidDateProvider
+     */
+    public function testInvalidDatesAreRejectedWithoutFailing(string $kind, string $date, string $time): void
+    {
+        $ctx = $this->context($kind);
+        $config = $ctx['config'];
+        $this->login($this->getUser($config['owner']));
+        $values = $this->validValues($ctx['editUrl'], $config['form']);
+        foreach (['dateTime', 'fromDateTime', 'toDateTime'] as $field) {
+            if (isset($values[$config['form']][$field])) {
+                $values[$config['form']][$field] = ['date' => $date, 'time' => $time];
+            }
+        }
+        $before = $this->rows($config['table']);
+        $original = $this->text($config['table'], $ctx['id'], $config['text']);
+        $values[$config['form']][$config['text']] = 'Con fecha inválida';
+
+        $this->client->request('POST', $ctx['newUrl'], $values);
+        self::assertLessThan(500, $this->client->getResponse()->getStatusCode());
+        $this->client->request('POST', $ctx['editUrl'], $values);
+        self::assertLessThan(500, $this->client->getResponse()->getStatusCode());
+
+        self::assertSame($before, $this->rows($config['table']));
+        self::assertSame($original, $this->text($config['table'], $ctx['id'], $config['text']));
+    }
+
+    /**
      * @dataProvider kindProvider
      */
     public function testOutsiderCannotCreateOrEditTheRecordOfAnotherTeacher(string $kind): void

@@ -19,11 +19,7 @@
 namespace App\Repository;
 
 use App\Entity\AnsweredSurvey;
-use App\Entity\Edu\AcademicYear;
-use App\Entity\Edu\Teacher;
-use App\Entity\Edu\Training;
 use App\Entity\Survey;
-use App\Entity\WltModule\Agreement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -49,48 +45,4 @@ class AnsweredSurveyRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findByWltStudentSurveyAndTraining(Survey $survey, Training $training)
-    {
-        return $this->createQueryBuilder('asu')
-            ->join('asu.survey', 's')
-            ->innerJoin(Agreement::class, 'a', 'WITH', 'a.studentSurvey = asu')
-            ->join('a.studentEnrollment', 'se')
-            ->join('se.group', 'gro')
-            ->join('gro.grade', 'gra')
-            ->where('s = :survey')
-            ->andWhere('gra.training = :training')
-            ->setParameter('survey', $survey)
-            ->setParameter('training', $training)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByWltCompanySurveyAndTraining(Survey $survey, Training $training)
-    {
-        return $this->createQueryBuilder('asu')
-            ->join('asu.survey', 's')
-            ->innerJoin(Agreement::class, 'a', 'WITH', 'a.companySurvey = asu')
-            ->join('a.studentEnrollment', 'se')
-            ->join('se.group', 'gro')
-            ->join('gro.grade', 'gra')
-            ->where('s = :survey')
-            ->andWhere('gra.training = :training')
-            ->setParameter('survey', $survey)
-            ->setParameter('training', $training)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByWltOrganizationSurvey(Survey $survey, AcademicYear $academicYear)
-    {
-        return $this->createQueryBuilder('asu')
-            ->join('asu.survey', 's')
-            ->innerJoin(Teacher::class, 't', 'WITH', 't.wltTeacherSurvey = asu')
-            ->where('s = :survey')
-            ->andWhere('t.academicYear = :academic_year')
-            ->setParameter('survey', $survey)
-            ->setParameter('academic_year', $academicYear)
-            ->getQuery()
-            ->getResult();
-    }
 }

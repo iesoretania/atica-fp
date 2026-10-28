@@ -71,12 +71,15 @@ class PerformanceScaleValueRepository extends ServiceEntityRepository
             ->orderBy('psv.numericGrade', 'DESC');
 
         if ($q) {
+            $search = $queryBuilder->expr()->orX('psv.description LIKE :tq', 'psv.notes LIKE :tq');
+            // la nota numérica solo se compara si lo buscado es un número
+            if (is_numeric($q)) {
+                $search->add('psv.numericGrade = :q');
+                $queryBuilder->setParameter('q', (int) $q);
+            }
             $queryBuilder
-                ->where('psv.numericCode = :q')
-                ->orWhere('psv.description LIKE :tq')
-                ->orWhere('psv.notes LIKE :tq')
-                ->setParameter('q', $q)
-                ->setParameter('tq', '%'.$q.'%');
+                ->andWhere($search)
+                ->setParameter('tq', '%' . $q . '%');
         }
 
         $queryBuilder

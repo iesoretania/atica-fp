@@ -84,7 +84,13 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
         $projects,
         \DateTimeInterface $dateTime = null
     ) {
-        return $this->findByProjectsAndAgreementDateQueryBuilder($projects, $dateTime)
+        $qb = $this->findByProjectsAndAgreementDateQueryBuilder($projects, $dateTime);
+        // sin fecha no se ha unido todavía el acuerdo
+        if (!in_array('ag', $qb->getAllAliases(), true)) {
+            $qb->join(Agreement::class, 'ag', 'WITH', 'ag.studentEnrollment = se');
+        }
+
+        return $qb
             ->andWhere('ag.workcenter = :workcenter')
             ->setParameter('workcenter', $workcenter)
             ->getQuery()
@@ -93,12 +99,13 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
 
     public function findByProjectAndAcademicYearDate(Project $project, \DateTimeInterface $dateTime = null)
     {
+        $qb = $this->findByProjectsQueryBuilder([$project]);
 
+        // sin fecha se devuelve todo el alumnado del proyecto
         if ($dateTime instanceof \DateTimeInterface) {
             $startDate = \DateTime::createFromInterface($dateTime);
             $startDate->setTimezone(new \DateTimeZone('UTC'));
             $startDate->setTime(0, 0);
-            $qb = $this->findByProjectsQueryBuilder([$project]);
             $qb
                 ->andWhere('a.startDate <= :end_date_time')
                 ->andWhere('a.endDate >= :start_date_time')

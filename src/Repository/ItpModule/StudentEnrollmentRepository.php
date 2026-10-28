@@ -18,7 +18,6 @@
 
 namespace App\Repository\ItpModule;
 
-use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\ItpModule\StudentProgram;
 use App\Entity\ItpModule\TrainingProgram;
@@ -108,23 +107,6 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
                 ->setParameter('start_date_time', $startDate)
                 ->setParameter('end_date_time', $endDate);
         }
-        return $qb
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByTrainingProgramAndAcademicYear(TrainingProgram $trainingProgram, ?AcademicYear $academicYear)
-    {
-        $qb = $this->findByTrainingProgramQueryBuilder([$trainingProgram]);
-
-        if ($academicYear instanceof AcademicYear) {
-            $qb
-                ->join('pgg.grade', 'g')
-                ->join('g.training', 't')
-                ->andWhere('t = :academic_year')
-                ->setParameter('academic_year', $academicYear);
-        }
-
         return $qb
             ->getQuery()
             ->getResult();

@@ -21,18 +21,6 @@ class TrainingProgramRepository extends ServiceEntityRepository
         parent::__construct($registry, TrainingProgram::class);
     }
 
-    public function findByAcademicYear(AcademicYear $academicYear): array
-    {
-        return $this->createQueryBuilder('tp')
-            ->addSelect('tr')
-            ->join('tp.training', 'tr')
-            ->where('tr.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear)
-            ->orderBy('tr.name')
-            ->getQuery()
-            ->getResult();
-    }
-
     public function findAllInListByIdAndAcademicYear(array $items, AcademicYear $academicYear): array
     {
         return $this->createQueryBuilder('tp')
