@@ -80,6 +80,8 @@ class WltAgreementCalendarTest extends AppWebTestCase
      */
     public static function outsiderProvider(): iterable
     {
+        // el tutor docente puede gestionar el acuerdo, pero el calendario es solo del gestor de FP dual y del jefe de departamento
+        yield 'tutor docente y de grupo' => ['alfa.tutor'];
         yield 'profesorado de otro acuerdo' => ['alfa.profesor'];
         yield 'tutor laboral' => ['alfa.tutorlaboral'];
         yield 'el propio alumno' => ['alfa.alumno5'];
@@ -145,6 +147,7 @@ class WltAgreementCalendarTest extends AppWebTestCase
     public static function invalidHoursProvider(): iterable
     {
         yield 'negativas' => ['-3'];
+        yield 'más de 24 horas' => ['25'];
         yield 'decimales' => ['7.5'];
         yield 'texto' => ['muchas'];
     }
@@ -167,6 +170,19 @@ class WltAgreementCalendarTest extends AppWebTestCase
 
         self::assertResponseStatusCodeSame(200);
         self::assertSame($original, $this->em()->getRepository(WorkDay::class)->find($workDay->getId())->getHours());
+    }
+
+    public function testTwentyFourHoursIsTheMaximumAllowed(): void
+    {
+        $id = $this->agreementId();
+        $workDayId = $this->workDays($id)[0]->getId();
+        $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
+
+        $crawler = $this->client->request('GET', "/dual/acuerdo/calendario/jornada/$workDayId");
+        $this->client->submit($crawler->selectButton('Guardar cambios')->form(['work_day[hours]' => '24']));
+
+        self::assertResponseRedirects("/dual/acuerdo/calendario/$id");
+        self::assertSame(24, $this->em()->getRepository(WorkDay::class)->find($workDayId)->getHours());
     }
 
     public function testWorkDaysAreDeletedOnlyWithConfirmation(): void

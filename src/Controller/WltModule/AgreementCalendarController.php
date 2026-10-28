@@ -88,8 +88,10 @@ class AgreementCalendarController extends AbstractController
         WorkDayRepository $workDayRepository,
         AgreementRepository $agreementRepository,
         ManagerRegistry $managerRegistry,
+        UserExtensionService $userExtensionService,
         Agreement $agreement
     ): Response {
+        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_MANAGE, $userExtensionService->getCurrentOrganization());
         $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
 
         $title = $translator->trans('title.calendar.add', [], 'wlt_agreement');
@@ -232,8 +234,10 @@ class AgreementCalendarController extends AbstractController
         AgreementRepository $agreementRepository,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
+        UserExtensionService $userExtensionService,
         Agreement $agreement
     ): Response {
+        $this->denyAccessUnlessGranted(OrganizationVoter::WLT_MANAGE, $userExtensionService->getCurrentOrganization());
         $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
 
         $items = $request->request->all('items');

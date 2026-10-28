@@ -43,6 +43,8 @@ x.x.x (xxxx-xx-xx)
 * fix: Ya no se produce un error al crear o abrir una reunión de FP dual siendo tutor de grupo, jefe de departamento, coordinador o profesorado
 * fix (security): Ya no se pueden borrar preguntas de una encuesta que tiene respuestas usando la pantalla de otra encuesta
 * fix: Ya no se produce un error al fallar el inicio de sesión cuando la petición incluye una cabecera de autenticación HTTP Basic
+* fix (security): Añadir y borrar jornadas del calendario de un acuerdo de FP dual queda restringido al gestor de FP dual y al jefe de departamento, igual que consultarlo
+* fix: Las horas de una jornada de FP dual no pueden superar las 24 horas
 * fix: Al importar competencias, resultados de aprendizaje, criterios y actividades desde texto con saltos de línea de Windows ya no se guarda un salto de línea al final de cada descripción
 * fix: El botón de guardar y el token de seguridad de los formularios de encuestas de FCT, FP dual y FFE quedan ahora dentro del formulario
 
