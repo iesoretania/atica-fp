@@ -233,6 +233,26 @@ class TrackingController extends AbstractController
         ]);
     }
 
+    /**
+     * getArrayResult() devuelve todas las columnas de las personas (contraseña cifrada, token de restablecimiento,
+     * etc.): se dejan solo los datos necesarios para identificarlas, en cualquier nivel del resultado
+     */
+    private static function withoutPersonalData(array $data): array
+    {
+        // una persona se reconoce por su contraseña, que no se comparte nunca
+        if (array_key_exists('password', $data)) {
+            return array_intersect_key($data, array_flip(['id', 'firstName', 'lastName', 'gender']));
+        }
+
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = self::withoutPersonalData($value);
+            }
+        }
+
+        return $data;
+    }
+
     #[Route(path: '/api/v2/acuerdo/listar', name: 'api_workplace_training_agreement_list', methods: ['GET'])]
     public function apiList(
         UserExtensionService $userExtensionService,
@@ -268,7 +288,7 @@ class TrackingController extends AbstractController
         ];
         foreach ($agreements as $agreement) {
             $agreements2['agreements'][] = [
-                'agreement' => $agreement[0],
+                'agreement' => self::withoutPersonalData($agreement[0]),
                 'horas_totales' => $agreement[1],
                 'horas_bloqueadas' => $agreement[2],
                 'jornadas_sin_asistir' => $agreement[3],

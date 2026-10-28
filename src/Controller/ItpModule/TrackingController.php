@@ -93,6 +93,15 @@ class TrackingController extends AbstractController
         ]);
     }
 
+    /**
+     * Una hoja de cálculo interpreta como fórmula el texto que empieza por = + - @ o una tabulación: se antepone
+     * un apóstrofo para que se muestre como texto
+     */
+    private static function csvText(string $value): string
+    {
+        return preg_match('/^[=+\-@\t\r]/', $value) === 1 ? "'" . $value : $value;
+    }
+
     #[Route(path: '/exportar/{academicYear}', name: 'in_company_training_phase_tracking_export', requirements: ['academicYear' => '\\d+'], methods: ['GET'])]
     public function export(
         Request                             $request,
@@ -144,7 +153,7 @@ class TrackingController extends AbstractController
                 'Fecha de fin',
                 'Horas totales',
                 'Horas de asistencia',
-            ], ';');
+            ], ';', '"', '');
 
             foreach ($items as $item) {
                 $spw = $item[0] ?? null;
@@ -159,18 +168,18 @@ class TrackingController extends AbstractController
                 $attendanceHours = isset($item['locked_hours']) ? (float) $item['locked_hours'] / 100.0 : 0.0;
 
                 fputcsv($output, [
-                    (string) ($enrollment?->getPerson() ?? ''),
-                    (string) ($group?->getName() ?? ''),
-                    (string) ($grade?->getName() ?? ''),
-                    (string) ($grade?->getTraining()?->getName() ?? ''),
-                    (string) ($spw->getWorkcenter() ?? ''),
-                    (string) ($spw->getEducationalTutor() ?? ''),
-                    (string) ($spw->getWorkTutor() ?? ''),
+                    self::csvText((string) ($enrollment?->getPerson() ?? '')),
+                    self::csvText((string) ($group?->getName() ?? '')),
+                    self::csvText((string) ($grade?->getName() ?? '')),
+                    self::csvText((string) ($grade?->getTraining()?->getName() ?? '')),
+                    self::csvText((string) ($spw->getWorkcenter() ?? '')),
+                    self::csvText((string) ($spw->getEducationalTutor() ?? '')),
+                    self::csvText((string) ($spw->getWorkTutor() ?? '')),
                     $spw->getStartDate()?->format('d/m/Y') ?? '',
                     $spw->getEndDate()?->format('d/m/Y') ?? '',
                     number_format($hours, 2, ',', ''),
                     number_format($attendanceHours, 2, ',', ''),
-                ], ';');
+                ], ';', '"', '');
             }
 
             fclose($output);
