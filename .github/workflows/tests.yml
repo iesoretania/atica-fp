@@ -50,7 +50,8 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: ctype, curl, dom, gd, iconv, intl, libxml, mbstring, pdo_mysql, xml, zip
           ini-values: memory_limit=1G
-          coverage: none
+          # PCOV solo en el trabajo principal: el de intrusión no necesita medir cobertura
+          coverage: ${{ matrix.suite.extras && 'pcov' || 'none' }}
           tools: composer:v2
 
       - name: Obtener la caché de Composer
@@ -71,7 +72,17 @@ jobs:
         run: composer test:reset-db
 
       - name: Ejecutar los tests
+        if: ${{ !matrix.suite.extras }}
         run: vendor/bin/phpunit ${{ matrix.suite.phpunit }}
+
+      - name: Ejecutar los tests con cobertura
+        if: matrix.suite.extras
+        run: vendor/bin/phpunit ${{ matrix.suite.phpunit }} --coverage-text --coverage-clover=coverage.xml
+
+      - name: Resumen de cobertura
+        if: matrix.suite.extras
+        run: |
+          php -r '$x = simplexml_load_file("coverage.xml"); $m = $x->project->metrics; $c = (int) $m["coveredstatements"]; $t = (int) $m["statements"]; printf("### Cobertura de líneas: %.1f %% (%d de %d)\n", $t ? 100 * $c / $t : 0, $c, $t);' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Análisis estático (PHPStan)
         if: matrix.suite.extras
