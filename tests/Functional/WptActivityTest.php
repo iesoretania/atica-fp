@@ -83,6 +83,18 @@ class WptActivityTest extends AppWebTestCase
         self::assertSame('Mantenimiento corregido', $this->em()->getRepository(Activity::class)->find($id)->getDescription());
     }
 
+    public function testImportWithWindowsLineEndingsDoesNotKeepTheCarriageReturn(): void
+    {
+        $shiftId = $this->shiftId();
+        $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
+
+        $this->client->request('POST', "/fct/actividad/importar/$shiftId", ['data' => "A4: Mantenimiento\r\nA5: Redes\r\n"]);
+
+        self::assertSame(['A1', 'A2', 'A3', 'A4', 'A5'], $this->activityCodes($shiftId));
+        $activity = $this->em()->getRepository(Activity::class)->find($this->activityId($shiftId, 'A4'));
+        self::assertSame('Mantenimiento', $activity->getDescription());
+    }
+
     public function testActivityWithoutCodeOrDescriptionIsRejected(): void
     {
         $shiftId = $this->shiftId();

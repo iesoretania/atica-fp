@@ -312,7 +312,8 @@ class LearningOutcomeController extends AbstractController
         foreach ($items as $item) {
             preg_match('/^(.{1,10})\: (.*)/u', $item, $matches);
             if ($matches !== []) {
-                $output[$matches[1]] = $matches[2];
+                // con saltos de línea de Windows (\r\n) el texto conserva el \r final
+                $output[$matches[1]] = rtrim($matches[2]);
             }
         }
 
