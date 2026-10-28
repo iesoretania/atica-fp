@@ -27,8 +27,10 @@ use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\WltModule\AgreementRepository;
 use App\Repository\WltModule\EducationalTutorAnsweredSurveyRepository;
 use App\Repository\WltModule\ProjectRepository;
+use App\Repository\WltModule\StudentAnsweredSurveyRepository;
 use App\Repository\WltModule\TeacherRepository;
 use App\Repository\WltModule\WorkDayRepository;
+use App\Repository\WltModule\WorkTutorAnsweredSurveyRepository;
 use App\Service\MailerService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -49,7 +51,9 @@ class CronCommand extends Command
         private readonly AcademicYearRepository                   $academicYearRepository,
         private readonly ProjectRepository                        $projectRepository,
         private readonly TeacherRepository                        $wltTeacherRepository,
-        private readonly EducationalTutorAnsweredSurveyRepository $educationalTutorAnsweredSurveyRepository
+        private readonly EducationalTutorAnsweredSurveyRepository $educationalTutorAnsweredSurveyRepository,
+        private readonly StudentAnsweredSurveyRepository          $studentAnsweredSurveyRepository,
+        private readonly WorkTutorAnsweredSurveyRepository        $workTutorAnsweredSurveyRepository
     ) {
         parent::__construct();
     }
@@ -229,7 +233,10 @@ class CronCommand extends Command
                     ->getStudentSurvey();
                 $count = 0;
                 if ($referenceSurvey !== null) {
-                    if ($agreement->getStudentSurvey()) {
+                    if ($this->studentAnsweredSurveyRepository->findOneByProjectAndStudentEnrollment(
+                        $agreement->getProject(),
+                        $agreement->getStudentEnrollment()
+                    )) {
                         $status = 'table.wlt.unaswered_survey_warning.status.ok';
                     } else {
                         $status = 'table.wlt.unaswered_survey_warning.status.on_time';
@@ -286,7 +293,7 @@ class CronCommand extends Command
                     $params = [
                         '%name%' => $workTutor->getPerson()->getFirstName(),
                         '%company%' => $agreement->getWorkcenter()->getCompany()->getName(),
-                        '%limit%' => $agreementData[1],
+                        '%limit%' => $agreementData[1]->format($this->translator->trans('format.datetime', [], 'general')),
                         '%count%' => $agreementData[2],
                         '%organization%' => $workTutor
                             ->getGroup()
@@ -349,7 +356,12 @@ class CronCommand extends Command
                     ->getCompanySurvey();
                 $count = 0;
                 if ($referenceSurvey !== null) {
-                    if ($agreement->getCompanySurvey()) {
+                    if ($agreement->getWorkTutor() !== null && $this->workTutorAnsweredSurveyRepository
+                            ->findOneByProjectAcademicYearAndWorkTutor(
+                                $agreement->getProject(),
+                                $academicYear,
+                                $agreement->getWorkTutor()
+                            )) {
                         $status = 'table.wlt.unaswered_survey_warning.status.ok';
                     } else {
                         $status = 'table.wlt.unaswered_survey_warning.status.on_time';
@@ -407,7 +419,7 @@ class CronCommand extends Command
                         '%name%' => $person->getFirstName(),
                         '%student%' => $agreement->getStudentEnrollment()->getPerson(),
                         '%company%' => $agreement->getWorkcenter()->getCompany()->getName(),
-                        '%limit%' => $agreementData[1],
+                        '%limit%' => $agreementData[1]->format($this->translator->trans('format.datetime', [], 'general')),
                         '%count%' => $agreementData[2],
                         '%organization%' => $agreement
                             ->getProject()
@@ -523,7 +535,7 @@ class CronCommand extends Command
                     $params = [
                         '%name%' => $person->getFirstName(),
                         '%academic_year%' => $teacher->getAcademicYear()->getDescription(),
-                        '%limit%' => $personData[1],
+                        '%limit%' => $personData[1]->format($this->translator->trans('format.datetime', [], 'general')),
                         '%count%' => $personData[2],
                         '%organization%' => $teacher->getAcademicYear()->getOrganization()->getName()
                     ];
