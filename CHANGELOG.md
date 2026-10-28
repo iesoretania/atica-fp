@@ -41,6 +41,7 @@ x.x.x (xxxx-xx-xx)
 * fix: Ya no se genera un aviso interno al comprobar el permiso para borrar un comentario de evaluación de la FFE
 * fix: Tras añadir un comentario a una actividad de la valoración de la FFE se vuelve a la pantalla de comentarios, como en FP dual
 * fix: Ya no se produce un error al crear o abrir una reunión de FP dual siendo tutor de grupo, jefe de departamento, coordinador o profesorado
+* fix: El botón de guardar y el token de seguridad de los formularios de encuestas de FCT, FP dual y FFE quedan ahora dentro del formulario
 
 7.6.3 (2026-05-06)
 ------------------

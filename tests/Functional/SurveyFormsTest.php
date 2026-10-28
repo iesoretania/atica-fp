@@ -109,21 +109,15 @@ class SurveyFormsTest extends AppWebTestCase
     }
 
     /**
-     * El botón y el token CSRF de las plantillas de encuestas quedan fuera del elemento form en el DOM (los
-     * navegadores los asocian igualmente a su formulario), así que se selecciona el formulario por sus campos y
-     * se añade el token a mano.
+     * Contesta la primera pregunta con el formulario real de la página, incluido el botón y el token CSRF
+     * (que deben estar dentro del elemento form)
      */
     private function submitSurvey(Crawler $crawler, string $value = '3'): void
     {
-        $form = $crawler->filter('form')->reduce(
-            static fn(Crawler $node): bool => $node->filter('[name^="answered_survey"]')->count() > 0
-        )->form();
+        $form = $crawler->selectButton('Guardar encuesta')->form();
+        $form['answered_survey[answers][0][numericValue]']->select($value);
 
-        $values = $form->getPhpValues();
-        $values['answered_survey']['_token'] = $crawler->filter('input[name="answered_survey[_token]"]')->attr('value');
-        $values['answered_survey']['answers'][0]['numericValue'] = $value;
-
-        $this->client->request('POST', $form->getUri(), $values);
+        $this->client->submit($form);
     }
 
     private function answeredSurveyCount(): int

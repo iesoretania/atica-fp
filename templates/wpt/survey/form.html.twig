@@ -4,6 +4,7 @@
 {% import 'macros.html.twig' as m %}
 {% block content %}
     {% if survey %}
+        {{ form_start(form) }}
         {% if read_only %}
             <div class="alert alert-warning">{{ 'prompt.read_only_warning'|trans|nl2br }}</div>
         {% endif %}
@@ -31,7 +32,6 @@
                     </h5>
                 {% endif %}
             </div>
-            {{ form_start(form) }}
             {{ form_label(form.answers) }}
             {{ form_errors(form.answers) }}
 
@@ -67,9 +67,9 @@
             </div>
         </div>
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
+        {{ form_end(form) }}
     {% else %}
         <div class="alert alert-danger">{{ 'prompt.no_survey'|trans|nl2br }}</div>
     {% endif %}
     {{ m.link_button(back_url|default(last_url), 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {{ form_end(form) }}
 {% endblock %}
