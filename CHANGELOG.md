@@ -51,6 +51,8 @@ x.x.x (xxxx-xx-xx)
 * fix (security): Borrar competencias de una enseñanza queda restringido a quien administra la organización, igual que consultarlas y modificarlas (antes también podían el jefe de departamento y el coordinador de FP dual)
 * fix: El gestor de un grupo de la FFE ya puede crear y modificar las actividades del programa formativo, además de listarlas, descargarlas y borrarlas
 * fix: El jefe de departamento ya puede gestionar y borrar los contactos de FP dual y de la FFE de sus enseñanzas, como las visitas de FCT
+* fix (security): Un administrador o responsable económico de una organización ya no puede borrar los itinerarios de desplazamiento de otra organización enviando sus identificadores
+* fix: El coordinador de la FFE ya puede crear y modificar las sedes de las empresas, además de listarlas y borrarlas
 * fix: Ya se puede buscar en el listado de valores de una escala de calificación (antes daba un error)
 * fix: Ya no se produce un error al guardar una reunión de FP dual, una visita de FCT o un contacto de FP dual o de la FFE con una fecha no válida o vacía, sino que se muestra el error de validación
 * fix: El comando periódico ya no falla cuando un proyecto de FP dual tiene encuestas de alumnado o de empresa configuradas, y los avisos de encuestas sin contestar se envían con la fecha límite bien escrita

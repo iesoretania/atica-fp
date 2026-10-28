@@ -42,11 +42,13 @@ class TravelRouteRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAllInListById($items)
+    public function findAllInListByIdAndOrganization($items, Organization $organization)
     {
         return $this->createQueryBuilder('tr')
             ->where('tr IN (:items)')
+            ->andWhere('tr.organization = :organization')
             ->setParameter('items', $items)
+            ->setParameter('organization', $organization)
             ->orderBy('tr.description', 'ASC')
             ->getQuery()
             ->getResult();

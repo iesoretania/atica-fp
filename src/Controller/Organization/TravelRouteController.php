@@ -178,7 +178,7 @@ class TravelRouteController extends AbstractController
             return $this->redirectToRoute('organization_travel_route_list');
         }
 
-        $travelRoutes = $travelRouteRepository->findAllInListById($items);
+        $travelRoutes = $travelRouteRepository->findAllInListByIdAndOrganization($items, $organization);
 
         if ($request->get('confirm', '') === 'ok') {
             try {

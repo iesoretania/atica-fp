@@ -22,6 +22,7 @@ use App\Entity\Person;
 use App\Entity\Workcenter;
 use App\Repository\Edu\TeacherRepository;
 use App\Repository\Edu\TrainingRepository;
+use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\WltModule\OrganizationVoter as WltOrganizationVoter;
 use App\Service\UserExtensionService;
 use Psr\Cache\CacheItemPoolInterface;
@@ -88,7 +89,8 @@ class WorkcenterVoter extends CachedVoter
                 return null !== $this->teacherRepository
                         ->findOneByPersonAndAcademicYear($user, $organization->getCurrentAcademicYear());
 
-            // Si es jefe de algún departamento de FP o el coordinador de FP dual, permitir gestionar
+            // Si es jefe de algún departamento de FP o el coordinador de FP dual o de la FFE, permitir gestionar
+            // (los mismos que pueden gestionar empresas en la organización)
             case self::MANAGE:
                 // 1) Jefe de departamento
                 if ($this->trainingRepository->countAcademicYearAndDepartmentHead(
@@ -100,6 +102,11 @@ class WorkcenterVoter extends CachedVoter
 
                 // 2) Coordinador de FP dual
                 if ($this->decisionManager->decide($token, [WltOrganizationVoter::WLT_MANAGER], $organization)) {
+                    return true;
+                }
+
+                // 3) Coordinador de la FFE
+                if ($this->decisionManager->decide($token, [ItpOrganizationVoter::ITP_MANAGER], $organization)) {
                     return true;
                 }
                 break;
