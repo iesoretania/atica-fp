@@ -178,7 +178,7 @@ class SubjectImportController extends AbstractController
                                 $subjectName,
                                 $gradeName
                             );
-                            $subjectCollection[$subjectName . $gradeName] = $subject;
+                            $subjectCollection[$indexSubject] = $subject;
                             if (null !== $subject) {
                                 $collection[] = $subject;
                                 $oldCount++;

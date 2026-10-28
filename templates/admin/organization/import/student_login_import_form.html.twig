@@ -55,7 +55,7 @@
         {% if stats.existing %}
             <h4>{{ 'report.student_login.existing'|trans }}</h4>
             <ul>
-                {% for person in stats.renamed %}
+                {% for person in stats.existing %}
                     <li><a href="{{ path('admin_user_form_edit', {'id': person.id }) }}" target="_blank">{{ person }}</a> - {{ person.loginUsername }}
                         - <i>{{ 'report.student_login.existing.info'|trans }}</i>
                     </li>
