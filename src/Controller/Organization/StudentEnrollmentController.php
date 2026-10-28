@@ -66,7 +66,7 @@ class StudentEnrollmentController extends AbstractController
             try {
                 $em->flush();
                 $this->addFlash('success', $translator->trans('message.saved', [], 'edu_student_enrollment'));
-                return $this->redirectToRoute('organization_teacher_list', [
+                return $this->redirectToRoute('organization_student_enrollment_list', [
                     'academicYear' => $studentEnrollment->getGroup()->getGrade()->getTraining()->getAcademicYear()
                 ]);
             } catch (\Exception) {
