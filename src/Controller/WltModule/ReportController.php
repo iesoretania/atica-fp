@@ -426,7 +426,7 @@ class ReportController extends AbstractController
         Project $project,
         AcademicYear $academicYear
     ): Response {
-        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_ATTENDANCE, $project);
+        $this->denyAccessUnlessGranted(ProjectVoter::REPORT_LEARNING_PROGRAM, $project);
 
         $learningPrograms = $wltLearningProgramRepository->findByProject($project);
 
