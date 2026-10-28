@@ -103,7 +103,13 @@ class ActivityVoter extends CachedVoter
 
         switch ($attribute) {
             case self::MANAGE:
-                return $isDepartmentHead;
+                // igual que el listado y el borrado de actividades: el jefe/a de departamento y quien gestiona
+                // algún grupo del programa formativo
+                $trainingProgram = $subject->getProgramGrade()?->getTrainingProgram();
+
+                return $isDepartmentHead
+                    || ($trainingProgram !== null
+                        && $this->decisionManager->decide($token, [TrainingProgramVoter::MANAGE], $trainingProgram));
         }
 
         // denegamos en cualquier otro caso

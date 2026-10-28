@@ -57,6 +57,22 @@ class ContactVoter extends CachedVoter
     }
 
     /**
+     * ¿Es jefe/a de departamento de alguna enseñanza de los programas formativos de la visita?
+     */
+    private function isDepartmentHead(Contact $contact, Person $user): bool
+    {
+        foreach ($contact->getTrainingPrograms() as $trainingProgram) {
+            foreach ($trainingProgram->getTrainingProgramGrades() as $programGrade) {
+                if ($programGrade->getGrade()?->getTraining()?->getDepartment()?->getHead()?->getPerson() === $user) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * {@inheritdoc}
      */
     final public function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
@@ -99,8 +115,9 @@ class ContactVoter extends CachedVoter
 
         switch ($attribute) {
             case self::MANAGE:
-                // El propio docente puede gestionar su visita si es del curso académico actual
-                return $subject->getTeacher()->getPerson() === $user
+                // El propio docente o el jefe/a de departamento de las enseñanzas de la visita pueden gestionarla
+                // si es del curso académico actual
+                return ($subject->getTeacher()->getPerson() === $user || $this->isDepartmentHead($subject, $user))
                     && $subject->getTeacher()->getAcademicYear() === $organization->getCurrentAcademicYear();
             case self::ACCESS:
                 $teacher = $subject->getTeacher();

@@ -71,6 +71,7 @@ class ItpActivityTest extends AppWebTestCase
     {
         yield 'administrador local' => ['alfa.admin'];
         yield 'jefe de departamento' => ['alfa.jefe'];
+        yield 'gestor de la FFE' => ['alfa.gestorffe'];
     }
 
     /**
@@ -85,17 +86,6 @@ class ItpActivityTest extends AppWebTestCase
         foreach ($this->readPaths($programGrade, $activity) as $path) {
             $this->client->request('GET', $path);
             self::assertResponseIsSuccessful($username . ' ' . $path);
-        }
-    }
-
-    public function testGroupManagerOpensTheListAndTheReport(): void
-    {
-        $programGrade = $this->programGradeId();
-        $this->login($this->getUser('alfa.gestorffe'));
-
-        foreach ([self::BASE . "/listar/$programGrade", self::BASE . "/descargar/$programGrade"] as $path) {
-            $this->client->request('GET', $path);
-            self::assertResponseIsSuccessful($path);
         }
     }
 
@@ -161,7 +151,7 @@ class ItpActivityTest extends AppWebTestCase
     {
         $programGrade = $this->programGradeId();
         $id = $this->activityId($programGrade);
-        $this->login($this->getUser('alfa.jefe'));
+        $this->login($this->getUser('alfa.gestorffe'));
 
         $crawler = $this->client->request('GET', self::BASE . "/$id");
         $this->client->submit($crawler->selectButton('Guardar cambios')->form(['activity[name]' => 'Nombre corregido']));
