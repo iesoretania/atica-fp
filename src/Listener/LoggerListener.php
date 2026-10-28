@@ -81,8 +81,9 @@ class LoggerListener implements EventSubscriberInterface
 
     public function onAuthenticationFailure(LoginFailureEvent $event): void
     {
-        /** @var Person $user */
+        // Request::getUser() devuelve el usuario de la cabecera HTTP Basic (una cadena), no una persona
         $user = $event->getRequest()->getUser();
+        $user = $user instanceof Person ? $user : null;
 
         $ip = $this->requestStack->getMainRequest()->getClientIp();
         $eventName = EventLog::LOGIN_ERROR;
