@@ -152,9 +152,11 @@ class FinalReportController extends AbstractController
             'menu_path' => 'workplace_training_final_report_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
+            'read_only' => $readOnly,
             'form' => $form->createView()
         ]);
     }
+
     #[Route(path: '/descargar/{id}', name: 'workplace_training_final_report_report', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function generate(
         TranslatorInterface $translator,

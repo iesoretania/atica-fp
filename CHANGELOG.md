@@ -51,6 +51,7 @@ x.x.x (xxxx-xx-xx)
 * fix (security): Borrar competencias de una enseñanza queda restringido a quien administra la organización, igual que consultarlas y modificarlas (antes también podían el jefe de departamento y el coordinador de FP dual)
 * fix: El gestor de un grupo de la FFE ya puede crear y modificar las actividades del programa formativo, además de listarlas, descargarlas y borrarlas
 * fix: El jefe de departamento ya puede gestionar y borrar los contactos de FP dual y de la FFE de sus enseñanzas, como las visitas de FCT
+* fix: El informe final de FCT ya no muestra el botón de guardar cuando no se puede modificar, en lugar de confirmar un guardado que no se realiza
 * fix: El informe de la encuesta de empresas de la FFE ya se puede obtener para cursos académicos con identificador de más de una cifra
 * fix: Corregidas las restricciones de los parámetros de 20 direcciones web (nombres mal escritos o sobrantes) que no validaban nada
 * fix: Ya se pueden borrar los acuerdos de FP dual que tienen comentarios de evaluación
