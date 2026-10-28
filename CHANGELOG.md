@@ -39,6 +39,7 @@ x.x.x (xxxx-xx-xx)
 * fix: La importación de profesorado valida todo el fichero antes de guardar nada y muestra un aviso en lugar de importar a medias cuando hay filas con datos vacíos o con formato no válido
 * fix (security): Los comentarios de evaluación de la FP dual y de la FFE y las asignaciones docentes ya no se pueden borrar abriendo un enlace, sino solo confirmando el borrado en la pantalla correspondiente
 * fix: Ya no se genera un aviso interno al comprobar el permiso para borrar un comentario de evaluación de la FFE
+* fix: Tras añadir un comentario a una actividad de la valoración de la FFE se vuelve a la pantalla de comentarios, como en FP dual
 
 7.6.3 (2026-05-06)
 ------------------

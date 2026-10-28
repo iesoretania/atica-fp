@@ -26,7 +26,6 @@ use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\StudentProgramWorkcenterActivity;
 use App\Entity\ItpModule\StudentProgramWorkcenterActivityComment;
 use App\Entity\Person;
-use App\Entity\WltModule\AgreementActivityRealizationComment;
 use App\Form\Type\ItpModule\StudentProgramWorkcenterActivityNewCommentType;
 use App\Form\Type\ItpModule\StudentProgramWorkcenterGradeType;
 use App\Repository\Edu\AcademicYearRepository;
@@ -212,7 +211,7 @@ class GradingController extends AbstractController
                 $this->addFlash('success', $translator->trans('message.saved', [],
                     'itp_grading'));
 
-                if (!$newComment instanceof AgreementActivityRealizationComment) {
+                if (!$newComment instanceof StudentProgramWorkcenterActivityComment) {
                     return $this->redirectToRoute('in_company_training_phase_tracking_grading_form', [
                         'studentProgramWorkcenter' => $studentProgramWorkcenter->getId()
                     ]);
