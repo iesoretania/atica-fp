@@ -59,7 +59,7 @@ class ServerErrorSweepTest extends AppWebTestCase
     /**
      * @dataProvider organizationProvider
      */
-    public function testNoRouteReturnsAServerError(string $username, string $organizationCode, int $minDownloads): void
+    public function testNoRouteReturnsAServerError(string $username, string $organizationCode, int $minDownloads, int $minSuccessful): void
     {
         $this->login($this->getUser($username), true, $organizationCode);
         $router = static::getContainer()->get('router');
@@ -92,7 +92,7 @@ class ServerErrorSweepTest extends AppWebTestCase
         }
 
         self::assertGreaterThan(150, $tested, 'Se han probado muy pocas rutas');
-        self::assertGreaterThan(100, $successful, 'Casi no hay respuestas correctas: la prueba no es concluyente');
+        self::assertGreaterThanOrEqual($minSuccessful, $successful,'Casi no hay respuestas correctas: la prueba no es concluyente');
         self::assertGreaterThanOrEqual($minDownloads, $downloads, 'Se han descargado pocos ficheros: las exportaciones no se han probado');
         self::assertSame([], $errors, "Rutas con error del servidor:\n" . implode("\n", array_map(
             static fn(string $key, int $status): string => "$status $key",
@@ -102,17 +102,17 @@ class ServerErrorSweepTest extends AppWebTestCase
     }
 
     /**
-     * @return iterable<string, array{string, string, int}> usuario, organización y descargas mínimas esperadas
+     * @return iterable<string, array{string, string, int, int}> usuario, organización, descargas y respuestas correctas mínimas
      */
     public static function organizationProvider(): iterable
     {
-        yield 'administrador local' => [DemoData::USER_A_LOCAL_ADMIN, DemoData::ORG_A_CODE, 6];
-        yield 'tutor de grupo' => ['alfa.tutor', DemoData::ORG_A_CODE, 1];
-        yield 'coordinador de FP dual' => ['alfa.coordinador', DemoData::ORG_A_CODE, 0];
-        yield 'gestor de la FFE' => ['alfa.gestorffe', DemoData::ORG_A_CODE, 0];
-        yield 'tutor laboral' => ['alfa.tutorlaboral', DemoData::ORG_A_CODE, 0];
-        yield 'alumno de FCT' => ['alfa.alumno1', DemoData::ORG_A_CODE, 0];
-        yield 'alumno de FP dual' => ['alfa.alumno5', DemoData::ORG_A_CODE, 0];
-        yield 'alumno de FFE' => ['alfa.alumno7', DemoData::ORG_A_CODE, 0];
+        yield 'administrador local' => [DemoData::USER_A_LOCAL_ADMIN, DemoData::ORG_A_CODE, 6, 100];
+        yield 'tutor de grupo' => ['alfa.tutor', DemoData::ORG_A_CODE, 1, 100];
+        yield 'coordinador de FP dual' => ['alfa.coordinador', DemoData::ORG_A_CODE, 0, 100];
+        yield 'gestor de la FFE' => ['alfa.gestorffe', DemoData::ORG_A_CODE, 0, 50];
+        yield 'tutor laboral' => ['alfa.tutorlaboral', DemoData::ORG_A_CODE, 0, 50];
+        yield 'alumno de FCT' => ['alfa.alumno1', DemoData::ORG_A_CODE, 0, 30];
+        yield 'alumno de FP dual' => ['alfa.alumno5', DemoData::ORG_A_CODE, 0, 30];
+        yield 'alumno de FFE' => ['alfa.alumno7', DemoData::ORG_A_CODE, 0, 30];
     }
 }

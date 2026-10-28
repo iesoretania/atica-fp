@@ -142,10 +142,10 @@ class MeetingController extends AbstractController
                     $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
                 if ($teacher) {
-                    $groups = $wltGroupRepository->findByAcademicYearAndItpTeacherPerson($academicYear, $person);
+                    $groups = $wltGroupRepository->findByAcademicYearAndPerson($academicYear, $person)->toArray();
                 }
             } else {
-                $groups = $wltGroupRepository->findByAcademicYearAndItpTeacherPerson($academicYear, $person);
+                $groups = $wltGroupRepository->findByAcademicYearAndPerson($academicYear, $person)->toArray();
             }
         }
         $teachers = [];
