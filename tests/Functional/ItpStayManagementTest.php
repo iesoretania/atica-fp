@@ -237,6 +237,18 @@ class ItpStayManagementTest extends AppWebTestCase
         self::assertSame($other['stay'], $this->stay('alfa.alumno8')->getId());
     }
 
+    public function testStayWithGradingCommentsCanBeDeleted(): void
+    {
+        $ids = $this->ids('alfa.alumno7');
+        $this->login($this->getUser('alfa.gestorffe'));
+
+        // la estancia de las fixtures tiene valoraciones y comentarios de actividades
+        $this->client->request('POST', self::STUDENT . "/eliminar/{$ids['program']}", ['items' => [$ids['stay']], 'confirm' => 'ok']);
+
+        self::assertResponseRedirects();
+        self::assertNull($this->em()->getRepository(StudentProgramWorkcenter::class)->find($ids['stay']));
+    }
+
     public function testStayDeletionRequiresConfirmation(): void
     {
         $ids = $this->ids();

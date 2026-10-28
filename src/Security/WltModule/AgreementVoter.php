@@ -170,6 +170,17 @@ class AgreementVoter extends CachedVoter
             );
 
             $agreementIsLocked = $organization->getCurrentAcademicYear() !== $training->getAcademicYear();
+        } else {
+            // acuerdo nuevo, todavía sin alumno: se puede rellenar mientras el proyecto no esté cerrado, y su jefe de
+            // departamento es el de alguno de los grupos del proyecto
+            $agreementIsLocked = false;
+            foreach ($subject->getProject()->getGroups() as $group) {
+                $head = $group->getGrade()?->getTraining()?->getDepartment()?->getHead()?->getPerson();
+                if ($head !== null && $head === $person) {
+                    $isDepartmentHead = true;
+                    break;
+                }
+            }
         }
 
         if ($subject->getProject()->isLocked()) {

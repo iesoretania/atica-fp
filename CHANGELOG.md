@@ -45,6 +45,9 @@ x.x.x (xxxx-xx-xx)
 * fix: Ya no se produce un error al fallar el inicio de sesión cuando la petición incluye una cabecera de autenticación HTTP Basic
 * fix (security): Añadir y borrar jornadas del calendario de un acuerdo de FP dual queda restringido al gestor de FP dual y al jefe de departamento, igual que consultarlo
 * fix: Las horas de una jornada de FP dual no pueden superar las 24 horas
+* fix: El coordinador de FP dual ya puede crear acuerdos (el formulario aparecía solo en lectura) y el jefe de departamento ya puede abrir el formulario de alta
+* fix: Ya se pueden borrar los acuerdos de FP dual que tienen comentarios de evaluación
+* fix: Ya no se produce un error al borrar o copiar acuerdos con identificadores que no existen en FCT y en FP dual
 * fix: Al importar competencias, resultados de aprendizaje, criterios y actividades desde texto con saltos de línea de Windows ya no se guarda un salto de línea al final de cada descripción
 * fix: El botón de guardar y el token de seguridad de los formularios de encuestas de FCT, FP dual y FFE quedan ahora dentro del formulario
 

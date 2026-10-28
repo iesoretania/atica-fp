@@ -406,9 +406,9 @@ class AgreementController extends AbstractController
         $title = $translator->trans('title.copy', [], 'wlt_agreement');
         $breadcrumb = [
             [
-                'fixed' => $agreement->getProject()->getName(),
+                'fixed' => $project->getName(),
                 'routeName' => 'work_linked_training_agreement_list',
-                'routeParams' => ['id' => $agreement->getProject()->getId()]
+                'routeParams' => ['id' => $project->getId()]
             ],
             ['fixed' => $title]
         ];

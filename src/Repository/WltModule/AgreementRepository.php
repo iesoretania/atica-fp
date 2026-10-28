@@ -25,6 +25,7 @@ use App\Entity\Organization;
 use App\Entity\Person;
 use App\Entity\WltModule\Agreement;
 use App\Entity\WltModule\AgreementActivityRealization;
+use App\Entity\WltModule\AgreementActivityRealizationComment;
 use App\Entity\WltModule\Meeting;
 use App\Entity\WltModule\Project;
 use App\Entity\WltModule\WorkDay;
@@ -284,6 +285,14 @@ class AgreementRepository extends ServiceEntityRepository
     public function deleteFromList($list): bool
     {
         $em = $this->getEntityManager();
+
+        // los comentarios de evaluación dependen de las realizaciones del acuerdo
+        $em->createQuery(
+            'DELETE FROM ' . AgreementActivityRealizationComment::class . ' c WHERE c.agreementActivityRealization IN ('
+            . 'SELECT aar.id FROM ' . AgreementActivityRealization::class . ' aar WHERE aar.agreement IN (:list))'
+        )
+            ->setParameter('list', $list)
+            ->execute();
 
         $em->createQueryBuilder()
             ->delete(AgreementActivityRealization::class, 'aar')

@@ -339,6 +339,11 @@ class AgreementController extends AbstractController
 
         $agreements = $agreementRepository->findAllInListByIdAndShift($items, $shift);
 
+        // identificadores que no existen o que son de otra fase: nada que borrar
+        if ($agreements === []) {
+            return $this->redirectToRoute('workplace_training_agreement_list', ['id' => $shift->getId()]);
+        }
+
         // comprobar individualmente que tenemos acceso
         foreach ($agreements as $agreement) {
             $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
