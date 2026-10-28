@@ -222,7 +222,11 @@ class SurveyQuestionController extends AbstractController
     {
         $em = $managerRegistry->getManager();
 
-        $surveys = $surveyQuestionRepository->findAllInListByIdAndOrganization($items, $organization);
+        // solo las preguntas de la encuesta de la ruta: la comprobación de respuestas se hizo sobre ella
+        $surveys = array_values(array_filter(
+            $surveyQuestionRepository->findAllInListByIdAndOrganization($items, $organization),
+            static fn(SurveyQuestion $question): bool => $question->getSurvey() === $survey
+        ));
         if ($surveys === []) {
             return $this->redirectToRoute('organization_survey_question_list', ['id' => $survey->getId()]);
         }
