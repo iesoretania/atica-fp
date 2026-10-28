@@ -203,7 +203,7 @@ class TrackingCalendarController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/operacion', name: 'in_company_training_phase_tracking_calendar_operation', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['POST'])]
+    #[Route(path: '/{id}/operacion', name: 'in_company_training_phase_tracking_calendar_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function operation(
         Request $request,
         WorkDayRepository $workDayRepository,

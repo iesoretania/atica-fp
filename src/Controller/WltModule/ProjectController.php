@@ -260,7 +260,7 @@ class ProjectController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/eliminar', name: 'work_linked_training_project_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route(path: '/eliminar', name: 'work_linked_training_project_operation', methods: ['POST'])]
     public function operation(
         Request                                $request,
         ProjectRepository                      $projectRepository,

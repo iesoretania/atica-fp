@@ -251,7 +251,7 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/centro/cumplimentar/{id}/{teacher}', name: 'work_linked_training_survey_educational_tutor_form', requirements: ['project' => '\d+', 'id' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(path: '/centro/cumplimentar/{id}/{teacher}', name: 'work_linked_training_survey_educational_tutor_form', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function educationalTutorFill(
         Request $request,
         TranslatorInterface $translator,

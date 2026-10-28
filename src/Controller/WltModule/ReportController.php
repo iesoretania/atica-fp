@@ -519,7 +519,7 @@ class ReportController extends AbstractController
         );
     }
 
-    #[Route(path: '/encuesta/estudiantes/{project}/{academicYear}', name: 'work_linked_training_report_student_survey_report', requirements: ['id' => '\d+', 'academicYear' => '\d+'], methods: ['GET'])]
+    #[Route(path: '/encuesta/estudiantes/{project}/{academicYear}', name: 'work_linked_training_report_student_survey_report', requirements: ['project' => '\d+', 'academicYear' => '\d+'], methods: ['GET'])]
     public function studentsReport(
         TranslatorInterface $translator,
         Environment $engine,
@@ -583,7 +583,7 @@ class ReportController extends AbstractController
         return $response;
     }
 
-    #[Route(path: '/encuesta/empresas/{project}/{academicYear}', name: 'work_linked_training_report_work_tutor_survey_report', requirements: ['id' => '\d+', 'academicYear' => '\d+'], methods: ['GET'])]
+    #[Route(path: '/encuesta/empresas/{project}/{academicYear}', name: 'work_linked_training_report_work_tutor_survey_report', requirements: ['project' => '\d+', 'academicYear' => '\d+'], methods: ['GET'])]
     public function workTutorReport(
         TranslatorInterface               $translator,
         Environment                       $engine,
@@ -648,7 +648,7 @@ class ReportController extends AbstractController
         return $response;
     }
 
-    #[Route(path: '/encuesta/centro/{project}/{academicYear}', name: 'work_linked_training_report_educational_tutor_survey_report', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[Route(path: '/encuesta/centro/{project}/{academicYear}', name: 'work_linked_training_report_educational_tutor_survey_report', requirements: ['project' => '\d+', 'academicYear' => '\d+'], methods: ['GET'])]
     public function educationalTutorReport(
         TranslatorInterface              $translator,
         Environment                      $engine,

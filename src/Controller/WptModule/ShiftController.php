@@ -194,7 +194,7 @@ class ShiftController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/eliminar/{academicYear}', name: 'workplace_training_shift_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route(path: '/eliminar/{academicYear}', name: 'workplace_training_shift_operation', requirements: ['academicYear' => '\d+'], methods: ['POST'])]
     public function operation(
         Request $request,
         ShiftRepository $shiftRepository,

@@ -257,7 +257,7 @@ class ReportController extends AbstractController
         return $response;
     }
 
-    #[Route(path: '/encuesta/empresas/{trainingProgram}/{academicYear}', name: '_work_tutor_survey_report', requirements: ['trainingProgram' => '\d+', 'academicYear' => '\d'], methods: ['GET'])]
+    #[Route(path: '/encuesta/empresas/{trainingProgram}/{academicYear}', name: '_work_tutor_survey_report', requirements: ['trainingProgram' => '\d+', 'academicYear' => '\d+'], methods: ['GET'])]
     public function workTutorReport(
         TranslatorInterface               $translator,
         Environment                       $engine,

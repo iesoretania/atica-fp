@@ -173,7 +173,7 @@ class GradingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/comentarios/{studentProgramWorkcenterActivity}', name: 'comment_form', requirements: ['student_program_workcenter_activity' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(path: '/comentarios/{studentProgramWorkcenterActivity}', name: 'comment_form', requirements: ['studentProgramWorkcenterActivity' => '\d+'], methods: ['GET', 'POST'])]
     final public function comment(
         Request $request,
         TranslatorInterface $translator,

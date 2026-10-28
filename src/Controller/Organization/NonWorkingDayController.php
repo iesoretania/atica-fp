@@ -39,7 +39,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route(path: '/centro/dia_no_lectivo')]
 class NonWorkingDayController extends AbstractController
 {
-    #[Route(path: '/nuevo/{academicYear}', name: 'organization_non_working_day_new', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(path: '/nuevo/{academicYear}', name: 'organization_non_working_day_new', requirements: ['academicYear' => '\d+'], methods: ['GET', 'POST'])]
     public function new(
         Request $request,
         TranslatorInterface $translator,

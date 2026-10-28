@@ -222,7 +222,7 @@ class TrainingProgramController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/eliminar/{academicYear}', name: 'in_company_training_phase_training_program_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route(path: '/eliminar/{academicYear}', name: 'in_company_training_phase_training_program_operation', requirements: ['academicYear' => '\d+'], methods: ['POST'])]
     public function operation(
         Request                   $request,
         TrainingProgramRepository $trainingProgramRepository,

@@ -902,7 +902,7 @@ class TrackingCalendarController extends AbstractController
                                 ]);
     }
 
-    #[Route(path: '/api/v2/jornada/{workDay}/{agreementEnrollment}', name: 'api_workplace_training_tracking_calendar_form', requirements: ['id' => '\d+', 'agreementEnrollment' => '\d+'], methods: ['GET'])]
+    #[Route(path: '/api/v2/jornada/{workDay}/{agreementEnrollment}', name: 'api_workplace_training_tracking_calendar_form', requirements: ['workDay' => '\d+', 'agreementEnrollment' => '\d+'], methods: ['GET'])]
     public function apiEdit(
         TrackedWorkDayRepository $trackedWorkDayRepository,
         ManagerRegistry $managerRegistry,

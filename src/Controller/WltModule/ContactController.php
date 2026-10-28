@@ -349,7 +349,7 @@ class ContactController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/eliminar', name: 'work_linked_training_contact_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route(path: '/eliminar', name: 'work_linked_training_contact_operation', methods: ['POST'])]
     public function operation(
         Request $request,
         ContactRepository $visitRepository,

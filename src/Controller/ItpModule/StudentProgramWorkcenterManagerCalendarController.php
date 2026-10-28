@@ -40,7 +40,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route(path: '/formacion/plan/curso/grupo/gestion/estancia/calendario')]
 class StudentProgramWorkcenterManagerCalendarController extends AbstractController
 {
-    #[Route(path: '/{studentProgramWorkcenter}', name: 'in_company_training_phase_student_program_workcenter_manage_calendar_list', requirements: ['studentProgramWorkcenter' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    #[Route(path: '/{studentProgramWorkcenter}', name: 'in_company_training_phase_student_program_workcenter_manage_calendar_list', requirements: ['studentProgramWorkcenter' => '\d+'], methods: ['GET'])]
     public function list(
         TranslatorInterface                $translator,
         WorkDayRepository                  $workDayRepository,

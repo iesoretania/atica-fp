@@ -196,7 +196,7 @@ class MeetingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/listar/{academicYear}/{page}', name: 'work_linked_training_meeting_list', requirements: ['academic_year' => '\d+', 'page' => '\d+'], methods: ['GET'])]
+    #[Route(path: '/listar/{academicYear}/{page}', name: 'work_linked_training_meeting_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
     public function list(
         Request                $request,
         UserExtensionService   $userExtensionService,
@@ -320,7 +320,7 @@ class MeetingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/eliminar', name: 'work_linked_training_meeting_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route(path: '/eliminar', name: 'work_linked_training_meeting_operation', methods: ['POST'])]
     public function operation(
         Request $request,
         MeetingRepository $meetingRepository,

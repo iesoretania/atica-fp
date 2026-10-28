@@ -159,7 +159,7 @@ class PerformanceScaleController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/eliminar', name: 'organization_performance_scale_operation', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route(path: '/eliminar', name: 'organization_performance_scale_operation', methods: ['POST'])]
     public function delete(
         Request                    $request,
         PerformanceScaleRepository $performanceScaleRepository,
