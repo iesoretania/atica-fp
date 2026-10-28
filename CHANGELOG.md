@@ -51,6 +51,7 @@ x.x.x (xxxx-xx-xx)
 * fix (security): Borrar competencias de una enseñanza queda restringido a quien administra la organización, igual que consultarlas y modificarlas (antes también podían el jefe de departamento y el coordinador de FP dual)
 * fix: El gestor de un grupo de la FFE ya puede crear y modificar las actividades del programa formativo, además de listarlas, descargarlas y borrarlas
 * fix: El jefe de departamento ya puede gestionar y borrar los contactos de FP dual y de la FFE de sus enseñanzas, como las visitas de FCT
+* fix (security): Un administrador de un centro ya no puede borrar profesorado de otro centro enviando sus identificadores en el borrado de profesorado
 * fix: Ya no se produce un error al mostrar el resultado de la importación de usuarios PASEN cuando alguno ya lo tiene otra persona
 * fix: La importación de materias ya no cuenta varias veces como existente una materia que aparece en varias filas del fichero
 * fix (security): Un administrador o responsable económico de una organización ya no puede borrar los itinerarios de desplazamiento de otra organización enviando sus identificadores

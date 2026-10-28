@@ -238,7 +238,8 @@ class TeacherController extends AbstractController
                 $em->createQueryBuilder()
                     ->delete(Teacher::class, 't')
                     ->where('t IN (:items)')
-                    ->setParameter('items', $items)
+                    // solo el profesorado de este curso académico: los identificadores enviados no son de fiar
+                    ->setParameter('items', $teachers)
                     ->getQuery()
                     ->execute();
 
