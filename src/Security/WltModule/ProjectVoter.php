@@ -150,10 +150,8 @@ class ProjectVoter extends CachedVoter
             case self::REPORT_ATTENDANCE:
             case self::REPORT_GRADING:
             case self::REPORT_LEARNING_PROGRAM:
-                return $isDepartmentHead;
-
             case self::REPORT_ORGANIZATION_SURVEY:
-                return false;
+                return $isDepartmentHead;
 
             case self::ACCESS_EDUCATIONAL_TUTOR_SURVEY:
             case self::FILL_EDUCATIONAL_TUTOR_SURVEY:

@@ -58,11 +58,6 @@ class ReportsTest extends AppWebTestCase
 
         foreach ($this->reportUrls() as $name => $url) {
             $this->client->request('GET', $url);
-            // en FP dual la encuesta de centro es solo de quien administra la organización (ProjectVoter)
-            if ($username === 'alfa.jefe' && $name === 'FP dual encuesta de centro') {
-                self::assertResponseStatusCodeSame(403, "$username: $name");
-                continue;
-            }
             self::assertResponseIsSuccessful("$username: $name");
         }
     }
