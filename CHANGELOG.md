@@ -48,6 +48,7 @@ x.x.x (xxxx-xx-xx)
 * fix: El coordinador de FP dual ya puede crear acuerdos (el formulario aparecía solo en lectura) y el jefe de departamento ya puede abrir el formulario de alta
 * fix (security): La API de seguimiento de convenios de FCT ya no devuelve las contraseñas cifradas ni los datos de restablecimiento de contraseña de las personas del convenio
 * fix (security): La exportación a CSV del seguimiento de la FFE ya no permite que un nombre que empiece por = + - o @ se ejecute como fórmula al abrirlo en una hoja de cálculo
+* fix (security): Borrar competencias de una enseñanza queda restringido a quien administra la organización, igual que consultarlas y modificarlas (antes también podían el jefe de departamento y el coordinador de FP dual)
 * fix: Ya se pueden borrar los acuerdos de FP dual que tienen comentarios de evaluación
 * fix: El jefe de departamento ya puede obtener el informe de la encuesta de centro de FP dual, como en FCT y en la FFE
 * fix: Ya no se produce un error al borrar o copiar acuerdos con identificadores que no existen en FCT y en FP dual

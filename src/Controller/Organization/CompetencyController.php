@@ -22,7 +22,6 @@ use App\Entity\Edu\Competency;
 use App\Entity\Edu\Training;
 use App\Form\Type\Edu\CompetencyType;
 use App\Repository\Edu\CompetencyRepository;
-use App\Security\Edu\TrainingVoter;
 use App\Security\OrganizationVoter;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -188,7 +187,7 @@ class CompetencyController extends AbstractController
         Training $training
     ): Response
     {
-        $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $training);
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
 
         $em = $managerRegistry->getManager();
 
