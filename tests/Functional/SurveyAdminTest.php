@@ -337,4 +337,44 @@ class SurveyAdminTest extends AppWebTestCase
 
         self::assertSame($foreign, $this->questionIds($foreignId));
     }
+
+    public function testQuestionListShowsAndFiltersTheQuestions(): void
+    {
+        [$surveyId] = $this->createSurvey(DemoData::ORG_A_CODE, 'Encuesta con preguntas');
+        $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
+
+        foreach (["/centro/encuesta/pregunta/listar/$surveyId/resultado", "/centro/encuesta/pregunta/listar/$surveyId/resultado/1", "/centro/encuesta/pregunta/listar/$surveyId/resultado/99"] as $url) {
+            $this->client->request('GET', $url);
+            self::assertResponseIsSuccessful($url);
+            self::assertStringContainsString('Pregunta 2', (string) $this->client->getResponse()->getContent(), $url);
+        }
+
+        $this->client->request('GET', "/centro/encuesta/pregunta/listar/$surveyId/resultado", ['q' => 'Pregunta 2']);
+        $content = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('Pregunta 2', $content);
+        self::assertStringNotContainsString('Pregunta 3', $content);
+    }
+
+    public function testQuestionListOfAnAnsweredSurveyOpens(): void
+    {
+        [$surveyId] = $this->createSurvey(DemoData::ORG_A_CODE, 'Con respuestas', true);
+        $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
+
+        $this->client->request('GET', "/centro/encuesta/pregunta/listar/$surveyId/resultado");
+
+        self::assertResponseIsSuccessful();
+    }
+
+    /**
+     * @dataProvider nonManagerProvider
+     */
+    public function testNonManagersCannotListTheQuestions(string $username): void
+    {
+        [$surveyId] = $this->createSurvey(DemoData::ORG_A_CODE, 'Privada');
+        $this->login($this->getUser($username), true, str_starts_with($username, 'beta.') ? DemoData::ORG_B_CODE : DemoData::ORG_A_CODE);
+
+        $this->client->request('GET', "/centro/encuesta/pregunta/listar/$surveyId/resultado");
+
+        self::assertResponseStatusCodeSame(403);
+    }
 }
