@@ -86,6 +86,7 @@ x.x.x (xxxx-xx-xx)
 * fix: Ya no se puede guardar un curso académico cuya fecha de fin no es posterior a la de inicio
 * fix (security): En FP dual, el alumnado de un proyecto y su borrado solo los gestiona quien puede gestionar ese proyecto, no cualquier coordinador o jefe de departamento del centro
 * fix: En FCT, la tutoría laboral ya no puede abrir el listado de encuestas del alumnado, que tampoco aparece en su menú
+* fix: El responsable económico ya no ve en su menú las escalas de valoración ni las encuestas de FCT, a las que no tiene acceso
 
 7.6.3 (2026-05-06)
 ------------------

@@ -123,7 +123,10 @@ class WptModule implements ModuleBuilderInterface
                 ->setIcon('chart-pie')
                 ->setPriority(6000);
 
-            $menu1->addChild($menu2);
+            // quien solo accede por los gastos de desplazamiento (responsable económico) no ve las encuestas
+            if ($this->security->isGranted(OrganizationVoter::WPT_ACCESS, $organization)) {
+                $menu1->addChild($menu2);
+            }
 
             if ($this->security->isGranted(OrganizationVoter::WPT_MANAGER, $organization) ||
                 $this->security->isGranted(OrganizationVoter::WPT_DEPARTMENT_HEAD, $organization) ||
