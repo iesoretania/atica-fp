@@ -22,6 +22,7 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -111,7 +112,16 @@ class StudentProgramWorkcenterManagerController extends AbstractController
         $form->get('company')->setData($studentProgramWorkcenter->getWorkcenter()?->getCompany());
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()
+            && $studentProgramWorkcenterRepository->countByStudentEnrollmentsProgramGroupAndWorkcenter(
+                $form->get('students')->getData(),
+                $programGroup,
+                $studentProgramWorkcenter->getWorkcenter()
+            ) > 0
+        ) {
+            // la restricción de unicidad del formulario no puede aplicarse en lote, pues el programa del alumnado aún no existe
+            $form->addError(new FormError($translator->trans('student_program.enrollment.workcenter.unique', [], 'validators')));
+        } elseif ($form->isSubmitted() && $form->isValid()) {
             try {
                 foreach ($form->get('students')->getData() as $studentEnrollment) {
                     assert($studentEnrollment instanceof StudentEnrollment);

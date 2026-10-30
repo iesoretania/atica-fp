@@ -99,7 +99,9 @@ class StudentProgramWorkcenterBatchType extends AbstractType
             assert($programGroup instanceof ProgramGroup);
             $group = $programGroup->getGroup();
             assert($group instanceof Group);
-            $company = $this->companyRepository->find($formData['company']);
+            $company = isset($formData['company']) && is_scalar($formData['company'])
+                ? $this->companyRepository->find($formData['company'])
+                : null;
             $companies = $this->itpCompanyRepository->findByProgramGrade($programGroup->getProgramGrade());
             $teachers = $this->teacherRepository->findByGroup($programGroup->getGroup());
             $students = $this->studentEnrollmentRepository->findByGroup($group);

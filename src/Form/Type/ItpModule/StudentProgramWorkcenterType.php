@@ -91,7 +91,9 @@ class StudentProgramWorkcenterType extends AbstractType
             $formData = $event->getData();
             $data = $form->getData();
             assert($data instanceof StudentProgramWorkcenter);
-            $company = $this->companyRepository->find($formData['company']);
+            $company = isset($formData['company']) && is_scalar($formData['company'])
+                ? $this->companyRepository->find($formData['company'])
+                : null;
             $companies = $this->itpCompanyRepository->findByProgramGrade($data->getStudentProgram()->getProgramGroup()->getProgramGrade());
             $teachers = $this->teacherRepository->findByGroup($data->getStudentProgram()->getProgramGroup()->getGroup());
 

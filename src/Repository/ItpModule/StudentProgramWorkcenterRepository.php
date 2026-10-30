@@ -3,6 +3,7 @@
 namespace App\Repository\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
@@ -11,6 +12,7 @@ use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\ItpModule\WorkDay;
 use App\Entity\Person;
+use App\Entity\Workcenter;
 use App\Repository\Edu\GroupRepository;
 use App\Repository\Edu\TeacherRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -149,6 +151,33 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
             ->addOrderBy('w.name', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Cuenta las estancias que ya tiene el alumnado indicado en un centro de trabajo para un grupo del programa
+     *
+     * @param StudentEnrollment[] $studentEnrollments
+     */
+    public function countByStudentEnrollmentsProgramGroupAndWorkcenter(
+        array $studentEnrollments,
+        ProgramGroup $programGroup,
+        ?Workcenter $workcenter
+    ): int {
+        if ($studentEnrollments === [] || !$workcenter instanceof Workcenter) {
+            return 0;
+        }
+
+        return (int) $this->createQueryBuilder('spw')
+            ->select('COUNT(spw)')
+            ->join('spw.studentProgram', 'sp')
+            ->where('sp.studentEnrollment IN (:student_enrollments)')
+            ->andWhere('sp.programGroup = :program_group')
+            ->andWhere('spw.workcenter = :workcenter')
+            ->setParameter('student_enrollments', $studentEnrollments)
+            ->setParameter('program_group', $programGroup)
+            ->setParameter('workcenter', $workcenter)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     final public function updateDates(StudentProgramWorkcenter $studentProgramWorkcenter): void

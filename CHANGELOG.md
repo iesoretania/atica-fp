@@ -73,6 +73,8 @@ x.x.x (xxxx-xx-xx)
 * fix (security): En la encuesta de centro de FCT, FP dual y FFE, cada tutor docente solo puede contestar la suya; en nombre de otro solo puede hacerlo quien gestiona la convocatoria, el proyecto o el programa
 * fix (security): En la encuesta de centro de la FFE, el profesorado indicado debe ser tutor docente del programa, como ya ocurría en FCT y FP dual
 * fix: Ya no se produce un error al buscar en el listado de informes de contactos por centro de trabajo de FP dual, y los listados de informes de contactos solo incluyen tutores docentes de los acuerdos de sus grupos
+* fix: Ya no se produce un error al enviar sin empresa el formulario de estancias de la FFE
+* fix: Al crear estancias de la FFE por lotes ya no se duplica la estancia de un alumno que ya está en ese centro de trabajo
 * fix (security): La migración segura de la base de datos borra ya la copia de seguridad al terminar, salvo que se indique --keep-backup, en lugar de dejarla siempre guardada
 * fix: El botón de volver de la encuesta de centro de FCT, FP dual y FFE vuelve ahora al listado del curso académico correcto
 * fix: Ya no se puede guardar un curso académico cuya fecha de fin no es posterior a la de inicio
