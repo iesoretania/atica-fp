@@ -322,7 +322,7 @@ class TravelExpenseController extends AbstractController
 
         $items = $request->request->all('items');
         if (count($items) === 0) {
-            return $this->redirectToRoute('work_linked_training_travel_expense_detail_list');
+            return $this->redirectToRoute('work_linked_training_travel_expense_detail_list', ['id' => $teacher->getId()]);
         }
 
         $travelExpenses = $travelExpenseRepository->findAllInListById($items);

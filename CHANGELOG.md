@@ -73,6 +73,7 @@ x.x.x (xxxx-xx-xx)
 * fix (security): En la encuesta de centro de FCT, FP dual y FFE, cada tutor docente solo puede contestar la suya; en nombre de otro solo puede hacerlo quien gestiona la convocatoria, el proyecto o el programa
 * fix (security): En la encuesta de centro de la FFE, el profesorado indicado debe ser tutor docente del programa, como ya ocurría en FCT y FP dual
 * fix: Ya no se produce un error al buscar en el listado de informes de contactos por centro de trabajo de FP dual, y los listados de informes de contactos solo incluyen tutores docentes de los acuerdos de sus grupos
+* fix: Ya no se produce un error al borrar gastos de desplazamiento de FCT, FP dual o FFE sin haber seleccionado ninguno
 * fix: En los informes de contactos de FP dual, la coordinación ve todo el profesorado y los centros de los proyectos que gestiona, y la jefatura de departamento los de sus enseñanzas, aunque no impartan clase en esos grupos
 * fix: La encuesta de centro de FP dual funciona como en FCT y la FFE: la jefatura de departamento accede al listado y ve a los tutores docentes de sus enseñanzas, y la coordinación los de sus proyectos
 * fix: Ya no se produce un error al buscar en los listados de informes de FCT ni en el de informes por proyecto de FP dual
