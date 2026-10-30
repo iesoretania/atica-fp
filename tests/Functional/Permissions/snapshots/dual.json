@@ -1,0 +1,1010 @@
+{
+    "module": "dual",
+    "title": "FP dual",
+    "profiles": {
+        "admin": {
+            "label": "Administración del centro",
+            "user": "alfa.admin"
+        },
+        "coordinador": {
+            "label": "Coordinación del proyecto",
+            "user": "alfa.coordinador"
+        },
+        "jefe": {
+            "label": "Jefatura de departamento",
+            "user": "alfa.jefe"
+        },
+        "tutor": {
+            "label": "Responsable de seguimiento y tutoría de grupo",
+            "user": "alfa.tutor"
+        },
+        "otro-tutor": {
+            "label": "Responsable de seguimiento de otro convenio",
+            "user": "alfa.profesor"
+        },
+        "profesorado": {
+            "label": "Profesorado del grupo",
+            "user": "alfa.director"
+        },
+        "alumno": {
+            "label": "Alumnado del convenio",
+            "user": "alfa.alumno5"
+        },
+        "tutor-laboral": {
+            "label": "Responsable laboral del convenio",
+            "user": "alfa.tutorlaboral"
+        },
+        "economico": {
+            "label": "Responsable económico",
+            "user": "alfa.economico"
+        },
+        "resto": {
+            "label": "Resto del personal",
+            "user": "alfa.gestorffe"
+        }
+    },
+    "sections": [
+        {
+            "title": "Proyectos",
+            "actions": [
+                {
+                    "label": "Ver el listado de proyectos",
+                    "request": "GET /dual/proyecto/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Crear un proyecto",
+                    "request": "GET /dual/proyecto/nuevo",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar un proyecto",
+                    "request": "GET /dual/proyecto/{project}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Gestionar el alumnado de un proyecto",
+                    "request": "GET /dual/proyecto/estudiantes/{project}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar proyectos",
+                    "request": "POST /dual/proyecto/eliminar items[]={project}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Programa formativo",
+            "actions": [
+                {
+                    "label": "Ver las empresas de un proyecto",
+                    "request": "GET /dual/programa/{project}/listar/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Incorporar una empresa al proyecto",
+                    "request": "GET /dual/programa/nuevo/{project}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar el programa de una empresa",
+                    "request": "GET /dual/programa/{learningProgram}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar empresas del proyecto",
+                    "request": "POST /dual/programa/operacion/{project} items[]={learningProgram}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver las actividades de un proyecto",
+                    "request": "GET /dual/proyecto/programa/{project}/actividad/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Crear una actividad",
+                    "request": "GET /dual/proyecto/programa/{project}/actividad/nueva",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar una actividad",
+                    "request": "GET /dual/proyecto/programa/actividad/{dualActivity}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Copiar actividades de otro proyecto",
+                    "request": "GET /dual/proyecto/copiar/{project}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar actividades",
+                    "request": "POST /dual/proyecto/programa/{project}/actividad/eliminar items[]={dualActivity}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver las concreciones de una actividad",
+                    "request": "GET /dual/proyecto/programa/{dualActivity}/concrecion/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar una concreción",
+                    "request": "GET /dual/proyecto/programa/{realization}/detalles/concrecion",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Convenios",
+            "actions": [
+                {
+                    "label": "Ver los convenios de un proyecto",
+                    "request": "GET /dual/acuerdo/{project}/listar/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Crear un convenio",
+                    "request": "GET /dual/acuerdo/nuevo/{project}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar un convenio",
+                    "request": "GET /dual/acuerdo/{dualAgreement}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver el calendario de un convenio",
+                    "request": "GET /dual/acuerdo/calendario/{dualAgreement}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar convenios",
+                    "request": "POST /dual/acuerdo/operacion/{project} items[]={dualAgreement}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Seguimiento diario",
+            "actions": [
+                {
+                    "label": "Ver el seguimiento del alumnado",
+                    "request": "GET /dual/seguimiento/acuerdo/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "profesorado": true,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir el calendario de seguimiento de un alumno",
+                    "request": "GET /dual/seguimiento/calendario/{dualAgreement}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": true,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Descargar la hoja de asistencia",
+                    "request": "GET /dual/seguimiento/calendario/{dualAgreement}/asistencia",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": true,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Valoración y evaluación",
+            "actions": [
+                {
+                    "label": "Ver los convenios evaluables",
+                    "request": "GET /dual/convenio/evaluar/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "profesorado": true,
+                        "alumno": false,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Valorar las actividades de un convenio",
+                    "request": "GET /dual/convenio/evaluar/{dualAgreement}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": true,
+                        "alumno": false,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver el resumen de evaluación",
+                    "request": "GET /dual/resultado/estudiante/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de resultados de un alumno",
+                    "request": "GET /dual/resultado/estudiante/{dualStudent}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Reuniones de tutorización",
+            "actions": [
+                {
+                    "label": "Ver las reuniones",
+                    "request": "GET /dual/reunion/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "profesorado": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Registrar una reunión",
+                    "request": "GET /dual/reunion/nueva/{year}",
+                    "allowed": {
+                        "admin": false,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "profesorado": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar una reunión",
+                    "request": "GET /dual/reunion/{meeting}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar reuniones",
+                    "request": "POST /dual/reunion/eliminar items[]={meeting}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": false,
+                        "jefe": false,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Contactos con empresas",
+            "actions": [
+                {
+                    "label": "Ver los contactos con empresas",
+                    "request": "GET /dual/contacto/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "profesorado": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Registrar un contacto",
+                    "request": "GET /dual/contacto/nuevo",
+                    "allowed": {
+                        "admin": false,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "profesorado": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar un contacto",
+                    "request": "GET /dual/contacto/{dualContact}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar contactos",
+                    "request": "POST /dual/contacto/eliminar items[]={dualContact}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": false,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver el informe de contactos del responsable de seguimiento",
+                    "request": "GET /dual/contacto/informe/seguimiento/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "profesorado": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver el informe de contactos por centro de trabajo",
+                    "request": "GET /dual/contacto/informe/centros/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "profesorado": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Gastos de desplazamiento",
+            "actions": [
+                {
+                    "label": "Ver el resumen de gastos del profesorado",
+                    "request": "GET /dual/desplazamiento/resumen/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "profesorado": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver los gastos de un docente",
+                    "request": "GET /dual/desplazamiento/{teacher}/listar/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "profesorado": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Registrar un gasto",
+                    "request": "GET /dual/desplazamiento/nuevo/{teacher}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": false,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Descargar el informe de gastos",
+                    "request": "GET /dual/desplazamiento/{teacher}/descargar",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": false,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar gastos",
+                    "request": "POST /dual/desplazamiento/eliminar/{teacher} items[]={dualExpense}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": false,
+                        "jefe": false,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Encuestas",
+            "actions": [
+                {
+                    "label": "Ver las encuestas de alumnado",
+                    "request": "GET /dual/encuesta/estudiante/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "profesorado": false,
+                        "alumno": true,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir la encuesta de alumnado de un convenio",
+                    "request": "GET /dual/encuesta/estudiante/cumplimentar/{dualAgreement}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": true,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver las encuestas de empresa",
+                    "request": "GET /dual/encuesta/empresa/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "profesorado": true,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir la encuesta de empresa de un convenio",
+                    "request": "GET /dual/encuesta/empresa/cumplimentar/{dualAgreement}/{workTutor}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver las encuestas de centro",
+                    "request": "GET /dual/encuesta/centro/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir la encuesta de centro de un docente",
+                    "request": "GET /dual/encuesta/centro/cumplimentar/{project}/{teacher}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Informes del proyecto",
+            "actions": [
+                {
+                    "label": "Acceder al apartado de informes",
+                    "request": "GET /dual/informe/",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de reuniones",
+                    "request": "GET /dual/informe/reuniones/{project}/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de asistencia",
+                    "request": "GET /dual/informe/asistencia/{project}/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de evaluación",
+                    "request": "GET /dual/informe/evaluacion/{project}/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe del programa formativo",
+                    "request": "GET /dual/informe/programa_formativo/{project}/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de la encuesta de alumnado",
+                    "request": "GET /dual/informe/encuesta/estudiantes/{project}/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de la encuesta de empresas",
+                    "request": "GET /dual/informe/encuesta/empresas/{project}/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de la encuesta de centro",
+                    "request": "GET /dual/informe/encuesta/centro/{project}/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "coordinador": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "profesorado": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        }
+    ]
+}

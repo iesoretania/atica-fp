@@ -30,7 +30,7 @@ class MenuController extends AbstractController
     public function index(UserExtensionService $userExtensionService): Response
     {
         $this->denyAccessUnlessGranted(
-            WltOrganizationVoter::WLT_ACCESS,
+            WltOrganizationVoter::WLT_ACCESS_SECTION,
             $userExtensionService->getCurrentOrganization()
         );
         return $this->render(

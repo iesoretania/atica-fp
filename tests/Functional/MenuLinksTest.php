@@ -52,6 +52,22 @@ class MenuLinksTest extends AppWebTestCase
     }
 
     /**
+     * El responsable económico puede gestionar los gastos de desplazamiento de los tres módulos, así que los tres
+     * deben ofrecerle el camino hasta ellos (y solo ese)
+     */
+    public function testFinancialManagerReachesTheExpensesOfEveryModule(): void
+    {
+        $this->login($this->getUser('alfa.economico'));
+
+        foreach (['/fct' => '/fct/desplazamiento/', '/dual' => '/dual/desplazamiento/', '/formacion' => '/formacion/desplazamiento/'] as $home => $expenses) {
+            $links = $this->menuLinks($home);
+
+            self::assertNotEmpty($links, "El responsable económico no tiene acceso a $home");
+            self::assertNotEmpty(array_filter($links, static fn(string $link): bool => str_starts_with($link, $expenses)), "Falta el enlace a los gastos en $home");
+        }
+    }
+
+    /**
      * @return array<string, string> enlaces internos del menú y de las tarjetas de la página, por ruta
      */
     private function menuLinks(string $path): array

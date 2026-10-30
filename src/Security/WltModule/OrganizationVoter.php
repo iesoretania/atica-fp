@@ -52,6 +52,7 @@ class OrganizationVoter extends CachedVoter
     public const WLT_EDUCATIONAL_TUTOR = 'WLT_ORGANIZATION_EDUCATIONAL_TUTOR';
     public const WLT_DEPARTMENT_HEAD = 'WLT_ORGANIZATION_DEPARTMENT_HEAD';
 
+    public const WLT_ACCESS_SECTION = 'WLT_ORGANIZATION_ACCESS_SECTION';
     public const WLT_ACCESS_EXPENSE = 'WLT_ORGANIZATION_ACCESS_EXPENSE';
     public const WLT_CREATE_EXPENSE = 'WLT_ORGANIZATION_CREATE_EXPENSE';
 
@@ -92,6 +93,7 @@ class OrganizationVoter extends CachedVoter
             self::WLT_MANAGER,
             self::WLT_EDUCATIONAL_TUTOR,
             self::WLT_DEPARTMENT_HEAD,
+            self::WLT_ACCESS_SECTION,
             self::WLT_ACCESS_EXPENSE,
             self::WLT_CREATE_EXPENSE
         ], true);
@@ -271,6 +273,12 @@ class OrganizationVoter extends CachedVoter
                         $subject->getCurrentAcademicYear(),
                         $user
                     ) > 0;
+
+            case self::WLT_ACCESS_SECTION:
+                // 1) Todos los que acceden a la FP dual
+                // 2) Gestor económico del centro, para consultar los gastos de desplazamiento
+                return $this->decisionManager->decide($token, [self::WLT_ACCESS], $subject) ||
+                    $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $subject);
 
             case self::WLT_ACCESS_EXPENSE:
                 // 1) Todos los que pueden acceder a las visitas

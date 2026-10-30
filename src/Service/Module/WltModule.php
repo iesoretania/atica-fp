@@ -39,7 +39,7 @@ class WltModule implements ModuleBuilderInterface
 
         $root = [];
 
-        if ($this->security->isGranted(OrganizationVoter::WLT_ACCESS, $organization)) {
+        if ($this->security->isGranted(OrganizationVoter::WLT_ACCESS_SECTION, $organization)) {
             $menu1 = new MenuItem();
             $menu1
                 ->setName('work_linked_training')
@@ -71,7 +71,10 @@ class WltModule implements ModuleBuilderInterface
                 ->setDescription('menu.work_linked_training.tracking.detail')
                 ->setIcon('user-clock');
 
-            $menu1->addChild($menu2);
+            // quien solo accede por los gastos de desplazamiento (responsable económico) no ve el seguimiento
+            if ($this->security->isGranted(OrganizationVoter::WLT_ACCESS, $organization)) {
+                $menu1->addChild($menu2);
+            }
 
             if ($this->security->isGranted(OrganizationVoter::WLT_VIEW_EVALUATION, $organization)) {
                 $menu2 = new MenuItem();
@@ -134,11 +137,14 @@ class WltModule implements ModuleBuilderInterface
                 ->setIcon('chart-pie')
                 ->setPriority(10000);
 
-            $menu1->addChild($menu2);
+            if ($this->security->isGranted(OrganizationVoter::WLT_ACCESS, $organization)) {
+                $menu1->addChild($menu2);
+            }
 
             if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization) ||
                 $this->security->isGranted(OrganizationVoter::WLT_DEPARTMENT_HEAD, $organization) ||
                 $this->security->isGranted(OrganizationVoter::WLT_GROUP_TUTOR, $organization) ||
+                $this->security->isGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization) ||
                 $this->security->isGranted(OrganizationVoter::WLT_STUDENT, $organization)
             ) {
                 $menu3 = new MenuItem();

@@ -24,7 +24,8 @@ class WltPagesTest extends AppWebTestCase
      * "alumno1" solo participa en FCT y "alumno5" en FP dual: el módulo no debe estar abierto al otro.
      */
     private const ACCESS = [
-        'home' => ['alfa.jefe', 'alfa.coordinador', 'alfa.tutor', 'alfa.profesor', 'alfa.alumno5', 'alfa.tutorlaboral', 'alfa.tutorlaboral2'],
+        // el responsable económico entra por los gastos de desplazamiento
+        'home' => ['alfa.jefe', 'alfa.coordinador', 'alfa.tutor', 'alfa.profesor', 'alfa.alumno5', 'alfa.tutorlaboral', 'alfa.tutorlaboral2', 'alfa.economico'],
         // gestión del proyecto: coordinador y jefatura de departamento
         'projects' => ['alfa.jefe', 'alfa.coordinador'],
         'agreements' => ['alfa.jefe', 'alfa.coordinador'],

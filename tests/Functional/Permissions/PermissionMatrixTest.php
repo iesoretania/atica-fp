@@ -67,7 +67,33 @@ class PermissionMatrixTest extends AppWebTestCase
             $db->insert('survey', ['organization_id' => $organization->getId(), 'title' => 'Encuesta de prueba']);
         }
 
+        // el profesorado del grupo de FP dual (alfa.director, sin otro cargo) da clase al alumno 5
+        $db->executeStatement(
+            'INSERT INTO edu_teaching (teacher_id, group_id, subject_id)
+             SELECT t.id, se.group_id, (SELECT s.id FROM edu_subject s JOIN edu_group g ON g.grade_id = s.grade_id WHERE g.id = se.group_id LIMIT 1)
+             FROM edu_teacher t
+             JOIN person p ON p.id = t.person_id AND p.login_username = ?
+             JOIN edu_student_enrollment se ON se.person_id = (SELECT id FROM person WHERE login_username = ?)
+             WHERE t.academic_year_id = ? AND NOT EXISTS (SELECT 1 FROM edu_teaching x WHERE x.teacher_id = t.id)',
+            ['alfa.director', 'alfa.alumno5', $organization->getCurrentAcademicYear()->getId()]
+        );
+        $dualAgreement = (int) $db->fetchOne(
+            'SELECT a.id FROM wlt_agreement a JOIN edu_student_enrollment se ON se.id = a.student_enrollment_id JOIN person p ON p.id = se.person_id WHERE p.login_username = ?',
+            ['alfa.alumno5']
+        );
+
         return [
+            // FP dual
+            '{project}' => (int) $db->fetchOne('SELECT id FROM wlt_project WHERE organization_id = ? ORDER BY id LIMIT 1', [$organization->getId()]),
+            '{learningProgram}' => (int) $db->fetchOne('SELECT lp.id FROM wlt_learning_program lp JOIN wlt_project pr ON pr.id = lp.project_id WHERE pr.organization_id = ? ORDER BY lp.id LIMIT 1', [$organization->getId()]),
+            '{dualActivity}' => (int) $db->fetchOne('SELECT ac.id FROM wlt_activity ac JOIN wlt_project pr ON pr.id = ac.project_id WHERE pr.organization_id = ? ORDER BY ac.id LIMIT 1', [$organization->getId()]),
+            '{realization}' => (int) $db->fetchOne('SELECT r.id FROM wlt_activity_realization r JOIN wlt_activity ac ON ac.id = r.activity_id JOIN wlt_project pr ON pr.id = ac.project_id WHERE pr.organization_id = ? ORDER BY r.id LIMIT 1', [$organization->getId()]),
+            '{dualAgreement}' => $dualAgreement,
+            '{dualStudent}' => (int) $db->fetchOne('SELECT se.id FROM edu_student_enrollment se JOIN person p ON p.id = se.person_id WHERE p.login_username = ?', ['alfa.alumno5']),
+            '{meeting}' => (int) $db->fetchOne('SELECT m.id FROM wlt_meeting m JOIN wlt_project pr ON pr.id = m.project_id WHERE pr.organization_id = ? ORDER BY m.id LIMIT 1', [$organization->getId()]),
+            '{dualContact}' => (int) $db->fetchOne('SELECT c.id FROM wlt_contact c JOIN edu_teacher t ON t.id = c.teacher_id JOIN edu_academic_year ay ON ay.id = t.academic_year_id WHERE ay.organization_id = ? ORDER BY c.id LIMIT 1', [$organization->getId()]),
+            '{dualExpense}' => (int) $db->fetchOne('SELECT e.id FROM wlt_travel_expense e JOIN person p ON p.login_username = ? JOIN edu_teacher t ON t.id = e.teacher_id AND t.person_id = p.id ORDER BY e.id LIMIT 1', ['alfa.tutor']),
+            // FCT
             '{year}' => $organization->getCurrentAcademicYear()->getId(),
             '{shift}' => (int) $db->fetchOne(
                 'SELECT s.id FROM wpt_shift s JOIN edu_subject su ON su.id = s.subject_id JOIN edu_grade g ON g.id = su.grade_id JOIN edu_training t ON t.id = g.training_id JOIN edu_academic_year ay ON ay.id = t.academic_year_id WHERE ay.organization_id = ? ORDER BY s.id LIMIT 1',
