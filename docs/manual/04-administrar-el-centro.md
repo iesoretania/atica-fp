@@ -142,7 +142,7 @@ quién las imparte.
     informes. Esa información sale de aquí, de la docencia de cada materia: si falta, un docente no podrá
     evaluar a sus estudiantes.
 
-### Resultados de aprendizaje y criterios de evaluación
+### Resultados de aprendizaje y criterios de evaluación {#resultados-de-aprendizaje-y-criterios-de-evaluacion}
 
 El botón **Resultados de aprendizaje** de cada materia abre su lista; cada resultado tiene a su vez sus
 **criterios de evaluación**. Son el catálogo sobre el que se evalúa en FP dual y en la FFE.
@@ -155,7 +155,7 @@ importar o exportar como texto (`RA1: descripción`, uno por línea) con los bot
 inferior de cada lista, y se arrastran de un curso a otro con
 [Copiar datos de otro curso](03-preparar-el-curso-academico.md#copiar-datos-de-otro-curso).
 
-## Días no lectivos
+## Días no lectivos {#dias-no-lectivos}
 
 **Gestión del centro → Días no lectivos** lista los días del curso en que no hay clase: festivos y
 puentes.
@@ -191,7 +191,7 @@ Elige en **Administrador/a local** a una o varias personas del profesorado y gua
   llega a todos los centros es la [administración de la plataforma](08-administrar-la-plataforma.md).
 - Procura que haya siempre al menos dos personas, para que nadie quede fuera si una cambia de centro.
 
-## Itinerarios de desplazamiento
+## Itinerarios de desplazamiento {#itinerarios-de-desplazamiento}
 
 **Gestión del centro → Itinerarios de desplazamiento** es el catálogo de trayectos que el profesorado
 selecciona al registrar un gasto de desplazamiento (por ejemplo, «Linares > Jaén > Linares»), con su

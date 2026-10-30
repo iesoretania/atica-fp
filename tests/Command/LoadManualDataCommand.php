@@ -305,11 +305,18 @@ class LoadManualDataCommand extends Command
                 ['Su preparación técnica era adecuada para las tareas encomendadas', 'range_1_5', true],
                 ['Observaciones', 'textarea', false],
             ],
+            'Satisfacción de la tutoría docente con las prácticas' => [
+                ['La empresa ha colaborado en el seguimiento del alumnado', 'range_1_5', true],
+                ['La comunicación con la tutoría laboral ha sido fluida', 'range_1_5', true],
+                ['Propuestas de mejora para la próxima convocatoria', 'textarea', false],
+            ],
         ];
 
+        $ids = [];
         foreach ($surveys as $title => $questions) {
             $connection->insert('survey', ['organization_id' => $organization, 'title' => $title]);
             $survey = (int) $connection->lastInsertId();
+            $ids[$title] = $survey;
             foreach ($questions as $order => [$description, $type, $mandatory]) {
                 $connection->insert('survey_question', [
                     'survey_id' => $survey,
@@ -320,5 +327,21 @@ class LoadManualDataCommand extends Command
                 ]);
             }
         }
+
+        // la convocatoria de FCT del centro usa las tres encuestas
+        $connection->executeStatement(
+            'UPDATE wpt_shift SET student_survey_id = ?, company_survey_id = ?, educational_tutor_survey_id = ?
+             WHERE subject_id IN (
+                 SELECT s.id FROM edu_subject s
+                 JOIN edu_grade g ON g.id = s.grade_id JOIN edu_training t ON t.id = g.training_id
+                 JOIN edu_academic_year ay ON ay.id = t.academic_year_id WHERE ay.organization_id = ?
+             )',
+            [
+                $ids['Satisfacción del alumnado con las prácticas'],
+                $ids['Satisfacción de la empresa con el alumnado'],
+                $ids['Satisfacción de la tutoría docente con las prácticas'],
+                $organization,
+            ]
+        );
     }
 }

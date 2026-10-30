@@ -66,6 +66,14 @@ nav:
       - 07-encuestas-y-plantillas-de-informe.md
       - 08-administrar-la-plataforma.md
       - 09-permisos-generales.md
+  - FCT (Formación en centros de trabajo):
+      - 10-fct-vision-general.md
+      - 11-fct-gestion.md
+      - 12-fct-tutoria-docente-y-de-grupo.md
+      - 13-fct-alumnado.md
+      - 14-fct-tutoria-laboral.md
+      - 15-fct-responsable-economico.md
+      - 16-fct-permisos.md
   - Anexos:
       - 90-resolucion-de-problemas.md
       - 92-despliegue-y-mantenimiento.md

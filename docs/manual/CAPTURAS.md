@@ -115,6 +115,7 @@ datos de relleno sin acuerdos, útiles para mostrar listas con contenido y para 
 | | `empresas-*` (listado, ficha, sedes) | `06` | No |
 | | `encuestas-*` y `plantillas-*` (listados, ficha de encuesta, preguntas, ficha de pregunta, ficha de plantilla) | `07` | No |
 | | `plataforma-*` (centros, ficha de centro, usuarios, ficha de usuario) | `08` | No |
+| `capture-fct.mjs` | `fct-*` de la administración (`fct-inicio-gestion`, convocatorias, actividades, acuerdos, calendario, seguimiento, informes, visitas y gastos), de la jefatura, la tutoría docente (`fct-tutoria-*`, `fct-jornada-*`), el alumnado (`fct-alumnado-*`), la tutoría laboral (`fct-laboral-*`) y el responsable económico (`fct-economico-*`) | `10` a `16` | No |
 
 Cada script nuevo se anota aquí al crearlo.
 

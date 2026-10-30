@@ -10,7 +10,7 @@ el **centro educativo** (la tutoría docente). Las preguntas de esas encuestas s
 **Gestión del centro → Encuestas**, y después se **asigna cada encuesta** a una convocatoria de FCT, a un
 proyecto de FP dual o a un programa de FFE (en los capítulos de cada módulo).
 
-![Listado de encuestas del centro: «Satisfacción de la empresa con el alumnado» y «Satisfacción del alumnado con las prácticas», con el botón «Preguntas» en cada una](img/encuestas-listado.png)
+![Listado de encuestas del centro: «Satisfacción de la empresa con el alumnado», «Satisfacción de la tutoría docente con las prácticas» y «Satisfacción del alumnado con las prácticas», con el botón «Preguntas» en cada una](img/encuestas-listado.png)
 
 Un mismo modelo de encuesta puede usarse en varios módulos y en varios cursos. Lo normal es tener un
 modelo por colectivo (alumnado, empresas, centro) y reutilizarlo.
