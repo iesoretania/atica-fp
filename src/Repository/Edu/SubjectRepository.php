@@ -141,6 +141,8 @@ class SubjectRepository extends ServiceEntityRepository
                 ->join('s.teachings', 't')
                 ->join('t.teacher', 'te')
                 ->andWhere('te.person = :person')
+                // docencia en ese grupo, no en otro grupo del mismo curso
+                ->andWhere('t.group = :group')
                 ->setParameter('person', $person);
         }
 

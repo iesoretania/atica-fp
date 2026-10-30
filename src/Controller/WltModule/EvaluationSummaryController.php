@@ -177,10 +177,20 @@ class EvaluationSummaryController extends AbstractController
 
         /** @var Person $user */
         $user = $this->getUser();
+
+        // la jefatura del departamento de la enseñanza también ve a todo su alumnado
+        $isDepartmentHead = $studentEnrollment->getGroup()->getGrade()->getTraining()->getDepartment()?->getHead()?->getPerson() === $user;
+        $seesEverything = $isGroupTutor || $isWltManager || $isDepartmentHead;
+
         $subjects = $subjectRepository->findByGroupAndPerson(
             $studentEnrollment->getGroup(),
-            $isGroupTutor || $isWltManager ? null : $user
+            $seesEverything ? null : $user
         );
+
+        // el resto del profesorado solo ve el informe del alumnado al que da clase
+        if (!$seesEverything && $subjects === []) {
+            throw $this->createAccessDeniedException();
+        }
 
         $report = [];
 

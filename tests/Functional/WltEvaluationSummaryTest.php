@@ -71,6 +71,35 @@ class WltEvaluationSummaryTest extends AppWebTestCase
         self::assertStringContainsString('Valoración de la empresa muy positiva', (string) $this->client->getResponse()->getContent());
     }
 
+    public function testATeacherOnlySeesTheReportOfTheStudentsTheyTeach(): void
+    {
+        // "profesor" da clase en 1º DAM A, que pasa a formar parte del proyecto de FP dual; el alumnado con acuerdos
+        // (alumno5 y alumno6) está en 2º DAM A, donde no imparte
+        $conn = $this->connection();
+        $project = (int) $conn->fetchOne('SELECT id FROM wlt_project WHERE organization_id = ? ORDER BY id LIMIT 1', [$this->getOrganization()->getId()]);
+        $conn->executeStatement('INSERT INTO wlt_project_group (project_id, group_id) VALUES (?, 1)', [$project]);
+        $this->login($this->getUser('alfa.profesor'));
+
+        $this->client->request('GET', self::BASE . '/' . $this->enrollmentId('alfa.alumno4'));
+        self::assertResponseIsSuccessful('Su propio alumnado');
+
+        foreach (['alfa.alumno5', 'alfa.alumno6'] as $student) {
+            $this->client->request('GET', self::BASE . '/' . $this->enrollmentId($student));
+            self::assertResponseStatusCodeSame(403, $student);
+        }
+    }
+
+    public function testTeachersOfTheGroupAndTheGroupTutorStillSeeTheirStudents(): void
+    {
+        // "tutor" da clase y es tutor del grupo 2º DAM A
+        $this->login($this->getUser('alfa.tutor'));
+
+        foreach (['alfa.alumno5', 'alfa.alumno6'] as $student) {
+            $this->client->request('GET', self::BASE . '/' . $this->enrollmentId($student));
+            self::assertResponseIsSuccessful($student);
+        }
+    }
+
     /**
      * @return iterable<string, array{string}>
      */
