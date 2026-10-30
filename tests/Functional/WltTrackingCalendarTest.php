@@ -322,4 +322,134 @@ class WltTrackingCalendarTest extends AppWebTestCase
 
         self::assertNotSame('Con el acuerdo cerrado', $this->reload($workDay)->getNotes());
     }
+
+    private function weekCode(WorkDay $workDay): int
+    {
+        $date = $workDay->getDate();
+
+        return (int) $date->format('o') * 100 + (int) $date->format('W');
+    }
+
+    public function testTutorUnlocksAWeek(): void
+    {
+        $workDay = $this->workDayOf('alfa.alumno5');
+        $this->login($this->getUser('alfa.tutor'));
+
+        $this->client->request('POST', $this->operationUrl($workDay), ['lock_week' => $this->weekCode($workDay)]);
+        self::assertTrue($this->reload($workDay)->isLocked());
+
+        $this->client->request('POST', $this->operationUrl($workDay), ['unlock_week' => $this->weekCode($workDay)]);
+
+        self::assertResponseRedirects();
+        self::assertFalse($this->reload($workDay)->isLocked());
+    }
+
+    public function testStudentCannotUnlockAWeek(): void
+    {
+        $workDay = $this->workDayOf('alfa.alumno5');
+        $this->lock($workDay);
+        $this->login($this->getUser('alfa.alumno5'));
+
+        $this->client->request('POST', $this->operationUrl($workDay), ['unlock_week' => $this->weekCode($workDay)]);
+
+        self::assertResponseStatusCodeSame(403);
+        self::assertTrue($this->reload($workDay)->isLocked());
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function participantProvider(): iterable
+    {
+        yield 'alumno' => ['alfa.alumno5'];
+        yield 'tutor docente' => ['alfa.tutor'];
+        yield 'tutor laboral' => ['alfa.tutorlaboral'];
+        yield 'coordinador' => ['alfa.coordinador'];
+        yield 'jefe de departamento' => ['alfa.jefe'];
+        yield 'administrador' => ['alfa.admin'];
+    }
+
+    /**
+     * @dataProvider participantProvider
+     */
+    public function testParticipantsOpenTheCalendarAndGetTheReports(string $username): void
+    {
+        $workDay = $this->workDayOf('alfa.alumno5');
+        $agreement = $workDay->getAgreement()->getId();
+        $this->login($this->getUser($username));
+
+        $this->client->request('GET', "/dual/seguimiento/calendario/$agreement");
+        self::assertResponseIsSuccessful($username);
+
+        $this->client->request('GET', "/dual/seguimiento/calendario/$agreement/asistencia");
+        self::assertResponseIsSuccessful($username . ' asistencia');
+        self::assertStringContainsString('application/pdf', (string) $this->client->getResponse()->headers->get('Content-Type'));
+
+        $year = intdiv($this->weekCode($workDay), 100);
+        $week = $this->weekCode($workDay) % 100;
+        $this->client->request('GET', "/dual/seguimiento/calendario/$agreement/informe/descargar/$year/$week");
+        self::assertResponseIsSuccessful($username . ' actividades');
+        self::assertStringContainsString('application/pdf', (string) $this->client->getResponse()->headers->get('Content-Type'));
+    }
+
+    public function testWeeklyReportIsRequestedFromTheCalendarAndDraftWeeksAreMarked(): void
+    {
+        $workDay = $this->workDayOf('alfa.alumno5');
+        $this->login($this->getUser('alfa.tutor'));
+
+        $this->client->request('POST', $this->operationUrl($workDay), ['week_report' => $this->weekCode($workDay)]);
+        self::assertResponseRedirects();
+        $this->client->followRedirect();
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('application/pdf', (string) $this->client->getResponse()->headers->get('Content-Type'));
+
+        // con la semana cerrada se genera igualmente, sin la marca de borrador
+        $this->client->request('POST', $this->operationUrl($workDay), ['lock_week' => $this->weekCode($workDay)]);
+        $this->client->request('POST', $this->operationUrl($workDay), ['week_report' => $this->weekCode($workDay)]);
+        $this->client->followRedirect();
+        self::assertResponseIsSuccessful();
+    }
+
+    public function testWeekWithoutWorkDaysReturnsToTheCalendar(): void
+    {
+        $agreement = $this->agreementOf('alfa.alumno5')->getId();
+        $this->login($this->getUser('alfa.tutor'));
+
+        $this->client->request('GET', "/dual/seguimiento/calendario/$agreement/informe/descargar/2000/1");
+
+        self::assertResponseRedirects("/dual/seguimiento/calendario/$agreement");
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function nonParticipantProvider(): iterable
+    {
+        yield 'alumno de otro acuerdo' => ['alfa.alumno6'];
+        yield 'tutor laboral de otro acuerdo' => ['alfa.tutorlaboral2'];
+        yield 'gestor de la FFE' => ['alfa.gestorffe'];
+        yield 'responsable económico' => ['alfa.economico'];
+        yield 'administrador de otro centro' => ['beta.admin'];
+    }
+
+    /**
+     * @dataProvider nonParticipantProvider
+     */
+    public function testNonParticipantsCannotOpenTheCalendarOrTheReports(string $username): void
+    {
+        $workDay = $this->workDayOf('alfa.alumno5');
+        $agreement = $workDay->getAgreement()->getId();
+        $year = intdiv($this->weekCode($workDay), 100);
+        $week = $this->weekCode($workDay) % 100;
+        $this->login($this->getUser($username), true, str_starts_with($username, 'beta.') ? \App\Tests\Fixtures\DemoData::ORG_B_CODE : \App\Tests\Fixtures\DemoData::ORG_A_CODE);
+
+        foreach ([
+            "/dual/seguimiento/calendario/$agreement",
+            "/dual/seguimiento/calendario/$agreement/asistencia",
+            "/dual/seguimiento/calendario/$agreement/informe/descargar/$year/$week",
+        ] as $url) {
+            $this->client->request('GET', $url);
+            self::assertResponseStatusCodeSame(403, $username . ' ' . $url);
+        }
+    }
 }
