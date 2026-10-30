@@ -54,8 +54,15 @@ class PersonAPIController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // sin identificador no hay contraseña inicial que dar: se genera una que nadie conoce y la persona
+            // entra con «¿Olvidó la contraseña?»
             $uid = $form->get('uniqueIdentifier')->getData();
-            $newPerson->setPassword($passwordEncoder->hashPassword($newPerson, $uid));
+            if ($uid === null || $uid === '') {
+                $uid = bin2hex(random_bytes(16));
+            }
+            $newPerson
+                ->setPassword($passwordEncoder->hashPassword($newPerson, $uid))
+                ->setForcePasswordChange(true);
             $em->persist($newPerson);
             $em->flush();
 

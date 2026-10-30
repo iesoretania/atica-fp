@@ -88,6 +88,7 @@ x.x.x (xxxx-xx-xx)
 * fix: En FCT, la tutoría laboral ya no puede abrir el listado de encuestas del alumnado, que tampoco aparece en su menú
 * fix: El responsable económico ya no ve en su menú las escalas de valoración ni las encuestas de FCT, a las que no tiene acceso
 * fix: Las preguntas de encuesta de tipo «Número del 0 al 10» no mostraban ninguna opción de respuesta y no se podían contestar
+* fix (security): Las personas dadas de alta desde los acuerdos y las empresas (tutorías laborales, gerentes) deben cambiar su contraseña inicial en el primer acceso, y registrarlas sin identificador ya no produce un error
 
 7.6.3 (2026-05-06)
 ------------------
