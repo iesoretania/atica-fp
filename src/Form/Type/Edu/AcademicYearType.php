@@ -29,6 +29,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AcademicYearType extends AbstractType
@@ -65,6 +66,9 @@ class AcademicYearType extends AbstractType
             ->add('endDate', null, [
                 'label' => 'form.end_date',
                 'widget' => 'single_text',
+                'constraints' => [
+                    new GreaterThan(propertyPath: 'parent.all[startDate].data', message: 'academic_year.end_date.invalid')
+                ],
                 'required' => true
             ])
             ->add('principal', EntityType::class, [
