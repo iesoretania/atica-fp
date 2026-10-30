@@ -222,6 +222,7 @@ class ProjectController extends AbstractController
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_MANAGE, $organization);
+        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
         $em = $managerRegistry->getManager();
 
@@ -285,7 +286,11 @@ class ProjectController extends AbstractController
         if (count($items) === 0) {
             return $this->redirectToRoute('work_linked_training_project_list');
         }
-        $selectedItems = $projectRepository->findAllInListByIdAndOrganization($items, $organization);
+        // solo se pueden borrar los proyectos que el usuario puede gestionar, no todos los del centro
+        $selectedItems = array_values(array_filter(
+            $projectRepository->findAllInListByIdAndOrganization($items, $organization),
+            fn(Project $project): bool => $this->isGranted(ProjectVoter::MANAGE, $project)
+        ));
 
         if ($request->get('confirm', '') === 'ok') {
             try {
