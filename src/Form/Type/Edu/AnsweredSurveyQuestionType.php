@@ -65,6 +65,7 @@ class AnsweredSurveyQuestionType extends AbstractType
                     break;
                 case SurveyQuestion::RANGE_0_5:
                 case SurveyQuestion::RANGE_1_5:
+                case SurveyQuestion::RANGE_0_10:
                 case SurveyQuestion::RANGE_1_10:
                     if ($type === SurveyQuestion::RANGE_1_5) {
                         $min = 1;

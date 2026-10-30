@@ -108,6 +108,33 @@ class SurveyFormsTest extends AppWebTestCase
         self::assertResponseIsSuccessful();
     }
 
+    /**
+     * @return iterable<string, array{string, int}> tipo de pregunta numérica y número de valores que ofrece
+     */
+    public static function numericQuestionProvider(): iterable
+    {
+        yield 'del 0 al 5' => ['range_0_5', 6];
+        yield 'del 1 al 5' => ['range_1_5', 5];
+        yield 'del 0 al 10' => ['range_0_10', 11];
+        yield 'del 1 al 10' => ['range_1_10', 10];
+    }
+
+    /**
+     * @dataProvider numericQuestionProvider
+     */
+    public function testEveryNumericQuestionTypeOffersItsValues(string $type, int $expected): void
+    {
+        $this->enableSurveys();
+        static::getContainer()->get('doctrine')->getConnection()->executeStatement('UPDATE survey_question SET type = ?', [$type]);
+        $this->login($this->getUser('alfa.alumno1'));
+
+        $crawler = $this->client->request('GET', $this->studentFormUrls()['FCT']);
+
+        self::assertCount($expected, $crawler->filter('input[name="answered_survey[answers][0][numericValue]"]')->reduce(
+            static fn(Crawler $input): bool => $input->attr('value') !== ''
+        ));
+    }
+
     public function testStudentAnswersTheirSurveyOnce(): void
     {
         $this->enableSurveys();
