@@ -68,6 +68,8 @@ x.x.x (xxxx-xx-xx)
 * fix: Ya no se produce un error al borrar o copiar acuerdos con identificadores que no existen en FCT y en FP dual
 * fix: Al importar competencias, resultados de aprendizaje, criterios y actividades desde texto con saltos de línea de Windows ya no se guarda un salto de línea al final de cada descripción
 * fix: El botón de guardar y el token de seguridad de los formularios de encuestas de FCT, FP dual y FFE quedan ahora dentro del formulario
+* fix: El jefe de departamento ya puede abrir el formulario de nueva convocatoria de FCT sin que se produzca un error
+* fix (security): El jefe de departamento solo puede crear convocatorias de FCT para materias de las enseñanzas de su departamento
 
 7.6.3 (2026-05-06)
 ------------------

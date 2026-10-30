@@ -159,6 +159,7 @@ class ShiftController extends AbstractController
 
         $form = $this->createForm(ShiftType::class, $shift, [
             'lock_manager' => !$isManager,
+            'person' => $this->getUser(),
             'academic_year' => $academicYear
         ]);
 

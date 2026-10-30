@@ -114,6 +114,12 @@ class ShiftVoter extends CachedVoter
             return true;
         }
 
+        // una convocatoria nueva todavía no tiene materia, y por tanto departamento: quien llegue hasta aquí ya ha
+        // pasado la comprobación de gestor de FCT del controlador, y el formulario solo le ofrece sus materias
+        if (!$subject->getGrade()) {
+            return $attribute === self::MANAGE;
+        }
+
         $isCurrentAcademicYear = $subject->getGrade()->getTraining()
                 ->getAcademicYear() === $organization->getCurrentAcademicYear();
 

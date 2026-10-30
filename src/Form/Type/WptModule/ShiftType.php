@@ -53,6 +53,15 @@ class ShiftType extends AbstractType
 
         $subjects = $this->subjectRepository->findByAcademicYear($academicYear);
 
+        // quien no administra el centro (el jefe de departamento) solo puede elegir materias de sus enseñanzas
+        if ($options['lock_manager'] && $options['person'] !== null) {
+            $subjects = array_values(array_filter(
+                $subjects,
+                static fn(Subject $subject): bool => $subject->getGrade()?->getTraining()?->getDepartment()?->getHead()?->getPerson()
+                    === $options['person']
+            ));
+        }
+
         $surveys = $this->surveyRepository->findByOrganization($organization);
 
         $templates = $this->reportTemplateRepository->findByOrganization($organization);
@@ -180,6 +189,7 @@ class ShiftType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Shift::class,
             'lock_manager' => false,
+            'person' => null,
             'academic_year' => null,
             'translation_domain' => 'wpt_shift'
         ]);
