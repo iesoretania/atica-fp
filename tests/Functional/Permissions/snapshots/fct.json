@@ -549,7 +549,7 @@
                         "tutor": true,
                         "otro-tutor": true,
                         "alumno": true,
-                        "tutor-laboral": true,
+                        "tutor-laboral": false,
                         "economico": false,
                         "resto": false
                     }

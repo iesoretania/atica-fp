@@ -96,6 +96,16 @@ class SurveyController extends AbstractController
         }
         $this->denyAccessUnlessGranted(OrganizationVoter::WPT_ACCESS, $organization);
 
+        // la tutoría laboral no participa en la encuesta del alumnado (igual que en el menú)
+        if (!$this->isGranted(OrganizationVoter::WPT_MANAGER, $organization) &&
+            !$this->isGranted(OrganizationVoter::WPT_DEPARTMENT_HEAD, $organization) &&
+            !$this->isGranted(OrganizationVoter::WPT_EDUCATIONAL_TUTOR, $organization) &&
+            !$this->isGranted(OrganizationVoter::WPT_GROUP_TUTOR, $organization) &&
+            !$this->isGranted(OrganizationVoter::WPT_STUDENT, $organization)
+        ) {
+            throw $this->createAccessDeniedException();
+        }
+
         $title = $translator->trans('title.survey.student.list', [], 'wpt_survey');
 
         /** @var Person $person */

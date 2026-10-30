@@ -85,6 +85,7 @@ x.x.x (xxxx-xx-xx)
 * fix: El botón de volver de la encuesta de centro de FCT, FP dual y FFE vuelve ahora al listado del curso académico correcto
 * fix: Ya no se puede guardar un curso académico cuya fecha de fin no es posterior a la de inicio
 * fix (security): En FP dual, el alumnado de un proyecto y su borrado solo los gestiona quien puede gestionar ese proyecto, no cualquier coordinador o jefe de departamento del centro
+* fix: En FCT, la tutoría laboral ya no puede abrir el listado de encuestas del alumnado, que tampoco aparece en su menú
 
 7.6.3 (2026-05-06)
 ------------------
