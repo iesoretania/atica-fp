@@ -68,6 +68,29 @@ class MenuLinksTest extends AppWebTestCase
     }
 
     /**
+     * El profesorado que solo da clase en FP dual no participa en ninguna encuesta: no debe ver la entrada
+     */
+    public function testTeachingOnlyStaffIsNotOfferedAnEmptySurveySection(): void
+    {
+        $db = static::getContainer()->get('doctrine')->getConnection();
+        $db->executeStatement(
+            'INSERT INTO edu_teaching (teacher_id, group_id, subject_id)
+             SELECT t.id, se.group_id, (SELECT s.id FROM edu_subject s JOIN edu_group g ON g.grade_id = s.grade_id WHERE g.id = se.group_id LIMIT 1)
+             FROM edu_teacher t
+             JOIN person p ON p.id = t.person_id AND p.login_username = ?
+             JOIN edu_student_enrollment se ON se.person_id = (SELECT id FROM person WHERE login_username = ?)
+             WHERE t.academic_year_id = ? AND NOT EXISTS (SELECT 1 FROM edu_teaching x WHERE x.teacher_id = t.id)',
+            ['alfa.director', 'alfa.alumno5', $this->getOrganization()->getCurrentAcademicYear()->getId()]
+        );
+        $this->login($this->getUser('alfa.director'));
+
+        $links = $this->menuLinks('/dual');
+
+        self::assertNotEmpty($links);
+        self::assertSame([], array_filter($links, static fn(string $link): bool => str_starts_with($link, '/dual/encuesta')));
+    }
+
+    /**
      * @return array<string, string> enlaces internos del menú y de las tarjetas de la página, por ruta
      */
     private function menuLinks(string $path): array

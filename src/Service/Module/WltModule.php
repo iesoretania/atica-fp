@@ -193,6 +193,11 @@ class WltModule implements ModuleBuilderInterface
                 $menu2->addChild($menu3);
             }
 
+            // el profesorado del grupo no participa en ninguna encuesta: no se le ofrece una entrada vacía
+            if ($menu2->getChildren()->isEmpty()) {
+                $menu1->removeChild($menu2);
+            }
+
             if ($this->security->isGranted(OrganizationVoter::WLT_MANAGE, $organization)
             ) {
                 $menu2 = new MenuItem();
