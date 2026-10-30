@@ -56,3 +56,16 @@ plugins:
 # La navegación se completa a medida que se redactan los capítulos (ver el plan en docs/manual/README.md).
 nav:
   - Introducción: index.md
+  - Funcionalidad general:
+      - 01-instalacion-y-puesta-en-marcha.md
+      - 02-primeros-pasos.md
+      - 03-preparar-el-curso-academico.md
+      - 04-administrar-el-centro.md
+      - 05-importaciones.md
+      - 06-empresas-y-centros-de-trabajo.md
+      - 07-encuestas-y-plantillas-de-informe.md
+      - 08-administrar-la-plataforma.md
+      - 09-permisos-generales.md
+  - Anexos:
+      - 90-resolucion-de-problemas.md
+      - 92-despliegue-y-mantenimiento.md

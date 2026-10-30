@@ -15,7 +15,7 @@ const administracion = [
     ['preparar-curso-listado', '/centro/cursoacademico/listar/1'],
     ['preparar-curso-formulario', '/centro/cursoacademico/1'],
     ['preparar-curso-copiar', '/centro/cursoacademico/copiar/1'],
-    ['preparar-curso-inicio-centro', '/centro'],
+    ['preparar-curso-inicio-centro', '/centro', { fullPage: true }],
     // 04 · administrar el centro
     ['centro-profesorado', '/centro/profesorado/listar/1/1'],
     ['centro-profesorado-formulario', '/centro/profesorado/nuevo'],
@@ -57,6 +57,46 @@ for (const [name, path, options] of administracion) {
     await shot(sesionAdministracion, name, options);
 }
 
+// ── 04 · fichas que se abren desde un listado ───────────────────────────────
+for (const [name, list, link] of [
+    ['centro-profesorado-ficha', '/centro/profesorado/listar/1/1', 'Jiménez Aranda, Marta'],
+    ['centro-matricula-ficha', '/centro/matricula/listar/1/1', 'Fernández Ortiz, Daniel'],
+    ['centro-materia-ficha', '/centro/materia/listar/1/1', 'Programación'],
+    ['centro-departamento-ficha', '/centro/departamento/listar/1/1', 'Informática'],
+]) {
+    console.log(name);
+    await open(sesionAdministracion, list);
+    await sesionAdministracion.getByRole('link', { name: link, exact: true }).first().click();
+    await sesionAdministracion.waitForLoadState('networkidle');
+    await shot(sesionAdministracion, name, { fullPage: true });
+}
+
+// ── 07 · encuesta: ficha, preguntas y una pregunta; plantilla de informe ────
+console.log('encuestas-*');
+await open(sesionAdministracion, '/centro/encuesta/listar/1');
+await sesionAdministracion.getByRole('link', { name: 'Satisfacción del alumnado con las prácticas' }).first().click();
+await sesionAdministracion.waitForLoadState('networkidle');
+await shot(sesionAdministracion, 'encuestas-formulario');
+await open(sesionAdministracion, '/centro/encuesta/listar/1');
+await sesionAdministracion.getByRole('row', { name: /alumnado con las prácticas/ }).getByRole('link', { name: 'Preguntas' }).click();
+await sesionAdministracion.waitForLoadState('networkidle');
+await shot(sesionAdministracion, 'encuestas-preguntas', { fullPage: true });
+await sesionAdministracion.getByRole('link', { name: 'Valoración global de las prácticas (0 a 10)' }).first().click();
+await sesionAdministracion.waitForLoadState('networkidle');
+await shot(sesionAdministracion, 'encuestas-pregunta-formulario');
+await open(sesionAdministracion, '/centro/plantilla/listar/1');
+await sesionAdministracion.getByRole('link', { name: 'Papel con membrete del centro' }).first().click();
+await sesionAdministracion.waitForLoadState('networkidle');
+await shot(sesionAdministracion, 'plantillas-formulario');
+
+// ── 04 · el responsable económico solo ve itinerarios (y escalas) ───────────
+const economico = await newSession();
+await login(economico, 'economico');
+await open(economico, '/centro');
+await shot(economico, 'centro-economico-inicio');
+await open(economico, '/centro/itinerario/listar/1');
+await shot(economico, 'centro-itinerarios-economico');
+
 // ── 02 · acceso sin sesión y recuperación de contraseña ─────────────────────
 const anonimo = await newSession();
 await open(anonimo, '/restablecer');
@@ -65,6 +105,11 @@ await shot(anonimo, 'primeros-pasos-recuperar-contrasena');
 // ── 08 · plataforma ─────────────────────────────────────────────────────────
 const plataforma = await newSession();
 await login(plataforma, 'plataforma');
+// quien tiene acceso a varios centros elige uno al entrar
+await shot(plataforma, 'primeros-pasos-seleccion-centro', { clip: { x: 380, y: 0, width: 600, height: 380 } });
+await plataforma.locator('input[type="radio"]').first().check();
+await plataforma.click('button[type="submit"]');
+await plataforma.waitForLoadState('networkidle');
 for (const [name, path] of [
     ['plataforma-organizaciones', '/admin/organizaciones/listar/1'],
     ['plataforma-organizacion-formulario', '/admin/organizaciones/1'],

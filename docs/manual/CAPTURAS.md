@@ -108,6 +108,13 @@ datos de relleno sin acuerdos, útiles para mostrar listas con contenido y para 
 | Script | Imágenes (`docs/manual/img/`) | Capítulo | ¿Modifica datos? |
 | --- | --- | --- | --- |
 | `capture-primeros-pasos.mjs` | `primeros-pasos-acceso`, `-inicio`, `-datos-personales` | `02` | No |
+| `capture-parte-general.mjs` | `primeros-pasos-recuperar-contrasena`, `-seleccion-centro` | `02` | No |
+| | `preparar-curso-*` (listado, formulario, copiar, inicio del centro) | `03` | No |
+| | `centro-*` (profesorado, matrículas, departamentos, enseñanzas, niveles, grupos, materias, resultados, días no lectivos, tipos de contacto, roles, itinerarios, escalas y las fichas de cada uno; `centro-economico-inicio` y `centro-itinerarios-economico` con el perfil de responsable económico) | `04` | No |
+| | `importaciones-*` (inicio, profesorado, grupos, alumnado, usuarios PASEN, días no lectivos) | `05` | No |
+| | `empresas-*` (listado, ficha, sedes) | `06` | No |
+| | `encuestas-*` y `plantillas-*` (listados, ficha de encuesta, preguntas, ficha de pregunta, ficha de plantilla) | `07` | No |
+| | `plataforma-*` (centros, ficha de centro, usuarios, ficha de usuario) | `08` | No |
 
 Cada script nuevo se anota aquí al crearlo.
 

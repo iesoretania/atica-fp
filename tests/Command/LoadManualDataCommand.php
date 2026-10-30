@@ -67,6 +67,33 @@ class LoadManualDataCommand extends Command
         'alfa.alumno8' => ['sgallego', 'Sara', 'Gallego Roldán'],
     ];
 
+    /**
+     * Personas del segundo centro (I.E.S. Miguel Hernández), que salen en los listados de la administración de
+     * la plataforma: nombre de usuario de las fixtures => [usuario, nombre, apellidos]
+     *
+     * @var array<string, array{string, string, string}>
+     */
+    private const SECOND_CENTER_PROFILES = [
+        'beta.admin' => ['cmolina', 'Cristina', 'Molina Herrera'],
+        'beta.director' => ['gmarin', 'Gloria', 'Marín Lozano'],
+        'beta.economico' => ['ocastro', 'Óscar', 'Castro Prieto'],
+        'beta.jefe' => ['fvidal', 'Fernando', 'Vidal Rojas'],
+        'beta.tutor' => ['rsoto', 'Rosa', 'Soto Camacho'],
+        'beta.profesor' => ['mbravo', 'Manuel', 'Bravo Ibáñez'],
+        'beta.coordinador' => ['vleon', 'Verónica', 'León Cano'],
+        'beta.gestorffe' => ['jparra', 'Jorge', 'Parra Duarte'],
+        'beta.tutorlaboral' => ['dcarmona', 'David', 'Carmona Pons'],
+        'beta.tutorlaboral2' => ['lmendez', 'Laura', 'Méndez Gil'],
+        'beta.alumno1' => ['jsantos', 'Javier', 'Santos Moya'],
+        'beta.alumno2' => ['mpascual', 'Marta', 'Pascual Rey'],
+        'beta.alumno3' => ['ecano', 'Eric', 'Cano Vázquez'],
+        'beta.alumno4' => ['nduran', 'Nuria', 'Durán Salas'],
+        'beta.alumno5' => ['bcrespo', 'Bruno', 'Crespo Lara'],
+        'beta.alumno6' => ['ahidalgo', 'Alicia', 'Hidalgo Mena'],
+        'beta.alumno7' => ['pescudero', 'Pablo', 'Escudero Ríos'],
+        'beta.alumno8' => ['isanz', 'Inés', 'Sanz Llorente'],
+    ];
+
     private const FIRST_NAMES = [
         'Lucas', 'Martina', 'Mateo', 'Valeria', 'Pablo', 'Julia', 'Álvaro', 'Paula', 'Diego', 'Claudia',
         'Javier', 'Alba', 'Rubén', 'Marina', 'Iván', 'Natalia', 'Óscar', 'Elena', 'Marcos', 'Andrea',
@@ -117,7 +144,7 @@ class LoadManualDataCommand extends Command
             return Command::FAILURE;
         }
 
-        foreach (self::PROFILES as [$username]) {
+        foreach ([...self::PROFILES, ...self::SECOND_CENTER_PROFILES] as [$username]) {
             $this->usernames[$username] = true;
         }
 
@@ -230,6 +257,12 @@ class LoadManualDataCommand extends Command
                     [$username, $username, $firstName, $lastName, $username . '@' . self::emailDomain(), $old]
                 );
             }
+            foreach (self::SECOND_CENTER_PROFILES as $old => [$username, $firstName, $lastName]) {
+                $connection->executeStatement(
+                    'UPDATE person SET login_username = ?, unique_identifier = ?, first_name = ?, last_name = ?, email_address = ? WHERE login_username = ?',
+                    [$username, $username, $firstName, $lastName, $username . '@mhernandez.example', $old]
+                );
+            }
             $connection->executeStatement(
                 'UPDATE organization SET name = ?, code = ?, city = ?, address = ?, zip_code = ?, phone_number = ?, email_address = ? WHERE code = ?',
                 [self::ORGANIZATION_NAME, self::ORGANIZATION_CODE, 'Linares', 'Calle Ramón y Cajal, 12', '23700', '953 00 00 00', 'direccion@' . self::emailDomain(), DemoData::ORG_A_CODE]
@@ -238,10 +271,54 @@ class LoadManualDataCommand extends Command
                 'UPDATE organization SET name = ?, code = ?, city = ? WHERE code = ?',
                 ['I.E.S. Miguel Hernández', '29700457', 'Úbeda', DemoData::ORG_B_CODE]
             );
+            $connection->executeStatement(
+                'UPDATE edu_report_template SET description = ? WHERE organization_id = (SELECT id FROM organization WHERE code = ?)',
+                ['Papel con membrete del centro', self::ORGANIZATION_CODE]
+            );
+            $this->addSurveys($connection);
             $connection->commit();
         } catch (\Throwable $e) {
             $connection->rollBack();
             throw $e;
+        }
+    }
+
+    /**
+     * Encuestas del centro (capítulo «Encuestas y plantillas de informe»): una de satisfacción del alumnado, con
+     * todos los tipos de pregunta, y otra, más corta, para las empresas. Sin respuestas, así que se pueden editar.
+     */
+    private function addSurveys(Connection $connection): void
+    {
+        $organization = (int) $connection->fetchOne('SELECT id FROM organization WHERE code = ?', [self::ORGANIZATION_CODE]);
+
+        $surveys = [
+            'Satisfacción del alumnado con las prácticas' => [
+                ['La empresa me recibió y me explicó cómo se trabaja', 'range_1_5', true],
+                ['Las tareas que he realizado se corresponden con mi ciclo formativo', 'range_1_5', true],
+                ['He recibido el apoyo de mi tutor o tutora laboral', 'range_1_5', true],
+                ['Valoración global de las prácticas (0 a 10)', 'range_0_10', true],
+                ['Lo que más me ha gustado', 'text', false],
+                ['Comentarios y sugerencias para mejorar', 'textarea', false],
+            ],
+            'Satisfacción de la empresa con el alumnado' => [
+                ['El alumno o la alumna se ha integrado en el equipo', 'range_1_5', true],
+                ['Su preparación técnica era adecuada para las tareas encomendadas', 'range_1_5', true],
+                ['Observaciones', 'textarea', false],
+            ],
+        ];
+
+        foreach ($surveys as $title => $questions) {
+            $connection->insert('survey', ['organization_id' => $organization, 'title' => $title]);
+            $survey = (int) $connection->lastInsertId();
+            foreach ($questions as $order => [$description, $type, $mandatory]) {
+                $connection->insert('survey_question', [
+                    'survey_id' => $survey,
+                    'description' => $description,
+                    'type' => $type,
+                    'mandatory' => $mandatory ? 1 : 0,
+                    'order_nr' => $order + 1,
+                ]);
+            }
         }
     }
 }
