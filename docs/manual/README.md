@@ -75,6 +75,21 @@ Equivale a ejecutar `make docs-pdf` y `make docs-web`.
 4. Las imágenes van en `img/` con un nombre que empiece por el del capítulo, y siempre con texto
    alternativo que describa lo que se ve.
 
+## Matrices de permisos
+
+La matriz de permisos de cada módulo **no se escribe a mano**: sale de una instantánea que un test verifica
+contra el código.
+
+- `tests/Functional/Permissions/PermissionMatrix.php` define las acciones (una pantalla o un borrado sin
+  confirmar) y los perfiles (cada uno, un usuario de las fixtures).
+- `PermissionMatrixTest` inicia sesión con cada perfil, hace cada petición y compara el resultado con
+  `tests/Functional/Permissions/snapshots/<módulo>.json`. Si alguien cambia un permiso, el test falla y
+  obliga a decidir si el cambio es intencionado y a actualizar el manual.
+- Tras un cambio intencionado: `UPDATE_PERMISSION_MATRIX=1 APP_ENV=test php bin/phpunit tests/Functional/Permissions`,
+  revisar el diff del JSON y regenerar la tabla.
+- La tabla en Markdown, lista para el capítulo, se obtiene con `php scripts/render-permission-matrix.php fct`.
+  Los matices que no son sí/no («solo de sus propios acuerdos») se escriben a mano bajo la tabla.
+
 ## Regenerar las capturas
 
 Las capturas salen de scripts de Node/[Playwright](https://playwright.dev) en `scripts/screenshots/`,

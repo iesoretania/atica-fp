@@ -1,0 +1,705 @@
+{
+    "module": "fct",
+    "title": "FCT",
+    "profiles": {
+        "admin": {
+            "label": "Administración del centro",
+            "user": "alfa.admin"
+        },
+        "jefe": {
+            "label": "Jefatura de departamento",
+            "user": "alfa.jefe"
+        },
+        "tutor": {
+            "label": "Tutoría docente y de grupo",
+            "user": "alfa.tutor"
+        },
+        "otro-tutor": {
+            "label": "Tutoría docente de otro acuerdo",
+            "user": "alfa.profesor"
+        },
+        "alumno": {
+            "label": "Alumnado del acuerdo",
+            "user": "alfa.alumno1"
+        },
+        "tutor-laboral": {
+            "label": "Tutoría laboral del acuerdo",
+            "user": "alfa.tutorlaboral"
+        },
+        "economico": {
+            "label": "Responsable económico",
+            "user": "alfa.economico"
+        },
+        "resto": {
+            "label": "Resto del personal",
+            "user": "alfa.gestorffe"
+        }
+    },
+    "sections": [
+        {
+            "title": "Convocatorias y actividades",
+            "actions": [
+                {
+                    "label": "Ver el listado de convocatorias",
+                    "request": "GET /fct/convocatoria/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Crear una convocatoria",
+                    "request": "GET /fct/convocatoria/nueva/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar una convocatoria",
+                    "request": "GET /fct/convocatoria/{shift}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar convocatorias",
+                    "request": "POST /fct/convocatoria/eliminar/{year} items[]={shift}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver las actividades de una convocatoria",
+                    "request": "GET /fct/actividad/{shift}/listar/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Crear una actividad",
+                    "request": "GET /fct/actividad/nueva/{shift}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Copiar actividades de otra convocatoria",
+                    "request": "GET /fct/actividad/copiar/{shift}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Copiar actividades de un proyecto de FP dual",
+                    "request": "GET /fct/actividad/copiar/dual/{shift}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Importar actividades desde texto",
+                    "request": "POST /fct/actividad/importar/{shift}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar actividades",
+                    "request": "POST /fct/actividad/operacion/{shift} items[]={activity}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Acuerdos",
+            "actions": [
+                {
+                    "label": "Ver los acuerdos de una convocatoria",
+                    "request": "GET /fct/acuerdo/{shift}/listar/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Crear un acuerdo",
+                    "request": "GET /fct/acuerdo/nuevo/{shift}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar un acuerdo",
+                    "request": "GET /fct/acuerdo/{agreement}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Gestionar el alumnado de un acuerdo",
+                    "request": "GET /fct/acuerdo/estudiante/{enrollment}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Descargar el programa formativo de un acuerdo",
+                    "request": "GET /fct/acuerdo/programa/descargar/{agreement}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar acuerdos",
+                    "request": "POST /fct/acuerdo/operacion/{shift} items[]={agreement}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver el calendario de un acuerdo",
+                    "request": "GET /fct/convenio/calendario/{agreement}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Seguimiento diario",
+            "actions": [
+                {
+                    "label": "Ver el seguimiento del alumnado",
+                    "request": "GET /fct/seguimiento/acuerdo/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir el calendario de seguimiento de un alumno",
+                    "request": "GET /fct/seguimiento/calendario/{enrollment}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Descargar la hoja de asistencia",
+                    "request": "GET /fct/seguimiento/calendario/{enrollment}/asistencia/descargar",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Descargar el resumen de actividades",
+                    "request": "GET /fct/seguimiento/calendario/{enrollment}/actividades/descargar",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver los informes finales",
+                    "request": "GET /fct/informe/acuerdo/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "alumno": false,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir el informe final para cumplimentarlo",
+                    "request": "GET /fct/informe/cumplimentar/{enrollment}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Descargar el informe final",
+                    "request": "GET /fct/informe/descargar/{enrollment}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Visitas",
+            "actions": [
+                {
+                    "label": "Ver el resumen de visitas del profesorado",
+                    "request": "GET /fct/visita/resumen/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver las visitas de un docente",
+                    "request": "GET /fct/visita/{teacher}/listar/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Registrar una visita",
+                    "request": "GET /fct/visita/nueva/{teacher}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Descargar el informe de visitas",
+                    "request": "GET /fct/visita/{teacher}/descargar",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar visitas",
+                    "request": "POST /fct/visita/eliminar/{teacher} items[]={visit}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Gastos de desplazamiento",
+            "actions": [
+                {
+                    "label": "Ver el resumen de gastos del profesorado",
+                    "request": "GET /fct/desplazamiento/resumen/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver los gastos de un docente",
+                    "request": "GET /fct/desplazamiento/{teacher}/listar/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Registrar un gasto",
+                    "request": "GET /fct/desplazamiento/nuevo/{teacher}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Descargar el informe de gastos",
+                    "request": "GET /fct/desplazamiento/{teacher}/descargar",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar gastos",
+                    "request": "POST /fct/desplazamiento/eliminar/{teacher} items[]={expense}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": false,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Encuestas",
+            "actions": [
+                {
+                    "label": "Ver las encuestas de alumnado",
+                    "request": "GET /fct/encuesta/estudiante/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir la encuesta de alumnado de un acuerdo",
+                    "request": "GET /fct/encuesta/estudiante/cumplimentar/{enrollment}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": true,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver las encuestas de empresa",
+                    "request": "GET /fct/encuesta/empresa/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "alumno": false,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir la encuesta de empresa de un acuerdo",
+                    "request": "GET /fct/encuesta/empresa/cumplimentar/{enrollment}/{workTutor}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver las encuestas de centro",
+                    "request": "GET /fct/encuesta/centro/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir la encuesta de centro de un docente",
+                    "request": "GET /fct/encuesta/centro/cumplimentar/{shift}/{teacher}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": true,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Informes de la convocatoria",
+            "actions": [
+                {
+                    "label": "Acceder al apartado de informes",
+                    "request": "GET /fct/informe/",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver el listado de informes de las encuestas",
+                    "request": "GET /fct/informe/encuesta/estudiantes/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de la encuesta de alumnado",
+                    "request": "GET /fct/informe/encuesta/estudiantes/{shift}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de la encuesta de empresas",
+                    "request": "GET /fct/informe/encuesta/empresas/{shift}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de la encuesta de centro",
+                    "request": "GET /fct/informe/encuesta/centro/{shift}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "tutor": false,
+                        "otro-tutor": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        }
+    ]
+}
