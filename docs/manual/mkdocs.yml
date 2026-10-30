@@ -1,0 +1,57 @@
+site_name: Manual de usuario de ÁTICA FP
+site_description: Gestión de la formación en centros de trabajo (FCT, FP dual y FFE)
+# Sustituye por la URL real una vez publicada la web del manual.
+site_url: https://iesoretania.github.io/atica-fp/
+# Versión y fecha del release en el pie de la web. Fuente única: config/services.yaml.
+# El target "docs-web" del Makefile exporta MANUAL_COPYRIGHT con app.version y
+# app.pub_date; al construir directamente con mkdocs (sin la variable) se usa el valor por defecto.
+copyright: !ENV [MANUAL_COPYRIGHT, "Manual de usuario de ÁTICA FP"]
+docs_dir: .
+site_dir: ../manual-site
+use_directory_urls: false
+repo_url: https://github.com/iesoretania/atica-fp
+
+exclude_docs: |
+  README.md
+  PLAN.md
+  requirements.txt
+  _build.html
+  *.pdf
+
+theme:
+  name: material
+  language: es
+  logo: assets/logo.png
+  favicon: assets/favicon.png
+  palette:
+    primary: custom
+    accent: custom
+  icon:
+      repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - toc.integrate
+
+extra_css:
+  - assets/theme.css
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+
+# La navegación se completa a medida que se redactan los capítulos (ver el plan en docs/manual/README.md).
+nav:
+  - Introducción: index.md

@@ -1,0 +1,74 @@
+name: Documentación
+
+# Genera el manual (PDF y web). No publica nada: sube el resultado como artefacto del trabajo.
+# En cada cambio de la documentación se comprueba que se construye; con una etiqueta de versión
+# (vX.Y.Z) los artefactos llevan el sufijo de la versión.
+on:
+  push:
+    tags: ['v*']
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'Makefile'
+      - 'config/services.yaml'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Sufijo de versión de los ficheros generados'
+        required: false
+        default: 'dev'
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    name: Manual (PDF y web)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.x"
+
+      - name: Instalar pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+
+      - name: Instalar MkDocs Material
+        run: pip install -r docs/manual/requirements.txt
+
+      - name: Determinar versión
+        id: ver
+        run: |
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            echo "version=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${{ github.event.inputs.version || 'dev' }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generar el manual
+        env:
+          # Reutiliza el Chrome preinstalado del runner para pagedjs-cli (evita descargar un Chromium aparte)
+          CHROME_PATH: /usr/bin/google-chrome
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
+        run: make docs
+
+      - name: Ensamblar los ficheros con sufijo de versión
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          mkdir -p _docs-dist
+          cp docs/manual/atica-fp-manual.pdf "_docs-dist/atica-fp-manual-${VERSION}.pdf"
+          (cd docs/manual-site && zip -r "../../_docs-dist/atica-fp-manual-web-${VERSION}.zip" .)
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: atica-fp-docs
+          path: _docs-dist/*

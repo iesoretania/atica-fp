@@ -19,6 +19,11 @@ yarn-error.log
 /data
 /backups
 
+# Documentación generada (make docs): el PDF y la web se publican desde la integración continua
+/docs/manual/_build.html
+/docs/manual/*.pdf
+/docs/manual-site/
+
 ###> phpunit/phpunit ###
 /phpunit.xml
 /.phpunit.cache/

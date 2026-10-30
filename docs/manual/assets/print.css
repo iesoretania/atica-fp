@@ -1,0 +1,187 @@
+/*
+ * Estilos de impresión del manual (solo PDF, vía Paged.js).
+ * Define la maquetación paginada: portada, índice, cabeceras/pies,
+ * numeración de página y saltos por capítulo. Complementa a theme.css.
+ */
+
+@page {
+  size: A4;
+  margin: 22mm 18mm 20mm;
+  @top-right {
+    content: "Manual de usuario";
+    color: #6b7280;
+    font-size: 9pt;
+  }
+  @bottom-center {
+    content: counter(page);
+    color: #6b7280;
+    font-size: 9pt;
+  }
+}
+
+/* La portada (bloque de título de Pandoc) no lleva cabecera ni numeración. */
+@page cover {
+  @top-right { content: none; }
+  @bottom-center { content: none; }
+}
+
+html { font-size: 11pt; }
+
+/* ----- Portada ----- */
+#title-block-header {
+  page: cover;
+  break-after: page;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+  border-bottom: none;
+}
+
+#title-block-header .title {
+  font-size: 34pt;
+  color: #0a6f93;
+  border: none;
+  margin-bottom: 0.2em;
+}
+
+#title-block-header .subtitle {
+  font-size: 16pt;
+  color: #064e69;
+  font-weight: normal;
+}
+
+#title-block-header .author,
+#title-block-header .date {
+  color: #6b7280;
+  font-size: 12pt;
+}
+
+/* ----- Índice ----- */
+nav#TOC {
+  break-after: page;
+}
+
+nav#TOC::before {
+  content: "Índice";
+  display: block;
+  font-size: 20pt;
+  color: #0a6f93;
+  border-bottom: 2px solid #bcd9e6;
+  padding-bottom: 0.2em;
+  margin-bottom: 0.6em;
+}
+
+nav#TOC ul { list-style: none; padding-left: 1em; }
+nav#TOC > ul { padding-left: 0; }
+nav#TOC a { text-decoration: none; color: #14202b; }
+
+/* Número de página junto a cada entrada del índice (Paged.js). */
+nav#TOC a::after {
+  content: target-counter(attr(href), page);
+  float: right;
+  color: #6b7280;
+}
+
+/* ----- Saltos de página por capítulo ----- */
+h1 { break-before: page; }
+#title-block-header + nav#TOC + h1,
+nav#TOC + h1 { break-before: avoid; }
+
+h2, h3, h4 { break-after: avoid; }
+table, pre, blockquote, figure { break-inside: avoid; }
+img { break-inside: avoid; }
+
+/* Evita líneas viudas/huérfanas. */
+p { orphans: 3; widows: 3; }
+
+/* ----- Admonitions (generadas por pandoc-admonitions.lua) ----- */
+.admonition {
+  border-left: 4px solid;
+  border-radius: 4px;
+  margin: 1em 0;
+  padding: 0.5em 0.9em 0.5em 0.9em;
+  break-inside: avoid;
+}
+
+.admonition p:first-child { margin-top: 0; }
+.admonition p:last-child  { margin-bottom: 0; }
+
+.admonition-title {
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.2em;
+}
+
+/* — tip / hint / important ———— verde  💡 */
+.admonition.tip,
+.admonition.hint,
+.admonition.important {
+  border-color: #2e7d32;
+  background:   #f1f8e9;
+}
+.admonition.tip .admonition-title,
+.admonition.hint .admonition-title,
+.admonition.important .admonition-title { color: #1b5e20; }
+.admonition.tip .admonition-title::before,
+.admonition.hint .admonition-title::before,
+.admonition.important .admonition-title::before { content: '💡 '; }
+
+/* — note ————————————————————— azul  📝 */
+.admonition.note {
+  border-color: #1565c0;
+  background:   #e8eaf6;
+}
+.admonition.note .admonition-title { color: #0d47a1; }
+.admonition.note .admonition-title::before { content: '📝 '; }
+
+/* — info / todo —————————————— cian  ℹ️ */
+.admonition.info,
+.admonition.todo {
+  border-color: #00838f;
+  background:   #e0f7fa;
+}
+.admonition.info .admonition-title,
+.admonition.todo .admonition-title { color: #006064; }
+.admonition.info .admonition-title::before,
+.admonition.todo .admonition-title::before { content: 'ℹ️ '; }
+
+/* — warning / caution / attention — ámbar  ⚠️ */
+.admonition.warning,
+.admonition.caution,
+.admonition.attention {
+  border-color: #e65100;
+  background:   #fff8e1;
+}
+.admonition.warning .admonition-title,
+.admonition.caution .admonition-title,
+.admonition.attention .admonition-title { color: #bf360c; }
+.admonition.warning .admonition-title::before,
+.admonition.caution .admonition-title::before,
+.admonition.attention .admonition-title::before { content: '⚠️ '; }
+
+/* — danger / error —————————— rojo  🚨 */
+.admonition.danger,
+.admonition.error {
+  border-color: #b71c1c;
+  background:   #ffebee;
+}
+.admonition.danger .admonition-title,
+.admonition.error .admonition-title { color: #7f0000; }
+.admonition.danger .admonition-title::before,
+.admonition.error .admonition-title::before { content: '🚨 '; }
+
+/* — question / help / faq ———— azul de marca  ❓ */
+.admonition.question,
+.admonition.help,
+.admonition.faq {
+  border-color: #0a6f93;
+  background:   #eef6fa;
+}
+.admonition.question .admonition-title,
+.admonition.help .admonition-title,
+.admonition.faq .admonition-title { color: #064e69; }
+.admonition.question .admonition-title::before,
+.admonition.help .admonition-title::before,
+.admonition.faq .admonition-title::before { content: '❓ '; }

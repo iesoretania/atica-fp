@@ -1,0 +1,109 @@
+/*
+ * Tema compartido del manual.
+ * Paleta azul de la aplicación (tema Yeti de Bootswatch).
+ * Lo consumen tanto el PDF (Pandoc + Paged.js) como la web (MkDocs Material,
+ * vía extra_css).
+ */
+
+:root {
+  --nx-ink: #14202b;
+  --nx-accent: #0a6f93;
+  --nx-accent-dark: #064e69;
+  --nx-accent-soft: #eef6fa;
+  --nx-muted: #6b7280;
+  --nx-border: #bcd9e6;
+}
+
+/* ----- Variables de Material for MkDocs: igualan la paleta azul de la aplicación ----- */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: var(--nx-accent);
+  --md-primary-fg-color--light: var(--nx-accent);
+  --md-primary-fg-color--dark: var(--nx-accent-dark);
+  --md-accent-fg-color: var(--nx-accent-dark);
+  --md-typeset-a-color: var(--nx-accent-dark);
+}
+
+/* ----- Tipografía base (se aplica sobre todo al PDF de Pandoc) ----- */
+body {
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--nx-ink);
+  line-height: 1.55;
+}
+
+h1, h2, h3, h4 {
+  color: var(--nx-ink);
+  line-height: 1.2;
+}
+
+h1 { font-size: 2em; }
+
+h2 {
+  color: var(--nx-accent);
+  border-bottom: 2px solid var(--nx-border);
+  padding-bottom: 0.2em;
+  margin-top: 1.6em;
+}
+
+h3 { color: var(--nx-accent-dark); }
+
+strong { color: var(--nx-accent); }
+
+a { color: var(--nx-accent-dark); }
+
+/* ----- Tablas ----- */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+th {
+  background: var(--nx-accent);
+  color: #fff;
+  text-align: left;
+  padding: 0.45em 0.6em;
+}
+
+td {
+  padding: 0.4em 0.6em;
+  border-bottom: 1px solid var(--nx-border);
+}
+
+tr:nth-child(even) td { background: var(--nx-accent-soft); }
+
+/* ----- Código ----- */
+code {
+  background: var(--nx-accent-soft);
+  color: var(--nx-ink);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+pre {
+  background: var(--nx-accent-soft);
+  border: 1px solid var(--nx-border);
+  border-radius: 6px;
+  padding: 0.8em 1em;
+  overflow-x: auto;
+}
+
+pre code { background: none; padding: 0; }
+
+/* ----- Citas / notas ----- */
+blockquote {
+  border-left: 4px solid var(--nx-accent);
+  background: var(--nx-accent-soft);
+  margin: 1em 0;
+  padding: 0.6em 1em;
+  color: var(--nx-ink);
+}
+
+blockquote > :first-child { margin-top: 0; }
+blockquote > :last-child { margin-bottom: 0; }
+
+/* ----- Imágenes (capturas) ----- */
+img {
+  max-width: 100%;
+  border: 1px solid var(--nx-border);
+  border-radius: 6px;
+}
