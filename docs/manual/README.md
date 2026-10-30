@@ -77,4 +77,7 @@ Equivale a ejecutar `make docs-pdf` y `make docs-web`.
 
 ## Regenerar las capturas
 
-Pendiente: se describirá aquí cuando se cree el mecanismo de capturas (ver `PLAN.md`, fase 1).
+Las capturas salen de scripts de Node/[Playwright](https://playwright.dev) en `scripts/screenshots/`,
+ejecutados contra una base de datos **desechable** con datos de demostración (`make docs-data`) y la
+aplicación servida con `make docs-app`, nunca contra datos reales. El procedimiento, los usuarios de
+demostración y el catálogo de capturas están en [`CAPTURAS.md`](CAPTURAS.md).

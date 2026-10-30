@@ -1,4 +1,4 @@
-.PHONY: docs docs-pdf docs-web docs-serve cheatsheets
+.PHONY: docs docs-pdf docs-web docs-serve cheatsheets docs-data docs-app
 
 # Versión publicada, leída de config/services.yaml (app.version). La portada del
 # manual en PDF y el pie de la web la muestran automáticamente, así que en cada
@@ -10,6 +10,15 @@ PUB_DATE := $(shell grep -E '^[[:space:]]*app\.pub_date:' config/services.yaml |
 
 # Capítulos del manual, en orden: index.md y los ficheros NN-*.md
 MANUAL_CHAPTERS := docs/manual/index.md $(sort $(wildcard docs/manual/[0-9][0-9]-*.md))
+
+## Recrea la base de datos desechable de las capturas del manual (fp_manual) con los datos de demostración.
+## Nunca toca la base de datos de desarrollo. Ver docs/manual/CAPTURAS.md.
+docs-data:
+	bash scripts/manual.sh data
+
+## Sirve la aplicación sobre esa base de datos (http://127.0.0.1:8744) para ejecutar los scripts de capturas.
+docs-app:
+	bash scripts/manual.sh serve
 
 ## Genera la documentación completa: manual (PDF y web) y fichas de referencia rápida.
 docs: docs-pdf docs-web cheatsheets

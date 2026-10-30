@@ -14,6 +14,7 @@ repo_url: https://github.com/iesoretania/atica-fp
 exclude_docs: |
   README.md
   PLAN.md
+  CAPTURAS.md
   requirements.txt
   _build.html
   *.pdf
