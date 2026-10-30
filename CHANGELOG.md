@@ -72,6 +72,7 @@ x.x.x (xxxx-xx-xx)
 * fix (security): El jefe de departamento solo puede crear convocatorias de FCT para materias de las enseñanzas de su departamento
 * fix (security): En la encuesta de centro de FCT, FP dual y FFE, cada tutor docente solo puede contestar la suya; en nombre de otro solo puede hacerlo quien gestiona la convocatoria, el proyecto o el programa
 * fix (security): En la encuesta de centro de la FFE, el profesorado indicado debe ser tutor docente del programa, como ya ocurría en FCT y FP dual
+* fix (security): La migración segura de la base de datos borra ya la copia de seguridad al terminar, salvo que se indique --keep-backup, en lugar de dejarla siempre guardada
 * fix: El botón de volver de la encuesta de centro de FCT, FP dual y FFE vuelve ahora al listado del curso académico correcto
 * fix: Ya no se puede guardar un curso académico cuya fecha de fin no es posterior a la de inicio
 * fix (security): En FP dual, el alumnado de un proyecto y su borrado solo los gestiona quien puede gestionar ese proyecto, no cualquier coordinador o jefe de departamento del centro

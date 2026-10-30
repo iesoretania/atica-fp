@@ -118,7 +118,7 @@ class SafeMigrateCommand extends Command
                 $this->backupFilePath)
             ) {
                 $this->io->success($this->translator->trans('message.migration.success.restore', [], 'command'));
-                if (!$input->hasOption('keep-backup')) {
+                if (!$input->getOption('keep-backup')) {
                     $this->removeBackup();
                 }
             } else {
@@ -129,7 +129,7 @@ class SafeMigrateCommand extends Command
 
         $this->io->success($this->translator->trans('message.migration.success.migrate', [], 'command'));
 
-        if (!$input->hasOption('keep-backup')) {
+        if (!$input->getOption('keep-backup')) {
             $this->removeBackup();
         }
 
