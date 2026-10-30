@@ -468,7 +468,7 @@
                     }
                 },
                 {
-                    "label": "Valorar las actividades de un convenio",
+                    "label": "Abrir la valoración de actividades de un convenio (consulta o modificación según el perfil)",
                     "request": "GET /dual/convenio/evaluar/{dualAgreement}",
                     "allowed": {
                         "admin": true,
@@ -509,75 +509,6 @@
                         "tutor": true,
                         "otro-tutor": false,
                         "profesorado": true,
-                        "alumno": false,
-                        "tutor-laboral": false,
-                        "economico": false,
-                        "resto": false
-                    }
-                }
-            ]
-        },
-        {
-            "title": "Reuniones de tutorización",
-            "actions": [
-                {
-                    "label": "Ver las reuniones",
-                    "request": "GET /dual/reunion/listar/{year}/1",
-                    "allowed": {
-                        "admin": true,
-                        "coordinador": true,
-                        "jefe": true,
-                        "tutor": true,
-                        "otro-tutor": true,
-                        "profesorado": true,
-                        "alumno": false,
-                        "tutor-laboral": false,
-                        "economico": false,
-                        "resto": false
-                    }
-                },
-                {
-                    "label": "Registrar una reunión",
-                    "request": "GET /dual/reunion/nueva/{year}",
-                    "allowed": {
-                        "admin": false,
-                        "coordinador": true,
-                        "jefe": true,
-                        "tutor": true,
-                        "otro-tutor": true,
-                        "profesorado": true,
-                        "alumno": false,
-                        "tutor-laboral": false,
-                        "economico": false,
-                        "resto": false
-                    }
-                },
-                {
-                    "label": "Editar una reunión",
-                    "request": "GET /dual/reunion/{meeting}",
-                    "allowed": {
-                        "admin": true,
-                        "coordinador": true,
-                        "jefe": true,
-                        "tutor": true,
-                        "otro-tutor": false,
-                        "profesorado": false,
-                        "alumno": false,
-                        "tutor-laboral": false,
-                        "economico": false,
-                        "resto": false
-                    }
-                },
-                {
-                    "label": "Eliminar reuniones",
-                    "request": "POST /dual/reunion/eliminar items[]={meeting}",
-                    "allowed": {
-                        "admin": true,
-                        "coordinador": false,
-                        "jefe": false,
-                        "tutor": true,
-                        "otro-tutor": false,
-                        "profesorado": false,
                         "alumno": false,
                         "tutor-laboral": false,
                         "economico": false,
@@ -816,8 +747,8 @@
                         "jefe": true,
                         "tutor": true,
                         "otro-tutor": true,
-                        "profesorado": true,
-                        "alumno": true,
+                        "profesorado": false,
+                        "alumno": false,
                         "tutor-laboral": true,
                         "economico": false,
                         "resto": false

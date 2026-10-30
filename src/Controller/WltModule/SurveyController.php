@@ -419,6 +419,17 @@ class SurveyController extends AbstractController
         }
         $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_ACCESS, $organization);
 
+        // quienes no participan en la encuesta de la empresa (alumnado, profesorado del grupo) no la ven en su menú
+        // ni pueden abrir el listado
+        if (!$this->isGranted(WltOrganizationVoter::WLT_MANAGER, $organization) &&
+            !$this->isGranted(WltOrganizationVoter::WLT_DEPARTMENT_HEAD, $organization) &&
+            !$this->isGranted(WltOrganizationVoter::WLT_GROUP_TUTOR, $organization) &&
+            !$this->isGranted(WltOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization) &&
+            !$this->isGranted(WltOrganizationVoter::WLT_WORK_TUTOR, $organization)
+        ) {
+            throw $this->createAccessDeniedException();
+        }
+
         $title = $translator->trans('title.survey.work_tutor.list', [], 'wlt_survey');
 
         /** @var Person $person */

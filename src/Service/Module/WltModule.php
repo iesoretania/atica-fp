@@ -162,6 +162,7 @@ class WltModule implements ModuleBuilderInterface
             if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization) ||
                 $this->security->isGranted(OrganizationVoter::WLT_DEPARTMENT_HEAD, $organization) ||
                 $this->security->isGranted(OrganizationVoter::WLT_GROUP_TUTOR, $organization) ||
+                $this->security->isGranted(OrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization) ||
                 $this->security->isGranted(OrganizationVoter::WLT_WORK_TUTOR, $organization)
             ) {
                 $menu3 = new MenuItem();

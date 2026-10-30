@@ -90,6 +90,7 @@ x.x.x (xxxx-xx-xx)
 * fix: Las preguntas de encuesta de tipo «Número del 0 al 10» no mostraban ninguna opción de respuesta y no se podían contestar
 * fix (security): Las personas dadas de alta desde los acuerdos y las empresas (tutorías laborales, gerentes) deben cambiar su contraseña inicial en el primer acceso, y registrarlas sin identificador ya no produce un error
 * fix: En FP dual, el responsable económico accede ahora a los gastos de desplazamiento desde el menú, y la tutoría laboral y el profesorado del grupo ya no pueden abrir el listado de encuestas del alumnado, que tampoco aparece en su menú
+* fix: En FP dual, el alumnado y el profesorado del grupo ya no pueden abrir el listado de encuestas de empresa, que tampoco aparece en su menú, y las tutorías docentes lo tienen en el suyo
 
 7.6.3 (2026-05-06)
 ------------------

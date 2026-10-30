@@ -238,15 +238,9 @@ final class PermissionMatrix
                     ]),
                     self::section('Valoración y evaluación', [
                         ['Ver los convenios evaluables', 'GET /dual/convenio/evaluar/listar/{year}/1'],
-                        ['Valorar las actividades de un convenio', 'GET /dual/convenio/evaluar/{dualAgreement}'],
+                        ['Abrir la valoración de actividades de un convenio (consulta o modificación según el perfil)', 'GET /dual/convenio/evaluar/{dualAgreement}'],
                         ['Ver el resumen de evaluación', 'GET /dual/resultado/estudiante/listar/{year}/1'],
                         ['Obtener el informe de resultados de un alumno', 'GET /dual/resultado/estudiante/{dualStudent}'],
-                    ]),
-                    self::section('Reuniones de tutorización', [
-                        ['Ver las reuniones', 'GET /dual/reunion/listar/{year}/1'],
-                        ['Registrar una reunión', 'GET /dual/reunion/nueva/{year}'],
-                        ['Editar una reunión', 'GET /dual/reunion/{meeting}'],
-                        ['Eliminar reuniones', 'POST /dual/reunion/eliminar items[]={meeting}'],
                     ]),
                     self::section('Contactos con empresas', [
                         ['Ver los contactos con empresas', 'GET /dual/contacto/listar/{year}/1'],
