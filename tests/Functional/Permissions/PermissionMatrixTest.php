@@ -62,6 +62,11 @@ class PermissionMatrixTest extends AppWebTestCase
             ['alfa.alumno1']
         );
 
+        // las fixtures no tienen encuestas propias del centro: se crea una (el test se revierte al terminar)
+        if (!$db->fetchOne('SELECT id FROM survey WHERE organization_id = ?', [$organization->getId()])) {
+            $db->insert('survey', ['organization_id' => $organization->getId(), 'title' => 'Encuesta de prueba']);
+        }
+
         return [
             '{year}' => $organization->getCurrentAcademicYear()->getId(),
             '{shift}' => (int) $db->fetchOne(
@@ -75,6 +80,20 @@ class PermissionMatrixTest extends AppWebTestCase
             '{visit}' => (int) $db->fetchOne('SELECT id FROM wpt_contact WHERE teacher_id = ? ORDER BY id LIMIT 1', [$teacher]),
             '{expense}' => (int) $db->fetchOne('SELECT id FROM wpt_travel_expense WHERE teacher_id = ? ORDER BY id LIMIT 1', [$teacher]),
             '{workTutor}' => (int) $db->fetchOne('SELECT id FROM person WHERE login_username = ?', ['alfa.tutorlaboral']),
+            // parte general
+            '{organization}' => $organization->getId(),
+            '{person}' => (int) $db->fetchOne('SELECT id FROM person WHERE login_username = ?', ['alfa.tutor']),
+            '{studentEnrollment}' => (int) $db->fetchOne('SELECT se.id FROM edu_student_enrollment se JOIN person p ON p.id = se.person_id WHERE p.login_username = ?', ['alfa.alumno1']),
+            '{department}' => (int) $db->fetchOne('SELECT id FROM edu_department WHERE academic_year_id = ? ORDER BY id LIMIT 1', [$organization->getCurrentAcademicYear()->getId()]),
+            '{training}' => (int) $db->fetchOne('SELECT id FROM edu_training WHERE academic_year_id = ? ORDER BY id LIMIT 1', [$organization->getCurrentAcademicYear()->getId()]),
+            '{group}' => (int) $db->fetchOne('SELECT g.id FROM edu_group g JOIN edu_grade gr ON gr.id = g.grade_id JOIN edu_training t ON t.id = gr.training_id WHERE t.academic_year_id = ? ORDER BY g.id LIMIT 1', [$organization->getCurrentAcademicYear()->getId()]),
+            '{subject}' => (int) $db->fetchOne('SELECT s.id FROM edu_subject s JOIN edu_grade gr ON gr.id = s.grade_id JOIN edu_training t ON t.id = gr.training_id WHERE t.academic_year_id = ? ORDER BY s.id LIMIT 1', [$organization->getCurrentAcademicYear()->getId()]),
+            '{company}' => (int) $db->fetchOne('SELECT id FROM company ORDER BY id LIMIT 1'),
+            '{workcenter}' => (int) $db->fetchOne('SELECT id FROM workcenter ORDER BY id LIMIT 1'),
+            '{survey}' => (int) $db->fetchOne('SELECT id FROM survey WHERE organization_id = ? ORDER BY id LIMIT 1', [$organization->getId()]),
+            '{template}' => (int) $db->fetchOne('SELECT id FROM edu_report_template WHERE organization_id = ? ORDER BY id LIMIT 1', [$organization->getId()]),
+            '{route}' => (int) $db->fetchOne('SELECT id FROM edu_travel_route WHERE organization_id = ? ORDER BY id LIMIT 1', [$organization->getId()]),
+            '{scale}' => (int) $db->fetchOne('SELECT id FROM edu_performance_scale WHERE organization_id = ? ORDER BY id LIMIT 1', [$organization->getId()]),
         ];
     }
 

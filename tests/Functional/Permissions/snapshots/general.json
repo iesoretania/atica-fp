@@ -1,0 +1,738 @@
+{
+    "module": "general",
+    "title": "Parte general",
+    "profiles": {
+        "plataforma": {
+            "label": "Administración de la plataforma",
+            "user": "admin"
+        },
+        "admin": {
+            "label": "Administración del centro",
+            "user": "alfa.admin"
+        },
+        "economico": {
+            "label": "Responsable económico",
+            "user": "alfa.economico"
+        },
+        "jefe": {
+            "label": "Jefatura de departamento",
+            "user": "alfa.jefe"
+        },
+        "coordinador": {
+            "label": "Coordinación de FP dual",
+            "user": "alfa.coordinador"
+        },
+        "gestor-ffe": {
+            "label": "Gestión de la FFE",
+            "user": "alfa.gestorffe"
+        },
+        "profesorado": {
+            "label": "Profesorado sin otro cargo",
+            "user": "alfa.profesor"
+        },
+        "alumnado": {
+            "label": "Alumnado",
+            "user": "alfa.alumno1"
+        }
+    },
+    "sections": [
+        {
+            "title": "Datos personales",
+            "actions": [
+                {
+                    "label": "Ver y cambiar sus datos personales y su contraseña",
+                    "request": "GET /datos",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": true,
+                        "jefe": true,
+                        "coordinador": true,
+                        "gestor-ffe": true,
+                        "profesorado": true,
+                        "alumnado": true
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Plataforma",
+            "actions": [
+                {
+                    "label": "Acceder al apartado de administración",
+                    "request": "GET /admin",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": false,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver el listado de centros",
+                    "request": "GET /admin/organizaciones/listar/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": false,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar un centro",
+                    "request": "GET /admin/organizaciones/{organization}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": false,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Crear un centro",
+                    "request": "GET /admin/organizaciones/nueva",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": false,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver el listado de usuarios",
+                    "request": "GET /admin/usuarios/listar/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": false,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar un usuario",
+                    "request": "GET /admin/usuarios/{person}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": false,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Cursos académicos",
+            "actions": [
+                {
+                    "label": "Ver el listado de cursos académicos",
+                    "request": "GET /centro/cursoacademico/listar/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar un curso académico",
+                    "request": "GET /centro/cursoacademico/{year}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Copiar datos de otro curso",
+                    "request": "GET /centro/cursoacademico/copiar/{year}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Gestión del centro",
+            "actions": [
+                {
+                    "label": "Acceder al apartado de gestión del centro",
+                    "request": "GET /centro",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": true,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver el listado de profesorado",
+                    "request": "GET /centro/profesorado/listar/{year}/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar un docente",
+                    "request": "GET /centro/profesorado/{teacher}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Eliminar docentes",
+                    "request": "POST /centro/profesorado/eliminar/{year} users[]={teacher}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver el listado de matrículas",
+                    "request": "GET /centro/matricula/listar/{year}/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar una matrícula",
+                    "request": "GET /centro/matricula/{studentEnrollment}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver el listado de departamentos",
+                    "request": "GET /centro/departamento/listar/{year}/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar un departamento",
+                    "request": "GET /centro/departamento/{department}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver el listado de enseñanzas",
+                    "request": "GET /centro/ensenanza/listar/{year}/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar una enseñanza",
+                    "request": "GET /centro/ensenanza/{training}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver el listado de niveles",
+                    "request": "GET /centro/nivel/listar/{year}/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver el listado de grupos",
+                    "request": "GET /centro/grupo/listar/{year}/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar un grupo",
+                    "request": "GET /centro/grupo/{group}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver el listado de materias",
+                    "request": "GET /centro/materia/listar/{year}/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar una materia",
+                    "request": "GET /centro/materia/{subject}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver el listado de días no lectivos",
+                    "request": "GET /centro/dia_no_lectivo/listar/{year}/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver los tipos de contacto con empresas",
+                    "request": "GET /centro/contactos/listar/{year}/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Asignar roles del centro",
+                    "request": "GET /centro/rol",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Importaciones",
+            "actions": [
+                {
+                    "label": "Acceder al apartado de importaciones",
+                    "request": "GET /centro/importar",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Importar profesorado",
+                    "request": "GET /centro/importar/profesorado",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Importar grupos",
+                    "request": "GET /centro/importar/grupo",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Importar alumnado",
+                    "request": "GET /centro/importar/estudiante",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Empresas y centros de trabajo",
+            "actions": [
+                {
+                    "label": "Ver el listado de empresas",
+                    "request": "GET /empresa/listar/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": true,
+                        "coordinador": true,
+                        "gestor-ffe": true,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Crear una empresa",
+                    "request": "GET /empresa/nueva",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": true,
+                        "coordinador": true,
+                        "gestor-ffe": true,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar una empresa",
+                    "request": "GET /empresa/{company}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": true,
+                        "coordinador": true,
+                        "gestor-ffe": true,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Eliminar empresas",
+                    "request": "POST /empresa/eliminar items[]={company}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": true,
+                        "coordinador": true,
+                        "gestor-ffe": true,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver los centros de trabajo de una empresa",
+                    "request": "GET /empresa/{company}/sede/listar/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": true,
+                        "coordinador": true,
+                        "gestor-ffe": true,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar un centro de trabajo",
+                    "request": "GET /empresa/sede/{workcenter}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": true,
+                        "coordinador": true,
+                        "gestor-ffe": true,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Encuestas y plantillas",
+            "actions": [
+                {
+                    "label": "Ver el listado de encuestas",
+                    "request": "GET /centro/encuesta/listar/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar una encuesta",
+                    "request": "GET /centro/encuesta/{survey}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver las preguntas de una encuesta",
+                    "request": "GET /centro/encuesta/pregunta/listar/{survey}/resultado/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver el listado de plantillas de informe",
+                    "request": "GET /centro/plantilla/listar/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar una plantilla de informe",
+                    "request": "GET /centro/plantilla/{template}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Desplazamientos y valoración",
+            "actions": [
+                {
+                    "label": "Ver los itinerarios de desplazamiento",
+                    "request": "GET /centro/itinerario/listar/1",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": true,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar un itinerario",
+                    "request": "GET /centro/itinerario/detalle/{route}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": true,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Ver las escalas de valoración",
+                    "request": "GET /centro/escala/listar/1/",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                },
+                {
+                    "label": "Editar una escala de valoración",
+                    "request": "GET /centro/escala/{scale}",
+                    "allowed": {
+                        "plataforma": true,
+                        "admin": true,
+                        "economico": false,
+                        "jefe": false,
+                        "coordinador": false,
+                        "gestor-ffe": false,
+                        "profesorado": false,
+                        "alumnado": false
+                    }
+                }
+            ]
+        }
+    ]
+}
