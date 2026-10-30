@@ -416,32 +416,44 @@ class ContactController extends AbstractController
 
         $groups = [];
         $currentUserTeacher = null;
+        $seesWholeScope = $isManager;
 
         if (!$isManager) {
             /** @var Person $person */
             $person = $this->getUser();
 
-            if (!$isWltManager) {
-                // no es administrador ni coordinador de FP:
-                // puede ser jefe de departamento, tutor de grupo o profesor -> ver sólo sus grupos
-                $currentUserTeacher =
-                    $wltTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
+            $currentUserTeacher = $wltTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
 
-                if ($currentUserTeacher) {
-                    $groups = $wltGroupRepository->findByAcademicYearAndWltTeacherPerson($academicYear, $person);
-                }
-            } else {
-                $groups = $wltGroupRepository->findByAcademicYearAndWltTeacherPerson($academicYear, $person);
+            // la jefatura de departamento ve todos los grupos de sus enseñanzas y la coordinación los de los
+            // proyectos que gestiona; el resto del profesorado, solo su propio informe
+            $headGroups = $isDepartmentHead
+                ? $wltGroupRepository->findByAcademicYearAndWLTDepartmentHeadPerson($academicYear, $person)
+                : [];
+            $managedGroups = $isWltManager
+                ? $wltGroupRepository->findByAcademicYearAndWLTProjectManagerPerson($academicYear, $person)
+                : [];
+            $teachingGroups = $currentUserTeacher
+                ? $wltGroupRepository->findByAcademicYearAndWltTeacherPerson($academicYear, $person)
+                : [];
+
+            foreach ([...$headGroups, ...$managedGroups, ...$teachingGroups] as $group) {
+                $groups[$group->getId()] = $group;
             }
+            $groups = array_values($groups);
+            $seesWholeScope = $headGroups !== [] || $managedGroups !== [] || ($isWltManager && !$currentUserTeacher);
         } else {
             $groups = $wltGroupRepository->findByAcademicYear($academicYear);
         }
-        $teachers = [];
-        if (!$isManager && !$isDepartmentHead && $currentUserTeacher) {
-            $teachers = [$currentUserTeacher];
-        } elseif ($groups) {
-            $teachers = $wltTeacherRepository->findByGroupsOrEducationalTutor($groups, $academicYear);
+
+        if (!$seesWholeScope && $currentUserTeacher) {
+            return [$currentUserTeacher];
         }
+
+        $teachers = $groups ? $wltTeacherRepository->findByGroupsOrEducationalTutor($groups, $academicYear) : [];
+        if ($currentUserTeacher && !in_array($currentUserTeacher, $teachers, true)) {
+            $teachers[] = $currentUserTeacher;
+        }
+
         return $teachers;
     }
 

@@ -467,7 +467,11 @@ class SurveyController extends AbstractController
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization);
+        // tutores docentes y coordinación, y también los jefes de departamento, como en FCT y la FFE
+        if (!$this->isGranted(WltOrganizationVoter::WLT_EDUCATIONAL_TUTOR, $organization)
+            && !$this->isGranted(WltOrganizationVoter::WLT_DEPARTMENT_HEAD, $organization)) {
+            throw $this->createAccessDeniedException();
+        }
 
         $title = $translator->trans('title.survey.educational_tutor.list', [], 'wlt_survey');
 

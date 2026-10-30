@@ -57,9 +57,19 @@ class WltContactReportTest extends AppWebTestCase
         }
     }
 
-    public function testAdministratorGetsTheReportsAsPdf(): void
+    /**
+     * La administración, la coordinación (proyectos que gestiona) y la jefatura de departamento (sus enseñanzas)
+     * obtienen los informes de todo su ámbito, aunque no impartan clase en esos grupos.
+     *
+     * @dataProvider managerProvider
+     */
+    public function testManagersGetTheReportsOfTheirScopeAsPdf(string $username): void
     {
-        $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
+        $this->login($this->getUser($username));
+
+        $lists = [self::BASE . '/seguimiento/' . $this->year() . '/1', self::BASE . '/centros/' . $this->year() . '/1'];
+        $this->client->request('GET', $lists[0]);
+        self::assertStringContainsString((string) $this->connection()->fetchOne('SELECT last_name FROM person WHERE login_username = ?', ['alfa.tutor']), (string) $this->client->getResponse()->getContent(), "$username ve al profesorado de su ámbito");
 
         foreach ([
             self::BASE . '/seguimiento/datos/' . $this->teacherId('alfa.tutor'),
@@ -68,7 +78,7 @@ class WltContactReportTest extends AppWebTestCase
             $crawler = $this->client->request('GET', $url);
             $this->client->submit($crawler->filter('form')->last()->form());
 
-            self::assertResponseIsSuccessful($url);
+            self::assertResponseIsSuccessful($username . ' ' . $url);
             self::assertStringContainsString('application/pdf', (string) $this->client->getResponse()->headers->get('Content-Type'), $url);
         }
     }

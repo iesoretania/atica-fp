@@ -143,6 +143,27 @@ class GroupRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Grupos de los proyectos que gestiona la persona
+     */
+    public function findByAcademicYearAndWLTProjectManagerPerson(AcademicYear $academicYear, Person $person): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('g')
+            ->distinct(true)
+            ->from(Group::class, 'g')
+            ->join(Project::class, 'p', 'WITH', 'g MEMBER OF p.groups')
+            ->join('g.grade', 'gr')
+            ->join('gr.training', 'tr')
+            ->where('tr.academicYear = :academic_year')
+            ->andWhere('p.manager = :person')
+            ->setParameter('academic_year', $academicYear)
+            ->setParameter('person', $person)
+            ->addOrderBy('g.name')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function countAcademicYearAndWLTDepartmentHeadPerson(AcademicYear $academicYear, Person $person)
     {
         return $this->findByAcademicYearAndWLTGroupDepartmentHeadQueryBuilder($academicYear, $person)

@@ -29,7 +29,6 @@ use App\Entity\WltModule\EducationalTutorAnsweredSurvey;
 use App\Entity\WltModule\Project;
 use App\Repository\Edu\TeacherRepository as EduTeacherRepository;
 use App\Security\OrganizationVoter;
-use App\Security\WltModule\OrganizationVoter as WltOrganizationVoter;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -217,21 +216,25 @@ class TeacherRepository extends EduTeacherRepository
                 ->setParameter('tq', '%'.$q.'%');
         }
 
-        $isManager = $this->security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $this->security->isGranted(WltOrganizationVoter::WLT_MANAGER, $organization);
+        if (!$this->security->isGranted(OrganizationVoter::MANAGE, $organization)) {
+            // la coordinación ve los proyectos que gestiona y la jefatura de departamento los de sus enseñanzas;
+            // el resto del profesorado, solo lo suyo
+            $projects = [];
+            foreach ([...$this->projectRepository->findByManager($person), ...$this->projectRepository->findByDepartmentHeadPerson($person)] as $project) {
+                $projects[$project->getId()] = $project;
+            }
+            $projects = array_values($projects);
 
-        if (!$isManager && $isWltManager) {
-            $projects = $this->projectRepository->findByManager($person);
-            $queryBuilder
-                ->andWhere('pro IN (:projects) OR p = :person')
-                ->setParameter('projects', $projects)
-                ->setParameter('person', $person);
-        }
-
-        if (!$isWltManager && !$isManager) {
-            $queryBuilder
-                ->andWhere('p = :person')
-                ->setParameter('person', $person);
+            if ($projects !== []) {
+                $queryBuilder
+                    ->andWhere('pro IN (:projects) OR p = :person')
+                    ->setParameter('projects', $projects)
+                    ->setParameter('person', $person);
+            } else {
+                $queryBuilder
+                    ->andWhere('p = :person')
+                    ->setParameter('person', $person);
+            }
         }
 
         $queryBuilder

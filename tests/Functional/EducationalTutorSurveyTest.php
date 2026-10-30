@@ -187,9 +187,10 @@ class EducationalTutorSurveyTest extends AppWebTestCase
             yield "$module: alumno no ve la de centro" => [$base . '/centro', $student, 403];
             yield "$module: economico no ve la de alumnado" => [$base . '/estudiante', 'alfa.economico', 403];
         }
-        // en FCT y FFE el jefe de departamento ve el listado de centro; en FP dual solo llega al formulario
         yield 'FCT: jefe de departamento' => ['/fct/encuesta/centro', 'alfa.jefe', 200];
+        yield 'FP dual: jefe de departamento' => ['/dual/encuesta/centro', 'alfa.jefe', 200];
         yield 'FFE: jefe de departamento' => ['/formacion/encuesta/centro', 'alfa.jefe', 200];
+        yield 'FP dual: coordinador' => ['/dual/encuesta/centro', 'alfa.coordinador', 200];
     }
 
     /**
@@ -205,6 +206,46 @@ class EducationalTutorSurveyTest extends AppWebTestCase
             $this->client->request('GET', $base . '/' . $this->year() . '/1' . $query);
             self::assertResponseStatusCodeSame($status, $username . ' ' . $base . $query);
         }
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function centreListProvider(): iterable
+    {
+        yield 'FCT' => ['/fct/encuesta/centro'];
+        yield 'FP dual' => ['/dual/encuesta/centro'];
+        yield 'FFE' => ['/formacion/encuesta/centro'];
+    }
+
+    /**
+     * El jefe de departamento ve a todos los tutores docentes de sus enseñanzas; cada tutor, solo su propia encuesta.
+     *
+     * @dataProvider centreListProvider
+     */
+    public function testCentreSurveyListShowsEachRoleItsOwnScope(string $base): void
+    {
+        $this->enableEducationalTutorSurveys();
+        $conn = $this->connection();
+        $lastName = fn(string $username): string => (string) $conn->fetchOne('SELECT last_name FROM person WHERE login_username = ?', [$username]);
+        $url = $base . '/' . $this->year() . '/1';
+
+        $this->login($this->getUser('alfa.jefe'));
+        $this->client->request('GET', $url);
+        $head = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString($lastName('alfa.profesor'), $head);
+        // en FFE la estancia de "tutor" es de una empresa que las fixtures no incluyen en el programa
+        $headSeesBoth = $base !== '/formacion/encuesta/centro';
+        if ($headSeesBoth) {
+            self::assertStringContainsString($lastName('alfa.tutor') . ',', $head, 'La jefatura ve a todo el profesorado de sus enseñanzas');
+        }
+
+        $this->login($this->getUser('alfa.profesor'));
+        $this->client->request('GET', $url);
+        $own = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString($lastName('alfa.profesor'), $own);
+        // en FP dual y FCT "tutor" y "profesor" comparten convocatoria o proyecto, pero cada uno solo ve lo suyo
+        self::assertStringNotContainsString($lastName('alfa.tutor') . ',', $own);
     }
 
     /**
