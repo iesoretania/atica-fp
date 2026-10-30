@@ -27,9 +27,11 @@ use App\Form\Type\Edu\AnsweredSurveyType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\ItpModule\EducationalTutorAnsweredSurveyRepository;
 use App\Repository\ItpModule\StudentAnsweredSurveyRepository;
+use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use App\Repository\ItpModule\WorkTutorAnsweredSurveyRepository;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\StudentProgramWorkcenterVoter;
+use App\Security\ItpModule\TrainingProgramVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
@@ -254,6 +256,7 @@ class SurveyController extends AbstractController
         TranslatorInterface                      $translator,
         EducationalTutorAnsweredSurveyRepository $educationalTutorAnsweredSurveyRepository,
         ManagerRegistry                          $managerRegistry,
+        StudentProgramWorkcenterRepository       $studentProgramWorkcenterRepository,
         StudentProgramWorkcenter                 $studentProgramWorkcenter,
         Teacher                                  $teacher
     ): Response {
@@ -263,6 +266,23 @@ class SurveyController extends AbstractController
 
         $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::VIEW_EDUCATIONAL_TUTOR_SURVEY, $studentProgramWorkcenter);
         $readOnly = !$this->isGranted(StudentProgramWorkcenterVoter::FILL_EDUCATIONAL_TUTOR_SURVEY, $studentProgramWorkcenter);
+
+        // solo pueden contestar la encuesta de centro los tutores docentes (titulares o adicionales) del programa
+        $isEducationalTutor = false;
+        foreach ($studentProgramWorkcenterRepository->findByEducationalTutorOrAdditionalEducationalTutor($teacher) as $stay) {
+            if ($stay->getStudentProgram()->getProgramGroup()->getProgramGrade()->getTrainingProgram() === $trainingProgram) {
+                $isEducationalTutor = true;
+                break;
+            }
+        }
+        if (!$isEducationalTutor) {
+            throw $this->createAccessDeniedException();
+        }
+
+        // cada tutor docente contesta la suya; en nombre de otro solo quien gestiona el programa
+        if ($teacher->getPerson() !== $this->getUser()) {
+            $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $trainingProgram);
+        }
 
         $survey = $trainingProgram->getEducationalTutorSurvey();
 
@@ -315,7 +335,7 @@ class SurveyController extends AbstractController
             ['fixed' => $title]
         ];
         $backUrl = $this->generateUrl('in_company_training_phase_survey_educational_tutor_list', [
-            'academicYear' => $teacher->getId()
+            'academicYear' => $teacher->getAcademicYear()->getId()
         ]);
         return $this->render('wlt/survey/form.html.twig', [
             'menu_path' => 'in_company_training_phase_survey_educational_tutor_list',

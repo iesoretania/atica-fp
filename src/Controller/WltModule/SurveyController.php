@@ -277,6 +277,11 @@ class SurveyController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        // cada tutor docente contesta la suya; en nombre de otro solo quien gestiona el proyecto
+        if ($teacher->getPerson() !== $this->getUser()) {
+            $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
+        }
+
         $survey = $project->getEducationalTutorSurvey();
 
         if ($survey instanceof Survey) {
@@ -328,7 +333,7 @@ class SurveyController extends AbstractController
             ['fixed' => $title]
         ];
         $backUrl = $this->generateUrl('work_linked_training_survey_educational_tutor_list', [
-            'academicYear' => $teacher->getId()
+            'academicYear' => $teacher->getAcademicYear()->getId()
         ]);
         return $this->render('wlt/survey/form.html.twig', [
             'menu_path' => 'work_linked_training_survey_educational_tutor_list',

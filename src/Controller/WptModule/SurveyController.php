@@ -441,6 +441,11 @@ class SurveyController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        // cada tutor docente contesta la suya; en nombre de otro solo quien gestiona la convocatoria
+        if ($teacher->getPerson() !== $this->getUser()) {
+            $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
+        }
+
         $survey = $shift->getEducationalTutorSurvey();
 
         if ($survey instanceof Survey) {
@@ -492,7 +497,7 @@ class SurveyController extends AbstractController
             ['fixed' => $title]
         ];
         $backUrl = $this->generateUrl('workplace_training_survey_educational_tutor_list', [
-            'academicYear' => $teacher->getId()
+            'academicYear' => $teacher->getAcademicYear()->getId()
         ]);
         return $this->render('wpt/survey/form.html.twig', [
             'menu_path' => 'workplace_training_survey_educational_tutor_list',
