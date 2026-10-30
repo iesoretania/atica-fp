@@ -23,6 +23,8 @@ yarn-error.log
 /docs/manual/_build.html
 /docs/manual/*.pdf
 /docs/manual-site/
+/docs/cheatsheets/ficha-*.pdf
+/docs/cheatsheets/_build.md
 
 ###> phpunit/phpunit ###
 /phpunit.xml

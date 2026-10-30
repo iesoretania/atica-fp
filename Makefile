@@ -1,4 +1,4 @@
-.PHONY: docs docs-pdf docs-web docs-serve
+.PHONY: docs docs-pdf docs-web docs-serve cheatsheets
 
 # Versión publicada, leída de config/services.yaml (app.version). La portada del
 # manual en PDF y el pie de la web la muestran automáticamente, así que en cada
@@ -11,8 +11,27 @@ PUB_DATE := $(shell grep -E '^[[:space:]]*app\.pub_date:' config/services.yaml |
 # Capítulos del manual, en orden: index.md y los ficheros NN-*.md
 MANUAL_CHAPTERS := docs/manual/index.md $(sort $(wildcard docs/manual/[0-9][0-9]-*.md))
 
-## Genera el manual completo: PDF y web.
-docs: docs-pdf docs-web
+## Genera la documentación completa: manual (PDF y web) y fichas de referencia rápida.
+docs: docs-pdf docs-web cheatsheets
+
+## Genera las fichas de referencia rápida (docs/cheatsheets/ficha-*.pdf), una por función básica.
+##
+## Requiere Node.js: usa "npx @marp-team/marp-cli" sin instalación global. Cada ficha es un PDF
+## independiente. Se sustituyen los marcadores {{VERSION}} y {{PUB_DATE}} del .md en un fichero
+## temporal _build.md (en el mismo directorio, para que las rutas a img/ resuelvan) y se compila ese;
+## por eso hay que generar siempre con "make cheatsheets", no directamente con marp sobre el .md.
+## El tema compartido (docs/cheatsheets/theme.css) se registra con --theme-set.
+cheatsheets:
+	@command -v npx >/dev/null 2>&1 || { echo "Necesitas Node.js/npx para generar las fichas. Instala Node y reintenta."; exit 1; }
+	@for f in docs/cheatsheets/*.md; do \
+		[ -e "$$f" ] || continue; \
+		base=$$(basename "$$f" .md); \
+		case "$$base" in README|_build) continue ;; esac; \
+		sed -e 's/{{VERSION}}/$(VERSION)/g' -e 's#{{PUB_DATE}}#$(PUB_DATE)#g' "$$f" > docs/cheatsheets/_build.md; \
+		npx --yes @marp-team/marp-cli docs/cheatsheets/_build.md --allow-local-files --no-stdin \
+			--theme-set docs/cheatsheets/theme.css -o "docs/cheatsheets/ficha-$$base.pdf" < /dev/null; \
+	done
+	rm -f docs/cheatsheets/_build.md
 
 ## Genera el manual en PDF (docs/manual/atica-fp-manual.pdf).
 ##

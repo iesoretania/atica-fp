@@ -1,0 +1,160 @@
+/* @theme atica-fp-cheatsheet */
+
+/*
+ * Tema Marp para las fichas de referencia rápida (docs/cheatsheets/*.md).
+ * Una página A4 vertical por ficha, pensada como póster: pocos pasos, capturas
+ * móviles grandes, casi nada de prosa. Usa la misma paleta azul que el manual (docs/manual/assets/theme.css)
+ * (--nx-*) para que las fichas se vean como parte de la misma familia visual.
+ */
+
+section {
+  width: 210mm;
+  height: 297mm;
+  padding: 16mm 18mm 12mm;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--nx-ink);
+  background: #fff;
+}
+
+:root {
+  --nx-ink: #14202b;
+  --nx-accent: #0a6f93;
+  --nx-accent-soft: #eef6fa;
+  --nx-muted: #6b7280;
+}
+
+/* ----- Cabecera ----- */
+.kicker {
+  color: var(--nx-accent);
+  font-size: 15pt;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin: 0 0 2mm;
+}
+
+h1 {
+  color: var(--nx-ink);
+  font-size: 30pt;
+  line-height: 1.1;
+  margin: 0 0 8mm;
+  border-bottom: 2px solid #bcd9e6;
+  padding-bottom: 4mm;
+}
+
+/* ----- Pasos numerados (rejilla de 2 columnas) ----- */
+.steps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8mm 10mm;
+  flex: 1;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 5mm;
+}
+
+.step .num {
+  flex: 0 0 auto;
+  width: 10mm;
+  height: 10mm;
+  border-radius: 50%;
+  background: var(--nx-accent);
+  color: #fff;
+  font-size: 13pt;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step .text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.step p {
+  margin: 0 0 3mm;
+  font-size: 12.5pt;
+  line-height: 1.35;
+}
+
+.step strong {
+  color: var(--nx-accent);
+}
+
+/* Iconos de línea (heroicons, ver docs/cheatsheets/instalar-app.md). Van como <img> porque
+   Marp escapa las etiquetas HTML que no reconoce (como <svg>) fuera de un atributo src;
+   el color va ya fijo en el propio SVG (un <img> no hereda currentColor del texto). Selector
+   reforzado (.step img.icn) para ganarle en especificidad a ".step img" de abajo, pensada
+   para las capturas de pantalla, no para iconos en línea con el texto. */
+.step img.icn {
+  display: inline;
+  width: 1.05em;
+  height: 1.05em;
+  max-height: none;
+  vertical-align: -0.18em;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.step img {
+  display: block;
+  max-height: 62mm;
+  max-width: 100%;
+  width: auto;
+  border: 1px solid #bcd9e6;
+  border-radius: 2mm;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+}
+
+/* Ficha sin capturas por paso (p. ej. "Mis guardias"): una sola columna de bloques. */
+.steps.sin-capturas {
+  grid-template-columns: 1fr;
+  gap: 5mm;
+}
+
+.steps.sin-capturas .step .num {
+  width: 8mm;
+  height: 8mm;
+  font-size: 11pt;
+}
+
+/* Captura de escritorio a ancho completo (equipo directivo, admin de centro: ver
+   docs/cheatsheets/curso-nuevo.md). Las demás fichas usan .step img, pensada para capturas
+   móviles en retrato (limitadas por alto); una captura de escritorio apaisada necesita lo
+   contrario, limitarse por ancho, para que el texto de la interfaz siga siendo legible en la
+   página impresa. */
+.captura-escritorio {
+  display: block;
+  width: 100%;
+  margin-top: 4mm;
+  border: 1px solid #bcd9e6;
+  border-radius: 2mm;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+}
+
+/* ----- Nota final ----- */
+.nota {
+  margin-top: 6mm;
+  padding: 3mm 5mm;
+  border-left: 3px solid var(--nx-accent);
+  background: var(--nx-accent-soft);
+  border-radius: 2mm;
+  font-size: 10.5pt;
+  color: var(--nx-ink);
+}
+
+.nota p { margin: 0; }
+
+/* ----- Pie (versión / fecha) ----- */
+footer {
+  color: var(--nx-muted);
+  font-size: 9pt;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 3mm;
+}

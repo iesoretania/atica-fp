@@ -1,8 +1,12 @@
 name: Documentación
 
-# Genera el manual (PDF y web). No publica nada: sube el resultado como artefacto del trabajo.
-# En cada cambio de la documentación se comprueba que se construye; con una etiqueta de versión
-# (vX.Y.Z) los artefactos llevan el sufijo de la versión.
+# Genera el manual (PDF y web) y las fichas de referencia rápida.
+#
+# - En cada cambio de la documentación se comprueba que se construye (artefacto del trabajo).
+# - Con una etiqueta de versión (vX.Y.Z) los ficheros llevan el sufijo de la versión, se adjuntan a la
+#   release de GitHub y, si es la versión estable más reciente, la web se publica en GitHub Pages.
+#
+# Requisito en el repositorio: Settings → Pages → Source: «GitHub Actions».
 on:
   push:
     tags: ['v*']
@@ -24,11 +28,32 @@ permissions:
 
 jobs:
   docs:
-    name: Manual (PDF y web)
+    name: Manual y fichas
     runs-on: ubuntu-latest
+    outputs:
+      deploy_pages: ${{ steps.stable.outputs.deploy }}
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0   # todas las etiquetas, para saber si esta es la versión estable más alta
+
+      - name: ¿Etiqueta estable e igual o más nueva?
+        id: stable
+        run: |
+          REF="${{ github.ref_name }}"
+          if [[ "${{ github.ref_type }}" != "tag" ]] || [[ "$REF" == *-* ]]; then
+            echo "deploy=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          # Se publica si REF es igual o más nueva que cualquier otra versión estable; es decir, no
+          # existe ninguna etiqueta estable estrictamente superior (permite volver a publicar la misma).
+          NEWER=$(git tag --list 'v*' | grep -vE '[-]' | sort -V \
+                    | awk -v r="$REF" 'found {print} $0 == r {found=1}')
+          if [[ -z "$NEWER" ]]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -53,9 +78,9 @@ jobs:
             echo "version=${{ github.event.inputs.version || 'dev' }}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Generar el manual
+      - name: Generar manual y fichas
         env:
-          # Reutiliza el Chrome preinstalado del runner para pagedjs-cli (evita descargar un Chromium aparte)
+          # Reutiliza el Chrome preinstalado del runner para pagedjs-cli y marp-cli (evita descargar un Chromium aparte)
           CHROME_PATH: /usr/bin/google-chrome
           PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
         run: make docs
@@ -67,8 +92,59 @@ jobs:
           mkdir -p _docs-dist
           cp docs/manual/atica-fp-manual.pdf "_docs-dist/atica-fp-manual-${VERSION}.pdf"
           (cd docs/manual-site && zip -r "../../_docs-dist/atica-fp-manual-web-${VERSION}.zip" .)
+          for f in docs/cheatsheets/ficha-*.pdf; do
+            [ -e "$f" ] || continue
+            name=$(basename "$f" .pdf)
+            cp "$f" "_docs-dist/atica-fp-${name}-${VERSION}.pdf"
+          done
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: atica-fp-docs
           path: _docs-dist/*
+
+      - name: Subir artefacto de Pages (solo la última versión estable)
+        if: steps.stable.outputs.deploy == 'true'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: docs/manual-site
+
+  # Adjunta el manual y las fichas a la release de la versión (solo con etiqueta). Si la release ya
+  # existe se le añaden los ficheros sin tocar su texto; si no, se crea vacía.
+  release-assets:
+    if: github.ref_type == 'tag'
+    needs: docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Descargar los ficheros generados
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: atica-fp-docs
+
+      - name: Adjuntar a la release
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          files: |
+            atica-fp-manual-*.pdf
+            atica-fp-manual-web-*.zip
+            atica-fp-ficha-*.pdf
+
+  # Publica la web en GitHub Pages (solo la última versión estable)
+  deploy-pages:
+    needs: docs
+    if: needs.docs.outputs.deploy_pages == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Desplegar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

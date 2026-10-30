@@ -24,6 +24,20 @@ Criterios que se mantienen en todos los capítulos:
 - Redacción en español, de «tú», sin jerga técnica salvo en los capítulos de instalación y plataforma.
 - El manual describe la versión actual (7.x); no documenta versiones anteriores.
 
+### Decisiones tomadas
+
+- **Datos de demostración propios**, realistas (nombres, empresas, calendario) y con una cuenta por
+  perfil, en una base de datos desechable. No se reutilizan las fixtures de los tests, que mantienen su
+  propia función.
+- **Publicación**: la web en GitHub Pages (solo la última versión estable) y el PDF del manual y las
+  fichas adjuntos a la release de cada versión. Lo hace `.github/workflows/docs.yml`.
+- **Formatos**: manual (PDF y web) y **fichas de referencia rápida** de una página. No hay presentación.
+- **Perfiles**: el responsable económico tiene un capítulo propio, corto, en cada módulo.
+- **Tratamiento**: «tú».
+- **Instalación completa, con lo básico separado**: el capítulo 01 es lo mínimo para poner la aplicación
+  en marcha; el despliegue en detalle, las actualizaciones y el mantenimiento van en un anexo técnico
+  (`92-...`) que el resto de lectores puede saltarse.
+
 ## 2. Perfiles
 
 Perfiles reales, tal como los distingue la aplicación (voters y menús):
@@ -58,7 +72,7 @@ número. Rangos fijos para poder añadir capítulos sin renumerar: 01-09 general
 
 | Fichero | Perfiles | Contenido |
 | --- | --- | --- |
-| `01-instalacion-y-puesta-en-marcha.md` | Plataforma | Requisitos, Docker, variables, `app:admin`, `app:organization`, tareas programadas (`app:cron`), copias (`app:backup`, `app:backup-restore`), migraciones seguras (`app:safe-migrate`), actualizaciones entre versiones |
+| `01-instalacion-y-puesta-en-marcha.md` | Plataforma | **Solo lo básico**: requisitos, arranque con Docker, variables imprescindibles, primer administrador (`app:admin`) y primer centro (`app:organization`), tarea programada (`app:cron`) y una copia de seguridad (`app:backup`). Remite al anexo 92 para todo lo demás |
 | `02-primeros-pasos.md` | Todos | Acceso, selección de organización, menú, datos personales y contraseña, recuperación de contraseña |
 | `03-preparar-el-curso-academico.md` | Administración del centro | Cursos académicos y copia del curso, módulos activos, orden recomendado de preparación |
 | `04-administrar-el-centro.md` | Administración del centro | Profesorado, alumnado y matrículas, departamentos, enseñanzas, niveles, grupos, materias, competencias, resultados de aprendizaje y criterios, días no lectivos, métodos de contacto, perfiles de usuario, rutas de desplazamiento, escalas de valoración |
@@ -112,6 +126,7 @@ número. Rangos fijos para poder añadir capítulos sin renumerar: 01-09 general
 | --- | --- |
 | `90-resolucion-de-problemas.md` | Síntomas frecuentes y su causa (sin acceso a un módulo, alumnado que no aparece, importación con conflictos...) |
 | `91-glosario.md` | FCT, FP dual, FFE, acuerdo, estancia, convocatoria, concreción de actividad, tutoría docente y laboral... |
+| `92-despliegue-y-mantenimiento.md` | **Anexo técnico**: despliegue con Docker en detalle (proxy inverso, HTTPS, variables), actualización entre versiones (a partir de los `UPGRADE-*.md` y `app:safe-migrate`), copias y restauración (`app:backup`, `app:backup-restore`), tareas programadas, registro de errores |
 
 Cada capítulo de perfil sigue la misma plantilla, para que el manual sea predecible:
 
@@ -155,23 +170,42 @@ con el prefijo del capítulo (`fct-gestion-convocatorias.png`).
   de perfil, es decir, unas 200 en total.
 - Cada imagen se revisa a ojo antes de confirmarla y el pie nombra lo que se ve.
 
-## 6. Fases y orden de trabajo
+## 6. Fichas de referencia rápida
+
+Una página A4 por tarea frecuente, pensadas para el móvil y para imprimir (mecanismo y tema en
+`docs/cheatsheets/`, ver su `README.md`). Salen de los capítulos de perfil una vez revisados, no antes.
+Candidatas, a confirmar al redactar cada módulo:
+
+| Ficha | Perfil | Módulos |
+| --- | --- | --- |
+| Registrar la jornada del día | Alumnado | FCT, FP dual, FFE |
+| Registrar una visita o un contacto con la empresa | Tutoría docente | FCT, FP dual, FFE |
+| Registrar un gasto de desplazamiento | Tutoría docente | FCT, FP dual, FFE |
+| Registrar la asistencia y valorar al alumnado | Tutoría laboral | FCT, FP dual, FFE |
+| Evaluar al alumnado | Profesorado | FP dual, FFE |
+| Preparar un curso nuevo | Administración del centro | General |
+| Importar profesorado y alumnado desde Séneca | Administración del centro | General |
+
+Se redactan por módulo cuando el capítulo de ese perfil está cerrado; si una tarea es idéntica en los tres
+módulos se hace una sola ficha con las diferencias de menú anotadas.
+
+## 7. Fases y orden de trabajo
 
 | Fase | Entrega | Criterio de hecho |
 | --- | --- | --- |
-| 0 | **Mecanismo de generación** (hecho): `Makefile`, MkDocs, pandoc, estilos, CI | `make docs` genera PDF y web |
+| 0 | **Mecanismo de generación** (hecho): `Makefile`, MkDocs, pandoc, Marp, estilos y CI (Pages y release) | `make docs` genera PDF, web y fichas |
 | 1 | **Datos de demostración y capturas**: dataset realista (nombres, empresas, calendario), cuentas por perfil, scripts base y runbook; comprobación automática de permisos | Se pueden regenerar las capturas de un capítulo con un comando; la comprobación de permisos pasa |
 | 2 | Parte A (general), capítulos 01-09 | Revisados y con capturas |
 | 3 | FCT (10-16): es el módulo más simple y fija la plantilla de los demás | Revisado por una persona que use el módulo |
 | 4 | FP dual (20-27) | Idem |
 | 5 | FFE (30-37) | Idem |
-| 6 | Anexos, introducción definitiva, revisión transversal de enlaces y de coherencia terminológica | `make docs` sin avisos; enlaces comprobados |
-| 7 | Publicación: web y PDF adjuntos a cada versión | Según se decida (ver preguntas) |
+| 6 | Anexos (incluido el técnico), fichas de referencia rápida, introducción definitiva, revisión transversal de enlaces y de coherencia terminológica | `make docs` sin avisos; enlaces comprobados |
+| 7 | Publicación: activar Pages en el repositorio y etiquetar una versión para comprobar el flujo | La web está en `iesoretania.github.io/atica-fp` y la release lleva el PDF y las fichas |
 
 Cada fase termina con un commit propio. El manual se redacta contra la rama `v7`; los cambios de
 pantallas posteriores actualizan el capítulo y sus capturas en el mismo commit que el cambio.
 
-## 7. Control de calidad
+## 8. Control de calidad
 
 - Cada afirmación sobre permisos se contrasta con la matriz comprobada.
 - Cada capítulo lo recorre quien lo escribe en la aplicación, siguiendo sus propios pasos con la cuenta
