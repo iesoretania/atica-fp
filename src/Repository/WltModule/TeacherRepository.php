@@ -81,7 +81,7 @@ class TeacherRepository extends EduTeacherRepository
                 'WITH',
                 'a.educationalTutor = t OR a.additionalEducationalTutor = t'
             )
-            ->join(StudentEnrollment::class, 'se')
+            ->join(StudentEnrollment::class, 'se', 'WITH', 'a.studentEnrollment = se')
             ->andWhere('se.group IN (:groups)')
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('groups', $groups)

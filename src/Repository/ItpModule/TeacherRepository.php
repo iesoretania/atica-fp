@@ -19,7 +19,6 @@
 namespace App\Repository\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
-use App\Entity\Edu\StudentEnrollment;
 use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\TrainingProgram;
@@ -62,7 +61,8 @@ class TeacherRepository extends EduTeacherRepository
                 'WITH',
                 'spw.educationalTutor = t OR spw.additionalEducationalTutor = t'
             )
-            ->join(StudentEnrollment::class, 'se')
+            ->join('spw.studentProgram', 'sp')
+            ->join('sp.studentEnrollment', 'se')
             ->andWhere('se.group IN (:groups)')
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('groups', $groups)

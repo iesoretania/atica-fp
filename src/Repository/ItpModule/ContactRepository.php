@@ -95,7 +95,7 @@ class ContactRepository extends ServiceEntityRepository
 
         if ($q) {
             $qb
-                ->where('co.name LIKE :tq OR w.name LIKE :tq')
+                ->andWhere('co.name LIKE :tq OR w.name LIKE :tq')
                 ->setParameter('tq', '%'. $q . '%');
         }
         $qb
