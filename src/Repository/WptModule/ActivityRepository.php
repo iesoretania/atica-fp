@@ -158,7 +158,7 @@ class ActivityRepository extends ServiceEntityRepository
                 if ($learningOutcome instanceof LearningOutcome) {
                     $criterion = $this->criterionRepository
                         ->findOneByCodeAndLearningOutcome($criterion->getCode(), $learningOutcome);
-                    if ($criterion && !$newActivity->getCriteria()->contains($learningOutcome)) {
+                    if ($criterion && !$newActivity->getCriteria()->contains($criterion)) {
                         $newActivity->getCriteria()->add($criterion);
                     }
                 }
