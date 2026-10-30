@@ -186,7 +186,7 @@ class WltModule implements ModuleBuilderInterface
                 $menu2->addChild($menu3);
             }
 
-            if ($this->security->isGranted(OrganizationVoter::WLT_MANAGER, $organization)
+            if ($this->security->isGranted(OrganizationVoter::WLT_MANAGE, $organization)
             ) {
                 $menu2 = new MenuItem();
                 $menu2

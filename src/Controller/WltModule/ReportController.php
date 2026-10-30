@@ -60,7 +60,7 @@ class ReportController extends AbstractController
     public function index(UserExtensionService $userExtensionService): Response
     {
         $this->denyAccessUnlessGranted(
-            WltOrganizationVoter::WLT_MANAGER,
+            WltOrganizationVoter::WLT_MANAGE,
             $userExtensionService->getCurrentOrganization()
         );
         return $this->render(
@@ -207,9 +207,9 @@ class ReportController extends AbstractController
             $queryBuilder
                 ->where('p.name LIKE :tq')
                 ->orWhere('p.name LIKE :tq')
-                ->orWhere('m.first_name LIKE :tq')
-                ->orWhere('m.last_name LIKE :tq')
-                ->orWhere('m.unique_identifier LIKE :tq')
+                ->orWhere('m.firstName LIKE :tq')
+                ->orWhere('m.lastName LIKE :tq')
+                ->orWhere('m.uniqueIdentifier LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
 

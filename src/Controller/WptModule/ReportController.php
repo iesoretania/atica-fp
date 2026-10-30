@@ -101,7 +101,7 @@ class ReportController extends AbstractController
         if ($q) {
             $queryBuilder
                 ->where('gr.name LIKE :tq')
-                ->orWhere('sh.name LIKE :tq')
+                ->orWhere('s.name LIKE :tq')
                 ->setParameter('tq', '%'.$q.'%');
         }
 
