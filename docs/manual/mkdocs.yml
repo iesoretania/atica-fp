@@ -74,6 +74,15 @@ nav:
       - 14-fct-tutoria-laboral.md
       - 15-fct-responsable-economico.md
       - 16-fct-permisos.md
+  - FP dual (Formación profesional dual):
+      - 20-dual-vision-general.md
+      - 21-dual-gestion.md
+      - 22-dual-tutoria-docente-y-de-grupo.md
+      - 23-dual-profesorado-y-evaluacion.md
+      - 24-dual-alumnado.md
+      - 25-dual-tutoria-laboral.md
+      - 26-dual-responsable-economico.md
+      - 27-dual-permisos.md
   - Anexos:
       - 90-resolucion-de-problemas.md
       - 92-despliegue-y-mantenimiento.md

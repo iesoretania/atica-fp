@@ -103,8 +103,8 @@ table:has(th:nth-child(7)) {
 table:has(th:nth-child(7)) th,
 table:has(th:nth-child(7)) td { padding: 0.25em 0.3em; line-height: 1.25; text-align: center; }
 table:has(th:nth-child(7)) th:first-child,
-table:has(th:nth-child(7)) td:first-child { width: 30%; text-align: left; }
-table:has(th:nth-child(7)) th { font-size: 6pt; overflow-wrap: anywhere; }
+table:has(th:nth-child(7)) td:first-child { width: 25%; text-align: left; }
+table:has(th:nth-child(7)) th { font-size: 5.5pt; padding-left: 0.1em; padding-right: 0.1em; overflow-wrap: anywhere; }
 table:has(th:nth-child(7)) tr { break-inside: avoid; }
 thead { display: table-header-group; }
 

@@ -92,6 +92,7 @@ La fuente es `LoadManualDataCommand::PROFILES`; `scripts/screenshots/lib.mjs` (`
 | Jefatura de departamento (Informática) | `jefatura` | `rcabrera` | Ramón Cabrera Soler |
 | Tutoría docente y de grupo (2º DAM A) | `tutoria` | `mjimenez` | Marta Jiménez Aranda |
 | Profesorado | `profesorado` | `jbarrios` | Julián Barrios Cortés |
+| Profesorado que solo da clase en 2º DAM A (evalúa en FP dual y FFE) | `docenteGrupo` | `jcortes` | Julia Cortés Ramos |
 | Coordinación de FP dual | `coordinacion` | `esalas` | Elena Salas Quintana |
 | Gestión de la FFE | `gestorFfe` | `therrero` | Tomás Herrero Lara |
 | Tutoría laboral (Tecnologías del Sur) | `tutoriaLaboral` | `snavarro` | Sergio Navarro Gil |
@@ -116,6 +117,7 @@ datos de relleno sin acuerdos, útiles para mostrar listas con contenido y para 
 | | `encuestas-*` y `plantillas-*` (listados, ficha de encuesta, preguntas, ficha de pregunta, ficha de plantilla) | `07` | No |
 | | `plataforma-*` (centros, ficha de centro, usuarios, ficha de usuario) | `08` | No |
 | `capture-fct.mjs` | `fct-*` de la administración (`fct-inicio-gestion`, convocatorias, actividades, acuerdos, calendario, seguimiento, informes, visitas y gastos), de la jefatura, la tutoría docente (`fct-tutoria-*`, `fct-jornada-*`), el alumnado (`fct-alumnado-*`), la tutoría laboral (`fct-laboral-*`) y el responsable económico (`fct-economico-*`) | `10` a `16` | No |
+| `capture-dual.mjs` | `dual-*` de la administración (proyectos, alumnado adherido, actividades, concreciones, empresas, convenios, calendario, seguimiento, valoración, resumen, contactos, gastos e informes), de la coordinación y la jefatura, la tutoría docente y de grupo (`dual-tutoria-*`, `dual-jornada-*`, `dual-evaluacion-*`), el profesorado del grupo (`dual-docente-*`), el alumnado (`dual-alumnado-*`), la tutoría laboral (`dual-laboral-*`) y el responsable económico (`dual-economico-*`) | `20` a `27` | No |
 
 Cada script nuevo se anota aquí al crearlo.
 

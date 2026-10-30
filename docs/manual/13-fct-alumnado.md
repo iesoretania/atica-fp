@@ -22,7 +22,7 @@ Solo ves el módulo si tienes un acuerdo de colaboración en el curso activo.
 
 ![Menú de FCT del alumnado: dos tarjetas, «Seguimiento de actividad» y «Encuestas»](img/fct-alumnado-inicio.png)
 
-## Tu calendario
+## Tu calendario {#tu-calendario}
 
 **Seguimiento de actividad** te lleva directamente a tu **calendario formativo**: todas las jornadas de tus
 prácticas, mes a mes.

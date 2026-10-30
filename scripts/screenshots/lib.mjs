@@ -32,6 +32,7 @@ export const accounts = {
     jefatura: 'rcabrera',
     tutoria: 'mjimenez', // tutoría docente y de grupo
     profesorado: 'jbarrios',
+    docenteGrupo: 'jcortes', // da clase en 2º DAM A y no tiene otro cargo (evalúa en FP dual y FFE)
     coordinacion: 'esalas', // coordinación de FP dual
     gestorFfe: 'therrero',
     tutoriaLaboral: 'snavarro',

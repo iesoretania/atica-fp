@@ -61,7 +61,7 @@ seleccionados** quitas los marcados (con confirmación previa).
     ([capítulo 12](12-fct-tutoria-docente-y-de-grupo.md#gastos-de-desplazamiento)). Tú intervienes para completar
     o corregir.
 
-## Verificar los itinerarios
+## Verificar los itinerarios {#verificar-los-itinerarios}
 
 Cuando un docente no encuentra su trayecto en el catálogo, **lo crea él mismo** con los kilómetros que él
 calcula. Ese itinerario queda **sin verificar** hasta que tú, o la administración del centro, lo compruebas. Es la

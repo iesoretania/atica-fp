@@ -166,7 +166,7 @@ Se usan al generar los calendarios de prácticas de los tres módulos: por defec
 se saltan (quien prepara el calendario puede indicar que los ignore). Puedes crearlos uno a uno (fecha y descripción) o importar el calendario escolar oficial
 ([Importaciones](05-importaciones.md#dias-no-lectivos)).
 
-## Tipos de contacto con empresas
+## Tipos de contacto con empresas {#tipos-de-contacto-con-empresas}
 
 **Gestión del centro → Tipos de contacto con empresas** es el catálogo de formas de contacto que el
 profesorado puede elegir al registrar un contacto con una empresa (correo electrónico, teléfono...).
@@ -209,7 +209,7 @@ verificado.
 El responsable económico, que es quien figura como secretario o secretaria del curso, ve en
 **Gestión del centro** únicamente esta tarjeta. El resto del apartado le está cerrado.
 
-## Escalas de valoración del desempeño
+## Escalas de valoración del desempeño {#escalas-de-valoracion-del-desempeno}
 
 **Gestión del centro → Escalas de valoración del desempeño** define los niveles con los que se valora
 el desempeño del alumnado en los módulos que evalúan por actividades o resultados de aprendizaje.

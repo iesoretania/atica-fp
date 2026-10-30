@@ -276,10 +276,40 @@ class LoadManualDataCommand extends Command
                 ['Papel con membrete del centro', self::ORGANIZATION_CODE]
             );
             $this->addSurveys($connection);
+            $this->addTeaching($connection);
+            // calificación numérica de cada nivel de desempeño (en centésimas): Insuficiente 3, Suficiente 6, Notable 8
+            $connection->executeStatement(
+                "UPDATE edu_performance_scale_value SET numeric_grade = CASE description WHEN 'Insuficiente' THEN 300 WHEN 'Suficiente' THEN 600 ELSE 800 END"
+            );
+            // el texto de las reuniones es plano (el formulario no tiene editor): sin etiquetas HTML
+            $connection->executeStatement(
+                'UPDATE wlt_meeting SET detail = ?',
+                ['Reunión de seguimiento del proyecto: revisión del calendario de prácticas y de las actividades realizadas hasta la fecha.']
+            );
             $connection->commit();
         } catch (\Throwable $e) {
             $connection->rollBack();
             throw $e;
+        }
+    }
+
+    /**
+     * Una docente que solo da clase en 2º DAM A (Proyecto intermodular) y no tiene ningún otro cargo ni tutoría: es
+     * el perfil de «profesorado» de FP dual y de la FFE, que evalúa al alumnado del grupo (usuario «jcortes»)
+     */
+    private function addTeaching(Connection $connection): void
+    {
+        $connection->executeStatement(
+            'INSERT INTO edu_teaching (teacher_id, group_id, subject_id)
+             SELECT t.id, g.id, s.id
+             FROM edu_teacher t
+             JOIN person p ON p.id = t.person_id AND p.login_username = ?
+             JOIN edu_group g ON g.name = ? AND g.grade_id IN (SELECT gr.id FROM edu_grade gr JOIN edu_training tr ON tr.id = gr.training_id WHERE tr.academic_year_id = t.academic_year_id)
+             JOIN edu_subject s ON s.name = ? AND s.grade_id = g.grade_id',
+            ['jcortes', '2º DAM A', 'Proyecto intermodular']
+        );
+        if ($connection->fetchOne('SELECT COUNT(*) FROM edu_teaching te JOIN edu_teacher t ON t.id = te.teacher_id JOIN person p ON p.id = t.person_id WHERE p.login_username = ?', ['jcortes']) === '0') {
+            throw new \RuntimeException('No se ha podido asignar la docencia de «jcortes»: ha cambiado el reparto de nombres de los datos de relleno.');
         }
     }
 
