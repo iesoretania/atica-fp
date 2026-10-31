@@ -277,6 +277,7 @@ class LoadManualDataCommand extends Command
             );
             $this->addSurveys($connection);
             $this->addTeaching($connection);
+            $this->addFfe($connection);
             // calificación numérica de cada nivel de desempeño (en centésimas): Insuficiente 3, Suficiente 6, Notable 8
             $connection->executeStatement(
                 "UPDATE edu_performance_scale_value SET numeric_grade = CASE description WHEN 'Insuficiente' THEN 300 WHEN 'Suficiente' THEN 600 ELSE 800 END"
@@ -310,6 +311,93 @@ class LoadManualDataCommand extends Command
         );
         if ($connection->fetchOne('SELECT COUNT(*) FROM edu_teaching te JOIN edu_teacher t ON t.id = te.teacher_id JOIN person p ON p.id = t.person_id WHERE p.login_username = ?', ['jcortes']) === '0') {
             throw new \RuntimeException('No se ha podido asignar la docencia de «jcortes»: ha cambiado el reparto de nombres de los datos de relleno.');
+        }
+    }
+
+    /**
+     * Ampliaciones para los capítulos de la FFE (30 a 37), todas aditivas:
+     * - «jbarrios» (responsable de seguimiento de la estancia de Adrián Ibáñez) y «therrero» (tutoría dual del grupo) dan
+     *   clase en 2º DAM A: los formularios de la estancia y del grupo solo ofrecen al profesorado que da clase en el
+     *   grupo, así que sin esto saldrían sin responsable;
+     * - la empresa de la estancia de Sara Gallego (Consultoría del Norte) se incorpora al plan con su convenio;
+     * - el plan usa las tres encuestas del centro;
+     * - las jornadas anteriores a una semana antes de «hoy» están confirmadas (bloqueadas), y Sara Gallego tiene una falta
+     *   justificada y otra injustificada, para que el seguimiento y la asistencia muestren algo.
+     */
+    private function addFfe(Connection $connection): void
+    {
+        $organization = (int) $connection->fetchOne('SELECT id FROM organization WHERE code = ?', [self::ORGANIZATION_CODE]);
+
+        foreach (['jbarrios', 'therrero'] as $username) {
+            $connection->executeStatement(
+                'INSERT INTO edu_teaching (teacher_id, group_id, subject_id)
+                 SELECT t.id, g.id, s.id
+                 FROM edu_teacher t
+                 JOIN person p ON p.id = t.person_id AND p.login_username = ?
+                 JOIN edu_group g ON g.name = ? AND g.grade_id IN (SELECT gr.id FROM edu_grade gr JOIN edu_training tr ON tr.id = gr.training_id WHERE tr.academic_year_id = t.academic_year_id)
+                 JOIN edu_subject s ON s.name = ? AND s.grade_id = g.grade_id',
+                [$username, '2º DAM A', 'Proyecto intermodular']
+            );
+        }
+
+        $stays = $connection->fetchFirstColumn(
+            'SELECT spw.id FROM itp_student_program_workcenter spw
+             JOIN itp_student_program sp ON sp.id = spw.student_program_id
+             JOIN edu_student_enrollment se ON se.id = sp.student_enrollment_id
+             JOIN edu_group g ON g.id = se.group_id JOIN edu_grade gr ON gr.id = g.grade_id
+             JOIN edu_training tr ON tr.id = gr.training_id JOIN edu_academic_year ay ON ay.id = tr.academic_year_id
+             WHERE ay.organization_id = ? ORDER BY spw.id',
+            [$organization]
+        );
+        if (count($stays) < 2) {
+            throw new \RuntimeException('No se han encontrado las dos estancias de FFE de las fixtures.');
+        }
+        [$adrian, $sara] = $stays;
+
+        // la empresa de Sara en el plan, con las mismas actividades que la primera empresa
+        $firstProgram = (int) $connection->fetchOne('SELECT cp.id FROM itp_company_program cp JOIN itp_program_grade pg ON pg.id = cp.program_grade_id ORDER BY cp.id LIMIT 1');
+        $connection->executeStatement(
+            'INSERT INTO itp_company_program (program_grade_id, company_id, agreement_number, monitoring_instruments)
+             SELECT cp.program_grade_id, (SELECT w.company_id FROM itp_student_program_workcenter spw JOIN workcenter w ON w.id = spw.workcenter_id WHERE spw.id = ?), ?, ?
+             FROM itp_company_program cp WHERE cp.id = ?',
+            [$sara, 'FFE-002', 'Reuniones quincenales con el tutor dual', $firstProgram]
+        );
+        $secondProgram = (int) $connection->lastInsertId();
+        $connection->executeStatement(
+            'INSERT INTO itp_company_program_activity (company_program_id, activity_id) SELECT ?, activity_id FROM itp_company_program_activity WHERE company_program_id = ?',
+            [$secondProgram, $firstProgram]
+        );
+
+        // el plan usa las tres encuestas del centro
+        $surveys = $connection->fetchAllKeyValue('SELECT title, id FROM survey WHERE organization_id = ?', [$organization]);
+        $connection->executeStatement(
+            'UPDATE itp_training_program SET student_survey_id = ?, company_survey_id = ?, educational_tutor_survey_id = ?
+             WHERE id IN (
+                 SELECT pg.training_program_id FROM itp_program_grade pg
+                 JOIN edu_grade gr ON gr.id = pg.grade_id JOIN edu_training tr ON tr.id = gr.training_id
+                 JOIN edu_academic_year ay ON ay.id = tr.academic_year_id WHERE ay.organization_id = ?
+             )',
+            [
+                $surveys['Satisfacción del alumnado con las prácticas'],
+                $surveys['Satisfacción de la empresa con el alumnado'],
+                $surveys['Satisfacción de la tutoría docente con las prácticas'],
+                $organization,
+            ]
+        );
+
+        // jornadas confirmadas hasta una semana antes de «hoy» y las faltas de Sara
+        $cutOff = DemoData::today()->modify('-8 days')->format('Y-m-d');
+        $connection->executeStatement(
+            'UPDATE itp_work_day SET locked = 1 WHERE date <= ? AND student_program_workcenter_id IN (?, ?)',
+            [$cutOff, $adrian, $sara]
+        );
+        $past = $connection->fetchFirstColumn(
+            'SELECT id FROM itp_work_day WHERE student_program_workcenter_id = ? AND date <= ? ORDER BY date DESC LIMIT 10',
+            [$sara, $cutOff]
+        );
+        foreach ([[$past[2], 2], [$past[7], 1]] as [$day, $absence]) {
+            $connection->executeStatement('UPDATE itp_work_day SET absence = ?, locked = 1 WHERE id = ?', [$absence, $day]);
+            $connection->executeStatement('DELETE FROM itp_work_day_activity WHERE work_day_id = ?', [$day]);
         }
     }
 

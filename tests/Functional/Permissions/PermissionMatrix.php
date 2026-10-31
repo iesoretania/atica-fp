@@ -287,7 +287,7 @@ final class PermissionMatrix
                 ],
             ],
             'ffe' => [
-                'title' => 'Formación en empresas (FFE)',
+                'title' => 'Formación en empresa (FFE)',
                 'profiles' => [
                     'admin' => ['label' => 'Administración del centro', 'user' => 'alfa.admin'],
                     'jefe' => ['label' => 'Jefatura de departamento', 'user' => 'alfa.jefe'],
@@ -302,17 +302,17 @@ final class PermissionMatrix
                     'resto' => ['label' => 'Resto del personal', 'user' => 'alfa.coordinador'],
                 ],
                 'sections' => [
-                    self::section('Programas formativos', [
-                        ['Ver el listado de programas formativos', 'GET /formacion/plan/listar/{year}/1'],
-                        ['Crear un programa formativo', 'GET /formacion/plan/nuevo/{year}'],
-                        ['Editar un programa formativo', 'GET /formacion/plan/{trainingProgram}/{year}'],
-                        ['Eliminar programas formativos', 'POST /formacion/plan/eliminar/{year} items[]={trainingProgram}'],
-                        ['Ver los cursos de un programa', 'GET /formacion/plan/curso/listar/{trainingProgram}/1'],
-                        ['Editar los resultados de aprendizaje de un curso', 'GET /formacion/plan/curso/resultados/{programGrade}'],
+                    self::section('Planes de formación', [
+                        ['Ver el listado de planes de formación', 'GET /formacion/plan/listar/{year}/1'],
+                        ['Crear un plan de formación', 'GET /formacion/plan/nuevo/{year}'],
+                        ['Editar un plan de formación', 'GET /formacion/plan/{trainingProgram}/{year}'],
+                        ['Eliminar planes de formación', 'POST /formacion/plan/eliminar/{year} items[]={trainingProgram}'],
+                        ['Ver los cursos de un plan', 'GET /formacion/plan/curso/listar/{trainingProgram}/1'],
+                        ['Editar las horas previstas de un curso','GET /formacion/plan/curso/resultados/{programGrade}'],
                         ['Ver los grupos de un curso', 'GET /formacion/plan/grupo/listar/{programGrade}/1'],
                         ['Editar un grupo', 'GET /formacion/plan/grupo/{programGroup}'],
                     ]),
-                    self::section('Actividades y empresas del programa', [
+                    self::section('Actividades y empresas del plan', [
                         ['Ver las actividades de un curso', 'GET /formacion/plan/actividad/listar/{programGrade}/1'],
                         ['Crear una actividad', 'GET /formacion/plan/actividad/nueva/{programGrade}'],
                         ['Editar una actividad', 'GET /formacion/plan/actividad/{itpActivity}'],
@@ -321,7 +321,7 @@ final class PermissionMatrix
                         ['Eliminar actividades', 'POST /formacion/plan/actividad/eliminar/{programGrade} items[]={itpActivity}'],
                         ['Ver las empresas de un curso', 'GET /formacion/plan/empresa/listar/{programGrade}/1'],
                         ['Incorporar una empresa', 'GET /formacion/plan/empresa/nueva/{programGrade}'],
-                        ['Editar el programa de una empresa', 'GET /formacion/plan/empresa/{companyProgram}'],
+                        ['Editar la participación de una empresa', 'GET /formacion/plan/empresa/{companyProgram}'],
                         ['Eliminar empresas del curso', 'POST /formacion/plan/empresa/eliminar/{programGrade} items[]={companyProgram}'],
                     ]),
                     self::section('Alumnado y estancias', [
@@ -379,7 +379,7 @@ final class PermissionMatrix
                         ['Ver las encuestas de centro', 'GET /formacion/encuesta/centro/{year}/1'],
                         ['Abrir la encuesta de centro de un docente', 'GET /formacion/encuesta/centro/cumplimentar/{stay}/{itpTeacher}'],
                     ]),
-                    self::section('Informes del programa', [
+                    self::section('Informes del plan', [
                         ['Acceder al apartado de informes', 'GET /formacion/informe/'],
                         ['Ver el listado de informes de las encuestas de alumnado', 'GET /formacion/informe/encuesta/estudiantes/listar/{year}/1'],
                         ['Obtener el informe de la encuesta de alumnado', 'GET /formacion/informe/encuesta/estudiantes/{trainingProgram}/{year}'],

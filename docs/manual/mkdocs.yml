@@ -83,6 +83,15 @@ nav:
       - 25-dual-tutoria-laboral.md
       - 26-dual-responsable-economico.md
       - 27-dual-permisos.md
+  - FFE (Formación en empresa):
+      - 30-ffe-vision-general.md
+      - 31-ffe-gestion.md
+      - 32-ffe-tutoria-docente-y-de-grupo.md
+      - 33-ffe-profesorado-y-evaluacion.md
+      - 34-ffe-alumnado.md
+      - 35-ffe-tutoria-laboral.md
+      - 36-ffe-responsable-economico.md
+      - 37-ffe-permisos.md
   - Anexos:
       - 90-resolucion-de-problemas.md
       - 92-despliegue-y-mantenimiento.md

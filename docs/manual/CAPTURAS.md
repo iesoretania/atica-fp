@@ -139,9 +139,17 @@ datos de relleno sin acuerdos, útiles para mostrar listas con contenido y para 
 | `capture-fct.mjs` | `fct-*` de la administración (`fct-inicio-gestion`, convocatorias, actividades, acuerdos, calendario, seguimiento, informes, visitas y gastos), de la jefatura, la tutoría docente (`fct-tutoria-*`, `fct-jornada-*`), el alumnado (`fct-alumnado-*`), la tutoría laboral (`fct-laboral-*`) y el responsable económico (`fct-economico-*`) | `10` a `16` | No |
 | `capture-dual.mjs` | `dual-*` de la administración (proyectos, alumnado adherido, actividades, concreciones, empresas, convenios, calendario, seguimiento, valoración, resumen, contactos, gastos, reuniones de tutorización e informes), de la coordinación y la jefatura, la tutoría docente y de grupo (`dual-tutoria-*`, `dual-jornada-*`, `dual-evaluacion-*`), el profesorado del grupo (`dual-docente-*`), el alumnado (`dual-alumnado-*`), la tutoría laboral (`dual-laboral-*`) y el responsable económico (`dual-economico-*`) | `20` a `27` | No |
 
+| `capture-ffe.mjs` | `ffe-*` de la administración (planes, cursos, grupos, actividades, empresas, alumnado, estancias, calendarios, resumen de evaluación, seguimiento, contactos, gastos e informes), la gestión de la FFE y la jefatura, la tutoría docente y de grupo (`ffe-tutoria-*`, `ffe-jornada-*`, `ffe-valoracion-*`), el responsable de seguimiento, el profesorado del grupo (`ffe-docente-*`), el alumnado (`ffe-alumnado-*`), la tutoría laboral (`ffe-laboral-*`) y el responsable económico (`ffe-economico-*`) | `30` a `37` | No |
+
 Cada script nuevo se anota aquí al crearlo.
 
 ## Qué falta en los datos (se amplía al redactar cada módulo)
+
+Ampliaciones ya hechas (`LoadManualDataCommand::addFfe`, fase 5, todas aditivas): Julián Barrios y Tomás Herrero dan
+clase en 2º DAM A (los formularios del grupo y de la estancia solo ofrecen al profesorado del grupo; con ello salen
+también en las listas de docentes del módulo de FP dual y en las materias); la empresa de la estancia de Sara Gallego
+entra en el plan con su convenio (FFE-002); el plan usa las tres encuestas del centro; las jornadas hasta una semana antes
+de «hoy» están confirmadas y Sara tiene una falta justificada y otra injustificada.
 
 Los datos tienen una sola enseñanza (CFGS DAM), una convocatoria de FCT, un proyecto de FP dual y un
 programa de FFE. Es suficiente para el recorrido de cada perfil, pero cuando un capítulo necesite variedad

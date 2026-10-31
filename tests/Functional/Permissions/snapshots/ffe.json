@@ -1,6 +1,6 @@
 {
     "module": "ffe",
-    "title": "Formación en empresas (FFE)",
+    "title": "Formación en empresa (FFE)",
     "profiles": {
         "admin": {
             "label": "Administración del centro",
@@ -49,10 +49,10 @@
     },
     "sections": [
         {
-            "title": "Programas formativos",
+            "title": "Planes de formación",
             "actions": [
                 {
-                    "label": "Ver el listado de programas formativos",
+                    "label": "Ver el listado de planes de formación",
                     "request": "GET /formacion/plan/listar/{year}/1",
                     "allowed": {
                         "admin": true,
@@ -69,7 +69,7 @@
                     }
                 },
                 {
-                    "label": "Crear un programa formativo",
+                    "label": "Crear un plan de formación",
                     "request": "GET /formacion/plan/nuevo/{year}",
                     "allowed": {
                         "admin": true,
@@ -86,7 +86,7 @@
                     }
                 },
                 {
-                    "label": "Editar un programa formativo",
+                    "label": "Editar un plan de formación",
                     "request": "GET /formacion/plan/{trainingProgram}/{year}",
                     "allowed": {
                         "admin": true,
@@ -103,7 +103,7 @@
                     }
                 },
                 {
-                    "label": "Eliminar programas formativos",
+                    "label": "Eliminar planes de formación",
                     "request": "POST /formacion/plan/eliminar/{year} items[]={trainingProgram}",
                     "allowed": {
                         "admin": true,
@@ -120,7 +120,7 @@
                     }
                 },
                 {
-                    "label": "Ver los cursos de un programa",
+                    "label": "Ver los cursos de un plan",
                     "request": "GET /formacion/plan/curso/listar/{trainingProgram}/1",
                     "allowed": {
                         "admin": true,
@@ -137,7 +137,7 @@
                     }
                 },
                 {
-                    "label": "Editar los resultados de aprendizaje de un curso",
+                    "label": "Editar las horas previstas de un curso",
                     "request": "GET /formacion/plan/curso/resultados/{programGrade}",
                     "allowed": {
                         "admin": true,
@@ -190,7 +190,7 @@
             ]
         },
         {
-            "title": "Actividades y empresas del programa",
+            "title": "Actividades y empresas del plan",
             "actions": [
                 {
                     "label": "Ver las actividades de un curso",
@@ -329,7 +329,7 @@
                     }
                 },
                 {
-                    "label": "Editar el programa de una empresa",
+                    "label": "Editar la participación de una empresa",
                     "request": "GET /formacion/plan/empresa/{companyProgram}",
                     "allowed": {
                         "admin": true,
@@ -1126,7 +1126,7 @@
             ]
         },
         {
-            "title": "Informes del programa",
+            "title": "Informes del plan",
             "actions": [
                 {
                     "label": "Acceder al apartado de informes",

@@ -27,7 +27,7 @@ En **FP dual** solo tienes la tarjeta **Dietas de desplazamiento**.
 
 **Dietas de desplazamiento** abre el resumen del curso con el profesorado de FP dual.
 
-![Resumen de desplazamientos de FP dual: dos docentes con el número de desplazamientos, la distancia, otros gastos, si están verificados y el botón «Registro de dietas»](img/dual-economico-resumen.png)
+![Resumen de desplazamientos de FP dual: cuatro docentes con el número de desplazamientos, la distancia, otros gastos, si están verificados y el botón «Registro de dietas»](img/dual-economico-resumen.png)
 
 Cada fila muestra los desplazamientos de un docente, sus kilómetros, los otros gastos y si todos sus itinerarios están
 verificados. El botón **Registro de dietas** descarga la relación de gastos en PDF. Pulsa el nombre de un docente para
