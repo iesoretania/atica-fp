@@ -49,7 +49,7 @@ class ActivityController extends AbstractController
         Project $project
     ): Response
     {
-        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
+        $this->denyAccessUnlessGranted(ProjectVoter::MODIFY, $project);
 
         $activity = new Activity();
         $activity
@@ -71,8 +71,11 @@ class ActivityController extends AbstractController
 
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
+        $readOnly = !$this->isGranted(ProjectVoter::MODIFY, $project);
+
         $form = $this->createForm(ActivityType::class, $activity, [
-            'project' => $project
+            'project' => $project,
+            'disabled' => $readOnly
         ]);
 
         $form->handleRequest($request);
@@ -113,6 +116,7 @@ class ActivityController extends AbstractController
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'subject' => $project,
+            'read_only' => $readOnly,
             'form' => $form->createView()
         ]);
     }
@@ -171,7 +175,8 @@ class ActivityController extends AbstractController
             'pager' => $pager,
             'q' => $q,
             'project' => $project,
-            'domain' => 'wlt_activity'
+            'domain' => 'wlt_activity',
+            'read_only' => !$this->isGranted(ProjectVoter::MODIFY, $project)
         ]);
     }
 
@@ -183,7 +188,7 @@ class ActivityController extends AbstractController
         TranslatorInterface $translator,
         Project $project
     ): Response {
-        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
+        $this->denyAccessUnlessGranted(ProjectVoter::MODIFY, $project);
 
         $em = $managerRegistry->getManager();
 
@@ -235,7 +240,7 @@ class ActivityController extends AbstractController
         ManagerRegistry $managerRegistry,
         Project $project
     ): Response {
-        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
+        $this->denyAccessUnlessGranted(ProjectVoter::MODIFY, $project);
 
         $projects = $projectRepository->findRelatedByOrganizationButOne($project->getOrganization(), $project);
 

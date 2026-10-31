@@ -136,8 +136,8 @@ actualizar el manual.
 - **Encuestas.** Los listados solo contienen lo que corresponde a quien los abre. El alumnado ve su encuesta; la
   tutoría laboral, la suya; y las tutorías, la jefatura, la gestión y la administración, las tres. El profesorado del grupo
   no participa en ninguna. A diferencia de otras modalidades, no tienen fechas de apertura y cierre.
-- **Bloqueo del plan.** Con «Plan de formación bloqueado» activado, solo la administración del centro puede gestionarlo:
-  la jefatura y la gestión de la FFEOE reciben un error de acceso denegado en todas las pantallas de **Planes de
-  formación** (plan, cursos, grupos, actividades, empresas, alumnado y estancias) hasta que la administración lo
-  desbloquee. El seguimiento, la valoración y las encuestas de las estancias no cambian.
+- **Bloqueo del plan.** Con «Plan de formación bloqueado» activado, solo la administración del centro puede modificarlo:
+  la jefatura y la gestión de la FFEOE abren en **solo lectura** todas las pantallas de **Planes de formación** (plan,
+  cursos, grupos, actividades, empresas, alumnado, estancias y calendarios) hasta que la administración lo desbloquee.
+  La tabla mide el plan abierto. El seguimiento, la valoración y las encuestas de las estancias no cambian.
 - **Módulo desactivado.** Si el módulo Formación en empresa no está activo en el curso, ningún perfil tiene acceso a él.

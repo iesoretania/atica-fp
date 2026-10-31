@@ -32,71 +32,115 @@ class LockedPlansAndExpensesTest extends AppWebTestCase
     // --- Bloqueo del plan de formación de la FFEOE ----------------------------------------------
 
     /**
-     * @return iterable<string, array{string, int, int}> usuario, estado con el plan abierto y estado con el plan bloqueado
+     * @return iterable<string, array{string, bool}> usuario y si puede seguir modificando con el plan bloqueado
      */
     public static function planManagerProvider(): iterable
     {
-        yield 'administración del centro' => ['alfa.admin', 200, 200];
-        yield 'jefatura de departamento' => ['alfa.jefe', 200, 403];
-        yield 'gestión de la FFEOE' => ['alfa.gestorffe', 200, 403];
+        yield 'administración del centro' => ['alfa.admin', true];
+        yield 'jefatura de departamento' => ['alfa.jefe', false];
+        yield 'gestión de la FFEOE' => ['alfa.gestorffe', false];
     }
 
     /**
+     * Con el plan bloqueado, la jefatura y la gestión consultan sus pantallas en solo lectura (sin botón de guardar y con
+     * los campos desactivados) y no pueden escribir; la administración sigue pudiendo
+     *
      * @dataProvider planManagerProvider
      */
-    public function testLockedTrainingPlanIsOnlyManagedByTheAdministration(string $username, int $open, int $locked): void
+    public function testLockedTrainingPlanIsReadOnlyExceptForTheAdministration(string $username, bool $canModify): void
     {
-        $plan = (int) $this->db()->fetchOne('SELECT id FROM itp_training_program ORDER BY id LIMIT 1');
-        $grade = (int) $this->db()->fetchOne('SELECT id FROM itp_program_grade WHERE training_program_id = ? ORDER BY id LIMIT 1', [$plan]);
-        $urls = [
+        $db = $this->db();
+        $plan = (int) $db->fetchOne('SELECT id FROM itp_training_program ORDER BY id LIMIT 1');
+        $grade = (int) $db->fetchOne('SELECT id FROM itp_program_grade WHERE training_program_id = ? ORDER BY id LIMIT 1', [$plan]);
+        $forms = [
             "/formacion/plan/$plan/" . $this->year(),
-            "/formacion/plan/actividad/listar/$grade/1",
-            "/formacion/plan/empresa/listar/$grade/1",
+            '/formacion/plan/grupo/' . (int) $db->fetchOne('SELECT id FROM itp_program_group WHERE program_grade_id = ? LIMIT 1', [$grade]),
+            '/formacion/plan/actividad/' . (int) $db->fetchOne('SELECT id FROM itp_activity WHERE program_grade_id = ? LIMIT 1', [$grade]),
+            '/formacion/plan/empresa/' . (int) $db->fetchOne('SELECT id FROM itp_company_program WHERE program_grade_id = ? LIMIT 1', [$grade]),
+            '/formacion/plan/curso/grupo/gestion/detalle/' . (int) $db->fetchOne('SELECT id FROM itp_student_program_workcenter ORDER BY id LIMIT 1'),
         ];
+        $deletion = ["/formacion/plan/actividad/eliminar/$grade", ['items' => [(int) $db->fetchOne('SELECT id FROM itp_activity WHERE program_grade_id = ? LIMIT 1', [$grade])]]];
         $this->login($this->getUser($username));
 
-        foreach ($urls as $url) {
-            $this->client->request('GET', $url);
-            self::assertResponseStatusCodeSame($open, "$username $url con el plan abierto");
+        // abierto: todos pueden modificar y la confirmación de borrado se muestra
+        foreach ($forms as $url) {
+            $crawler = $this->client->request('GET', $url);
+            self::assertResponseIsSuccessful("$username $url con el plan abierto");
+            self::assertSame(1, $crawler->selectButton('Guardar cambios')->count(), "$username $url con el plan abierto");
         }
+        $this->client->request('POST', $deletion[0], $deletion[1]);
+        self::assertResponseIsSuccessful();
 
-        $this->db()->executeStatement('UPDATE itp_training_program SET locked = 1 WHERE id = ?', [$plan]);
-        foreach ($urls as $url) {
-            $this->client->request('GET', $url);
-            self::assertResponseStatusCodeSame($locked, "$username $url con el plan bloqueado");
+        $db->executeStatement('UPDATE itp_training_program SET locked = 1 WHERE id = ?', [$plan]);
+        foreach ($forms as $url) {
+            $crawler = $this->client->request('GET', $url);
+            self::assertResponseIsSuccessful("$username $url con el plan bloqueado");
+            self::assertSame($canModify ? 1 : 0, $crawler->selectButton('Guardar cambios')->count(), "$username $url con el plan bloqueado");
+            if (!$canModify) {
+                self::assertSame(0, $crawler->filter('main input:not([disabled]):not([type=hidden]):not([type=search]), main select:not([disabled]), main textarea:not([disabled])')->count(), "$username $url: campos activos con el plan bloqueado");
+            }
         }
+        $this->client->request('POST', $deletion[0], $deletion[1] + ['confirm' => 'ok']);
+        self::assertResponseStatusCodeSame($canModify ? 302 : 403, "$username: borrar con el plan bloqueado");
+        $this->client->request('POST', $forms[0], ['training_program' => ['name' => 'Cambiado']]);
+        if (!$canModify) {
+            self::assertResponseStatusCodeSame(403);
+        }
+        self::assertNotSame('Cambiado', $db->fetchOne('SELECT name FROM itp_training_program WHERE id = ?', [$plan]));
     }
 
     // --- Bloqueo del proyecto de FP dual ---------------------------------------------------------
 
     /**
-     * @return iterable<string, array{string, int}> usuario y estado con el proyecto bloqueado
+     * @return iterable<string, array{string, bool}> usuario y si puede seguir modificando con el proyecto bloqueado
      */
     public static function projectManagerProvider(): iterable
     {
-        yield 'administración del centro' => ['alfa.admin', 200];
-        yield 'coordinación del proyecto' => ['alfa.coordinador', 200];
-        yield 'jefatura de departamento' => ['alfa.jefe', 403];
+        yield 'administración del centro' => ['alfa.admin', true];
+        yield 'coordinación del proyecto' => ['alfa.coordinador', true];
+        yield 'jefatura de departamento' => ['alfa.jefe', false];
     }
 
     /**
+     * Con el proyecto bloqueado, la jefatura consulta el proyecto, sus actividades, concreciones y empresas en solo
+     * lectura y no puede escribir; la administración y la coordinación siguen pudiendo
+     *
      * @dataProvider projectManagerProvider
      */
-    public function testLockedProjectIsNotManagedByTheDepartmentHead(string $username, int $locked): void
+    public function testLockedProjectIsReadOnlyForTheDepartmentHead(string $username, bool $canModify): void
     {
-        $project = (int) $this->db()->fetchOne('SELECT id FROM wlt_project ORDER BY id LIMIT 1');
-        $urls = ["/dual/proyecto/$project", "/dual/proyecto/programa/$project/actividad/1"];
+        $db = $this->db();
+        $project = (int) $db->fetchOne('SELECT id FROM wlt_project ORDER BY id LIMIT 1');
+        $activity = (int) $db->fetchOne('SELECT id FROM wlt_activity WHERE project_id = ? ORDER BY id LIMIT 1', [$project]);
+        $forms = [
+            "/dual/proyecto/$project",
+            "/dual/proyecto/estudiantes/$project",
+            "/dual/proyecto/programa/actividad/$activity",
+            '/dual/proyecto/programa/' . (int) $db->fetchOne('SELECT id FROM wlt_activity_realization WHERE activity_id = ? ORDER BY id LIMIT 1', [$activity]) . '/detalles/concrecion',
+            '/dual/programa/' . (int) $db->fetchOne('SELECT id FROM wlt_learning_program WHERE project_id = ? ORDER BY id LIMIT 1', [$project]),
+        ];
         $this->login($this->getUser($username));
 
-        foreach ($urls as $url) {
-            $this->client->request('GET', $url);
-            self::assertResponseStatusCodeSame(200, "$username $url con el proyecto abierto");
+        foreach ($forms as $url) {
+            $crawler = $this->client->request('GET', $url);
+            self::assertResponseIsSuccessful("$username $url con el proyecto abierto");
+            self::assertSame(1, $crawler->selectButton('Guardar cambios')->count(), "$username $url con el proyecto abierto");
         }
+        $this->client->request('POST', "/dual/proyecto/programa/$project/actividad/eliminar", ['items' => [$activity]]);
+        self::assertResponseIsSuccessful();
 
-        $this->db()->executeStatement('UPDATE wlt_project SET locked = 1 WHERE id = ?', [$project]);
-        foreach ($urls as $url) {
-            $this->client->request('GET', $url);
-            self::assertResponseStatusCodeSame($locked, "$username $url con el proyecto bloqueado");
+        $db->executeStatement('UPDATE wlt_project SET locked = 1 WHERE id = ?', [$project]);
+        foreach ($forms as $url) {
+            $crawler = $this->client->request('GET', $url);
+            self::assertResponseIsSuccessful("$username $url con el proyecto bloqueado");
+            self::assertSame($canModify ? 1 : 0, $crawler->selectButton('Guardar cambios')->count(), "$username $url con el proyecto bloqueado");
+        }
+        $this->client->request('POST', "/dual/proyecto/programa/$project/actividad/eliminar", ['items' => [$activity], 'confirm' => 'ok']);
+        self::assertResponseStatusCodeSame($canModify ? 302 : 403, "$username: borrar con el proyecto bloqueado");
+        $this->client->request('GET', "/dual/proyecto/programa/$project/actividad/1");
+        self::assertResponseIsSuccessful();
+        if (!$canModify) {
+            self::assertSame(1, (int) $db->fetchOne('SELECT COUNT(*) FROM wlt_activity WHERE id = ?', [$activity]));
         }
     }
 

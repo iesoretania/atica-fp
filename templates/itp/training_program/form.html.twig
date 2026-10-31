@@ -5,7 +5,7 @@
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ m.start_button() }}
-        {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+        {% if not is_read_only() %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(path('in_company_training_phase_training_program_list', {'academicYear': academic_year.id ?? null}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}

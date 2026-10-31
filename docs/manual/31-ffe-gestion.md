@@ -57,9 +57,10 @@ ficha.
 - **Horas totales de la enseñanza** y **horas previstas**: las horas que el currículo dedica a la FFEOE y las que el plan
   prevé realizar.
 - **Plan de formación bloqueado**: «Sólo el equipo directivo puede realizar cambios». Con el bloqueo, el plan aparece con
-  un candado en los listados y **solo la administración del centro** puede gestionarlo: la jefatura y la gestión de la
-  FFEOE dejan de poder abrir sus pantallas de gestión (plan, cursos, grupos, actividades, empresas, alumnado y estancias)
-  hasta que la administración lo desbloquee. El seguimiento, la valoración y las encuestas de las estancias siguen igual.
+  un candado en los listados y **solo la administración del centro** puede modificarlo: la jefatura y la gestión de la
+  FFEOE siguen consultando sus pantallas (plan, cursos, grupos, actividades, empresas, alumnado, estancias y
+  calendarios), pero **en solo lectura**: los campos aparecen desactivados y no hay botones de guardar, añadir,
+  importar, copiar ni eliminar. El seguimiento, la valoración y las encuestas de las estancias siguen igual.
 - **Escala de valoración del desempeño**: los niveles con que se valorará cada actividad
   ([capítulo 4](04-administrar-el-centro.md#escalas-de-valoracion-del-desempeno)).
 - **Plantillas de informe**: el [papel con membrete](07-encuestas-y-plantillas-de-informe.md#plantillas-de-informe) de

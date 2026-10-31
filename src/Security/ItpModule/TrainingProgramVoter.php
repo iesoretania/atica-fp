@@ -33,6 +33,7 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 class TrainingProgramVoter extends CachedVoter
 {
     public const MANAGE = 'ITP_TRAINING_PROGRAM_MANAGE';
+    public const MODIFY = 'ITP_TRAINING_PROGRAM_MODIFY';
     public const MANAGE_PERMISSIONS = 'ITP_TRAINING_PROGRAM_MANAGE_GRADES';
     public const ACCESS = 'ITP_TRAINING_PROGRAM_ACCESS';
 
@@ -60,6 +61,7 @@ class TrainingProgramVoter extends CachedVoter
         return in_array($attribute, [
             self::MANAGE_PERMISSIONS,
             self::MANAGE,
+            self::MODIFY,
             self::ACCESS,
             self::REPORT_STUDENT_SURVEY,
             self::REPORT_WORK_TUTOR_SURVEY,
@@ -127,9 +129,10 @@ class TrainingProgramVoter extends CachedVoter
         switch ($attribute) {
             case self::MANAGE_PERMISSIONS:
                 return $isDepartmentHead;
-            case self::MANAGE:
-                // con el plan bloqueado solo lo gestiona la administración del centro («el equipo directivo»)
+            case self::MODIFY:
+                // con el plan bloqueado solo lo modifica la administración del centro («el equipo directivo»)
                 return ($isDepartmentHead || $isGroupManager) && !$subject->isLocked();
+            case self::MANAGE:
             case self::ACCESS:
             case self::REPORT_STUDENT_SURVEY:
             case self::REPORT_WORK_TUTOR_SURVEY:

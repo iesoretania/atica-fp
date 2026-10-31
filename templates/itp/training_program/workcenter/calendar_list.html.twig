@@ -8,7 +8,7 @@
             <td class="w-d{% if day %} workday{% endif %}">
                 {% if day %}
                     {% set url = path('in_company_training_phase_student_program_workcenter_manage_calendar_form', {'workDay': day.id}) %}
-                    {% if not read_only %}<label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> {% endif %}<a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a></label><br/>
+                    {% if not (read_only or is_read_only()) %}<label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> {% endif %}<a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a></label><br/>
                     {% if day.hours is divisible by 100 %}
                         {{ 'caption.hours'|trans({'count': day.hours / 100}, 'calendar') }}
                     {% else %}
@@ -23,7 +23,7 @@
     {% endembed %}
 
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {% if not read_only %}
+    {% if not (read_only or is_read_only()) %}
         {{ m.link_button(path(add_route_name, {'studentProgramWorkcenter': student_program_workcenter.id}), 'calendar-plus', 'btn-success', 'form.add'|trans) }}
         {{ m.link_button('', 'check-square', 'btn-primary', 'form.select_deselect'|trans, 'toggle') }}
         {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}

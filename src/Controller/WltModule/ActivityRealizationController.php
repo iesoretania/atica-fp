@@ -45,7 +45,7 @@ class ActivityRealizationController extends AbstractController
         Activity $activity
     ): Response
     {
-        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $activity->getProject());
+        $this->denyAccessUnlessGranted(ProjectVoter::MODIFY, $activity->getProject());
 
         $activityRealization = new ActivityRealization();
         $activityRealization
@@ -69,8 +69,11 @@ class ActivityRealizationController extends AbstractController
 
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
+        $readOnly = !$this->isGranted(ProjectVoter::MODIFY, $project);
+
         $form = $this->createForm(ActivityRealizationType::class, $activityRealization, [
-            'activity' => $activity
+            'activity' => $activity,
+            'disabled' => $readOnly
         ]);
 
         $form->handleRequest($request);
@@ -113,6 +116,7 @@ class ActivityRealizationController extends AbstractController
             'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
+            'read_only' => $readOnly,
             'form' => $form->createView()
         ]);
     }
@@ -179,7 +183,8 @@ class ActivityRealizationController extends AbstractController
             'pager' => $pager,
             'q' => $q,
             'activity' => $activity,
-            'domain' => 'wlt_activity_realization'
+            'domain' => 'wlt_activity_realization',
+            'read_only' => !$this->isGranted(ProjectVoter::MODIFY, $project)
         ]);
     }
 
@@ -192,7 +197,7 @@ class ActivityRealizationController extends AbstractController
         Activity $activity): Response
     {
         $project = $activity->getProject();
-        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
+        $this->denyAccessUnlessGranted(ProjectVoter::MODIFY, $project);
 
         $em = $managerRegistry->getManager();
 

@@ -12,7 +12,7 @@
         </div>
         {% block new_action %}
         <div class="form-group col-sm-7">
-            <a href="{% block path_new %}{% endblock %}" class="btn btn-success"><i class="fa fa-plus"></i> {{ 'table.new'|trans }}</a>
+            {% if not (read_only|default(false) or is_read_only()) %}<a href="{% block path_new %}{% endblock %}" class="btn btn-success"><i class="fa fa-plus"></i> {{ 'table.new'|trans }}</a>{% endif %}
             {% block more_actions %}{% endblock %}
         </div>
         {% endblock %}

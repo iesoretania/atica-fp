@@ -6,8 +6,8 @@
     {{ form_widget(form) }}
     {{ m.start_button() }}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-        {{ m.submit_button('calc', 'calculator', 'btn-primary', 'form.calculate'|trans) }}
-        {{ m.submit_button('submit', 'check', 'btn-success', 'form.add'|trans) }}
+        {% if not is_read_only() %}{{ m.submit_button('calc', 'calculator', 'btn-primary', 'form.calculate'|trans) }}
+        {{ m.submit_button('submit', 'check', 'btn-success', 'form.add'|trans) }}{% endif %}
     {{ m.end_button() }}
     {{ form_end(form) }}
 

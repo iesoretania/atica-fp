@@ -48,7 +48,7 @@ class LearningProgramController extends AbstractController
         Project $project
     ): Response
     {
-        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
+        $this->denyAccessUnlessGranted(ProjectVoter::MODIFY, $project);
 
         $learningProgram = new LearningProgram();
         $learningProgram->setProject($project);
@@ -69,8 +69,11 @@ class LearningProgramController extends AbstractController
 
         $em = $managerRegistry->getManager();
 
+        $readOnly = !$this->isGranted(ProjectVoter::MODIFY, $project);
+
         $form = $this->createForm(LearningProgramType::class, $learningProgram, [
-            'project' => $project
+            'project' => $project,
+            'disabled' => $readOnly
         ]);
 
         $form->handleRequest($request);
@@ -109,6 +112,7 @@ class LearningProgramController extends AbstractController
             'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
+            'read_only' => $readOnly,
             'form' => $form->createView()
         ]);
     }
@@ -174,6 +178,7 @@ class LearningProgramController extends AbstractController
             'pager' => $pager,
             'q' => $q,
             'domain' => 'wlt_learning_program',
+            'read_only' => !$this->isGranted(ProjectVoter::MODIFY, $project),
             'project' => $project
         ]);
     }
@@ -186,7 +191,7 @@ class LearningProgramController extends AbstractController
         ManagerRegistry $managerRegistry,
         Project $project
     ): Response|RedirectResponse {
-        $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
+        $this->denyAccessUnlessGranted(ProjectVoter::MODIFY, $project);
 
         $items = $request->request->all('items');
 

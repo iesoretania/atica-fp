@@ -176,8 +176,12 @@ class ProjectController extends AbstractController
 
         $em = $managerRegistry->getManager();
 
+        // con el proyecto bloqueado, la jefatura de departamento lo consulta en solo lectura
+        $readOnly = !$this->isGranted(ProjectVoter::MODIFY, $project);
+
         $form = $this->createForm(ProjectType::class, $project, [
-            'lock_manager' => !$isManager
+            'lock_manager' => !$isManager,
+            'disabled' => $readOnly
         ]);
 
         $form->handleRequest($request);
@@ -208,6 +212,7 @@ class ProjectController extends AbstractController
             'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
+            'read_only' => $readOnly,
             'form' => $form->createView()
         ]);
     }
@@ -226,8 +231,11 @@ class ProjectController extends AbstractController
 
         $em = $managerRegistry->getManager();
 
+        $readOnly = !$this->isGranted(ProjectVoter::MODIFY, $project);
+
         $form = $this->createForm(ProjectStudentEnrollmentType::class, $project, [
-            'groups' => $project->getGroups()
+            'groups' => $project->getGroups(),
+            'disabled' => $readOnly
         ]);
 
         $form->handleRequest($request);
@@ -257,6 +265,7 @@ class ProjectController extends AbstractController
             'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
+            'read_only' => $readOnly,
             'form' => $form->createView()
         ]);
     }
@@ -289,7 +298,7 @@ class ProjectController extends AbstractController
         // solo se pueden borrar los proyectos que el usuario puede gestionar, no todos los del centro
         $selectedItems = array_values(array_filter(
             $projectRepository->findAllInListByIdAndOrganization($items, $organization),
-            fn(Project $project): bool => $this->isGranted(ProjectVoter::MANAGE, $project)
+            fn(Project $project): bool => $this->isGranted(ProjectVoter::MODIFY, $project)
         ));
 
         if ($request->get('confirm', '') === 'ok') {

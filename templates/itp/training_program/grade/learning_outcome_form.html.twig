@@ -7,7 +7,7 @@
     {{ form_start(form) }}
     {{ form_widget(form) }}
     <p></p>
-    {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+    {% if not is_read_only() %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ form_end(form) }}
 {% endblock %}

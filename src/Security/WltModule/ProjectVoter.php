@@ -31,6 +31,7 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 class ProjectVoter extends CachedVoter
 {
     public const MANAGE = 'WLT_PROJECT_MANAGE';
+    public const MODIFY = 'WLT_PROJECT_MODIFY';
     public const ACCESS_EDUCATIONAL_TUTOR_SURVEY = 'WLT_EDUCATIONAL_TUTOR_SURVEY_ACCESS';
     public const FILL_EDUCATIONAL_TUTOR_SURVEY = 'WLT_EDUCATIONAL_TUTOR_SURVEY_MANAGE';
     public const REPORT_STUDENT_SURVEY = 'WLT_STUDENT_SURVEY_REPORT';
@@ -60,6 +61,7 @@ class ProjectVoter extends CachedVoter
         }
         return in_array($attribute, [
             self::MANAGE,
+            self::MODIFY,
             self::ACCESS_EDUCATIONAL_TUTOR_SURVEY,
             self::FILL_EDUCATIONAL_TUTOR_SURVEY,
             self::REPORT_STUDENT_SURVEY,
@@ -144,7 +146,10 @@ class ProjectVoter extends CachedVoter
 
         switch ($attribute) {
             case self::MANAGE:
-                // con el proyecto bloqueado solo lo gestionan la administración y la coordinación del proyecto
+                return $isDepartmentHead;
+
+            case self::MODIFY:
+                // con el proyecto bloqueado solo lo modifican la administración y la coordinación del proyecto
                 return $isDepartmentHead && !$subject->isLocked();
 
             case self::REPORT_STUDENT_SURVEY:
