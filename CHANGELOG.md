@@ -4,7 +4,7 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
-x.x.x (xxxx-xx-xx)
+7.7.0 (2026-10-31)
 ------------------
 * feat: Permitir exportar estado de estancias de FFEOE en formato CSV
 * fix: En FP dual vuelve a aparecer en el menú la entrada «Reuniones de tutorización», sin la cual no se podían registrar reuniones desde la aplicación
