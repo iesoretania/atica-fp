@@ -36,8 +36,12 @@ que ya muestran otras imágenes.
 
    ```bash
    mkdir -p ~/atica-fp-shots && cd ~/atica-fp-shots
-   npm init -y && npm i playwright@1.61.0
+   npm init -y && npm i playwright@1.61.0 pixelmatch@5.3.0 pngjs@7.0.0
    ```
+
+   `pixelmatch` y `pngjs` solo sirven para que una captura no sustituya a la imagen existente si la diferencia
+   es ruido (ver «Reglas aprendidas»); sin ellos todo funciona, pero git verá cambios en imágenes que no han
+   cambiado.
 
 2. **Recrea los datos** (cada vez que quieras empezar de cero: los scripts que modifican datos dejan la
    base de datos distinta de la inicial):
@@ -75,6 +79,15 @@ que ya muestran otras imágenes.
   (`prepare`): una captura de página completa tras un scroll descoloca los elementos fijos.
 - Tras pulsar algo que recarga una parte de la página, espera al nuevo estado (`waitForSelector` sobre un
   elemento visible), no solo a `networkidle`.
+- **El reloj del navegador está fijo** en `2026-11-17T10:30:00+01:00` (`fixedNow` en `lib.mjs`; se cambia con
+  `SHOTS_NOW`), el puntero se aparta antes de cada captura (si no, resalta la tarjeta que quede debajo del botón
+  de entrada) y se espera a la tipografía. El reloj **del servidor** no se puede fijar: lo único que depende de él
+  es el año del pie de página y los valores por defecto de algunos formularios nuevos; el año cambiará cada enero.
+- **Una captura solo reemplaza a la imagen existente si difiere de ella en más de 100 píxeles** (según
+  `pixelmatch`) o cambia de tamaño: Chromium suaviza el texto de forma ligeramente distinta en cada ejecución
+  y, sin esa tolerancia, git mostraría decenas de imágenes modificadas sin motivo. El script lo indica con «(sin
+  cambios)». Para forzar la escritura (por ejemplo, tras cambiar un único carácter de una pantalla), usa
+  `SHOTS_FORCE=1`.
 - Los scripts de solo lectura pueden ejecutarse en cualquier orden; los que modifican datos se anotan en
   la columna «¿Modifica datos?» del catálogo y se ejecutan al final.
 
