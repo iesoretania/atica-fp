@@ -98,9 +98,10 @@ class AgreementVoter extends CachedVoter
 
         $person = $user;
 
-        $agreementIsLocked = $subject->getShift()->getGrade()
-            && $subject->getShift()->getGrade()->getTraining()->getAcademicYear()
-            === $organization->getCurrentAcademicYear();
+        // un acuerdo de un curso anterior es de solo lectura
+        $agreementIsLocked = !$subject->getShift()->getGrade()
+            || $subject->getShift()->getGrade()->getTraining()->getAcademicYear()
+            !== $organization->getCurrentAcademicYear();
 
         // es jefe de departamento de la enseñanza de la convocatoria
         $isDepartmentHead = $subject->getShift()->getGrade()
@@ -114,10 +115,7 @@ class AgreementVoter extends CachedVoter
 
         switch ($attribute) {
             case self::MANAGE:
-                if ($isDepartmentHead) {
-                    return $agreementIsLocked;
-                }
-                return false;
+                return $isDepartmentHead && !$agreementIsLocked;
 
             // Si es permiso de acceso, comprobar si es el estudiante, docente, el tutor de grupo o
             // el responsable laboral

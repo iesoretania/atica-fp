@@ -53,8 +53,10 @@ de la derecha accedes al **programa formativo** (las actividades) y a los **acue
 - **Horas**: el total de horas de prácticas que tiene que hacer cada estudiante.
 - **Trimestre**: primero, segundo o tercero.
 - **Convocatoria bloqueada**: marcada como «bloqueada», la convocatoria queda cerrada y el seguimiento se
-  congela: ya no se pueden registrar ni modificar jornadas, informes ni encuestas. Úsalo cuando la
-  convocatoria ha terminado y está todo revisado.
+  congela: ya no se pueden registrar ni modificar jornadas, informes ni encuestas. Tampoco la jefatura de
+  departamento puede ya cambiar la convocatoria, su programa formativo ni sus acuerdos, ni eliminarla: los abre
+  en solo lectura. Solo la administración del centro puede seguir modificándolos, por ejemplo para
+  desbloquearla. Úsalo cuando la convocatoria ha terminado y está todo revisado.
 - **Plantillas de informe** (asistencia, informe semanal de actividades, registro resumen de actividades
   e informe del tutor/a laboral): el [papel con membrete](07-encuestas-y-plantillas-de-informe.md#plantillas-de-informe)
   de cada documento. «Sin plantilla» genera el documento sobre papel en blanco.

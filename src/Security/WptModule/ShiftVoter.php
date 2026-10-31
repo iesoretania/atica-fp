@@ -31,6 +31,8 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 class ShiftVoter extends CachedVoter
 {
     public const MANAGE = 'WPT_SHIFT_MANAGE';
+    // modificar la convocatoria y su programa formativo: como MANAGE, pero la jefatura no puede si está bloqueada
+    public const MODIFY = 'WPT_SHIFT_MODIFY';
     public const ACCESS_MANAGER_SURVEY = 'WPT_MANAGER_SURVEY_ACCESS';
     public const FILL_MANAGER_SURVEY = 'WPT_MANAGER_SURVEY_MANAGE';
     public const ACCESS_EDUCATIONAL_TUTOR_SURVEY = 'WPT_EDUCATIONAL_TUTOR_SURVEY_ACCESS';
@@ -60,6 +62,7 @@ class ShiftVoter extends CachedVoter
         }
         return in_array($attribute, [
             self::MANAGE,
+            self::MODIFY,
             self::ACCESS_MANAGER_SURVEY,
             self::FILL_MANAGER_SURVEY,
             self::ACCESS_EDUCATIONAL_TUTOR_SURVEY,
@@ -117,7 +120,7 @@ class ShiftVoter extends CachedVoter
         // una convocatoria nueva todavía no tiene materia, y por tanto departamento: quien llegue hasta aquí ya ha
         // pasado la comprobación de gestor de FCT del controlador, y el formulario solo le ofrece sus materias
         if (!$subject->getGrade()) {
-            return $attribute === self::MANAGE;
+            return $attribute === self::MANAGE || $attribute === self::MODIFY;
         }
 
         $isCurrentAcademicYear = $subject->getGrade()->getTraining()
@@ -129,6 +132,10 @@ class ShiftVoter extends CachedVoter
             $subject->getGrade()->getTraining()->getDepartment()->getHead()->getPerson() === $user;
 
         switch ($attribute) {
+            case self::MODIFY:
+                // una convocatoria bloqueada solo la modifica la administración del centro
+                return $isDepartmentHead && !$subject->isLocked();
+
             case self::MANAGE:
             case self::ACCESS_MANAGER_SURVEY:
             case self::REPORT_STUDENT_SURVEY:

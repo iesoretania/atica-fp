@@ -7,6 +7,8 @@ en las distintas versiones de la misma.
 x.x.x (xxxx-xx-xx)
 ------------------
 * feat: Permitir exportar estado de estancias de FFEOE en formato CSV
+* fix: En FP dual vuelve a aparecer en el menú la entrada «Reuniones de tutorización», sin la cual no se podían registrar reuniones desde la aplicación
+* fix: Una convocatoria de FCT bloqueada ya no puede ser modificada por la jefatura de departamento (ni la convocatoria, ni su programa formativo, ni sus convenios, ni eliminarla), y se corrige el permiso de los convenios, que estaba invertido
 * fix (security): Solucionado un problema por el que no se comprobaba el rol de administrador en la gestión de usuarios
 * fix (security): Se elimina el contenido peligroso del texto enriquecido de las encuestas y de los informes de visitas antes de mostrarlo
 * fix (security): Limitado el número de intentos de inicio de sesión fallidos y protegido el formulario de entrada con token CSRF

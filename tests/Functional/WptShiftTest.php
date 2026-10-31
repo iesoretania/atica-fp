@@ -197,6 +197,49 @@ class WptShiftTest extends AppWebTestCase
         self::assertSame(0, $crawler->selectButton('Guardar cambios')->count());
     }
 
+    public function testLockedShiftIsReadOnlyForTheDepartmentHeadButNotForTheAdministrator(): void
+    {
+        $shift = $this->shiftId();
+        $agreement = (int) $this->connection()->fetchOne('SELECT id FROM wpt_agreement WHERE shift_id = ? ORDER BY id LIMIT 1', [$shift]);
+        $activity = (int) $this->connection()->fetchOne('SELECT id FROM wpt_activity WHERE shift_id = ? ORDER BY id LIMIT 1', [$shift]);
+
+        // sin bloquear, la jefatura modifica la convocatoria, su programa formativo y sus convenios
+        $this->login($this->getUser('alfa.jefe'));
+        foreach (["/fct/convocatoria/$shift", "/fct/actividad/$activity", "/fct/acuerdo/$agreement"] as $url) {
+            $crawler = $this->client->request('GET', $url);
+            self::assertResponseIsSuccessful();
+            self::assertSame(1, $crawler->selectButton('Guardar cambios')->count(), $url);
+        }
+
+        $this->connection()->executeStatement('UPDATE wpt_shift SET locked = 1 WHERE id = ?', [$shift]);
+
+        // bloqueada, los abre pero ya no puede guardar nada
+        foreach (["/fct/convocatoria/$shift", "/fct/actividad/$activity", "/fct/acuerdo/$agreement"] as $url) {
+            $crawler = $this->client->request('GET', $url);
+            self::assertResponseIsSuccessful();
+            self::assertSame(0, $crawler->selectButton('Guardar cambios')->count(), $url);
+        }
+        $this->client->request('POST', "/fct/convocatoria/$shift", ['shift' => ['name' => 'Cambiado']]);
+        self::assertNotSame('Cambiado', $this->connection()->fetchOne('SELECT name FROM wpt_shift WHERE id = ?', [$shift]));
+
+        $activities = (int) $this->connection()->fetchOne('SELECT COUNT(*) FROM wpt_activity WHERE shift_id = ?', [$shift]);
+        $this->client->request('POST', "/fct/actividad/operacion/$shift", ['items' => [$activity], 'confirm' => 'ok']);
+        self::assertResponseStatusCodeSame(403);
+        $this->client->request('POST', "/fct/actividad/importar/$shift", ['data' => "ZZ1 Actividad nueva\n"]);
+        self::assertResponseStatusCodeSame(403);
+        $this->client->request('GET', "/fct/actividad/copiar/$shift");
+        self::assertResponseStatusCodeSame(403);
+        $this->client->request('POST', '/fct/convocatoria/eliminar/' . $this->year(), ['items' => [$shift], 'confirm' => 'ok']);
+        self::assertResponseStatusCodeSame(403);
+        self::assertSame($activities, (int) $this->connection()->fetchOne('SELECT COUNT(*) FROM wpt_activity WHERE shift_id = ?', [$shift]));
+        self::assertSame(1, (int) $this->connection()->fetchOne('SELECT COUNT(*) FROM wpt_shift WHERE id = ?', [$shift]));
+
+        // la administración del centro sigue pudiendo, por ejemplo para desbloquearla
+        $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
+        $crawler = $this->client->request('GET', "/fct/convocatoria/$shift");
+        self::assertSame(1, $crawler->selectButton('Guardar cambios')->count());
+    }
+
     public function testDeletionRequiresConfirmationAndRemovesTheShiftWithItsActivitiesAndAgreements(): void
     {
         $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));

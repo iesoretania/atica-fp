@@ -54,13 +54,17 @@
 {% block after_table %}
     <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {# con la convocatoria bloqueada el programa formativo solo se consulta #}
+    {% if is_granted('WPT_SHIFT_MODIFY', shift) %}
     {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
     {{ m.link_button(path('workplace_training_activity_copy', {'id': shift.id}), 'copy', 'btn-primary', 'form.copy'|trans) }}
     {% if is_granted(constant('App\\Security\\WltModule\\OrganizationVoter::WLT_MANAGER'), user_extension.currentOrganization) %}
     {{ m.link_button(path('workplace_training_activity_worklinked_copy', {'id': shift.id}), 'copy', 'btn-primary', 'form.copy_wlt'|trans) }}
     {% endif %}
+    {% endif %}
 </form>
 
+{% if is_granted('WPT_SHIFT_MODIFY', shift) %}
 <p class="clearfix"></p>
 <h4>{{ 'title.import'|trans }}</h4>
 <form action="{{ path('workplace_training_activity_import', {'id': shift.id}) }}" method="post">
@@ -68,4 +72,5 @@
     <p class="clearfix"></p>
     {{ m.submit_button('import', 'download', 'btn-warning', 'form.import'|trans) }}
 </form>
+{% endif %}
 {% endblock %}

@@ -150,6 +150,8 @@ class ShiftController extends AbstractController
         AcademicYear $academicYear = null
     ): Response {
         $this->denyAccessUnlessGranted(ShiftVoter::MANAGE, $shift);
+        // una convocatoria bloqueada solo se consulta
+        $readOnly = !$this->isGranted(ShiftVoter::MODIFY, $shift);
 
         $academicYear = $shift->getGrade() instanceof Grade ? $shift->getGrade()->getTraining()->getAcademicYear() : $academicYear;
         $organization = $userExtensionService->getCurrentOrganization();
@@ -158,6 +160,7 @@ class ShiftController extends AbstractController
         $em = $managerRegistry->getManager();
 
         $form = $this->createForm(ShiftType::class, $shift, [
+            'disabled' => $readOnly,
             'lock_manager' => !$isManager,
             'person' => $this->getUser(),
             'academic_year' => $academicYear
@@ -191,6 +194,7 @@ class ShiftController extends AbstractController
             'menu_path' => 'workplace_training_shift_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
+            'read_only' => $readOnly,
             'form' => $form->createView()
         ]);
     }
@@ -217,6 +221,11 @@ class ShiftController extends AbstractController
             return $this->redirectToRoute('workplace_training_shift_list');
         }
         $selectedItems = $shiftRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
+
+        // las convocatorias bloqueadas solo las elimina la administración del centro
+        foreach ($selectedItems as $selectedItem) {
+            $this->denyAccessUnlessGranted(ShiftVoter::MODIFY, $selectedItem);
+        }
 
         if ($request->get('confirm', '') === 'ok') {
             try {
