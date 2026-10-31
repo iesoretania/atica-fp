@@ -198,7 +198,7 @@ módulos se hace una sola ficha con las diferencias de menú anotadas.
 | 2 | Parte A (general), capítulos 01-09 (**redactada**; pendiente la revisión de una persona que administre un centro) | Revisados y con capturas |
 | 3 | FCT (10-16): es el módulo más simple y fija la plantilla de los demás (**redactada**; pendiente la revisión de una persona que use el módulo) | Revisado por una persona que use el módulo |
 | 4 | FP dual (20-27) (**redactada**; pendiente la revisión de una persona que use el módulo) | Idem |
-| 5 | FFE (30-37) (**redactada**; pendiente la revisión de una persona que use el módulo). Salieron del recorrido tres cambios de código: el profesorado del grupo ya consulta el resumen de evaluación, y los accesos de seguimiento, valoración, evaluación por grupo y encuestas coinciden con el menú | Idem |
+| 5 | FFE (30-37) (**redactada**; pendiente la revisión de una persona que use el módulo). Salieron del recorrido dos cambios de código: el profesorado del grupo ya consulta el resumen de evaluación, y los accesos de seguimiento, valoración, evaluación por grupo y encuestas coinciden con el menú | Idem |
 | 6 | Anexos (incluido el técnico), fichas de referencia rápida, introducción definitiva, revisión transversal de enlaces y de coherencia terminológica | `make docs` sin avisos; enlaces comprobados |
 | 7 | Publicación: activar Pages en el repositorio y etiquetar una versión para comprobar el flujo | La web está en `iesoretania.github.io/atica-fp` y la release lleva el PDF y las fichas |
 

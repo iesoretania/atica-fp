@@ -84,17 +84,23 @@ que ya muestran otras imágenes.
   las jornadas, reuniones, visitas y gastos caen siempre en las mismas fechas, y el **reloj del navegador** está en
   esa misma fecha (`fixedNow` en `lib.mjs`; se cambia con `SHOTS_NOW`). Además, el puntero se aparta antes de cada
   captura (si no, resalta la tarjeta que quede debajo del botón de entrada) y se espera a la tipografía.
-- **El reloj del servidor PHP no se puede fijar**, y esto es lo único que sigue dependiendo del día real: el año
-  del pie de página (cambiará cada enero), los valores por defecto de los formularios nuevos (visita, gasto,
-  reunión: fecha y hora actuales), el botón «Hoy» de los calendarios de seguimiento (solo aparece si hay una
-  jornada en el día real, es decir, entre el 31/10/2026 y el 28/11/2026 en un día laborable) y las jornadas que el
-  servidor considera pasadas o futuras (a partir del 28/11/2026 todas son pasadas). Si una imagen cambia sin motivo
-  al regenerarla, mira primero si es una de estas.
+- **El reloj del servidor PHP no se puede fijar**, y esto es lo que sigue dependiendo del día real:
+  - los **valores por defecto de los formularios nuevos** (visita, contacto, gasto, informe, añadir jornadas: fecha y
+    hora actuales) y la columna «Últ. conexión» del listado de usuarios de la plataforma (la hora de los accesos de la
+    propia captura): se sustituyen por la fecha de referencia con `fixDateTime: true` y `fixLastAccess: true` en la
+    captura (ver `lib.mjs`); **toda captura nueva de un formulario de alta debe llevar `fixDateTime: true`**;
+  - el **año del pie de página** (cambiará cada enero) y las **jornadas que el servidor considera pasadas o futuras**
+    (a partir del 28/11/2026 todas son pasadas), que no se pueden sustituir;
+  - el botón **«Hoy»** de los calendarios de seguimiento (solo aparece si hay una jornada en el día real, es decir,
+    entre el 31/10/2026 y el 28/11/2026 en un día laborable).
+
+  Si una imagen cambia sin motivo al regenerarla, mira primero si es una de estas.
 - **Una captura solo reemplaza a la imagen existente si difiere de ella en más de 100 píxeles** (según
   `pixelmatch`) o cambia de tamaño: Chromium suaviza el texto de forma ligeramente distinta en cada ejecución
   y, sin esa tolerancia, git mostraría decenas de imágenes modificadas sin motivo. El script lo indica con «(sin
   cambios)». Para forzar la escritura (por ejemplo, tras cambiar un único carácter de una pantalla), usa
-  `SHOTS_FORCE=1`.
+  `SHOTS_FORCE=1`. El ruido de Chromium aparece a veces al lanzar el navegador (por ejemplo, cuando el equipo está
+  ocupado con otra cosa), así que **no ejecutes tests ni otras tareas pesadas mientras generas capturas**.
 - Los scripts de solo lectura pueden ejecutarse en cualquier orden; los que modifican datos se anotan en
   la columna «¿Modifica datos?» del catálogo y se ejecutan al final.
 

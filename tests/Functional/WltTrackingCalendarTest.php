@@ -306,21 +306,47 @@ class WltTrackingCalendarTest extends AppWebTestCase
         self::assertTrue($reloaded->isLocked(), 'Una jornada con falta se bloquea');
     }
 
-    public function testStudentCannotFillADayOfALockedAgreement(): void
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function lockedProjectWriterProvider(): iterable
+    {
+        yield 'alumnado' => ['alfa.alumno5'];
+        yield 'tutoría de grupo' => ['alfa.tutor'];
+        yield 'tutoría laboral' => ['alfa.tutorlaboral'];
+        yield 'jefatura de departamento' => ['alfa.jefe'];
+    }
+
+    /**
+     * Con el proyecto cerrado (en FP dual el cierre es del proyecto al que pertenece el convenio) nadie que participa
+     * en el seguimiento cambia una jornada, ni mandando la petición completa del formulario
+     *
+     * @dataProvider lockedProjectWriterProvider
+     */
+    public function testNobodyFillsADayOfALockedProject(string $username): void
     {
         $workDay = $this->workDayOf('alfa.alumno5');
+        $notes = $workDay->getNotes();
+        $this->login($this->getUser($username));
+
+        // la petición se prepara con el formulario real mientras el proyecto está abierto...
+        $crawler = $this->client->request('GET', $this->formUrl($workDay));
+        $values = $crawler->selectButton('Guardar cambios')->form()->getPhpValues();
+        $values['work_day_tracking']['notes'] = 'Con el proyecto cerrado';
+
+        // ... y se envía una vez cerrado
         $em = $this->em();
-        // en FP dual el cierre es del proyecto al que pertenece el acuerdo
         $em->find(Agreement::class, $workDay->getAgreement()->getId())->getProject()->setLocked(true);
         $em->flush();
-        $this->login($this->getUser('alfa.alumno5'));
+        $this->client->request('POST', $this->formUrl($workDay), $values);
+        self::assertSame($notes, $this->reload($workDay)->getNotes(), $username);
 
-        $token = $this->token($workDay);
-        $this->client->request('POST', $this->formUrl($workDay), [
-            'work_day_tracking' => ['notes' => 'Con el acuerdo cerrado', '_token' => $token],
-        ]);
-
-        self::assertNotSame('Con el acuerdo cerrado', $this->reload($workDay)->getNotes());
+        // control: la misma petición, con el proyecto abierto, sí guarda (si no, la prueba no sería concluyente)
+        $em = $this->em();
+        $em->find(Agreement::class, $workDay->getAgreement()->getId())->getProject()->setLocked(false);
+        $em->flush();
+        $this->client->request('POST', $this->formUrl($workDay), $values);
+        self::assertSame('Con el proyecto cerrado', $this->reload($workDay)->getNotes(), $username);
     }
 
     private function weekCode(WorkDay $workDay): int

@@ -22,7 +22,7 @@ actualizar el manual.
 | **Administración del centro** | Administración local del centro ([capítulo 4](04-administrar-el-centro.md#administracion-local)) |
 | **Jefatura de departamento** | Jefatura del departamento al que pertenece la enseñanza del plan |
 | **Gestión de la FFE** | Docente designado como tutoría dual de algún grupo del plan |
-| **Tutoría de grupo** | Tutor o tutora del grupo del estudiante de la estancia, sin ser responsable de su seguimiento |
+| **Tutoría de grupo** | Tutor o tutora del grupo del estudiante de la estancia, sin ser responsable de su seguimiento. En la prueba es además responsable de seguimiento de **otra** estancia, por eso la tabla le da visitas y desplazamientos; una tutoría de grupo que no es responsable de seguimiento de ninguna estancia no los tiene |
 | **Tutoría docente de la estancia** | Docente responsable del seguimiento de la estancia |
 | **Profesorado del grupo** | Docente que da clase al grupo del estudiante y no tiene otro cargo |
 | **Alumnado de la estancia** | El estudiante de la estancia |
@@ -125,13 +125,15 @@ actualizar el manual.
   profesorado del grupo solo ve el resumen de evaluación.
 - **Resumen de evaluación.** El profesorado del grupo ve las estancias de los grupos en los que da clase; la tutoría
   laboral y el alumnado no la ven.
-- **Visitas.** Las puede **modificar y eliminar** solo quien las registró (y la administración del centro). La
-  administración del centro no puede **registrar** visitas ni desplazamientos si no es profesorado del curso, y por eso la
-  tabla marca «—» en «Registrar una visita» pero ✅ en «Editar». La gestión de la FFE y la tutoría de grupo abren
-  las visitas ajenas en solo lectura.
+- **Visitas.** Las **modifican** quien las registró y la administración del centro, y las **eliminan** además la
+  **jefatura de departamento**, que las abre con el formulario activo aunque el desplegable «Docente» solo la ofrezca a
+  ella. La gestión de la FFE y la tutoría de grupo las abren en **solo lectura** (por eso la tabla marca ✅ en «Editar
+  una visita» donde basta con poder abrirla, pero «—» en «Eliminar visitas» para ellas). La administración del centro no puede
+  **registrar** visitas ni desplazamientos si no es profesorado del curso, y por eso marca «—» en «Registrar una visita».
 - **Gastos.** Cada docente registra y elimina los suyos. La administración, la jefatura y la gestión de la FFE pueden
-  registrarlos; el responsable económico puede corregirlos y eliminarlos, pero **no registrarlos** en nombre del
-  profesorado.
+  **corregir y eliminar los de cualquier docente** (en la FCT y la FP dual la jefatura no puede eliminarlos); la tutoría
+  de grupo los abre en solo lectura. El responsable económico puede corregirlos y eliminarlos, pero **no registrarlos**
+  en nombre del profesorado.
 - **Encuestas.** Los listados solo contienen lo que corresponde a quien los abre. El alumnado ve su encuesta; la
   tutoría laboral, la suya; y las tutorías, la jefatura, la gestión y la administración, las tres. El profesorado del grupo
   no participa en ninguna. A diferencia de otras modalidades, no tienen fechas de apertura y cierre.

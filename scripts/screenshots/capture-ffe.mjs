@@ -13,32 +13,14 @@ import { launch, login, baseUrl, shot } from './lib.mjs';
 
 const { newSession, close } = await launch();
 
-/**
- * Los formularios de registro nuevo (contacto, desplazamiento) llevan por defecto la fecha y la hora del servidor,
- * que no se puede fijar: se sustituyen por las de referencia para que la imagen no cambie en cada ejecución.
- */
-async function fixCurrentDateTime(page) {
-    await page.evaluate(() => {
-        for (const input of document.querySelectorAll('input[type="date"]')) {
-            input.value = '2026-10-31';
-        }
-        for (const input of document.querySelectorAll('input[type="time"]')) {
-            input.value = '10:30';
-        }
-    });
-}
-
 async function run(profile, shots) {
     const page = await newSession();
     await login(page, profile);
-    for (const [name, path, { fixDateTime, ...options } = {}] of shots) {
+    for (const [name, path, options] of shots) {
         const response = await page.goto(`${baseUrl}${path}`);
         await page.waitForLoadState('networkidle');
         const status = response?.status();
         console.log(`${status >= 400 ? '!! ' + status + ' ' : ''}${name}`);
-        if (fixDateTime) {
-            await fixCurrentDateTime(page);
-        }
         await shot(page, name, options);
     }
     return page;
@@ -64,7 +46,7 @@ const administracion = await run('administracion', [
     ['ffe-estancias-gestion', '/formacion/plan/curso/grupo/gestion/listar/1/1'],
     ['ffe-estancias-lote', '/formacion/plan/curso/grupo/gestion/nueva/1', { fullPage: true }],
     ['ffe-estancia-calendario-gestion', '/formacion/plan/curso/grupo/gestion/estancia/calendario/1', { fullPage: true }],
-    ['ffe-estancia-jornadas-nuevas', '/formacion/plan/curso/grupo/gestion/estancia/calendario/incorporar/1', { fullPage: true }],
+    ['ffe-estancia-jornadas-nuevas', '/formacion/plan/curso/grupo/gestion/estancia/calendario/incorporar/1', { fullPage: true, fixDateTime: true }],
     ['ffe-seguimiento-listado', '/formacion/seguimiento/listar/1/1'],
     ['ffe-valoracion-listado', '/formacion/valoracion/listar/1/1'],
     ['ffe-resumen-grupos', '/formacion/valoracion/evaluacion/1/1'],

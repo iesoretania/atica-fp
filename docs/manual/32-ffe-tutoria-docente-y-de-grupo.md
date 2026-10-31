@@ -17,10 +17,14 @@ Una misma persona puede ser las dos cosas; lo que puedes hacer depende de tu rel
 | Registrar y revisar jornadas, bloquearlas y marcar faltas | ✅ | ✅ |
 | **Valorar** las actividades realizadas y comentarlas | ✅ | ✅ |
 | Consultar el **resumen de evaluación** del alumnado | ✅ | ✅ |
-| Registrar **visitas y contactos** con las empresas | ✅ | — |
-| Registrar **gastos de desplazamiento** | ✅ | — |
+| Registrar **visitas y contactos** con las empresas | ✅ | —\* |
+| Registrar **gastos de desplazamiento** | ✅ | —\* |
 | Rellenar las encuestas del alumnado y de la empresa en su nombre | ✅ | ✅ |
 | Rellenar tu **encuesta de satisfacción** como responsable de seguimiento | ✅ | — |
+
+\* Si además eres responsable de seguimiento de alguna estancia, que es lo habitual. Las visitas y los desplazamientos
+son una tarea de quien hace seguimiento: una tutoría de grupo que no es responsable de seguimiento de ninguna estancia
+**no tiene** las tarjetas «Contactos con empresas» ni «Dietas de desplazamiento».
 
 La [matriz de permisos](37-ffe-permisos.md) lo detalla pantalla a pantalla. La administración, la jefatura y la gestión
 de la FFE pueden hacer lo mismo con todo su ámbito ([capítulo 31](31-ffe-gestion.md)).
@@ -150,12 +154,14 @@ registrar uno nuevo pulsa **Registrar contacto**:
 3. Elige el **tipo de contacto**: los tipos disponibles son los del
    [catálogo del centro](04-administrar-el-centro.md#tipos-de-contacto-con-empresas).
 4. Marca los **programas formativos** (los planes de formación con estancias en ese centro de trabajo) y los
-   **estudiantes relacionados**: las listas se rellenan al elegir el centro de trabajo y, hasta entonces, indican que no
-   hay ninguno disponible.
+   **estudiantes relacionados**. Las listas se rellenan por orden: al elegir el centro de trabajo aparecen sus programas
+   y, al marcar uno, sus estudiantes. Hasta entonces indican que no hay ninguno disponible.
 5. Escribe las **observaciones** y guarda.
 
-Un contacto solo lo modifica o elimina quien lo registró (y la administración del centro). La gestión de la FFE y la
-jefatura pueden consultarlo y corregirlo, pero no eliminarlo si no es suyo.
+Un contacto lo modifican y eliminan **quien lo registró** y la **administración del centro**. La **jefatura de
+departamento** puede eliminarlo y lo abre con el formulario activo, pero el desplegable «Docente» solo la ofrece a ella,
+así que no puede guardar un contacto ajeno sin asignárselo. La gestión de la FFE y la tutoría de grupo lo abren en
+**solo lectura**: los campos aparecen desactivados y no hay botón de guardar.
 
 !!! warning "La administración del centro no puede registrar visitas"
     Para registrar una visita o un desplazamiento hace falta ser **profesorado del curso**: el contacto queda a nombre de
@@ -166,7 +172,10 @@ jefatura pueden consultarlo y corregirlo, pero no eliminarlo si no es suyo.
 
 **Formación en empresa → Dietas de desplazamiento** funciona exactamente igual que en la FCT: registras los viajes con
 su itinerario, otros gastos y los planes de formación relacionados, y el responsable económico los verifica. Todo está
-explicado en [FCT: tutoría docente y de grupo](12-fct-tutoria-docente-y-de-grupo.md#gastos-de-desplazamiento).
+explicado en [FCT: tutoría docente y de grupo](12-fct-tutoria-docente-y-de-grupo.md#gastos-de-desplazamiento). Una
+diferencia con las otras modalidades: aquí la **jefatura** y la **gestión de la FFE** pueden corregir y **eliminar los
+desplazamientos de cualquier docente**, además de la administración y el responsable económico; la tutoría de grupo
+abre los ajenos en solo lectura.
 
 ![Tus desplazamientos: listado vacío con el botón «Registrar desplazamiento»](img/ffe-tutoria-gastos.png)
 

@@ -113,7 +113,7 @@ await plataforma.waitForLoadState('networkidle');
 for (const [name, path] of [
     ['plataforma-organizaciones', '/admin/organizaciones/listar/1'],
     ['plataforma-organizacion-formulario', '/admin/organizaciones/1'],
-    ['plataforma-usuarios', '/admin/usuarios/listar/1'],
+    ['plataforma-usuarios', '/admin/usuarios/listar/1', { fixLastAccess: true }],
     ['plataforma-usuario-formulario', '/admin/usuarios/1'],
 ]) {
     console.log(name);

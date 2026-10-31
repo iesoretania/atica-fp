@@ -141,19 +141,47 @@ class WltEvaluationTest extends AppWebTestCase
         self::assertSame('Evaluación del tutor laboral', $this->agreementOf('alfa.alumno5')->getWorkTutorRemarks());
     }
 
-    public function testNothingIsSavedWhenTheProjectIsLocked(): void
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function gradersProvider(): iterable
     {
-        $em = $this->em();
+        yield 'tutor de grupo' => ['alfa.tutor'];
+        yield 'tutor laboral' => ['alfa.tutorlaboral'];
+        yield 'coordinador' => ['alfa.coordinador'];
+        yield 'jefe de departamento' => ['alfa.jefe'];
+    }
+
+    /**
+     * Con el proyecto cerrado nadie que valora puede guardar la valoración, ni mandando la petición completa del
+     * formulario (preparada con el proyecto abierto)
+     *
+     * @dataProvider gradersProvider
+     */
+    public function testNothingIsSavedWhenTheProjectIsLocked(string $username): void
+    {
         $agreement = $this->agreementOf('alfa.alumno5');
+        $before = $agreement->getWorkTutorRemarks();
+        $this->login($this->getUser($username));
+
+        // la petición se prepara con el formulario real mientras el proyecto está abierto...
+        $crawler = $this->client->request('GET', $this->evaluationUrl());
+        $values = $crawler->selectButton('Guardar cambios')->form()->getPhpValues();
+        $values['agreement_evaluation']['workTutorRemarks'] = 'Cambio con el proyecto cerrado';
+
+        // ... y se envía una vez cerrado
+        $em = $this->em();
         $em->find(Agreement::class, $agreement->getId())->getProject()->setLocked(true);
         $em->flush();
-        $this->login($this->getUser('alfa.tutor'));
+        $this->client->request('POST', $this->evaluationUrl(), $values);
+        self::assertSame($before, $this->agreementOf('alfa.alumno5')->getWorkTutorRemarks(), $username);
 
-        $this->client->request('POST', $this->evaluationUrl(), [
-            'agreement_evaluation' => ['workTutorRemarks' => 'Cambio con el proyecto cerrado'],
-        ]);
-
-        self::assertNotSame('Cambio con el proyecto cerrado', $this->agreementOf('alfa.alumno5')->getWorkTutorRemarks());
+        // control: la misma petición, con el proyecto abierto, sí guarda (si no, la prueba no sería concluyente)
+        $em = $this->em();
+        $em->find(Agreement::class, $agreement->getId())->getProject()->setLocked(false);
+        $em->flush();
+        $this->client->request('POST', $this->evaluationUrl(), $values);
+        self::assertSame('Cambio con el proyecto cerrado', $this->agreementOf('alfa.alumno5')->getWorkTutorRemarks(), $username);
     }
 
     public function testRemarksOfOtherAgreementsAreNotModified(): void

@@ -99,7 +99,7 @@ Cada grupo tiene tres botones: **Añadir estancias en el mismo centro de trabajo
 ![Ficha del grupo 2º DAM A: horas previstas, tutoría dual de grupo (Tomás Herrero Lara) y el alumnado del grupo con casillas, con las de Sara Gallego Roldán y Adrián Ibáñez Mora marcadas y bloqueadas porque ya tienen estancias](img/ffe-grupo-formulario.png)
 
 - **Horas previstas** del grupo.
-- **Tutorías dual de grupo**: las personas que gestionan el plan en este grupo (la **gestión de la FFE**). Solo se
+- **Tutorías duales de grupo**: las personas que gestionan el plan en este grupo (la **gestión de la FFE**). Solo se
   ofrece el profesorado que **da clase en el grupo**.
 - **Estudiantes del plan de formación**: marca el alumnado del grupo que participa. Quien ya tiene estancias aparece
   marcado y **no se puede desmarcar** mientras las conserve. **Seleccionar todos** y **Deseleccionar todos** agilizan

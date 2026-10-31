@@ -115,8 +115,45 @@ export async function prepare(page) {
     await page.evaluate(() => window.scrollTo(0, 0));
     // sin esperar a la tipografía, algunas capturas salen con el texto a medio sustituir
     await page.evaluate(() => document.fonts.ready);
+    // y los componentes (selectores, editores) reajustan el diseño un instante después de cargar la página
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    await page.waitForTimeout(400);
     // el puntero se queda donde se pulsó el botón de entrada y resaltaría el elemento que haya debajo
     await page.mouse.move(0, 0);
+}
+
+/**
+ * Los formularios de registro nuevo (visita, contacto, desplazamiento, informe, jornadas...) llevan por defecto la fecha
+ * y la hora del servidor, que no se puede fijar: con `fixDateTime: true` en `shot` se sustituyen las fechas y horas de
+ * esos campos por las de referencia (`fixedNow`) para que la imagen no cambie en cada ejecución. No se usa en pantallas
+ * cuyos campos de fecha llevan datos (una estancia, una reunión...).
+ */
+export async function fixCurrentDateTime(page) {
+    const day = fixedNow.toISOString().slice(0, 10);
+    await page.evaluate(day => {
+        for (const input of document.querySelectorAll('input[type="date"]')) {
+            input.value = day;
+        }
+        for (const input of document.querySelectorAll('input[type="time"]')) {
+            input.value = '10:30';
+        }
+    }, day);
+}
+
+/**
+ * El listado de usuarios de la plataforma muestra la fecha y la hora del último acceso de cada persona, que son las de
+ * los accesos de la propia captura (reloj del servidor, minuto a minuto). Con `fixLastAccess: true` en `shot` esas
+ * fechas de las celdas de la tabla se sustituyen por la de referencia.
+ */
+export async function fixLastAccess(page) {
+    const day = fixedNow.toISOString().slice(0, 10).split('-').reverse().join('/');
+    await page.evaluate(day => {
+        for (const cell of document.querySelectorAll('table td')) {
+            if (/^\s*\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}\s*$/.test(cell.textContent)) {
+                cell.textContent = `${day} 10:30`;
+            }
+        }
+    }, day);
 }
 
 /** Va a una ruta de la aplicación y espera a que termine de cargar */
@@ -129,7 +166,13 @@ export async function open(page, path) {
  * Guarda una captura en el directorio de salida. `name` es el nombre sin extensión y lleva el prefijo del
  * capítulo (por ejemplo, «primeros-pasos-acceso»). Con `selector` se captura solo ese elemento.
  */
-export async function shot(page, name, { selector, fullPage = false, clip } = {}) {
+export async function shot(page, name, { selector, fullPage = false, clip, fixDateTime = false, fixLastAccess: lastAccess = false } = {}) {
+    if (fixDateTime) {
+        await fixCurrentDateTime(page);
+    }
+    if (lastAccess) {
+        await fixLastAccess(page);
+    }
     await prepare(page);
     const path = `${outDir}/${name}.png`;
     const options = { animations: 'disabled', caret: 'hide' };
