@@ -23,7 +23,10 @@ namespace App\Tests\Functional\Permissions;
  *   {teacher}     docente «tutor», responsable de seguimiento del alumno 1
  *   {visit}       visita de ese docente
  *   {expense}     gasto de desplazamiento de ese docente
- *   {workTutor}   tutor laboral del acuerdo
+ *   {workTutor}   tutor laboral del acuerdo (y de la estancia de FFE)
+ *   {stay}        estancia de FFE del alumno 7; {studentProgram}, {workDay} y el resto de marcadores de FFE
+ *                 («{programGrade}», «{programGroup}», «{itpActivity}», «{companyProgram}», «{itpTeacher}»,
+ *                 «{itpContact}», «{itpExpense}», «{trainingProgram}») salen de la misma estancia y su programa
  *
  * Perfiles: se identifican con una clave y apuntan a un usuario de las fixtures. Los que dependen de su
  * relación con un acuerdo concreto (tutoría docente, alumnado, tutoría laboral) lo hacen respecto al
@@ -280,6 +283,107 @@ final class PermissionMatrix
                         ['Obtener el informe de la encuesta de alumnado', 'GET /dual/informe/encuesta/estudiantes/{project}/{year}'],
                         ['Obtener el informe de la encuesta de empresas', 'GET /dual/informe/encuesta/empresas/{project}/{year}'],
                         ['Obtener el informe de la encuesta de centro', 'GET /dual/informe/encuesta/centro/{project}/{year}'],
+                    ]),
+                ],
+            ],
+            'ffe' => [
+                'title' => 'Formación en empresas (FFE)',
+                'profiles' => [
+                    'admin' => ['label' => 'Administración del centro', 'user' => 'alfa.admin'],
+                    'jefe' => ['label' => 'Jefatura de departamento', 'user' => 'alfa.jefe'],
+                    'gestor' => ['label' => 'Gestión de la FFE', 'user' => 'alfa.gestorffe'],
+                    'tutor' => ['label' => 'Tutoría de grupo', 'user' => 'alfa.tutor'],
+                    'tutor-docente' => ['label' => 'Tutoría docente de la estancia', 'user' => 'alfa.profesor'],
+                    'alumno' => ['label' => 'Alumnado de la estancia', 'user' => 'alfa.alumno7'],
+                    'tutor-laboral' => ['label' => 'Tutoría laboral de la estancia', 'user' => 'alfa.tutorlaboral'],
+                    'otro-tutor-laboral' => ['label' => 'Tutoría laboral de otra estancia', 'user' => 'alfa.tutorlaboral2'],
+                    'economico' => ['label' => 'Responsable económico', 'user' => 'alfa.economico'],
+                    'resto' => ['label' => 'Resto del personal', 'user' => 'alfa.coordinador'],
+                ],
+                'sections' => [
+                    self::section('Programas formativos', [
+                        ['Ver el listado de programas formativos', 'GET /formacion/plan/listar/{year}/1'],
+                        ['Crear un programa formativo', 'GET /formacion/plan/nuevo/{year}'],
+                        ['Editar un programa formativo', 'GET /formacion/plan/{trainingProgram}/{year}'],
+                        ['Eliminar programas formativos', 'POST /formacion/plan/eliminar/{year} items[]={trainingProgram}'],
+                        ['Ver los cursos de un programa', 'GET /formacion/plan/curso/listar/{trainingProgram}/1'],
+                        ['Editar los resultados de aprendizaje de un curso', 'GET /formacion/plan/curso/resultados/{programGrade}'],
+                        ['Ver los grupos de un curso', 'GET /formacion/plan/grupo/listar/{programGrade}/1'],
+                        ['Editar un grupo', 'GET /formacion/plan/grupo/{programGroup}'],
+                    ]),
+                    self::section('Actividades y empresas del programa', [
+                        ['Ver las actividades de un curso', 'GET /formacion/plan/actividad/listar/{programGrade}/1'],
+                        ['Crear una actividad', 'GET /formacion/plan/actividad/nueva/{programGrade}'],
+                        ['Editar una actividad', 'GET /formacion/plan/actividad/{itpActivity}'],
+                        ['Importar actividades desde texto', 'GET /formacion/plan/actividad/importar/{programGrade}'],
+                        ['Descargar las actividades', 'GET /formacion/plan/actividad/descargar/{programGrade}'],
+                        ['Eliminar actividades', 'POST /formacion/plan/actividad/eliminar/{programGrade} items[]={itpActivity}'],
+                        ['Ver las empresas de un curso', 'GET /formacion/plan/empresa/listar/{programGrade}/1'],
+                        ['Incorporar una empresa', 'GET /formacion/plan/empresa/nueva/{programGrade}'],
+                        ['Editar el programa de una empresa', 'GET /formacion/plan/empresa/{companyProgram}'],
+                        ['Eliminar empresas del curso', 'POST /formacion/plan/empresa/eliminar/{programGrade} items[]={companyProgram}'],
+                    ]),
+                    self::section('Alumnado y estancias', [
+                        ['Ver el alumnado de un grupo', 'GET /formacion/plan/curso/grupo/estudiante/listar/{programGroup}/1'],
+                        ['Incorporar alumnado al grupo', 'GET /formacion/plan/curso/grupo/estudiante/nueva/{programGroup}'],
+                        ['Editar el alumnado incorporado', 'GET /formacion/plan/curso/grupo/estudiante/{studentProgram}'],
+                        ['Eliminar alumnado del grupo', 'POST /formacion/plan/curso/grupo/estudiante/eliminar/{programGroup} items[]={studentProgram}'],
+                        ['Ver las estancias de un alumno', 'GET /formacion/plan/curso/grupo/estudiante/estancia/listar/{studentProgram}/1'],
+                        ['Crear una estancia', 'GET /formacion/plan/curso/grupo/estudiante/estancia/nueva/{studentProgram}'],
+                        ['Editar una estancia', 'GET /formacion/plan/curso/grupo/estudiante/estancia/{stay}'],
+                        ['Eliminar estancias', 'POST /formacion/plan/curso/grupo/estudiante/estancia/eliminar/{studentProgram} items[]={stay}'],
+                        ['Ver el calendario de una estancia', 'GET /formacion/plan/curso/grupo/estudiante/estancia/calendario/{stay}'],
+                        ['Ver todas las estancias de un curso', 'GET /formacion/plan/curso/grupo/gestion/listar/{programGrade}/1'],
+                        ['Crear una estancia desde la gestión', 'GET /formacion/plan/curso/grupo/gestion/nueva/{programGroup}'],
+                        ['Editar una estancia desde la gestión', 'GET /formacion/plan/curso/grupo/gestion/detalle/{stay}'],
+                        ['Ver el calendario de una estancia desde la gestión', 'GET /formacion/plan/curso/grupo/gestion/estancia/calendario/{stay}'],
+                        ['Eliminar estancias desde la gestión', 'POST /formacion/plan/curso/grupo/gestion/operacion/{programGrade} items[]={stay}'],
+                    ]),
+                    self::section('Seguimiento diario', [
+                        ['Ver el seguimiento del alumnado', 'GET /formacion/seguimiento/listar/{year}/1'],
+                        ['Exportar el seguimiento', 'GET /formacion/seguimiento/exportar/{year}'],
+                        ['Abrir el calendario de seguimiento de una estancia', 'GET /formacion/seguimiento/calendario/{stay}'],
+                        ['Descargar la hoja de asistencia', 'GET /formacion/seguimiento/calendario/{stay}/asistencia'],
+                        ['Abrir una jornada del calendario', 'GET /formacion/seguimiento/calendario/jornada/{workDay}'],
+                    ]),
+                    self::section('Valoración y evaluación', [
+                        ['Ver las estancias valorables', 'GET /formacion/valoracion/listar/{year}/1'],
+                        ['Abrir la valoración de una estancia (consulta o modificación según el perfil)', 'GET /formacion/valoracion/{stay}'],
+                        ['Obtener el informe de valoración', 'GET /formacion/valoracion/informe/{stay}'],
+                        ['Ver los grupos para la evaluación', 'GET /formacion/valoracion/evaluacion/{year}/1'],
+                        ['Ver el alumnado de un grupo para la evaluación', 'GET /formacion/valoracion/evaluacion/grupo/{programGroup}/1'],
+                        ['Ver el detalle de evaluación de una estancia', 'GET /formacion/valoracion/evaluacion/grupo/detalle/{stay}'],
+                        ['Obtener el informe de evaluación', 'GET /formacion/valoracion/evaluacion/informe/{stay}'],
+                    ]),
+                    self::section('Visitas', [
+                        ['Ver las visitas', 'GET /formacion/contacto/listar/{year}/1'],
+                        ['Registrar una visita', 'GET /formacion/contacto/nuevo'],
+                        ['Editar una visita', 'GET /formacion/contacto/{itpContact}'],
+                        ['Eliminar visitas', 'POST /formacion/contacto/eliminar items[]={itpContact}'],
+                    ]),
+                    self::section('Gastos de desplazamiento', [
+                        ['Ver el resumen de gastos del profesorado', 'GET /formacion/desplazamiento/resumen/{year}/1'],
+                        ['Ver los gastos de un docente', 'GET /formacion/desplazamiento/{itpTeacher}/listar/1'],
+                        ['Registrar un gasto', 'GET /formacion/desplazamiento/nuevo/{itpTeacher}'],
+                        ['Editar un gasto', 'GET /formacion/desplazamiento/detalle/{itpExpense}'],
+                        ['Descargar el informe de gastos', 'GET /formacion/desplazamiento/{itpTeacher}/descargar'],
+                        ['Eliminar gastos', 'POST /formacion/desplazamiento/eliminar/{itpTeacher} items[]={itpExpense}'],
+                    ]),
+                    self::section('Encuestas', [
+                        ['Acceder al apartado de encuestas', 'GET /formacion/encuesta/'],
+                        ['Ver las encuestas de alumnado', 'GET /formacion/encuesta/estudiante/{year}/1'],
+                        ['Abrir la encuesta de alumnado de una estancia', 'GET /formacion/encuesta/estudiante/cumplimentar/{stay}'],
+                        ['Ver las encuestas de empresa', 'GET /formacion/encuesta/empresa/{year}/1'],
+                        ['Abrir la encuesta de empresa de una estancia', 'GET /formacion/encuesta/empresa/cumplimentar/{stay}/{workTutor}'],
+                        ['Ver las encuestas de centro', 'GET /formacion/encuesta/centro/{year}/1'],
+                        ['Abrir la encuesta de centro de un docente', 'GET /formacion/encuesta/centro/cumplimentar/{stay}/{itpTeacher}'],
+                    ]),
+                    self::section('Informes del programa', [
+                        ['Acceder al apartado de informes', 'GET /formacion/informe/'],
+                        ['Ver el listado de informes de las encuestas de alumnado', 'GET /formacion/informe/encuesta/estudiantes/listar/{year}/1'],
+                        ['Obtener el informe de la encuesta de alumnado', 'GET /formacion/informe/encuesta/estudiantes/{trainingProgram}/{year}'],
+                        ['Obtener el informe de la encuesta de empresas', 'GET /formacion/informe/encuesta/empresas/{trainingProgram}/{year}'],
+                        ['Obtener el informe de la encuesta de centro', 'GET /formacion/informe/encuesta/centro/{trainingProgram}/{year}'],
                     ]),
                 ],
             ],

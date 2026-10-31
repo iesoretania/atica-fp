@@ -45,6 +45,7 @@ class OrganizationVoter extends CachedVoter
     public const ITP_CREATE_VISIT = 'ORGANIZATION_ITP_CREATE_VISIT';
 
     public const ITP_ACCESS_SURVEY = 'ORGANIZATION_ITP_ACCESS_SURVEY';
+    public const ITP_ACCESS_TRACKING = 'ORGANIZATION_ITP_ACCESS_TRACKING';
 
     public const ITP_STUDENT = 'ORGANIZATION_ITP_STUDENT';
     public const ITP_WORK_TUTOR = 'ORGANIZATION_ITP_WORK_TUTOR';
@@ -81,6 +82,7 @@ class OrganizationVoter extends CachedVoter
             self::ITP_ACCESS_VISIT,
             self::ITP_CREATE_VISIT,
             self::ITP_ACCESS_SURVEY,
+            self::ITP_ACCESS_TRACKING,
             self::ITP_STUDENT,
             self::ITP_WORK_TUTOR,
             self::ITP_EDUCATIONAL_TUTOR,
@@ -175,6 +177,9 @@ class OrganizationVoter extends CachedVoter
             case self::ITP_VIEW_EVALUATION:
                 // Si es jefe de departamento, tutor de grupo, tutor docente o tutor laboral, permitir ver evaluaciones
                 return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isItpTeacher;
+            case self::ITP_ACCESS_TRACKING:
+                // Quien participa en alguna estancia. El responsable económico no: solo entra a los gastos
+                return $isDepartmentHead || $isItpStudent || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor || $isItpTeacher;
             case self::ITP_ACCESS_SECTION:
                 // Si es jefe de algún departamento, estudiante, tutor de grupo, tutor docente o laboral, permitir acceder.
                 // El responsable económico también, para poder consultar los gastos de desplazamiento

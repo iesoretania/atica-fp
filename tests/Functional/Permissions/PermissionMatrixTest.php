@@ -82,7 +82,30 @@ class PermissionMatrixTest extends AppWebTestCase
             ['alfa.alumno5']
         );
 
+        // FFE: la estancia del alumno 7 (tutoría docente «alfa.profesor», tutoría laboral «alfa.tutorlaboral»)
+        $stay = (int) $db->fetchOne(
+            'SELECT spw.id FROM itp_student_program_workcenter spw JOIN itp_student_program sp ON sp.id = spw.student_program_id JOIN edu_student_enrollment se ON se.id = sp.student_enrollment_id JOIN person p ON p.id = se.person_id WHERE p.login_username = ?',
+            ['alfa.alumno7']
+        );
+        $programGrade = (int) $db->fetchOne(
+            'SELECT pg.id FROM itp_program_grade pg JOIN edu_grade g ON g.id = pg.grade_id JOIN edu_training t ON t.id = g.training_id WHERE t.academic_year_id = ? ORDER BY pg.id LIMIT 1',
+            [$organization->getCurrentAcademicYear()->getId()]
+        );
+        $itpTeacher = (int) $db->fetchOne('SELECT t.id FROM edu_teacher t JOIN person p ON p.id = t.person_id WHERE p.login_username = ?', ['alfa.profesor']);
+
         return [
+            // FFE
+            '{trainingProgram}' => (int) $db->fetchOne('SELECT training_program_id FROM itp_program_grade WHERE id = ?', [$programGrade]),
+            '{programGrade}' => $programGrade,
+            '{programGroup}' => (int) $db->fetchOne('SELECT id FROM itp_program_group WHERE program_grade_id = ? ORDER BY id LIMIT 1', [$programGrade]),
+            '{itpActivity}' => (int) $db->fetchOne('SELECT id FROM itp_activity WHERE program_grade_id = ? ORDER BY id LIMIT 1', [$programGrade]),
+            '{companyProgram}' => (int) $db->fetchOne('SELECT id FROM itp_company_program WHERE program_grade_id = ? ORDER BY id LIMIT 1', [$programGrade]),
+            '{stay}' => $stay,
+            '{studentProgram}' => (int) $db->fetchOne('SELECT student_program_id FROM itp_student_program_workcenter WHERE id = ?', [$stay]),
+            '{workDay}' => (int) $db->fetchOne('SELECT id FROM itp_work_day WHERE student_program_workcenter_id = ? ORDER BY id LIMIT 1', [$stay]),
+            '{itpTeacher}' => $itpTeacher,
+            '{itpContact}' => (int) $db->fetchOne('SELECT id FROM itp_contact WHERE teacher_id = ? ORDER BY id LIMIT 1', [$itpTeacher]),
+            '{itpExpense}' => (int) $db->fetchOne('SELECT id FROM itp_travel_expense WHERE teacher_id = ? ORDER BY id LIMIT 1', [$itpTeacher]),
             // FP dual
             '{project}' => (int) $db->fetchOne('SELECT id FROM wlt_project WHERE organization_id = ? ORDER BY id LIMIT 1', [$organization->getId()]),
             '{learningProgram}' => (int) $db->fetchOne('SELECT lp.id FROM wlt_learning_program lp JOIN wlt_project pr ON pr.id = lp.project_id WHERE pr.organization_id = ? ORDER BY lp.id LIMIT 1', [$organization->getId()]),

@@ -85,24 +85,17 @@ class ItpGradingListsTest extends AppWebTestCase
      */
     public function testEachRoleSeesOnlyItsStaysInTheGroupList(string $username, array $expected): void
     {
+        if (in_array($username, ['alfa.tutorlaboral', 'alfa.tutorlaboral2'], true)) {
+            // la tutoría laboral no participa en la evaluación: el listado del grupo le está cerrado
+            $this->login($this->getUser($username));
+            $this->client->request('GET', '/formacion/valoracion/evaluacion/grupo/' . $this->groupId());
+            self::assertResponseStatusCodeSame(403, $username);
+
+            return;
+        }
         $this->login($this->getUser($username));
 
         self::assertSame($expected, $this->studentsIn('/formacion/valoracion/evaluacion/grupo/' . $this->groupId()), $username);
-    }
-
-    public function testStudentSeesOnlyTheirOwnStayInTheGroupList(): void
-    {
-        $this->login($this->getUser('alfa.alumno7'));
-
-        // el alumnado no ve las estancias de sus compañeros aunque abra la lista del grupo
-        self::assertSame(['Alumno 7'], $this->studentsIn('/formacion/valoracion/evaluacion/grupo/' . $this->groupId()));
-    }
-
-    public function testFinancialManagerSeesNoStaysInTheGroupList(): void
-    {
-        $this->login($this->getUser('alfa.economico'));
-
-        self::assertSame([], $this->studentsIn('/formacion/valoracion/evaluacion/grupo/' . $this->groupId()));
     }
 
     /**
@@ -149,6 +142,9 @@ class ItpGradingListsTest extends AppWebTestCase
         $this->login($this->getUser($username));
 
         $this->client->request('GET', '/formacion/valoracion/evaluacion/' . $this->year());
+        self::assertResponseStatusCodeSame(403);
+        // tampoco el listado del alumnado de un grupo, que antes se abría vacío o con su propia estancia
+        $this->client->request('GET', '/formacion/valoracion/evaluacion/grupo/' . $this->groupId());
         self::assertResponseStatusCodeSame(403);
         $this->client->request('GET', '/formacion/valoracion/evaluacion/grupo/detalle/' . $this->stayId());
         self::assertResponseStatusCodeSame(403);

@@ -42,9 +42,10 @@ class ItpPagesTest extends AppWebTestCase
         'companies' => ['alfa.jefe', 'alfa.gestorffe'],
         'students' => ['alfa.jefe', 'alfa.gestorffe'],
         'manage' => ['alfa.jefe', 'alfa.gestorffe'],
-        // sigue sin ver datos del alumnado: sus listados salen vacíos (ver testFinancialManagerDoesNotSeeStudentData)
-        'tracking' => self::WITH_FINANCIAL_MANAGER,
-        'grading' => self::WITH_FINANCIAL_MANAGER,
+        // el responsable económico no accede al seguimiento ni a la valoración (ver testFinancialManagerDoesNotSeeStudentData)
+        'tracking' => self::PARTICIPANTS,
+        // la valoración no es para el alumnado (la entrada del menú tampoco se le ofrece)
+        'grading' => ['alfa.jefe', 'alfa.gestorffe', 'alfa.tutor', 'alfa.profesor', 'alfa.tutorlaboral', 'alfa.tutorlaboral2'],
         // estancia de alumno7: su tutor docente (profesor), la tutora del grupo, él mismo y su tutor laboral
         'calendar' => ['alfa.jefe', 'alfa.gestorffe', 'alfa.tutor', 'alfa.profesor', 'alfa.alumno7', 'alfa.tutorlaboral'],
         // visitas: tutores docentes y gestión
@@ -156,24 +157,17 @@ class ItpPagesTest extends AppWebTestCase
         $this->login($this->getUser('alfa.economico'));
 
         foreach (['tracking', 'grading'] as $screen) {
-            $content = $this->get($screen);
-            self::assertResponseIsSuccessful();
-            self::assertStringContainsString('No hay resultados', $content, $screen);
-            self::assertStringNotContainsString('Estudiante Alfa', $content, $screen);
+            $this->get($screen);
+            self::assertResponseStatusCodeSame(403, $screen);
         }
 
-        // la exportación a CSV tampoco debe incluir al alumnado
+        // la exportación a CSV tampoco está a su alcance
         $academicYear = $this->getOrganization()->getCurrentAcademicYear()->getId();
         $this->client->request('GET', static::getContainer()->get('router')->generate(
             'in_company_training_phase_tracking_export',
             ['academicYear' => $academicYear]
         ));
-        self::assertResponseIsSuccessful();
-        // es una respuesta en streaming: el contenido está en la respuesta interna del cliente
-        $csv = (string) $this->client->getInternalResponse()->getContent();
-        self::assertNotSame('', $csv, 'El CSV está vacío: la comprobación no sería concluyente');
-        self::assertStringNotContainsString('Estudiante Alfa', $csv);
-        self::assertStringNotContainsString('Alumno', $csv);
+        self::assertResponseStatusCodeSame(403);
     }
 
     /**

@@ -55,7 +55,7 @@ class TrackingController extends AbstractController
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_SECTION, $organization);
+        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_TRACKING, $organization);
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -114,7 +114,7 @@ class TrackingController extends AbstractController
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_SECTION, $organization);
+        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_TRACKING, $organization);
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
         $q = $request->get('q');

@@ -66,8 +66,10 @@ class SurveyController extends AbstractController
     #[Route(path: '/', name: '', methods: ['GET'])]
     public function index(UserExtensionService $userExtensionService): Response
     {
+        // el mismo permiso que muestra la entrada «Encuestas» del menú: con el de la sección, el responsable
+        // económico entraba en una página sin ninguna opción y fallaba con un error 500
         $this->denyAccessUnlessGranted(
-            ItpOrganizationVoter::ITP_ACCESS_SECTION,
+            ItpOrganizationVoter::ITP_ACCESS_SURVEY,
             $userExtensionService->getCurrentOrganization()
         );
         return $this->render(

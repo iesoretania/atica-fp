@@ -73,7 +73,8 @@ class GradingController extends AbstractController
             $academicYear = $organization->getCurrentAcademicYear();
         }
 
-        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_SECTION, $organization);
+        // el mismo permiso que la entrada «Valoración» del menú
+        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_VIEW_GRADES, $organization);
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -432,7 +433,9 @@ class GradingController extends AbstractController
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
 
-        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_SECTION, $organization);
+        // el mismo permiso que el listado de grupos de la evaluación (el alumnado, la tutoría laboral y el
+        // responsable económico no lo tienen y antes abrían aquí un listado vacío)
+        $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_VIEW_EVALUATION, $organization);
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 

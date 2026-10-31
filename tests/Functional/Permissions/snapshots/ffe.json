@@ -1,0 +1,1149 @@
+{
+    "module": "ffe",
+    "title": "Formación en empresas (FFE)",
+    "profiles": {
+        "admin": {
+            "label": "Administración del centro",
+            "user": "alfa.admin"
+        },
+        "jefe": {
+            "label": "Jefatura de departamento",
+            "user": "alfa.jefe"
+        },
+        "gestor": {
+            "label": "Gestión de la FFE",
+            "user": "alfa.gestorffe"
+        },
+        "tutor": {
+            "label": "Tutoría de grupo",
+            "user": "alfa.tutor"
+        },
+        "tutor-docente": {
+            "label": "Tutoría docente de la estancia",
+            "user": "alfa.profesor"
+        },
+        "alumno": {
+            "label": "Alumnado de la estancia",
+            "user": "alfa.alumno7"
+        },
+        "tutor-laboral": {
+            "label": "Tutoría laboral de la estancia",
+            "user": "alfa.tutorlaboral"
+        },
+        "otro-tutor-laboral": {
+            "label": "Tutoría laboral de otra estancia",
+            "user": "alfa.tutorlaboral2"
+        },
+        "economico": {
+            "label": "Responsable económico",
+            "user": "alfa.economico"
+        },
+        "resto": {
+            "label": "Resto del personal",
+            "user": "alfa.coordinador"
+        }
+    },
+    "sections": [
+        {
+            "title": "Programas formativos",
+            "actions": [
+                {
+                    "label": "Ver el listado de programas formativos",
+                    "request": "GET /formacion/plan/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Crear un programa formativo",
+                    "request": "GET /formacion/plan/nuevo/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar un programa formativo",
+                    "request": "GET /formacion/plan/{trainingProgram}/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar programas formativos",
+                    "request": "POST /formacion/plan/eliminar/{year} items[]={trainingProgram}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver los cursos de un programa",
+                    "request": "GET /formacion/plan/curso/listar/{trainingProgram}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar los resultados de aprendizaje de un curso",
+                    "request": "GET /formacion/plan/curso/resultados/{programGrade}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver los grupos de un curso",
+                    "request": "GET /formacion/plan/grupo/listar/{programGrade}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar un grupo",
+                    "request": "GET /formacion/plan/grupo/{programGroup}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Actividades y empresas del programa",
+            "actions": [
+                {
+                    "label": "Ver las actividades de un curso",
+                    "request": "GET /formacion/plan/actividad/listar/{programGrade}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Crear una actividad",
+                    "request": "GET /formacion/plan/actividad/nueva/{programGrade}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar una actividad",
+                    "request": "GET /formacion/plan/actividad/{itpActivity}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Importar actividades desde texto",
+                    "request": "GET /formacion/plan/actividad/importar/{programGrade}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Descargar las actividades",
+                    "request": "GET /formacion/plan/actividad/descargar/{programGrade}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar actividades",
+                    "request": "POST /formacion/plan/actividad/eliminar/{programGrade} items[]={itpActivity}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver las empresas de un curso",
+                    "request": "GET /formacion/plan/empresa/listar/{programGrade}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Incorporar una empresa",
+                    "request": "GET /formacion/plan/empresa/nueva/{programGrade}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar el programa de una empresa",
+                    "request": "GET /formacion/plan/empresa/{companyProgram}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar empresas del curso",
+                    "request": "POST /formacion/plan/empresa/eliminar/{programGrade} items[]={companyProgram}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Alumnado y estancias",
+            "actions": [
+                {
+                    "label": "Ver el alumnado de un grupo",
+                    "request": "GET /formacion/plan/curso/grupo/estudiante/listar/{programGroup}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Incorporar alumnado al grupo",
+                    "request": "GET /formacion/plan/curso/grupo/estudiante/nueva/{programGroup}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar el alumnado incorporado",
+                    "request": "GET /formacion/plan/curso/grupo/estudiante/{studentProgram}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar alumnado del grupo",
+                    "request": "POST /formacion/plan/curso/grupo/estudiante/eliminar/{programGroup} items[]={studentProgram}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver las estancias de un alumno",
+                    "request": "GET /formacion/plan/curso/grupo/estudiante/estancia/listar/{studentProgram}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Crear una estancia",
+                    "request": "GET /formacion/plan/curso/grupo/estudiante/estancia/nueva/{studentProgram}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar una estancia",
+                    "request": "GET /formacion/plan/curso/grupo/estudiante/estancia/{stay}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar estancias",
+                    "request": "POST /formacion/plan/curso/grupo/estudiante/estancia/eliminar/{studentProgram} items[]={stay}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver el calendario de una estancia",
+                    "request": "GET /formacion/plan/curso/grupo/estudiante/estancia/calendario/{stay}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver todas las estancias de un curso",
+                    "request": "GET /formacion/plan/curso/grupo/gestion/listar/{programGrade}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Crear una estancia desde la gestión",
+                    "request": "GET /formacion/plan/curso/grupo/gestion/nueva/{programGroup}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar una estancia desde la gestión",
+                    "request": "GET /formacion/plan/curso/grupo/gestion/detalle/{stay}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver el calendario de una estancia desde la gestión",
+                    "request": "GET /formacion/plan/curso/grupo/gestion/estancia/calendario/{stay}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar estancias desde la gestión",
+                    "request": "POST /formacion/plan/curso/grupo/gestion/operacion/{programGrade} items[]={stay}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Seguimiento diario",
+            "actions": [
+                {
+                    "label": "Ver el seguimiento del alumnado",
+                    "request": "GET /formacion/seguimiento/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "otro-tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Exportar el seguimiento",
+                    "request": "GET /formacion/seguimiento/exportar/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "otro-tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir el calendario de seguimiento de una estancia",
+                    "request": "GET /formacion/seguimiento/calendario/{stay}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Descargar la hoja de asistencia",
+                    "request": "GET /formacion/seguimiento/calendario/{stay}/asistencia",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir una jornada del calendario",
+                    "request": "GET /formacion/seguimiento/calendario/jornada/{workDay}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Valoración y evaluación",
+            "actions": [
+                {
+                    "label": "Ver las estancias valorables",
+                    "request": "GET /formacion/valoracion/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": true,
+                        "otro-tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir la valoración de una estancia (consulta o modificación según el perfil)",
+                    "request": "GET /formacion/valoracion/{stay}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": true,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de valoración",
+                    "request": "GET /formacion/valoracion/informe/{stay}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": true,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver los grupos para la evaluación",
+                    "request": "GET /formacion/valoracion/evaluacion/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver el alumnado de un grupo para la evaluación",
+                    "request": "GET /formacion/valoracion/evaluacion/grupo/{programGroup}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver el detalle de evaluación de una estancia",
+                    "request": "GET /formacion/valoracion/evaluacion/grupo/detalle/{stay}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de evaluación",
+                    "request": "GET /formacion/valoracion/evaluacion/informe/{stay}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Visitas",
+            "actions": [
+                {
+                    "label": "Ver las visitas",
+                    "request": "GET /formacion/contacto/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Registrar una visita",
+                    "request": "GET /formacion/contacto/nuevo",
+                    "allowed": {
+                        "admin": false,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar una visita",
+                    "request": "GET /formacion/contacto/{itpContact}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar visitas",
+                    "request": "POST /formacion/contacto/eliminar items[]={itpContact}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": false,
+                        "tutor": false,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Gastos de desplazamiento",
+            "actions": [
+                {
+                    "label": "Ver el resumen de gastos del profesorado",
+                    "request": "GET /formacion/desplazamiento/resumen/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver los gastos de un docente",
+                    "request": "GET /formacion/desplazamiento/{itpTeacher}/listar/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Registrar un gasto",
+                    "request": "GET /formacion/desplazamiento/nuevo/{itpTeacher}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Editar un gasto",
+                    "request": "GET /formacion/desplazamiento/detalle/{itpExpense}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Descargar el informe de gastos",
+                    "request": "GET /formacion/desplazamiento/{itpTeacher}/descargar",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Eliminar gastos",
+                    "request": "POST /formacion/desplazamiento/eliminar/{itpTeacher} items[]={itpExpense}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": true,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Encuestas",
+            "actions": [
+                {
+                    "label": "Acceder al apartado de encuestas",
+                    "request": "GET /formacion/encuesta/",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": true,
+                        "tutor-laboral": true,
+                        "otro-tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver las encuestas de alumnado",
+                    "request": "GET /formacion/encuesta/estudiante/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": true,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir la encuesta de alumnado de una estancia",
+                    "request": "GET /formacion/encuesta/estudiante/cumplimentar/{stay}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": true,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver las encuestas de empresa",
+                    "request": "GET /formacion/encuesta/empresa/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": true,
+                        "otro-tutor-laboral": true,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir la encuesta de empresa de una estancia",
+                    "request": "GET /formacion/encuesta/empresa/cumplimentar/{stay}/{workTutor}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": true,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver las encuestas de centro",
+                    "request": "GET /formacion/encuesta/centro/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": true,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Abrir la encuesta de centro de un docente",
+                    "request": "GET /formacion/encuesta/centro/cumplimentar/{stay}/{itpTeacher}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": true,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Informes del programa",
+            "actions": [
+                {
+                    "label": "Acceder al apartado de informes",
+                    "request": "GET /formacion/informe/",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Ver el listado de informes de las encuestas de alumnado",
+                    "request": "GET /formacion/informe/encuesta/estudiantes/listar/{year}/1",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de la encuesta de alumnado",
+                    "request": "GET /formacion/informe/encuesta/estudiantes/{trainingProgram}/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de la encuesta de empresas",
+                    "request": "GET /formacion/informe/encuesta/empresas/{trainingProgram}/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                },
+                {
+                    "label": "Obtener el informe de la encuesta de centro",
+                    "request": "GET /formacion/informe/encuesta/centro/{trainingProgram}/{year}",
+                    "allowed": {
+                        "admin": true,
+                        "jefe": true,
+                        "gestor": true,
+                        "tutor": false,
+                        "tutor-docente": false,
+                        "alumno": false,
+                        "tutor-laboral": false,
+                        "otro-tutor-laboral": false,
+                        "economico": false,
+                        "resto": false
+                    }
+                }
+            ]
+        }
+    ]
+}

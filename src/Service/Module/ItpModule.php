@@ -67,7 +67,7 @@ class ItpModule implements ModuleBuilderInterface
                 $menu1->addChild($menu2);
             }
 
-            if ($this->security->isGranted(ItpOrganizationVoter::ITP_ACCESS_SECTION, $organization)) {
+            if ($this->security->isGranted(ItpOrganizationVoter::ITP_ACCESS_TRACKING, $organization)) {
                 $menu2 = new MenuItem();
                 $menu2
                     ->setName('in_company_training_phase_tracking')
