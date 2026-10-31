@@ -12,12 +12,13 @@ persona puede ser las dos cosas; lo que puedes hacer depende de tu relación con
 | Registrar y revisar jornadas, bloquearlas y marcar faltas | ✅ | ✅ |
 | **Valorar** las concreciones realizadas y comentarlas | ✅ | ✅ |
 | Consultar el **resumen de evaluación** del alumnado | — | ✅ |
+| Registrar **reuniones de tutorización** con el alumnado | ✅ | ✅\* |
 | Registrar **contactos** con las empresas | ✅ | ✅\* |
 | Registrar **gastos de desplazamiento** | ✅ | ✅\* |
 | Rellenar las encuestas del alumnado y de la empresa en su nombre | ✅ | ✅ |
 | Rellenar tu **encuesta de satisfacción del centro** | ✅ | — |
 
-\* Si además das clase a alguno de los grupos del proyecto, que es lo habitual. Los contactos y los
+\* Si además das clase a alguno de los grupos del proyecto, que es lo habitual. Las reuniones, los contactos y los
 desplazamientos son una tarea de quien hace seguimiento o imparte docencia en la FP dual.
 
 La [matriz de permisos](27-dual-permisos.md) lo detalla pantalla a pantalla. La administración, la coordinación y
@@ -27,9 +28,9 @@ la jefatura pueden hacer lo mismo con todo su ámbito ([capítulo 21](21-dual-ge
 
 Tu menú de **FP dual** tiene las tarjetas **Seguimiento de actividad**, **Valoración del desempeño de
 actividades**, **Resumen de evaluación** (si eres tutor o tutora de grupo), **Contactos con empresas**, **Dietas de
-desplazamiento** y **Encuestas**.
+desplazamiento**, **Reuniones de tutorización** y **Encuestas**.
 
-![Menú de FP dual de una tutoría docente y de grupo: seguimiento de actividad, valoración del desempeño de actividades, resumen de evaluación, contactos con empresas, dietas de desplazamiento y encuestas](img/dual-inicio-tutoria.png)
+![Menú de FP dual de una tutoría docente y de grupo: seguimiento de actividad, valoración del desempeño de actividades, resumen de evaluación, contactos con empresas, dietas de desplazamiento, reuniones de tutorización y encuestas](img/dual-inicio-tutoria.png)
 
 ## Seguimiento diario
 
@@ -108,6 +109,40 @@ jornadas que ya la tengan marcada se mantienen).
 Si eres **tutor o tutora de grupo**, **Resumen de evaluación** te permite consultar, de cada estudiante del grupo,
 el resultado de todos los módulos. Cómo es el informe está explicado en el
 [capítulo 23](23-dual-profesorado-y-evaluacion.md#el-informe-de-resultados-de-un-estudiante).
+
+## Reuniones de tutorización {#reuniones-de-tutorizacion}
+
+**FP dual → Reuniones de tutorización** es el registro de las reuniones que el profesorado mantiene con el
+alumnado de un proyecto para hacer su seguimiento: qué se habló, quién estuvo y cuándo. Lo que registres aquí
+alimenta el [informe de reuniones](21-dual-gestion.md#informes) del proyecto, con un resumen por docente.
+
+![Listado de reuniones de tutorización: la reunión del 09/10/2026 registrada por Marta Jiménez en el proyecto de FP dual, con los dos estudiantes y la docente que participaron](img/dual-tutoria-reuniones.png)
+
+El listado muestra, de cada reunión, la fecha y la hora, quién la registró, el proyecto, el alumnado y el
+profesorado que participó. Con el **selector de curso** de arriba consultas también las de cursos anteriores, y
+con el **filtro** buscas por docente, proyecto o estudiante. Ves **las que has registrado**; si eres tutoría de
+grupo, también las del alumnado de tus grupos y aquellas en las que figuras como docente participante.
+
+Para registrar una reunión pulsa **Nueva reunión**:
+
+![Formulario de una reunión de tutorización: fecha y hora, docente que la registra, proyecto, estudiantes, docentes participantes y detalles](img/dual-tutoria-reunion-formulario.png)
+
+1. Indica la **fecha y la hora** (por defecto, el momento actual).
+2. **Registrada por**: eres tú. Solo el profesorado del curso puede registrar reuniones.
+3. Elige el **proyecto**: solo aparecen los proyectos en los que participas.
+4. Marca los **estudiantes** que asistieron. La lista se rellena al elegir el proyecto con el alumnado adherido en
+   esa fecha; si no hay ninguno, el campo queda desactivado.
+5. Marca los **docentes** participantes (al menos uno, que normalmente eres tú).
+6. En **Detalles** escribe lo tratado, en texto sin formato.
+7. Pulsa **Guardar cambios**.
+
+Para corregir una reunión, ábrela desde el listado. Para eliminar varias, márcalas, pulsa **Eliminar las reuniones
+seleccionadas** y confirma.
+
+!!! note "Quién puede modificar una reunión"
+    Solo **quien la registró** puede modificarla o eliminarla, y solo en el curso actual (y la administración del
+    centro). El resto de docentes que la ven, como participantes, tutoría de grupo, coordinación o jefatura, la
+    abren en **solo lectura**: los campos aparecen desactivados y no hay botón de guardar.
 
 ## Contactos con empresas {#contactos-con-empresas}
 

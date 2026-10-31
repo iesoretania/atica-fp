@@ -17,6 +17,7 @@ estudiante ha hecho en la empresa se vincula con los resultados de aprendizaje d
 - Ver el **resumen de evaluación** y el **informe de resultados** del alumnado al que das clase, limitados a tus
   módulos.
 - Ver los **contactos** con empresas y el **resumen de gastos**, y registrar los tuyos.
+- Registrar tus **reuniones de tutorización** con el alumnado.
 
 Solo ves a los estudiantes **de los grupos a los que das clase**. La [matriz de permisos](27-dual-permisos.md) lo
 resume.
@@ -24,10 +25,10 @@ resume.
 ## Dónde está
 
 Tu menú de **FP dual** tiene **Seguimiento de actividad**, **Valoración del desempeño de actividades**, **Resumen de
-evaluación**, **Contactos con empresas** y **Dietas de desplazamiento**. No tienes encuestas: en la FP dual solo las
-contestan el alumnado, la empresa y quien hace el seguimiento.
+evaluación**, **Contactos con empresas**, **Dietas de desplazamiento** y **Reuniones de tutorización**. No tienes
+encuestas: en la FP dual solo las contestan el alumnado, la empresa y quien hace el seguimiento.
 
-![Menú de FP dual del profesorado del grupo: seguimiento de actividad, valoración del desempeño de actividades, resumen de evaluación, contactos con empresas y dietas de desplazamiento](img/dual-docente-inicio.png)
+![Menú de FP dual del profesorado del grupo: seguimiento de actividad, valoración del desempeño de actividades, resumen de evaluación, contactos con empresas, dietas de desplazamiento y reuniones de tutorización](img/dual-docente-inicio.png)
 
 ## Consultar la valoración
 
@@ -83,6 +84,9 @@ evaluación es una decisión tuya: el informe te da los datos de partida.
   ([capítulo 22](22-dual-tutoria-docente-y-de-grupo.md#contactos-con-empresas)).
 - **Dietas de desplazamiento**: ves el resumen del profesorado y registras tus propios desplazamientos
   ([FCT: gastos](12-fct-tutoria-docente-y-de-grupo.md#gastos-de-desplazamiento)).
+- **Reuniones de tutorización**: registras las reuniones que mantienes con el alumnado de los proyectos en los que
+  das clase ([capítulo 22](22-dual-tutoria-docente-y-de-grupo.md#reuniones-de-tutorizacion)). Solo ves las que has
+  registrado tú.
 
 ## Qué no puedes hacer y a quién pedirlo
 

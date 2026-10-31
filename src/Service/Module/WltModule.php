@@ -128,6 +128,19 @@ class WltModule implements ModuleBuilderInterface
                 $menu1->addChild($menu2);
             }
 
+            if ($this->security->isGranted(OrganizationVoter::WLT_ACCESS_MEETING, $organization)) {
+                $menu2 = new MenuItem();
+                $menu2
+                    ->setName('work_linked_training_meeting')
+                    ->setRouteName('work_linked_training_meeting_list')
+                    ->setCaption('menu.work_linked_training.meeting')
+                    ->setDescription('menu.work_linked_training.meeting.detail')
+                    ->setIcon('user-friends')
+                    ->setPriority(9000);
+
+                $menu1->addChild($menu2);
+            }
+
             $menu2 = new MenuItem();
             $menu2
                 ->setName('work_linked_training_survey')

@@ -18,7 +18,7 @@ Tres personas pueden gestionar un proyecto, con matices:
 - Definir las **actividades** y sus **concreciones**, y el **programa formativo de cada empresa**.
 - Crear los **convenios** de cada estudiante y su **calendario** de alternancia.
 - **Seguir** el estado de todos los convenios y **valorar** las actividades realizadas.
-- Consultar los **contactos** y **desplazamientos** del profesorado.
+- Consultar las **reuniones de tutorización**, los **contactos** y los **desplazamientos** del profesorado.
 - Obtener los **informes** del proyecto y de las encuestas.
 
 La [matriz de permisos](27-dual-permisos.md) detalla cada acción.
@@ -26,10 +26,10 @@ La [matriz de permisos](27-dual-permisos.md) detalla cada acción.
 ## Dónde está
 
 En el menú de **FP dual**, la tarjeta **Proyectos** reúne la preparación; el resto de tarjetas (seguimiento,
-valoración, resumen de evaluación, contactos, dietas, encuestas e informes) son las mismas que ven las demás
-personas, pero con acceso a todos los datos de tu ámbito.
+valoración, resumen de evaluación, contactos, dietas, reuniones, encuestas e informes) son las mismas que ven las
+demás personas, pero con acceso a todos los datos de tu ámbito.
 
-![Menú de FP dual de la coordinación del proyecto: proyectos, seguimiento de actividad, valoración, resumen de evaluación, contactos con empresas, dietas, encuestas e informes](img/dual-inicio-coordinacion.png)
+![Menú de FP dual de la coordinación del proyecto: proyectos, seguimiento de actividad, valoración, resumen de evaluación, contactos con empresas, dietas, reuniones de tutorización, encuestas e informes](img/dual-inicio-coordinacion.png)
 
 ## Proyectos {#proyectos}
 
@@ -194,6 +194,13 @@ Como gestión puedes ver todo el trabajo diario del proyecto:
 
   ![Resumen de desplazamientos de FP dual por docente, con número de desplazamientos, distancia, otros gastos y verificación](img/dual-gastos-resumen.png)
 
+- **Reuniones de tutorización**: las reuniones que el profesorado ha registrado con el alumnado
+  ([cómo se registran](22-dual-tutoria-docente-y-de-grupo.md#reuniones-de-tutorizacion)). La administración ve todas;
+  la coordinación, las de sus proyectos; la jefatura, las del alumnado de su departamento. Puedes consultarlas, pero
+  solo las modifica quien las registró (o la administración).
+
+  ![Reuniones de tutorización vistas por la administración: la reunión del 09/10/2026 de Marta Jiménez con dos estudiantes del proyecto](img/dual-reuniones.png)
+
 ## Informes {#informes}
 
 La tarjeta **Informes** (solo para administración, coordinación y jefatura) genera los documentos del proyecto en
@@ -215,8 +222,8 @@ PDF. Elige el informe, después el proyecto en el listado, y la aplicación lo g
 
 - **La coordinación y la jefatura solo gestionan su ámbito.** Los proyectos de otras personas o de otras
   enseñanzas, a la administración del centro.
-- **Registrar contactos y desplazamientos** requiere ser docente del curso: la administración del centro, si no
-  está en el profesorado, puede consultarlos y modificarlos pero no registrarlos.
+- **Registrar reuniones, contactos y desplazamientos** requiere ser docente del curso: la administración del
+  centro, si no está en el profesorado, puede consultarlos y modificarlos pero no registrarlos.
 - **Los registros diarios** los hacen las tutorías, el alumnado y la empresa; como gestión puedes consultarlos y
   corregirlos.
 - **Los usuarios del alumnado y del profesorado** se crean al [importarlos](05-importaciones.md).

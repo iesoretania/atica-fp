@@ -95,4 +95,4 @@ Las entradas del módulo, y quién las ve, son estas:
 | **Encuestas** | Encuestas de alumnado, empresa y centro | Según la encuesta (ver el capítulo de cada perfil) |
 | **Informes** | Informes de resultados y encuestas del proyecto | Administración, coordinación y jefatura |
 
-![Menú de FP dual de la administración del centro, con las entradas de proyectos, seguimiento, valoración, resumen de evaluación, contactos, dietas, encuestas e informes](img/dual-inicio-gestion.png)
+![Menú de FP dual de la administración del centro, con las entradas de proyectos, seguimiento, valoración, resumen de evaluación, contactos, dietas, reuniones, encuestas e informes](img/dual-inicio-gestion.png)

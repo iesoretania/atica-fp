@@ -69,6 +69,11 @@ actualizar el manual.
 | Abrir la valoración de actividades de un convenio (consulta o modificación según el perfil) | ✅ | ✅ | ✅ | ✅ | — | ✅ | — | ✅ | — | — |
 | Ver el resumen de evaluación | ✅ | ✅ | ✅ | ✅ | — | ✅ | — | — | — | — |
 | Obtener el informe de resultados de un alumno | ✅ | ✅ | ✅ | ✅ | — | ✅ | — | — | — | — |
+| **Reuniones de tutorización** |  |  |  |  |  |  |  |  |  |  |
+| Ver las reuniones | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | — | — | — | — |
+| Registrar una reunión | — | ✅ | ✅ | ✅ | ✅ | ✅ | — | — | — | — |
+| Editar una reunión | ✅ | ✅ | ✅ | ✅ | — | — | — | — | — | — |
+| Eliminar reuniones | ✅ | — | — | ✅ | — | — | — | — | — | — |
 | **Contactos con empresas** |  |  |  |  |  |  |  |  |  |  |
 | Ver los contactos con empresas | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | — | — | — | — |
 | Registrar un contacto | — | ✅ | ✅ | ✅ | ✅ | ✅ | — | — | — | — |
@@ -121,6 +126,9 @@ actualizar el manual.
   por cualquier docente; la jefatura puede registrar pero no eliminar los de otra persona.
 - **Encuestas.** Los listados solo contienen lo que corresponde a quien los abre. El alumnado ve su encuesta; la
   empresa, la suya; y las tutorías, coordinación y jefatura, las tres. El profesorado del grupo no participa en ninguna.
-- **Reuniones de tutorización.** El informe de reuniones aparece en los informes del proyecto, pero la
-  aplicación no tiene hoy una entrada en el menú para registrar reuniones nuevas.
+- **Reuniones de tutorización.** Solo el profesorado del curso puede registrarlas, así que la administración del
+  centro, si no es docente, no puede. Las modifica o elimina únicamente quien las registró (y la administración
+  del centro): el resto de perfiles que las ven (coordinación, jefatura o tutoría de grupo) las abren en solo
+  lectura, y por eso la tabla marca «Editar» donde se puede abrir la reunión. Las reuniones que ve cada perfil
+  están limitadas a su ámbito: las propias, las de sus proyectos o las de su alumnado.
 - **Módulo desactivado.** Si el módulo FP dual no está activo en el curso, ningún perfil tiene acceso a él.
