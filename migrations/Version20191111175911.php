@@ -16,7 +16,7 @@ class Version20191111175911 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE wlt_project ADD manager_final_survey_id INT DEFAULT NULL, ADD educational_tutor_survey_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE wlt_project ADD CONSTRAINT FK_E4D36E41D7568059 FOREIGN KEY (manager_final_survey_id) REFERENCES survey (id) ON DELETE SET NULL');
@@ -37,7 +37,7 @@ class Version20191111175911 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE wlt_educational_tutor_answered_survey DROP FOREIGN KEY FK_CBD11B7541807E1D');
         $this->addSql('DROP INDEX IDX_CBD11B7541807E1D ON wlt_educational_tutor_answered_survey');

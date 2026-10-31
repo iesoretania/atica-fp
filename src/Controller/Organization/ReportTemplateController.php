@@ -140,7 +140,7 @@ class ReportTemplateController extends AbstractController
             ->from(ReportTemplate::class, 'rt')
             ->orderBy('rt.description');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('rt.description LIKE :tq')
@@ -191,7 +191,7 @@ class ReportTemplateController extends AbstractController
 
         $templates = $reportTemplateRepository->findAllInListByIdAndOrganization($items, $organization);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $reportTemplateRepository->deleteFromList($templates);
 

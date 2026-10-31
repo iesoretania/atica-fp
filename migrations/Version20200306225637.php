@@ -16,7 +16,7 @@ class Version20200306225637 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE wpt_agreement_enrollment ADD work_tutor_id INT NOT NULL, ADD educational_tutor_id INT NOT NULL, ADD company_survey_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE wpt_agreement_enrollment ADD CONSTRAINT FK_A24B4F78F53AEEAD FOREIGN KEY (work_tutor_id) REFERENCES person (id)');
@@ -50,7 +50,7 @@ class Version20200306225637 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE wpt_agreement ADD company_survey_id INT DEFAULT NULL, ADD educational_tutor_id INT NOT NULL, ADD work_tutor_id INT NOT NULL');
         $this->addSql('ALTER TABLE wpt_agreement ADD CONSTRAINT FK_22310F9480E5DA6D FOREIGN KEY (company_survey_id) REFERENCES answered_survey (id) ON DELETE SET NULL');

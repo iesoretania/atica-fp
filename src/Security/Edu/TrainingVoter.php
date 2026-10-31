@@ -28,6 +28,7 @@ use App\Service\UserExtensionService;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 
 class TrainingVoter extends CachedVoter
 {
@@ -58,7 +59,7 @@ class TrainingVoter extends CachedVoter
     /**
      * {@inheritdoc}
      */
-    final public function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+    final public function voteOnAttribute($attribute, $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         if (!$subject instanceof Training) {
             return false;

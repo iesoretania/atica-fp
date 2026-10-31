@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use TFox\MpdfPortBundle\Service\MpdfService;
+use App\Service\MpdfService;
 use Twig\Environment;
 
 #[Route(path: '/fct/informe')]
@@ -97,7 +97,7 @@ class ReportController extends AbstractController
             ->leftJoin('d.head', 'h')
             ->orderBy('s.name');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('gr.name LIKE :tq')

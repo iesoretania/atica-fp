@@ -91,7 +91,7 @@ class ShiftType extends AbstractType
                 'divisor' => 100,
                 'constraints' => [
                     new Positive(),
-                    new LessThanOrEqual(['value' => 1000000, 'message' => 'calendar.hours.max'])
+                    new LessThanOrEqual(value: 1000000, message: 'calendar.hours.max')
                 ],
                 'attr' => [
                     'min' => 0

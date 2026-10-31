@@ -42,7 +42,7 @@ class RequestListener implements EventSubscriberInterface
         $session = $event->getRequest()->getSession();
 
         if (($session->get('organization_id', '') === '') && $event->isMainRequest()) {
-            $route = $event->getRequest()->get('_route');
+            $route = $event->getRequest()->attributes->get('_route');
             if ($route && !str_starts_with((string) $route, 'log') && $route[0] !== '_') {
                 $session->set('_security.organization.target_path', $event->getRequest()->getUri());
                 $event->setResponse(
@@ -59,7 +59,7 @@ class RequestListener implements EventSubscriberInterface
             !$this->token->getToken()->getUser()->getExternalCheck() &&
             !$this->accessDecisionManager->decide($this->token->getToken(), ['IS_IMPERSONATOR'])
         ) {
-            $route = $event->getRequest()->get('_route');
+            $route = $event->getRequest()->attributes->get('_route');
             if ($route && !str_starts_with((string) $route, 'log') && !str_starts_with((string) $route, 'force') && $route[0] !== '_') {
                 $session->set('_security.force_password_change.target_path', $event->getRequest()->getUri());
                 $event->setResponse(

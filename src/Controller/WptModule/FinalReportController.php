@@ -40,7 +40,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use TFox\MpdfPortBundle\Service\MpdfService;
+use App\Service\MpdfService;
 
 #[Route(path: '/fct/informe')]
 class FinalReportController extends AbstractController
@@ -65,7 +65,7 @@ class FinalReportController extends AbstractController
 
         $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_FILL_REPORT, $organization);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */

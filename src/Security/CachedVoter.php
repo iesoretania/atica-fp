@@ -22,6 +22,7 @@ use App\Entity\Person;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 abstract class CachedVoter extends Voter
@@ -34,7 +35,7 @@ abstract class CachedVoter extends Voter
     /**
      * {@inheritdoc}
      */
-    public function vote(TokenInterface $token, $subject, array $attributes): int
+    public function vote(TokenInterface $token, $subject, array $attributes, ?Vote $vote = null): int
     {
         $hash = $subject ? spl_object_hash($subject) . '_' : '';
         $user = $token->getUser();
@@ -43,7 +44,7 @@ abstract class CachedVoter extends Voter
             : md5(($user instanceof Person ? (string) $user->getId() : $user->getUserIdentifier()) . '|' . spl_object_hash($user));
 
         // abstain vote by default in case none of the attributes are supported
-        $vote = self::ACCESS_ABSTAIN;
+        $decision = self::ACCESS_ABSTAIN;
 
         foreach ($attributes as $attribute) {
             if (!$this->supports($attribute, $subject)) {
@@ -64,18 +65,18 @@ abstract class CachedVoter extends Voter
 
             // as soon as at least one attribute is supported, default is to deny access
             // grant access as soon as at least one attribute returns a positive response
-            $vote = $this->voteOnAttribute($attribute, $subject, $token) ? self::ACCESS_GRANTED : self::ACCESS_DENIED;
+            $decision = $this->voteOnAttribute($attribute, $subject, $token, $vote) ? self::ACCESS_GRANTED : self::ACCESS_DENIED;
 
             // write vote on cache
             if ($cachedItem !== null) {
                 $cachedItem->expiresAfter(1);
-                $cachedItem->set($vote);
+                $cachedItem->set($decision);
                 $this->cacheItemPool->save($cachedItem);
             }
-            if ($vote === self::ACCESS_GRANTED) {
-                return $vote;
+            if ($decision === self::ACCESS_GRANTED) {
+                return $decision;
             }
         }
-        return $vote;
+        return $decision;
     }
 }

@@ -68,7 +68,7 @@ class TrainingProgramController extends AbstractController
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         /** @var Person $person */
         $person = $this->getUser();
@@ -243,7 +243,7 @@ class TrainingProgramController extends AbstractController
         }
         $selectedItems = $trainingProgramRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $trainingProgramRepository->deleteFromList($selectedItems);
 

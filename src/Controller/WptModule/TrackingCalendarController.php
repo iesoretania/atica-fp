@@ -46,7 +46,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use TFox\MpdfPortBundle\Service\MpdfService;
+use App\Service\MpdfService;
 use Twig\Environment;
 
 #[Route(path: '/fct/seguimiento/calendario')]
@@ -256,9 +256,9 @@ class TrackingCalendarController extends AbstractController
     ): Response
     {
         $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::ACCESS, $agreementEnrollment);
-        if ($request->get('week_report')) {
-            $year = floor($request->get('week_report') / 100);
-            $week = $request->get('week_report') % 100;
+        if ($request->request->get('week_report')) {
+            $year = floor($request->request->get('week_report') / 100);
+            $week = $request->request->get('week_report') % 100;
             return $this->redirectToRoute(
                 'workplace_training_tracking_calendar_activity_report',
                 ['id' => $agreementEnrollment->getId(), 'year' => $year, 'week' => $week]
@@ -266,13 +266,13 @@ class TrackingCalendarController extends AbstractController
         }
 
         // bloquear jornadas solo corresponde a quien puede bloquear; el tutor laboral solo registra asistencia
-        if ($request->get('lock_week') || $request->get('unlock_week')) {
+        if ($request->request->get('lock_week') || $request->request->get('unlock_week')) {
             $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::LOCK, $agreementEnrollment);
         }
 
-        if ($request->get('lock_week')) {
-            $year = floor($request->get('lock_week') / 100);
-            $week = $request->get('lock_week') % 100;
+        if ($request->request->get('lock_week')) {
+            $year = floor($request->request->get('lock_week') / 100);
+            $week = $request->request->get('lock_week') % 100;
             $trackedWorkDayRepository->updateWeekLock($year, $week, $agreementEnrollment, true);
             return $this->redirectToRoute(
                 'workplace_training_tracking_calendar_list',
@@ -280,9 +280,9 @@ class TrackingCalendarController extends AbstractController
             );
         }
 
-        if ($request->get('unlock_week')) {
-            $year = floor($request->get('unlock_week') / 100);
-            $week = $request->get('unlock_week') % 100;
+        if ($request->request->get('unlock_week')) {
+            $year = floor($request->request->get('unlock_week') / 100);
+            $week = $request->request->get('unlock_week') % 100;
             $trackedWorkDayRepository->updateWeekLock($year, $week, $agreementEnrollment, false);
             return $this->redirectToRoute(
                 'workplace_training_tracking_calendar_list',
@@ -302,8 +302,8 @@ class TrackingCalendarController extends AbstractController
         findInListByWorkDayIdAndAgreementEnrollment($items, $agreementEnrollment);
 
         // comprobar si es bloqueo de jornadas
-        $locked = $request->get('lock') === '';
-        if ($locked || $request->get('unlock') === '') {
+        $locked = $request->request->get('lock') === '';
+        if ($locked || $request->request->get('unlock') === '') {
             $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::LOCK, $agreementEnrollment);
             try {
                 $trackedWorkDayRepository->updateLock($trackedWorkDays, $agreementEnrollment, $locked);
@@ -322,12 +322,12 @@ class TrackingCalendarController extends AbstractController
         $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::ATTENDANCE, $agreementEnrollment);
 
         $updateAttendance = false;
-        if ($request->get('submit-justified') === '') {
+        if ($request->request->get('submit-justified') === '') {
             // marcar en las jornadas que estudiante no ha estado en el centro de trabajo de forma justificada
             $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::LOCK, $agreementEnrollment);
             $value = TrackedWorkDay::JUSTIFIED_ABSENCE;
             $updateAttendance = true;
-        } elseif ($request->get('submit-unjustified') === '') {
+        } elseif ($request->request->get('submit-unjustified') === '') {
             // marcar en las jornadas que estudiante no ha estado en el centro de trabajo
             $this->denyAccessUnlessGranted(AgreementEnrollmentVoter::ATTENDANCE, $agreementEnrollment);
             $value = TrackedWorkDay::UNJUSTIFIED_ABSENCE;
@@ -365,7 +365,7 @@ class TrackingCalendarController extends AbstractController
             'menu_path' => 'workplace_training_tracking_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'type' => $request->get('justified-absence') === '' ? "justified" : "unjustified",
+            'type' => $request->request->get('justified-absence') === '' ? "justified" : "unjustified",
             'agreement' => $agreementEnrollment,
             'items' => $trackedWorkDays
         ]);
@@ -997,12 +997,12 @@ class TrackingCalendarController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        if ($request->get('absence') !== null) {
+        if ($request->request->get('absence') !== null) {
             $this->denyAccessUnlessGranted(
                 AgreementEnrollmentVoter::ATTENDANCE,
                 $trackedWorkDay->getAgreementEnrollment()
             );
-            $absence = (int) $request->get('absence');
+            $absence = (int) $request->request->get('absence');
             if ($absence !== TrackedWorkDay::NO_ABSENCE
                 && $absence !== TrackedWorkDay::JUSTIFIED_ABSENCE
                 && $absence !== TrackedWorkDay::UNJUSTIFIED_ABSENCE) {
@@ -1017,12 +1017,12 @@ class TrackingCalendarController extends AbstractController
             }
             $trackedWorkDay->setAbsence($absence);
         }
-        $trackedWorkDay->setNotes($request->get('notes'));
-        $trackedWorkDay->setOtherActivities($request->get('other_activities'));
-        $trackedWorkDay->setStartTime1($request->get('start_time1'));
-        $trackedWorkDay->setStartTime2($request->get('start_time2'));
-        $trackedWorkDay->setEndTime1($request->get('end_time1'));
-        $trackedWorkDay->setEndTime2($request->get('end_time2'));
+        $trackedWorkDay->setNotes($request->request->get('notes'));
+        $trackedWorkDay->setOtherActivities($request->request->get('other_activities'));
+        $trackedWorkDay->setStartTime1($request->request->get('start_time1'));
+        $trackedWorkDay->setStartTime2($request->request->get('start_time2'));
+        $trackedWorkDay->setEndTime1($request->request->get('end_time1'));
+        $trackedWorkDay->setEndTime2($request->request->get('end_time2'));
 
         // las mismas validaciones que el formulario web (por ejemplo, el formato de las horas de entrada y salida)
         $violations = $validator->validate($trackedWorkDay);
@@ -1067,12 +1067,12 @@ class TrackingCalendarController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        if ($request->get('hours') === null) {
+        if ($request->request->get('hours') === null) {
             throw $this->createAccessDeniedException();
         }
 
         // las horas se envían en centésimas: solo números enteros (el rango lo valida la entidad)
-        if (preg_match('/^-?\d{1,9}$/', (string) $request->get('hours')) !== 1) {
+        if (preg_match('/^-?\d{1,9}$/', (string) $request->request->get('hours')) !== 1) {
             return new JsonResponse(['result' => 'error', 'errors' => ['hours: valor no válido']], Response::HTTP_BAD_REQUEST);
         }
 
@@ -1096,7 +1096,7 @@ class TrackingCalendarController extends AbstractController
         $found = false;
         foreach ($trackedActivities as $trackedActivity) {
             if ($trackedActivity->getActivity() === $activity) {
-                $trackedActivity->setHours((int)$request->get('hours'));
+                $trackedActivity->setHours((int)$request->request->get('hours'));
                 $found = true;
 
                 if (count($validator->validate($trackedActivity)) > 0) {

@@ -103,7 +103,7 @@ class OrganizationController extends AbstractController
             ->from(Organization::class, 'o')
             ->orderBy('o.name');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('o.id = :q')
@@ -198,7 +198,7 @@ class OrganizationController extends AbstractController
     private function processRemoveOrganizations(Request $request, TranslatorInterface $translator, $organizations, ObjectManager $em)
     {
         $redirect = false;
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $this->deleteOrganizations($organizations, $em);
                 $em->flush();

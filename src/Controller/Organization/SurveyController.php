@@ -35,6 +35,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -49,7 +50,7 @@ class SurveyController extends AbstractController
         TranslatorInterface $translator,
         SurveyRepository $surveyRepository,
         ManagerRegistry $managerRegistry,
-        Survey $survey = null
+        #[MapEntity(id: 'id')] ?Survey $survey = null
     ): Response
     {
         $organization = $userExtensionService->getCurrentOrganization();
@@ -142,7 +143,7 @@ class SurveyController extends AbstractController
             ->from(Survey::class, 's')
             ->orderBy('s.title');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('s.title LIKE :tq')
@@ -225,7 +226,7 @@ class SurveyController extends AbstractController
         if ($surveys === []) {
             return $this->redirectToRoute('organization_survey_list');
         }
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $surveyRepository->purgeAnswersFromList($surveys);
 
@@ -265,7 +266,7 @@ class SurveyController extends AbstractController
             return $this->redirectToRoute('organization_survey_list');
         }
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 foreach ($surveys as $survey) {
                     $surveyQuestionRepository->deleteFromSurvey($survey);

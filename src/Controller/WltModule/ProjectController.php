@@ -84,7 +84,7 @@ class ProjectController extends AbstractController
             ->leftJoin('d.head', 'h')
             ->orderBy('p.name');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('p.name LIKE :tq')
@@ -301,7 +301,7 @@ class ProjectController extends AbstractController
             fn(Project $project): bool => $this->isGranted(ProjectVoter::MODIFY, $project)
         ));
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 /** @var Project $selectedItem */
                 foreach ($selectedItems as $selectedItem) {

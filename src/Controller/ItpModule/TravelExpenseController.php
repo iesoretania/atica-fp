@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use TFox\MpdfPortBundle\Service\MpdfService;
+use App\Service\MpdfService;
 use Twig\Environment;
 
 #[Route(path: '/formacion/desplazamiento', name: 'in_company_training_phase_travel_expense_')]
@@ -178,7 +178,7 @@ class TravelExpenseController extends AbstractController
         $allowNew = $this->isGranted(ItpOrganizationVoter::ITP_CREATE_EXPENSE, $organization)
             && $this->isGranted(TravelExpenseVoter::MANAGE, (new TravelExpense())->setTeacher($teacher));
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $qb = $travelExpenseRepository->createStatsByTeacherOrderByDateTimeFilterQueryBuilder($teacher, $q);
 
@@ -235,7 +235,7 @@ class TravelExpenseController extends AbstractController
         $person = $this->getUser();
         assert($person instanceof Person);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $queryBuilder = $travelExpenseRepository->createTeacherTravelExpenseStatsByPersonAndAcademicYearQueryBuilder(
             $academicYear,
@@ -292,7 +292,7 @@ class TravelExpenseController extends AbstractController
             $this->denyAccessUnlessGranted(TravelExpenseVoter::MANAGE, $travelExpense);
         }
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 foreach ($travelExpenses as $travelExpense) {
                     $em->remove($travelExpense);

@@ -55,7 +55,7 @@ class StudentProgramWorkcenterController extends AbstractController
         $programGrade = $programGroup->getProgramGrade();
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         /** @var Person $person */
         $person = $this->getUser();
@@ -253,7 +253,7 @@ class StudentProgramWorkcenterController extends AbstractController
         }
         $selectedItems = $studentProgramWorkcenterRepository->findAllInListByIdAndStudentProgram($items, $studentProgram);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $studentProgramWorkcenterRepository->deleteFromList($selectedItems);
                 $studentProgramWorkcenterRepository->flush();

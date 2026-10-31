@@ -16,7 +16,7 @@ class Version20200308211815 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE wpt_tracked_work_day DROP FOREIGN KEY FK_E7E67EDADAE14AC5');
         $this->addSql('DROP INDEX UNIQ_E7E67EDADAE14AC5A23B8704 ON wpt_tracked_work_day');
@@ -33,7 +33,7 @@ class Version20200308211815 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE wpt_tracked_work_day DROP FOREIGN KEY FK_E7E67EDAA32BEB28');
         $this->addSql('DROP INDEX IDX_E7E67EDAA32BEB28 ON wpt_tracked_work_day');

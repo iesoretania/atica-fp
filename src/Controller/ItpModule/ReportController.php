@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use TFox\MpdfPortBundle\Service\MpdfService;
+use App\Service\MpdfService;
 use Twig\Environment;
 
 #[Route(path: '/formacion/informe', name: 'in_company_training_phase_report')]
@@ -86,13 +86,13 @@ class ReportController extends AbstractController
         $person = $this->getUser();
         assert($person instanceof Person);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $queryBuilder = $trainingProgramRepository->createByManagerQueryBuilder(
             $academicYear,
             $isManager,
             $person,
-            $request->get('q')
+            $request->query->get('q')
         );
 
         $adapter = new QueryAdapter($queryBuilder, false);

@@ -37,7 +37,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use TFox\MpdfPortBundle\Service\MpdfService;
+use App\Service\MpdfService;
 use Twig\Environment;
 
 #[Route(path: '/formacion/seguimiento/calendario')]
@@ -213,9 +213,9 @@ class TrackingCalendarController extends AbstractController
     {
         $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::ACCESS, $studentProgramWorkcenter);
 
-        if ($request->get('week_report')) {
-            $year = floor($request->get('week_report') / 100);
-            $week = $request->get('week_report') % 100;
+        if ($request->request->get('week_report')) {
+            $year = floor($request->request->get('week_report') / 100);
+            $week = $request->request->get('week_report') % 100;
             return $this->redirectToRoute(
                 'in_company_training_phase_tracking_calendar_activity_report',
                 ['studentProgramWorkcenter' => $studentProgramWorkcenter->getId(), 'year' => $year, 'week' => $week]
@@ -223,10 +223,10 @@ class TrackingCalendarController extends AbstractController
         }
 
         // El resto de operaciones requieren permisos de bloqueo o asistencia
-        if ($request->get('lock_week')) {
+        if ($request->request->get('lock_week')) {
             $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::LOCK, $studentProgramWorkcenter);
-            $year = floor($request->get('lock_week') / 100);
-            $week = $request->get('lock_week') % 100;
+            $year = floor($request->request->get('lock_week') / 100);
+            $week = $request->request->get('lock_week') % 100;
             $workDayRepository->updateWeekLock($year, $week, $studentProgramWorkcenter, true);
             return $this->redirectToRoute(
                 'in_company_training_phase_tracking_calendar_list',
@@ -234,10 +234,10 @@ class TrackingCalendarController extends AbstractController
             );
         }
 
-        if ($request->get('unlock_week')) {
+        if ($request->request->get('unlock_week')) {
             $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::LOCK, $studentProgramWorkcenter);
-            $year = floor($request->get('unlock_week') / 100);
-            $week = $request->get('unlock_week') % 100;
+            $year = floor($request->request->get('unlock_week') / 100);
+            $week = $request->request->get('unlock_week') % 100;
             $workDayRepository->updateWeekLock($year, $week, $studentProgramWorkcenter, false);
             return $this->redirectToRoute(
                 'in_company_training_phase_tracking_calendar_list',
@@ -256,8 +256,8 @@ class TrackingCalendarController extends AbstractController
         $workDays = $workDayRepository->findInListByIdAndStudentProgramWorkcenter($items, $studentProgramWorkcenter);
 
         // comprobar si es bloqueo de jornadas
-        $locked = $request->get('lock') === '';
-        if ($locked || $request->get('unlock') === '') {
+        $locked = $request->request->get('lock') === '';
+        if ($locked || $request->request->get('unlock') === '') {
             try {
                 $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::LOCK, $studentProgramWorkcenter);
                 $workDayRepository->updateLock($workDays, $studentProgramWorkcenter, $locked);
@@ -273,12 +273,12 @@ class TrackingCalendarController extends AbstractController
         }
 
         $updateAttendance = false;
-        if ($request->get('submit-justified') === '') {
+        if ($request->request->get('submit-justified') === '') {
             // marcar en las jornadas que estudiante no ha estado en el centro de trabajo de forma justificada
             $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::LOCK, $studentProgramWorkcenter);
             $value = WorkDay::ABSENCE_JUSTIFIED;
             $updateAttendance = true;
-        } elseif ($request->get('submit-unjustified') === '') {
+        } elseif ($request->request->get('submit-unjustified') === '') {
             // marcar en las jornadas que estudiante no ha estado en el centro de trabajo
             $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::ATTENDANCE, $studentProgramWorkcenter);
             $value = WorkDay::ABSENCE_UNJUSTIFIED;
@@ -314,7 +314,7 @@ class TrackingCalendarController extends AbstractController
             'menu_path' => 'in_company_training_phase_tracking_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'type' => $request->get('justified-absence') === '' ? "justified" : "unjustified",
+            'type' => $request->request->get('justified-absence') === '' ? "justified" : "unjustified",
             'student_program_workcenter' => $studentProgramWorkcenter,
             'items' => $workDays
         ]);

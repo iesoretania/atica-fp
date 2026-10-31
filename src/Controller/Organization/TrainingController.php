@@ -34,6 +34,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -47,7 +48,7 @@ class TrainingController extends AbstractController
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
         ManagerRegistry $managerRegistry,
-        Training $training = null
+        #[MapEntity(id: 'id')] ?Training $training = null
     ): Response {
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
@@ -127,7 +128,7 @@ class TrainingController extends AbstractController
             ->from(Training::class, 't')
             ->orderBy('t.name');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('t.name LIKE :tq')
@@ -185,7 +186,7 @@ class TrainingController extends AbstractController
 
         $trainings = $trainingRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $em->createQueryBuilder()
                     ->delete(Training::class, 't')

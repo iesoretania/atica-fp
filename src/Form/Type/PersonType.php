@@ -159,12 +159,12 @@ class PersonType extends AbstractType
                             'required' => false,
                             'mapped' => false,
                             'constraints' => [
-                                new UserPassword([
-                                    'groups' => ['password']
-                                ]),
-                                new NotBlank([
-                                    'groups' => ['password']
-                                ])
+                                new UserPassword(
+                                    groups: ['password']
+                                ),
+                                new NotBlank(
+                                    groups: ['password']
+                                )
                             ]
                         ]);
                 }
@@ -181,14 +181,14 @@ class PersonType extends AbstractType
                         'first_options' => [
                             'label' => 'form.new_password',
                             'constraints' => [
-                                new Length([
-                                    'min' => 8,
-                                    'minMessage' => 'password.min_length',
-                                    'groups' => ['password']
-                                ]),
-                                new NotBlank([
-                                    'groups' => ['password']
-                                ])
+                                new Length(
+                                    min: 8,
+                                    minMessage: 'password.min_length',
+                                    groups: ['password']
+                                ),
+                                new NotBlank(
+                                    groups: ['password']
+                                )
                             ]
                         ],
                         'second_options' => [

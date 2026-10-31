@@ -380,7 +380,7 @@ class SurveyController extends AbstractController
         /** @var Person $person */
         $person = $this->getUser();
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $queryBuilder = $studentAnsweredSurveyRepository->findByAcademicYearAndPersonFilterQueryBuilder(
             $q,
@@ -435,7 +435,7 @@ class SurveyController extends AbstractController
         /** @var Person $person */
         $person = $this->getUser();
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $queryBuilder = $agreementRepository->findByAcademicYearAndPersonFilterQueryBuilder(
             $q,
@@ -500,7 +500,7 @@ class SurveyController extends AbstractController
         /** @var Person $person */
         $person = $this->getUser();
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $queryBuilder = $wltTeacherRepository->findTeachersDataByProjectGroupByProjectAndPersonFilteredQueryBuilder(
             $q,

@@ -142,7 +142,7 @@ class ActivityType extends AbstractType
                     return ['class' => 'lo_' . $e->getLearningOutcome()->getId()];
                 },
                 'constraints' => [
-                    new Count(['min' => 1, 'minMessage' => 'selection.count.invalid.min'])
+                    new Count(min: 1, minMessage: 'selection.count.invalid.min')
                 ],
                 'multiple' => true,
                 'expanded' => true,
@@ -158,7 +158,7 @@ class ActivityType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Activity::class,
             'constraints' => [
-                new UniqueEntity(['fields' => ['code', 'programGrade']])
+                new UniqueEntity(fields: ['code', 'programGrade'])
             ],
             'program_grade' => null,
             'translation_domain' => 'itp_activity'

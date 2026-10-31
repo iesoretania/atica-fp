@@ -394,6 +394,7 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface, \Stri
         return null;
     }
 
+    #[\Deprecated('Symfony 8 ya no exige este método; no hay credenciales temporales que borrar')]
     public function eraseCredentials(): void
     {
     }

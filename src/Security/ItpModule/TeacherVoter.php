@@ -31,6 +31,7 @@ use App\Service\UserExtensionService;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 
 class TeacherVoter extends CachedVoter
 {
@@ -65,7 +66,7 @@ class TeacherVoter extends CachedVoter
     /**
      * {@inheritdoc}
      */
-    final public function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+    final public function voteOnAttribute($attribute, $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         if (!$subject instanceof Teacher) {
             return false;

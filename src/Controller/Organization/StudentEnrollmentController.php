@@ -120,7 +120,7 @@ class StudentEnrollmentController extends AbstractController
             ->innerJoin('g.grade', 'gr')
             ->innerJoin('gr.training', 't');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->andWhere('p.id = :q')
@@ -187,7 +187,7 @@ class StudentEnrollmentController extends AbstractController
 
         $studentEnrollments = $studentEnrollmentRepository->findInListByAcademicYear($items, $academicYear);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $studentEnrollmentRepository->deleteFromList($studentEnrollments);
 

@@ -76,7 +76,7 @@
             <main role="main" class="col-md-12 ml-sm-auto pt-0 px-4">
                 <ol class="breadcrumb d-none d-lg-flex">
                     {% set last_url = "" %}
-                    {% for menu_item in module_extension.pathByRouteName(menu_path|default(app.request.get('_route'))) %}
+                    {% for menu_item in module_extension.pathByRouteName(menu_path|default(app.current_route)) %}
                         <li class="breadcrumb-item">
                         {% if not loop.last or (breadcrumb is defined and breadcrumb) %}{% set last_url = path(menu_item.routeName, menu_item.routeParams) %}<a href="{{ last_url }}" class="breadcrumb-link">{% endif %}
                         {%- if menu_item.icon %}<i class="fa fa-{{ menu_item.icon }}"></i> {% endif -%}

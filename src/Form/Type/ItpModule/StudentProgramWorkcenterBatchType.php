@@ -132,7 +132,7 @@ class StudentProgramWorkcenterBatchType extends AbstractType
                     return $studentEnrollment->__toString();
                 },
                 'constraints' => [
-                    new Count(['min' => 1, 'minMessage' => 'selection.count.invalid.min'])
+                    new Count(min: 1, minMessage: 'selection.count.invalid.min')
                 ],
                 'required' => true
             ])
@@ -213,7 +213,7 @@ class StudentProgramWorkcenterBatchType extends AbstractType
                 },
                 'choice_translation_domain' => false,
                 'constraints' => [
-                    new Count(['min' => 1, 'minMessage' => 'selection.count.invalid.min'])
+                    new Count(min: 1, minMessage: 'selection.count.invalid.min')
                 ],
                 'required' => true
             ]);
@@ -227,7 +227,7 @@ class StudentProgramWorkcenterBatchType extends AbstractType
         $resolver->setDefaults([
             'data_class' => StudentProgramWorkcenter::class,
             'constraints' => [
-                new UniqueEntity(['fields' => ['studentProgram', 'workcenter'], 'message' => 'student_program.enrollment.workcenter.unique'])
+                new UniqueEntity(fields: ['studentProgram', 'workcenter'], message: 'student_program.enrollment.workcenter.unique')
             ],
             'translation_domain' => 'itp_student_program_workcenter',
             'program_group' => null

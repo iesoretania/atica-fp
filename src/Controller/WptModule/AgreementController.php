@@ -46,7 +46,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use TFox\MpdfPortBundle\Service\MpdfService;
+use App\Service\MpdfService;
 use Twig\Environment;
 
 #[Route(path: '/fct/acuerdo')]
@@ -264,7 +264,7 @@ class AgreementController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         $queryBuilder = $agreementEnrollmentRepository->findByShiftAndFilter($shift, $q);
 
         $adapter = new QueryAdapter($queryBuilder, false);
@@ -311,10 +311,10 @@ class AgreementController extends AbstractController
         $items = $request->request->all('items');
 
         if ((is_countable($items) ? count($items) : 0) !== 0) {
-            if ('' === $request->get('delete')) {
+            if ('' === $request->request->get('delete')) {
                 return $this->delete($items, $request, $translator, $agreementRepository, $managerRegistry, $shift);
             }
-            if ('' === $request->get('copy')) {
+            if ('' === $request->request->get('copy')) {
                 return $this->copy($items, $request, $translator, $agreementRepository, $managerRegistry, $shift);
             }
         }
@@ -349,7 +349,7 @@ class AgreementController extends AbstractController
             $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
         }
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $agreementRepository->deleteFromList($agreements);
 

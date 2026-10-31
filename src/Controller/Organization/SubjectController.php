@@ -131,7 +131,7 @@ class SubjectController extends AbstractController
             ->join('g.training', 't')
             ->orderBy('s.name');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('s.name LIKE :tq')
@@ -189,7 +189,7 @@ class SubjectController extends AbstractController
 
         $subjects = $subjectRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $subjectRepository->deleteFromList($subjects);
 

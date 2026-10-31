@@ -201,7 +201,7 @@ class TrackingController extends AbstractController
 
         $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_ACCESS, $organization);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
         /** @var QueryBuilder $queryBuilder */

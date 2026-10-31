@@ -253,7 +253,7 @@ class MeetingController extends AbstractController
             $projects = $projectRepository->findByManager($person);
         }
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         if ($q) {
             $queryBuilder
@@ -344,7 +344,7 @@ class MeetingController extends AbstractController
             $this->denyAccessUnlessGranted(MeetingVoter::MANAGE, $meeting);
         }
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $meetingRepository->deleteFromList($meetings);
 

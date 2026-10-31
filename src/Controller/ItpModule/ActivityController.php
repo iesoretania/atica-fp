@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use TFox\MpdfPortBundle\Service\MpdfService;
+use App\Service\MpdfService;
 use Twig\Environment;
 
 #[Route(path: '/formacion/plan/actividad')]
@@ -66,7 +66,7 @@ class ActivityController extends AbstractController
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         /** @var Person $person */
         $person = $this->getUser();
@@ -224,7 +224,7 @@ class ActivityController extends AbstractController
         }
         $selectedItems = $activityRepository->findAllInListByIdAndProgramGrade($items, $programGrade);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $activityRepository->deleteFromList($selectedItems);
                 $activityRepository->flush();

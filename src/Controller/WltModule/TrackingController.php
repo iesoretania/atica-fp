@@ -95,7 +95,7 @@ class TrackingController extends AbstractController
             ->addOrderBy('a.startDate')
             ->addOrderBy('c.name');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         if ($q) {
             $queryBuilder

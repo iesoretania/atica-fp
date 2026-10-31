@@ -5,6 +5,7 @@ namespace App\Tests\Unit\Security;
 use App\Security\CachedVoter;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 
 class CachedVoterTest extends VoterTestCase
 {
@@ -25,7 +26,7 @@ class CachedVoterTest extends VoterTestCase
                 return $attribute === 'TEST_MANAGE' && $subject instanceof \stdClass;
             }
 
-            protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
+            protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
             {
                 $this->evaluations++;
                 return $token->getUser() === $this->allowedUser;

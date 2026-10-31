@@ -373,7 +373,7 @@ class SurveyController extends AbstractController
         $person = $this->getUser();
         assert($person instanceof Person);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -420,7 +420,7 @@ class SurveyController extends AbstractController
         $person = $this->getUser();
         assert($person instanceof Person);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
@@ -468,7 +468,7 @@ class SurveyController extends AbstractController
         $person = $this->getUser();
         assert($person instanceof Person);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
         $isItpManager = $this->isGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);

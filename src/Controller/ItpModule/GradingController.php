@@ -52,7 +52,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use TFox\MpdfPortBundle\Service\MpdfService;
+use App\Service\MpdfService;
 use Twig\Environment;
 
 #[Route(path: '/formacion/valoracion', name: 'in_company_training_phase_tracking_grading_')]
@@ -78,7 +78,7 @@ class GradingController extends AbstractController
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         $person = $this->getUser();
         assert($person instanceof Person);
 
@@ -392,7 +392,7 @@ class GradingController extends AbstractController
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         $person = $this->getUser();
         assert($person instanceof Person);
 
@@ -439,7 +439,7 @@ class GradingController extends AbstractController
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         $person = $this->getUser();
         assert($person instanceof Person);
 

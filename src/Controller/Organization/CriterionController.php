@@ -129,7 +129,7 @@ class CriterionController extends AbstractController
             ->from(Criterion::class, 'c')
             ->orderBy('c.code');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('c.code LIKE :tq')
@@ -205,7 +205,7 @@ class CriterionController extends AbstractController
 
         $criteria = $criterionRepository->findAllInListByIdAndLearningOutcome($items, $learningOutcome);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $criterionRepository->deleteFromList($criteria);
 

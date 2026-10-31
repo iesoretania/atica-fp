@@ -41,12 +41,12 @@ class ReportTemplateType extends AbstractType
                 'label' => 'form.data',
                 'mapped' => false,
                 'constraints' => [
-                    new File([
-                        'mimeTypes' => [
+                    new File(
+                        mimeTypes: [
                             'application/pdf',
                             'application/x-pdf',
                         ]
-                    ])
+                    )
                 ],
                 'required' => true
             ]);

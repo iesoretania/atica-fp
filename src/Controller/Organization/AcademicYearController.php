@@ -137,7 +137,7 @@ class AcademicYearController extends AbstractController
             ->leftJoin('p.person', 'pp')
             ->orderBy('ay.description', 'DESC');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->andWhere('ay.description LIKE :tq')
@@ -251,7 +251,7 @@ class AcademicYearController extends AbstractController
     private function processRemoveAcademicYear(Request $request, $academicYears, ObjectManager $em, TranslatorInterface $translator)
     {
         $redirect = false;
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $this->deleteAcademicYears($academicYears, $em);
                 $em->flush();

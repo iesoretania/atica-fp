@@ -46,7 +46,7 @@ class PerformanceScaleValueType extends AbstractType
                 'divisor' => 100,
                 'constraints' => [
                     new PositiveOrZero(),
-                    new LessThanOrEqual(['value' => 1000, 'message' => 'grading.max'])
+                    new LessThanOrEqual(value: 1000, message: 'grading.max')
                 ],
                 'required' => true
             ])

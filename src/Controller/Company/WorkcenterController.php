@@ -135,7 +135,7 @@ class WorkcenterController extends AbstractController
             ->orderBy('w.name')
             ->addOrderBy('w.city');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('w.name LIKE :tq')
@@ -204,7 +204,7 @@ class WorkcenterController extends AbstractController
 
         $workCenters = $workcenterRepository->findAllInListByIdAndCompany($items, $company);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $workcenterRepository->deleteFromList($workCenters);
 

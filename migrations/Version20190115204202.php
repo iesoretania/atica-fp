@@ -16,7 +16,7 @@ class Version20190115204202 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('CREATE TABLE edu_teacher (id INT AUTO_INCREMENT NOT NULL, person_id INT NOT NULL, academic_year_id INT NOT NULL, department_id INT DEFAULT NULL, INDEX IDX_89A031C7217BBB47 (person_id), INDEX IDX_89A031C7C54F3401 (academic_year_id), INDEX IDX_89A031C7AE80F5DF (department_id), UNIQUE INDEX UNIQ_89A031C7217BBB47C54F3401 (person_id, academic_year_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE edu_competency (id INT AUTO_INCREMENT NOT NULL, training_id INT NOT NULL, code VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, INDEX IDX_237FAB0BBEFD98D1 (training_id), UNIQUE INDEX UNIQ_237FAB0BBEFD98D177153098 (training_id, code), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
@@ -124,7 +124,7 @@ class Version20190115204202 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE edu_group_tutor DROP FOREIGN KEY FK_78832E9441807E1D');
         $this->addSql('ALTER TABLE edu_teaching DROP FOREIGN KEY FK_EB30486D41807E1D');

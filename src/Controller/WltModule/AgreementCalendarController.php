@@ -121,7 +121,7 @@ class AgreementCalendarController extends AbstractController
                 $calendarAdd->getIgnoreNonWorkingDays()
             );
 
-            if ('' === $request->get('submit', 'none')) {
+            if ('' === $request->request->get('submit', 'none')) {
                 try {
                     $managerRegistry->getManager()->flush();
                     $agreementRepository->updateDates($agreement);
@@ -250,7 +250,7 @@ class AgreementCalendarController extends AbstractController
 
         $workDays = $workDayRepository->findInListByIdAndAgreement($items, $agreement);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $workDayRepository->deleteFromList($workDays);
 

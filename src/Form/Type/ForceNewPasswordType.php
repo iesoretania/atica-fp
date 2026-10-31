@@ -52,10 +52,10 @@ class ForceNewPasswordType extends AbstractType
                 'first_options' => [
                     'label' => 'form.reset.password_new',
                     'constraints' => [
-                        new Length([
-                            'min' => 8,
-                            'minMessage' => 'password.min_length'
-                        ]),
+                        new Length(
+                            min: 8,
+                            minMessage: 'password.min_length'
+                        ),
                         new NotNull()
                     ],
                     'attr' => ['tabindex' => 3, 'autofocus' => ''],

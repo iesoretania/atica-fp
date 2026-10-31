@@ -16,7 +16,7 @@ class Version20200305125141 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('CREATE TABLE wpt_visit (id INT AUTO_INCREMENT NOT NULL, teacher_id INT NOT NULL, workcenter_id INT NOT NULL, date_time DATETIME NOT NULL, detail LONGTEXT DEFAULT NULL, INDEX IDX_BE387B1C41807E1D (teacher_id), INDEX IDX_BE387B1CA2473C4B (workcenter_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE wpt_visit_agreement (visit_id INT NOT NULL, agreement_id INT NOT NULL, INDEX IDX_AFFBB6275FA0FF2 (visit_id), INDEX IDX_AFFBB6224890B2B (agreement_id), PRIMARY KEY(visit_id, agreement_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
@@ -35,7 +35,7 @@ class Version20200305125141 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE wpt_visit_agreement DROP FOREIGN KEY FK_AFFBB6275FA0FF2');
         $this->addSql('ALTER TABLE wpt_visit_student_enrollment DROP FOREIGN KEY FK_3740B2075FA0FF2');

@@ -120,7 +120,7 @@ class PerformanceScaleValueController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted(PerformanceScaleVoter::MANAGE, $performanceScale);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $queryBuilder = $performanceScaleValueRepository->findByPerformanceScaleAndPartialStringQueryBuilder($performanceScale, $q);
 
@@ -176,7 +176,7 @@ class PerformanceScaleValueController extends AbstractController
 
         $grades = $performanceScaleValueRepository->findAllInListByIdAndPerformanceScale($items, $performanceScale);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $performanceScaleValueRepository->deleteFromList($grades);
 

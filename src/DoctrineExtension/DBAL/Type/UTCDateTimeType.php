@@ -6,14 +6,14 @@
 namespace App\DoctrineExtension\DBAL\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\DateTimeType;
+use Doctrine\DBAL\Types\Exception\InvalidFormat;
 
 class UTCDateTimeType extends DateTimeType
 {
     private static ?\DateTimeZone $utc = null;
 
-    final public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
+    final public function convertToDatabaseValue(mixed $value, AbstractPlatform $platform): ?string
     {
         if ($value === null) {
             return null;
@@ -28,7 +28,7 @@ class UTCDateTimeType extends DateTimeType
         return $value->format($platform->getDateTimeFormatString());
     }
 
-    final public function convertToPHPValue($value, AbstractPlatform $platform): mixed
+    final public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?\DateTime
     {
         if ($value === null) {
             return null;
@@ -41,7 +41,7 @@ class UTCDateTimeType extends DateTimeType
         $val = \DateTime::createFromFormat($platform->getDateTimeFormatString(), $value, self::$utc);
 
         if (!$val) {
-            throw ConversionException::conversionFailed($value, $this->getName());
+            throw InvalidFormat::new($value, self::class, $platform->getDateTimeFormatString());
         }
 
         return $val;

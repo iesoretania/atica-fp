@@ -140,7 +140,7 @@ class SurveyQuestionController extends AbstractController
             ->from(SurveyQuestion::class, 'sq')
             ->orderBy('sq.orderNr');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('sq.description LIKE :tq')
@@ -231,7 +231,7 @@ class SurveyQuestionController extends AbstractController
             return $this->redirectToRoute('organization_survey_question_list', ['id' => $survey->getId()]);
         }
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $surveyQuestionRepository->deleteFromList($surveys);
 

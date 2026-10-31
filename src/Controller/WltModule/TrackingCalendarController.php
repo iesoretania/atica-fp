@@ -38,7 +38,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use TFox\MpdfPortBundle\Service\MpdfService;
+use App\Service\MpdfService;
 use Twig\Environment;
 
 #[Route(path: '/dual/seguimiento/calendario')]
@@ -215,9 +215,9 @@ class TrackingCalendarController extends AbstractController
     ): Response
     {
         $this->denyAccessUnlessGranted(AgreementVoter::ACCESS, $agreement);
-        if ($request->get('week_report')) {
-            $year = floor($request->get('week_report') / 100);
-            $week = $request->get('week_report') % 100;
+        if ($request->request->get('week_report')) {
+            $year = floor($request->request->get('week_report') / 100);
+            $week = $request->request->get('week_report') % 100;
             return $this->redirectToRoute(
                 'work_linked_training_tracking_calendar_activity_report',
                 ['id' => $agreement->getId(), 'year' => $year, 'week' => $week]
@@ -225,13 +225,13 @@ class TrackingCalendarController extends AbstractController
         }
 
         // bloquear jornadas solo corresponde a quien puede bloquear; el tutor laboral solo registra asistencia
-        if ($request->get('lock_week') || $request->get('unlock_week')) {
+        if ($request->request->get('lock_week') || $request->request->get('unlock_week')) {
             $this->denyAccessUnlessGranted(AgreementVoter::LOCK, $agreement);
         }
 
-        if ($request->get('lock_week')) {
-            $year = floor($request->get('lock_week') / 100);
-            $week = $request->get('lock_week') % 100;
+        if ($request->request->get('lock_week')) {
+            $year = floor($request->request->get('lock_week') / 100);
+            $week = $request->request->get('lock_week') % 100;
             $workDayRepository->updateWeekLock($year, $week, $agreement, true);
             return $this->redirectToRoute(
                 'work_linked_training_tracking_calendar_list',
@@ -239,9 +239,9 @@ class TrackingCalendarController extends AbstractController
             );
         }
 
-        if ($request->get('unlock_week')) {
-            $year = floor($request->get('unlock_week') / 100);
-            $week = $request->get('unlock_week') % 100;
+        if ($request->request->get('unlock_week')) {
+            $year = floor($request->request->get('unlock_week') / 100);
+            $week = $request->request->get('unlock_week') % 100;
             $workDayRepository->updateWeekLock($year, $week, $agreement, false);
             return $this->redirectToRoute(
                 'work_linked_training_tracking_calendar_list',
@@ -260,8 +260,8 @@ class TrackingCalendarController extends AbstractController
         $workDays = $workDayRepository->findInListByIdAndAgreement($items, $agreement);
 
         // comprobar si es bloqueo de jornadas
-        $locked = $request->get('lock') === '';
-        if ($locked || $request->get('unlock') === '') {
+        $locked = $request->request->get('lock') === '';
+        if ($locked || $request->request->get('unlock') === '') {
             $this->denyAccessUnlessGranted(AgreementVoter::LOCK, $agreement);
             try {
                 $workDayRepository->updateLock($workDays, $agreement, $locked);
@@ -280,7 +280,7 @@ class TrackingCalendarController extends AbstractController
         // marcar en las jornadas que estudiante no ha estado en el centro de trabajo
         $this->denyAccessUnlessGranted(AgreementVoter::ATTENDANCE, $agreement);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $workDayRepository->updateAttendance($workDays, WorkDay::UNJUSTIFIED_ABSENCE);
                 $managerRegistry->getManager()->flush();

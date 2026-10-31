@@ -47,7 +47,7 @@ class WorkDayType extends AbstractType
                 'divisor' => 100,
                 'constraints' => [
                     new Positive(),
-                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.hours.max'])
+                    new LessThanOrEqual(value: 2400, message: 'calendar.hours.max')
                 ],
                 'required' => true
             ])
@@ -86,7 +86,7 @@ class WorkDayType extends AbstractType
             'data_class' => WorkDay::class,
             'translation_domain' => 'calendar',
             'constraints' => [
-                new UniqueEntity(['fields' => ['date', 'studentProgramWorkcenter']])
+                new UniqueEntity(fields: ['date', 'studentProgramWorkcenter'])
             ]
         ]);
     }

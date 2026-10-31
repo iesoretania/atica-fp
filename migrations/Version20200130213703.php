@@ -16,29 +16,29 @@ class Version20200130213703 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $academicYears = $this->connection->createQueryBuilder()
             ->select('ay.id')
             ->addSelect('ay.organization_id')
             ->from('edu_academic_year', 'ay')
-            ->execute()
-            ->fetchAll();
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         foreach ($academicYears as $academicYear) {
             $project = $this->connection->createQueryBuilder()
                 ->select('p.id')
                 ->from('wlt_project', 'p')
                 ->where('p.organization_id = ' . $academicYear['organization_id'])
-                ->execute()
-                ->fetchAll();
+                ->executeQuery()
+                ->fetchAllAssociative();
 
             if ($project !== []) {
                 $this->connection->createQueryBuilder()
                     ->update('wlt_activity_realization_grade', 'arg')
                     ->set('arg.project_id', $project[0]['id'])
                     ->where('arg.academic_year_id = ' . $academicYear['id'])
-                    ->execute();
+                    ->executeStatement();
             }
         }
 
@@ -54,7 +54,7 @@ class Version20200130213703 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
         $this->throwIrreversibleMigrationException("Sorry! Cannot downgrade to 2.0.x");
     }
 }

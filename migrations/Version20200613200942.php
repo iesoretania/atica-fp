@@ -16,7 +16,7 @@ class Version20200613200942 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('DROP TABLE wlt_manager_answered_survey');
         $this->addSql('DROP TABLE wpt_report_audit');
@@ -37,7 +37,7 @@ class Version20200613200942 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('CREATE TABLE wlt_manager_answered_survey (id INT AUTO_INCREMENT NOT NULL, project_id INT NOT NULL, answered_survey_id INT NOT NULL, academic_year_id INT NOT NULL, INDEX IDX_FA50ACDC166D1F9C (project_id), INDEX IDX_FA50ACDCC54F3401 (academic_year_id), INDEX IDX_FA50ACDCA97283E6 (answered_survey_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE wpt_report_audit (agreement_enrollment_id INT NOT NULL, rev INT NOT NULL, work_activities LONGTEXT DEFAULT NULL COLLATE utf8mb4_spanish_ci, professional_competence INT DEFAULT NULL, organizational_competence INT DEFAULT NULL, relational_competence INT DEFAULT NULL, contingency_response INT DEFAULT NULL, other_description1 VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_spanish_ci, other1 INT DEFAULT NULL, other_description2 VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_spanish_ci, other2 INT DEFAULT NULL, proposed_changes LONGTEXT DEFAULT NULL COLLATE utf8mb4_spanish_ci, sign_date DATE DEFAULT NULL, revtype VARCHAR(4) NOT NULL COLLATE utf8mb4_spanish_ci, INDEX rev_fd82d0cd772f0fbe220033a10b2261ae_idx (rev), PRIMARY KEY(agreement_enrollment_id, rev)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');

@@ -75,7 +75,7 @@ class AgreementType extends AbstractType
                 'choices' => $studentEnrollments,
                 'placeholder' => 'form.student_enrollment.none',
                 'constraints' => [
-                    new Count(['min' => 1])
+                    new Count(min: 1)
                 ],
                 'multiple' => true,
                 'expanded' => true,

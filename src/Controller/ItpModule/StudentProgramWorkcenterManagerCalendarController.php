@@ -142,7 +142,7 @@ class StudentProgramWorkcenterManagerCalendarController extends AbstractControll
                 $calendarAdd->getIgnoreNonWorkingDays()
             );
 
-            if ('' === $request->get('submit', 'none')) {
+            if ('' === $request->request->get('submit', 'none')) {
                 try {
                     $workDayRepository->flush();
                     $studentProgramWorkcenterRepository->updateDates($studentProgramWorkcenter);
@@ -289,7 +289,7 @@ class StudentProgramWorkcenterManagerCalendarController extends AbstractControll
 
         $workDays = $workDayRepository->findInListByIdAndStudentProgramWorkcenter($items, $studentProgramWorkcenter);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $workDayRepository->deleteFromList($workDays);
 

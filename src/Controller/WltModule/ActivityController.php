@@ -139,7 +139,7 @@ class ActivityController extends AbstractController
             ->from(Activity::class, 'a')
             ->orderBy('a.code');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('a.code LIKE :tq')
@@ -199,7 +199,7 @@ class ActivityController extends AbstractController
 
         $activities = $activityRepository->findAllInListByIdAndProject($items, $project);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $activityRepository->deleteFromList($activities);
 

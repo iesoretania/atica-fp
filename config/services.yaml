@@ -67,10 +67,10 @@ services:
             tags: [ 'app.organization' ]
 
     App\Service\Module\ModuleService:
-        arguments: [!tagged { tag: 'app.menu' }]
+        arguments: [!tagged_iterator { tag: 'app.menu' }]
 
     App\Service\Organization\OrganizationBuilderChain:
-        arguments: [!tagged { tag: 'app.organization' }]
+        arguments: [!tagged_iterator { tag: 'app.organization' }]
 
     App\Service\MailerService:
         autowire: false

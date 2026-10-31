@@ -42,7 +42,7 @@ class WorkDayType extends AbstractType
             ->add('hours', IntegerType::class, [
                 'label' => 'form.total_hours',
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24, 'notInRangeMessage' => 'calendar.hours.max'])
+                    new Range(min: 0, max: 24, notInRangeMessage: 'calendar.hours.max')
                 ],
                 'attr' => [
                     'min' => 0,

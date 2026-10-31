@@ -53,7 +53,7 @@ class CompanyController extends AbstractController
         assert($programGrade instanceof ProgramGrade);
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         /** @var Person $person */
         $person = $this->getUser();
@@ -197,7 +197,7 @@ class CompanyController extends AbstractController
         }
         $selectedItems = $companyProgramRepository->findAllInListByIdAndProgramGrade($items, $programGrade);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $companyProgramRepository->deleteFromList($selectedItems);
                 $companyProgramRepository->flush();

@@ -131,7 +131,7 @@ class CompanyController extends AbstractController
             ->orderBy('c.name')
             ->addOrderBy('c.city');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('c.code LIKE :tq')
@@ -182,7 +182,7 @@ class CompanyController extends AbstractController
 
         $companies = $companyRepository->findAllInListById($items);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $companyRepository->deleteFromList($companies);
 
@@ -213,7 +213,7 @@ class CompanyController extends AbstractController
         PersonRepository $personRepository,
         TranslatorInterface $translator
     ): Response {
-        $term = $request->get('q');
+        $term = $request->query->get('q');
 
         $organization = $userExtensionService->getCurrentOrganization();
 

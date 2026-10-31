@@ -187,7 +187,7 @@ class ContactController extends AbstractController
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_VISIT, $organization);
         $allowNew = $this->isGranted(ItpOrganizationVoter::ITP_CREATE_VISIT, $organization);
 
-        $mf = $request->get('mf');
+        $mf = $request->query->get('mf');
 
         $methodCollection = [];
         if (null !== $mf) {
@@ -203,7 +203,7 @@ class ContactController extends AbstractController
         $person = $this->getUser();
         assert($person instanceof Person);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $queryBuilder = $contactRepository->createContactQueryBuilder($academicYear, $person, $isManager, $methodCollection, $q);
 
@@ -258,7 +258,7 @@ class ContactController extends AbstractController
             $this->denyAccessUnlessGranted(ContactVoter::MANAGE, $visit);
         }
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 foreach ($visits as $visit) {
                     $contactRepository->remove($visit);

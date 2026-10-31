@@ -116,7 +116,7 @@ class ContactMethodController extends AbstractController
 
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         $queryBuilder = $contactMethodRepository->createFilteredAndByAcademicYearQueryBuilder($academicYear, $q);
 
         $adapter = new QueryAdapter($queryBuilder, false);
@@ -160,7 +160,7 @@ class ContactMethodController extends AbstractController
 
         $contactMethods = $contactMethodRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $contactMethodRepository->deleteFromList($contactMethods);
 

@@ -75,8 +75,8 @@ class NewPersonType extends AbstractType
     {
         $resolver->setDefaults([
             'constraints' => [
-                new UniqueEntity(['fields' => 'uniqueIdentifier']),
-                new UniqueEntity(['fields' => 'emailAddress'])
+                new UniqueEntity(fields: 'uniqueIdentifier'),
+                new UniqueEntity(fields: 'emailAddress')
             ],
             'data_class' => Person::class,
             'translation_domain' => 'person'

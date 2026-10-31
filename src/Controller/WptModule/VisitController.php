@@ -46,7 +46,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use TFox\MpdfPortBundle\Service\MpdfService;
+use App\Service\MpdfService;
 use Twig\Environment;
 
 #[Route(path: '/fct/visita')]
@@ -212,7 +212,7 @@ class VisitController extends AbstractController
             ->leftJoin('se.person', 'sep')
             ->addOrderBy('v.dateTime', 'DESC');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         if ($q) {
             $queryBuilder
@@ -306,7 +306,7 @@ class VisitController extends AbstractController
             ->addOrderBy('p.lastName')
             ->addOrderBy('p.firstName');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         if ($q) {
             $queryBuilder
@@ -366,7 +366,7 @@ class VisitController extends AbstractController
             $this->denyAccessUnlessGranted(VisitVoter::MANAGE, $visit);
         }
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 foreach ($visits as $visit) {
                     $em->remove($visit);

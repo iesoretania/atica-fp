@@ -91,7 +91,7 @@ class EvaluationSummaryController extends AbstractController
             ->addOrderBy('p.firstName')
             ->addOrderBy('g.name');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         if ($q) {
             $queryBuilder

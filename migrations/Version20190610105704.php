@@ -16,7 +16,7 @@ class Version20190610105704 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE edu_training DROP FOREIGN KEY FK_2692AD50F913D1F');
         $this->addSql('DROP INDEX IDX_2692AD50F913D1F ON edu_training');
@@ -33,7 +33,7 @@ class Version20190610105704 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE edu_academic_year DROP FOREIGN KEY FK_CFBE31D0D5F8DFB5');
         $this->addSql('DROP INDEX IDX_CFBE31D0D5F8DFB5 ON edu_academic_year');

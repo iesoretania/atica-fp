@@ -127,7 +127,7 @@ class TravelRouteController extends AbstractController
             ->from(TravelRoute::class, 'tr')
             ->addOrderBy('tr.description', 'ASC');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         if ($q) {
             $queryBuilder
@@ -180,7 +180,7 @@ class TravelRouteController extends AbstractController
 
         $travelRoutes = $travelRouteRepository->findAllInListByIdAndOrganization($items, $organization);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $travelRouteRepository->deleteFromList($travelRoutes);
                 $em->flush();

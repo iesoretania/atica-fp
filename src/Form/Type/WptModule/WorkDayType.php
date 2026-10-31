@@ -46,7 +46,7 @@ class WorkDayType extends AbstractType
                 'divisor' => 100,
                 'constraints' => [
                     new Positive(),
-                    new LessThanOrEqual(['value' => 2400, 'message' => 'calendar.hours.max'])
+                    new LessThanOrEqual(value: 2400, message: 'calendar.hours.max')
                 ],
                 'attr' => [
                     'min' => 0

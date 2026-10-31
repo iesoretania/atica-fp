@@ -59,7 +59,7 @@ class TrackingController extends AbstractController
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         $person = $this->getUser();
         assert($person instanceof Person);
 
@@ -117,7 +117,7 @@ class TrackingController extends AbstractController
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_TRACKING, $organization);
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         $person = $this->getUser();
         assert($person instanceof Person);
 

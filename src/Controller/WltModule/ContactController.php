@@ -52,7 +52,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use TFox\MpdfPortBundle\Service\MpdfService;
+use App\Service\MpdfService;
 use Twig\Environment;
 
 #[Route(path: '/dual/contacto')]
@@ -218,7 +218,7 @@ class ContactController extends AbstractController
         $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_ACCESS_VISIT, $organization);
         $allowNew = $this->isGranted(WltOrganizationVoter::WLT_CREATE_VISIT, $organization);
 
-        $mf = $request->get('mf');
+        $mf = $request->query->get('mf');
 
         $methodCollection = [];
         if (null !== $mf) {
@@ -274,7 +274,7 @@ class ContactController extends AbstractController
             $projects = $projectRepository->findByDepartmentHeadPerson($person);
         }
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         if ($q) {
             $queryBuilder
@@ -377,7 +377,7 @@ class ContactController extends AbstractController
             $this->denyAccessUnlessGranted(ContactVoter::MANAGE, $visit);
         }
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 foreach ($visits as $visit) {
                     $em->remove($visit);
@@ -489,7 +489,7 @@ class ContactController extends AbstractController
             $wltTeacherRepository
         );
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $queryBuilder = $contactRepository
             ->getTeacherStatsByIdAndFilterQueryBuilder($teachers, $q);
@@ -676,7 +676,7 @@ class ContactController extends AbstractController
 
         $workcenters = $contactRepository->findWorkcentersByTeachers($teachers);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $queryBuilder = $contactRepository
             ->getWorkcenterStatsByIdAcademicYearAndFilterQueryBuilder($workcenters, $academicYear, $q);

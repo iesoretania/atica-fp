@@ -43,10 +43,10 @@ class NewPasswordType extends AbstractType
                 'first_options' => [
                     'label' => false,
                     'constraints' => [
-                        new Length([
-                            'min' => 8,
-                            'minMessage' => 'password.min_length'
-                        ]),
+                        new Length(
+                            min: 8,
+                            minMessage: 'password.min_length'
+                        ),
                         new NotNull()
                     ],
                     'attr' => ['tabindex' => 2, 'autofocus' => '', 'placeholder' => 'form.reset.password_new']

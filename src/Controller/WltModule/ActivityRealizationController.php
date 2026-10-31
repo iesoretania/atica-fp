@@ -140,7 +140,7 @@ class ActivityRealizationController extends AbstractController
             ->from(ActivityRealization::class, 'ar')
             ->orderBy('ar.code');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('ar.code LIKE :tq')
@@ -211,7 +211,7 @@ class ActivityRealizationController extends AbstractController
 
         $activityRealizations = $activityRealizationRepository->findAllInListByIdAndActivity($items, $activity);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $activityRealizationRepository->deleteFromList($activityRealizations);
 

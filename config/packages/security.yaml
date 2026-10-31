@@ -14,7 +14,7 @@ security:
     role-hierarchy:
         ROLE_ADMIN: [ROLE_ALLOWED_TO_SWITCH]
 
-    hide_user_not_found: true
+    expose_security_errors: none
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs

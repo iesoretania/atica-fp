@@ -135,7 +135,7 @@ class PerformanceScaleController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         $queryBuilder = $performanceScaleRepository->findByOrganizationAndPartialStringQueryBuilder($organization, $q);
 
@@ -177,7 +177,7 @@ class PerformanceScaleController extends AbstractController
 
         $performanceScales = $performanceScaleRepository->findAllInListByIdAndOrganization($items, $organization);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $performanceScaleRepository->deleteFromList($performanceScales);
 

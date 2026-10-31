@@ -16,7 +16,7 @@ class Version20200304222616 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('CREATE TABLE edu_criterion (id INT AUTO_INCREMENT NOT NULL, learning_outcome_id INT NOT NULL, code VARCHAR(255) NOT NULL, name LONGTEXT NOT NULL, description LONGTEXT DEFAULT NULL, INDEX IDX_6A1D6D1335C2B2D5 (learning_outcome_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE wpt_shift (id INT AUTO_INCREMENT NOT NULL, subject_id INT NOT NULL, student_survey_id INT DEFAULT NULL, company_survey_id INT DEFAULT NULL, educational_tutor_survey_id INT DEFAULT NULL, attendance_report_template_id INT DEFAULT NULL, final_report_template_id INT DEFAULT NULL, weekly_activity_report_template_id INT DEFAULT NULL, name VARCHAR(255) NOT NULL, hours INT NOT NULL, type VARCHAR(255) NOT NULL, quarter INT NOT NULL, INDEX IDX_584DA96023EDC87 (subject_id), INDEX IDX_584DA960D490911D (student_survey_id), INDEX IDX_584DA96080E5DA6D (company_survey_id), INDEX IDX_584DA96068F6798B (educational_tutor_survey_id), INDEX IDX_584DA96013E6472B (attendance_report_template_id), INDEX IDX_584DA96010BDE131 (final_report_template_id), INDEX IDX_584DA9603BBF8EEC (weekly_activity_report_template_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci ENGINE = InnoDB');
@@ -76,7 +76,7 @@ class Version20200304222616 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf(!$this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform, 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE wpt_activity_criterion DROP FOREIGN KEY FK_6E60352697766307');
         $this->addSql('ALTER TABLE wpt_shift_student_enrollment DROP FOREIGN KEY FK_2D53063BB70BC0E');

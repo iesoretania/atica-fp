@@ -137,7 +137,7 @@ class LearningProgramController extends AbstractController
             ->join('cp.company', 'c')
             ->addOrderBy('c.name');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('c.name LIKE :tq')
@@ -195,7 +195,7 @@ class LearningProgramController extends AbstractController
 
         $items = $request->request->all('items');
 
-        if (count($items) !== 0 && '' === $request->get('delete')) {
+        if (count($items) !== 0 && '' === $request->request->get('delete')) {
             return $this->delete($items, $request, $translator, $learningProgramRepository, $managerRegistry, $project);
         }
 
@@ -217,7 +217,7 @@ class LearningProgramController extends AbstractController
 
         $learningPrograms = $learningProgramRepository->findAllInListByIdAndProject($items, $project);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $learningProgramRepository->deleteFromList($learningPrograms);
 

@@ -124,7 +124,7 @@ class GradeController extends AbstractController
             ->orderBy('g.name')
             ->innerJoin('g.training', 't');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('g.name LIKE :tq')
@@ -177,7 +177,7 @@ class GradeController extends AbstractController
 
         $grades = $gradeRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $gradeRepository->deleteFromList($grades);
 

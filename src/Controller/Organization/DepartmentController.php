@@ -125,7 +125,7 @@ class DepartmentController extends AbstractController
             ->from(Department::class, 'd')
             ->orderBy('d.name');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('d.name LIKE :tq')
@@ -177,7 +177,7 @@ class DepartmentController extends AbstractController
 
         $departments = $departmentRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $em->createQueryBuilder()
                     ->delete(Department::class, 'd')

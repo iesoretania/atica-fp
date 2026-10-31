@@ -103,7 +103,7 @@ class MeetingType extends AbstractType
                 'class' => Teacher::class,
                 'choices' => $teachers,
                 'constraints' => [
-                    new Count(['min' => 1])
+                    new Count(min: 1)
                 ],
                 'multiple' => true,
                 'required' => true

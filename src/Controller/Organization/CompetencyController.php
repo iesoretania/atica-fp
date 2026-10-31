@@ -136,7 +136,7 @@ class CompetencyController extends AbstractController
             ->from(Competency::class, 'c')
             ->orderBy('c.code');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('c.code LIKE :tq')
@@ -198,7 +198,7 @@ class CompetencyController extends AbstractController
 
         $competencies = $competencyRepository->findAllInListByIdAndTraining($items, $training);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $competencyRepository->deleteFromList($competencies);
 

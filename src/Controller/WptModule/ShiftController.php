@@ -78,7 +78,7 @@ class ShiftController extends AbstractController
             ->leftJoin('d.head', 'h')
             ->orderBy('s.name');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('s.name LIKE :tq')
@@ -227,7 +227,7 @@ class ShiftController extends AbstractController
             $this->denyAccessUnlessGranted(ShiftVoter::MODIFY, $selectedItem);
         }
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $agreementRepository->deleteFromShifts($selectedItems);
                 $activityRepository->deleteFromShifts($selectedItems);

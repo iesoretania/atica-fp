@@ -133,7 +133,7 @@ class NonWorkingDayController extends AbstractController
             ->from(NonWorkingDay::class, 'n')
             ->orderBy('n.date');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
 
         if ($q) {
             $queryBuilder
@@ -191,7 +191,7 @@ class NonWorkingDayController extends AbstractController
 
         $nonWorkingDays = $nonWorkingDayRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $nonWorkingDayRepository->deleteFromList($nonWorkingDays);
 

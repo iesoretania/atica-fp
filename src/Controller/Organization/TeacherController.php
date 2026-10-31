@@ -176,7 +176,7 @@ class TeacherController extends AbstractController
             ->addOrderBy('p.firstName')
             ->innerJoin('t.person', 'p');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->andWhere('p.id = :q')
@@ -233,7 +233,7 @@ class TeacherController extends AbstractController
 
         $teachers = $teacherRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $em->createQueryBuilder()
                     ->delete(Teacher::class, 't')

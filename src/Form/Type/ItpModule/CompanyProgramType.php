@@ -102,7 +102,7 @@ class CompanyProgramType extends AbstractType
                         return $activity->getCode() . ' - ' . $activity->getName();
                     },
                     'constraints' => [
-                        new Count(['min' => 1, 'minMessage' => 'selection.count.invalid.min'])
+                        new Count(min: 1, minMessage: 'selection.count.invalid.min')
                     ],
                     'multiple' => true,
                     'expanded' => true,
@@ -128,7 +128,7 @@ class CompanyProgramType extends AbstractType
         $resolver->setDefaults([
             'data_class' => CompanyProgram::class,
             'constraints' => [
-                new UniqueEntity(['fields' => ['company', 'programGrade']])
+                new UniqueEntity(fields: ['company', 'programGrade'])
             ],
             'translation_domain' => 'itp_company'
         ]);

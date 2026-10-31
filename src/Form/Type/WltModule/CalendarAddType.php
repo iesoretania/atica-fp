@@ -42,56 +42,56 @@ class CalendarAddType extends AbstractType
             ->add('totalHours', null, [
                 'label' => 'form.total_hours',
                 'constraints' => [
-                    new Range(['min' => 1, 'max' => 3000])
+                    new Range(min: 1, max: 3000)
                 ],
                 'required' => true
             ])
             ->add('hoursMon', null, [
                 'label' => 'form.hours_mon',
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new Range(min: 0, max: 24)
                 ],
                 'required' => true
             ])
             ->add('hoursTue', null, [
                 'label' => 'form.hours_tue',
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new Range(min: 0, max: 24)
                 ],
                 'required' => true
             ])
             ->add('hoursWed', null, [
                 'label' => 'form.hours_wed',
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new Range(min: 0, max: 24)
                 ],
                 'required' => true
             ])
             ->add('hoursThu', null, [
                 'label' => 'form.hours_thu',
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new Range(min: 0, max: 24)
                 ],
                 'required' => true
             ])
             ->add('hoursFri', null, [
                 'label' => 'form.hours_fri',
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new Range(min: 0, max: 24)
                 ],
                 'required' => true
             ])
             ->add('hoursSat', null, [
                 'label' => 'form.hours_sat',
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new Range(min: 0, max: 24)
                 ],
                 'required' => true
             ])
             ->add('hoursSun', null, [
                 'label' => 'form.hours_sun',
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 24])
+                    new Range(min: 0, max: 24)
                 ],
                 'required' => true
             ])

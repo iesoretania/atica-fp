@@ -137,7 +137,7 @@ class LearningOutcomeController extends AbstractController
             ->from(LearningOutcome::class, 'l')
             ->orderBy('l.code');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('l.code LIKE :tq')
@@ -202,7 +202,7 @@ class LearningOutcomeController extends AbstractController
 
         $learningOutcomes = $learningOutcomeRepository->findAllInListByIdAndSubject($items, $subject);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $learningOutcomeRepository->deleteFromList($learningOutcomes);
 

@@ -109,7 +109,7 @@ class UserController extends AbstractController
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('p.id = :q')
@@ -170,7 +170,7 @@ class UserController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $em->createQueryBuilder()
                     ->delete(Person::class, 'p')

@@ -125,7 +125,7 @@ class GroupController extends AbstractController
             ->innerJoin('g.grade', 'gr')
             ->innerJoin('gr.training', 't');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('g.name LIKE :tq')
@@ -178,7 +178,7 @@ class GroupController extends AbstractController
 
         $groups = $groupRepository->findAllInListByIdAndAcademicYear($items, $academicYear);
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $em->createQueryBuilder()
                     ->delete(Group::class, 't')

@@ -218,7 +218,7 @@ class AgreementController extends AbstractController
             ->addOrderBy('a.startDate')
             ->addOrderBy('c.name');
 
-        $q = $request->get('q');
+        $q = $request->query->get('q');
         if ($q) {
             $queryBuilder
                 ->where('g.name LIKE :tq')
@@ -295,10 +295,10 @@ class AgreementController extends AbstractController
         $items = $request->request->all('items');
 
         if (count($items) !== 0) {
-            if ('' === $request->get('delete')) {
+            if ('' === $request->request->get('delete')) {
                 return $this->delete($items, $request, $translator, $agreementRepository, $managerRegistry, $project);
             }
-            if ('' === $request->get('copy')) {
+            if ('' === $request->request->get('copy')) {
                 return $this->copy($items, $request, $translator, $agreementRepository, $managerRegistry, $project);
             }
         }
@@ -326,7 +326,7 @@ class AgreementController extends AbstractController
             $this->denyAccessUnlessGranted(AgreementVoter::MANAGE, $agreement);
         }
 
-        if ($request->get('confirm', '') === 'ok') {
+        if ($request->request->get('confirm', '') === 'ok') {
             try {
                 $agreementRepository->deleteFromList($agreements);
 

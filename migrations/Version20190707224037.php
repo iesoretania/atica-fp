@@ -33,7 +33,8 @@ class Version20190707224037 extends AbstractMigration
             ->join('t', 'edu_academic_year', 'ay', 't.academic_year_id = ay.id')
             ->join('ay', 'organization', 'o', 'ay.organization_id = o.id')
             ->setParameter('status', true)
-            ->execute();
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         // por cada enseñanza y curso académico...
         /** @var Training $workLinkedTraining */
@@ -47,7 +48,8 @@ class Version20190707224037 extends AbstractMigration
                 ->setParameter('organization_id', $workLinkedTraining['organization_id'])
                 ->setParameter('role', Role::ROLE_WLT_MANAGER)
                 ->setMaxResults(1)
-                ->execute();
+                ->executeQuery()
+                ->fetchAllAssociative();
 
             // crear el proyecto
             $startDate = new \DateTime($workLinkedTraining['start_date']);
@@ -82,8 +84,8 @@ class Version20190707224037 extends AbstractMigration
                     ->setParameter('academic_year_id', $workLinkedTraining['academic_year_id'])
                     ->setParameter('person_id', $managerId)
                     ->setMaxResults(1)
-                    ->execute()
-                    ->fetchAll();
+                    ->executeQuery()
+                    ->fetchAllAssociative();
                 $teacherId = $teacher[0]['id'];
                 $teacherAnsweredSurveyId = $teacher[0]['wlt_teacher_survey_id'];
             }
@@ -96,8 +98,8 @@ class Version20190707224037 extends AbstractMigration
                 ->setParameter('organization_id', $workLinkedTraining['organization_id'])
                 ->setParameter('name', $projectName)
                 ->setMaxResults(1)
-                ->execute()
-                ->fetchAll();
+                ->executeQuery()
+                ->fetchAllAssociative();
 
             if ($teacherAnsweredSurveyId) {
                 $this->connection->insert('wlt_educational_tutor_answered_survey', [
@@ -113,13 +115,14 @@ class Version20190707224037 extends AbstractMigration
                 ->join('s', 'edu_grade', 'g', 'g.id = s.grade_id')
                 ->where('g.training_id = :training_id')
                 ->setParameter('training_id', $workLinkedTraining['id'])
-                ->execute();
+                ->executeQuery()
+                ->fetchAllAssociative();
 
             $this->connection->createQueryBuilder()
                 ->update('wlt_learning_program', 'lp')
                 ->set('lp.project_id', $project[0]['id'])
                 ->where('lp.training_id = ' . $workLinkedTraining['id'])
-                ->execute();
+                ->executeStatement();
 
             foreach ($subjects as $subject) {
                 $this->connection->createQueryBuilder()
@@ -127,7 +130,7 @@ class Version20190707224037 extends AbstractMigration
                     ->set('a.project_id', $project[0]['id'])
                     ->where('a.subject_id = :subject_id')
                     ->setParameter('subject_id', $subject['id'])
-                    ->execute();
+                    ->executeStatement();
             }
 
             // buscar acuerdos de colaboración y añadirles el proyecto tutor/a de seguimiento
@@ -139,7 +142,8 @@ class Version20190707224037 extends AbstractMigration
                 ->join('g', 'edu_grade', 'gr', 'g.grade_id = gr.id')
                 ->where('gr.training_id = :training_id')
                 ->setParameter('training_id', $workLinkedTraining['id'])
-                ->execute();
+                ->executeQuery()
+                ->fetchAllAssociative();
 
             foreach ($students as $student) {
                 $rows = $this->connection->createQueryBuilder()
@@ -147,7 +151,7 @@ class Version20190707224037 extends AbstractMigration
                     ->set('a.educational_tutor_id', $teacherId)
                     ->set('a.project_id', $project[0]['id'])
                     ->where('a.student_enrollment_id = ' . $student['id'])
-                    ->execute();
+                    ->executeStatement();
 
                 if ($rows > 0) {
 
@@ -156,7 +160,7 @@ class Version20190707224037 extends AbstractMigration
                         ->update('wlt_meeting', 'm')
                         ->set('m.project_id', $project[0]['id'])
                         ->where('m.id IN (SELECT mse.meeting_id FROM wlt_meeting_student_enrollment mse WHERE mse.student_enrollment_id = ' . $student['id'] . ')')
-                        ->execute();
+                        ->executeStatement();
 
                     $this->connection->insert('wlt_project_student_enrollment', [
                         'project_id' => $project[0]['id'],
@@ -170,7 +174,7 @@ class Version20190707224037 extends AbstractMigration
                         ->andWhere('pg.group_id = :group_id')
                         ->setParameter('project_id', $project[0]['id'])
                         ->setParameter('group_id', $student['group_id'])
-                        ->execute()->fetch()
+                        ->executeQuery()->fetchAssociative()
                     ) {
                         $this->connection->insert('wlt_project_group', [
                             'project_id' => $project[0]['id'],
