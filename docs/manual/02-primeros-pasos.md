@@ -61,8 +61,8 @@ Los apartados posibles son:
 | --- | --- | --- |
 | **Administración** | Gestionar los centros y los usuarios de toda la plataforma | Administración de la plataforma ([capítulo 8](08-administrar-la-plataforma.md)) |
 | **Gestión del centro** | Profesorado, alumnado, grupos, enseñanzas, importaciones... | Administración del centro; el responsable económico, solo sus itinerarios ([capítulo 4](04-administrar-el-centro.md)) |
-| **Empresas colaboradoras** | Empresas y sus centros de trabajo | Administración del centro, jefaturas de departamento, coordinación de FP dual y gestión de la FFE ([capítulo 6](06-empresas-y-centros-de-trabajo.md)) |
-| **FCT**, **FP dual**, **FFE** | Cada módulo de formación en empresa | Quien interviene en ese módulo; solo si el módulo está activo en el curso |
+| **Empresas colaboradoras** | Empresas y sus centros de trabajo | Administración del centro, jefaturas de departamento, coordinación de FP dual y gestión de la FFEOE ([capítulo 6](06-empresas-y-centros-de-trabajo.md)) |
+| **FCT**, **FP dual**, **FFEOE** | Cada módulo de formación en empresa | Quien interviene en ese módulo; solo si el módulo está activo en el curso |
 | **Datos personales** | Tus datos y tu contraseña | Todo el mundo |
 
 Cada página muestra arriba una **ruta de navegación** (por ejemplo, «I.E.S. Ada Lovelace › Gestión

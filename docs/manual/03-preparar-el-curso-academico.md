@@ -12,7 +12,7 @@ Todo lo que se explica aquí está en **Gestión del centro → Cursos académic
 Un centro puede tener varios cursos (el actual y los anteriores), pero **siempre hay uno activo**: el
 que ven todas las personas por defecto al entrar. Los anteriores siguen disponibles para consultarlos.
 
-![Listado de cursos académicos con el 2026-2027: director, secretaria, etiquetas de los módulos activos (FFE, Dual, FCT), el botón «Copiar desde otro curso» y la marca de curso activado](img/preparar-curso-listado.png)
+![Listado de cursos académicos con el 2026-2027: director, secretaria, etiquetas de los módulos activos (FFEOE, Dual, FCT), el botón «Copiar desde otro curso» y la marca de curso activado](img/preparar-curso-listado.png)
 
 En el listado ves, por cada curso, quién es la dirección y la secretaría, qué módulos tiene activos y si
 es el activo. Con **Crear nuevo curso académico** añades uno; para convertir otro en el activo, pulsa
@@ -33,7 +33,7 @@ Pulsa en el nombre del curso para editarlo.
 - **Secretario/a**: es la persona que actúa como **responsable económico** del centro. Quien
   se elija aquí podrá consultar y verificar los itinerarios y los gastos de desplazamiento del
   profesorado en los tres módulos. Es el único sitio donde se asigna ese perfil, y cambia con cada curso.
-- **Módulos activos**: marca **FCT**, **FP dual** y **FFE** (Formación en centros de trabajo,
+- **Módulos activos**: marca **FCT**, **FP dual** y **FFEOE** (Formación en centros de trabajo,
   Formación profesional dual y Formación en empresa) según los que vaya a usar el centro este curso. Un
   módulo desactivado desaparece del menú de todo el mundo.
 - **Plantillas predeterminadas vertical y apaisado**: la plantilla de PDF que se usará como fondo de los
@@ -83,7 +83,7 @@ Los datos de un curso dependen unos de otros, así que importa el orden. El que 
    que necesites ([Administrar el centro](04-administrar-el-centro.md#administracion-local)).
 10. **Revisa las empresas** y centros de trabajo que se van a usar
     ([Empresas y centros de trabajo](06-empresas-y-centros-de-trabajo.md)).
-11. **Prepara cada módulo**: ya pueden empezar quienes gestionan FCT, FP dual y FFE (partes B, C y D de
+11. **Prepara cada módulo**: ya pueden empezar quienes gestionan FCT, FP dual y FFEOE (partes B, C y D de
     este manual).
 
 ![Inicio de «Gestión del centro»: una tarjeta por apartado (profesorado, matrículas, grupos, niveles, enseñanzas, materias, familias profesionales, cursos, días no lectivos...)](img/preparar-curso-inicio-centro.png)

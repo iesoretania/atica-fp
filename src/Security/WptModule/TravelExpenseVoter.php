@@ -102,8 +102,10 @@ class TravelExpenseVoter extends CachedVoter
         switch ($attribute) {
             case self::MANAGE:
                 // El propio docente puede gestionar su visita si es del curso académico actual
-                return $subject->getTeacher()->getPerson() === $user
-                    && $subject->getTeacher()->getAcademicYear() === $organization->getCurrentAcademicYear();
+                // el propio docente y la jefatura de departamento, sobre los gastos de cualquier docente del curso actual
+                return $subject->getTeacher()->getAcademicYear() === $organization->getCurrentAcademicYear()
+                    && ($subject->getTeacher()->getPerson() === $user
+                        || $this->decisionManager->decide($token, [\App\Security\WptModule\OrganizationVoter::WPT_MANAGER], $organization));
             case self::ACCESS:
                 // Puede acceder a los datos de la visita el propio docente
                 if ($subject->getTeacher()->getPerson() === $user) {

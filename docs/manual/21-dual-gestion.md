@@ -54,8 +54,9 @@ llevan a las partes del proyecto: **Programa formativo** (las actividades), **Em
   los estudiantes de esos grupos.
 - **Bloqueo del proyecto**: con el bloqueo activado, el proyecto queda **cerrado**: los convenios, las jornadas,
   las valoraciones y las encuestas dejan de poder modificarse (también por la coordinación y las tutorías). Solo
-  la administración del centro puede seguir cambiándolos. Úsalo cuando el proyecto ha terminado y está todo
-  revisado.
+  la administración del centro puede seguir cambiándolos. Tampoco puede abrir ya el proyecto, su programa
+  formativo ni sus empresas la **jefatura de departamento** (recibe un error de acceso denegado): solo la
+  administración y la coordinación del proyecto. Úsalo cuando el proyecto ha terminado y está todo revisado.
 - **Plantillas de informe** de asistencia y de informe semanal de actividades: el
   [papel con membrete](07-encuestas-y-plantillas-de-informe.md#plantillas-de-informe) de esos PDF.
 - **Escala de valoración del desempeño**: los niveles con que se valorará cada concreción

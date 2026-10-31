@@ -1,4 +1,4 @@
-# FFE: permisos
+# FFEOE: permisos
 
 Este capítulo es para **todo el mundo**: resume qué puede hacer cada perfil en el módulo de formación en empresa. Igual
 que las demás matrices, **no está escrita de memoria**: cada versión de la aplicación se prueba entrando con un usuario
@@ -21,7 +21,7 @@ actualizar el manual.
 | --- | --- |
 | **Administración del centro** | Administración local del centro ([capítulo 4](04-administrar-el-centro.md#administracion-local)) |
 | **Jefatura de departamento** | Jefatura del departamento al que pertenece la enseñanza del plan |
-| **Gestión de la FFE** | Docente designado como tutoría dual de algún grupo del plan |
+| **Gestión de la FFEOE** | Docente designado como tutoría dual de algún grupo del plan |
 | **Tutoría de grupo** | Tutor o tutora del grupo del estudiante de la estancia, sin ser responsable de su seguimiento. En la prueba es además responsable de seguimiento de **otra** estancia, por eso la tabla le da visitas y desplazamientos; una tutoría de grupo que no es responsable de seguimiento de ninguna estancia no los tiene |
 | **Tutoría docente de la estancia** | Docente responsable del seguimiento de la estancia |
 | **Profesorado del grupo** | Docente que da clase al grupo del estudiante y no tiene otro cargo |
@@ -33,7 +33,7 @@ actualizar el manual.
 
 ## Matriz de permisos
 
-| Puede... | Administración del centro | Jefatura de departamento | Gestión de la FFE | Tutoría de grupo | Tutoría docente de la estancia | Profesorado del grupo | Alumnado de la estancia | Tutoría laboral de la estancia | Tutoría laboral de otra estancia | Responsable económico | Resto del personal |
+| Puede... | Administración del centro | Jefatura de departamento | Gestión de la FFEOE | Tutoría de grupo | Tutoría docente de la estancia | Profesorado del grupo | Alumnado de la estancia | Tutoría laboral de la estancia | Tutoría laboral de otra estancia | Responsable económico | Resto del personal |
 | --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 | **Planes de formación** |  |  |  |  |  |  |  |  |  |  |  |
 | Ver el listado de planes de formación | ✅ | ✅ | ✅ | — | — | — | — | — | — | — | — |
@@ -92,7 +92,7 @@ actualizar el manual.
 | **Gastos de desplazamiento** |  |  |  |  |  |  |  |  |  |  |  |
 | Ver el resumen de gastos del profesorado | ✅ | ✅ | ✅ | ✅ | ✅ | — | — | — | — | ✅ | — |
 | Ver los gastos de un docente | ✅ | ✅ | ✅ | ✅ | ✅ | — | — | — | — | ✅ | — |
-| Registrar un gasto | ✅ | ✅ | ✅ | ✅ | ✅ | — | — | — | — | — | — |
+| Registrar un gasto | ✅ | ✅ | ✅ | — | ✅ | — | — | — | — | ✅ | — |
 | Editar un gasto | ✅ | ✅ | ✅ | ✅ | ✅ | — | — | — | — | ✅ | — |
 | Descargar el informe de gastos | ✅ | ✅ | ✅ | ✅ | ✅ | — | — | — | — | ✅ | — |
 | Eliminar gastos | ✅ | ✅ | ✅ | — | ✅ | — | — | — | — | ✅ | — |
@@ -113,30 +113,31 @@ actualizar el manual.
 
 ## Matices
 
-- **Gestión.** La administración del centro gestiona todos los planes. **La jefatura y la gestión de la FFE** gestionan
+- **Gestión.** La administración del centro gestiona todos los planes. **La jefatura y la gestión de la FFEOE** gestionan
   solo los de su departamento o de los grupos que tienen a su cargo: la tabla mide el caso en que el plan es suyo.
 - **Seguimiento y calendario.** Los listados solo contienen las estancias que corresponden a quien los abre. El
   profesorado que solo da clase no ve el seguimiento. La tutoría laboral de otra estancia ve su propio listado, pero no el
   calendario de la estancia de la tabla.
 - **Jornadas.** Las pueden **modificar** el alumnado, la tutoría laboral, el responsable de seguimiento, la tutoría de
-  grupo, la gestión de la FFE, la jefatura y la administración. Una jornada bloqueada solo la modifican los tutores y
+  grupo, la gestión de la FFEOE, la jefatura y la administración. Una jornada bloqueada solo la modifican los tutores y
   los perfiles de gestión.
 - **Valoración.** «Abrir la valoración» es **consulta y modificación** para quien la ve. El alumnado no la ve y el
   profesorado del grupo solo ve el resumen de evaluación.
 - **Resumen de evaluación.** El profesorado del grupo ve las estancias de los grupos en los que da clase; la tutoría
   laboral y el alumnado no la ven.
-- **Visitas.** Las **modifican** quien las registró y la administración del centro, y las **eliminan** además la
-  **jefatura de departamento**, que las abre con el formulario activo aunque el desplegable «Docente» solo la ofrezca a
-  ella. La gestión de la FFE y la tutoría de grupo las abren en **solo lectura** (por eso la tabla marca ✅ en «Editar
+- **Visitas.** Las **modifican y eliminan** quien las registró, la **jefatura de departamento** y la administración del
+  centro (la jefatura ve en el desplegable «Docente» al docente que la registró). La gestión de la FFEOE y la tutoría de grupo las abren en **solo lectura** (por eso la tabla marca ✅ en «Editar
   una visita» donde basta con poder abrirla, pero «—» en «Eliminar visitas» para ellas). La administración del centro no puede
   **registrar** visitas ni desplazamientos si no es profesorado del curso, y por eso marca «—» en «Registrar una visita».
-- **Gastos.** Cada docente registra y elimina los suyos. La administración, la jefatura y la gestión de la FFE pueden
-  **corregir y eliminar los de cualquier docente** (en la FCT y la FP dual la jefatura no puede eliminarlos); la tutoría
-  de grupo los abre en solo lectura. El responsable económico puede corregirlos y eliminarlos, pero **no registrarlos**
-  en nombre del profesorado.
+- **Gastos.** Cada docente registra y elimina los suyos. La administración, la jefatura, la gestión de la FFEOE y el
+  responsable económico pueden **registrar, corregir y eliminar los de cualquier docente**; las demás personas, incluida
+  la tutoría de grupo, solo gestionan los suyos y abren los ajenos en solo lectura (la tabla mide los gastos del docente
+  responsable de la estancia).
 - **Encuestas.** Los listados solo contienen lo que corresponde a quien los abre. El alumnado ve su encuesta; la
   tutoría laboral, la suya; y las tutorías, la jefatura, la gestión y la administración, las tres. El profesorado del grupo
   no participa en ninguna. A diferencia de otras modalidades, no tienen fechas de apertura y cierre.
-- **Bloqueo del plan.** El campo «Plan de formación bloqueado» solo marca el plan con un candado: no restringe ninguna de
-  las acciones de la tabla.
+- **Bloqueo del plan.** Con «Plan de formación bloqueado» activado, solo la administración del centro puede gestionarlo:
+  la jefatura y la gestión de la FFEOE reciben un error de acceso denegado en todas las pantallas de **Planes de
+  formación** (plan, cursos, grupos, actividades, empresas, alumnado y estancias) hasta que la administración lo
+  desbloquee. El seguimiento, la valoración y las encuestas de las estancias no cambian.
 - **Módulo desactivado.** Si el módulo Formación en empresa no está activo en el curso, ningún perfil tiene acceso a él.

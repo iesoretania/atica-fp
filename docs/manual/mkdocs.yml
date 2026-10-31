@@ -1,5 +1,5 @@
 site_name: Manual de usuario de ÁTICA FP
-site_description: Gestión de la formación en centros de trabajo (FCT, FP dual y FFE)
+site_description: Gestión de la formación en centros de trabajo (FCT, FP dual y FFEOE)
 # Sustituye por la URL real una vez publicada la web del manual.
 site_url: https://iesoretania.github.io/atica-fp/
 # Versión y fecha del release en el pie de la web. Fuente única: config/services.yaml.
@@ -83,7 +83,7 @@ nav:
       - 25-dual-tutoria-laboral.md
       - 26-dual-responsable-economico.md
       - 27-dual-permisos.md
-  - FFE (Formación en empresa):
+  - FFEOE(Formación en empresa):
       - 30-ffe-vision-general.md
       - 31-ffe-gestion.md
       - 32-ffe-tutoria-docente-y-de-grupo.md

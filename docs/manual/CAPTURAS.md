@@ -118,14 +118,14 @@ La fuente es `LoadManualDataCommand::PROFILES`; `scripts/screenshots/lib.mjs` (`
 | Jefatura de departamento (Informática) | `jefatura` | `rcabrera` | Ramón Cabrera Soler |
 | Tutoría docente y de grupo (2º DAM A) | `tutoria` | `mjimenez` | Marta Jiménez Aranda |
 | Profesorado | `profesorado` | `jbarrios` | Julián Barrios Cortés |
-| Profesorado que solo da clase en 2º DAM A (evalúa en FP dual y FFE) | `docenteGrupo` | `jcortes` | Julia Cortés Ramos |
+| Profesorado que solo da clase en 2º DAM A (evalúa en FP dual y FFEOE) | `docenteGrupo` | `jcortes` | Julia Cortés Ramos |
 | Coordinación de FP dual | `coordinacion` | `esalas` | Elena Salas Quintana |
-| Gestión de la FFE | `gestorFfe` | `therrero` | Tomás Herrero Lara |
+| Gestión de la FFEOE | `gestorFfe` | `therrero` | Tomás Herrero Lara |
 | Tutoría laboral (Tecnologías del Sur) | `tutoriaLaboral` | `snavarro` | Sergio Navarro Gil |
 | Tutoría laboral (Consultoría del Norte) | `tutoriaLaboral2` | `pduran` | Patricia Durán Vela |
 | Alumnado con acuerdo de FCT | `alumnoFct` | `dfernandez` | Daniel Fernández Ortiz |
 | Alumnado con acuerdo de FP dual | `alumnoDual` | `apastor` | Alejandro Pastor Vega |
-| Alumnado con estancia de FFE | `alumnoFfe` | `aibanez` | Adrián Ibáñez Mora |
+| Alumnado con estancia de FFEOE | `alumnoFfe` | `aibanez` | Adrián Ibáñez Mora |
 
 El resto del profesorado (9 docentes) y del alumnado (34 estudiantes, 14 en 2º DAM A y 20 en 1º DAM A) son
 datos de relleno sin acuerdos, útiles para mostrar listas con contenido y para crear acuerdos nuevos.
@@ -145,7 +145,7 @@ datos de relleno sin acuerdos, útiles para mostrar listas con contenido y para 
 | `capture-fct.mjs` | `fct-*` de la administración (`fct-inicio-gestion`, convocatorias, actividades, acuerdos, calendario, seguimiento, informes, visitas y gastos), de la jefatura, la tutoría docente (`fct-tutoria-*`, `fct-jornada-*`), el alumnado (`fct-alumnado-*`), la tutoría laboral (`fct-laboral-*`) y el responsable económico (`fct-economico-*`) | `10` a `16` | No |
 | `capture-dual.mjs` | `dual-*` de la administración (proyectos, alumnado adherido, actividades, concreciones, empresas, convenios, calendario, seguimiento, valoración, resumen, contactos, gastos, reuniones de tutorización e informes), de la coordinación y la jefatura, la tutoría docente y de grupo (`dual-tutoria-*`, `dual-jornada-*`, `dual-evaluacion-*`), el profesorado del grupo (`dual-docente-*`), el alumnado (`dual-alumnado-*`), la tutoría laboral (`dual-laboral-*`) y el responsable económico (`dual-economico-*`) | `20` a `27` | No |
 
-| `capture-ffe.mjs` | `ffe-*` de la administración (planes, cursos, grupos, actividades, empresas, alumnado, estancias, calendarios, resumen de evaluación, seguimiento, contactos, gastos e informes), la gestión de la FFE y la jefatura, la tutoría docente y de grupo (`ffe-tutoria-*`, `ffe-jornada-*`, `ffe-valoracion-*`), el responsable de seguimiento, el profesorado del grupo (`ffe-docente-*`), el alumnado (`ffe-alumnado-*`), la tutoría laboral (`ffe-laboral-*`) y el responsable económico (`ffe-economico-*`) | `30` a `37` | No |
+| `capture-ffe.mjs` | `ffe-*` de la administración (planes, cursos, grupos, actividades, empresas, alumnado, estancias, calendarios, resumen de evaluación, seguimiento, contactos, gastos e informes), la gestión de la FFEOE y la jefatura, la tutoría docente y de grupo (`ffe-tutoria-*`, `ffe-jornada-*`, `ffe-valoracion-*`), el responsable de seguimiento, el profesorado del grupo (`ffe-docente-*`), el alumnado (`ffe-alumnado-*`), la tutoría laboral (`ffe-laboral-*`) y el responsable económico (`ffe-economico-*`) | `30` a `37` | No |
 
 Cada script nuevo se anota aquí al crearlo.
 
@@ -158,6 +158,6 @@ entra en el plan con su convenio (FFE-002); el plan usa las tres encuestas del c
 de «hoy» están confirmadas y Sara tiene una falta justificada y otra injustificada.
 
 Los datos tienen una sola enseñanza (CFGS DAM), una convocatoria de FCT, un proyecto de FP dual y un
-programa de FFE. Es suficiente para el recorrido de cada perfil, pero cuando un capítulo necesite variedad
+programa de FFEOE. Es suficiente para el recorrido de cada perfil, pero cuando un capítulo necesite variedad
 (varias convocatorias, una bloqueada, un gasto sin verificar, un proyecto cerrado...) se añade al comando y
 se registra en este fichero, en la fase del módulo correspondiente (ver `PLAN.md`).

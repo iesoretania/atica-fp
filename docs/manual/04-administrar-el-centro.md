@@ -138,14 +138,14 @@ quién las imparte.
 ![Ficha de una materia: nivel, nombre, abreviatura y código Séneca](img/centro-materia-ficha.png)
 
 !!! note "Quién da clase a quién"
-    En FP dual y en la FFE, **quien da clase a un grupo** puede evaluar a su alumnado y consultar sus
+    En FP dual y en la FFEOE, **quien da clase a un grupo** puede evaluar a su alumnado y consultar sus
     informes. Esa información sale de aquí, de la docencia de cada materia: si falta, un docente no podrá
     evaluar a sus estudiantes.
 
 ### Resultados de aprendizaje y criterios de evaluación {#resultados-de-aprendizaje-y-criterios-de-evaluacion}
 
 El botón **Resultados de aprendizaje** de cada materia abre su lista; cada resultado tiene a su vez sus
-**criterios de evaluación**. Son el catálogo sobre el que se evalúa en FP dual y en la FFE.
+**criterios de evaluación**. Son el catálogo sobre el que se evalúa en FP dual y en la FFEOE.
 
 ![Resultados de aprendizaje de la materia Programación: la lista con RA1, el botón «Criterios de evaluación» y debajo la importación masiva por texto](img/centro-resultados.png)
 

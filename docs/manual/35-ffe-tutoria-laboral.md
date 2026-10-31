@@ -1,4 +1,4 @@
-# FFE: tutoría laboral
+# FFEOE: tutoría laboral
 
 Este capítulo es para la **persona de la empresa que tutoriza al alumnado** de formación en empresa: el **tutor o tutora
 dual de empresa** de la estancia (en el resto del manual, la tutoría laboral). Explica lo que el centro educativo te
@@ -85,6 +85,6 @@ contestado.
 ## Qué no puedes hacer y a quién pedirlo
 
 - **Cambiar jornadas bloqueadas, el calendario o las actividades de la estancia**: es cosa del responsable de seguimiento
-  o de la gestión de la FFE.
+  o de la gestión de la FFEOE.
 - **Ver estancias de otros tutores**: solo ves las tuyas.
 - **Valorar a un estudiante que no tienes asignado**: pide al centro que te dé de alta como tutor dual en esa estancia.

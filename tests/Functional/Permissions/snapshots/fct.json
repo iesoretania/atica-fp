@@ -526,7 +526,7 @@
                     "request": "POST /fct/desplazamiento/eliminar/{teacher} items[]={expense}",
                     "allowed": {
                         "admin": true,
-                        "jefe": false,
+                        "jefe": true,
                         "tutor": true,
                         "otro-tutor": false,
                         "alumno": false,

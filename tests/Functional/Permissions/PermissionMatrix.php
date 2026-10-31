@@ -23,8 +23,8 @@ namespace App\Tests\Functional\Permissions;
  *   {teacher}     docente «tutor», responsable de seguimiento del alumno 1
  *   {visit}       visita de ese docente
  *   {expense}     gasto de desplazamiento de ese docente
- *   {workTutor}   tutor laboral del acuerdo (y de la estancia de FFE)
- *   {stay}        estancia de FFE del alumno 7; {studentProgram}, {workDay} y el resto de marcadores de FFE
+ *   {workTutor}   tutor laboral del acuerdo (y de la estancia de FFEOE)
+ *   {stay}        estancia de FFEOE del alumno 7; {studentProgram}, {workDay} y el resto de marcadores de FFEOE
  *                 («{programGrade}», «{programGroup}», «{itpActivity}», «{companyProgram}», «{itpTeacher}»,
  *                 «{itpContact}», «{itpExpense}», «{trainingProgram}») salen de la misma estancia y su programa
  *
@@ -122,7 +122,7 @@ final class PermissionMatrix
                     'economico' => ['label' => 'Responsable económico', 'user' => 'alfa.economico'],
                     'jefe' => ['label' => 'Jefatura de departamento', 'user' => 'alfa.jefe'],
                     'coordinador' => ['label' => 'Coordinación de FP dual', 'user' => 'alfa.coordinador'],
-                    'gestor-ffe' => ['label' => 'Gestión de la FFE', 'user' => 'alfa.gestorffe'],
+                    'gestor-ffe' => ['label' => 'Gestión de la FFEOE', 'user' => 'alfa.gestorffe'],
                     'profesorado' => ['label' => 'Profesorado sin otro cargo', 'user' => 'alfa.profesor'],
                     'alumnado' => ['label' => 'Alumnado', 'user' => 'alfa.alumno1'],
                 ],
@@ -287,11 +287,11 @@ final class PermissionMatrix
                 ],
             ],
             'ffe' => [
-                'title' => 'Formación en empresa (FFE)',
+                'title' => 'Formación en empresa (FFEOE)',
                 'profiles' => [
                     'admin' => ['label' => 'Administración del centro', 'user' => 'alfa.admin'],
                     'jefe' => ['label' => 'Jefatura de departamento', 'user' => 'alfa.jefe'],
-                    'gestor' => ['label' => 'Gestión de la FFE', 'user' => 'alfa.gestorffe'],
+                    'gestor' => ['label' => 'Gestión de la FFEOE', 'user' => 'alfa.gestorffe'],
                     'tutor' => ['label' => 'Tutoría de grupo', 'user' => 'alfa.tutor'],
                     'tutor-docente' => ['label' => 'Tutoría docente de la estancia', 'user' => 'alfa.profesor'],
                     'profesorado' => ['label' => 'Profesorado del grupo', 'user' => 'alfa.director'],

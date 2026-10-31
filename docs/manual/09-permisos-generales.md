@@ -2,7 +2,7 @@
 
 Este capítulo es para **todo el mundo**: resume qué puede hacer cada perfil en la parte general de
 ÁTICA FP (acceso, datos personales, administración del centro, empresas, encuestas y plataforma). Cada
-módulo tiene después su propia matriz con lo que cada perfil puede hacer en FCT, FP dual y FFE.
+módulo tiene después su propia matriz con lo que cada perfil puede hacer en FCT, FP dual y FFEOE.
 
 La tabla **no está escrita de memoria**: cada versión de la aplicación se prueba entrando con un usuario
 de cada perfil y abriendo cada pantalla de la tabla. Si la aplicación cambia un permiso sin que cambie esta
@@ -26,7 +26,7 @@ tabla, la prueba falla.
 | **Responsable económico** | Secretaría del centro | Se elige como secretario o secretaria en los [datos del curso](03-preparar-el-curso-academico.md#los-datos-de-un-curso) |
 | **Jefatura de departamento** | Jefatura de una familia profesional | Se asigna en el [departamento](04-administrar-el-centro.md#departamentos) |
 | **Coordinación de FP dual** | Responsable de proyectos de FP dual | Se designa como responsable de un proyecto en el módulo de FP dual |
-| **Gestión de la FFE** | Responsable de la formación en empresa | Se designa como responsable de un programa formativo en el módulo de FFE |
+| **Gestión de la FFEOE** | Responsable de la formación en empresa | Se designa como responsable de un programa formativo en el módulo de FFEOE |
 | **Profesorado sin otro cargo** | Docente sin ningún cargo anterior | Estar en el profesorado del curso |
 | **Alumnado** | Estudiante con matrícula | Estar matriculado |
 
@@ -36,7 +36,7 @@ módulos.
 
 ## Matriz de permisos
 
-| Puede... | Administración de la plataforma | Administración del centro | Responsable económico | Jefatura de departamento | Coordinación de FP dual | Gestión de la FFE | Profesorado sin otro cargo | Alumnado |
+| Puede... | Administración de la plataforma | Administración del centro | Responsable económico | Jefatura de departamento | Coordinación de FP dual | Gestión de la FFEOE | Profesorado sin otro cargo | Alumnado |
 | --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 | **Datos personales** |  |  |  |  |  |  |  |  |
 | Ver y cambiar sus datos personales y su contraseña | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -101,7 +101,7 @@ módulos.
 - **Responsable económico.** Su única tarea en la parte general son los **itinerarios de
   desplazamiento**. Sus permisos sobre los gastos de desplazamiento están en cada módulo.
 - **Empresas.** La administración del centro, las jefaturas de departamento, la coordinación de FP dual y la
-  gestión de la FFE gestionan el **mismo catálogo de empresas**, que es compartido por todos los centros
+  gestión de la FFEOE gestionan el **mismo catálogo de empresas**, que es compartido por todos los centros
   ([capítulo 6](06-empresas-y-centros-de-trabajo.md)). Cualquiera de ellos puede crear, editar y eliminar
   empresas y centros de trabajo; el resto del profesorado, no.
 - **Jefatura de departamento.** En la parte general solo gestiona empresas. Su verdadero ámbito son las

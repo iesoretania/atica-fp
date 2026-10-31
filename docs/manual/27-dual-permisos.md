@@ -30,7 +30,7 @@ actualizar el manual.
 | **Alumnado del convenio** | Estudiante del convenio |
 | **Responsable laboral del convenio** | Persona de la empresa responsable del convenio |
 | **Responsable económico** | Secretaría del centro ([capítulo 26](26-dual-responsable-economico.md)) |
-| **Resto del personal** | Cualquier otra persona del centro (por ejemplo, la gestión de la FFE) |
+| **Resto del personal** | Cualquier otra persona del centro (por ejemplo, la gestión de la FFEOE) |
 
 ## Matriz de permisos
 
@@ -84,9 +84,9 @@ actualizar el manual.
 | **Gastos de desplazamiento** |  |  |  |  |  |  |  |  |  |  |
 | Ver el resumen de gastos del profesorado | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | — | — | ✅ | — |
 | Ver los gastos de un docente | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | — | — | ✅ | — |
-| Registrar un gasto | ✅ | — | ✅ | ✅ | — | — | — | — | ✅ | — |
-| Descargar el informe de gastos | ✅ | — | ✅ | ✅ | — | — | — | — | ✅ | — |
-| Eliminar gastos | ✅ | — | — | ✅ | — | — | — | — | ✅ | — |
+| Registrar un gasto | ✅ | ✅ | ✅ | ✅ | — | — | — | — | ✅ | — |
+| Descargar el informe de gastos | ✅ | ✅ | ✅ | ✅ | — | — | — | — | ✅ | — |
+| Eliminar gastos | ✅ | ✅ | ✅ | ✅ | — | — | — | — | ✅ | — |
 | **Encuestas** |  |  |  |  |  |  |  |  |  |  |
 | Ver las encuestas de alumnado | ✅ | ✅ | ✅ | ✅ | ✅ | — | ✅ | — | — | — |
 | Abrir la encuesta de alumnado de un convenio | ✅ | ✅ | ✅ | ✅ | — | — | ✅ | — | — | — |
@@ -122,8 +122,10 @@ actualizar el manual.
   administración del centro no puede registrar contactos si no es profesorado del curso; la coordinación y la
   jefatura sí, si lo son. Los contactos y desplazamientos son tarea del profesorado que hace seguimiento o imparte
   docencia en el proyecto.
-- **Gastos.** Cada docente registra y elimina los suyos. La administración y el responsable económico pueden hacerlo
-  por cualquier docente; la jefatura puede registrar pero no eliminar los de otra persona.
+- **Gastos.** Cada docente registra y elimina los suyos. La administración, la jefatura, la coordinación y el
+  responsable económico pueden registrar, corregir y eliminar los de cualquier docente.
+- **Bloqueo del proyecto.** Con el proyecto bloqueado, la jefatura de departamento no puede abrir las pantallas de
+  gestión del proyecto, de su programa formativo ni de sus empresas; solo la administración y la coordinación.
 - **Encuestas.** Los listados solo contienen lo que corresponde a quien los abre. El alumnado ve su encuesta; la
   empresa, la suya; y las tutorías, coordinación y jefatura, las tres. El profesorado del grupo no participa en ninguna.
 - **Reuniones de tutorización.** Solo el profesorado del curso puede registrarlas, así que la administración del

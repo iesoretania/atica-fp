@@ -8,7 +8,7 @@ usan después en los tres módulos: las **encuestas** de satisfacción y las **p
 En cada módulo se pide opinión a tres colectivos: el **alumnado**, las **empresas** (la tutoría laboral) y
 el **centro educativo** (la tutoría docente). Las preguntas de esas encuestas se definen aquí, en
 **Gestión del centro → Encuestas**, y después se **asigna cada encuesta** a una convocatoria de FCT, a un
-proyecto de FP dual o a un programa de FFE (en los capítulos de cada módulo).
+proyecto de FP dual o a un programa de FFEOE (en los capítulos de cada módulo).
 
 ![Listado de encuestas del centro: «Satisfacción de la empresa con el alumnado», «Satisfacción de la tutoría docente con las prácticas» y «Satisfacción del alumnado con las prácticas», con el botón «Preguntas» en cada una](img/encuestas-listado.png)
 

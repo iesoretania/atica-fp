@@ -1,4 +1,4 @@
-# FFE: alumnado
+# FFEOE: alumnado
 
 Este capítulo es para el **alumnado que hace una estancia de formación en empresa**. Explica qué tienes que hacer cada
 jornada en la aplicación y qué documentos puedes descargar. Lo que registres lo usan tu responsable de seguimiento y tu
@@ -74,7 +74,7 @@ Cuando tu centro lo indica, tienes que contestar una encuesta sobre cómo ha ido
 **Formación en empresa → Encuestas**. Pulsa tu nombre en el listado, contesta las preguntas y pulsa **Guardar
 encuesta**.
 
-![Encuesta de satisfacción del alumnado de FFE: preguntas de valoración del 1 al 5 y del 0 al 10, una respuesta de una línea y un comentario](img/ffe-alumnado-encuesta.png)
+![Encuesta de satisfacción del alumnado de FFEOE: preguntas de valoración del 1 al 5 y del 0 al 10, una respuesta de una línea y un comentario](img/ffe-alumnado-encuesta.png)
 
 Las preguntas obligatorias hay que contestarlas para guardar. Si la vuelves a abrir, aparece con lo que ya habías
 contestado. Tus respuestas las ve el centro agrupadas con las del resto del alumnado.
@@ -83,6 +83,6 @@ contestado. Tus respuestas las ve el centro agrupadas con las del resto del alum
 
 - **Cambiar jornadas bloqueadas**: pídeselo a tu responsable de seguimiento.
 - **Marcar faltas** o cambiar tu calendario, tu empresa o tus actividades: es cosa de tu tutoría o de la gestión de
-  la FFE.
+  la FFEOE.
 - **Ver tu valoración**: la hacen la tutoría laboral y tu tutoría; el profesorado de tus módulos la consulta para
   evaluarte. Si quieres saber cómo vas, pregunta a tu responsable de seguimiento.

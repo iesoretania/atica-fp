@@ -92,7 +92,7 @@ imparte en cada grupo.
 - **Ruta en Séneca**: *Personal › Personal del centro › botón «Materias y grupos» › Unidad: Cualquiera ›
   botón «Exportar datos»*. Columnas: Materia, Unidad, Curso y Profesor/a (opcional).
 - **Profesorado asociado a las materias**: «asignar automáticamente» crea la docencia de cada docente en
-  cada grupo. Imprescindible para que el profesorado pueda evaluar (en FP dual y FFE solo evalúa quien da
+  cada grupo. Imprescindible para que el profesorado pueda evaluar (en FP dual y FFEOE solo evalúa quien da
   clase al grupo).
 - **Materias iguales en la misma enseñanza de FP**: si un módulo aparece en varios cursos de la misma
   enseñanza, puedes **dejar solo el del curso mayor** o conservarlos como materias independientes.

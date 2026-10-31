@@ -29,7 +29,7 @@ conocer los cambios necesarios.**
     * Si usas Windows, abre un PowerShell y ejecuta `$env:DEMO=1;  docker-compose up -d`
     * En estos caso, el usuario será `admin` y la contraseña `aticafp`
     * Los datos de prueba incluyen dos centros (I.E.S. Alfa e I.E.S. Beta) con datos de los tres módulos (FCT, FP dual
-      y FFE). Cada centro tiene usuarios de ejemplo con todos los roles (`alfa.admin`, `alfa.jefe`, `alfa.tutor`,
+      y FFEOE). Cada centro tiene usuarios de ejemplo con todos los roles (`alfa.admin`, `alfa.jefe`, `alfa.tutor`,
       `alfa.profesor`, `alfa.alumno1`, `alfa.tutorlaboral`... y los equivalentes `beta.*`), todos con la contraseña
       `demo1234`. Las fechas de las prácticas son las del día en que se generaron los datos.
 - Esperar... (bastante tiempo)

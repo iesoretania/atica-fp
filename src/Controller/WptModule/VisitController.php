@@ -123,6 +123,10 @@ class VisitController extends AbstractController
             $isDepartmentHead,
             $readOnly
         );
+        // quien puede modificar una visita ajena (la jefatura, por ejemplo) debe ver al docente que la registró
+        if ($visit->getTeacher() instanceof Teacher && !in_array($visit->getTeacher(), $teachers, true)) {
+            $teachers[] = $visit->getTeacher();
+        }
 
         $form = $this->createForm(VisitType::class, $visit, [
             'disabled' => $readOnly,

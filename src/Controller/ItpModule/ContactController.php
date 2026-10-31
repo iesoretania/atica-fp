@@ -125,6 +125,9 @@ class ContactController extends AbstractController
 
         if ($readOnly && $contact->getTeacher() instanceof Teacher) {
             $teachers = [$contact->getTeacher()];
+        } elseif ($contact->getTeacher() instanceof Teacher && !in_array($contact->getTeacher(), $teachers, true)) {
+            // quien puede modificar un contacto ajeno (la jefatura, por ejemplo) debe ver al docente que lo registró
+            $teachers[] = $contact->getTeacher();
         }
 
         $form = $this->createForm(ContactType::class, $contact, [

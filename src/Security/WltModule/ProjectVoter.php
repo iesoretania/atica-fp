@@ -144,6 +144,9 @@ class ProjectVoter extends CachedVoter
 
         switch ($attribute) {
             case self::MANAGE:
+                // con el proyecto bloqueado solo lo gestionan la administración y la coordinación del proyecto
+                return $isDepartmentHead && !$subject->isLocked();
+
             case self::REPORT_STUDENT_SURVEY:
             case self::REPORT_COMPANY_SURVEY:
             case self::REPORT_MEETING:

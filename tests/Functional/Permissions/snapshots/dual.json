@@ -727,7 +727,7 @@
                     "request": "GET /dual/desplazamiento/nuevo/{teacher}",
                     "allowed": {
                         "admin": true,
-                        "coordinador": false,
+                        "coordinador": true,
                         "jefe": true,
                         "tutor": true,
                         "otro-tutor": false,
@@ -743,7 +743,7 @@
                     "request": "GET /dual/desplazamiento/{teacher}/descargar",
                     "allowed": {
                         "admin": true,
-                        "coordinador": false,
+                        "coordinador": true,
                         "jefe": true,
                         "tutor": true,
                         "otro-tutor": false,
@@ -759,8 +759,8 @@
                     "request": "POST /dual/desplazamiento/eliminar/{teacher} items[]={dualExpense}",
                     "allowed": {
                         "admin": true,
-                        "coordinador": false,
-                        "jefe": false,
+                        "coordinador": true,
+                        "jefe": true,
                         "tutor": true,
                         "otro-tutor": false,
                         "profesorado": false,

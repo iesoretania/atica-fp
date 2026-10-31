@@ -1,6 +1,6 @@
 {
     "module": "ffe",
-    "title": "Formación en empresa (FFE)",
+    "title": "Formación en empresa (FFEOE)",
     "profiles": {
         "admin": {
             "label": "Administración del centro",
@@ -11,7 +11,7 @@
             "user": "alfa.jefe"
         },
         "gestor": {
-            "label": "Gestión de la FFE",
+            "label": "Gestión de la FFEOE",
             "user": "alfa.gestorffe"
         },
         "tutor": {
@@ -938,13 +938,13 @@
                         "admin": true,
                         "jefe": true,
                         "gestor": true,
-                        "tutor": true,
+                        "tutor": false,
                         "tutor-docente": true,
                         "profesorado": false,
                         "alumno": false,
                         "tutor-laboral": false,
                         "otro-tutor-laboral": false,
-                        "economico": false,
+                        "economico": true,
                         "resto": false
                     }
                 },

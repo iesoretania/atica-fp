@@ -153,6 +153,10 @@ class ContactController extends AbstractController
         } elseif ($groups) {
             $teachers = $wltTeacherRepository->findByGroupsOrEducationalTutor($groups, $academicYear);
         }
+        // quien puede modificar un contacto ajeno (la jefatura, por ejemplo) debe ver al docente que lo registró
+        if ($visit->getTeacher() instanceof Teacher && !in_array($visit->getTeacher(), $teachers, true)) {
+            $teachers[] = $visit->getTeacher();
+        }
 
         $form = $this->createForm(ContactType::class, $visit, [
             'disabled' => $readOnly,

@@ -27,7 +27,7 @@ permiso, la prueba falla y obliga a actualizar el manual.
 | **Alumnado del acuerdo** | Estudiante incluido en el acuerdo |
 | **Tutoría laboral del acuerdo** | Persona de la empresa responsable del acuerdo |
 | **Responsable económico** | Secretaría del centro ([capítulo 15](15-fct-responsable-economico.md)) |
-| **Resto del personal** | Cualquier otra persona del centro (por ejemplo, la gestión de la FFE) |
+| **Resto del personal** | Cualquier otra persona del centro (por ejemplo, la gestión de la FFEOE) |
 
 ## Matriz de permisos
 
@@ -71,7 +71,7 @@ permiso, la prueba falla y obliga a actualizar el manual.
 | Ver los gastos de un docente | ✅ | ✅ | ✅ | ✅ | — | — | ✅ | — |
 | Registrar un gasto | ✅ | ✅ | ✅ | — | — | — | ✅ | — |
 | Descargar el informe de gastos | ✅ | ✅ | ✅ | — | — | — | ✅ | — |
-| Eliminar gastos | ✅ | — | ✅ | — | — | — | ✅ | — |
+| Eliminar gastos | ✅ | ✅ | ✅ | — | — | — | ✅ | — |
 | **Encuestas** |  |  |  |  |  |  |  |  |
 | Ver las encuestas de alumnado | ✅ | ✅ | ✅ | ✅ | ✅ | — | — | — |
 | Abrir la encuesta de alumnado de un acuerdo | ✅ | ✅ | ✅ | — | ✅ | — | — | — |
@@ -92,8 +92,8 @@ permiso, la prueba falla y obliga a actualizar el manual.
   (seguimiento, informes, resumen de visitas y de gastos, encuestas) pero no puede **abrir** el calendario ni la
   ficha de un alumno ajeno. Los listados se filtran por persona, así que solo contienen lo que le corresponde.
 - **Jefatura de departamento.** Todo lo de su columna es **solo para las convocatorias de las enseñanzas de su
-  departamento**. La excepción visible es «Eliminar gastos»: la jefatura puede registrar gastos, pero no
-  eliminar los de otro docente.
+  departamento**. Los gastos de desplazamiento son la excepción: la jefatura puede registrar, corregir y eliminar
+  los de cualquier docente.
 - **Tutoría de grupo sin tutoría docente.** Tiene los permisos de la columna «Tutoría docente y de grupo» sobre
   el alumnado de su grupo, **salvo visitas, gastos, registro resumen de actividades y encuesta de centro**,
   que son de quien hace tutoría docente.

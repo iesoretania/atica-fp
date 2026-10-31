@@ -102,8 +102,9 @@ class TravelExpenseVoter extends CachedVoter
             case self::MANAGE:
                 // El propio docente puede gestionar su visita si es del curso académico actual
                 // o quien tenga permiso en sus planes formativos
+                // el propio docente, la jefatura de departamento y la gestión de la FFEOE, sobre los gastos de cualquier docente del curso actual
                 return ($subject->getTeacher()->getPerson() === $user
-                    || $this->decisionManager->decide($token, [TeacherVoter::MANAGE_EXPENSE], $subject->getTeacher()))
+                    || $this->decisionManager->decide($token, [\App\Security\ItpModule\OrganizationVoter::ITP_MANAGER], $organization))
                     && $subject->getTeacher()->getAcademicYear() === $organization->getCurrentAcademicYear();
             case self::ACCESS:
                 // Puede acceder a los datos de la visita el propio docente

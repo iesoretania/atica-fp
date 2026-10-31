@@ -1,4 +1,4 @@
-# FFE: tutoría docente y de grupo
+# FFEOE: tutoría docente y de grupo
 
 Este capítulo es para el **profesorado que hace el seguimiento del alumnado** de la formación en empresa: el
 **responsable de seguimiento** de una estancia (la tutoría docente) y la **tutoría de grupo** del alumnado del plan.
@@ -6,7 +6,7 @@ Una misma persona puede ser las dos cosas; lo que puedes hacer depende de tu rel
 
 !!! note "Dos figuras que se parecen"
     La **tutoría de grupo** es la persona que tutoriza al grupo del alumno (la del centro, la de siempre). La
-    **tutoría dual de grupo** es la figura de la FFE que gestiona el plan en ese grupo ([capítulo 31](31-ffe-gestion.md)).
+    **tutoría dual de grupo** es la figura de la FFEOE que gestiona el plan en ese grupo ([capítulo 31](31-ffe-gestion.md)).
     No son la misma, aunque puede recaer en la misma persona.
 
 ## Qué puedes hacer
@@ -27,7 +27,7 @@ son una tarea de quien hace seguimiento: una tutoría de grupo que no es respons
 **no tiene** las tarjetas «Contactos con empresas» ni «Dietas de desplazamiento».
 
 La [matriz de permisos](37-ffe-permisos.md) lo detalla pantalla a pantalla. La administración, la jefatura y la gestión
-de la FFE pueden hacer lo mismo con todo su ámbito ([capítulo 31](31-ffe-gestion.md)).
+de la FFEOE pueden hacer lo mismo con todo su ámbito ([capítulo 31](31-ffe-gestion.md)).
 
 ## Dónde está
 
@@ -125,7 +125,7 @@ anteriores. También puedes **deshabilitar la actividad no valorada**: así el e
 las jornadas (las que ya la tengan marcada se mantienen).
 
 !!! note "Quién valora"
-    Valoran la **tutoría laboral**, el **responsable de seguimiento**, la **tutoría de grupo**, la **gestión de la FFE**,
+    Valoran la **tutoría laboral**, el **responsable de seguimiento**, la **tutoría de grupo**, la **gestión de la FFEOE**,
     la **jefatura** y la **administración**. El profesorado de los módulos consulta el resultado en el
     [resumen de evaluación](33-ffe-profesorado-y-evaluacion.md).
 
@@ -158,9 +158,8 @@ registrar uno nuevo pulsa **Registrar contacto**:
    y, al marcar uno, sus estudiantes. Hasta entonces indican que no hay ninguno disponible.
 5. Escribe las **observaciones** y guarda.
 
-Un contacto lo modifican y eliminan **quien lo registró** y la **administración del centro**. La **jefatura de
-departamento** puede eliminarlo y lo abre con el formulario activo, pero el desplegable «Docente» solo la ofrece a ella,
-así que no puede guardar un contacto ajeno sin asignárselo. La gestión de la FFE y la tutoría de grupo lo abren en
+Un contacto lo modifican y eliminan **quien lo registró**, la **jefatura de departamento** y la **administración del
+centro**. La gestión de la FFEOE y la tutoría de grupo lo abren en
 **solo lectura**: los campos aparecen desactivados y no hay botón de guardar.
 
 !!! warning "La administración del centro no puede registrar visitas"
@@ -172,14 +171,14 @@ así que no puede guardar un contacto ajeno sin asignárselo. La gestión de la 
 
 **Formación en empresa → Dietas de desplazamiento** funciona exactamente igual que en la FCT: registras los viajes con
 su itinerario, otros gastos y los planes de formación relacionados, y el responsable económico los verifica. Todo está
-explicado en [FCT: tutoría docente y de grupo](12-fct-tutoria-docente-y-de-grupo.md#gastos-de-desplazamiento). Una
-diferencia con las otras modalidades: aquí la **jefatura** y la **gestión de la FFE** pueden corregir y **eliminar los
-desplazamientos de cualquier docente**, además de la administración y el responsable económico; la tutoría de grupo
-abre los ajenos en solo lectura.
+explicado en [FCT: tutoría docente y de grupo](12-fct-tutoria-docente-y-de-grupo.md#gastos-de-desplazamiento). Cada
+docente registra y gestiona los suyos; la **jefatura**, la **gestión de la FFEOE**, la administración y el responsable
+económico pueden **registrar, corregir y eliminar los desplazamientos de cualquier docente**. El resto, incluida la
+tutoría de grupo, abre los ajenos en solo lectura.
 
 ![Tus desplazamientos: listado vacío con el botón «Registrar desplazamiento»](img/ffe-tutoria-gastos.png)
 
-![Nuevo desplazamiento de FFE: salida y llegada, planes de formación relacionados, itinerario, gastos adicionales y observaciones](img/ffe-tutoria-gasto-nuevo.png)
+![Nuevo desplazamiento de FFEOE: salida y llegada, planes de formación relacionados, itinerario, gastos adicionales y observaciones](img/ffe-tutoria-gasto-nuevo.png)
 
 ## Encuestas
 
@@ -197,12 +196,12 @@ abre los ajenos en solo lectura.
 
 ![Formulario de la encuesta de satisfacción del responsable de seguimiento: dos preguntas de valoración del 1 al 5 y un cuadro de propuestas de mejora](img/ffe-tutoria-encuesta-centro-formulario.png)
 
-A diferencia de otras modalidades, las encuestas de la FFE no tienen fechas de apertura y cierre: se pueden contestar
+A diferencia de otras modalidades, las encuestas de la FFEOE no tienen fechas de apertura y cierre: se pueden contestar
 mientras el curso académico esté activo; en un curso anterior solo se consultan.
 
 ## Qué no puedes hacer y a quién pedirlo
 
-- **Crear estancias, calendarios, actividades o empresas del plan**: es de la gestión de la FFE, la jefatura y la
+- **Crear estancias, calendarios, actividades o empresas del plan**: es de la gestión de la FFEOE, la jefatura y la
   administración ([capítulo 31](31-ffe-gestion.md)).
 - **Ver el seguimiento de estancias ajenas.** Como responsable de seguimiento ves el de tu alumnado, no el de otras
   tutorías; los listados solo muestran lo que te corresponde.

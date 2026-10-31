@@ -93,6 +93,6 @@ impedir que una persona entre, usa mejor el **Acceso: denegado**.
 
 ## Los módulos de cada centro
 
-No hay un interruptor de módulos a nivel de plataforma: **cada centro activa FCT, FP dual y FFE por
+No hay un interruptor de módulos a nivel de plataforma: **cada centro activa FCT, FP dual y FFEOE por
 curso académico**, desde los [datos del curso](03-preparar-el-curso-academico.md#los-datos-de-un-curso).
 La administración de la plataforma puede hacerlo entrando en el centro, igual que su administración local.

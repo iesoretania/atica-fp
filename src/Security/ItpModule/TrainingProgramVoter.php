@@ -128,6 +128,8 @@ class TrainingProgramVoter extends CachedVoter
             case self::MANAGE_PERMISSIONS:
                 return $isDepartmentHead;
             case self::MANAGE:
+                // con el plan bloqueado solo lo gestiona la administración del centro («el equipo directivo»)
+                return ($isDepartmentHead || $isGroupManager) && !$subject->isLocked();
             case self::ACCESS:
             case self::REPORT_STUDENT_SURVEY:
             case self::REPORT_WORK_TUTOR_SURVEY:

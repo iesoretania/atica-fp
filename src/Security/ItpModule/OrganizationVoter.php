@@ -145,7 +145,7 @@ class OrganizationVoter extends CachedVoter
 
         switch ($attribute) {
             case self::ITP_STUDENT:
-                // Si es estudiante de FFE, permitir
+                // Si es estudiante de FFEOE, permitir
                 return $isDepartmentHead || $isItpManager || $isItpStudent || $isStudentProgramWorkcenterEducationalTutor || $isGroupTutor;
             case self::ITP_WORK_TUTOR:
                 // Si es tutor dual de empresa, permitir
@@ -161,6 +161,9 @@ class OrganizationVoter extends CachedVoter
                 return $isStudentProgramWorkcenterEducationalTutor || $isItpManager || $isDepartmentHead
                     || $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $subject);
             case self::ITP_CREATE_EXPENSE:
+                // como las visitas, y además el responsable económico (igual que en la FCT y la FP dual)
+                return $isStudentProgramWorkcenterEducationalTutor || $isItpManager || $isDepartmentHead
+                    || $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_FINANCIAL_MANAGER], $subject);
             case self::ITP_ACCESS_VISIT:
             case self::ITP_CREATE_VISIT:
                 // profesorado responsable de seguimiento, siempre

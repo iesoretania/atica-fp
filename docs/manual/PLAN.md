@@ -14,7 +14,7 @@ Criterios que se mantienen en todos los capítulos:
 
 - **General frente a módulo.** Lo que no depende de un módulo (acceso, administración del centro,
   importaciones, empresas, encuestas, plataforma) va solo en la parte general. Cada módulo (FCT, FP dual,
-  FFE) cuenta solo lo suyo y remite a la parte general para lo común. No se repite contenido: se enlaza.
+  FFEOE) cuenta solo lo suyo y remite a la parte general para lo común. No se repite contenido: se enlaza.
 - **Por perfil dentro de cada módulo.** Cada capítulo de módulo es «lo que hace este perfil, en este
   módulo», con el recorrido real de pantallas. Un perfil que no interviene en un módulo no tiene capítulo.
 - **Matriz de permisos en cada módulo** (y una general), generada y comprobada contra el código, no
@@ -49,10 +49,10 @@ Perfiles reales, tal como los distingue la aplicación (voters y menús):
 | Responsable económico | Consulta y gestiona los gastos de desplazamiento del centro |
 | Jefatura de departamento | Gestiona la formación de las enseñanzas de su departamento |
 | Coordinación de FP dual | Persona responsable de uno o más proyectos de FP dual |
-| Gestión de la FFE | Persona que gestiona los programas formativos de la FFE |
+| Gestión de la FFEOE | Persona que gestiona los programas formativos de la FFEOE |
 | Tutoría docente | Profesorado responsable de seguimiento de los acuerdos o estancias |
 | Tutoría de grupo | Tutor o tutora de un grupo con alumnado en el módulo |
-| Profesorado | Profesorado que imparte docencia en el grupo (evalúa en FP dual y FFE) |
+| Profesorado | Profesorado que imparte docencia en el grupo (evalúa en FP dual y FFEOE) |
 | Alumnado | Alumnado con acuerdo o estancia |
 | Tutoría laboral | Persona de la empresa que tutoriza al alumnado |
 
@@ -60,7 +60,7 @@ Perfiles reales, tal como los distingue la aplicación (voters y menús):
 
 Ficheros `NN-*.md` en `docs/manual/`. La web los agrupa en secciones de `nav`; el PDF los concatena por
 número. Rangos fijos para poder añadir capítulos sin renumerar: 01-09 general, 10-19 FCT, 20-29 FP dual,
-30-39 FFE, 90 en adelante anexos.
+30-39 FFEOE, 90 en adelante anexos.
 
 ### Introducción
 
@@ -107,25 +107,25 @@ número. Rangos fijos para poder añadir capítulos sin renumerar: 01-09 general
 | `26-dual-responsable-economico.md` | Responsable económico | Gastos de desplazamiento |
 | `27-dual-permisos.md` | Todos | **Matriz de permisos de FP dual** |
 
-### Parte D. FFE (Formación en empresa)
+### Parte D. FFEOE (Formación en empresa)
 
 | Fichero | Perfil | Contenido |
 | --- | --- | --- |
 | `30-ffe-vision-general.md` | Todos | Qué es el módulo, ciclo de un programa formativo, vocabulario |
-| `31-ffe-gestion.md` | Administración, gestión de la FFE y jefatura | Programas formativos, grupos, alumnado, empresas del programa, estancias (alta por lotes, copia de calendario), actividades, informes |
+| `31-ffe-gestion.md` | Administración, gestión de la FFEOE y jefatura | Programas formativos, grupos, alumnado, empresas del programa, estancias (alta por lotes, copia de calendario), actividades, informes |
 | `32-ffe-tutoria-docente-y-de-grupo.md` | Tutoría docente y de grupo | Seguimiento, visitas, gastos, encuestas, calificación |
 | `33-ffe-profesorado-y-evaluacion.md` | Profesorado | Calificación y resumen de evaluación |
 | `34-ffe-alumnado.md` | Alumnado | Registro de jornadas, encuesta |
 | `35-ffe-tutoria-laboral.md` | Tutoría laboral | Asistencia, valoración, encuesta de empresa |
 | `36-ffe-responsable-economico.md` | Responsable económico | Gastos de desplazamiento |
-| `37-ffe-permisos.md` | Todos | **Matriz de permisos de la FFE** |
+| `37-ffe-permisos.md` | Todos | **Matriz de permisos de la FFEOE** |
 
 ### Anexos
 
 | Fichero | Contenido |
 | --- | --- |
 | `90-resolucion-de-problemas.md` | Síntomas frecuentes y su causa (sin acceso a un módulo, alumnado que no aparece, importación con conflictos...) |
-| `91-glosario.md` | FCT, FP dual, FFE, acuerdo, estancia, convocatoria, concreción de actividad, tutoría docente y laboral... |
+| `91-glosario.md` | FCT, FP dual, FFEOE, acuerdo, estancia, convocatoria, concreción de actividad, tutoría docente y laboral... |
 | `92-despliegue-y-mantenimiento.md` | **Anexo técnico**: despliegue con Docker en detalle (proxy inverso, HTTPS, variables), actualización entre versiones (a partir de los `UPGRADE-*.md` y `app:safe-migrate`), copias y restauración (`app:backup`, `app:backup-restore`), tareas programadas, registro de errores |
 
 Cada capítulo de perfil sigue la misma plantilla, para que el manual sea predecible:
@@ -178,11 +178,11 @@ Candidatas, a confirmar al redactar cada módulo:
 
 | Ficha | Perfil | Módulos |
 | --- | --- | --- |
-| Registrar la jornada del día | Alumnado | FCT, FP dual, FFE |
-| Registrar una visita o un contacto con la empresa | Tutoría docente | FCT, FP dual, FFE |
-| Registrar un gasto de desplazamiento | Tutoría docente | FCT, FP dual, FFE |
-| Registrar la asistencia y valorar al alumnado | Tutoría laboral | FCT, FP dual, FFE |
-| Evaluar al alumnado | Profesorado | FP dual, FFE |
+| Registrar la jornada del día | Alumnado | FCT, FP dual, FFEOE |
+| Registrar una visita o un contacto con la empresa | Tutoría docente | FCT, FP dual, FFEOE |
+| Registrar un gasto de desplazamiento | Tutoría docente | FCT, FP dual, FFEOE |
+| Registrar la asistencia y valorar al alumnado | Tutoría laboral | FCT, FP dual, FFEOE |
+| Evaluar al alumnado | Profesorado | FP dual, FFEOE |
 | Preparar un curso nuevo | Administración del centro | General |
 | Importar profesorado y alumnado desde Séneca | Administración del centro | General |
 
@@ -194,11 +194,11 @@ módulos se hace una sola ficha con las diferencias de menú anotadas.
 | Fase | Entrega | Criterio de hecho |
 | --- | --- | --- |
 | 0 | **Mecanismo de generación** (hecho): `Makefile`, MkDocs, pandoc, Marp, estilos y CI (Pages y release) | `make docs` genera PDF, web y fichas |
-| 1 | **Datos de demostración y capturas** (hecha): dataset con nombres creíbles y más profesorado y alumnado (`make docs-data`), cuentas por perfil, librería y script piloto de capturas, runbook (`CAPTURAS.md`) y comprobación automática de permisos con la matriz de FCT. Las matrices de FP dual y FFE y los datos extra que pida cada módulo se añaden en sus fases | Se pueden regenerar las capturas de un capítulo con un comando; la comprobación de permisos pasa |
+| 1 | **Datos de demostración y capturas** (hecha): dataset con nombres creíbles y más profesorado y alumnado (`make docs-data`), cuentas por perfil, librería y script piloto de capturas, runbook (`CAPTURAS.md`) y comprobación automática de permisos con la matriz de FCT. Las matrices de FP dual y FFEOE y los datos extra que pida cada módulo se añaden en sus fases | Se pueden regenerar las capturas de un capítulo con un comando; la comprobación de permisos pasa |
 | 2 | Parte A (general), capítulos 01-09 (**redactada**; pendiente la revisión de una persona que administre un centro) | Revisados y con capturas |
 | 3 | FCT (10-16): es el módulo más simple y fija la plantilla de los demás (**redactada**; pendiente la revisión de una persona que use el módulo) | Revisado por una persona que use el módulo |
 | 4 | FP dual (20-27) (**redactada**; pendiente la revisión de una persona que use el módulo) | Idem |
-| 5 | FFE (30-37) (**redactada**; pendiente la revisión de una persona que use el módulo). Salieron del recorrido dos cambios de código: el profesorado del grupo ya consulta el resumen de evaluación, y los accesos de seguimiento, valoración, evaluación por grupo y encuestas coinciden con el menú | Idem |
+| 5 | FFEOE (30-37) (**redactada**; pendiente la revisión de una persona que use el módulo). Salieron del recorrido dos cambios de código: el profesorado del grupo ya consulta el resumen de evaluación, y los accesos de seguimiento, valoración, evaluación por grupo y encuestas coinciden con el menú | Idem |
 | 6 | Anexos (incluido el técnico), fichas de referencia rápida, introducción definitiva, revisión transversal de enlaces y de coherencia terminológica | `make docs` sin avisos; enlaces comprobados |
 | 7 | Publicación: activar Pages en el repositorio y etiquetar una versión para comprobar el flujo | La web está en `iesoretania.github.io/atica-fp` y la release lleva el PDF y las fichas |
 
@@ -211,5 +211,5 @@ pantallas posteriores actualizan el capítulo y sus capturas en el mismo commit 
 - Cada capítulo lo recorre quien lo escribe en la aplicación, siguiendo sus propios pasos con la cuenta
   del perfil, antes de darlo por bueno.
 - Enlaces internos y de anclas: `make docs-web` avisa de los rotos.
-- Terminología única (`91-glosario.md`): «estancia» y «acuerdo» no se mezclan, FCT/FP dual/FFE se
+- Terminología única (`91-glosario.md`): «estancia» y «acuerdo» no se mezclan, FCT/FP dual/FFEOE se
   escriben igual en todo el manual.

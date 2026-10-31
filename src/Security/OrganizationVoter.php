@@ -111,7 +111,7 @@ class OrganizationVoter extends CachedVoter
                     return true;
                 }
 
-                // 2) Coordinador de FP dual o de FFE
+                // 2) Coordinador de FP dual o de FFEOE
                 return
                     $this->decisionManager->decide($token, [WltOrganizationVoter::WLT_MANAGER], $subject) ||
                     $this->decisionManager->decide($token, [ItpOrganizationVoter::ITP_MANAGER], $subject);

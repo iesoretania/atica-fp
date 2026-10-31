@@ -2,7 +2,7 @@
 
 Este capítulo es para quien da de alta las empresas donde el alumnado hace las prácticas: la
 **administración del centro**, las **jefaturas de departamento**, la **coordinación de FP dual** y la
-**gestión de la FFE**. Las tres modalidades de formación (FCT, FP dual y FFE) trabajan sobre el mismo
+**gestión de la FFEOE**. Las tres modalidades de formación (FCT, FP dual y FFEOE) trabajan sobre el mismo
 catálogo de empresas y centros de trabajo, por eso se gestionan aquí, una sola vez, y no dentro de cada
 módulo.
 
@@ -71,5 +71,5 @@ Desde la ficha de una empresa, el botón **Sedes** abre su lista de centros de t
 
 Este catálogo guarda **empresas y sedes**, no las personas que tutorizan al alumnado. La **tutoría
 laboral** (la persona de la empresa que supervisa al alumno) se indica en cada acuerdo de FCT o FP dual y
-en cada estancia de la FFE, y se explica en los capítulos de cada módulo. La única persona que se
+en cada estancia de la FFEOE, y se explica en los capítulos de cada módulo. La única persona que se
 registra aquí es el **gerente**, que es opcional.

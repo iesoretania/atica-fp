@@ -24,7 +24,7 @@ El módulo de FCT de ÁTICA FP sirve para:
   actividades, informe de visitas y de gastos.
 
 La FCT es una de las **tres modalidades** de formación en empresa de la aplicación; las otras dos son
-la [FP dual](20-dual-vision-general.md) y la [FFE](30-ffe-vision-general.md). Se activa por curso
+la [FP dual](20-dual-vision-general.md) y la [FFEOE](30-ffe-vision-general.md). Se activa por curso
 académico en [los datos del curso](03-preparar-el-curso-academico.md#los-datos-de-un-curso).
 
 ## El vocabulario de la FCT

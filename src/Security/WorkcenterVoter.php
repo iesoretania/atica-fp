@@ -89,7 +89,7 @@ class WorkcenterVoter extends CachedVoter
                 return null !== $this->teacherRepository
                         ->findOneByPersonAndAcademicYear($user, $organization->getCurrentAcademicYear());
 
-            // Si es jefe de algún departamento de FP o el coordinador de FP dual o de la FFE, permitir gestionar
+            // Si es jefe de algún departamento de FP o el coordinador de FP dual o de la FFEOE, permitir gestionar
             // (los mismos que pueden gestionar empresas en la organización)
             case self::MANAGE:
                 // 1) Jefe de departamento
@@ -105,7 +105,7 @@ class WorkcenterVoter extends CachedVoter
                     return true;
                 }
 
-                // 3) Coordinador de la FFE
+                // 3) Coordinador de la FFEOE
                 if ($this->decisionManager->decide($token, [ItpOrganizationVoter::ITP_MANAGER], $organization)) {
                     return true;
                 }

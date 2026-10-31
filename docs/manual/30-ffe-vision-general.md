@@ -1,10 +1,10 @@
-# FFE: visión general
+# FFEOE: visión general
 
-Este capítulo es para **todas las personas que intervienen en la formación en empresa (FFE)**, sea cual sea su
+Este capítulo es para **todas las personas que intervienen en la formación en empresa (FFEOE)**, sea cual sea su
 perfil. Explica qué es el módulo, cómo se organiza un plan de formación de principio a fin y quién hace qué.
 Después, cada perfil tiene su capítulo con las tareas concretas.
 
-## Qué es la FFE
+## Qué es la FFEOE
 
 La **formación en empresa** es la fase del currículo en la que el alumnado hace **estancias** en empresas u
 organismos equiparables para trabajar actividades formativas **vinculadas a los resultados de aprendizaje** de
@@ -13,7 +13,7 @@ a la [FCT](10-fct-vision-general.md) en que es una fase concreta del ciclo, pero
 organizarse: el centro define un **plan de formación** para un curso, con sus actividades, sus empresas
 colaboradoras y sus grupos, y cada estudiante tiene una o más **estancias** dentro de ese plan.
 
-El módulo de FFE de ÁTICA FP sirve para:
+El módulo de FFEOE de ÁTICA FP sirve para:
 
 - **Definir el plan de formación** de un curso: las actividades formativas, con los resultados de aprendizaje y los
   criterios de evaluación que trabajan, y las empresas que colaboran.
@@ -27,18 +27,18 @@ El módulo de FFE de ÁTICA FP sirve para:
 
 Se activa por curso académico en [los datos del curso](03-preparar-el-curso-academico.md#los-datos-de-un-curso).
 
-## El vocabulario de la FFE
+## El vocabulario de la FFEOE
 
 Muchos conceptos son los mismos que en las otras modalidades, con nombres propios. En la aplicación verás los
 términos de la columna de la izquierda.
 
 | Término | Qué es |
 | --- | --- |
-| **Plan de formación** | La planificación de la FFE de un curso: sus cursos, grupos, actividades, empresas, plantillas de informe y encuestas. Se organiza por **cursos** (niveles) de una enseñanza y por **grupos** |
+| **Plan de formación** | La planificación de la FFEOE de un curso: sus cursos, grupos, actividades, empresas, plantillas de informe y encuestas. Se organiza por **cursos** (niveles) de una enseñanza y por **grupos** |
 | **Actividad formativa** | Una tarea que el alumnado hace en las empresas («Soporte técnico»). Se asocia a los **resultados de aprendizaje** (RA) y a los **criterios de evaluación** (CE) de los módulos profesionales que trabaja. **Es lo que se valora** |
 | **Plan de formación inicial** | El conjunto de actividades formativas de un curso con sus RA y CE. Se puede importar de Séneca y descargar en PDF |
 | **Empresa del plan** | Una empresa u organismo equiparable que colabora en el plan, con su **número de convenio de colaboración**, sus mecanismos de seguimiento y las actividades que ofrece |
-| **Tutoría dual de grupo** | El profesorado que gestiona el plan en un grupo (la **gestión de la FFE**) |
+| **Tutoría dual de grupo** | El profesorado que gestiona el plan en un grupo (la **gestión de la FFEOE**) |
 | **Plan de formación individualizado** | El alumno o la alumna incorporados al plan, con sus autorizaciones y adaptaciones especiales |
 | **Estancia** | El periodo de un estudiante en un **centro de trabajo** de una empresa, con su calendario. Un estudiante puede tener varias |
 | **Docente responsable del seguimiento** | La persona del profesorado que hace el seguimiento de la estancia (la tutoría docente de la FCT). Puede haber una adicional |
@@ -51,7 +51,7 @@ empresa) y **tutoría de grupo** (la del grupo del alumno, que es otra figura di
 
 ## El ciclo de un plan de formación
 
-1. **Preparación** (administración, jefatura o gestión de la FFE): se crea el
+1. **Preparación** (administración, jefatura o gestión de la FFEOE): se crea el
    [plan de formación](31-ffe-gestion.md#planes-de-formacion) del curso con su escala de valoración, sus plantillas
    y sus encuestas, y se definen sus [cursos y grupos](31-ffe-gestion.md#cursos-y-grupos).
 2. **Actividades y empresas**: se definen las [actividades formativas](31-ffe-gestion.md#actividades-formativas) y se
@@ -71,9 +71,9 @@ empresa) y **tutoría de grupo** (la del grupo del alumno, que es otra figura di
 
 ## Quién hace qué
 
-| Perfil | Qué hace en la FFE | Capítulo |
+| Perfil | Qué hace en la FFEOE | Capítulo |
 | --- | --- | --- |
-| **Administración del centro**, **jefatura de departamento** y **gestión de la FFE** | Preparan el plan, las actividades, las empresas, el alumnado y las estancias; ven todo el seguimiento, las valoraciones y los informes | [31](31-ffe-gestion.md) |
+| **Administración del centro**, **jefatura de departamento** y **gestión de la FFEOE** | Preparan el plan, las actividades, las empresas, el alumnado y las estancias; ven todo el seguimiento, las valoraciones y los informes | [31](31-ffe-gestion.md) |
 | **Responsable de seguimiento** y **tutoría de grupo** | Seguimiento diario, valoración, visitas, desplazamientos y encuestas | [32](32-ffe-tutoria-docente-y-de-grupo.md) |
 | **Profesorado del grupo** | Consulta el resumen de evaluación del alumnado al que da clase | [33](33-ffe-profesorado-y-evaluacion.md) |
 | **Alumnado** | Registra su jornada y contesta la encuesta | [34](34-ffe-alumnado.md) |
@@ -89,17 +89,17 @@ Las entradas del módulo, y quién las ve, son estas:
 
 | Entrada | Para qué sirve | Quién la ve |
 | --- | --- | --- |
-| **Planes de formación** | Plan, cursos, grupos, actividades, empresas, alumnado y estancias | Administración, jefatura y gestión de la FFE |
+| **Planes de formación** | Plan, cursos, grupos, actividades, empresas, alumnado y estancias | Administración, jefatura y gestión de la FFEOE |
 | **Seguimiento de actividad** | Calendarios y asistencia | Quien participa en alguna estancia: administración, jefatura, gestión, tutoría de grupo, responsable de seguimiento, alumnado y tutoría laboral |
 | **Valoración del desempeño de actividades** | Valorar cada actividad realizada | Administración, jefatura, gestión, tutoría de grupo, responsable de seguimiento y tutoría laboral |
 | **Resumen de evaluación** | Resultado del alumnado por actividad, criterio, resultado de aprendizaje y módulo | Administración, jefatura, gestión, tutoría de grupo, responsable de seguimiento y profesorado del grupo |
 | **Contactos con empresas** | Registro de visitas y contactos | Administración, jefatura, gestión y responsables de seguimiento |
 | **Dietas de desplazamiento** | Gastos de desplazamiento | Los anteriores y el responsable económico |
 | **Encuestas** | Encuestas de alumnado, empresa y responsable de seguimiento | Administración, jefatura, gestión, tutoría de grupo, responsable de seguimiento, alumnado y tutoría laboral (cada uno solo ve lo suyo) |
-| **Informes** | Informes de las encuestas del plan | Administración, jefatura y gestión de la FFE |
+| **Informes** | Informes de las encuestas del plan | Administración, jefatura y gestión de la FFEOE |
 
 ![Menú de formación en empresa de la administración del centro: planes de formación, seguimiento de actividad, valoración del desempeño de actividades, resumen de evaluación, contactos con empresas, dietas de desplazamiento, encuestas e informes](img/ffe-inicio-gestion.png)
 
 !!! note "Quien no tiene nada que hacer en el módulo, no lo ve"
     El módulo aparece en el menú solo a quien interviene en él: si no eres administración, jefatura ni gestión de la
-    FFE y no tienes ninguna estancia ni das clase al alumnado del plan, no verás **Formación en empresa**.
+    FFEOE y no tienes ninguna estancia ni das clase al alumnado del plan, no verás **Formación en empresa**.

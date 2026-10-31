@@ -29,7 +29,6 @@ use App\Repository\ItpModule\StudentProgramWorkcenterRepository;
 use App\Repository\ItpModule\TravelExpenseRepository;
 use App\Security\Edu\OrganizationVoter as EduOrganizationVoter;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
-use App\Security\ItpModule\TeacherVoter;
 use App\Security\ItpModule\TravelExpenseVoter;
 use App\Security\OrganizationVoter;
 use App\Service\UserExtensionService;
@@ -67,6 +66,8 @@ class TravelExpenseController extends AbstractController
             ->setTeacher($teacher)
             ->setFromDateTime(new \DateTime())
             ->setToDateTime(new \DateTime());
+        // se registran los gastos propios; la jefatura, la gestión de la FFEOE y el responsable económico pueden registrar los de cualquier docente
+        $this->denyAccessUnlessGranted(TravelExpenseVoter::MANAGE, $travelExpense);
 
         $managerRegistry->getManager()->persist($travelExpense);
 
@@ -97,7 +98,7 @@ class TravelExpenseController extends AbstractController
 
         $em = $managerRegistry->getManager();
 
-        $readOnly = !$this->isGranted(TeacherVoter::MANAGE_EXPENSE, $travelExpense->getTeacher());
+        $readOnly = !$this->isGranted(TravelExpenseVoter::MANAGE, $travelExpense);
 
         $teacher = $travelExpense->getTeacher();
         assert($teacher instanceof Teacher);
@@ -174,7 +175,8 @@ class TravelExpenseController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_EXPENSE, $organization);
 
-        $allowNew = $this->isGranted(TeacherVoter::MANAGE_EXPENSE, $teacher);
+        $allowNew = $this->isGranted(ItpOrganizationVoter::ITP_CREATE_EXPENSE, $organization)
+            && $this->isGranted(TravelExpenseVoter::MANAGE, (new TravelExpense())->setTeacher($teacher));
 
         $q = $request->get('q');
 

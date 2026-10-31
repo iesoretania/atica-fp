@@ -1,6 +1,6 @@
-# FFE: gestión del plan de formación
+# FFEOE: gestión del plan de formación
 
-Este capítulo es para la **administración del centro**, las **jefaturas de departamento** y la **gestión de la FFE**:
+Este capítulo es para la **administración del centro**, las **jefaturas de departamento** y la **gestión de la FFEOE**:
 las personas que preparan la formación en empresa de cada curso. Cubre el plan de formación, sus cursos y grupos,
 las actividades formativas, las empresas colaboradoras, el alumnado, las estancias con sus calendarios y los
 informes.
@@ -10,7 +10,7 @@ Tres figuras pueden gestionar un plan, con matices:
 - **La administración del centro** gestiona todos los planes del centro.
 - **La jefatura de departamento** gestiona los planes de las enseñanzas de su departamento (por eso es importante
   que cada enseñanza esté enlazada con su [familia profesional](04-administrar-el-centro.md#departamentos)).
-- **La gestión de la FFE** es el profesorado designado como **tutoría dual de grupo** en algún grupo del plan. Gestiona
+- **La gestión de la FFEOE** es el profesorado designado como **tutoría dual de grupo** en algún grupo del plan. Gestiona
   los planes de los grupos que tiene a su cargo.
 
 ## Qué puedes hacer
@@ -31,7 +31,7 @@ En el menú de **Formación en empresa**, la tarjeta **Planes de formación** re
 tarjetas (seguimiento, valoración, resumen de evaluación, contactos, dietas, encuestas e informes) son las mismas que
 ven las demás personas, pero con acceso a todos los datos de tu ámbito.
 
-![Menú de formación en empresa de la gestión de la FFE: planes de formación, seguimiento de actividad, valoración, resumen de evaluación, contactos, dietas, encuestas e informes](img/ffe-inicio-gestor.png)
+![Menú de formación en empresa de la gestión de la FFEOE: planes de formación, seguimiento de actividad, valoración, resumen de evaluación, contactos, dietas, encuestas e informes](img/ffe-inicio-gestor.png)
 
 ## Planes de formación {#planes-de-formacion}
 
@@ -54,10 +54,12 @@ ficha.
 - **Nombre** del plan.
 - **Niveles**: los cursos de la enseñanza que participan (por ejemplo, 2º DAM). Son obligatorios.
 - **Modalidad**: **General** o **Intensiva**. Los grupos la heredan, aunque cada estancia puede indicar la suya.
-- **Horas totales de la enseñanza** y **horas previstas**: las horas que el currículo dedica a la FFE y las que el plan
+- **Horas totales de la enseñanza** y **horas previstas**: las horas que el currículo dedica a la FFEOE y las que el plan
   prevé realizar.
-- **Plan de formación bloqueado**: la ficha ofrece «Sólo el equipo directivo puede realizar cambios», pero hoy el
-  bloqueo **solo marca el plan con un candado** en los listados; no impide modificarlo.
+- **Plan de formación bloqueado**: «Sólo el equipo directivo puede realizar cambios». Con el bloqueo, el plan aparece con
+  un candado en los listados y **solo la administración del centro** puede gestionarlo: la jefatura y la gestión de la
+  FFEOE dejan de poder abrir sus pantallas de gestión (plan, cursos, grupos, actividades, empresas, alumnado y estancias)
+  hasta que la administración lo desbloquee. El seguimiento, la valoración y las encuestas de las estancias siguen igual.
 - **Escala de valoración del desempeño**: los niveles con que se valorará cada actividad
   ([capítulo 4](04-administrar-el-centro.md#escalas-de-valoracion-del-desempeno)).
 - **Plantillas de informe**: el [papel con membrete](07-encuestas-y-plantillas-de-informe.md#plantillas-de-informe) de
@@ -99,7 +101,7 @@ Cada grupo tiene tres botones: **Añadir estancias en el mismo centro de trabajo
 ![Ficha del grupo 2º DAM A: horas previstas, tutoría dual de grupo (Tomás Herrero Lara) y el alumnado del grupo con casillas, con las de Sara Gallego Roldán y Adrián Ibáñez Mora marcadas y bloqueadas porque ya tienen estancias](img/ffe-grupo-formulario.png)
 
 - **Horas previstas** del grupo.
-- **Tutorías duales de grupo**: las personas que gestionan el plan en este grupo (la **gestión de la FFE**). Solo se
+- **Tutorías duales de grupo**: las personas que gestionan el plan en este grupo (la **gestión de la FFEOE**). Solo se
   ofrece el profesorado que **da clase en el grupo**.
 - **Estudiantes del plan de formación**: marca el alumnado del grupo que participa. Quien ya tiene estancias aparece
   marcado y **no se puede desmarcar** mientras las conserve. **Seleccionar todos** y **Deseleccionar todos** agilizan
@@ -271,7 +273,7 @@ Con acceso a todo el plan, ves los mismos listados que el profesorado, con todas
 
 **Formación en empresa → Informes** genera los informes de las tres encuestas del plan.
 
-![Informes de la FFE: encuesta de satisfacción de alumnado, del tutor laboral y del tutor docente](img/ffe-informes-inicio.png)
+![Informes de la FFEOE: encuesta de satisfacción de alumnado, del tutor laboral y del tutor docente](img/ffe-informes-inicio.png)
 
 Cada uno lista los planes del curso:
 
@@ -286,7 +288,7 @@ están explicadas en el [capítulo 7](07-encuestas-y-plantillas-de-informe.md).
 - **Crear usuarios del profesorado o del alumnado**: se importan o se dan de alta en la
   [gestión del centro](04-administrar-el-centro.md). El único usuario que se crea desde aquí es la **tutoría
   laboral**, al registrar una estancia.
-- **Gestionar planes ajenos**: la jefatura y la gestión de la FFE solo ven los planes de su departamento o de los
+- **Gestionar planes ajenos**: la jefatura y la gestión de la FFEOE solo ven los planes de su departamento o de los
   grupos que tienen a su cargo; la administración del centro, todos.
 - **Registrar visitas** si no eres profesorado del curso: la administración del centro puede consultarlas y corregirlas,
   pero no registrarlas ([capítulo 32](32-ffe-tutoria-docente-y-de-grupo.md#visitas-a-las-empresas)).

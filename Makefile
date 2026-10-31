@@ -59,7 +59,7 @@ docs-pdf:
 		--lua-filter=docs/pandoc-admonitions.lua \
 		--lua-filter=docs/pandoc-internal-links.lua \
 		--metadata title="Manual de usuario de ÁTICA FP" \
-		--metadata subtitle="Gestión de la formación en centros de trabajo: FCT, FP dual y FFE" \
+		--metadata subtitle="Gestión de la formación en centros de trabajo: FCT, FP dual y FFEOE" \
 		--metadata date="Versión $(VERSION) · $(PUB_DATE)" \
 		--metadata lang=es \
 		-c assets/theme.css -c assets/print.css \

@@ -1,4 +1,4 @@
-# FFE: profesorado y evaluación
+# FFEOE: profesorado y evaluación
 
 Este capítulo es para el **profesorado que da clase al alumnado de la formación en empresa** y necesita saber cómo
 le ha ido en las empresas para **evaluarlo**. Si no eres además responsable de seguimiento ni tutoría de grupo, lo
@@ -57,11 +57,11 @@ valoran el desempeño en la empresa y a ti te corresponde decidir cómo pesa en 
 
 !!! note "Solo lo que corresponde a tu grupo"
     Ves las estancias de los grupos en los que das clase (y solo el resumen, no la valoración de cada actividad). Si
-    das clase en varios grupos del plan, aparecen todos. La gestión de la FFE, la jefatura, la tutoría de grupo y el
+    das clase en varios grupos del plan, aparecen todos. La gestión de la FFEOE, la jefatura, la tutoría de grupo y el
     responsable de seguimiento ven además el resto del seguimiento de su ámbito ([capítulo 32](32-ffe-tutoria-docente-y-de-grupo.md)).
 
 ## Qué no puedes hacer y a quién pedirlo
 
 - **Valorar actividades o corregir una valoración**: es del responsable de seguimiento, de la tutoría de grupo o de la
   tutoría laboral.
-- **Ver estancias de grupos en los que no das clase**: pídelo a la gestión de la FFE o a la jefatura.
+- **Ver estancias de grupos en los que no das clase**: pídelo a la gestión de la FFEOE o a la jefatura.

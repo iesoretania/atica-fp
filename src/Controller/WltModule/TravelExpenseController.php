@@ -69,6 +69,8 @@ class TravelExpenseController extends AbstractController
             ->setTeacher($teacher)
             ->setFromDateTime(new \DateTime())
             ->setToDateTime(new \DateTime());
+        // se registran los gastos propios; la jefatura, la coordinación y el responsable económico pueden registrar los de cualquier docente
+        $this->denyAccessUnlessGranted(TravelExpenseVoter::MANAGE, $travelExpense);
 
         $managerRegistry->getManager()->persist($travelExpense);
 
@@ -164,7 +166,8 @@ class TravelExpenseController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_ACCESS_EXPENSE, $organization);
 
-        $allowNew = $this->isGranted(WltOrganizationVoter::WLT_CREATE_EXPENSE, $organization);
+        $allowNew = $this->isGranted(WltOrganizationVoter::WLT_CREATE_EXPENSE, $organization)
+            && $this->isGranted(TravelExpenseVoter::MANAGE, (new TravelExpense())->setTeacher($teacher));
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
