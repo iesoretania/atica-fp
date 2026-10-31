@@ -189,6 +189,67 @@ class PermissionMatrixTest extends AppWebTestCase
         self::assertSame(array_keys($expected), array_keys($actual), 'Las acciones de la matriz no coinciden con las de la instantánea');
     }
 
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function moduleProvider(): iterable
+    {
+        foreach (array_keys(PermissionMatrix::modules()) as $module) {
+            yield $module => [$module];
+        }
+    }
+
+    /**
+     * La matriz solo comprueba quién llega a la pantalla de confirmación; este test comprueba que esa pantalla es
+     * de verdad una confirmación: ninguna acción de borrado de la matriz modifica un solo dato sin «confirm=ok»,
+     * ni siquiera cuando la pide la administración del centro
+     *
+     * @dataProvider moduleProvider
+     */
+    public function testNoDeleteActionChangesDataWithoutConfirmation(string $module): void
+    {
+        $definition = PermissionMatrix::modules()[$module];
+        $placeholders = $this->placeholders();
+        $this->login($this->getUser($definition['profiles']['admin']['user']));
+
+        $checked = 0;
+        foreach ($definition['sections'] as $section) {
+            foreach ($section['actions'] as $action) {
+                [$method, $path, $body] = [...explode(' ', $action['request'], 3), ''];
+                if ($method !== 'POST' || !str_contains($body, 'items[]') && !str_contains($body, 'users[]')) {
+                    continue;
+                }
+                $before = $this->tableCounts();
+                parse_str(strtr($body, $placeholders), $parameters);
+                $this->client->request($method, strtr($path, $placeholders), $parameters);
+
+                $after = $this->tableCounts();
+                $changed = array_keys(array_filter($after, static fn(int $rows, string $table): bool => $rows !== $before[$table], ARRAY_FILTER_USE_BOTH));
+                self::assertSame([], $changed, sprintf('%s «%s» (%s) modifica datos sin pedir confirmación', $module, $action['label'], $action['request']));
+                $checked++;
+            }
+        }
+
+        self::assertGreaterThan(0, $checked, "El módulo $module no tiene acciones de borrado");
+    }
+
+    /**
+     * @return array<string, int> filas de cada tabla
+     */
+    private function tableCounts(): array
+    {
+        $db = $this->connection();
+        $counts = [];
+        foreach ($db->createSchemaManager()->listTableNames() as $table) {
+            if ($table === 'event_log') {
+                continue; // el registro de actividad anota cada petición, también las que no cambian nada
+            }
+            $counts[$table] = (int) $db->fetchOne('SELECT COUNT(*) FROM `' . $table . '`');
+        }
+
+        return $counts;
+    }
+
     public static function tearDownAfterClass(): void
     {
         if (self::updating()) {

@@ -240,6 +240,29 @@ class WptShiftTest extends AppWebTestCase
         self::assertSame(1, $crawler->selectButton('Guardar cambios')->count());
     }
 
+    public function testNoAgreementCanBeCreatedInALockedShift(): void
+    {
+        $shift = $this->shiftId();
+        $agreements = (int) $this->connection()->fetchOne('SELECT COUNT(*) FROM wpt_agreement WHERE shift_id = ?', [$shift]);
+        $this->login($this->getUser('alfa.jefe'));
+
+        // control: con la convocatoria abierta, la jefatura puede crear convenios
+        $crawler = $this->client->request('GET', "/fct/acuerdo/nuevo/$shift");
+        self::assertResponseIsSuccessful();
+        self::assertSame(1, $crawler->selectButton('Guardar cambios')->count());
+        $values = $crawler->selectButton('Guardar cambios')->form()->getPhpValues();
+
+        $this->connection()->executeStatement('UPDATE wpt_shift SET locked = 1 WHERE id = ?', [$shift]);
+        $crawler = $this->client->request('GET', "/fct/acuerdo/nuevo/$shift");
+        if ($this->client->getResponse()->getStatusCode() === 200) {
+            self::assertSame(0, $crawler->selectButton('Guardar cambios')->count());
+        }
+        $this->client->request('POST', "/fct/acuerdo/nuevo/$shift", $values);
+
+        self::assertLessThan(500, $this->client->getResponse()->getStatusCode());
+        self::assertSame($agreements, (int) $this->connection()->fetchOne('SELECT COUNT(*) FROM wpt_agreement WHERE shift_id = ?', [$shift]));
+    }
+
     public function testDeletionRequiresConfirmationAndRemovesTheShiftWithItsActivitiesAndAgreements(): void
     {
         $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));

@@ -87,6 +87,101 @@ class WltMeetingTest extends AppWebTestCase
         self::assertSame($count, static::getContainer()->get('doctrine')->getConnection()->fetchOne('SELECT COUNT(*) FROM wlt_meeting'));
     }
 
+    private function connection(): \Doctrine\DBAL\Connection
+    {
+        return static::getContainer()->get('doctrine')->getConnection();
+    }
+
+    private function teacherId(string $username): int
+    {
+        return (int) $this->connection()->fetchOne(
+            'SELECT t.id FROM edu_teacher t JOIN person p ON p.id = t.person_id WHERE p.login_username = ? ORDER BY t.id DESC LIMIT 1',
+            [$username]
+        );
+    }
+
+    private function meetingId(): int
+    {
+        return (int) $this->connection()->fetchOne('SELECT id FROM wlt_meeting ORDER BY id LIMIT 1');
+    }
+
+    public function testGroupTutorRegistersAMeetingAndIsItsCreator(): void
+    {
+        $year = $this->getOrganization()->getCurrentAcademicYear()->getId();
+        $tutor = $this->teacherId('alfa.tutor');
+        $before = (int) $this->connection()->fetchOne('SELECT COUNT(*) FROM wlt_meeting');
+        $this->login($this->getUser('alfa.tutor'));
+
+        $crawler = $this->client->request('GET', '/dual/reunion/nueva/' . $year);
+        $values = $crawler->selectButton('Guardar cambios')->form()->getPhpValues();
+        $values['meeting']['dateTime'] = ['date' => '2026-11-12', 'time' => '10:30'];
+        $values['meeting']['createdBy'] = (string) $tutor;
+        $values['meeting']['project'] = (string) $this->connection()->fetchOne('SELECT id FROM wlt_project LIMIT 1');
+        $values['meeting']['teachers'] = [(string) $tutor];
+        $values['meeting']['detail'] = 'Se revisa el calendario de alternancia';
+        $this->client->request('POST', '/dual/reunion/nueva/' . $year, $values);
+
+        self::assertResponseRedirects('/dual/reunion/listar');
+        self::assertSame($before + 1, (int) $this->connection()->fetchOne('SELECT COUNT(*) FROM wlt_meeting'));
+        $row = $this->connection()->fetchAssociative('SELECT created_by_id, detail FROM wlt_meeting ORDER BY id DESC LIMIT 1');
+        self::assertSame($tutor, (int) $row['created_by_id']);
+        self::assertSame('Se revisa el calendario de alternancia', $row['detail']);
+    }
+
+    /**
+     * La jefatura de departamento ve las reuniones de su ámbito pero solo las puede modificar quien las creó
+     */
+    public function testAnotherTeacherOpensTheMeetingReadOnlyAndCannotChangeIt(): void
+    {
+        $id = $this->meetingId();
+        $detail = (string) $this->connection()->fetchOne('SELECT detail FROM wlt_meeting WHERE id = ?', [$id]);
+        $this->login($this->getUser('alfa.jefe'));
+
+        $crawler = $this->client->request('GET', '/dual/reunion/' . $id);
+
+        self::assertResponseIsSuccessful();
+        self::assertCount(0, $crawler->selectButton('Guardar cambios'), 'La jefatura ve el botón de guardar en una reunión ajena');
+
+        $this->client->request('POST', '/dual/reunion/' . $id, ['meeting' => ['detail' => 'Modificada por otra persona']]);
+
+        self::assertSame($detail, (string) $this->connection()->fetchOne('SELECT detail FROM wlt_meeting WHERE id = ?', [$id]));
+    }
+
+    public function testCreatorSeesTheSaveButtonOfTheirMeeting(): void
+    {
+        $this->login($this->getUser('alfa.tutor'));
+
+        $crawler = $this->client->request('GET', '/dual/reunion/' . $this->meetingId());
+
+        self::assertResponseIsSuccessful();
+        self::assertCount(1, $crawler->selectButton('Guardar cambios'));
+    }
+
+    public function testDeletingAMeetingAsksForConfirmationAndOnlyTheCreatorOrAnAdministratorCanDoIt(): void
+    {
+        $id = $this->meetingId();
+        $count = (int) $this->connection()->fetchOne('SELECT COUNT(*) FROM wlt_meeting');
+
+        // otra persona con acceso a la reunión no puede eliminarla, ni siquiera pidiendo la confirmación
+        $this->login($this->getUser('alfa.jefe'));
+        $this->client->request('POST', '/dual/reunion/eliminar', ['items' => [$id], 'confirm' => 'ok']);
+        self::assertResponseStatusCodeSame(403);
+        self::assertSame($count, (int) $this->connection()->fetchOne('SELECT COUNT(*) FROM wlt_meeting'));
+
+        // quien la creó recibe primero la página de confirmación, que no borra nada
+        static::ensureKernelShutdown();
+        $this->client = static::createClient();
+        $this->login($this->getUser('alfa.tutor'));
+        $this->client->request('POST', '/dual/reunion/eliminar', ['items' => [$id]]);
+        self::assertResponseIsSuccessful();
+        self::assertSame($count, (int) $this->connection()->fetchOne('SELECT COUNT(*) FROM wlt_meeting'));
+
+        // y al confirmar se elimina
+        $this->client->request('POST', '/dual/reunion/eliminar', ['items' => [$id], 'confirm' => 'ok']);
+        self::assertResponseRedirects('/dual/reunion/listar');
+        self::assertSame($count - 1, (int) $this->connection()->fetchOne('SELECT COUNT(*) FROM wlt_meeting'));
+    }
+
     public function testStudentCannotOpenTheMeetingForms(): void
     {
         $this->login($this->getUser('alfa.alumno5'));

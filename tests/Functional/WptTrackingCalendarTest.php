@@ -204,6 +204,65 @@ class WptTrackingCalendarTest extends AppWebTestCase
         self::assertSame($notes, $this->reload($tracked)->getNotes());
     }
 
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function lockedShiftWriterProvider(): iterable
+    {
+        yield 'alumnado' => ['alfa.alumno1'];
+        yield 'tutoría docente' => ['alfa.tutor'];
+        yield 'tutoría laboral' => ['alfa.tutorlaboral'];
+        yield 'jefatura de departamento' => ['alfa.jefe'];
+    }
+
+    /**
+     * Con la convocatoria bloqueada nadie que participa en el seguimiento puede cambiar una jornada, ni mandando
+     * la petición a mano ni por la API
+     *
+     * @dataProvider lockedShiftWriterProvider
+     */
+    public function testNobodyChangesADayOfALockedShift(string $username): void
+    {
+        $tracked = $this->trackedDayOf('alfa.alumno1');
+        $notes = $tracked->getNotes();
+        $shift = $tracked->getAgreementEnrollment()->getAgreement()->getShift()->getId();
+        $this->login($this->getUser($username));
+
+        // la petición se prepara con el formulario real mientras la convocatoria está abierta...
+        $url = $this->formUrl($tracked->getWorkDay(), $tracked->getAgreementEnrollment());
+        $crawler = $this->client->request('GET', $url);
+        $button = $crawler->selectButton('Guardar cambios');
+        if ($button->count() === 0) {
+            // ... y si el perfil no puede ni rellenarla abierta, se envía el formulario con la mano
+            $values = ['work_day_tracking' => ['_token' => $crawler->filter('input[name="work_day_tracking[_token]"]')->attr('value')]];
+        } else {
+            $values = $button->form()->getPhpValues();
+        }
+        $values['work_day_tracking']['notes'] = 'Modificada con la convocatoria bloqueada';
+
+        $this->em()->getConnection()->executeStatement('UPDATE wpt_shift SET locked = 1 WHERE id = ?', [$shift]);
+        $this->client->request('POST', $url, $values);
+
+        self::assertSame($notes, $this->reload($tracked)->getNotes(), $username);
+    }
+
+    /**
+     * Control de la prueba anterior: la misma petición sí guarda las notas mientras la convocatoria está abierta
+     */
+    public function testTheSameRequestChangesTheDayWhileTheShiftIsOpen(): void
+    {
+        $tracked = $this->trackedDayOf('alfa.alumno1');
+        $this->login($this->getUser('alfa.alumno1'));
+
+        $url = $this->formUrl($tracked->getWorkDay(), $tracked->getAgreementEnrollment());
+        $crawler = $this->client->request('GET', $url);
+        $values = $crawler->selectButton('Guardar cambios')->form()->getPhpValues();
+        $values['work_day_tracking']['notes'] = 'Modificada con la convocatoria abierta';
+        $this->client->request('POST', $url, $values);
+
+        self::assertSame('Modificada con la convocatoria abierta', $this->reload($tracked)->getNotes());
+    }
+
     public function testStudentCannotUnlockTheirDayWithACraftedRequest(): void
     {
         $tracked = $this->trackedDayOf('alfa.alumno1');

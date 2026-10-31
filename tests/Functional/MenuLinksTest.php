@@ -68,6 +68,35 @@ class MenuLinksTest extends AppWebTestCase
     }
 
     /**
+     * En la FFE el responsable económico entra solo para los gastos: no se le ofrecen seguimiento, valoración,
+     * evaluación ni encuestas, que para él estarían vacíos (o, antes, fallaban)
+     */
+    public function testFinancialManagerIsOnlyOfferedTheExpensesInFfe(): void
+    {
+        $this->login($this->getUser('alfa.economico'));
+
+        $links = $this->menuLinks('/formacion');
+
+        self::assertSame(['/formacion', '/formacion/desplazamiento/resumen'], array_values(array_filter(
+            $links,
+            static fn(string $link): bool => str_starts_with($link, '/formacion')
+        )));
+    }
+
+    /**
+     * El alumnado de FFE solo sigue su estancia y contesta la encuesta: ni valoración ni evaluación de grupo
+     */
+    public function testFfeStudentIsNotOfferedTheGradingScreens(): void
+    {
+        $this->login($this->getUser('alfa.alumno7'));
+
+        $links = $this->menuLinks('/formacion');
+
+        self::assertNotEmpty(array_filter($links, static fn(string $link): bool => str_starts_with($link, '/formacion/seguimiento')));
+        self::assertSame([], array_filter($links, static fn(string $link): bool => str_starts_with($link, '/formacion/valoracion')));
+    }
+
+    /**
      * El profesorado que solo da clase en FP dual no participa en ninguna encuesta: no debe ver la entrada
      */
     public function testTeachingOnlyStaffIsNotOfferedAnEmptySurveySection(): void
