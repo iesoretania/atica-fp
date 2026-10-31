@@ -162,7 +162,7 @@ class WltFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
         // Calificaciones de las realizaciones y un comentario
         $grade = $this->getReference(EduFixtures::REF_PERFORMANCE_SCALE_VALUE . $prefix . '.2', PerformanceScaleValue::class);
         $gradedBy = $this->teacher($prefix, DemoData::ROLE_GROUP_TUTOR)->getPerson();
-        $today = new \DateTimeImmutable('today');
+        $today = DemoData::today();
         foreach ([$agreement1, $agreement2] as $agreement) {
             foreach ($realizations as $index => $realization) {
                 $agreementRealization = new AgreementActivityRealization();

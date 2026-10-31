@@ -77,6 +77,16 @@ class PermissionMatrixTest extends AppWebTestCase
              WHERE t.academic_year_id = ? AND NOT EXISTS (SELECT 1 FROM edu_teaching x WHERE x.teacher_id = t.id)',
             ['alfa.director', 'alfa.alumno5', $organization->getCurrentAcademicYear()->getId()]
         );
+        // lo mismo para el grupo de FFE (el del alumno 7), por si no es el mismo grupo
+        $db->executeStatement(
+            'INSERT INTO edu_teaching (teacher_id, group_id, subject_id)
+             SELECT t.id, se.group_id, (SELECT s.id FROM edu_subject s JOIN edu_group g ON g.grade_id = s.grade_id WHERE g.id = se.group_id LIMIT 1)
+             FROM edu_teacher t
+             JOIN person p ON p.id = t.person_id AND p.login_username = ?
+             JOIN edu_student_enrollment se ON se.person_id = (SELECT id FROM person WHERE login_username = ?)
+             WHERE t.academic_year_id = ? AND NOT EXISTS (SELECT 1 FROM edu_teaching x WHERE x.teacher_id = t.id AND x.group_id = se.group_id)',
+            ['alfa.director', 'alfa.alumno7', $organization->getCurrentAcademicYear()->getId()]
+        );
         $dualAgreement = (int) $db->fetchOne(
             'SELECT a.id FROM wlt_agreement a JOIN edu_student_enrollment se ON se.id = a.student_enrollment_id JOIN person p ON p.id = se.person_id WHERE p.login_username = ?',
             ['alfa.alumno5']

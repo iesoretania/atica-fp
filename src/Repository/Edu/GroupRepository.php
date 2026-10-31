@@ -149,6 +149,20 @@ class GroupRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Grupos en los que el docente da clase
+     */
+    public function findByTeacher(Teacher $teacher): array
+    {
+        return $this->createQueryBuilder('g')
+            ->distinct()
+            ->join('g.teachings', 'te')
+            ->where('te.teacher = :teacher')
+            ->setParameter('teacher', $teacher)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByTutor(Teacher $teacher): array
     {
         return $this->createQueryBuilder('g')

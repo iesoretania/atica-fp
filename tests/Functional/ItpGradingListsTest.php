@@ -124,6 +124,38 @@ class ItpGradingListsTest extends AppWebTestCase
     }
 
     /**
+     * El profesorado que solo da clase en el grupo ve la evaluación de ese grupo y nada más
+     */
+    public function testTeachingOnlyStaffSeesTheEvaluationOfTheGroupTheyTeach(): void
+    {
+        $this->em()->getConnection()->executeStatement(
+            'INSERT INTO edu_teaching (teacher_id, group_id, subject_id)
+             SELECT t.id, se.group_id, (SELECT s.id FROM edu_subject s JOIN edu_group g ON g.grade_id = s.grade_id WHERE g.id = se.group_id LIMIT 1)
+             FROM edu_teacher t
+             JOIN person p ON p.id = t.person_id AND p.login_username = ?
+             JOIN edu_student_enrollment se ON se.person_id = (SELECT id FROM person WHERE login_username = ?)
+             WHERE t.academic_year_id = ? AND NOT EXISTS (SELECT 1 FROM edu_teaching x WHERE x.teacher_id = t.id AND x.group_id = se.group_id)',
+            ['alfa.director', 'alfa.alumno7', $this->year()]
+        );
+        $this->login($this->getUser('alfa.director'));
+
+        $this->client->request('GET', '/formacion/valoracion/evaluacion/' . $this->year());
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('2º DAM A', (string) $this->client->getResponse()->getContent());
+        self::assertSame(['Alumno 7', 'Alumno 8'], $this->studentsIn('/formacion/valoracion/evaluacion/grupo/' . $this->groupId()));
+        foreach (['/formacion/valoracion/evaluacion/grupo/detalle/', '/formacion/valoracion/evaluacion/informe/'] as $url) {
+            $this->client->request('GET', $url . $this->stayId());
+            self::assertResponseIsSuccessful($url);
+        }
+
+        // pero no la valoración de actividades ni el seguimiento diario de la estancia
+        foreach (['/formacion/valoracion/' . $this->stayId(), '/formacion/seguimiento/calendario/' . $this->stayId(), '/formacion/valoracion/listar/' . $this->year(), '/formacion/seguimiento/listar/' . $this->year()] as $url) {
+            $this->client->request('GET', $url);
+            self::assertResponseStatusCodeSame(403, $url);
+        }
+    }
+
+    /**
      * @return iterable<string, array{string}>
      */
     public static function evaluationOutsiderProvider(): iterable

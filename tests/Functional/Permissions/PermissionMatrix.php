@@ -294,6 +294,7 @@ final class PermissionMatrix
                     'gestor' => ['label' => 'Gestión de la FFE', 'user' => 'alfa.gestorffe'],
                     'tutor' => ['label' => 'Tutoría de grupo', 'user' => 'alfa.tutor'],
                     'tutor-docente' => ['label' => 'Tutoría docente de la estancia', 'user' => 'alfa.profesor'],
+                    'profesorado' => ['label' => 'Profesorado del grupo', 'user' => 'alfa.director'],
                     'alumno' => ['label' => 'Alumnado de la estancia', 'user' => 'alfa.alumno7'],
                     'tutor-laboral' => ['label' => 'Tutoría laboral de la estancia', 'user' => 'alfa.tutorlaboral'],
                     'otro-tutor-laboral' => ['label' => 'Tutoría laboral de otra estancia', 'user' => 'alfa.tutorlaboral2'],

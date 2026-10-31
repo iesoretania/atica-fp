@@ -178,8 +178,9 @@ class OrganizationVoter extends CachedVoter
                 // Si es jefe de departamento, tutor de grupo, tutor docente o tutor laboral, permitir ver evaluaciones
                 return $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isItpTeacher;
             case self::ITP_ACCESS_TRACKING:
-                // Quien participa en alguna estancia. El responsable económico no: solo entra a los gastos
-                return $isDepartmentHead || $isItpStudent || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor || $isItpTeacher;
+                // Quien participa en alguna estancia. El responsable económico no (solo entra a los gastos) ni el
+                // profesorado que solo da clase (solo ve la evaluación)
+                return $isDepartmentHead || $isItpStudent || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isStudentProgramWorkcenterWorkTutor;
             case self::ITP_ACCESS_SECTION:
                 // Si es jefe de algún departamento, estudiante, tutor de grupo, tutor docente o laboral, permitir acceder.
                 // El responsable económico también, para poder consultar los gastos de desplazamiento

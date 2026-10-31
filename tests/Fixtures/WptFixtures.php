@@ -111,7 +111,7 @@ class WptFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
         }
 
         // Jornadas (días laborables del período) y seguimiento diario hasta hoy
-        $today = new \DateTimeImmutable('today');
+        $today = DemoData::today();
         foreach ([$agreement1, $agreement2] as $agreement) {
             foreach ($this->weekdays($start, $end) as $date) {
                 $workDay = new WorkDay();

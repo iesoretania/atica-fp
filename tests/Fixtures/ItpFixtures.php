@@ -162,7 +162,7 @@ class ItpFixtures extends AbstractDemoFixture implements DependentFixtureInterfa
         // Valoración de actividades, un comentario y jornadas
         $scaleValue = $this->getReference(EduFixtures::REF_PERFORMANCE_SCALE_VALUE . $prefix . '.2', PerformanceScaleValue::class);
         $valuedBy = $this->teacher($prefix, DemoData::ROLE_TEACHER)->getPerson();
-        $today = new \DateTimeImmutable('today');
+        $today = DemoData::today();
         foreach ([$spw1, $spw2] as $spw) {
             foreach ($activities as $index => $activity) {
                 $spwActivity = new StudentProgramWorkcenterActivity();

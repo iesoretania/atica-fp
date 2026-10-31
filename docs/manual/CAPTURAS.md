@@ -79,10 +79,17 @@ que ya muestran otras imágenes.
   (`prepare`): una captura de página completa tras un scroll descoloca los elementos fijos.
 - Tras pulsar algo que recarga una parte de la página, espera al nuevo estado (`waitForSelector` sobre un
   elemento visible), no solo a `networkidle`.
-- **El reloj del navegador está fijo** en `2026-11-17T10:30:00+01:00` (`fixedNow` en `lib.mjs`; se cambia con
-  `SHOTS_NOW`), el puntero se aparta antes de cada captura (si no, resalta la tarjeta que quede debajo del botón
-  de entrada) y se espera a la tipografía. El reloj **del servidor** no se puede fijar: lo único que depende de él
-  es el año del pie de página y los valores por defecto de algunos formularios nuevos; el año cambiará cada enero.
+- **«Hoy» está fijado en dos sitios, y deben coincidir**: los **datos** se cargan con `DEMO_TODAY=2026-10-31`
+  (lo define `scripts/manual.sh data`; las fixtures de los tests no lo usan y siguen con la fecha real), de modo que
+  las jornadas, reuniones, visitas y gastos caen siempre en las mismas fechas, y el **reloj del navegador** está en
+  esa misma fecha (`fixedNow` en `lib.mjs`; se cambia con `SHOTS_NOW`). Además, el puntero se aparta antes de cada
+  captura (si no, resalta la tarjeta que quede debajo del botón de entrada) y se espera a la tipografía.
+- **El reloj del servidor PHP no se puede fijar**, y esto es lo único que sigue dependiendo del día real: el año
+  del pie de página (cambiará cada enero), los valores por defecto de los formularios nuevos (visita, gasto,
+  reunión: fecha y hora actuales), el botón «Hoy» de los calendarios de seguimiento (solo aparece si hay una
+  jornada en el día real, es decir, entre el 31/10/2026 y el 28/11/2026 en un día laborable) y las jornadas que el
+  servidor considera pasadas o futuras (a partir del 28/11/2026 todas son pasadas). Si una imagen cambia sin motivo
+  al regenerarla, mira primero si es una de estas.
 - **Una captura solo reemplaza a la imagen existente si difiere de ella en más de 100 píxeles** (según
   `pixelmatch`) o cambia de tamaño: Chromium suaviza el texto de forma ligeramente distinta en cada ejecución
   y, sin esa tolerancia, git mostraría decenas de imágenes modificadas sin motivo. El script lo indica con «(sin

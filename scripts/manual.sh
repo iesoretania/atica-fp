@@ -42,6 +42,9 @@ case "${1:-}" in
             exit 1
         fi
         export APP_ENV=test
+        # «Hoy» de los datos (convenios, jornadas, visitas...): fijo, para que no cambien con el día de la carga.
+        # Debe coincidir con SHOTS_NOW de scripts/screenshots/lib.mjs (ver docs/manual/CAPTURAS.md)
+        export DEMO_TODAY="${MANUAL_TODAY:-2026-10-31}"
         php -d memory_limit=1G bin/console doctrine:database:drop --force --if-exists
         php -d memory_limit=1G bin/console doctrine:database:create
         php -d memory_limit=1G bin/console doctrine:migrations:migrate --no-interaction

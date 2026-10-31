@@ -135,16 +135,33 @@ class WltMeetingTest extends AppWebTestCase
     {
         $id = $this->meetingId();
         $detail = (string) $this->connection()->fetchOne('SELECT detail FROM wlt_meeting WHERE id = ?', [$id]);
-        $this->login($this->getUser('alfa.jefe'));
 
+        // la petición completa, tal como la envía el formulario de quien creó la reunión
+        $this->login($this->getUser('alfa.tutor'));
         $crawler = $this->client->request('GET', '/dual/reunion/' . $id);
+        $values = $crawler->selectButton('Guardar cambios')->form()->getPhpValues();
+        $values['meeting']['detail'] = 'Modificada por otra persona';
 
+        static::ensureKernelShutdown();
+        $this->client = static::createClient();
+        $this->login($this->getUser('alfa.jefe'));
+        $crawler = $this->client->request('GET', '/dual/reunion/' . $id);
         self::assertResponseIsSuccessful();
         self::assertCount(0, $crawler->selectButton('Guardar cambios'), 'La jefatura ve el botón de guardar en una reunión ajena');
-
-        $this->client->request('POST', '/dual/reunion/' . $id, ['meeting' => ['detail' => 'Modificada por otra persona']]);
-
+        // el token del formulario es de la sesión de cada persona: se usa el de la página de la jefatura, si lo hay
+        $token = $crawler->filter('input[name="meeting[_token]"]');
+        $values['meeting']['_token'] = $token->count() ? $token->attr('value') : '';
+        $this->client->request('POST', '/dual/reunion/' . $id, $values);
         self::assertSame($detail, (string) $this->connection()->fetchOne('SELECT detail FROM wlt_meeting WHERE id = ?', [$id]));
+
+        // control: la misma petición, con el token de su sesión, enviada por quien la creó sí la modifica
+        static::ensureKernelShutdown();
+        $this->client = static::createClient();
+        $this->login($this->getUser('alfa.tutor'));
+        $crawler = $this->client->request('GET', '/dual/reunion/' . $id);
+        $values['meeting']['_token'] = $crawler->filter('input[name="meeting[_token]"]')->attr('value');
+        $this->client->request('POST', '/dual/reunion/' . $id, $values);
+        self::assertSame('Modificada por otra persona', (string) $this->connection()->fetchOne('SELECT detail FROM wlt_meeting WHERE id = ?', [$id]));
     }
 
     public function testCreatorSeesTheSaveButtonOfTheirMeeting(): void

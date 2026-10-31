@@ -396,7 +396,7 @@ class GradingController extends AbstractController
         $person = $this->getUser();
         assert($person instanceof Person);
 
-        $studentProgramWorkcenters = $studentProgramWorkcenterRepository->findByAcademicYearPersonManagerAndQuery($academicYear, $person, $isManager, null);
+        $studentProgramWorkcenters = $studentProgramWorkcenterRepository->findByAcademicYearPersonManagerAndQuery($academicYear, $person, $isManager, null, true);
         $queryBuilder = $programGroupRepository->createGroupsFromStudentProgramWorkcenterStatsQueryBuilder($studentProgramWorkcenters, $q);
 
         $adapter = new QueryAdapter($queryBuilder);
@@ -447,7 +447,8 @@ class GradingController extends AbstractController
             $programGroup,
             $person,
             $isManager,
-            $q
+            $q,
+            true
         );
         assert($queryBuilder instanceof QueryBuilder);
 

@@ -149,9 +149,18 @@ class StudentProgramWorkcenterVoter extends CachedVoter
                 }
             }
             $isStudentProgramWorkcenterEducationalTutor = $subject->getEducationalTutor() === $teacher || $subject->getAdditionalEducationalTutor() === $teacher;
+            // el profesorado que da clase en el grupo del alumno (solo ve su evaluación)
+            $isGroupTeacher = false;
+            foreach ($programGroup->getGroup()->getTeachings() as $teaching) {
+                if ($teaching->getTeacher() === $teacher) {
+                    $isGroupTeacher = true;
+                    break;
+                }
+            }
         } else {
             $isGroupTutor = false;
             $isStudentProgramWorkcenterEducationalTutor = false;
+            $isGroupTeacher = false;
         }
         $isStudentProgramWorkcenterWorkTutor = $subject->getWorkTutor() === $user || $subject->getAdditionalWorkTutor() === $user;
 
@@ -176,7 +185,7 @@ class StudentProgramWorkcenterVoter extends CachedVoter
             case self::VIEW_GRADE:
                 return $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isDepartmentHead || $isItpManager || $isStudentProgramWorkcenterWorkTutor;
             case self::VIEW_EVALUATION:
-                return $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isDepartmentHead || $isItpManager;
+                return $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor || $isDepartmentHead || $isItpManager || $isGroupTeacher;
             case self::FILL_STUDENT_SURVEY:
                 return $isCurrentAcademicYear && ($isItpStudent || $isDepartmentHead || $isItpManager || $isGroupTutor || $isStudentProgramWorkcenterEducationalTutor);
             case self::VIEW_WORK_TUTOR_SURVEY:

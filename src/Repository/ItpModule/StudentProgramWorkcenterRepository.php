@@ -255,9 +255,10 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         AcademicYear $academicYear,
         Person $person,
         bool $isManager,
-        ?string $q): QueryBuilder
+        ?string $q,
+        bool $includeTeaching = false): QueryBuilder
     {
-        $groups = $this->getManagedGroups($academicYear, $person, $isManager);
+        $groups = $this->getManagedGroups($academicYear, $person, $isManager, $includeTeaching);
         $qb = $this->createQueryBuilder('spw')
             ->addSelect('spw', 'c', 'w', 'p', 'g', 'gr', 't', 'sp', 'se', 'et', 'etp', 'wt')
             ->addSelect('COUNT(a) AS total_activities')
@@ -313,9 +314,10 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         AcademicYear $academicYear,
         Person $person,
         bool $isManager,
-        ?string $q): array
+        ?string $q,
+        bool $includeTeaching = false): array
     {
-        return $this->createGradingQueryBuilder($academicYear, $person, $isManager, $q)
+        return $this->createGradingQueryBuilder($academicYear, $person, $isManager, $q, $includeTeaching)
             ->getQuery()
             ->getResult();
     }
@@ -351,11 +353,12 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         ProgramGroup $programGroup,
         Person $person,
         bool $isManager,
-        ?string $q): QueryBuilder
+        ?string $q,
+        bool $includeTeaching = false): QueryBuilder
     {
         $group = $programGroup->getGroup();
         $academicYear = $group->getGrade()->getTraining()->getAcademicYear();
-        $qb = $this->createGradingQueryBuilder($academicYear, $person, $isManager, $q)
+        $qb = $this->createGradingQueryBuilder($academicYear, $person, $isManager, $q, $includeTeaching)
             ->andWhere('g = :group')
             ->setParameter('group', $group);
 
@@ -503,7 +506,10 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($studentProgramWorkcenter);
     }
 
-    public function getManagedGroups(AcademicYear $academicYear, Person $person, bool $isManager): array
+    /**
+     * @param bool $includeTeaching incluye también los grupos en los que se da clase (solo para la evaluación)
+     */
+    public function getManagedGroups(AcademicYear $academicYear, Person $person, bool $isManager, bool $includeTeaching = false): array
     {
         $teacher = $this->teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
         if (!$isManager && $teacher instanceof Teacher) {
@@ -524,6 +530,15 @@ class StudentProgramWorkcenterRepository extends ServiceEntityRepository
             foreach ($tutorGroups as $group) {
                 if (!in_array($group, $groups)) {
                     $groups[] = $group;
+                }
+            }
+
+            // Si dan clase en el grupo (solo ven su evaluación)
+            if ($includeTeaching) {
+                foreach ($this->groupRepository->findByTeacher($teacher) as $group) {
+                    if (!in_array($group, $groups)) {
+                        $groups[] = $group;
+                    }
                 }
             }
         } else {

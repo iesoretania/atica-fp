@@ -61,6 +61,18 @@ final class DemoData
     ];
 
     /**
+     * «Hoy» de las fixtures: la fecha real, o la de la variable de entorno DEMO_TODAY (formato AAAA-MM-DD) si está
+     * definida. La usa `scripts/manual.sh data` para que los datos del manual, y por tanto sus capturas, no cambien
+     * con el día en que se cargan. Los tests no la definen.
+     */
+    public static function today(): \DateTimeImmutable
+    {
+        $fixed = getenv('DEMO_TODAY');
+
+        return new \DateTimeImmutable($fixed !== false && $fixed !== '' ? $fixed : 'today');
+    }
+
+    /**
      * Período de prácticas de las fixtures: desde hace seis semanas hasta dentro de cuatro,
      * acotado al curso académico actual.
      *
@@ -68,7 +80,7 @@ final class DemoData
      */
     public static function trainingPeriod(?\DateTimeImmutable $today = null): array
     {
-        $today ??= new \DateTimeImmutable('today');
+        $today ??= self::today();
         $yearStart = self::currentSchoolYearStart($today);
         $yearEnd = $yearStart->modify('+1 year -1 day');
 
@@ -89,7 +101,7 @@ final class DemoData
      */
     public static function currentSchoolYearStart(?\DateTimeImmutable $today = null): \DateTimeImmutable
     {
-        $today ??= new \DateTimeImmutable('today');
+        $today ??= self::today();
         $year = (int) $today->format('n') >= 9 ? (int) $today->format('Y') : (int) $today->format('Y') - 1;
 
         return new \DateTimeImmutable(sprintf('%d-09-01', $year));

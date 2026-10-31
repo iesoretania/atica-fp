@@ -9,7 +9,7 @@
  *   SHOTS_BASE_URL  servidor de la aplicación (por defecto http://127.0.0.1:8744, el de «make docs-app»)
  *   SHOTS_OUT_DIR   directorio de salida (por defecto docs/manual/img)
  *   PLAYWRIGHT_DIR  directorio con node_modules/playwright
- *   SHOTS_NOW       fecha y hora que ve el navegador (por defecto 2026-11-17T10:30:00+01:00)
+ *   SHOTS_NOW       fecha y hora que ve el navegador (por defecto 2026-10-31T10:30:00+01:00)
  *
  * Chromium no pinta el texto exactamente igual en dos ejecuciones (decenas de píxeles de suavizado), así que
  * una captura solo reemplaza a la imagen existente si difiere de ella más de MAX_DIFF_PIXELS píxeles
@@ -26,10 +26,11 @@ export const baseUrl = process.env.SHOTS_BASE_URL ?? 'http://127.0.0.1:8744';
 export const outDir = process.env.SHOTS_OUT_DIR ?? 'docs/manual/img';
 
 /**
- * «Ahora» de las capturas: un día lectivo del curso 2026-2027 de los datos de demostración. Se puede cambiar con
- * SHOTS_NOW (formato ISO), pero entonces cambian las imágenes que dependen de la fecha.
+ * «Ahora» de las capturas: el mismo día en que `scripts/manual.sh data` sitúa los datos de demostración
+ * (DEMO_TODAY, 2026-10-31). Se puede cambiar con SHOTS_NOW (formato ISO), pero entonces el navegador y los datos
+ * discrepan y cambian las imágenes que dependen de la fecha.
  */
-export const fixedNow = new Date(process.env.SHOTS_NOW ?? '2026-11-17T10:30:00+01:00');
+export const fixedNow = new Date(process.env.SHOTS_NOW ?? '2026-10-31T10:30:00+01:00');
 
 /** Contraseña de todos los usuarios de demostración (DemoData::PASSWORD) */
 const PASSWORD = 'demo1234';
