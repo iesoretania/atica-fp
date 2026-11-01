@@ -2,7 +2,7 @@
 {% extends 'tailwind_2_layout.html.twig' %}
 
 {%- block form_row -%}
-    {%- set row_attr = row_attr|merge({class: row_attr.class|default('mb-5 max-w-2xl')}) -%}
+    {%- set row_attr = row_attr|merge({class: row_attr.class|default('@container mb-5 max-w-2xl')}) -%}
     {{- parent() -}}
 {%- endblock form_row -%}
 
@@ -57,19 +57,46 @@
     {%- endif -%}
 {%- endblock form_errors -%}
 
+{#- Listas expandidas. Selección única (radio): tarjetas seleccionables, con una descripción opcional bajo la etiqueta
+    (opción «choice_attr» del campo: 'data-description' => 'texto o clave de traducción'). Selección múltiple (casillas): lista simple.
+    form_label() no dibuja nada para los hijos de una lista expandida en el tema Tailwind de Symfony; la etiqueta se pinta a mano. -#}
 {%- block choice_widget_expanded -%}
-    <div {{ block('widget_container_attributes') }} class="mt-2 space-y-2">
-        {%- for child in form %}
-            <div class="flex items-center gap-2">
-                {{- form_widget(child) -}}
-                {#- form_label() no dibuja nada para los hijos de una lista expandida en el tema Tailwind de Symfony; se pinta a mano -#}
+    {%- if multiple -%}
+        <div {{ block('widget_container_attributes') }} class="mt-2 space-y-2">
+            {%- for child in form %}
+                <div class="flex items-center gap-2">
+                    {{- form_widget(child) -}}
+                    {%- set child_label = child.vars.label is same as(false) ? '' : (child.vars.label ?: child.vars.name|humanize) -%}
+                    <label for="{{ child.vars.id }}" class="text-sm text-gray-700">
+                        {{- child.vars.translation_domain is same as(false) ? child_label : child_label|trans(child.vars.label_translation_parameters|default({}), child.vars.translation_domain) -}}
+                    </label>
+                </div>
+            {% endfor -%}
+        </div>
+    {%- else -%}
+        {%- set count = form|length -%}
+        {#- Las columnas dependen del ancho de la fila (la fila es un «@container»): 1 si es estrecha, 2 y, con tres opciones, 3 si es ancha -#}
+        <div {{ block('widget_container_attributes') }} class="mt-2 grid grid-cols-1 gap-3 {{ count == 3 ? '@md:grid-cols-2 @2xl:grid-cols-3' : (count == 1 ? '' : '@md:grid-cols-2') }}">
+            {%- for child in form %}
                 {%- set child_label = child.vars.label is same as(false) ? '' : (child.vars.label ?: child.vars.name|humanize) -%}
-                <label for="{{ child.vars.id }}" class="text-sm text-gray-700">
-                    {{- child.vars.translation_domain is same as(false) ? child_label : child_label|trans(child.vars.label_translation_parameters|default({}), child.vars.translation_domain) -}}
+                {%- set description = child.vars.attr['data-description'] ?? null -%}
+                <label for="{{ child.vars.id }}"
+                       class="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 bg-white p-4 text-sm transition hover:border-gray-300 has-checked:border-brand-500 has-checked:bg-brand-50 has-focus-visible:ring-2 has-focus-visible:ring-brand-500 has-disabled:cursor-not-allowed has-disabled:opacity-60">
+                    <span class="mt-0.5">{{- form_widget(child) -}}</span>
+                    <span class="min-w-0">
+                        <span class="block font-medium text-gray-900">
+                            {{- child.vars.translation_domain is same as(false) ? child_label : child_label|trans(child.vars.label_translation_parameters|default({}), child.vars.translation_domain) -}}
+                        </span>
+                        {%- if description %}
+                            <span class="mt-0.5 block text-gray-500">
+                                {{- child.vars.translation_domain is same as(false) ? description : description|trans({}, child.vars.translation_domain) -}}
+                            </span>
+                        {% endif -%}
+                    </span>
                 </label>
-            </div>
-        {% endfor -%}
-    </div>
+            {% endfor -%}
+        </div>
+    {%- endif -%}
 {%- endblock choice_widget_expanded -%}
 
 {#- Select2EntityType con búsqueda remota: lo gestiona el controlador Stimulus entity-select (Tom Select) -#}

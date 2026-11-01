@@ -35,7 +35,7 @@
                         {% if name is null %}
                             <div class="hidden md:block" aria-hidden="true"></div>
                         {% elseif name in fields %}
-                            {{ form_row(form[name], {row_attr: {class: 'min-w-0'}}|merge(options[name]|default({}))) }}
+                            {{ form_row(form[name], {row_attr: {class: '@container min-w-0'}}|merge(options[name]|default({}))) }}
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -44,7 +44,7 @@
         {#- lo que no esté en la disposición, a todo el ancho -#}
         {% for child in form %}
             {% if child.vars.name not in placed and not child.rendered and 'hidden' not in child.vars.block_prefixes %}
-                {{ form_row(child, {row_attr: {class: 'min-w-0'}}|merge(options[child.vars.name]|default({}))) }}
+                {{ form_row(child, {row_attr: {class: '@container min-w-0'}}|merge(options[child.vars.name]|default({}))) }}
             {% endif %}
         {% endfor %}
         {{ form_rest(form) }}
