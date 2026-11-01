@@ -34,6 +34,9 @@ class WltListComponentsTest extends AppWebTestCase
     public static function listProvider(): iterable
     {
         yield 'proyectos' => ['Wlt:ProjectList', '/dual/proyecto/listar/{year}'];
+        yield 'actividades' => ['Wlt:ActivityList', '/dual/proyecto/programa/{project}/actividad'];
+        yield 'concreciones' => ['Wlt:ActivityRealizationList', '/dual/proyecto/programa/{activity}/concrecion'];
+        yield 'empresas del proyecto' => ['Wlt:LearningProgramList', '/dual/programa/{project}/listar'];
     }
 
     private function path(string $template): string
@@ -41,6 +44,7 @@ class WltListComponentsTest extends AppWebTestCase
         return strtr($template, [
             '{year}' => (string) $this->year(),
             '{project}' => (string) $this->first('wlt_project'),
+            '{activity}' => (string) $this->first('wlt_activity'),
         ]);
     }
 

@@ -113,6 +113,7 @@ class LearningProgramController extends AbstractController
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
+            'learning_program' => $learningProgram,
             'form' => $form->createView()
         ]);
     }
@@ -127,41 +128,6 @@ class LearningProgramController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('cp')
-            ->addSelect('SIZE(cp.activityRealizations)')
-            ->from(LearningProgram::class, 'cp')
-            ->join('cp.company', 'c')
-            ->addOrderBy('c.name');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('c.name LIKE :tq')
-                ->orWhere('c.code LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('cp.project = :project')
-            ->setParameter('project', $project);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        $pager
-            ->setMaxPerPage($this->getParameter('page.size'));
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
-
         $title = $translator->trans('title.list', [], 'wlt_learning_program');
 
         $breadcrumb = [
@@ -175,8 +141,6 @@ class LearningProgramController extends AbstractController
             'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'wlt_learning_program',
             'read_only' => !$this->isGranted(ProjectVoter::MODIFY, $project),
             'project' => $project

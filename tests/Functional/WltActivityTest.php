@@ -187,7 +187,7 @@ class WltActivityTest extends AppWebTestCase
         self::assertSame(['A1', 'A2'], $this->codes($project), 'La actividad en uso se conserva');
         $this->client->followRedirect();
         self::assertResponseIsSuccessful();
-        self::assertSelectorExists('.alert-danger, .alert-error', 'Se avisa de que no se ha podido borrar');
+        self::assertSelectorExists('[role="alert"]', 'Se avisa de que no se ha podido borrar');
     }
 
     public function testActivitiesOfAnotherProjectCannotBeDeletedThroughThisOne(): void

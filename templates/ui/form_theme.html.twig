@@ -66,6 +66,39 @@
         {#- Lista de casillas: recuadro con tarjetas y un único enlace «Seleccionar todos / Quitar todos» (si hay más de una opción).
             Es el aspecto general de cualquier selección múltiple expandida; las listas con textos propios pueden usar ui/form_checklist. -#}
         {%- set count = form|length -%}
+        {%- set has_groups = false -%}
+        {%- for group_label, group in form.vars.choices -%}{%- if group is iterable -%}{%- set has_groups = true -%}{%- endif -%}{%- endfor -%}
+        {%- if has_groups -%}
+        {#- Opciones agrupadas (group_by): un recuadro por grupo, con su propio «Seleccionar todos» -#}
+        <div {{ block('widget_container_attributes') }} class="mt-2 space-y-4">
+            {%- for group_label, group in form.vars.choices -%}
+                {%- set grouped = group is iterable -%}
+                <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-xs" data-controller="check-group"
+                     data-check-group-select-label-value="{{ 'selection.select_group'|trans({}, 'general') }}"
+                     data-check-group-clear-label-value="{{ 'selection.clear_group'|trans({}, 'general') }}">
+                    {%- if grouped %}
+                        <div class="mb-2 flex items-start justify-between gap-3">
+                            <h3 class="text-sm font-semibold text-gray-700">{{ group_label }}</h3>
+                            {%- if group|length > 1 %}
+                                <button type="button" data-check-group-target="toggle" data-action="check-group#toggle"
+                                        class="shrink-0 text-sm font-medium text-brand-700 hover:text-brand-900"></button>
+                            {% endif -%}
+                        </div>
+                    {% endif -%}
+                    <div class="grid grid-cols-1 gap-2">
+                        {%- for key, choice in (grouped ? group : {(group_label): group}) %}
+                            {%- set child = form[key] -%}
+                            <label for="{{ child.vars.id }}"
+                                   class="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 transition hover:border-gray-300 has-checked:border-brand-500 has-checked:bg-brand-50 has-focus-visible:ring-2 has-focus-visible:ring-brand-500 has-disabled:cursor-not-allowed has-disabled:opacity-60">
+                                <span class="mt-0.5">{{- form_widget(child, {translation_domain: false}) -}}</span>
+                                <span class="min-w-0">{{ child.vars.label }}</span>
+                            </label>
+                        {% endfor -%}
+                    </div>
+                </div>
+            {%- endfor -%}
+        </div>
+        {%- else -%}
         <div {{ block('widget_container_attributes') }} data-controller="check-group"
              data-check-group-select-label-value="{{ 'selection.select_group'|trans({}, 'general') }}"
              data-check-group-clear-label-value="{{ 'selection.clear_group'|trans({}, 'general') }}"
@@ -89,6 +122,7 @@
                 {% endfor -%}
             </div>
         </div>
+        {%- endif -%}
     {%- else -%}
         {%- set count = form|length -%}
         {#- Las columnas dependen del ancho de la fila (la fila es un «@container»): 1 si es estrecha, 2 y, con tres opciones, 3 si es ancha -#}

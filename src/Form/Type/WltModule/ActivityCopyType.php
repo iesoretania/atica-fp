@@ -36,6 +36,7 @@ class ActivityCopyType extends AbstractType
         $builder
             ->add('project', EntityType::class, [
                 'label' => 'form.source_project',
+                'help' => 'form.source_project.help',
                 'class' => Project::class,
                 'choices' => $options['projects'],
                 'choice_label' => 'name',

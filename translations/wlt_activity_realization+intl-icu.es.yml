@@ -1,7 +1,16 @@
 form.activity: Actividad
+form.activity.help: Actividad formativo-productiva a la que pertenece esta concreción.
 form.code: Código
+form.code.help: Identificador corto que se muestra en los listados.
 form.description: Descripción
+form.description.help: Qué hará el alumnado en la empresa para realizar esta parte de la actividad.
 form.learning_outcomes: Resultados de aprendizaje asociados
+form.learning_outcomes.help: Resultados de aprendizaje de los módulos del proyecto que se trabajan con esta concreción.
+
+card.title: Datos de la concreción
+
+danger.title: "Peligro: eliminación de la concreción"
+danger.text: Una vez eliminada la concreción, no se podrá recuperar. Si tiene elementos asociados, el borrado no tendrá lugar.
 
 form.save: Guardar cambios
 form.delete: Eliminar las concreciones seleccionadas

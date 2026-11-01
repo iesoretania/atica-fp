@@ -1,50 +1,7 @@
 {% trans_default_domain 'wlt_activity' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block path_new %}{{ path('work_linked_training_training_activity_new', {'id': project.id}) }}{% endblock %}
-
-{% block table_header %}
-    <th><label><input type="checkbox" id="select"> {{ 'header.code'|trans }}</label></th>
-    <th>{{ 'header.description'|trans }}</th>
-    <th>{{ 'header.competencies'|trans }}</th>
-    <th></th>
-{% endblock %}
-
-{% block table_body %}
-            {% for activity in pager %}
-                {% set url = path('work_linked_training_training_activity_edit', {'id': activity.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
-                    <td>
-                        <label><input type="checkbox" name="items[]" value="{{ activity.id }}" class="selectable"> <a href="{{ url }}">{{ activity.code }}</a></label>
-                    </td>
-                    <td>
-                        {{ activity.description|nl2br }}
-                    </td>
-                    <td>
-                        {{ activity.competencies|map(p => p.code)|join(', ') }}
-                    </td>
-                    <td>
-                        {{ m.link_button(path('work_linked_training_project_activity_realization_list', {'id': activity.id}), 'clipboard-list', 'btn-info btn-sm btn-block', 'table.activity_realizations'|trans, null, 'd-md-none d-lg-inline') }}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
-                </tr>
-            {% endfor %}
-{% endblock %}
-
-{% block before_table %}
-    <form action="{{ path('work_linked_training_training_activity_delete', {'id': project.id}) }}" method="post">
-{% endblock %}
-
-{% block after_table %}
-    <div class="clearfix"></div>
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {% if not read_only|default(false) %}
-    {{ m.link_button(path('work_linked_training_training_activity_copy', {'id': project.id}), 'copy', 'btn-primary', 'form.copy'|trans) }}
-    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
-    {% endif %}
-</form>
+{#- Listado dinámico (Live Component Wlt:ActivityList) -#}
+{% block content %}
+    {% include 'ui/_live_list.html.twig' with {component: 'Wlt:ActivityList', props: {project: project}} %}
 {% endblock %}

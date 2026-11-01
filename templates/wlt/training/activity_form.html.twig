@@ -1,12 +1,23 @@
 {% trans_default_domain 'wlt_activity' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['code:1', 'competencies:4'],
+        ['description'],
+        ['priorLearning'],
+    ], {}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {% if not read_only|default(false) %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+
+    {% if activity.id and not read_only|default(false) %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('work_linked_training_training_activity_delete', {'id': activity.project.id}), activity.id) }}
+    {% endif %}
 {% endblock %}

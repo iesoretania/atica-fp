@@ -45,6 +45,7 @@ class LearningProgramType extends AbstractType
         $builder
             ->add('company', EntityType::class, [
                 'label' => 'form.company',
+                'help' => 'form.company.help',
                 'class' => Company::class,
                 'choice_label' => 'fullName',
                 'choice_translation_domain' => false,
@@ -55,6 +56,7 @@ class LearningProgramType extends AbstractType
             ])
             ->add('activityRealizations', EntityType::class, [
                 'label' => 'form.activity_realizations',
+                'help' => 'form.activity_realizations.help',
                 'class' => ActivityRealization::class,
                 'expanded' => true,
                 'group_by' => fn(ActivityRealization $ar): string => (string) $ar->getActivity(),

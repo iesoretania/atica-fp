@@ -1,6 +1,13 @@
 form.academic_year: Curso académico
 form.company: Empresa
+form.company.help: Empresa colaboradora que se incorpora al proyecto.
 form.company.none: Seleccione empresa
+form.activity_realizations.help: Concreciones de actividad que el alumnado realizará en esta empresa, agrupadas por actividad.
+
+card.title: Programa formativo de la empresa
+
+danger.title: "Peligro: eliminación de la empresa del proyecto"
+danger.text: Una vez eliminada la empresa del proyecto (con su programa formativo), no se podrá recuperar.
 form.training: Enseñanza
 form.training.none: Seleccione una enseñanza
 form.activity_realizations: Actividades a realizar en la empresa

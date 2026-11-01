@@ -47,6 +47,7 @@ class ActivityRealizationType extends AbstractType
         $builder
             ->add('activity', EntityType::class, [
                 'label' => 'form.activity',
+                'help' => 'form.activity.help',
                 'class' => Activity::class,
                 'choice_translation_domain' => false,
                 'choices' => [$activity],
@@ -56,14 +57,17 @@ class ActivityRealizationType extends AbstractType
             ])
             ->add('code', null, [
                 'label' => 'form.code',
+                'help' => 'form.code.help',
                 'required' => true
             ])
             ->add('description', null, [
                 'label' => 'form.description',
+                'help' => 'form.description.help',
                 'required' => true
             ])
             ->add('learningOutcomes', EntityType::class, [
                 'label' => 'form.learning_outcomes',
+                'help' => 'form.learning_outcomes.help',
                 'class' => LearningOutcome::class,
                 'choice_translation_domain' => false,
                 'choices' => $learningOutcomes,

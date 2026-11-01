@@ -46,14 +46,17 @@ class ActivityType extends AbstractType
         $builder
             ->add('code', null, [
                 'label' => 'form.code',
+                'help' => 'form.code.help',
                 'required' => true
             ])
             ->add('description', null, [
                 'label' => 'form.description',
+                'help' => 'form.description.help',
                 'required' => true
             ])
             ->add('competencies', EntityType::class, [
                 'label' => 'form.competencies',
+                'help' => 'form.competencies.help',
                 'class' => Competency::class,
                 'choice_translation_domain' => false,
                 'choices' => $competencies,
@@ -63,6 +66,7 @@ class ActivityType extends AbstractType
             ])
             ->add('priorLearning', null, [
                 'label' => 'form.prior_learning',
+                'help' => 'form.prior_learning.help',
                 'required' => false
             ]);
     }

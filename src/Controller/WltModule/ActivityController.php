@@ -117,6 +117,7 @@ class ActivityController extends AbstractController
             'title' => $title,
             'subject' => $project,
             'read_only' => $readOnly,
+            'activity' => $activity,
             'form' => $form->createView()
         ]);
     }
@@ -131,36 +132,6 @@ class ActivityController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('a')
-            ->from(Activity::class, 'a')
-            ->orderBy('a.code');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('a.code LIKE :tq')
-                ->orWhere('a.description LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('a.project = :project')
-            ->setParameter('project', $project);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $project->getName() . ' - ' . $translator->trans('title.list', [], 'wlt_activity');
 
         $breadcrumb = [
@@ -172,8 +143,6 @@ class ActivityController extends AbstractController
             'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'project' => $project,
             'domain' => 'wlt_activity',
             'read_only' => !$this->isGranted(ProjectVoter::MODIFY, $project)

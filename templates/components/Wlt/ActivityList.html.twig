@@ -1,0 +1,54 @@
+{% trans_default_domain 'wlt_activity' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'wlt_activity', base_url: this.baseUrl, back_url: this.backUrl, project: this.project, read_only: this.readOnly} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block path_new %}{{ path('work_linked_training_training_activity_new', {'id': project.id}) }}{% endblock %}
+
+        {% block table_header %}
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'code' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">
+                <div class="flex items-center gap-2">
+                    {% if not read_only %}<input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600" aria-label="{{ 'selection.clear'|trans({}, 'general') }}">{% endif %}
+                    {{ lm.sort_button('header.code'|trans({}, domain), 'code', this.sort, this.dir) }}
+                </div>
+            </th>
+            <th>{{ 'header.description'|trans({}, domain) }}</th>
+            <th>{{ 'header.competencies'|trans({}, domain) }}</th>
+            <th></th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for activity in pager %}
+                {% set url = path('work_linked_training_training_activity_edit', {'id': activity.id}) %}
+                <tr>
+                    <td class="align-top">
+                        <label class="flex items-center gap-2">
+                            {% if not read_only %}<input type="checkbox" name="items[]" value="{{ activity.id }}" class="selectable size-4 rounded border-gray-300 text-brand-600">{% endif %}
+                            <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ activity.code }}</a>
+                        </label>
+                    </td>
+                    <td class="align-top">{{ activity.description|nl2br }}</td>
+                    <td class="align-top">{{ activity.competencies|map(p => p.code)|join(', ') }}</td>
+                    <td class="text-right">{{ m.link_button(path('work_linked_training_project_activity_realization_list', {'id': activity.id}), 'clipboard-list', 'btn-info btn-sm', 'table.activity_realizations'|trans({}, domain)) }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{% if not read_only %}{{ path('work_linked_training_training_activity_delete', {'id': project.id}) }}{% endif %}{% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+            {% if not read_only %}
+                {{ m.link_button(path('work_linked_training_training_activity_copy', {'id': project.id}), 'copy', 'btn-primary', 'form.copy'|trans({}, domain)) }}
+            {% endif %}
+        {% endblock %}
+        {% block selection_actions %}
+            {% if not read_only %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>

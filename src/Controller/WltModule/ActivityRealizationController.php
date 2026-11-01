@@ -117,6 +117,7 @@ class ActivityRealizationController extends AbstractController
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
+            'activity_realization' => $activityRealization,
             'form' => $form->createView()
         ]);
     }
@@ -131,36 +132,6 @@ class ActivityRealizationController extends AbstractController
     ): Response {
         $project = $activity->getProject();
         $this->denyAccessUnlessGranted(ProjectVoter::MANAGE, $project);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('ar')
-            ->from(ActivityRealization::class, 'ar')
-            ->orderBy('ar.code');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('ar.code LIKE :tq')
-                ->orWhere('ar.description LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('ar.activity = :activity')
-            ->setParameter('activity', $activity);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
 
         $title = $activity->getCode() . ' - ' . $translator->trans('title.list', [], 'wlt_activity_realization');
 
@@ -180,8 +151,6 @@ class ActivityRealizationController extends AbstractController
             'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'activity' => $activity,
             'domain' => 'wlt_activity_realization',
             'read_only' => !$this->isGranted(ProjectVoter::MODIFY, $project)
