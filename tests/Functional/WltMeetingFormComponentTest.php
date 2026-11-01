@@ -93,6 +93,19 @@ class WltMeetingFormComponentTest extends AppWebTestCase
         self::assertCount(1, $component['crawler']->filter('input[name="items[]"][value="' . $id . '"]'), 'La zona de peligro envía la reunión a la operación de borrado');
     }
 
+    public function testExistingMeetingComponentRequestsAreDeniedToAnotherOrganization(): void
+    {
+        $this->login($this->getUser('alfa.tutor'));
+        $id = (int) $this->connection()->fetchOne('SELECT id FROM wlt_meeting ORDER BY id LIMIT 1');
+        $component = $this->componentFor("/dual/reunion/$id");
+
+        $this->client->getCookieJar()->clear();
+        $this->login($this->getUser(DemoData::USER_B_LOCAL_ADMIN), true, DemoData::ORG_B_CODE);
+        $this->update($component, ['meeting.detail' => 'x']);
+
+        self::assertResponseStatusCodeSame(403);
+    }
+
     public function testComponentRequestsAreDeniedToAnotherOrganization(): void
     {
         $this->login($this->getUser('alfa.profesor'));

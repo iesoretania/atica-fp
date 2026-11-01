@@ -101,6 +101,19 @@ class WltContactFormComponentTest extends AppWebTestCase
         self::assertCount(1, $component['crawler']->filter('input[name="items[]"][value="' . $id . '"]'), 'La zona de peligro envía el contacto a la operación de borrado');
     }
 
+    public function testExistingContactComponentRequestsAreDeniedToAnotherOrganization(): void
+    {
+        $this->login($this->getUser('alfa.coordinador'));
+        $id = (int) $this->connection()->fetchOne('SELECT id FROM wlt_contact ORDER BY id LIMIT 1');
+        $component = $this->componentFor('Wlt:ContactForm', "/dual/contacto/$id");
+
+        $this->client->getCookieJar()->clear();
+        $this->login($this->getUser(DemoData::USER_B_LOCAL_ADMIN), true, DemoData::ORG_B_CODE);
+        $this->update($component, ['contact.detail' => 'x']);
+
+        self::assertResponseStatusCodeSame(403);
+    }
+
     public function testContactComponentRequestsAreDeniedToAnotherOrganization(): void
     {
         $this->login($this->getUser('alfa.coordinador'));
