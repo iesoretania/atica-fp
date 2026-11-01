@@ -104,6 +104,32 @@ e `Itp:ActivityForm`): ver sus clases para las reglas de cascada. Las seleccione
 envío del componente (nunca aparece «la opción seleccionada no es válida»). Pruebas: `Itp*ComponentTest` y `ItpListComponentsTest`
 (que incluye la repetición de la petición desde otro centro, que debe dar 403).
 
+### FP dual (`Wlt`)
+
+Módulo completo en el diseño nuevo (68 plantillas), con los listados como Live Components (`src/Twig/Components/Wlt/`):
+proyectos, actividades, concreciones, empresas del proyecto, convenios (filtro por grupo), contactos (forma y fechas),
+reuniones (proyecto y fechas), seguimiento, valoración, resultados del alumnado, desplazamientos (detalle y resumen),
+encuestas (alumnado, empresas, centro) e informes (proyectos con enlace al informe, y contactos por docente y por centro).
+
+Formularios Live con campos dependientes: `Wlt:MeetingForm` (autor → proyecto → alumnado y docentes), `Wlt:ContactForm`
+(fecha y centro → proyectos → alumnado) y `Wlt:ContactEducationalTutorReportForm` (proyectos → centro de trabajo). El
+convenio mantiene `dependent-fields` (como FCT). Los docentes elegibles se calculan en servicios compartidos por el
+controlador y el componente (`MeetingTeacherProvider`, `ContactTeacherProvider`, `ContactReportTeacherProvider`), de modo que
+cada actualización repite exactamente las comprobaciones del controlador (ver `hallazgos-seguridad.md`).
+
+Cambios de tema que se aplican a todos los módulos:
+
+- **Ayudas**: si un campo no declara `help`, el tema muestra la traducción `<etiqueta>.help` del dominio del formulario (la
+  misma convención que las explicaciones de las opciones de una lista de tarjetas). Basta con añadir traducciones.
+- **Desplegables**: todos los `<select>` de formulario son Tom Select (`choice-select`), con búsqueda; dentro de un Live
+  Component se reconstruyen solos cuando el campo se repinta.
+- **Listas de casillas agrupadas** (`group_by`): un recuadro por grupo con su «Seleccionar todos».
+- **Valoraciones**: `attr: {'data-layout': 'row'}` en un campo de tarjetas las coloca en una fila si caben y en vertical si no
+  (`.choice-row-N` en `app.css`); el título es la valoración y la ayuda su descripción.
+- **Calendarios**: `ui/calendar.html.twig` admite `hours_divisor` (FP dual guarda horas, FCT y FFEOE centésimas).
+- **Barra lateral**: separadores sobre «Empresas colaboradoras» y «Gestión del centro», «Mi perfil» y selector de centro con
+  chevron.
+
 ## 5. Riesgos y mitigación
 
 - **Tests funcionales**: ~6 ficheros dependen de selectores CSS; el resto usa rutas/texto, así que el riesgo es moderado. Cada módulo migrado debe pasar la suite completa (4090 tests) antes de continuar.
