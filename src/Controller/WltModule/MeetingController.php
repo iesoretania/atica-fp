@@ -28,17 +28,12 @@ use App\Repository\Edu\TeacherRepository;
 use App\Repository\WltModule\GroupRepository as WltGroupRepository;
 use App\Repository\WltModule\MeetingRepository;
 use App\Repository\WltModule\ProjectRepository;
-use App\Repository\WltModule\TeacherRepository as WltTeacherRepository;
-use App\Security\Edu\OrganizationVoter as EduOrganizationVoter;
 use App\Security\OrganizationVoter;
 use App\Security\WltModule\MeetingVoter;
 use App\Security\WltModule\OrganizationVoter as WltOrganizationVoter;
 use App\Service\UserExtensionService;
-use Doctrine\ORM\QueryBuilder;
+use App\Service\WltModule\MeetingTeacherProvider;
 use Doctrine\Persistence\ManagerRegistry;
-use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use Pagerfanta\Exception\OutOfRangeCurrentPageException;
-use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,10 +49,8 @@ class MeetingController extends AbstractController
         Request              $request,
         TranslatorInterface  $translator,
         UserExtensionService $userExtensionService,
-        Security             $security,
         TeacherRepository    $teacherRepository,
-        WltTeacherRepository $wltTeacherRepository,
-        WltGroupRepository   $groupRepository,
+        MeetingTeacherProvider $teacherProvider,
         ManagerRegistry      $managerRegistry,
         AcademicYear         $academicYear = null
     ): Response
@@ -90,10 +83,7 @@ class MeetingController extends AbstractController
             $request,
             $translator,
             $userExtensionService,
-            $security,
-            $teacherRepository,
-            $wltTeacherRepository,
-            $groupRepository,
+            $teacherProvider,
             $managerRegistry,
             $meeting,
             $academicYear
@@ -105,10 +95,7 @@ class MeetingController extends AbstractController
         Request              $request,
         TranslatorInterface  $translator,
         UserExtensionService $userExtensionService,
-        Security             $security,
-        TeacherRepository    $teacherRepository,
-        WltTeacherRepository $wltTeacherRepository,
-        WltGroupRepository   $wltGroupRepository,
+        MeetingTeacherProvider $teacherProvider,
         ManagerRegistry      $managerRegistry,
         Meeting              $meeting,
         AcademicYear         $academicYear = null
@@ -124,44 +111,9 @@ class MeetingController extends AbstractController
 
         $readOnly = !$this->isGranted(MeetingVoter::MANAGE, $meeting);
 
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(WltOrganizationVoter::WLT_MANAGER, $organization);
-        $isDepartmentHead = $security->isGranted(EduOrganizationVoter::EDU_DEPARTMENT_HEAD, $organization);
-
-        $groups = [];
-        $teacher = null;
-
-        if (!$isManager) {
-            /** @var Person $person */
-            $person = $this->getUser();
-
-            if (!$isWltManager) {
-                // no es administrador ni coordinador de FP:
-                // puede ser jefe de departamento, tutor de grupo o profesor -> ver sólo sus grupos
-                $teacher =
-                    $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
-
-                if ($teacher) {
-                    $groups = $wltGroupRepository->findByAcademicYearAndPerson($academicYear, $person)->toArray();
-                }
-            } else {
-                $groups = $wltGroupRepository->findByAcademicYearAndPerson($academicYear, $person)->toArray();
-            }
-        }
-        $teachers = [];
-        if (!$isManager && !$isDepartmentHead && $teacher && !$readOnly) {
-            $teachers = [$teacher];
-        } elseif ($groups) {
-            $teachers = $teacherRepository->findByGroups($groups);
-        }
-
-        if (!$teachers) {
-            $teachers = $wltTeacherRepository->findByAcademicYear($academicYear);
-        }
-
         $form = $this->createForm(MeetingType::class, $meeting, [
             'disabled' => $readOnly,
-            'teachers' => $teachers,
+            'teachers' => $teacherProvider->forAcademicYear($academicYear, $readOnly),
         ]);
 
         $form->handleRequest($request);
@@ -192,6 +144,7 @@ class MeetingController extends AbstractController
             'title' => $title,
             'read_only' => $readOnly,
             'academic_year' => $academicYear,
+            'meeting' => $meeting,
             'form' => $form->createView()
         ]);
     }
@@ -216,105 +169,12 @@ class MeetingController extends AbstractController
         }
 
         $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_ACCESS_MEETING, $organization);
-        $allowNew = $this->isGranted(WltOrganizationVoter::WLT_CREATE_MEETING, $organization);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-        $queryBuilder
-            ->select('m')
-            ->distinct()
-            ->addSelect('pr')
-            ->addSelect('cb')
-            ->addSelect('p')
-            ->from(Meeting::class, 'm')
-            ->join('m.project', 'pr')
-            ->join('m.createdBy', 'cb')
-            ->join('cb.person', 'p')
-            ->leftJoin('m.teachers', 'te')
-            ->leftJoin('te.person', 'tep')
-            ->leftJoin('m.studentEnrollments', 'se')
-            ->leftJoin('se.person', 'sep')
-            ->addOrderBy('m.dateTime', 'DESC');
-
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(WltOrganizationVoter::WLT_MANAGER, $organization);
-
-        $groups = [];
-        $projects = [];
-
-        /** @var Person $person */
-        $person = $this->getUser();
-        if (!$isWltManager && !$isManager) {
-            // no es administrador ni coordinador de FP:
-            // puede ser jefe de departamento o tutor de grupo -> ver solo visitas de los
-            // estudiantes de sus grupos
-            $groups = $groupRepository->findByAcademicYearAndGroupTutorOrDepartmentHeadPerson($academicYear, $person);
-        } elseif ($isWltManager) {
-            $projects = $projectRepository->findByManager($person);
-        }
-
-        $q = $request->query->get('q');
-
-        if ($q) {
-            $queryBuilder
-                ->orWhere('p.firstName LIKE :tq')
-                ->orWhere('p.lastName LIKE :tq')
-                ->orWhere('(pr.name IS NOT NULL AND pr.name LIKE :tq)')
-                ->orWhere('(sep.firstName IS NOT NULL AND (sep.firstName LIKE :tq OR sep.lastName LIKE :tq))')
-                ->orWhere('(tep.firstName IS NOT NULL AND (tep.firstName LIKE :tq OR tep.lastName LIKE :tq))')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        // ver siempre las propias
-        /** @var Person $user */
-        $user = $this->getUser();
-        $teacher =
-            $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $user);
-
-        if ($groups) {
-            $queryBuilder
-                ->andWhere('se.group IN (:groups) OR te = :teacher OR m.createdBy = :teacher')
-                ->setParameter('groups', $groups)
-                ->setParameter('teacher', $teacher);
-        }
-
-        if ($projects) {
-            $queryBuilder
-                ->andWhere('pr IN (:projects) OR te = :teacher OR m.createdBy = :teacher')
-                ->setParameter('projects', $projects)
-                ->setParameter('teacher', $teacher);
-        }
-
-        if (!$isWltManager && !$isManager && !$projects && !$groups) {
-            $queryBuilder
-                ->andWhere('m.createdBy = :teacher')
-                ->setParameter('teacher', $teacher);
-        }
-
-        $queryBuilder
-            ->andWhere('cb.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
-
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
 
         $title = $translator->trans('title.list', [], 'wlt_meeting');
 
         return $this->render('wlt/meeting/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'wlt_meeting',
-            'allow_new' => $allowNew,
-            'teacher' => $teacher,
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);

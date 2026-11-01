@@ -18,10 +18,10 @@
 
 namespace App\Form\Type\WltModule;
 
-use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\WltModule\Meeting;
 use App\Entity\WltModule\Project;
+use App\Form\Type\Edu\StudentEnrollmentChoiceType;
 use App\Repository\WltModule\ProjectRepository;
 use App\Repository\WltModule\StudentEnrollmentRepository;
 use App\Repository\WltModule\TeacherRepository;
@@ -87,9 +87,8 @@ class MeetingType extends AbstractType
                 'placeholder' => 'form.project.none',
                 'required' => true
             ])
-            ->add('studentEnrollments', EntityType::class, [
+            ->add('studentEnrollments', StudentEnrollmentChoiceType::class, [
                 'label' => 'form.students',
-                'class' => StudentEnrollment::class,
                 'choices' => $studentEnrollments,
                 'disabled' => !$canSelectStudentEnrollments,
                 'expanded' => $canSelectStudentEnrollments,

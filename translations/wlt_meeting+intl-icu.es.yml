@@ -1,4 +1,15 @@
 form.date: Fecha
+form.date.help: Día y hora en que se celebra la reunión. De la fecha depende el alumnado que se puede elegir.
+form.created_by.help: Docente que registra la reunión. Al cambiarlo se recalculan los proyectos disponibles.
+form.project.help: Proyecto de FP dual al que se refiere la reunión. Al elegirlo se ofrecen su alumnado y su profesorado.
+form.students.help: Estudiantes del proyecto con los que se trata en la reunión. Es opcional.
+form.teachers.help: Docentes que asisten a la reunión. Debe haber al menos uno.
+form.detail.help: Resumen de lo tratado y de los acuerdos de la reunión.
+
+card.title: Datos de la reunión
+
+danger.title: "Peligro: eliminación de la reunión"
+danger.text: Una vez eliminada la reunión, no se podrá recuperar.
 form.created_by: Registrada por
 form.created_by.none: Seleccione docente
 form.project: Proyecto

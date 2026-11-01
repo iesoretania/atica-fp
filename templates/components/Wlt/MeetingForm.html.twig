@@ -1,0 +1,21 @@
+{% trans_default_domain 'wlt_meeting' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+{#- Formulario de reunión (Live Component). Al cambiar el autor, el proyecto o la fecha, el servidor recalcula los campos que
+    dependen de ellos. El guardado es un envío normal del formulario al controlador (action). -#}
+<div {{ attributes.defaults({'data-loading': 'addClass(opacity-60)'}) }}>
+    {{ form_start(form, {action: this.submitUrl, method: 'POST'}) }}
+        {{ fl.grid(form, [
+            ['dateTime', 'createdBy'],
+            ['project'],
+            ['studentEnrollments'],
+            ['teachers'],
+            ['detail'],
+        ], {detail: {attr: {rows: 8}}}, 'card.title'|trans) }}
+        {{ m.start_button() }}
+            {% if not this.readOnly %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
+            {{ m.link_button(this.backUrl, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.end_button() }}
+    {{ form_end(form, {render_rest: false}) }}
+</div>

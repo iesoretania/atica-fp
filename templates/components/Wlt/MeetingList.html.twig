@@ -1,0 +1,55 @@
+{% trans_default_domain 'wlt_meeting' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'wlt_meeting', base_url: this.baseUrl, back_url: this.backUrl, academic_year: this.academicYear, allow_new: this.allowNew} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block path_new %}{{ path('work_linked_training_meeting_new', {'academicYear': academic_year.id}) }}{% endblock %}
+        {% block new_action %}{% if allow_new %}{{ parent() }}{% endif %}{% endblock %}
+
+        {% block table_header %}
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'datetime' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600" aria-label="{{ 'selection.clear'|trans({}, 'general') }}">
+                    {{ lm.sort_button('header.datetime'|trans({}, domain), 'datetime', this.sort, this.dir) }}
+                </div>
+            </th>
+            <th aria-sort="{{ this.sort == 'created_by' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.created_by'|trans({}, domain), 'created_by', this.sort, this.dir) }}</th>
+            <th aria-sort="{{ this.sort == 'project' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.project'|trans({}, domain), 'project', this.sort, this.dir) }}</th>
+            <th>{{ 'header.student_enrollments'|trans({}, domain) }}</th>
+            <th>{{ 'header.teachers'|trans({}, domain) }}</th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                {% set url = path('work_linked_training_meeting_edit', {'id': item.id}) %}
+                {% set can_manage = is_granted('WLT_MEETING_MANAGE', item) %}
+                <tr>
+                    <td class="align-top">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" name="items[]" value="{{ item.id }}" class="size-4 rounded border-gray-300 text-brand-600{% if can_manage %} selectable{% endif %}"{% if not can_manage %} disabled{% endif %}>
+                            <a href="{{ url }}" class="whitespace-nowrap font-medium text-gray-900 hover:text-brand-700">{{ item.datetime|date('format.datetime'|trans({}, 'general')) }}</a>
+                        </label>
+                    </td>
+                    <td class="align-top">{{ item.createdBy }}</td>
+                    <td class="align-top">{{ item.project }}</td>
+                    <td class="align-top">{{ item.studentEnrollments|join(', ') }}</td>
+                    <td class="align-top">{{ item.teachers|join(', ') }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('work_linked_training_meeting_operation') }}{% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+        {% block selection_actions %}
+            {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}
+        {% endblock %}
+    {% endembed %}
+</div>

@@ -37,6 +37,7 @@ class WltListComponentsTest extends AppWebTestCase
         yield 'actividades' => ['Wlt:ActivityList', '/dual/proyecto/programa/{project}/actividad'];
         yield 'concreciones' => ['Wlt:ActivityRealizationList', '/dual/proyecto/programa/{activity}/concrecion'];
         yield 'empresas del proyecto' => ['Wlt:LearningProgramList', '/dual/programa/{project}/listar'];
+        yield 'reuniones' => ['Wlt:MeetingList', '/dual/reunion/listar/{year}'];
     }
 
     private function path(string $template): string
@@ -100,6 +101,7 @@ class WltListComponentsTest extends AppWebTestCase
     public static function filteredListProvider(): iterable
     {
         yield 'proyectos bloqueados' => ['Wlt:ProjectList', '/dual/proyecto/listar/{year}', ['locked' => '0']];
+        yield 'reuniones por proyecto y fechas' => ['Wlt:MeetingList', '/dual/reunion/listar/{year}', ['project' => '1', 'from' => '2020-01-01', 'to' => '2099-12-31']];
     }
 
     /**
