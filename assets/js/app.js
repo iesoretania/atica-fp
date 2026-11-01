@@ -1,11 +1,13 @@
-require('../css/app.scss');
+import 'bootswatch/dist/yeti/bootstrap.min.css';
+import 'select2/dist/css/select2.min.css';
+import 'select2-theme-bootstrap4/dist/select2-bootstrap.min.css';
+import '@fortawesome/fontawesome-free/css/fontawesome.min.css';
+import '@fortawesome/fontawesome-free/css/solid.min.css';
+import '../css/app.css';
 
-const $ = require('jquery');
-global.$ = global.jQuery = $;
-
-require('bootstrap');
-require('select2');
-require('select2/dist/js/i18n/es');
+import $ from './jquery_global.js';
+import 'bootstrap';
+import './select2_es.js';
 
 $(document).ready(function() {
     $('select:not(.ignore_select2)').select2({
@@ -14,6 +16,11 @@ $(document).ready(function() {
     });
     $('[data-toggle="popover"]').popover();
 });
+
+// El editor de texto enriquecido (Quill) solo se descarga en las páginas que lo usan
+if (document.querySelector('textarea.rich-editor')) {
+    import('./rich_editor.js');
+}
 
 var file = document.querySelector('.custom-file-input');
 

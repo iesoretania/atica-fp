@@ -6,7 +6,7 @@ durante el período de alternancia de FP dual.
 Puedes seguir el desarrollo de esta herramienta vía X (antes Twitter) siguiendo a [@aticaFP].
 
 Este proyecto está desarrollado en PHP utilizando [Symfony] 6.4 y otros muchos componentes que se instalan usando
-[Composer] y [npmjs].
+[Composer]. Los assets de frontend se gestionan con AssetMapper de Symfony, sin Node.js.
 
 **IMPORTANTE: Si vas a actualizar desde la versión 6.x a la 7.x, por favor, lee el fichero [`UPGRADE-7.0.md`](UPGRADE-7.0.md) para
 conocer los cambios necesarios.**
@@ -17,7 +17,7 @@ conocer los cambios necesarios.**
 - Servidor web Apache2 (podría funcionar con nginx, pero no se ha probado aún).
 - Servidor de base de datos MySQL 8.0.28 o superior, o bien algún derivado equivalente (como MariaDB 11, Percona, etc).
 - PHP [Composer].
-- [Node.js] ≥ 18 y ≤ 20.
+- Acceso a Internet durante `composer install` (descarga las librerías JavaScript/CSS desde jsDelivr).
 
 ## Prueba rápida mediante Docker Compose
 
@@ -47,8 +47,8 @@ conocer los cambios necesarios.**
   - Modifica la configuración cambiando el contenido de `.env.local`
   - Es importante cambiar la variable `APP_SECRET` por un valor aleatorio, no dejes el que aparece.
   - Cambia la variable `DATABASE_URL` con los datos de acceso a la base de datos.
-- Ejecutar `npm install`
-- Ejecutar el comando `npm run build` para generar los assets.
+- Ejecutar `php bin/console asset-map:compile` para publicar los assets (CSS y JavaScript). Las librerías de
+  frontend se descargan automáticamente durante `composer install`; **no hace falta Node.js**.
 - Configurar el sitio de Apache2 para que el `DocumentRoot` sea la carpeta `public/` dentro de la carpeta de instalación.
 - Activar en Apache2 `mod_rewrite` (en S.O. Linux prueba con el comando `a2enmod rewrite` y reiniciando el servicio)
 - Para crear la base de datos: `php bin/console doctrine:database:create`
@@ -71,13 +71,12 @@ Cuando se publique una nueva versión de la plataforma, se deberán seguir los s
 
 - Incorporar al repositorio los cambios de la última versión oficial (```git pull```).
 - Ejecutar `composer install` desde la carpeta del proyecto.
-- Ejecutar `npm install`
 - Actualizar la base de datos (se sacará una copia de seguridad automáticamente):
   - `php bin/console app:safe-migrate -n`
 
     **IMPORTANTE:** Si fallara el comando anterior por la ausencia de algún comando en el sistema, se puede intentar
     con `php bin/console doctrine:migrations:migrate -n`, que realiza la migración sin copia de seguridad previa.
-- Ejecutar el comando `npm run build` para generar los assets.
+- Ejecutar el comando `php bin/console asset-map:compile` para volver a publicar los assets.
 
 ## Desarrollo y tests
 
@@ -102,6 +101,4 @@ Esta aplicación se ofrece bajo licencia [AGPL versión 3].
 [Symfony]: http://symfony.com/
 [Composer]: http://getcomposer.org
 [AGPL versión 3]: http://www.gnu.org/licenses/agpl.html
-[Node.js]: https://nodejs.org/en/
-[npmjs]: https://npmjs.com/
 [@aticaFP]: https://twitter.com/aticaFP

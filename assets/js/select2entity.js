@@ -1,3 +1,8 @@
+// Basado en tetranz/select2entity-bundle: plugin de jQuery que enlaza Select2 con los campos
+// Select2EntityType. Se carga como módulo para ejecutarse después de registrar Select2.
+import './jquery_global.js';
+import './select2_es.js';
+
 (function ($) {
     $.fn.select2entity = function (options) {
         this.each(function () {

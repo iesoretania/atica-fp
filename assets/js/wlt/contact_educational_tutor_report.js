@@ -4,7 +4,7 @@ $(function ()
     {
         var form = $(this).closest('form');
         var data = {};
-        workcenter = $("#contact_educational_tutor_report_workcenter");
+        var workcenter = $("#contact_educational_tutor_report_workcenter");
 
         var checked = [];
         $("#contact_educational_tutor_report_projects input:checked").each(function () {

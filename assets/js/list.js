@@ -1,4 +1,5 @@
-const debounce = require('lodash.debounce');
+import debounce from 'lodash.debounce';
+
 var last_value_q = "";
 var last_value_f = "";
 var last_value_mf = "";
@@ -18,7 +19,7 @@ var addCallBacks = function () {
         })
         .on("click", ".clickable-row input[type='checkbox']", updateButton)
         .on("click", ".clickable-row a", function (ev) {
-            item = ev.target;
+            var item = ev.target;
             if ($(item).attr("href")) {
                 if ($(item).attr("target")) {
                     window.open($(item).attr("href"), $(item).data("target")) || window.location.assign($(item).attr("href"));

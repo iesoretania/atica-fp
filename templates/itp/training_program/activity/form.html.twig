@@ -1,5 +1,6 @@
 {% trans_default_domain 'itp_activity' %}
 {% extends 'layout.html.twig' %}
+{% set js_entries = ['itp_activity'] %}
 {% import 'macros.html.twig' as m %}
 {% form_theme form _self %}
 {% block content %}
@@ -14,7 +15,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('itp_activity') }}
 {% endblock %}
 
 {% block _activity_learningOutcomes_widget %}

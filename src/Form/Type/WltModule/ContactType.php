@@ -31,7 +31,7 @@ use App\Repository\WltModule\StudentEnrollmentRepository;
 use App\Repository\WltModule\TeacherRepository;
 use App\Repository\WorkcenterRepository;
 use App\Service\UserExtensionService;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use App\Form\Type\RichTextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -137,7 +137,7 @@ class ContactType extends AbstractType
                 'placeholder' => 'form.student_enrollments.none',
                 'required' => false
             ])
-            ->add('detail', CKEditorType::class, [
+            ->add('detail', RichTextType::class, [
                 'label' => 'form.detail',
                 'required' => false,
                 'attr' => ['rows' => 10]

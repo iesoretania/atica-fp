@@ -1,5 +1,6 @@
 {% trans_default_domain 'calendar' %}
 {% extends 'layout.html.twig' %}
+{% set js_entries = ['list'] %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
     <form action="{{ path('work_linked_training_agreement_calendar_delete', {'id': agreement.id}) }}" class="list" method="post">
@@ -28,5 +29,4 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('list') }}
 {% endblock %}

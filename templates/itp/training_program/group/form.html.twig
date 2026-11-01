@@ -1,5 +1,6 @@
 {% trans_default_domain 'itp_group' %}
 {% extends 'layout.html.twig' %}
+{% set js_entries = ['itp_group'] %}
 {% import 'macros.html.twig' as m %}
 {% form_theme form _self %}
 {% block content %}
@@ -14,7 +15,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('itp_group') }}
 {% endblock %}
 
 {% block _program_group_currentStudentPrograms_widget %}

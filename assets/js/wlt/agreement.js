@@ -84,7 +84,7 @@ $(function ()
         data[workcenter.attr('name')] = workcenter.val();
         data[workTutor.attr('name')] = workTutor.val();
 
-        next = workcenter.next();
+        var next = workcenter.next();
         workcenter.replaceWith('<div id="agreement_workcenter"><span class="text-info"><i class="fa fa-circle-notch fa-spin fa-3x fa-fw"></i></span></div>');
         next.remove();
         next = activityRealizations.next();

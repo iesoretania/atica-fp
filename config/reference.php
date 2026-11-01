@@ -283,7 +283,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         }>,
  *     },
  *     asset_mapper?: bool|array{ // Asset Mapper configuration
- *         enabled?: bool|Param, // Default: false
+ *         enabled?: bool|Param, // Default: true
  *         paths?: Param|string|array<string, scalar|Param|null>,
  *         excluded_patterns?: list<scalar|Param|null>,
  *         exclude_dotfiles?: bool|Param, // If true, any files starting with "." will be excluded from the asset mapper. // Default: true
@@ -472,7 +472,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     },
  *     disallow_search_engine_index?: bool|Param, // Enabled by default when debug is enabled. // Default: true
  *     http_client?: bool|array{ // HTTP Client configuration
- *         enabled?: bool|Param, // Default: false
+ *         enabled?: bool|Param, // Default: true
  *         max_host_connections?: int|Param, // The maximum number of connections to a single host.
  *         default_options?: array{
  *             headers?: array<string, mixed>,
@@ -1039,49 +1039,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         ...<string, mixed>
  *     },
  * }
- * @psalm-type FosCkEditorConfig = array{
- *     enable?: bool|Param, // Default: true
- *     async?: bool|Param, // Default: false
- *     auto_inline?: bool|Param, // Default: true
- *     inline?: bool|Param, // Default: false
- *     autoload?: bool|Param, // Default: true
- *     jquery?: bool|Param, // Default: false
- *     require_js?: bool|Param, // Default: false
- *     input_sync?: bool|Param, // Default: false
- *     base_path?: scalar|Param|null, // Default: "bundles/fosckeditor/"
- *     js_path?: scalar|Param|null, // Default: "bundles/fosckeditor/ckeditor.js"
- *     jquery_path?: scalar|Param|null, // Default: "bundles/fosckeditor/adapters/jquery.js"
- *     default_config?: scalar|Param|null, // Default: null
- *     configs?: array<string, array<string, mixed>>,
- *     plugins?: array<string, array{ // Default: []
- *         path?: scalar|Param|null,
- *         filename?: scalar|Param|null,
- *     }>,
- *     styles?: array<string, list<array{ // Default: []
- *         name?: scalar|Param|null,
- *         type?: scalar|Param|null,
- *         widget?: scalar|Param|null,
- *         element?: mixed,
- *         styles?: array<string, scalar|Param|null>,
- *         attributes?: array<string, scalar|Param|null>,
- *     }>>,
- *     templates?: array<string, array{ // Default: []
- *         imagesPath?: scalar|Param|null,
- *         templates?: list<array{ // Default: []
- *             title?: scalar|Param|null,
- *             image?: scalar|Param|null,
- *             description?: scalar|Param|null,
- *             html?: scalar|Param|null,
- *             template?: scalar|Param|null,
- *             template_parameters?: array<string, scalar|Param|null>,
- *         }>,
- *     }>,
- *     filebrowsers?: array<string, scalar|Param|null>,
- *     toolbars?: array{
- *         configs?: array<string, list<mixed>>,
- *         items?: array<string, list<mixed>>,
- *     },
- * }
  * @psalm-type TetranzSelect2EntityConfig = array{
  *     minimum_input_length?: int|Param, // Default: 1
  *     scroll?: bool|Param, // Default: false
@@ -1579,16 +1536,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         },
  *     }>,
  * }
- * @psalm-type WebpackEncoreConfig = array{
- *     output_path?: scalar|Param|null, // The path where Encore is building the assets - i.e. Encore.setOutputPath()
- *     crossorigin?: false|"anonymous"|"use-credentials"|Param, // crossorigin value when Encore.enableIntegrityHashes() is used, can be false (default), anonymous or use-credentials // Default: false
- *     preload?: bool|Param, // preload all rendered script and link tags automatically via the http2 Link header. // Default: false
- *     cache?: bool|Param, // Enable caching of the entry point file(s) // Default: false
- *     strict_mode?: bool|Param, // Throw an exception if the entrypoints.json file is missing or an entry is missing from the data // Default: true
- *     builds?: array<string, scalar|Param|null>,
- *     script_attributes?: array<string, scalar|Param|null>,
- *     link_attributes?: array<string, scalar|Param|null>,
- * }
  * @psalm-type DebugConfig = array{
  *     max_items?: int|Param, // Max number of displayed items past the first level, -1 means no limit. // Default: 2500
  *     min_depth?: int|Param, // Minimum tree depth to clone all the items, 1 is default. // Default: 1
@@ -1626,12 +1573,10 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     doctrine_migrations?: DoctrineMigrationsConfig,
  *     twig?: TwigConfig,
  *     twig_extra?: TwigExtraConfig,
- *     fos_ck_editor?: FosCkEditorConfig,
  *     tetranz_select2_entity?: TetranzSelect2EntityConfig,
  *     simple_things_entity_audit?: SimpleThingsEntityAuditConfig,
  *     security?: SecurityConfig,
  *     monolog?: MonologConfig,
- *     webpack_encore?: WebpackEncoreConfig,
  *     babdev_pagerfanta?: BabdevPagerfantaConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
@@ -1643,12 +1588,10 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig?: TwigConfig,
  *         web_profiler?: WebProfilerConfig,
  *         twig_extra?: TwigExtraConfig,
- *         fos_ck_editor?: FosCkEditorConfig,
  *         tetranz_select2_entity?: TetranzSelect2EntityConfig,
  *         simple_things_entity_audit?: SimpleThingsEntityAuditConfig,
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
- *         webpack_encore?: WebpackEncoreConfig,
  *         debug?: DebugConfig,
  *         babdev_pagerfanta?: BabdevPagerfantaConfig,
  *         maker?: MakerConfig,
@@ -1662,12 +1605,10 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         twig?: TwigConfig,
  *         twig_extra?: TwigExtraConfig,
- *         fos_ck_editor?: FosCkEditorConfig,
  *         tetranz_select2_entity?: TetranzSelect2EntityConfig,
  *         simple_things_entity_audit?: SimpleThingsEntityAuditConfig,
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
- *         webpack_encore?: WebpackEncoreConfig,
  *         babdev_pagerfanta?: BabdevPagerfantaConfig,
  *     },
  *     "when@test"?: array{
@@ -1680,12 +1621,10 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig?: TwigConfig,
  *         web_profiler?: WebProfilerConfig,
  *         twig_extra?: TwigExtraConfig,
- *         fos_ck_editor?: FosCkEditorConfig,
  *         tetranz_select2_entity?: TetranzSelect2EntityConfig,
  *         simple_things_entity_audit?: SimpleThingsEntityAuditConfig,
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
- *         webpack_encore?: WebpackEncoreConfig,
  *         babdev_pagerfanta?: BabdevPagerfantaConfig,
  *         dama_doctrine_test?: DamaDoctrineTestConfig,
  *     },

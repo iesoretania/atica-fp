@@ -1,5 +1,6 @@
 {% trans_default_domain 'company' %}
 {% extends 'layout.html.twig' %}
+{% set js_entries = ['select2entity', 'person'] %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
     {{ form_start(form) }}
@@ -17,9 +18,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
-    {{ encore_entry_script_tags('person') }}
-    <script>
+    <script type="module">
         $(document).ready(function () {
             $('.select2entity[data-autostart="true"]').select2('destroy');
             $('.select2entity[data-autostart="true"]').select2entity({

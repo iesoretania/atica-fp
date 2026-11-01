@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{{ 'title.welcome'|trans({}, 'layout') }}{% endblock %} - {{ app_name }}</title>
-    {% block stylesheets %}
-        {{ encore_entry_link_tags('app') }}
-    {% endblock %}
+    {# Hojas de estilo y módulos JavaScript. Cada página añade los suyos con la variable js_entries
+       (nombres definidos en importmap.php); solo puede haber una llamada a importmap() por página #}
+    {% block importmap %}{{ importmap(['app']|merge(js_entries|default([]))) }}{% endblock %}
     <link rel="icon" type="image/png" href="{{ asset('favicon-96x96.png') }}" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
@@ -17,10 +17,9 @@
     <link rel="manifest" href="{{ asset('site.webmanifest') }}" />
     <meta name="msapplication-TileColor" content="#2d89ef">
     <meta name="theme-color" content="#ffffff">
+</head>
 <body>
 {% block body %}{% endblock %}
-{% block javascripts %}
-    {{ encore_entry_script_tags('app') }}
-{% endblock %}
+{% block javascripts %}{% endblock %}
 </body>
 </html>

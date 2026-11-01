@@ -19,7 +19,7 @@
 namespace App\Form\Type\Edu;
 
 use App\Entity\SurveyQuestion;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use App\Form\Type\RichTextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -34,7 +34,7 @@ class SurveyQuestionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('description', CKEditorType::class, [
+            ->add('description', RichTextType::class, [
                 'label' => 'form.description',
                 'required' => true,
                 'attr' => ['rows' => 8]

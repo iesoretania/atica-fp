@@ -5,7 +5,6 @@ twig:
     strict_variables: '%kernel.debug%'
     form_themes:
         - 'bootstrap_4_horizontal_layout.html.twig'
-        - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
         - '@TetranzSelect2Entity/Form/fields.html.twig'
     globals:
         app_name: '%env(APP_NAME)%'

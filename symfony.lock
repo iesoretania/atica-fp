@@ -95,18 +95,6 @@
     "egulias/email-validator": {
         "version": "3.1.2"
     },
-    "friendsofsymfony/ckeditor-bundle": {
-        "version": "2.3",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "2.0",
-            "ref": "f5ad42002183a6881962683e6d84bbb25cdfce5d"
-        },
-        "files": [
-            "config/packages/fos_ckeditor.yaml"
-        ]
-    },
     "johngrogg/ics-parser": {
         "version": "v2.2.2"
     },
@@ -187,6 +175,21 @@
     "symfony/asset": {
         "version": "v4.4.27"
     },
+    "symfony/asset-mapper": {
+        "version": "7.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.4",
+            "ref": "c01c47af2ec66a74ec046eccb919cfe27d3464ec"
+        },
+        "files": [
+            "assets/app.js",
+            "assets/styles/app.css",
+            "config/packages/asset_mapper.yaml",
+            "importmap.php"
+        ]
+    },
     "symfony/cache": {
         "version": "v4.4.36"
     },
@@ -240,9 +243,6 @@
     },
     "symfony/event-dispatcher-contracts": {
         "version": "v1.1.11"
-    },
-    "symfony/expression-language": {
-        "version": "v4.4.34"
     },
     "symfony/filesystem": {
         "version": "v4.4.27"
@@ -494,25 +494,6 @@
         "files": [
             "config/packages/web_profiler.yaml",
             "config/routes/web_profiler.yaml"
-        ]
-    },
-    "symfony/webpack-encore-bundle": {
-        "version": "1.17",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "1.10",
-            "ref": "eff2e505d4557c967b6710fe06bd947ba555cae5"
-        },
-        "files": [
-            "assets/app.js",
-            "assets/bootstrap.js",
-            "assets/controllers.json",
-            "assets/controllers/hello_controller.js",
-            "assets/styles/app.css",
-            "config/packages/webpack_encore.yaml",
-            "package.json",
-            "webpack.config.js"
         ]
     },
     "symfony/yaml": {

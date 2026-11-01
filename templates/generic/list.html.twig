@@ -1,5 +1,6 @@
 {% trans_default_domain domain %}
 {% extends 'layout.html.twig' %}
+{% set js_entries = ['list'] %}
 {% import 'macros.html.twig' as m %}
 
 {% block content %}
@@ -49,5 +50,4 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('list') }}
 {% endblock %}

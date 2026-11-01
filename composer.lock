@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f06fcb0e7349df93ca1aa1d2c9ea7b7e",
+    "content-hash": "a655bc7961f427217b22c0f98d5eb1ef",
     "packages": [
         {
             "name": "babdev/pagerfanta-bundle",
@@ -98,6 +98,83 @@
                 }
             ],
             "time": "2026-10-29T18:33:24+00:00"
+        },
+        {
+            "name": "composer/semver",
+            "version": "3.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/semver.git",
+                "reference": "d92543b7ede9c4ec6b59853cefb061e39866d2cf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/semver/zipball/d92543b7ede9c4ec6b59853cefb061e39866d2cf",
+                "reference": "d92543b7ede9c4ec6b59853cefb061e39866d2cf",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.2 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.11",
+                "symfony/phpunit-bridge": "^3 || ^7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\Semver\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nils Adermann",
+                    "email": "naderman@naderman.de",
+                    "homepage": "http://www.naderman.de"
+                },
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be"
+                },
+                {
+                    "name": "Rob Bast",
+                    "email": "rob.bast@gmail.com",
+                    "homepage": "http://robbast.nl"
+                }
+            ],
+            "description": "Version comparison library that offers utilities, version constraint parsing and validation.",
+            "keywords": [
+                "semantic",
+                "semver",
+                "validation",
+                "versioning"
+            ],
+            "support": {
+                "irc": "ircs://irc.libera.chat:6697/composer",
+                "issues": "https://github.com/composer/semver/issues",
+                "source": "https://github.com/composer/semver/tree/3.6.0"
+            },
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-10-29T09:13:34+00:00"
         },
         {
             "name": "doctrine/collections",
@@ -1298,87 +1375,6 @@
                 }
             ],
             "time": "2025-03-06T22:45:56+00:00"
-        },
-        {
-            "name": "friendsofsymfony/ckeditor-bundle",
-            "version": "2.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/FriendsOfSymfony/FOSCKEditorBundle.git",
-                "reference": "bf855d74d6aed0132d97c8f89c5ea8d81c4892a5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSCKEditorBundle/zipball/bf855d74d6aed0132d97c8f89c5ea8d81c4892a5",
-                "reference": "bf855d74d6aed0132d97c8f89c5ea8d81c4892a5",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "ext-zip": "*",
-                "php": "^8.2",
-                "symfony/asset": "^5.4 || ^6.4 || ^7.4 || ^8.0",
-                "symfony/config": "^5.4 || ^6.4 || ^7.4 || ^8.0",
-                "symfony/dependency-injection": "^5.4 || ^6.4 || ^7.4 || ^8.0",
-                "symfony/expression-language": "^5.4 || ^6.4 || ^7.4 || ^8.0",
-                "symfony/form": "^5.4 || ^6.4 || ^7.4 || ^8.0",
-                "symfony/framework-bundle": "^5.4 || ^6.4 || ^7.4 || ^8.0",
-                "symfony/http-foundation": "^5.4 || ^6.4 || ^7.4 || ^8.0",
-                "symfony/http-kernel": "^5.4 || ^6.4 || ^7.4 || ^8.0",
-                "symfony/options-resolver": "^5.4 || ^6.4 || ^7.4 || ^8.0",
-                "symfony/property-access": "^5.4 || ^6.4 || ^7.4 || ^8.0",
-                "symfony/routing": "^5.4 || ^6.4 || ^7.4 || ^8.0",
-                "symfony/twig-bundle": "^5.4 || ^6.4 || ^7.4 || ^8.0",
-                "twig/twig": "^2.4 || ^3.0"
-            },
-            "conflict": {
-                "sebastian/environment": "<1.3.4",
-                "sebastian/exporter": "<2.0.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.41",
-                "matthiasnoback/symfony-dependency-injection-test": "^4.0 || ^5.0 || ^6.0",
-                "phpunit/phpunit": "^9.6 || ^10.5",
-                "symfony/console": "^5.4 || ^6.4 || ^7.4 || ^8.0",
-                "symfony/yaml": "^5.4 || ^6.4 || ^7.4 || ^8.0"
-            },
-            "suggest": {
-                "egeloen/form-extra-bundle": "Allows to load CKEditor asynchronously"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "FOS\\CKEditorBundle\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Eric GELOEN",
-                    "email": "geloen.eric@gmail.com"
-                },
-                {
-                    "name": "FriendsOfSymfony Community",
-                    "homepage": "https://github.com/FriendsOfSymfony/FOSCKEditorBundle/graphs/contributors"
-                }
-            ],
-            "description": "Provides a CKEditor integration for your Symfony project.",
-            "keywords": [
-                "CKEditor"
-            ],
-            "support": {
-                "issues": "https://github.com/FriendsOfSymfony/FOSCKEditorBundle/issues",
-                "source": "https://github.com/FriendsOfSymfony/FOSCKEditorBundle/tree/2.8.0"
-            },
-            "time": "2025-12-19T15:18:37+00:00"
         },
         {
             "name": "johngrogg/ics-parser",
@@ -3033,6 +3029,91 @@
                 }
             ],
             "time": "2026-03-24T13:12:05+00:00"
+        },
+        {
+            "name": "symfony/asset-mapper",
+            "version": "v7.4.22",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/asset-mapper.git",
+                "reference": "a321a628c5bfb084ccf596d38c83be9c5cf9288a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/asset-mapper/zipball/a321a628c5bfb084ccf596d38c83be9c5cf9288a",
+                "reference": "a321a628c5bfb084ccf596d38c83be9c5cf9288a",
+                "shasum": ""
+            },
+            "require": {
+                "composer/semver": "^3.0",
+                "php": ">=8.2",
+                "symfony/deprecation-contracts": "^2.1|^3",
+                "symfony/filesystem": "^7.1|^8.0",
+                "symfony/http-client": "^6.4|^7.0|^8.0"
+            },
+            "conflict": {
+                "symfony/framework-bundle": "<6.4"
+            },
+            "require-dev": {
+                "symfony/asset": "^6.4|^7.0|^8.0",
+                "symfony/browser-kit": "^6.4|^7.0|^8.0",
+                "symfony/console": "^6.4.13|^7.1.6|^8.0",
+                "symfony/event-dispatcher-contracts": "^3.0",
+                "symfony/finder": "^6.4|^7.0|^8.0",
+                "symfony/framework-bundle": "^6.4.13|^7.1.6|^8.0",
+                "symfony/http-foundation": "^6.4|^7.0|^8.0",
+                "symfony/http-kernel": "^6.4.13|^7.1.6|^8.0",
+                "symfony/process": "^6.4|^7.0|^8.0",
+                "symfony/runtime": "^6.4.13|^7.1.6|^8.0",
+                "symfony/web-link": "^6.4|^7.0|^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\AssetMapper\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Maps directories of assets & makes them available in a public directory with versioned filenames.",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/asset-mapper/tree/v7.4.22"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-10-20T19:25:08+00:00"
         },
         {
             "name": "symfony/cache",
@@ -4746,6 +4827,189 @@
                 }
             ],
             "time": "2026-10-20T19:25:08+00:00"
+        },
+        {
+            "name": "symfony/http-client",
+            "version": "v7.4.22",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/http-client.git",
+                "reference": "9dd7ba9dc326b37d7f6e19588de79b5d91b20d66"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/9dd7ba9dc326b37d7f6e19588de79b5d91b20d66",
+                "reference": "9dd7ba9dc326b37d7f6e19588de79b5d91b20d66",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "psr/log": "^1|^2|^3",
+                "symfony/deprecation-contracts": "^2.5|^3",
+                "symfony/http-client-contracts": "~3.4.4|^3.5.2",
+                "symfony/polyfill-php83": "^1.29",
+                "symfony/service-contracts": "^2.5|^3"
+            },
+            "conflict": {
+                "amphp/amp": "<2.5",
+                "amphp/socket": "<1.1",
+                "php-http/discovery": "<1.15",
+                "symfony/http-foundation": "<6.4"
+            },
+            "provide": {
+                "php-http/async-client-implementation": "*",
+                "php-http/client-implementation": "*",
+                "psr/http-client-implementation": "1.0",
+                "symfony/http-client-implementation": "3.0"
+            },
+            "require-dev": {
+                "amphp/http-client": "^4.2.1|^5.0",
+                "amphp/http-tunnel": "^1.0|^2.0",
+                "guzzlehttp/promises": "^1.4|^2.0",
+                "nyholm/psr7": "^1.0",
+                "php-http/httplug": "^1.0|^2.0",
+                "psr/http-client": "^1.0",
+                "symfony/amphp-http-client-meta": "^1.0|^2.0",
+                "symfony/cache": "^6.4|^7.0|^8.0",
+                "symfony/dependency-injection": "^6.4|^7.0|^8.0",
+                "symfony/http-kernel": "^6.4|^7.0|^8.0",
+                "symfony/messenger": "^6.4|^7.0|^8.0",
+                "symfony/process": "^6.4|^7.0|^8.0",
+                "symfony/rate-limiter": "^6.4|^7.0|^8.0",
+                "symfony/stopwatch": "^6.4|^7.0|^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\HttpClient\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides powerful methods to fetch HTTP resources synchronously or asynchronously",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "http"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/http-client/tree/v7.4.22"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-10-26T21:52:50+00:00"
+        },
+        {
+            "name": "symfony/http-client-contracts",
+            "version": "v3.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/http-client-contracts.git",
+                "reference": "35be0019e2c2c9fba80f9dc033290a5240f7b44f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/35be0019e2c2c9fba80f9dc033290a5240f7b44f",
+                "reference": "35be0019e2c2c9fba80f9dc033290a5240f7b44f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/contracts",
+                    "name": "symfony/contracts"
+                },
+                "branch-alias": {
+                    "dev-main": "3.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Contracts\\HttpClient\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Test/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Generic abstractions related to HTTP clients",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "abstractions",
+                "contracts",
+                "decoupling",
+                "interfaces",
+                "interoperability",
+                "standards"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/http-client-contracts/tree/v3.7.3"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-08-04T08:41:16+00:00"
         },
         {
             "name": "symfony/http-foundation",
@@ -7950,82 +8214,6 @@
                 }
             ],
             "time": "2026-10-22T14:50:44+00:00"
-        },
-        {
-            "name": "symfony/webpack-encore-bundle",
-            "version": "2.4.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/webpack-encore-bundle.git",
-                "reference": "0cbc3485f127cd9f85e395f8177607ef00535634"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/webpack-encore-bundle/zipball/0cbc3485f127cd9f85e395f8177607ef00535634",
-                "reference": "0cbc3485f127cd9f85e395f8177607ef00535634",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.1.0",
-                "symfony/asset": "^5.4 || ^6.2 || ^7.0 || ^8.0",
-                "symfony/config": "^5.4 || ^6.2 || ^7.0 || ^8.0",
-                "symfony/dependency-injection": "^5.4 || ^6.2 || ^7.0 || ^8.0",
-                "symfony/http-kernel": "^5.4 || ^6.2 || ^7.0 || ^8.0",
-                "symfony/service-contracts": "^1.1.9 || ^2.1.3 || ^3.0"
-            },
-            "require-dev": {
-                "symfony/framework-bundle": "^5.4 || ^6.2 || ^7.0 || ^8.0",
-                "symfony/http-client": "^5.4 || ^6.2 || ^7.0 || ^8.0",
-                "symfony/phpunit-bridge": "^5.4 || ^6.2 || ^7.0 || ^8.0",
-                "symfony/twig-bundle": "^5.4 || ^6.2 || ^7.0 || ^8.0",
-                "symfony/web-link": "^5.4 || ^6.2 || ^7.0 || ^8.0"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "thanks": {
-                    "url": "https://github.com/symfony/webpack-encore",
-                    "name": "symfony/webpack-encore"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\WebpackEncoreBundle\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Integration of your Symfony app with Webpack Encore",
-            "support": {
-                "issues": "https://github.com/symfony/webpack-encore-bundle/issues",
-                "source": "https://github.com/symfony/webpack-encore-bundle/tree/2.4.2"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/nicolas-grekas",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2026-09-17T12:45:02+00:00"
         },
         {
             "name": "symfony/yaml",

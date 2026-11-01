@@ -1,5 +1,6 @@
 {% trans_default_domain 'calendar' %}
 {% extends 'layout.html.twig' %}
+{% set js_entries = ['list'] %}
 {% import 'macros.html.twig' as m %}
 {% block content %}
 <h1>
@@ -72,5 +73,4 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('list') }}
 {% endblock %}

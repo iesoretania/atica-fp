@@ -1,5 +1,6 @@
 {% trans_default_domain 'itp_company' %}
 {% extends 'layout.html.twig' %}
+{% set js_entries = ['itp_company'] %}
 {% import 'macros.html.twig' as m %}
 {% form_theme form _self %}
 
@@ -15,7 +16,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('itp_company') }}
 {% endblock %}
 
 {% block _company_program_programActivities_widget %}

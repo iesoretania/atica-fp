@@ -27,7 +27,7 @@ function clearForm(form, callback)
     });
 }
 
-my_item = $("select.travel-route");
+var my_item = $("select.travel-route");
 
 $('#new_travel_route').modal({
     focus: true,

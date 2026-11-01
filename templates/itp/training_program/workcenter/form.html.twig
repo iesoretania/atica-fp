@@ -1,5 +1,6 @@
 {% trans_default_domain 'itp_student_program_workcenter' %}
 {% extends 'layout.html.twig' %}
+{% set js_entries = ['select2entity', 'itp_workcenter', 'person'] %}
 {% import 'macros.html.twig' as m %}
 {% form_theme form _self %}
 {% block content %}
@@ -17,10 +18,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
-    {{ encore_entry_script_tags('itp_workcenter') }}
-    {{ encore_entry_script_tags('person') }}
-    <script>
+    <script type="module">
         $(document).ready(function () {
             $('.select2entity[data-autostart="true"]').select2('destroy');
             $('.select2entity[data-autostart="true"]').select2entity({

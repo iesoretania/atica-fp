@@ -16,10 +16,6 @@ source /etc/apache2/envvars
 # Instalar componentes de composer
 sudo -u www-data composer install
 
-# Instalar componentes de npm
-sudo npm install -g npm
-sudo -u www-data npm install
-
 # Si se ha solicitado incluir datos de prueba, volcarlos
 if [ "$DEMO" == "1" ]; then
     # Datos de demostración
@@ -32,8 +28,9 @@ fi
 # Ejecutar migración
 sudo -u www-data php bin/console --no-interaction d:m:m
 
-# Compilar assets de CSS y JS
-sudo -u www-data node_modules/.bin/encore prod
+# Publicar los assets de CSS y JS (AssetMapper; no hace falta Node.js)
+sudo -u www-data php bin/console importmap:install
+sudo -u www-data php bin/console asset-map:compile
 
 # Comprobar si hay usuarios en la base de datos
 RESULT=$(MYSQL_PWD=atica mysql -h db --user=atica aticafp -N -s -r -e "SELECT COUNT(*) FROM person")

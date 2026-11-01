@@ -29,7 +29,7 @@ function clearForm(form, callback)
     });
 }
 
-my_item = $("select.person");
+var my_item = $("select.person");
 
 $(function () {
         my_item.on('select2:select', function (e) {

@@ -18,8 +18,6 @@ RUN apt-get update \
         mysql-client \
         build-essential \
         zip \
-    && curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash - \
-    && apt -yq install nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 # Descargar composer
