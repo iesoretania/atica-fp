@@ -1,0 +1,74 @@
+{% trans_default_domain 'itp_student_program' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'itp_student_program', base_url: this.baseUrl, back_url: this.backUrl, program_group: this.programGroup, work_days_stats: this.workDaysStats, activities_stats: this.activitiesStats, total_activities: this.totalActivities} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block new_action %}{% endblock %}
+
+        {% block table_header %}
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'student' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600" aria-label="{{ 'selection.clear'|trans({}, 'general') }}">
+                    {{ lm.sort_button('header.student_name'|trans({}, domain), 'student', this.sort, this.dir) }}
+                </div>
+            </th>
+            <th>{{ 'header.tutors'|trans({}, domain) }}</th>
+            <th>{{ 'header.date_range'|trans({}, domain) }}</th>
+            <th>{{ 'header.activities'|trans({}, domain) }}</th>
+            <th>{{ 'header.hours'|trans({}, domain) }}</th>
+            <th></th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                {% set url = path('in_company_training_phase_student_program_workcenter_list', {'studentProgram': item.id}) %}
+                {% set student_program_workcenters = item.studentProgramWorkcenters %}
+                {% set starts = student_program_workcenters|map(w => w.startDate)|filter(d => d) %}
+                {% set ends = student_program_workcenters|map(w => w.endDate)|filter(d => d) %}
+                <tr>
+                    <td class="align-top">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable size-4 rounded border-gray-300 text-brand-600">
+                            <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.studentEnrollment.person.lastFirstName }}</a>
+                            {% if item.isAuthorizationNeeded %}<span title="{{ item.authorizationDescription }}"><twig:Ui:Icon name="user-shield" class="size-3.5 text-gray-500" /></span>{% endif %}
+                            {% if item.isAdaptationNeeded %}<span title="{{ item.adaptationDescription }}"><twig:Ui:Icon name="universal-access" class="size-3.5 text-gray-500" /></span>{% endif %}
+                        </label>
+                    </td>
+                    <td class="align-top">
+                        {% set multiple = student_program_workcenters|length > 1 %}
+                        {% if multiple %}<ul class="list-disc space-y-1 pl-4">{% endif %}
+                        {% for student_program_workcenter in student_program_workcenters %}
+                            {% if multiple %}<li>{% endif %}
+                            <i>{{ student_program_workcenter.workcenter }}</i>:
+                            {{ student_program_workcenter.educationalTutor }} / {{ student_program_workcenter.workTutor }}
+                            {% if multiple %}</li>{% endif %}
+                        {% endfor %}
+                        {% if multiple %}</ul>{% endif %}
+                    </td>
+                    <td class="align-top whitespace-nowrap">
+                        {% if starts and ends %}
+                            {{ min(starts)|date('format.date'|trans({}, 'general')) }} - {{ max(ends)|date('format.date'|trans({}, 'general')) }}
+                        {% endif %}
+                    </td>
+                    <td class="align-top">{{ activities_stats[item.studentEnrollment.id].total_activities|default(0) }}/{{ total_activities }}</td>
+                    <td class="align-top">{{ ((work_days_stats[item.studentEnrollment.id].total_hours|default(0))/100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}</td>
+                    <td class="text-right">{{ m.link_button(path('in_company_training_phase_student_program_edit', {'studentProgram': item.id}), 'info-circle', 'btn-info btn-sm', 'form.edit'|trans({}, domain)) }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('in_company_training_phase_student_program_operation', {'programGroup': program_group.id}) }}{% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+        {% block selection_actions %}
+            {% if not is_read_only() %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>

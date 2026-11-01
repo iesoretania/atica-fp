@@ -62,3 +62,7 @@ prompt.delete_confirm: |
     ¿Está seguro de que desea eliminar los siguientes estudiantes del plan de formación? Se eliminarán todos los datos asociados, como sus estancias, los datos de seguimiento o el calendario.
 
     Cuidado: Esta operación no se puede deshacer.
+
+filters.workcenter: Estancias
+filters.workcenter.with: Con estancia
+filters.workcenter.without: Sin estancia

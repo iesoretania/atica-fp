@@ -57,30 +57,6 @@ class StudentProgramController extends AbstractController
         assert($programGroup instanceof ProgramGroup);
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGroup->getProgramGrade()->getTrainingProgram());
 
-        $q = $request->query->get('q');
-
-        /** @var Person $person */
-        $person = $this->getUser();
-
-        $studentProgramsStats = $studentProgramRepository->getStatsByProgramGroupAndQuery(
-            $programGroup,
-            $q
-        );
-
-        $totalActivities = $programGradeRepository->countActivities($programGroup->getProgramGrade());
-        $workDaysStats = $programGroupRepository->getStudentEnrollmentWorkDaysStats($programGroup);
-        $activitiesStats = $programGroupRepository->getStudentEnrollmentActivitiesStats($programGroup);
-
-        $adapter = new ArrayAdapter($studentProgramsStats);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'itp_student_program')
             . ' - ' . $programGroup->getGroup()->__toString();
 
@@ -103,13 +79,8 @@ class StudentProgramController extends AbstractController
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'itp_student_program',
             'program_group' => $programGroup,
-            'work_days_stats' => $workDaysStats,
-            'activities_stats' => $activitiesStats,
-            'training_program_total_activities' => $totalActivities
         ]);
     }
 
