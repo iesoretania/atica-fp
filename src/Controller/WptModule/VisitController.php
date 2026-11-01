@@ -21,19 +21,14 @@ namespace App\Controller\WptModule;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\ReportTemplate;
 use App\Entity\Edu\Teacher;
-use App\Entity\Person;
 use App\Entity\WptModule\Contact;
 use App\Form\Type\WptModule\VisitType;
 use App\Repository\Edu\AcademicYearRepository;
-use App\Repository\Edu\TeacherRepository;
 use App\Repository\WptModule\ContactRepository;
-use App\Repository\WptModule\GroupRepository as WptGroupRepository;
-use App\Repository\WptModule\TeacherRepository as WptTeacherRepository;
-use App\Security\Edu\OrganizationVoter as EduOrganizationVoter;
-use App\Security\OrganizationVoter;
 use App\Security\WptModule\OrganizationVoter as WptOrganizationVoter;
 use App\Security\WptModule\VisitVoter;
 use App\Service\UserExtensionService;
+use App\Service\WptModule\VisitTeacherProvider;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Mpdf\Mpdf;
@@ -41,7 +36,6 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -57,10 +51,7 @@ class VisitController extends AbstractController
         Request              $request,
         TranslatorInterface  $translator,
         UserExtensionService $userExtensionService,
-        Security             $security,
-        TeacherRepository    $teacherRepository,
-        WptTeacherRepository $WPTTeacherRepository,
-        WptGroupRepository   $WPTGroupRepository,
+        VisitTeacherProvider $teacherProvider,
         ManagerRegistry      $managerRegistry,
         Teacher              $teacher
     ): Response
@@ -81,10 +72,7 @@ class VisitController extends AbstractController
             $request,
             $translator,
             $userExtensionService,
-            $security,
-            $teacherRepository,
-            $WPTTeacherRepository,
-            $WPTGroupRepository,
+            $teacherProvider,
             $managerRegistry,
             $visit
         );
@@ -95,10 +83,7 @@ class VisitController extends AbstractController
         Request              $request,
         TranslatorInterface  $translator,
         UserExtensionService $userExtensionService,
-        Security             $security,
-        TeacherRepository    $teacherRepository,
-        WptTeacherRepository $wptTeacherRepository,
-        WptGroupRepository   $wptGroupRepository,
+        VisitTeacherProvider $teacherProvider,
         ManagerRegistry      $managerRegistry,
         Contact              $visit
     ): Response {
@@ -111,18 +96,7 @@ class VisitController extends AbstractController
 
         $readOnly = !$this->isGranted(VisitVoter::MANAGE, $visit);
 
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isDepartmentHead = $security->isGranted(EduOrganizationVoter::EDU_DEPARTMENT_HEAD, $organization);
-
-        $teachers = $this->getTeachersByAcademicYearAndUser(
-            $teacherRepository,
-            $wptTeacherRepository,
-            $wptGroupRepository,
-            $academicYear,
-            $isManager,
-            $isDepartmentHead,
-            $readOnly
-        );
+        $teachers = $teacherProvider->forAcademicYear($academicYear, $readOnly);
         // quien puede modificar una visita ajena (la jefatura, por ejemplo) debe ver al docente que la registró
         if ($visit->getTeacher() instanceof Teacher && !in_array($visit->getTeacher(), $teachers, true)) {
             $teachers[] = $visit->getTeacher();
@@ -169,6 +143,7 @@ class VisitController extends AbstractController
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
+            'visit' => $visit,
             'form' => $form->createView()
         ]);
     }
@@ -262,9 +237,7 @@ class VisitController extends AbstractController
         Request                $request,
         UserExtensionService   $userExtensionService,
         TranslatorInterface    $translator,
-        TeacherRepository      $teacherRepository,
-        WptTeacherRepository   $WPTTeacherRepository,
-        WptGroupRepository     $WPTGroupRepository,
+        VisitTeacherProvider   $teacherProvider,
         AcademicYearRepository $academicYearRepository,
         ManagerRegistry        $managerRegistry,
         AcademicYear           $academicYear = null,
@@ -277,19 +250,7 @@ class VisitController extends AbstractController
 
         $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_ACCESS_VISIT, $organization);
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        $isDepartmentHead = $this->isGranted(EduOrganizationVoter::EDU_DEPARTMENT_HEAD, $organization);
-
-        $teachers = $this->getTeachersByAcademicYearAndUser(
-            $teacherRepository,
-            $WPTTeacherRepository,
-            $WPTGroupRepository,
-            $academicYear,
-            $isManager,
-            $isDepartmentHead,
-            false
-        );
+        $teachers = $teacherProvider->forAcademicYear($academicYear, false);
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
@@ -446,43 +407,6 @@ class VisitController extends AbstractController
                 unlink($tmp);
             }
         }
-    }
-
-    private function getTeachersByAcademicYearAndUser(
-        TeacherRepository    $teacherRepository,
-        WptTeacherRepository $wptTeacherRepository,
-        WptGroupRepository   $wptGroupRepository,
-        AcademicYear         $academicYear,
-        bool                 $isManager,
-        bool                 $isDepartmentHead,
-        bool                 $readOnly
-    ): array {
-        $groups = [];
-        $teacher = null;
-
-        if (false === $isManager) {
-            /** @var Person $person */
-            $person = $this->getUser();
-
-            // no es administrador ni coordinador de FP:
-            // puede ser jefe de departamento, tutor de grupo o profesor -> ver sólo sus grupos
-            $teacher =
-                $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
-
-            if ($teacher) {
-                $groups = $wptGroupRepository
-                    ->findByAcademicYearAndWptGroupTutorOrDepartmentHeadPerson($academicYear, $person);
-            }
-        }
-
-        if (!$isManager && !$isDepartmentHead && $teacher && !$readOnly) {
-            $teachers = [$teacher];
-        } elseif ($groups) {
-            $teachers = $wptTeacherRepository->findByGroups($groups);
-        } else {
-            $teachers = $wptTeacherRepository->findByAcademicYear($academicYear);
-        }
-        return $teachers;
     }
 
 }

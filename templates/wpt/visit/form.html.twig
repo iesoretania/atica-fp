@@ -1,24 +1,7 @@
 {% trans_default_domain 'wpt_visit' %}
 {% extends 'ui/layout.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
-{% form_theme form 'ui/form_theme.html.twig' %}
 
+{#- Los campos que dependen de otros (docente → centro de trabajo → acuerdos → alumnado) los recalcula el Live Component Wpt:VisitForm -#}
 {% block content %}
-    {#- Cascada: profesor/fecha/hora → centro de trabajo → convenios → alumnado. El servidor devuelve el formulario recalculado y
-        el controlador sustituye solo los campos afectados. -#}
-    {% set common = ['#visit_dateTime_date', '#visit_dateTime_time', '#visit_teacher', '#visit_workcenter'] %}
-    {{ form_start(form, {'attr': {
-        'data-controller': 'dependent-fields',
-        'data-dependent-fields-rules-value': ([
-            {on: ['#visit_teacher'], send: common, replace: ['#visit_workcenter', '#visit_agreements', '#visit_studentEnrollments'], selectFirst: '#visit_workcenter'},
-            {on: ['#visit_workcenter'], send: common, replace: ['#visit_agreements', '#visit_studentEnrollments']},
-            {on: ['#visit_dateTime_date', '#visit_agreements input'], send: common|merge(['#visit_agreements']), replace: ['#visit_studentEnrollments']},
-        ])|json_encode,
-    }}) }}
-    {{ form_widget(form) }}
-    {{ m.start_button() }}
-        {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {{ m.end_button() }}
-    {{ form_end(form) }}
+    <twig:Wpt:VisitForm :contact="visit.id ? visit : null" :teacher="visit.id ? null : visit.teacher" :form="form" :backUrl="last_url" />
 {% endblock %}

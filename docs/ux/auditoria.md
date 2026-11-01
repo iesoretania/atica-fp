@@ -51,6 +51,25 @@ Referencia visual y técnica: `atica-calidad` (Tailwind 4, Stimulus, Live Compon
 4. **Retirada**: eliminar Bootstrap, jQuery, Select2, Font Awesome, `select2entity-bundle` local y el tema Yeti.
 5. **Cierre**: rehacer capturas del manual (`docs/manual`), actualizar README.
 
+## 4b. Live Components (piloto en FCT)
+
+Piloto con dos pantallas: el listado de acuerdos (`Wpt:AgreementList`) y el formulario de visitas (`Wpt:VisitForm`).
+
+- **Listados** (`src/Twig/Components/AbstractListComponent.php` + `templates/ui/live_list.html.twig`): filtro (`q`) y página
+  (`page`) son estado del componente. Para añadir otro listado: una clase que extienda `AbstractListComponent`
+  (`authorize()` y `createQueryBuilder()`), una plantilla en `templates/components/` que haga `{% embed 'ui/live_list.html.twig' %}`
+  con sus bloques, y una página que la incluya. Dentro de un `embed` los bloques **no** heredan `trans_default_domain`.
+- **Historial del navegador** (`assets/controllers/live_history_controller.js`, mismo patrón que el árbol documental de ÁTICA
+  Calidad): `url: true` de Live Components solo hace `replaceState`, así que el estado se guarda con `pushState` al cambiar de
+  página (escribir en el filtro reemplaza la entrada) y `popstate` llama a la acción `syncFromUrl`. Resultado: volver desde una
+  ficha o con «Atrás» deja el listado como estaba (`?q=...&page=...`).
+- **Formularios** (`ComponentWithFormTrait`): el componente solo repinta los campos dependientes mientras se edita; el
+  guardado sigue siendo un envío normal al controlador. Una entidad nueva no se puede hidratar por id, así que el componente
+  guarda el docente y los valores del formulario y construye la entidad en cada petición. La propiedad no puede llamarse como el
+  formulario (`visit`). Los campos que pasan de `<select>` a casillas necesitan normalizar su valor a lista.
+- **Seguridad**: cada actualización llega a `/_components/...` como una petición nueva, así que los permisos se comprueban en
+  cada una (`authorize()`/`#[PostHydrate]`), no solo en el controlador de la página.
+
 ## 5. Riesgos y mitigación
 
 - **Tests funcionales**: ~6 ficheros dependen de selectores CSS; el resto usa rutas/texto, así que el riesgo es moderado. Cada módulo migrado debe pasar la suite completa (4090 tests) antes de continuar.
