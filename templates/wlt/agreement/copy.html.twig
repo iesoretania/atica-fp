@@ -1,39 +1,47 @@
 {% trans_default_domain 'wlt_agreement' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
     {{ form_start(form) }}
     {{ form_widget(form) }}
-        {% for item in items %}
-            <input type="hidden" name="items[]" value="{{ item.id }}">
-        {% endfor %}
-        <div id="table" class="col-md-12 table-responsive">
-            <table id="list" class="table table-bordered table-hover table-striped">
-                <thead>
+    {% for item in items %}
+        <input type="hidden" name="items[]" value="{{ item.id }}">
+    {% endfor %}
+    <div class="mb-4 overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+        <div class="overflow-x-auto">
+            <table id="list" class="w-full text-left text-sm">
+                <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500 [&_th]:px-4 [&_th]:py-3">
                     <tr>
-                        <th>{{ 'header.student_enrollment'|trans }}</label></th>
-                        <th>{{ 'header.workcenter'|trans }}</label></th>
-                        <th>{{ 'header.work_tutor'|trans }}</label></th>
-                        <th>{{ 'header.educational_tutor'|trans }}</label></th>
-                        <th>{{ 'header.dates'|trans }}</label></th>
+                        <th>{{ 'header.student_enrollment'|trans }}</th>
+                        <th>{{ 'header.workcenter'|trans }}</th>
+                        <th>{{ 'header.work_tutor'|trans }}</th>
+                        <th>{{ 'header.educational_tutor'|trans }}</th>
+                        <th>{{ 'header.dates'|trans }}</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-100 [&_td]:px-4 [&_td]:py-3">
                     {% for item in items %}
                         <tr>
                             <td>{{ item.studentEnrollment }}</td>
                             <td>{{ item.workcenter }}</td>
                             <td>{{ item.workTutor }}</td>
                             <td>{{ item.educationalTutor }}</td>
-                            <td>{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}
-                                {% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}</td>
+                            <td class="whitespace-nowrap">
+                                {{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}
+                                {% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        <div class="alert alert-warning">{{ 'prompt.copy_confirm'|trans|nl2br }}</div>
+    </div>
+    <twig:Ui:Alert type="warning" :message="'prompt.copy_confirm'|trans|nl2br" />
+    {{ m.start_button() }}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
         {{ m.submit_button('copy', 'copy', 'btn-success', 'form.copy_confirm'|trans) }}
+    {{ m.end_button() }}
     {{ form_end(form) }}
 {% endblock %}

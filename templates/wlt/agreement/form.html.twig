@@ -1,60 +1,47 @@
 {% trans_default_domain 'wlt_agreement' %}
-{% extends 'layout.html.twig' %}
-{% set js_entries = ['select2entity', 'wlt_agreement', 'person'] %}
-{% import 'macros.html.twig' as m %}
-{% form_theme form _self %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
 
 {% block content %}
-    {{ form_start(form, {'attr': {'data-ajax': path('work_linked_training_agreement_new', {'project': agreement.project.id})}}) }}
-    {{ form_widget(form) }}
+    {% set ajax_url = path('work_linked_training_agreement_new', {'project': agreement.project.id}) %}
+    {# Al elegir el estudiante se recalculan empresa, centro, concreciones y tutor docente; al cambiar la empresa, el centro (selecciona el primero) y las concreciones #}
+    {{ form_start(form, {'attr': {
+        'data-ajax': ajax_url,
+        'data-controller': 'dependent-fields',
+        'data-dependent-fields-url-value': ajax_url,
+        'data-dependent-fields-rules-value': ([
+            {
+                on: ['#agreement_studentEnrollment'],
+                send: ['#agreement_studentEnrollment', '#agreement_company', '#agreement_workcenter', '#agreement_workTutor'],
+                replace: ['#agreement_company', '#agreement_workcenter', '#agreement_activityRealizations', '#agreement_educationalTutor'],
+            },
+            {
+                on: ['#agreement_company'],
+                send: ['#agreement_studentEnrollment', '#agreement_company', '#agreement_workcenter', '#agreement_workTutor'],
+                replace: ['#agreement_workcenter', '#agreement_activityRealizations'],
+                selectFirst: '#agreement_workcenter',
+            },
+        ])|json_encode,
+    }}) }}
+    {{ fl.grid(form, [
+        ['studentEnrollment', 'internalCode'],
+        ['company', 'workcenter'],
+        ['workTutor', 'additionalWorkTutor'],
+        ['educationalTutor', 'additionalEducationalTutor'],
+        ['startDate', 'endDate'],
+        ['defaultStartTime1', 'defaultEndTime1', 'defaultStartTime2', 'defaultEndTime2'],
+        ['activityRealizations'],
+    ], {}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+    {% if agreement.id and not read_only %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('work_linked_training_agreement_operation', {'project': agreement.project.id}), agreement.id) }}
+    {% endif %}
 
-    <input type="hidden" id="new-person-label" value="{{ 'title.new'|trans({}, 'person') }}" />
-    {% include 'user/new_person_modal.partial.html.twig' %}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script type="module">
-        $(document).ready(function () {
-            $('.select2entity[data-autostart="true"]').select2('destroy');
-            $('.select2entity[data-autostart="true"]').select2entity({
-                theme: "bootstrap",
-                language: {
-                    inputTooShort: function () {
-                        return "{{ 'input.unique_identifier'|trans({}, 'person') }}";
-                    },
-                    searching: function () {
-                        return "{{ 'input.searching'|trans({}, 'person') }}";
-                    }
-                }
-            });
-        });
-    </script>
-{% endblock %}
-
-{% block _agreement_activityRealizations_widget %}
-    <div {{ block('widget_container_attributes') }}>
-        {% if form.vars.choices %}
-            <button type="button" id="select_all" class="btn btn-sm btn-secondary" title="{{ 'form.select_all'|trans }}"><i class="fa fa-check-square"></i></button>
-            <button type="button" id="select_none" class="btn btn-sm btn-secondary" title="{{ 'form.select_none'|trans }}"><i class="fa fa-square"></i></button>
-        {% endif %}
-        {% for name, choices in form.vars.choices %}
-            <h5 class="checkbox-category">
-                {{ name }}
-            </h5>
-            {% for key, choice in choices %}
-                {{ form_widget(form[key], {translation_domain: false}) }}
-                {{ form_label(form[key]) }}
-            {% endfor %}
-        {% else %}
-            <h5 class="checkbox-category">
-                {{ 'form.no_activity_realizations'|trans }}
-            </h5>
-        {% endfor %}
-    </div>
+    {% include 'ui/new_person_modal.html.twig' %}
 {% endblock %}

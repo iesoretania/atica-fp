@@ -38,6 +38,7 @@ class WltListComponentsTest extends AppWebTestCase
         yield 'concreciones' => ['Wlt:ActivityRealizationList', '/dual/proyecto/programa/{activity}/concrecion'];
         yield 'empresas del proyecto' => ['Wlt:LearningProgramList', '/dual/programa/{project}/listar'];
         yield 'reuniones' => ['Wlt:MeetingList', '/dual/reunion/listar/{year}'];
+        yield 'convenios' => ['Wlt:AgreementList', '/dual/acuerdo/{project}/listar'];
         yield 'contactos' => ['Wlt:ContactList', '/dual/contacto/listar/{year}'];
         yield 'informe de contactos por docente' => ['Wlt:ContactEducationalTutorReportList', '/dual/contacto/informe/seguimiento/{year}'];
         yield 'informe de contactos por centro de trabajo' => ['Wlt:ContactWorkcenterReportList', '/dual/contacto/informe/centros/{year}'];
@@ -104,6 +105,7 @@ class WltListComponentsTest extends AppWebTestCase
     public static function filteredListProvider(): iterable
     {
         yield 'proyectos bloqueados' => ['Wlt:ProjectList', '/dual/proyecto/listar/{year}', ['locked' => '0']];
+        yield 'convenios por grupo' => ['Wlt:AgreementList', '/dual/acuerdo/{project}/listar', ['group' => '1']];
         yield 'contactos por forma y fechas' => ['Wlt:ContactList', '/dual/contacto/listar/{year}', ['method' => '0', 'from' => '2020-01-01', 'to' => '2099-12-31']];
         yield 'reuniones por proyecto y fechas' => ['Wlt:MeetingList', '/dual/reunion/listar/{year}', ['project' => '1', 'from' => '2020-01-01', 'to' => '2099-12-31']];
     }

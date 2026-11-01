@@ -182,84 +182,6 @@ class AgreementController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('a')
-            ->addSelect('w')
-            ->addSelect('c')
-            ->addSelect('se')
-            ->addSelect('p')
-            ->addSelect('g')
-            ->addSelect('gr')
-            ->addSelect('t')
-            ->addSelect('wt')
-            ->addSelect('et')
-            ->addSelect('etp')
-            ->from(Agreement::class, 'a')
-            ->join('a.workcenter', 'w')
-            ->join('a.educationalTutor', 'et')
-            ->join('et.person', 'etp')
-            ->leftJoin('a.additionalEducationalTutor', 'aet')
-            ->leftJoin('aet.person', 'aetp')
-            ->join('w.company', 'c')
-            ->join('a.studentEnrollment', 'se')
-            ->join('se.person', 'p')
-            ->join('se.group', 'g')
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 't')
-            ->join('a.workTutor', 'wt')
-            ->leftJoin('a.additionalWorkTutor', 'awt')
-            ->join('a.project', 'pro')
-            ->orderBy('g.name')
-            ->addOrderBy('p.lastName')
-            ->addOrderBy('p.firstName')
-            ->addOrderBy('a.startDate')
-            ->addOrderBy('c.name');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('g.name LIKE :tq')
-                ->orWhere('p.lastName LIKE :tq')
-                ->orWhere('p.firstName LIKE :tq')
-                ->orWhere('etp.lastName LIKE :tq')
-                ->orWhere('etp.firstName LIKE :tq')
-                ->orWhere('aetp.lastName LIKE :tq')
-                ->orWhere('aetp.firstName LIKE :tq')
-                ->orWhere('w.name LIKE :tq')
-                ->orWhere('c.name LIKE :tq')
-                ->orWhere('g.name LIKE :tq')
-                ->orWhere('wt.firstName LIKE :tq')
-                ->orWhere('wt.lastName LIKE :tq')
-                ->orWhere('wt.uniqueIdentifier LIKE :tq')
-                ->orWhere('awt.firstName LIKE :tq')
-                ->orWhere('awt.lastName LIKE :tq')
-                ->orWhere('awt.uniqueIdentifier LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        /** @var Person $person */
-        $person = $this->getUser();
-
-        $projects = $agreementRepository->setQueryBuilderFilterByOrganizationManagerPersonProjectAndReturnProjects(
-            $queryBuilder,
-            $organization,
-            $person,
-            $project
-        );
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'wlt_agreement');
 
         $breadcrumb = [
@@ -271,11 +193,8 @@ class AgreementController extends AbstractController
             'menu_path' => 'work_linked_training_project_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'wlt_agreement',
-            'project' => $project,
-            'projects' => $projects
+            'project' => $project
         ]);
     }
 
