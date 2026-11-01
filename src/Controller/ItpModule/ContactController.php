@@ -30,6 +30,7 @@ use App\Repository\ItpModule\TeacherRepository as ItpTeacherRepository;
 use App\Security\ItpModule\ContactVoter;
 use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\OrganizationVoter;
+use App\Service\ItpModule\ContactTeacherProvider;
 use App\Service\UserExtensionService;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Exception\OutOfRangeCurrentPageException;
@@ -49,7 +50,7 @@ class ContactController extends AbstractController
         Request              $request,
         TranslatorInterface  $translator,
         UserExtensionService $userExtensionService,
-        Security             $security,
+        ContactTeacherProvider $teacherProvider,
         ItpTeacherRepository $itpTeacherRepository,
         ContactRepository    $contactRepository
     ): Response
@@ -79,8 +80,7 @@ class ContactController extends AbstractController
             $request,
             $translator,
             $userExtensionService,
-            $security,
-            $itpTeacherRepository,
+            $teacherProvider,
             $contactRepository,
             $contact
         );
@@ -91,8 +91,7 @@ class ContactController extends AbstractController
         Request              $request,
         TranslatorInterface  $translator,
         UserExtensionService $userExtensionService,
-        Security             $security,
-        ItpTeacherRepository $itpTeacherRepository,
+        ContactTeacherProvider $teacherProvider,
         ContactRepository    $contactRepository,
         Contact              $contact
     ): Response {
@@ -106,33 +105,9 @@ class ContactController extends AbstractController
         assert($academicYear instanceof AcademicYear);
 
         $readOnly = !$this->isGranted(ContactVoter::MANAGE, $contact);
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        $person = $this->getUser();
-        assert($person instanceof Person);
-
-        $teacher = $itpTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
-
-        if (!$isManager) {
-            if ($teacher instanceof Teacher) {
-                $teachers = [$teacher];
-            } else {
-                $teachers = [];
-            }
-        } else {
-            $teachers = $itpTeacherRepository->findByAcademicYear($academicYear);
-        }
-
-        if ($readOnly && $contact->getTeacher() instanceof Teacher) {
-            $teachers = [$contact->getTeacher()];
-        } elseif ($contact->getTeacher() instanceof Teacher && !in_array($contact->getTeacher(), $teachers, true)) {
-            // quien puede modificar un contacto ajeno (la jefatura, por ejemplo) debe ver al docente que lo registró
-            $teachers[] = $contact->getTeacher();
-        }
-
         $form = $this->createForm(ContactType::class, $contact, [
             'disabled' => $readOnly,
-            'teachers' => $teachers
+            'teachers' => $teacherProvider->forContact($contact, $readOnly)
         ]);
 
         $form->handleRequest($request);
@@ -163,6 +138,7 @@ class ContactController extends AbstractController
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
+            'contact' => $contact,
             'form' => $form->createView()
         ]);
     }

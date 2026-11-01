@@ -67,3 +67,6 @@ message.error: No se han podido guardar los cambios.
 message.report_error: No se ha podido generar el informe.
 message.deleted: Contactos eliminados con éxito.
 message.delete_error: Ha ocurrido un error al eliminar los contactos.
+
+danger.title: "Peligro: eliminación del contacto"
+danger.text: Una vez eliminado el contacto, no se podrá recuperar.
