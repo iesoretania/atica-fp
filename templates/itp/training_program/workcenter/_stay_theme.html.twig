@@ -1,0 +1,12 @@
+{% trans_default_domain 'itp_student_program_workcenter' %}
+{#- Tema de los formularios de estancia: las actividades de la empresa como lista de casillas con «seleccionar todas».
+    (Los «import» van dentro de cada bloque: el cuerpo de una plantilla que solo se usa como tema no se ejecuta.) -#}
+{% block _student_program_workcenter_selectedActivities_widget %}
+    {% import 'ui/form_checklist.html.twig' as cl %}
+    {{ cl.checklist(form, choices, 'form.select_all'|trans, 'form.select_none'|trans, 'form.no_activity'|trans) }}
+{% endblock %}
+
+{% block _student_program_workcenter_batch_selectedActivities_widget %}
+    {% import 'ui/form_checklist.html.twig' as cl %}
+    {{ cl.checklist(form, choices, 'form.select_all'|trans, 'form.select_none'|trans, 'form.no_activity'|trans) }}
+{% endblock %}

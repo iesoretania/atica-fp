@@ -204,7 +204,9 @@ class StudentProgramWorkcenterController extends AbstractController
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'student_program' => $studentProgramWorkcenter,
+            'stay' => $studentProgramWorkcenter,
+            'manage' => false,
+            'delete_url' => $this->generateUrl('in_company_training_phase_student_program_workcenter_operation', ['studentProgram' => $studentProgram->getId()]),
             'form' => $form->createView()
         ]);
     }

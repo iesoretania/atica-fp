@@ -167,7 +167,7 @@ class StudentProgramWorkcenterManagerController extends AbstractController
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'student_program' => $studentProgramWorkcenter,
+            'program_group' => $programGroup,
             'form' => $form->createView()
         ]);
     }
@@ -262,7 +262,9 @@ class StudentProgramWorkcenterManagerController extends AbstractController
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'student_program' => $studentProgramWorkcenter,
+            'stay' => $studentProgramWorkcenter,
+            'manage' => true,
+            'delete_url' => $this->generateUrl('in_company_training_phase_student_program_workcenter_manage_operation', ['programGrade' => $programGrade->getId()]),
             'form' => $form->createView()
         ]);
     }

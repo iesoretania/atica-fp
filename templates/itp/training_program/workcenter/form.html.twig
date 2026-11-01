@@ -1,38 +1,12 @@
 {% trans_default_domain 'itp_student_program_workcenter' %}
 {% extends 'ui/layout.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
 {% import 'ui/form_layout.html.twig' as fl %}
-{% import 'ui/form_checklist.html.twig' as cl %}
-{% form_theme form 'ui/form_theme.html.twig' _self %}
 
+{#- Los campos que dependen de otros (empresa → centro de trabajo y actividades) los recalcula el Live Component Itp:StayForm -#}
 {% block content %}
-    {#- Al cambiar la empresa se recalculan sus centros de trabajo (se elige el primero) y las actividades -#}
-    {% set prefix = '#student_program_workcenter_' %}
-    {{ form_start(form, {'attr': {
-        'data-controller': 'dependent-fields',
-        'data-dependent-fields-rules-value': ([{
-            on: [prefix ~ 'company'],
-            send: [prefix ~ 'company', prefix ~ 'workcenter', prefix ~ 'educationalTutor', prefix ~ 'additionalEducationalTutor', prefix ~ 'workTutor', prefix ~ 'additionalWorkTutor'],
-            replace: [prefix ~ 'workcenter', prefix ~ 'selectedActivities'],
-            selectFirst: prefix ~ 'workcenter',
-        }])|json_encode,
-    }}) }}
-    {{ fl.grid(form, [
-        ['company', 'workcenter'],
-        ['educationalTutor', 'additionalEducationalTutor'],
-        ['workTutor', 'additionalWorkTutor'],
-        ['startDate', 'endDate'],
-        ['selectedActivities'],
-    ], {}, 'card.title'|trans) }}
-    {{ m.start_button() }}
-        {% if not is_read_only() %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {{ m.end_button() }}
-    {{ form_end(form) }}
-
+    <twig:Itp:StayForm :stay="stay.id ? stay : null" :studentProgram="stay.id ? null : stay.studentProgram" :form="form" :backUrl="last_url" :manage="manage" />
+    {% if stay.id and not is_read_only() %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, delete_url, stay.id) }}
+    {% endif %}
     {% if not is_read_only() %}{% include 'ui/new_person_modal.html.twig' %}{% endif %}
-{% endblock %}
-
-{% block _student_program_workcenter_selectedActivities_widget %}
-    {{ cl.checklist(form, choices, 'form.select_all'|trans, 'form.select_none'|trans, 'form.no_activity'|trans) }}
 {% endblock %}

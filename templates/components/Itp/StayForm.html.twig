@@ -1,0 +1,24 @@
+{% trans_default_domain 'itp_student_program_workcenter' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' 'itp/training_program/workcenter/_stay_theme.html.twig' %}
+{#- Formulario de estancia (Live Component). Al elegir la empresa, el servidor recalcula sus centros de trabajo (se elige el primero) y
+    sus actividades. El guardado es un envío normal del formulario al controlador (action). Los selectores con búsqueda remota
+    de personas (Tom Select) se excluyen del repintado con data-live-ignore: gestionan su propio DOM. -#}
+{% set ignore = {class: '@container min-w-0', 'data-live-ignore': ''} %}
+<div {{ attributes.defaults({'data-loading': 'addClass(opacity-60)'}) }}>
+    {{ form_start(form, {action: this.submitUrl, method: 'POST'}) }}
+        {{ fl.grid(form, [
+            ['students'],
+            ['company', 'workcenter'],
+            ['educationalTutor', 'additionalEducationalTutor'],
+            ['workTutor', 'additionalWorkTutor'],
+            ['startDate', 'endDate'],
+            ['selectedActivities'],
+        ], {workTutor: {row_attr: ignore}, additionalWorkTutor: {row_attr: ignore}}, (this.batch ? 'card.title.batch' : 'card.title')|trans) }}
+        {{ m.start_button() }}
+            {% if not is_read_only() %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
+            {{ m.link_button(this.backUrl, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.end_button() }}
+    {{ form_end(form, {render_rest: false}) }}
+</div>

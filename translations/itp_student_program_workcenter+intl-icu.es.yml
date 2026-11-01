@@ -81,3 +81,6 @@ prompt.copy_confirm: |
     Esta operación no se puede deshacer.
 
 filters.group: Grupo
+
+danger.title: "Peligro: eliminación de la estancia"
+danger.text: Una vez eliminada la estancia (con sus jornadas, comentarios y valoraciones), no se podrá recuperar.

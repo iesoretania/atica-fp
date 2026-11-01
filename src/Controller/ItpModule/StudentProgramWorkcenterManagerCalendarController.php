@@ -253,7 +253,7 @@ class StudentProgramWorkcenterManagerCalendarController extends AbstractControll
             ['fixed' => $title]
         ];
 
-        return $this->render('itp/training_program/workcenter/form.html.twig', [
+        return $this->render('itp/training_program/workcenter/calendar_form.html.twig', [
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
