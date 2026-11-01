@@ -1,16 +1,18 @@
 {% trans_default_domain 'wlt_contact' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['projects'],
+        ['contactMethods'],
+    ], {}, 'card.report_title'|trans) }}
     {{ m.start_button() }}
         {{ m.submit_button('submit', 'print', 'btn-success', 'form.generate_report'|trans) }}
-        {{ m.link_button( path('work_linked_training_contact_list', {'academicYear': academic_year.id}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.link_button(path('work_linked_training_contact_list', {'academicYear': academic_year.id}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
 {% endblock %}

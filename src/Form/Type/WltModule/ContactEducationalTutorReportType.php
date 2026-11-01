@@ -86,6 +86,7 @@ class ContactEducationalTutorReportType extends AbstractType
             ])
             ->add('workcenter', EntityType::class, [
                 'label' => 'form.workcenter',
+                'help' => 'form.workcenter.report_help',
                 'class' => Workcenter::class,
                 'choices' => $workcenters,
                 'placeholder' => 'form.workcenter.all',

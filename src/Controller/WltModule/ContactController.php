@@ -40,6 +40,8 @@ use App\Security\OrganizationVoter;
 use App\Security\WltModule\ContactVoter;
 use App\Security\WltModule\OrganizationVoter as WltOrganizationVoter;
 use App\Service\UserExtensionService;
+use App\Service\WltModule\ContactReportTeacherProvider;
+use App\Service\WltModule\ContactTeacherProvider;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -63,8 +65,7 @@ class ContactController extends AbstractController
         Request              $request,
         TranslatorInterface  $translator,
         UserExtensionService $userExtensionService,
-        Security             $security,
-        WltGroupRepository   $wltGroupRepository,
+        ContactTeacherProvider $teacherProvider,
         WltTeacherRepository $wltTeacherRepository,
         ManagerRegistry      $managerRegistry
     ): Response
@@ -91,9 +92,7 @@ class ContactController extends AbstractController
             $request,
             $translator,
             $userExtensionService,
-            $security,
-            $wltGroupRepository,
-            $wltTeacherRepository,
+            $teacherProvider,
             $managerRegistry,
             $visit
         );
@@ -104,9 +103,7 @@ class ContactController extends AbstractController
         Request              $request,
         TranslatorInterface  $translator,
         UserExtensionService $userExtensionService,
-        Security             $security,
-        WltGroupRepository   $wltGroupRepository,
-        WltTeacherRepository $wltTeacherRepository,
+        ContactTeacherProvider $teacherProvider,
         ManagerRegistry      $managerRegistry,
         Contact              $visit
     ): Response {
@@ -121,46 +118,9 @@ class ContactController extends AbstractController
 
         $readOnly = !$this->isGranted(ContactVoter::MANAGE, $visit);
 
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(WltOrganizationVoter::WLT_MANAGER, $organization);
-        $isDepartmentHead = $security->isGranted(EduOrganizationVoter::EDU_DEPARTMENT_HEAD, $organization);
-
-        $groups = [];
-        $teacher = null;
-
-        if (!$isManager) {
-            /** @var Person $person */
-            $person = $this->getUser();
-
-            if (!$isWltManager) {
-                // no es administrador ni coordinador de FP:
-                // puede ser jefe de departamento, tutor de grupo o profesor -> ver sólo sus grupos
-                $teacher =
-                    $wltTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
-
-                if ($teacher) {
-                    $groups = $wltGroupRepository->findByAcademicYearAndWltTeacherPerson($academicYear, $person);
-                }
-            } else {
-                $groups = $wltGroupRepository->findByAcademicYearAndWltTeacherPerson($academicYear, $person);
-            }
-        } else {
-            $groups = $wltGroupRepository->findByAcademicYear($academicYear);
-        }
-        $teachers = [];
-        if (!$isManager && !$isDepartmentHead && $teacher && !$readOnly) {
-            $teachers = [$teacher];
-        } elseif ($groups) {
-            $teachers = $wltTeacherRepository->findByGroupsOrEducationalTutor($groups, $academicYear);
-        }
-        // quien puede modificar un contacto ajeno (la jefatura, por ejemplo) debe ver al docente que lo registró
-        if ($visit->getTeacher() instanceof Teacher && !in_array($visit->getTeacher(), $teachers, true)) {
-            $teachers[] = $visit->getTeacher();
-        }
-
         $form = $this->createForm(ContactType::class, $visit, [
             'disabled' => $readOnly,
-            'teachers' => $teachers
+            'teachers' => $teacherProvider->forContact($visit, $readOnly)
         ]);
 
         $form->handleRequest($request);
@@ -191,6 +151,7 @@ class ContactController extends AbstractController
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
+            'contact' => $visit,
             'form' => $form->createView()
         ]);
     }
@@ -216,138 +177,12 @@ class ContactController extends AbstractController
         }
 
         $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_ACCESS_VISIT, $organization);
-        $allowNew = $this->isGranted(WltOrganizationVoter::WLT_CREATE_VISIT, $organization);
-
-        $mf = $request->query->get('mf');
-
-        $methodCollection = [];
-        if (null !== $mf) {
-            $methodIdsCollection = explode(',', (string) $mf);
-            $methodCollection = $contactMethodRepository
-                ->findAllInListByIdAndAcademicYear($methodIdsCollection, $academicYear);
-            if (in_array('0', $methodIdsCollection, true)) {
-                $methodCollection[] = null;
-            }
-        }
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-        $queryBuilder
-            ->select('v')
-            ->distinct(true)
-            ->addSelect('t')
-            ->addSelect('p')
-            ->addSelect('w')
-            ->addSelect('c')
-            ->addSelect('pr')
-            ->addSelect('se')
-            ->addSelect('sep')
-            ->addSelect('seg')
-            ->from(Contact::class, 'v')
-            ->join('v.teacher', 't')
-            ->join('t.person', 'p')
-            ->join('v.workcenter', 'w')
-            ->join('w.company', 'c')
-            ->leftJoin('v.projects', 'pr')
-            ->leftJoin('v.studentEnrollments', 'se')
-            ->leftJoin('se.person', 'sep')
-            ->leftJoin('se.group', 'seg')
-            ->addOrderBy('v.dateTime', 'DESC');
-
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(WltOrganizationVoter::WLT_MANAGER, $organization);
-        $isDepartmentHead = $security->isGranted(WltOrganizationVoter::WLT_DEPARTMENT_HEAD, $organization);
-
-        $groups = [];
-        $projects = [];
-
-        /** @var Person $person */
-        $person = $this->getUser();
-        if (!$isWltManager && !$isManager && !$isDepartmentHead) {
-            // no es administrador ni coordinador de FP ni jefe de familia profesional:
-            // puede ser tutor de grupo -> ver solo visitas de los
-            // estudiantes de sus grupos
-            $groups = $wltGroupRepository->findByAcademicYearAndGroupTutorOrDepartmentHeadPerson($academicYear, $person);
-        } elseif ($isWltManager) {
-            $projects = $projectRepository->findByManager($person);
-        } elseif ($isDepartmentHead) {
-            $projects = $projectRepository->findByDepartmentHeadPerson($person);
-        }
-
-        $q = $request->query->get('q');
-
-        if ($q) {
-            $queryBuilder
-                ->orWhere('p.firstName LIKE :tq')
-                ->orWhere('p.lastName LIKE :tq')
-                ->orWhere('w.name LIKE :tq')
-                ->orWhere('c.name LIKE :tq')
-                ->orWhere('(pr.name IS NOT NULL AND pr.name LIKE :tq)')
-                ->orWhere('(seg.name IS NOT NULL AND seg.name LIKE :tq)')
-                ->orWhere('(sep.firstName IS NOT NULL AND (sep.firstName LIKE :tq OR sep.lastName LIKE :tq))')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        // ver siempre las propias
-        /** @var Person $user */
-        $user = $this->getUser();
-        $teacher =
-            $wltTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $user);
-
-        if ($groups) {
-            $queryBuilder
-                ->andWhere('se.group IN (:groups) OR v.teacher = :teacher')
-                ->setParameter('groups', $groups)
-                ->setParameter('teacher', $teacher);
-        }
-
-        if ($projects) {
-            $queryBuilder
-                ->andWhere('pr IN (:projects) OR v.teacher = :teacher')
-                ->setParameter('projects', $projects)
-                ->setParameter('teacher', $teacher);
-        }
-
-        $queryBuilder
-            ->andWhere('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
-
-        if (count($methodCollection) > 0) {
-            if (in_array(null, $methodCollection, true)) {
-                $queryBuilder->andWhere('v.method IN (:methods) OR v.method IS NULL');
-            } else {
-                $queryBuilder->andWhere('v.method IN (:methods)');
-            }
-
-            $queryBuilder
-                ->setParameter('methods', $methodCollection);
-        }
-
-        $adapter = new QueryAdapter($queryBuilder, true);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
 
         $title = $translator->trans('title.list', [], 'wlt_contact');
 
-        $methods = $contactMethodRepository->findEnabledByAcademicYear($academicYear);
-
-        $activeMethods = [];
-        $activeMethods = array_merge($activeMethods, $methodCollection);
-
         return $this->render('wlt/contact/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'wlt_contact',
-            'allow_new' => $allowNew,
-            'methods' => $methods,
-            'active_methods' => $activeMethods,
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
@@ -403,71 +238,11 @@ class ContactController extends AbstractController
         ]);
     }
 
-    /**
-     * @param $organization
-     * @return Teacher[]|array|Collection
-     */
-    private function getAllowedTeachers(
-        Security             $security,
-        Organization         $organization,
-        AcademicYear         $academicYear,
-        WltGroupRepository   $wltGroupRepository,
-        WltTeacherRepository $wltTeacherRepository
-    ) {
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isWltManager = $security->isGranted(WltOrganizationVoter::WLT_MANAGER, $organization);
-        $isDepartmentHead = $security->isGranted(EduOrganizationVoter::EDU_DEPARTMENT_HEAD, $organization);
-
-        $groups = [];
-        $currentUserTeacher = null;
-        $seesWholeScope = $isManager;
-
-        if (!$isManager) {
-            /** @var Person $person */
-            $person = $this->getUser();
-
-            $currentUserTeacher = $wltTeacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
-
-            // la jefatura de departamento ve todos los grupos de sus enseñanzas y la coordinación los de los
-            // proyectos que gestiona; el resto del profesorado, solo su propio informe
-            $headGroups = $isDepartmentHead
-                ? $wltGroupRepository->findByAcademicYearAndWLTDepartmentHeadPerson($academicYear, $person)
-                : [];
-            $managedGroups = $isWltManager
-                ? $wltGroupRepository->findByAcademicYearAndWLTProjectManagerPerson($academicYear, $person)
-                : [];
-            $teachingGroups = $currentUserTeacher
-                ? $wltGroupRepository->findByAcademicYearAndWltTeacherPerson($academicYear, $person)
-                : [];
-
-            foreach ([...$headGroups, ...$managedGroups, ...$teachingGroups] as $group) {
-                $groups[$group->getId()] = $group;
-            }
-            $groups = array_values($groups);
-            $seesWholeScope = $headGroups !== [] || $managedGroups !== [] || ($isWltManager && !$currentUserTeacher);
-        } else {
-            $groups = $wltGroupRepository->findByAcademicYear($academicYear);
-        }
-
-        if (!$seesWholeScope && $currentUserTeacher) {
-            return [$currentUserTeacher];
-        }
-
-        $teachers = $groups ? $wltTeacherRepository->findByGroupsOrEducationalTutor($groups, $academicYear) : [];
-        if ($currentUserTeacher && !in_array($currentUserTeacher, $teachers, true)) {
-            $teachers[] = $currentUserTeacher;
-        }
-
-        return $teachers;
-    }
-
     #[Route(path: '/informe/seguimiento/{academicYear}/{page}', name: 'work_linked_training_contact_educational_tutor_report_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
     public function educationTutorReportList(
         Request                $request,
         UserExtensionService   $userExtensionService,
-        Security               $security,
-        WltGroupRepository     $wltGroupRepository,
-        WltTeacherRepository   $wltTeacherRepository,
+        ContactReportTeacherProvider $reportTeachers,
         AcademicYearRepository $academicYearRepository,
         ContactRepository      $contactRepository,
         TranslatorInterface    $translator,
@@ -480,29 +255,6 @@ class ContactController extends AbstractController
         }
 
         $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_ACCESS_VISIT, $organization);
-
-        $teachers = $this->getAllowedTeachers(
-            $security,
-            $organization,
-            $academicYear,
-            $wltGroupRepository,
-            $wltTeacherRepository
-        );
-
-        $q = $request->query->get('q');
-
-        $queryBuilder = $contactRepository
-            ->getTeacherStatsByIdAndFilterQueryBuilder($teachers, $q);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
 
         $title = $translator->trans(
             'title.educational_tutor_report',
@@ -518,8 +270,6 @@ class ContactController extends AbstractController
             'menu_path' => 'work_linked_training_contact_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'wlt_contact',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
@@ -530,9 +280,7 @@ class ContactController extends AbstractController
     public function educationTutorReportForm(
         Request                 $request,
         UserExtensionService    $userExtensionService,
-        Security                $security,
-        WltGroupRepository      $wltGroupRepository,
-        WltTeacherRepository    $wltTeacherRepository,
+        ContactReportTeacherProvider $reportTeachers,
         ProjectRepository       $projectRepository,
         ContactRepository       $contactRepository,
         ContactMethodRepository $contactMethodRepository,
@@ -545,13 +293,7 @@ class ContactController extends AbstractController
 
         $academicYear = $teacher->getAcademicYear();
         assert($academicYear instanceof AcademicYear);
-        $teachers = $this->getAllowedTeachers(
-            $security,
-            $organization,
-            $academicYear,
-            $wltGroupRepository,
-            $wltTeacherRepository
-        );
+        $teachers = $reportTeachers->forAcademicYear($academicYear);
 
         if (!in_array($teacher, $teachers, true)) {
             throw $this->createAccessDeniedException();
@@ -602,6 +344,7 @@ class ContactController extends AbstractController
             'academic_year' => $academicYear,
             'breadcrumb' => $breadcrumb,
             'title' => $title,
+            'teacher' => $teacher,
             'form' => $form->createView()
         ]);
     }
@@ -650,9 +393,7 @@ class ContactController extends AbstractController
     public function workCenterReportList(
         Request                $request,
         UserExtensionService   $userExtensionService,
-        Security               $security,
-        WltGroupRepository     $wltGroupRepository,
-        WltTeacherRepository   $wltTeacherRepository,
+        ContactReportTeacherProvider $reportTeachers,
         AcademicYearRepository $academicYearRepository,
         ContactRepository      $contactRepository,
         TranslatorInterface    $translator,
@@ -666,30 +407,6 @@ class ContactController extends AbstractController
 
         $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_ACCESS_VISIT, $organization);
 
-        $teachers = $this->getAllowedTeachers(
-            $security,
-            $organization,
-            $academicYear,
-            $wltGroupRepository,
-            $wltTeacherRepository
-        );
-
-        $workcenters = $contactRepository->findWorkcentersByTeachers($teachers);
-
-        $q = $request->query->get('q');
-
-        $queryBuilder = $contactRepository
-            ->getWorkcenterStatsByIdAcademicYearAndFilterQueryBuilder($workcenters, $academicYear, $q);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
 
         $title = $translator->trans(
             'title.workcenter_report',
@@ -705,8 +422,6 @@ class ContactController extends AbstractController
             'menu_path' => 'work_linked_training_contact_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'wlt_contact',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
@@ -717,9 +432,7 @@ class ContactController extends AbstractController
     public function workcenterReportForm(
         Request                 $request,
         UserExtensionService    $userExtensionService,
-        Security                $security,
-        WltGroupRepository      $wltGroupRepository,
-        WltTeacherRepository    $wltTeacherRepository,
+        ContactReportTeacherProvider $reportTeachers,
         ProjectRepository       $projectRepository,
         ContactRepository       $contactRepository,
         ContactMethodRepository $contactMethodRepository,
@@ -731,13 +444,7 @@ class ContactController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_ACCESS_VISIT, $organization);
 
-        $teachers = $this->getAllowedTeachers(
-            $security,
-            $organization,
-            $academicYear,
-            $wltGroupRepository,
-            $wltTeacherRepository
-        );
+        $teachers = $reportTeachers->forAcademicYear($academicYear);
 
         $workcenters = $contactRepository->findWorkcentersByTeachers($teachers);
         if (!in_array($workcenter, $workcenters, true)) {

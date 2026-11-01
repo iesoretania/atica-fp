@@ -1,4 +1,21 @@
 form.datetime: Fecha y hora
+form.datetime.help: Momento del contacto. De la fecha depende el alumnado que se puede elegir.
+form.teacher.help: Docente que realiza el contacto con la empresa.
+form.workcenter.help: Centro de trabajo con el que se ha tenido el contacto. Al elegirlo se ofrecen sus proyectos y su alumnado.
+form.method.help: Cómo se ha realizado el contacto. Si no se indica, se considera presencial.
+form.projects.help: Proyectos de FP dual del centro de trabajo a los que se refiere el contacto.
+form.student_enrollments.help: Estudiantes sobre los que se ha tratado en el contacto.
+form.detail.help: Resumen de lo tratado y de los acuerdos del contacto.
+
+card.title: Datos del contacto
+card.report_title: Contactos que se incluyen en el informe
+
+form.projects.to_report.help: Se incluyen los contactos asociados a los proyectos marcados. Al cambiarlos se recalculan los centros de trabajo disponibles.
+form.methods.help: Solo se incluyen los contactos de los tipos marcados.
+form.workcenter.report_help: Si se elige un centro de trabajo, el informe solo incluye sus contactos. Si no, incluye los de todos.
+
+danger.title: "Peligro: eliminación del contacto"
+danger.text: Una vez eliminado el contacto, no se podrá recuperar.
 form.teacher: Docente
 form.teacher.none: Seleccione un docente
 form.workcenter: Centro de trabajo

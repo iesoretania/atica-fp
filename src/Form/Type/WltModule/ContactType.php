@@ -20,7 +20,6 @@ namespace App\Form\Type\WltModule;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\ContactMethod;
-use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\WltModule\Contact;
 use App\Entity\WltModule\Project;
@@ -31,6 +30,7 @@ use App\Repository\WltModule\StudentEnrollmentRepository;
 use App\Repository\WltModule\TeacherRepository;
 use App\Repository\WorkcenterRepository;
 use App\Service\UserExtensionService;
+use App\Form\Type\Edu\StudentEnrollmentChoiceType;
 use App\Form\Type\RichTextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -126,9 +126,8 @@ class ContactType extends AbstractType
                 'placeholder' => 'form.projects.none',
                 'required' => false
             ])
-            ->add('studentEnrollments', EntityType::class, [
+            ->add('studentEnrollments', StudentEnrollmentChoiceType::class, [
                 'label' => 'form.student_enrollments',
-                'class' => StudentEnrollment::class,
                 'choices' => $studentEnrollments,
                 'disabled' => !$canSelectStudentEnrollments,
                 'expanded' => $canSelectStudentEnrollments,

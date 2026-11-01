@@ -1,17 +1,7 @@
 {% trans_default_domain 'wlt_contact' %}
-{% extends 'layout.html.twig' %}
-{% set js_entries = ['wlt_contact_educational_tutor_report'] %}
-{% import 'macros.html.twig' as m %}
-{% block content %}
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ m.start_button() }}
-        {{ m.submit_button('submit', 'print', 'btn-success', 'form.generate_report'|trans) }}
-        {{ m.link_button( path('work_linked_training_contact_list', {'academicYear': academic_year.id}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {{ m.end_button() }}
-    {{ form_end(form) }}
-{% endblock %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block javascripts %}
-    {{ parent() }}
+{#- El centro de trabajo depende de los proyectos elegidos: lo recalcula el Live Component Wlt:ContactEducationalTutorReportForm -#}
+{% block content %}
+    <twig:Wlt:ContactEducationalTutorReportForm :teacher="teacher" :form="form" :backUrl="path('work_linked_training_contact_list', {'academicYear': academic_year.id})" />
 {% endblock %}

@@ -1,0 +1,19 @@
+{% trans_default_domain 'wlt_contact' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+{#- Formulario del informe de un docente (Live Component). Al cambiar los proyectos se recalculan los centros de trabajo; el
+    informe lo genera el controlador al enviar el formulario normalmente (action). -#}
+<div {{ attributes.defaults({'data-loading': 'addClass(opacity-60)'}) }}>
+    {{ form_start(form, {action: this.submitUrl, method: 'POST'}) }}
+        {{ fl.grid(form, [
+            ['projects'],
+            ['workcenter'],
+            ['contactMethods'],
+        ], {}, 'card.report_title'|trans) }}
+        {{ m.start_button() }}
+            {{ m.submit_button('submit', 'print', 'btn-success', 'form.generate_report'|trans) }}
+            {{ m.link_button(this.backUrl, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.end_button() }}
+    {{ form_end(form, {render_rest: false}) }}
+</div>

@@ -1,17 +1,11 @@
 {% trans_default_domain 'wlt_contact' %}
-{% extends 'layout.html.twig' %}
-{% set js_entries = ['wlt_contact'] %}
-{% import 'macros.html.twig' as m %}
-{% block content %}
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ m.start_button() }}
-        {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
-        {{ m.link_button( path('work_linked_training_contact_list', {'academicYear': academic_year.id}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {{ m.end_button() }}
-    {{ form_end(form) }}
-{% endblock %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/form_layout.html.twig' as fl %}
 
-{% block javascripts %}
-    {{ parent() }}
+{#- Los campos que dependen de otros (fecha y centro → proyectos → alumnado) los recalcula el Live Component Wlt:ContactForm -#}
+{% block content %}
+    <twig:Wlt:ContactForm :contactEntity="contact.id ? contact : null" :teacher="contact.id ? null : contact.teacher" :form="form" :backUrl="path('work_linked_training_contact_list', {'academicYear': academic_year.id})" />
+    {% if contact.id and not read_only %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('work_linked_training_contact_operation'), contact.id) }}
+    {% endif %}
 {% endblock %}
