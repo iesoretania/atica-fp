@@ -81,8 +81,28 @@ Piloto con dos pantallas: el listado de acuerdos (`Wpt:AgreementList`) y el form
   opciones)`: cada fila es una lista de campos que se reparten el ancho a partes iguales (de 1 a 6 columnas; `null` reserva
   una columna). Los campos que no se mencionan se añaden al final a todo el ancho. Mantiene validación, CSRF y los bloques
   personalizados del tema.
+- **Anchos proporcionales**: en `grid`, `campo:peso` reparte el ancho de la fila (`['code:1', 'name:4']`: código corto y nombre
+  largo).
 - **Seguridad**: cada actualización llega a `/_components/...` como una petición nueva, así que los permisos se comprueban en
   cada una (`authorize()`/`#[PostHydrate]`), no solo en el controlador de la página.
+- **Campos con DOM propio dentro de un Live Component** (selectores remotos Tom Select, editor Quill): su fila debe llevar
+  `data-live-ignore` (`row_attr`), para que el repintado no destruya el DOM que crea JavaScript. El valor se envía igualmente
+  con el `<form>` normal.
+- **Formularios con zona de peligro** (`fl.danger_zone`): tarjeta roja bajo el formulario, fuera del `<form>` principal, que
+  envía el id a la operación de borrado del listado (que pide confirmación).
+
+### FFEOE (`Itp`)
+
+Todos los listados de FFEOE son Live Components (`src/Twig/Components/Itp/`): programas formativos, actividades, empresas,
+estudiantes, estancias (por estudiante y gestión del ciclo), contactos (filtro de forma y fechas), desplazamientos (detalle y
+resumen), seguimiento, valoración y evaluación, encuestas (alumnado, empresas, centro) e informes de encuestas. Las tablas
+de «Grupos» y «Ciclos» del plan son resúmenes sobre datos ya calculados (no hay filtro, orden ni paginación que ofrecer) y
+siguen siendo plantillas estáticas.
+
+Formularios con campos dependientes (`Itp:ContactForm`, `Itp:StayForm` —individual, edición desde la gestión y alta por lote—
+e `Itp:ActivityForm`): ver sus clases para las reglas de cascada. Las selecciones que dejan de ser válidas se vacían antes del
+envío del componente (nunca aparece «la opción seleccionada no es válida»). Pruebas: `Itp*ComponentTest` y `ItpListComponentsTest`
+(que incluye la repetición de la petición desde otro centro, que debe dar 403).
 
 ## 5. Riesgos y mitigación
 
