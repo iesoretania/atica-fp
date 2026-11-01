@@ -11,12 +11,13 @@
         <twig:Ui:Alert type="warning" :message="'prompt.locked_warning'|trans|nl2br" />
     {% endif %}
     {{ form_start(form) }}
-    {{ form_widget(form.trackedActivities) }}
     {{ fl.grid(form, [
+        ['trackedActivities'],
         ['absence', 'locked'],
+        ['startTime1', 'endTime1', 'startTime2', 'endTime2'],
         ['otherActivities'],
         ['notes'],
-    ]) }}
+    ], {trackedActivities: {label: false}, otherActivities: {attr: {rows: 3}}, notes: {attr: {rows: 3}}}) }}
     {{ m.start_button() }}
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
@@ -43,6 +44,15 @@
                class="rounded-lg p-2 text-gray-500 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"><twig:Ui:Icon name="angle-right" /></a>
         {% endif %}
     </span>
+{% endblock %}
+
+{#- Horas de cada actividad del día: en columnas (tres por fila) -#}
+{% block _work_day_tracking_trackedActivities_widget %}
+    <div {{ block('widget_container_attributes') }} class="grid grid-cols-1 gap-x-6 gap-y-5 md:grid-cols-3">
+        {% for child in form %}
+            {{ form_row(child, {row_attr: {class: 'min-w-0'}}) }}
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {% block _program_grades_programGrades_widget %}
