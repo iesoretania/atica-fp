@@ -118,6 +118,7 @@
             {%- for group_label, group in form.vars.choices -%}
                 {%- set grouped = group is iterable -%}
                 <div role="group" {% if grouped %}aria-labelledby="{{ id }}_group_{{ loop.index }}"{% endif %}
+                     class="rounded-2xl border border-gray-200 bg-white p-4 shadow-xs"
                      data-controller="check-group"
                      data-check-group-select-label-value="{{ 'selection.select_group'|trans({}, 'general') }}"
                      data-check-group-clear-label-value="{{ 'selection.clear_group'|trans({}, 'general') }}">
