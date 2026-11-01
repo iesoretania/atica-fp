@@ -64,93 +64,10 @@ class EvaluationSummaryController extends AbstractController
 
         $this->denyAccessUnlessGranted(OrganizationVoter::WLT_VIEW_GRADE, $organization);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->addSelect('se')
-            ->addSelect('p')
-            ->addSelect('g')
-            ->addSelect('COUNT(DISTINCT a)')
-            ->addSelect('COUNT(ar)')
-            ->addSelect('COUNT(ar.grade)')
-            ->from(StudentEnrollment::class, 'se')
-            ->join('se.person', 'p')
-            ->join('se.group', 'g')
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 't')
-            ->leftJoin('t.department', 'd')
-            ->leftJoin('d.head', 'h')
-            ->join(Agreement::class, 'a', 'WITH', 'a.studentEnrollment = se')
-            ->join('a.evaluatedActivityRealizations', 'ar')
-            ->join('a.educationalTutor', 'et')
-            ->leftJoin('a.additionalEducationalTutor', 'aet')
-            ->join('a.project', 'pr')
-            ->groupBy('se')
-            ->addOrderBy('p.lastName')
-            ->addOrderBy('p.firstName')
-            ->addOrderBy('g.name');
-
-        $q = $request->query->get('q');
-
-        if ($q) {
-            $queryBuilder
-                ->orWhere('g.name LIKE :tq')
-                ->orWhere('p.lastName LIKE :tq')
-                ->orWhere('p.firstName LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        /** @var Person $person */
-        $person = $this->getUser();
-
-        // Darle acceso si es profesor/a de algún grupo
-        $teacher =
-            $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
-
-        if ($teacher) {
-            $groups = $wltGroupRepository->findByAcademicYearAndPerson($academicYear, $teacher->getPerson());
-            if ($groups->count() > 0) {
-                $queryBuilder
-                    ->andWhere('g IN (:groups) OR et.person = :person OR aet.person = :person ' .
-                    'OR a.workTutor = :person OR a.additionalWorkTutor = :person ' .
-                    'OR pr.manager = :person OR h.person = :person')
-                    ->setParameter('person', $person)
-                    ->setParameter('groups', $groups);
-            }
-        } else {
-            $isWltManager = $this->isGranted(OrganizationVoter::WLT_MANAGER, $organization);
-            if (!$isWltManager) {
-                $queryBuilder
-                    ->andWhere(
-                        'et.person = :person OR aet.person = :person ' .
-                        'OR a.workTutor = :person OR a.additionalWorkTutor = :person ' .
-                        'OR pr.manager = :person OR h.person = :person'
-                    )
-                    ->setParameter('person', $person);
-            }
-        }
-
-        $queryBuilder
-            ->andWhere('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.summary', [], 'wlt_agreement_activity_realization');
 
         return $this->render('wlt/evaluation/summary.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'wlt_agreement_activity_realization',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)

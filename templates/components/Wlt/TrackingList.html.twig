@@ -1,0 +1,51 @@
+{% trans_default_domain 'wlt_tracking' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'wlt_tracking', base_url: this.baseUrl, back_url: this.backUrl, academic_year: this.academicYear} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block new_action %}{% endblock %}
+
+        {% block table_header %}
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'student' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.student'|trans({}, domain), 'student', this.sort, this.dir) }}</th>
+            <th aria-sort="{{ this.sort == 'project' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.project'|trans({}, domain), 'project', this.sort, this.dir) }}</th>
+            <th aria-sort="{{ this.sort == 'workcenter' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.workcenter'|trans({}, domain), 'workcenter', this.sort, this.dir) }}</th>
+            <th aria-sort="{{ this.sort == 'start' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.dates'|trans({}, domain), 'start', this.sort, this.dir) }}</th>
+            <th>{{ 'header.status'|trans({}, domain) }}</th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                {% set url = path('work_linked_training_tracking_calendar_list', {'id': item[0].id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item[0].studentEnrollment }}</a></td>
+                    <td>
+                        {{ item[0].project }}
+                        {% if item[0].project.locked %}<twig:Ui:Icon name="lock" class="ml-1 inline size-3.5 text-gray-400" />{% endif %}
+                    </td>
+                    <td>{{ item[0].workcenter }}</td>
+                    <td class="whitespace-nowrap">{{ item[0].startDate ? item[0].startDate|date('format.date'|trans({}, 'general')) }}{{ item[0].endDate ? ' - ' ~ (item[0].endDate|date('format.date'|trans({}, 'general'))) }}</td>
+                    <td>
+                        {% if item[1] %}
+                            {{ item[2] }}/{{ 'table.hours'|trans({'count': item[1]}, domain) }} ({{ (item[2]*100/item[1])|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
+                            {% if item[3] != 0 %}
+                                - {{ 'table.absences'|trans({'count': item[3]}, domain) }}
+                                {% if item[4] != 0 %}
+                                    - {{ 'table.justified_absences'|trans({'count': item[4]}, domain) }}
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+    {% endembed %}
+</div>

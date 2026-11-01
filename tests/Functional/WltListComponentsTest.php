@@ -38,6 +38,9 @@ class WltListComponentsTest extends AppWebTestCase
         yield 'concreciones' => ['Wlt:ActivityRealizationList', '/dual/proyecto/programa/{activity}/concrecion'];
         yield 'empresas del proyecto' => ['Wlt:LearningProgramList', '/dual/programa/{project}/listar'];
         yield 'reuniones' => ['Wlt:MeetingList', '/dual/reunion/listar/{year}'];
+        yield 'seguimiento' => ['Wlt:TrackingList', '/dual/seguimiento/acuerdo/listar/{year}'];
+        yield 'valoración' => ['Wlt:EvaluationList', '/dual/convenio/evaluar/listar/{year}'];
+        yield 'resultados del alumnado' => ['Wlt:EvaluationSummaryList', '/dual/resultado/estudiante/listar/{year}'];
         yield 'convenios' => ['Wlt:AgreementList', '/dual/acuerdo/{project}/listar'];
         yield 'contactos' => ['Wlt:ContactList', '/dual/contacto/listar/{year}'];
         yield 'informe de contactos por docente' => ['Wlt:ContactEducationalTutorReportList', '/dual/contacto/informe/seguimiento/{year}'];

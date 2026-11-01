@@ -1,103 +1,96 @@
 {% trans_default_domain 'wlt_activity_realization_grade' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
-{% block content %}
-    {% set last_subject_id = 0 %}
-    {% for subjectData in report %}
-        <div class="card mb-3">
-        <div class="card-header subject-header"><h3>{{ subjectData[0] }}{% if subjectData[0].code %} - {{ subjectData[0].code }}{% endif %}</h3></div>
-        <div class="card-body">
-        {% set subject_sum = 0 %}
-        {% set subject_count = 0 %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
 
-        {% set last_activity_id = 0 %}
-        {% set activity_sum = 0 %}
-        {% set activity_count = 0 %}
-        {% for activityRealizationData in subjectData[1] %}
-            {% if last_activity_id != activityRealizationData[0].activity.id %}
-                {% if not loop.first %}
+{#- Macros de formato de las tablas de actividades -#}
+{% macro average_row(label, value_html) %}
+    <tr class="bg-gray-50 font-medium">
+        <td colspan="2" class="text-right">{{ label }}</td>
+        <td class="w-28">{{ value_html|raw }}</td>
+    </tr>
+{% endmacro %}
+
+{% block content %}
+    {% set decimal = 'format.decimal_separator'|trans({}, 'general') %}
+    {% for subjectData in report %}
+        <section class="mb-4 max-w-5xl overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+            <h2 class="border-b border-gray-100 px-5 py-4 text-sm font-semibold text-gray-900 sm:px-6">{{ subjectData[0] }}{% if subjectData[0].code %} - {{ subjectData[0].code }}{% endif %}</h2>
+            <div class="space-y-4 p-5 sm:p-6">
+                {% set subject_sum = 0 %}
+                {% set subject_count = 0 %}
+
+                {% set last_activity_id = 0 %}
+                {% set activity_sum = 0 %}
+                {% set activity_count = 0 %}
+                {% for activityRealizationData in subjectData[1] %}
+                    {% if last_activity_id != activityRealizationData[0].activity.id %}
+                        {% if not loop.first %}
+                            {{ _self.average_row('report.activity_average'|trans, activity_count ? (activity_sum/activity_count)|number_format(2, decimal) : 'report.no_grade'|trans) }}
+                            {% if activity_count %}
+                                {% set subject_sum = subject_sum + (activity_sum/activity_count) %}
+                                {% set subject_count = subject_count + 1 %}
+                            {% endif %}
+                            {% set activity_sum = 0 %}
+                            {% set activity_count = 0 %}
+                            </tbody></table></div>
+                        {% endif %}
+                        <div class="overflow-hidden rounded-lg ring-1 ring-gray-200"><table class="w-full text-left text-sm">
+                            <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500 [&_th]:px-4 [&_th]:py-3">
+                                <tr><th colspan="3">{{ activityRealizationData[0].activity }}</th></tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 [&_td]:px-4 [&_td]:py-2.5">
+                        {% set last_activity_id = activityRealizationData[0].activity.id %}
+                    {% endif %}
                     <tr>
-                        <td class="text-right" colspan="2">{{ 'report.activity_average'|trans }}</td>
-                        <td class="w-10">{% if activity_count %}{{ (activity_sum/activity_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}{% else %}{{ 'report.no_grade'|trans }}{% endif %}</td>
+                        <td>{{ activityRealizationData[0] }}</td>
+                        {% if activityRealizationData[4] > 0 %}
+                            {% set disabled = activityRealizationData[4] == activityRealizationData[3] %}
+                        {% else %}
+                            {% set disabled = false %}
+                        {% endif %}
+                        {% if activityRealizationData[1] is not null %}
+                            <td class="w-28 whitespace-nowrap">{{ activityRealizationData[2] ? activityRealizationData[2]|date('format.date'|trans({}, 'general')) }}</td>
+                            <td class="w-28">{{ (activityRealizationData[1] / 100.0)|number_format(2, decimal) }}</td>
+                            {% set activity_sum = activity_sum + (activityRealizationData[1] / 100.0) %}
+                            {% set activity_count = activity_count + 1 %}
+                        {% else %}
+                            <td class="w-28"></td>
+                            <td class="w-28 text-gray-500">{{ not disabled ? 'report.no_grade'|trans : 'report.disabled'|trans }}</td>
+                        {% endif %}
                     </tr>
+                {% else %}
+                    <p class="text-sm text-gray-500">{{ 'report.no_data'|trans }}</p>
+                {% endfor %}
+                {% if last_activity_id != 0 %}
+                    {{ _self.average_row('report.activity_average'|trans, activity_count ? (activity_sum/activity_count)|number_format(2, decimal) : 'report.no_grade'|trans) }}
                     {% if activity_count %}
                         {% set subject_sum = subject_sum + (activity_sum/activity_count) %}
                         {% set subject_count = subject_count + 1 %}
                     {% endif %}
-                    {% set activity_sum = 0 %}
-                    {% set activity_count = 0 %}
-                    </table>
+                    </tbody></table></div>
                 {% endif %}
-                <table class="table table-bordered table-striped">
-                <tr>
-                    <th colspan="3">{{ activityRealizationData[0].activity }}</th>
-                </tr>
-                {% set last_activity_id = activityRealizationData[0].activity.id %}
-            {% endif %}
-            <tr>
-                <td>{{ activityRealizationData[0] }}</td>
-                {% if activityRealizationData[4] > 0 %}
-                    {% set disabled = activityRealizationData[4] == activityRealizationData[3] %}
-                {% else %}
-                    {% set disabled = false %}
+                {% if subject_count %}
+                    <p class="text-right text-sm font-semibold text-gray-900">{{ 'report.subject_average'|trans }} {{ subjectData[0].code }}: {{ (subject_sum/subject_count)|number_format(2, decimal) }}</p>
+                {% elseif last_activity_id != 0 %}
+                    <p class="text-right text-sm font-semibold text-gray-900">{{ 'report.subject_average'|trans }} {{ subjectData[0].code }}: {{ 'report.no_grade'|trans }}</p>
                 {% endif %}
-                {% if activityRealizationData[1] is not null %}
-                    <td class="w-10">{{ activityRealizationData[2] ? activityRealizationData[2]|date('format.date'|trans({}, 'general')) }}</td>
-                    <td class="w-10">{{ (activityRealizationData[1] / 100.0) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</td>
-                    {% set activity_sum = activity_sum + (activityRealizationData[1] / 100.0) %}
-                    {% set activity_count = activity_count + 1 %}
-                {% else %}
-                    <td class="w-10"></td>
-                    <td class="w-10">{{ not disabled ? 'report.no_grade'|trans : 'report.disabled'|trans }}</td>
-                {% endif %}
-            </tr>
-        {% else %}
-            <h5 class="m-0">{{ 'report.no_data'|trans }}</h5>
-        {% endfor %}
-        {% if last_activity_id != 0 %}
-            <tr>
-                <td class="text-right" colspan="2">{{ 'report.activity_average'|trans }}</td>
-                <td class="w-10">{% if activity_count %}{{ (activity_sum/activity_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}{% else %}{{ 'report.no_grade'|trans }}{% endif %}</td>
-                {% if activity_count %}
-                    {% set subject_sum = subject_sum + (activity_sum/activity_count) %}
-                    {% set subject_count = subject_count + 1 %}
-                {% endif %}
-            </tr>
-            </table>
-        {% endif %}
-        {% if subject_count %}
-            <table class="table table-bordered table-striped">
-                <tr>
-                    <th class="text-right">{{ 'report.subject_average'|trans }} {{ subjectData[0].code }}</th>
-                    <th class="w-10">{{ (subject_sum/subject_count) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }}</th>
-                </tr>
-            </table>
-        {% elseif last_activity_id != 0 %}
-            <table class="table table-bordered table-striped">
-                <tr>
-                    <th class="text-right">{{ 'report.subject_average'|trans }} {{ subjectData[0].code }}</th>
-                    <th class="w-10">{{ 'report.no_grade'|trans }}</th>
-                </tr>
-            </table>
-        {% endif %}
-        </div>
-        </div>
+            </div>
+        </section>
     {% endfor %}
     {% if report_remarks %}
-        <div class="card mb-3">
-            <div class="card-header subject-header"><h3>{{ 'form.remarks'|trans }}</h3></div>
-            <div class="card-body">
-                <table class="table table-bordered table-striped">
-                    {% for report_remark in report_remarks %}
-                    <tr>
-                        <th class="w-20">{{ report_remark[0] }}</th>
-                        <td>{{ report_remark[1] | nl2br }}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
-        </div>
+        <section class="mb-4 max-w-5xl overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+            <h2 class="border-b border-gray-100 px-5 py-4 text-sm font-semibold text-gray-900 sm:px-6">{{ 'form.remarks'|trans }}</h2>
+            <dl class="divide-y divide-gray-100">
+                {% for report_remark in report_remarks %}
+                    <div class="grid gap-1 px-5 py-3 text-sm sm:grid-cols-4 sm:px-6">
+                        <dt class="font-medium text-gray-700">{{ report_remark[0] }}</dt>
+                        <dd class="sm:col-span-3">{{ report_remark[1]|nl2br }}</dd>
+                    </div>
+                {% endfor %}
+            </dl>
+        </section>
     {% endif %}
-    <div class="clearfix"></div>
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.start_button() }}
+        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.end_button() }}
 {% endblock %}
