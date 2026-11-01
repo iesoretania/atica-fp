@@ -12,7 +12,7 @@
             ['studentEnrollments'],
             ['teachers'],
             ['detail'],
-        ], {detail: {attr: {rows: 8}}}, 'card.title'|trans) }}
+        ], {detail: {attr: {rows: 8}, row_attr: {class: '@container min-w-0', 'data-live-ignore': ''}}}, 'card.title'|trans) }}
         {{ m.start_button() }}
             {% if not this.readOnly %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
             {{ m.link_button(this.backUrl, 'arrow-left', 'btn-info', 'form.back'|trans) }}

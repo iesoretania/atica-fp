@@ -106,7 +106,7 @@
                     <tr>
                         <td class="center">{{ item.dateTime|date('format.datetime'|trans({}, 'general')) }}</td>
                         <td>{{ item.teachers|join(', ') }}</td>
-                        <td>{{ item.detail }}</td>
+                        <td>{{ item.detail|sanitize_html }}</td>
                     </tr>
                     {% set total = total + 1 %}
                 {% else %}

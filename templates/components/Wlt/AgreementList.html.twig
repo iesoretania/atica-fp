@@ -1,0 +1,60 @@
+{% trans_default_domain 'wlt_agreement' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'wlt_agreement', base_url: this.baseUrl, back_url: this.backUrl, project: this.project} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block path_new %}{{ path('work_linked_training_agreement_new', {'project': project.id}) }}{% endblock %}
+
+        {% block table_header %}
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'student' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600" aria-label="{{ 'selection.clear'|trans({}, 'general') }}">
+                    {{ lm.sort_button('header.student_enrollment'|trans({}, domain), 'student', this.sort, this.dir) }}
+                </div>
+            </th>
+            <th>{{ 'header.internal_code'|trans({}, domain) }}</th>
+            <th aria-sort="{{ this.sort == 'workcenter' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.workcenter'|trans({}, domain), 'workcenter', this.sort, this.dir) }}</th>
+            <th>{{ 'header.work_tutor'|trans({}, domain) }}</th>
+            <th>{{ 'header.educational_tutor'|trans({}, domain) }}</th>
+            <th aria-sort="{{ this.sort == 'start' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.dates'|trans({}, domain), 'start', this.sort, this.dir) }}</th>
+            <th></th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                {% set url = path('work_linked_training_agreement_edit', {'id': item.id}) %}
+                {% set selectable = is_granted('WLT_AGREEMENT_MANAGE', item) %}
+                <tr>
+                    <td class="align-top">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" name="items[]" value="{{ item.id }}" class="size-4 rounded border-gray-300 text-brand-600{% if selectable %} selectable{% endif %}"{% if not selectable %} disabled{% endif %}>
+                            <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.studentEnrollment }}</a>
+                            {% if not selectable %}<twig:Ui:Icon name="lock" class="size-3.5 text-gray-400" />{% endif %}
+                        </label>
+                    </td>
+                    <td class="align-top">{{ item.internalCode }}</td>
+                    <td class="align-top">{{ item.workcenter }}</td>
+                    <td class="align-top">{{ item.workTutor }}</td>
+                    <td class="align-top">{{ item.educationalTutor.person }}</td>
+                    <td class="align-top whitespace-nowrap">{{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}{% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}</td>
+                    <td class="text-right">{{ m.link_button(path('work_linked_training_agreement_calendar_list', {'id': item.id}), 'calendar-days', 'btn-info btn-sm', 'table.calendar'|trans({}, domain)) }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="7" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('work_linked_training_agreement_operation', {'project': project.id}) }}{% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+        {% block selection_actions %}
+            {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}
+            {{ m.submit_button('copy', 'copy', 'btn-primary enable-on-items', 'form.calendar_copy'|trans({}, domain), true) }}
+        {% endblock %}
+    {% endembed %}
+</div>

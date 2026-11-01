@@ -22,6 +22,7 @@ use App\Entity\Edu\Teacher;
 use App\Entity\WltModule\Meeting;
 use App\Entity\WltModule\Project;
 use App\Form\Type\Edu\StudentEnrollmentChoiceType;
+use App\Form\Type\RichTextType;
 use App\Repository\WltModule\ProjectRepository;
 use App\Repository\WltModule\StudentEnrollmentRepository;
 use App\Repository\WltModule\TeacherRepository;
@@ -29,7 +30,6 @@ use App\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -108,7 +108,7 @@ class MeetingType extends AbstractType
                 'required' => true,
                 'attr' => ['data-controller' => 'choice-select']
             ])
-            ->add('detail', TextareaType::class, [
+            ->add('detail', RichTextType::class, [
                 'label' => 'form.detail',
                 'required' => false,
                 'attr' => ['rows' => 10]
