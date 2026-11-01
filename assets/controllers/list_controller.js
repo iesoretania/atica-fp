@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { getComponent } from '@symfony/ux-live-component';
 
 /*
  * Listados con filtro en vivo (sustituye a assets/js/list.js, que usaba jQuery).
@@ -19,11 +20,21 @@ export default class extends Controller {
         this.element.addEventListener('click', this.onClick);
         this.element.addEventListener('change', this.onChange);
         this.updateButtons();
+
+        // en los listados que son Live Components, la tabla se repinta sin recargar la página
+        if (this.element.hasAttribute('data-live-name-value')) {
+            this.onRendered = () => this.updateButtons();
+            getComponent(this.element).then((component) => {
+                this.component = component;
+                component.on('render:finished', this.onRendered);
+            });
+        }
     }
 
     disconnect() {
         this.element.removeEventListener('click', this.onClick);
         this.element.removeEventListener('change', this.onChange);
+        this.component?.off('render:finished', this.onRendered);
         clearTimeout(this.timer);
     }
 

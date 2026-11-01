@@ -1,0 +1,31 @@
+{% trans_default_domain 'wpt_agreement' %}
+{#- Listado dinámico de acuerdos (Live Component). Raíz: «live-history» guarda q y page en la URL (con «Atrás» del navegador) y «list» gestiona filas, selección y botones. -#}
+{% set base_url = path('workplace_training_agreement_list', {'id': this.shift.id}) %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': base_url,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'wpt_agreement', base_url: base_url} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block path_new %}{{ path('workplace_training_agreement_new', {'shift': this.shift.id}) }}{% endblock %}
+        {#- Los bloques de un embed no heredan trans_default_domain: se indica el dominio en cada traducción -#}
+        {% block table_header %}
+            <th><label class="flex items-center gap-2"><input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600"> {{ 'header.workcenter'|trans({}, domain) }}</label></th>
+            <th>{{ 'header.dates'|trans({}, domain) }}</th>
+            <th>{{ 'header.student_enrollments'|trans({}, domain) }}</th>
+            <th>{{ 'header.educational_tutor'|trans({}, domain) }}</th>
+            <th>{{ 'header.work_tutor'|trans({}, domain) }}</th>
+            <th></th>
+        {% endblock %}
+        {% block table_body %}
+            {% import 'wpt/agreement/_rows.html.twig' as rows %}
+            {{ rows.draw_all(pager) }}
+        {% endblock %}
+        {% block form_action %}{{ path('workplace_training_agreement_operation', {'shift': this.shift.id}) }}{% endblock %}
+        {% block after_table %}
+            {{ m.link_button(path('workplace_training_shift_list'), 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+            {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}
+            {{ m.submit_button('copy', 'copy', 'btn-primary enable-on-items', 'form.calendar_copy'|trans({}, domain), true) }}
+        {% endblock %}
+    {% endembed %}
+</div>

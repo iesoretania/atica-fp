@@ -1,0 +1,53 @@
+{% trans_default_domain 'wpt_agreement' %}
+{#- Un acuerdo ocupa tantas filas como alumnado matriculado tiene (celdas combinadas con rowspan) -#}
+{% macro draw_agreement(items, agreement) %}
+    {% import 'ui/macros.html.twig' as m %}
+    {% set url = path('workplace_training_agreement_edit', {'id': agreement.id}) %}
+    {% set span = items|length %}
+    {% for agreementEnrollment in items %}
+        {% set alt_url = path('workplace_training_agreement_enrollment_edit', {'id': agreementEnrollment.id}) %}
+        <tr class="clickable-row {{ loop.last ? '' : 'border-b-0' }}" data-href="{{ loop.first ? url : alt_url }}">
+            {% if loop.first %}
+                <td rowspan="{{ span }}" class="align-top">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="items[]" value="{{ agreement.id }}" class="size-4 rounded border-gray-300 text-brand-600{% if is_granted('WPT_AGREEMENT_MANAGE', agreement) %} selectable{% endif %}"{% if not is_granted('WPT_AGREEMENT_MANAGE', agreement) %} disabled{% endif %}>
+                        <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ agreement.workCenter }}</a>
+                    </label>
+                </td>
+                <td rowspan="{{ span }}" class="whitespace-nowrap align-top">
+                    {{ agreement.startDate ? agreement.startDate|date('format.date'|trans({}, 'general')) }}
+                    {% if agreement.endDate %} - {{ agreement.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
+                </td>
+            {% endif %}
+            <td><a href="{{ alt_url }}" class="hover:text-brand-700">{{ agreementEnrollment.studentEnrollment }}</a></td>
+            <td><a href="{{ alt_url }}" class="hover:text-brand-700">{{ agreementEnrollment.educationalTutor }}</a></td>
+            <td><a href="{{ alt_url }}" class="hover:text-brand-700">{{ agreementEnrollment.workTutor }}</a></td>
+            {#- Los dos botones, pegados: el calendario es del acuerdo, pero se repite en cada fila para que queden alineados -#}
+            <td class="whitespace-nowrap text-right">
+                <div class="inline-flex gap-px">
+                    {{ m.link_button_new(path('workplace_training_agreement_program_report', {'id': agreementEnrollment.id}), 'file-alt', 'btn-primary btn-sm', 'table.program_report'|trans) }}
+                    {{ m.link_button(path('workplace_training_agreement_calendar_list', {'id': agreement.id}), 'calendar-alt', 'btn-light btn-sm', 'table.calendar'|trans) }}
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endmacro %}
+
+{#- Dibuja todas las filas agrupando por acuerdo -#}
+{% macro draw_all(pager) %}
+    {% set items = [] %}
+    {% set last_agreement_id = 0 %}
+    {% for item in pager %}
+        {% if not loop.first and item.agreement.id != last_agreement_id %}
+            {{ _self.draw_agreement(items, items[0].agreement) }}
+            {% set items = [] %}
+        {% endif %}
+        {% set items = items|merge([item]) %}
+        {% set last_agreement_id = item.agreement.id %}
+    {% else %}
+        <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
+    {% endfor %}
+    {% if items is not empty %}
+        {{ _self.draw_agreement(items, items[0].agreement) }}
+    {% endif %}
+{% endmacro %}

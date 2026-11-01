@@ -1,0 +1,81 @@
+{#-
+  Cuerpo de un listado dinámico (Live Component). Se usa con {% embed 'ui/live_list.html.twig' %} dentro de la plantilla del
+  componente (que dibuja el elemento raíz con los controladores «live-history» y «list») y mantiene los mismos bloques que
+  ui/list.html.twig: path_new, more_actions, table_header, table_body, before_table, after_table, form_action y pagerfanta.
+
+  Variables: this (el componente, con q y page), pager, domain (dominio de traducción).
+  El buscador y el paginador usan data-model/data-live-action-param; el paginador conserva href="?page=N" para funcionar sin JavaScript.
+-#}
+{% trans_default_domain domain %}
+<div class="mb-4 flex flex-wrap items-center gap-3">
+    <div class="relative w-full sm:max-w-sm">
+        <twig:Ui:Icon name="search" class="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-gray-400" />
+        <input type="search" id="search" name="q" data-model="debounce(350)|q" autocomplete="off"
+               value="{{ this.q }}" placeholder="{{ 'table.filter'|trans }}"
+               class="block w-full rounded-lg border-0 bg-white py-2 pl-9 pr-9 text-sm [&::-webkit-search-cancel-button]:hidden shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-brand-500">
+        {% if this.q != '' %}
+            <button type="button" data-action="live#action:prevent" data-live-action-param="clearQuery" aria-label="{{ 'table.filter'|trans }}" class="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-gray-400 hover:text-gray-600">
+                <twig:Ui:Icon name="times" class="size-3.5" />
+            </button>
+        {% endif %}
+    </div>
+    {% if not (read_only|default(false) or is_read_only()) %}
+        <twig:Ui:Button href="{% block path_new %}{% endblock %}" icon="plus" label="{{ 'table.new'|trans }}" />
+    {% endif %}
+    {% block more_actions %}{% endblock %}
+</div>
+
+{#- URL del formulario de operaciones por lote (borrar, copiar...); si está vacía no se dibuja <form> -#}
+{% set form_action_url %}{% block form_action %}{% endblock %}{% endset %}
+<section id="exchange" data-loading="addClass(opacity-50)" class="transition-opacity">
+    {% if form_action_url|trim %}<form method="post" action="{{ form_action_url|trim }}">{% endif %}
+    {% block before_table %}{% endblock %}
+    <div class="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+        <p class="border-b border-gray-200 px-4 py-2.5 text-sm text-gray-500">{{ 'table.total'|trans({'count': pager.count}) }}</p>
+        <div class="overflow-x-auto">
+            <table id="list" class="w-full text-left text-sm">
+                <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500 [&_th]:px-4 [&_th]:py-3">
+                    <tr>{% block table_header %}{% endblock %}</tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 [&_td]:px-4 [&_td]:py-3 [&_tr.clickable-row]:cursor-pointer [&_tr.clickable-row:hover]:bg-brand-50/60">
+                    {% block table_body %}{% endblock %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% if pager.haveToPaginate %}
+        {% block pagerfanta %}
+            {% set current = pager.currentPage %}
+            {% set last = pager.nbPages %}
+            {% set base = base_url|default('') ~ '?' %}
+            {% set q_param = this.q != '' ? '&q=' ~ this.q|url_encode : '' %}
+            <nav class="mt-4 flex flex-wrap items-center justify-center gap-1 text-sm" aria-label="{{ 'paginator.next'|trans([], 'general') }}">
+                {% set pages = [] %}
+                {% for p in 1..last %}
+                    {% if p == 1 or p == last or (p >= current - 2 and p <= current + 2) %}{% set pages = pages|merge([p]) %}{% endif %}
+                {% endfor %}
+                {% if current > 1 %}
+                    <a href="{{ base }}page={{ current - 1 }}{{ q_param }}" data-action="live#action:prevent" data-live-action-param="setPage" data-live-page-param="{{ current - 1 }}"
+                       class="rounded-lg px-3 py-1.5 text-gray-600 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">{{ 'paginator.prev'|trans([], 'general') }}</a>
+                {% endif %}
+                {% for p in pages %}
+                    {% if not loop.first and p - pages[loop.index0 - 1] > 1 %}<span class="px-1 text-gray-400" aria-hidden="true">…</span>{% endif %}
+                    {% if p == current %}
+                        <span aria-current="page" class="rounded-lg bg-brand-600 px-3 py-1.5 font-medium text-white">{{ p }}</span>
+                    {% else %}
+                        <a href="{{ base }}page={{ p }}{{ q_param }}" data-action="live#action:prevent" data-live-action-param="setPage" data-live-page-param="{{ p }}"
+                           class="rounded-lg px-3 py-1.5 text-gray-600 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">{{ p }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if current < last %}
+                    <a href="{{ base }}page={{ current + 1 }}{{ q_param }}" data-action="live#action:prevent" data-live-action-param="setPage" data-live-page-param="{{ current + 1 }}"
+                       class="rounded-lg px-3 py-1.5 text-gray-600 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">{{ 'paginator.next'|trans([], 'general') }}</a>
+                {% endif %}
+            </nav>
+        {% endblock %}
+    {% endif %}
+    <div class="mt-6 flex flex-wrap gap-2">
+        {% block after_table %}{% endblock %}
+    </div>
+    {% if form_action_url|trim %}</form>{% endif %}
+</section>

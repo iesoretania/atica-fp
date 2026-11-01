@@ -27,7 +27,6 @@ use App\Form\Type\WptModule\AgreementEnrollmentType;
 use App\Form\Type\WptModule\AgreementType;
 use App\Form\Type\WptModule\CalendarCopyType;
 use App\Repository\WptModule\ActivityRepository;
-use App\Repository\WptModule\AgreementEnrollmentRepository;
 use App\Repository\WptModule\AgreementRepository;
 use App\Security\WptModule\AgreementVoter;
 use App\Security\WptModule\OrganizationVoter as WptOrganizationVoter;
@@ -37,9 +36,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
-use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use Pagerfanta\Exception\OutOfRangeCurrentPageException;
-use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -251,7 +247,6 @@ class AgreementController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         TranslatorInterface $translator,
-        AgreementEnrollmentRepository $agreementEnrollmentRepository,
         Shift $shift,
         int $page = 1
     ): Response
@@ -264,18 +259,9 @@ class AgreementController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $q = $request->query->get('q');
-        $queryBuilder = $agreementEnrollmentRepository->findByShiftAndFilter($shift, $q);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
+        // el listado lo dibuja el componente Wpt:AgreementList, que parte de estos valores (?q=...&page=...)
+        $q = trim((string) $request->query->get('q'));
+        $page = $request->query->getInt('page', $page);
 
         $title = $translator->trans('title.list', [], 'wpt_agreement');
 
@@ -288,9 +274,8 @@ class AgreementController extends AbstractController
             'menu_path' => 'workplace_training_shift_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
+            'page' => $page,
             'q' => $q,
-            'domain' => 'wpt_agreement',
             'shift' => $shift
         ]);
     }
