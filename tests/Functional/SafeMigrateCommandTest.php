@@ -46,8 +46,8 @@ class SafeMigrateCommandTest extends KernelTestCase
 
         $application = new Application();
         $application->setAutoExit(false);
-        $application->add(new SafeMigrateCommand($this->dir, $container->get('translator'), $container->get(EntityManagerInterface::class)));
-        $application->add((new Command('doctrine:migrations:migrate'))->setCode(static fn(): int => Command::SUCCESS));
+        $application->addCommand(new SafeMigrateCommand($this->dir, $container->get('translator'), $container->get(EntityManagerInterface::class)));
+        $application->addCommand((new Command('doctrine:migrations:migrate'))->setCode(static fn(): int => Command::SUCCESS));
 
         return new CommandTester($application->find('app:safe-migrate'));
     }
