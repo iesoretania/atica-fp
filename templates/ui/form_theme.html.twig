@@ -42,7 +42,17 @@
     {{- parent() -}}
 {%- endblock form_label -%}
 
+{#- Ayuda de un campo: la opción «help» o, por convención, la traducción de «<etiqueta>.help» en el dominio del formulario
+    (la misma convención que las explicaciones de las opciones de una lista de tarjetas). -#}
 {%- block form_help -%}
+    {%- if help is empty and label is not empty and label is not same as(false) and label is not iterable and translation_domain is not same as(false) -%}
+        {%- set help_key = label ~ '.help' -%}
+        {%- set help_candidate = help_key|trans(label_translation_parameters|default({}), translation_domain) -%}
+        {%- if help_candidate != help_key -%}
+            {%- set help = help_candidate -%}
+            {%- set help_translation_domain = false -%}
+        {%- endif -%}
+    {%- endif -%}
     {%- set help_attr = help_attr|merge({class: help_attr.class|default('mt-1 text-xs text-gray-500')}) -%}
     {{- parent() -}}
 {%- endblock form_help -%}

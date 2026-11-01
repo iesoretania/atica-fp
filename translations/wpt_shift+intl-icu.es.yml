@@ -1,4 +1,16 @@
 form.name: Nombre
+form.name.help: Nombre con el que se reconoce la convocatoria en los listados y en los informes.
+form.subject.help: Módulo de FCT de la enseñanza al que corresponde esta convocatoria.
+form.type.help: Grado de la enseñanza (por ejemplo, medio o superior).
+form.hours.help: Horas de formación que debe realizar el alumnado en la empresa.
+form.quarter.help: Trimestre del curso en el que se desarrolla la formación en la empresa.
+form.attendance_report_template.help: Documento que se genera para acreditar la asistencia de cada estudiante.
+form.weekly_activity_report_template.help: Documento que resume las actividades realizadas cada semana.
+form.activity_summary_report_template.help: Registro único que recoge todas las actividades realizadas durante la FCT.
+form.final_report_template.help: Documento con el que el tutor o tutora laboral valora al estudiante al terminar.
+form.student_survey.help: Encuesta que responde el alumnado al finalizar la FCT.
+form.company_survey.help: Encuesta que responde la empresa colaboradora sobre el desarrollo de la FCT.
+form.educational_tutor_survey.help: Encuesta que responde la tutoría docente sobre el seguimiento de la FCT.
 form.grade: Nivel
 form.subject: Módulo de FCT
 form.no_subject: Escoja el módulo de FCT de la enseñanza

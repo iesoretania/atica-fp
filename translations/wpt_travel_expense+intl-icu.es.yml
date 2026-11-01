@@ -1,4 +1,11 @@
 form.from_datetime: Fecha y hora de salida del centro
+form.from_datetime.help: Momento en que se sale del centro educativo para el desplazamiento.
+form.to_datetime.help: Momento en que se vuelve al centro educativo.
+form.agreements.help: Acuerdos de colaboración que se atienden en este desplazamiento.
+form.travel_route.help: Itinerario recorrido. Del itinerario se calculan los kilómetros a reintegrar.
+form.other_expenses.help: Gastos de peaje, aparcamiento u otros que se reintegran además de los kilómetros.
+form.other_expenses_description.help: Qué gastos son y por qué se han producido.
+form.description.help: Cualquier otra información sobre el desplazamiento.
 form.to_datetime: Fecha y hora de llegada al centro
 form.agreements: Acuerdos de colaboración relacionados
 form.travel_route: Itinerario

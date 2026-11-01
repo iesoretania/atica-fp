@@ -1,4 +1,24 @@
 form.shift: Convocatoria
+form.shift.help: Convocatoria de FCT a la que pertenece el acuerdo.
+form.company.help: Empresa colaboradora con la que se firma el acuerdo.
+form.workcenter.help: Centro de trabajo de la empresa donde el alumnado realiza la formación.
+form.student_enrollment.help: Estudiante que realiza la formación con este acuerdo.
+form.student_enrollments.help: Estudiantes que se incorporan al acuerdo. Cada uno tendrá su propio programa formativo y calendario.
+form.work_tutor.help: Persona de la empresa que supervisa al estudiante.
+form.default_work_tutor.help: Tutor o tutora laboral que se asigna por defecto a los estudiantes del acuerdo. Se puede cambiar en cada uno.
+form.additional_work_tutor.help: Segunda persona de la empresa que también supervisa al estudiante. Es opcional.
+form.educational_tutor.help: Docente del centro que hace el seguimiento del estudiante.
+form.default_educational_tutor.help: Docente que se asigna por defecto a los estudiantes del acuerdo. Se puede cambiar en cada uno.
+form.additional_educational_tutor.help: Segundo docente que también hace el seguimiento. Es opcional.
+form.sign_date.help: Día en que se firma el acuerdo de colaboración.
+form.start_date.help: Primer día de la formación en la empresa.
+form.end_date.help: Último día de la formación en la empresa.
+form.default_start_time_1.help: Hora a la que empieza la jornada habitual, en el primer tramo del día.
+form.default_end_time_1.help: Hora a la que termina el primer tramo de la jornada.
+form.default_start_time_2.help: Hora a la que empieza el segundo tramo, si la jornada es partida. Es opcional.
+form.default_end_time_2.help: Hora a la que termina el segundo tramo. Es opcional.
+form.activities.help: Actividades formativas que realiza este estudiante en la empresa.
+form.default_activities.help: Actividades que se asignan por defecto al alumnado que se incorpore al acuerdo.
 form.company: Empresa
 form.company.none: Seleccione empresa
 form.workcenter: Centro de trabajo

@@ -15,6 +15,17 @@ form.back: Volver
 form.activity_report: Imprimir registro de actividades
 
 form.work_activities: Áreas y puestos de trabajo donde ha desarrollado las actividades formativas
+form.work_activities.help: Describa en qué áreas o puestos de la empresa ha estado el estudiante y qué ha hecho en ellos.
+form.professional_competence.help: Conocimientos y destrezas propias del puesto de trabajo.
+form.organizational_competence.help: Organización del trabajo, planificación y cumplimiento de plazos.
+form.relational_competence.help: Trabajo en equipo y trato con compañeros, superiores y clientes.
+form.contingency_response.help: Capacidad de resolver imprevistos y adaptarse a situaciones nuevas.
+form.other1.help: Valoración del aspecto adicional que haya descrito arriba.
+form.other1_description.help: Aspecto que se quiere valorar además de los anteriores. Es opcional.
+form.other2.help: Valoración del aspecto adicional que haya descrito arriba.
+form.other2_description.help: Segundo aspecto que se quiere valorar. Es opcional.
+form.proposed_changes.help: Cambios que propone la empresa en las actividades del programa formativo.
+form.sign_date.help: Fecha en que se firma el informe.
 form.professional_competence: Valoración de la competencia profesional
 form.organizational_competence: Valoración de la competencia organizacional
 form.relational_competence: Valoración de la competencia relacional

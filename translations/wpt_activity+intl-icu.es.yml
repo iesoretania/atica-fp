@@ -1,4 +1,9 @@
 form.code: Código
+form.code.help: Identificador corto que se muestra en los listados.
+form.description.help: Qué hará el alumnado en la empresa en esta actividad formativa.
+form.criteria.help: Criterios de evaluación del módulo de FCT que se trabajan con esta actividad.
+form.source_shift.help: Se copian las actividades de esa convocatoria a la actual.
+form.source_wlt_project.help: Se copian las actividades del programa formativo de ese proyecto de FP dual.
 form.description: Descripción
 form.criteria: Criterios de evaluación asociados
 

@@ -1,4 +1,10 @@
 form.datetime: Fecha y hora
+form.datetime.help: Momento en que se realiza la visita al centro de trabajo.
+form.teacher.help: Docente que realiza la visita.
+form.workcenter.help: Centro de trabajo visitado. Al elegirlo se ofrecen sus acuerdos y su alumnado.
+form.agreements.help: Acuerdos de colaboración del centro de trabajo que se tratan en la visita.
+form.student_enrollments.help: Estudiantes con los que se habla durante la visita.
+form.detail.help: Resumen de lo tratado y de las incidencias o acuerdos de la visita.
 form.teacher: Tutor/a docente
 form.teacher.none: Seleccione un tutor/a docente
 form.workcenter: Centro de trabajo
