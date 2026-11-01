@@ -16,6 +16,10 @@
                         <input type="checkbox" name="items[]" value="{{ agreement.id }}" class="size-4 rounded border-gray-300 text-brand-600{% if is_granted('WPT_AGREEMENT_MANAGE', agreement) %} selectable{% endif %}"{% if not is_granted('WPT_AGREEMENT_MANAGE', agreement) %} disabled{% endif %}>
                         <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ agreement.workCenter }}</a>
                     </label>
+                    {#- El calendario es del acuerdo (no de cada alumno): va bajo el centro de trabajo -#}
+                    <div class="mt-2 pl-6">
+                        {{ m.link_button(path('workplace_training_agreement_calendar_list', {'id': agreement.id}), 'calendar-alt', 'btn-light btn-sm', 'table.calendar'|trans) }}
+                    </div>
                 </td>
                 <td rowspan="{{ span }}" class="whitespace-nowrap align-top">
                     {{ agreement.startDate ? agreement.startDate|date('format.date'|trans({}, 'general')) }}
@@ -25,14 +29,9 @@
             <td><a href="{{ alt_url }}" class="hover:text-brand-700">{{ agreementEnrollment.studentEnrollment }}</a></td>
             <td><a href="{{ alt_url }}" class="hover:text-brand-700">{{ agreementEnrollment.educationalTutor }}</a></td>
             <td><a href="{{ alt_url }}" class="hover:text-brand-700">{{ agreementEnrollment.workTutor }}</a></td>
-            <td class="text-right">
+            <td class="whitespace-nowrap text-right">
                 {{ m.link_button_new(path('workplace_training_agreement_program_report', {'id': agreementEnrollment.id}), 'file-alt', 'btn-primary btn-sm', 'table.program_report'|trans) }}
             </td>
-            {% if loop.first %}
-                <td rowspan="{{ span }}" class="text-right align-middle">
-                    {{ m.link_button(path('workplace_training_agreement_calendar_list', {'id': agreement.id}), 'calendar-alt', 'btn-info btn-sm', 'table.calendar'|trans) }}
-                </td>
-            {% endif %}
         </tr>
     {% endfor %}
 {% endmacro %}
@@ -45,7 +44,6 @@
     <th>{{ 'header.student_enrollments'|trans }}</th>
     <th>{{ 'header.educational_tutor'|trans }}</th>
     <th>{{ 'header.work_tutor'|trans }}</th>
-    <th></th>
     <th></th>
 {% endblock %}
 
@@ -60,7 +58,7 @@
         {% set items = items|merge([item]) %}
         {% set last_agreement_id = item.agreement.id %}
     {% else %}
-        <tr><td colspan="7" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
+        <tr><td colspan="6"class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
     {% endfor %}
     {% if items is not empty %}
         {{ _self.draw_agreement(items, items[0].agreement) }}
