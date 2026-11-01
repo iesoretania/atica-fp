@@ -1,11 +1,12 @@
 {% trans_default_domain 'calendar' %}
 {% extends 'ui/layout.html.twig' %}
 {% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
 {% form_theme form 'ui/form_theme.html.twig' %}
 
 {% block content %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [['date', 'hours']]) }}
     {{ m.start_button() }}
         {% if not read_only|default(false) %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}

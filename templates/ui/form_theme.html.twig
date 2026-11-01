@@ -32,6 +32,11 @@
     {%- endif -%}
 {%- endblock datetime_widget -%}
 
+{#- Importe con su símbolo de moneda en la misma línea (el tema base lo deja debajo) -#}
+{%- block money_widget -%}
+    <span class="flex items-center gap-2">{{- money_pattern|form_encode_currency(block('form_widget_simple')) -}}</span>
+{%- endblock money_widget -%}
+
 {%- block form_label -%}
     {%- set label_attr = label_attr|merge({class: label_attr.class|default('block text-sm font-medium text-gray-700')}) -%}
     {{- parent() -}}

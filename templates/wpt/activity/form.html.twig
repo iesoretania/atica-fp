@@ -3,9 +3,15 @@
 {% import 'ui/macros.html.twig' as m %}
 {% form_theme form 'ui/form_theme.html.twig' _self %}
 
+{% import 'ui/form_layout.html.twig' as fl %}
+
 {% block content %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['code', null, null],
+        ['description'],
+        ['criteria'],
+    ]) }}
     {{ m.start_button() }}
         {% if not read_only %}
             {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}

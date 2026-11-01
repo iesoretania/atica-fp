@@ -1,11 +1,17 @@
 {% trans_default_domain 'calendar' %}
 {% extends 'ui/layout.html.twig' %}
 {% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
 {% form_theme form 'ui/form_theme.html.twig' %}
 
 {% block content %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['startDate', 'totalHours'],
+        ['hoursMon', 'hoursTue', 'hoursWed', 'hoursThu'],
+        ['hoursFri', 'hoursSat', 'hoursSun', null],
+        ['overwriteAction', 'ignoreNonWorkingDays'],
+    ]) }}
     {{ m.start_button() }}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
         {{ m.submit_button('calc', 'calculator', 'btn-primary', 'form.calculate'|trans) }}
