@@ -185,64 +185,10 @@ class ReportController extends AbstractController
 
         $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_MANAGE, $organization);
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('p')
-            ->distinct()
-            ->from(Project::class, 'p')
-            ->leftJoin('p.manager', 'm')
-            ->join('p.groups', 'g')
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 'tr')
-            ->leftJoin('tr.department', 'd')
-            ->leftJoin('d.head', 'h')
-            ->orderBy('p.name');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('p.name LIKE :tq')
-                ->orWhere('p.name LIKE :tq')
-                ->orWhere('m.firstName LIKE :tq')
-                ->orWhere('m.lastName LIKE :tq')
-                ->orWhere('m.uniqueIdentifier LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('p.organization = :organization')
-            ->setParameter('organization', $organization);
-
-        if (!$isManager) {
-            $queryBuilder
-                ->andWhere('p.manager = :manager OR (d.head IS NOT NULL AND h.person = :manager)')
-                ->setParameter('manager', $this->getUser());
-        }
-
-        $queryBuilder
-            ->andWhere('tr.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans($title, [], 'wlt_report');
 
         return $this->render('wlt/report/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'wlt_project',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization),

@@ -1,49 +1,10 @@
 {% trans_default_domain 'wlt_project' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block new_action %}{% endblock %}
-
-{% block table_header %}
-    <th>{{ 'header.name'|trans }}</th>
-    <th>{{ 'header.manager'|trans }}</th>
-    <th>{{ 'header.groups'|trans }}</th>
-    <th>{{ 'header.student_count'|trans }}</th>
-{% endblock %}
-
-{% block table_body %}
-            {% for item in pager %}
-                {% set url = path(route_name, {'project': item.id, 'academicYear': academic_year.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}" data-target="_blank">
-                    <td>
-                        <a href="{{ url }}" {% if new_window|default(true) %}target="_blank"{% endif %}>{{ item.name }}</a>
-                    </td>
-                    <td>
-                        {{ item.manager }}
-                    </td>
-                    <td>
-                        {{ item.groups|join(', ') }}
-                    </td>
-                    <td>
-                        {{ item.studentEnrollments.count() }}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
-                </tr>
-            {% endfor %}
-{% endblock %}
-
-{% block before_filter %}
-    {% include 'organization/partial_academic_year.html.twig' %}
-{% endblock %}
-
-{% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
-{% endblock %}
-
-{% block after_table %}
-    <div class="clearfix"></div>
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{#- Listado dinámico (Live Component Wlt:ReportList): cada proyecto enlaza al informe de «route_name» -#}
+{% block content %}
+    <div data-controller="list">
+        {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: app.current_route} %}
+    </div>
+    {% include 'ui/_live_list.html.twig' with {component: 'Wlt:ReportList', props: {academicYear: academic_year, routeName: route_name}} %}
 {% endblock %}

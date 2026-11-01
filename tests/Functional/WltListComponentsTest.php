@@ -38,6 +38,16 @@ class WltListComponentsTest extends AppWebTestCase
         yield 'concreciones' => ['Wlt:ActivityRealizationList', '/dual/proyecto/programa/{activity}/concrecion'];
         yield 'empresas del proyecto' => ['Wlt:LearningProgramList', '/dual/programa/{project}/listar'];
         yield 'reuniones' => ['Wlt:MeetingList', '/dual/reunion/listar/{year}'];
+        yield 'encuestas del alumnado' => ['Wlt:SurveyStudentList', '/dual/encuesta/estudiante/{year}'];
+        yield 'encuestas de empresas' => ['Wlt:SurveyWorkTutorList', '/dual/encuesta/empresa/{year}'];
+        yield 'encuestas del centro' => ['Wlt:SurveyEducationalTutorList', '/dual/encuesta/centro/{year}'];
+        yield 'informe de reuniones' => ['Wlt:ReportList', '/dual/informe/reuniones/listar/{year}'];
+        yield 'informe de asistencia' => ['Wlt:ReportList', '/dual/informe/asistencia/listar/{year}'];
+        yield 'informe de evaluación' => ['Wlt:ReportList', '/dual/informe/evaluacion/listar/{year}'];
+        yield 'informe del programa formativo' => ['Wlt:ReportList', '/dual/informe/programa_formativo/listar/{year}'];
+        yield 'informe de encuestas del alumnado' => ['Wlt:ReportList', '/dual/informe/encuesta/estudiantes/listar/{year}'];
+        yield 'informe de encuestas de empresas' => ['Wlt:ReportList', '/dual/informe/encuesta/empresas/listar/{year}'];
+        yield 'informe de encuestas del centro' => ['Wlt:ReportList', '/dual/informe/encuesta/centro/listar/{year}'];
         yield 'desplazamientos' => ['Wlt:TravelExpenseList', '/dual/desplazamiento/{teacher}/listar'];
         yield 'resumen de desplazamientos' => ['Wlt:TravelExpenseTeacherList', '/dual/desplazamiento/resumen/{year}'];
         yield 'seguimiento' => ['Wlt:TrackingList', '/dual/seguimiento/acuerdo/listar/{year}'];

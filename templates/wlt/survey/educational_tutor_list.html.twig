@@ -1,50 +1,10 @@
 {% trans_default_domain 'wlt_survey' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block new_action %}{% endblock %}
-
-{% block table_header %}
-    <th>{{ 'header.educational_tutor'|trans }}</th>
-    <th>{{ 'header.project'|trans }}</th>
-    <th>{{ 'header.academic_year'|trans }}</th>
-    <th>{{ 'header.status'|trans }}</th>
-{% endblock %}
-
-{% block table_body %}
-            {% for item in pager %}
-                {% set url = path('work_linked_training_survey_educational_tutor_form', {'id': item.projectId, 'teacher': item.teacherId}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
-                    <td>
-                        <a href="{{ url }}">{{ item.lastName }}, {{ item.firstName }}</a>
-                    </td>
-                    <td>
-                        {{ item.projectName }}
-                        {% if item.projectLocked %} <i class="fa fa-lock"></i>{% endif %}
-                    </td>
-                    <td>
-                        {{ item.academicYearDescription }}
-                    </td>
-                    <td>
-                        {{ (item[1] ? 'table.answered.yes' : 'table.answered.no')|trans }}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
-                </tr>
-            {% endfor %}
-{% endblock %}
-
-{% block before_filter %}
-    {% include 'organization/partial_academic_year.html.twig' %}
-{% endblock %}
-
-{% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
-{% endblock %}
-
-{% block after_table %}
-        <div class="clearfix"></div>
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{#- Listado dinámico (Live Component Wlt:SurveyEducationalTutorList); el selector de curso académico navega a otra página -#}
+{% block content %}
+    <div data-controller="list">
+        {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'work_linked_training_survey_educational_tutor_list'} %}
+    </div>
+    {% include 'ui/_live_list.html.twig' with {component: 'Wlt:SurveyEducationalTutorList', props: {academicYear: academic_year}} %}
 {% endblock %}

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Twig\Components\Wlt;
 
 use App\Entity\Person;
-use App\Repository\Edu\StudentAnsweredSurveyRepository;
+use App\Repository\WltModule\StudentAnsweredSurveyRepository;
 use App\Security\WltModule\OrganizationVoter as WltOrganizationVoter;
 use App\Twig\Components\AbstractListComponent;
 use Doctrine\ORM\QueryBuilder;

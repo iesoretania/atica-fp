@@ -1,27 +1,24 @@
 {% trans_default_domain 'wlt_survey' %}
-{% form_theme form 'bootstrap_4_layout.html.twig' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
     {% if survey %}
         {{ form_start(form) }}
         {% if read_only %}
-            <div class="alert alert-warning">{{ 'prompt.read_only_warning'|trans|nl2br }}</div>
+            <twig:Ui:Alert type="warning" :message="'prompt.read_only_warning'|trans|nl2br" />
         {% endif %}
-        <div class="card mb-4">
-            <div class="card-header">
+        <div class="mb-4 overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+            <div class="border-b border-gray-200 bg-gray-50 px-5 py-4">
                 {% if project is defined %}
-                    <h3>
-                        {{ project }}
-                    </h3>
+                    <h2 class="text-lg font-semibold text-gray-900">{{ project }}</h2>
                 {% endif %}
                 {% if person is defined %}
-                    <h3>
-                        {{ person }}
-                    </h3>
+                    <h2 class="text-lg font-semibold text-gray-900">{{ person }}</h2>
                 {% endif %}
                 {% if survey.startTimestamp or survey.endTimestamp %}
-                    <h5>
+                    <p class="mt-1 text-sm text-gray-500">
                         {{ 'title.available'|trans }}
                         {% if survey.startTimestamp %}
                             {{ 'title.start_timestamp'|trans({'date': survey.startTimestamp|date('format.datetime'|trans({}, 'general'))}) }}
@@ -29,31 +26,31 @@
                         {% if survey.endTimestamp %}
                             {{ 'title.end_timestamp'|trans({'date': survey.endTimestamp|date('format.datetime'|trans({}, 'general'))}) }}
                         {% endif %}
-                    </h5>
+                    </p>
                 {% endif %}
             </div>
             {{ form_label(form.answers) }}
             {{ form_errors(form.answers) }}
 
-            <div class="card-body">
+            <div class="p-5">
                 {% set table = false %}
                 {% for answer in form.answers %}
                     {% if answer.vars.data.surveyQuestion.type == 'fixed' %}
                         {% if table %}
-                            </tbody>
-                        </table>
+                            </tbody></table></div>
                             {% set table = false %}
                         {% endif %}
-                        <div class="survey-text">{{ answer.vars.data.surveyQuestion.description|sanitize_html }}</div>
+                        <div class="prose prose-sm my-4 max-w-none">{{ answer.vars.data.surveyQuestion.description|sanitize_html }}</div>
                     {% else %}
                         {% if not table %}
-                            <table class="table table-sm table-bordered table-striped table-hover survey">
-                            <tbody>
+                            <div class="my-3 overflow-x-auto rounded-lg ring-1 ring-gray-200">
+                            <table class="w-full text-left text-sm survey">
+                            <tbody class="divide-y divide-gray-100 [&_td]:px-4 [&_td]:py-3 [&_td]:align-top">
                             {% set table = true %}
                         {% endif %}
                         <tr>
-                            <td class="w-50 question{% if answer.vars.data.surveyQuestion.mandatory %} required{% endif %}">{{ answer.vars.data.surveyQuestion.description|sanitize_html }}</td>
-                            <td class="w-50 response">
+                            <td class="w-1/2 question{% if answer.vars.data.surveyQuestion.mandatory %} required font-medium{% endif %}">{{ answer.vars.data.surveyQuestion.description|sanitize_html }}</td>
+                            <td class="w-1/2 response">
                                 {{ form_errors(answer) }}
                                 {{ form_widget(answer) }}
                             </td>
@@ -61,15 +58,17 @@
                     {% endif %}
                 {% endfor %}
                 {% if table %}
-                    </tbody>
-                </table>
+                    </tbody></table></div>
                 {% endif %}
             </div>
         </div>
-        {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
+        <div class="flex flex-wrap gap-2">
+            {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
+            {{ m.link_button(back_url|default(last_url), 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        </div>
         {{ form_end(form) }}
     {% else %}
-        <div class="alert alert-danger">{{ 'prompt.no_survey'|trans|nl2br }}</div>
+        <twig:Ui:Alert type="danger" :message="'prompt.no_survey'|trans|nl2br" />
+        {{ m.link_button(back_url|default(last_url), 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {% endif %}
-    {{ m.link_button(back_url|default(last_url), 'arrow-left', 'btn-info', 'form.back'|trans) }}
 {% endblock %}

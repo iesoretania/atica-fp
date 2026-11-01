@@ -1,0 +1,36 @@
+{% trans_default_domain 'wlt_project' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'wlt_project', base_url: this.baseUrl, back_url: this.backUrl, route_name: this.routeName, academic_year: this.academicYear} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block new_action %}{% endblock %}
+
+        {% block table_header %}
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'name' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.name'|trans({}, domain), 'name', this.sort, this.dir) }}</th>
+            <th aria-sort="{{ this.sort == 'manager' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.manager'|trans({}, domain), 'manager', this.sort, this.dir) }}</th>
+            <th>{{ 'header.groups'|trans({}, domain) }}</th>
+            <th>{{ 'header.student_count'|trans({}, domain) }}</th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                {% set url = path(route_name, {'project': item.id, 'academicYear': academic_year.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}" data-target="_blank">
+                    <td><a href="{{ url }}" target="_blank" class="font-medium text-gray-900 hover:text-brand-700">{{ item.name }}</a></td>
+                    <td>{{ item.manager }}</td>
+                    <td>{{ item.groups|join(', ') }}</td>
+                    <td>{{ item.studentEnrollments.count() }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+    {% endembed %}
+</div>

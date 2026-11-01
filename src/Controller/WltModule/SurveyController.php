@@ -377,25 +377,8 @@ class SurveyController extends AbstractController
 
         $title = $translator->trans('title.survey.project.list', [], 'wlt_survey');
 
-        /** @var Person $person */
-        $person = $this->getUser();
-
-        $q = $request->query->get('q');
-
-        $queryBuilder = $studentAnsweredSurveyRepository->findByAcademicYearAndPersonFilterQueryBuilder(
-            $q,
-            $academicYear,
-            $person
-        );
-
-        $pageSize = $this->getParameter('page.size');
-
-        $pager = $this->getPager($queryBuilder, $pageSize, $page);
-
         return $this->render('wlt/survey/student_list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'wlt_survey',
             'route_name' => 'work_linked_training_survey_student_form',
             'academic_year' => $academicYear,
@@ -432,41 +415,8 @@ class SurveyController extends AbstractController
 
         $title = $translator->trans('title.survey.work_tutor.list', [], 'wlt_survey');
 
-        /** @var Person $person */
-        $person = $this->getUser();
-
-        $q = $request->query->get('q');
-
-        $queryBuilder = $agreementRepository->findByAcademicYearAndPersonFilterQueryBuilder(
-            $q,
-            $academicYear,
-            $person
-        );
-
-        $queryBuilder
-            ->leftJoin(
-                WorkTutorAnsweredSurvey::class,
-                'was',
-                'WITH',
-                '(was.workTutor = wt OR was.workTutor = awt) AND ' .
-                'was.project = pro AND was.academicYear = :academic_year'
-            )
-            ->addSelect('COUNT(was), awt')
-            ->addGroupBy('a')
-            ->addOrderBy('wt.lastName')
-            ->addOrderBy('wt.firstName')
-            ->addOrderBy('wt.id')
-            ->addOrderBy('awt.id', 'DESC')
-            ->addOrderBy('pro.name');
-
-        $pageSize = $this->getParameter('page.size');
-
-        $pager = $this->getPager($queryBuilder, $pageSize, $page);
-
         return $this->render('wlt/survey/work_tutor_list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'wlt_survey',
             'route_name' => 'work_linked_training_survey_student_form',
             'academic_year' => $academicYear,
@@ -497,23 +447,8 @@ class SurveyController extends AbstractController
 
         $title = $translator->trans('title.survey.educational_tutor.list', [], 'wlt_survey');
 
-        /** @var Person $person */
-        $person = $this->getUser();
-
-        $q = $request->query->get('q');
-
-        $queryBuilder = $wltTeacherRepository->findTeachersDataByProjectGroupByProjectAndPersonFilteredQueryBuilder(
-            $q,
-            $academicYear,
-            $person
-        );
-
-        $pager = $this->getPager($queryBuilder, $this->getParameter('page.size'), $page);
-
         return $this->render('wlt/survey/educational_tutor_list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'wlt_survey',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)

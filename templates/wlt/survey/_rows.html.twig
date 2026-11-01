@@ -1,0 +1,58 @@
+{% trans_default_domain 'wlt_survey' %}
+{#- Filas de los listados de encuestas del alumnado y de la tutoría laboral: una fila por convenio; el alumno o tutor, el proyecto y el estado se combinan con rowspan.
+    kind: 'student' o 'work_tutor' -#}
+{% macro group(data, additional, kind) %}
+    {% for datum in data %}
+        <tr>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}" class="align-top">
+                    {% if kind == 'student' %}
+                        <a href="{{ path('work_linked_training_survey_student_form', {'id': data[0].id}) }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.studentEnrollment }}</a>
+                    {% else %}
+                        <a href="{{ path('work_linked_training_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].workTutor.id}) }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.workTutor }}</a>
+                        {% if datum.additionalWorkTutor %}
+                            <br><a href="{{ path('work_linked_training_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].additionalWorkTutor.id}) }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.additionalWorkTutor }}</a>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td rowspan="{{ data|length }}" class="align-top">
+                    {{ datum.project }}
+                    {% if datum.project.locked %}<twig:Ui:Icon name="lock" class="ml-1 inline size-3.5 text-gray-400" />{% endif %}
+                </td>
+            {% endif %}
+            {% if kind == 'work_tutor' %}<td>{{ datum.studentEnrollment }}</td>{% endif %}
+            <td>{{ datum.workcenter }}</td>
+            {% if kind == 'student' %}<td>{{ datum.workTutor }}</td>{% endif %}
+            <td class="whitespace-nowrap">
+                {{ datum.startDate ? datum.startDate|date('format.date'|trans({}, 'general')) }}
+                {% if datum.endDate %} - {{ datum.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
+            </td>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}" class="align-top">{{ (additional ? 'table.answered.yes' : 'table.answered.no')|trans }}</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+{% endmacro %}
+
+{% macro draw_all(pager, kind) %}
+    {% set last_id = 0 %}
+    {% set data = [] %}
+    {% set additional = 0 %}
+    {% for item in pager %}
+        {% set key = (kind == 'student' ? item[0].studentEnrollment.id : item[0].workTutor.id) ~ '-' ~ item[0].project.id %}
+        {% if last_id != key %}
+            {% if last_id != 0 %}{{ _self.group(data, additional, kind) }}{% endif %}
+            {% set last_id = key %}
+            {% set data = [item[0]] %}
+            {% set additional = item[1] %}
+        {% else %}
+            {% set data = data|merge([item[0]]) %}
+            {% set additional = additional + item[1] %}
+        {% endif %}
+    {% else %}
+        <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
+    {% endfor %}
+    {% if last_id != 0 %}
+        {{ _self.group(data, additional, kind) }}
+    {% endif %}
+{% endmacro %}
