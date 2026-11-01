@@ -101,11 +101,12 @@ select:not([multiple]):not([size]):disabled { opacity: .7; }
 .ts-dropdown .no-results { color: var(--color-gray-500); cursor: default; }
 
 /* Editor de texto enriquecido (Quill, ver controllers/rich_editor_controller.js) */
-.rich-editor-container { margin-top: 0.25rem; background: #fff; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 0 0 1px var(--color-gray-300) inset; }
+.rich-editor-container { margin-top: 0.25rem; background: #fff; border-radius: 0.5rem; overflow: hidden; border: 1px solid var(--color-gray-300); }
 .rich-editor-container .ql-toolbar.ql-snow { border: 0; border-bottom: 1px solid var(--color-gray-200); background: var(--color-gray-50); }
 .rich-editor-container .ql-container.ql-snow { border: 0; font-family: inherit; font-size: 0.875rem; }
-.rich-editor-container:focus-within { box-shadow: 0 0 0 2px var(--color-brand-500) inset; }
-.rich-editor-container.is-invalid { box-shadow: 0 0 0 2px var(--color-red-500) inset; }
+/* El anillo se dibuja con outline (se pinta por encima de la barra de herramientas, que tapaba un box-shadow interior) */
+.rich-editor-container:focus-within { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+.rich-editor-container.is-invalid { outline: 2px solid var(--color-red-500); outline-offset: -2px; }
 
 @media print {
     .no-print { display: none !important; }
