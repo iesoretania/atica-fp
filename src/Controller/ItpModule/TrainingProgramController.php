@@ -184,6 +184,16 @@ class TrainingProgramController extends AbstractController
                 ['fixed' => $translator->trans('title.new', [], 'itp_training_program')]
         ];
 
+        // La zona de peligro necesita el curso académico; si la ruta no lo trae, se deduce de las enseñanzas del plan
+        if ($academicYear === null) {
+            foreach ($trainingProgram->getTrainingProgramGrades() as $programGrade) {
+                $academicYear = $programGrade->getGrade()?->getTraining()?->getAcademicYear();
+                if ($academicYear !== null) {
+                    break;
+                }
+            }
+        }
+
         return $this->render('itp/training_program/form.html.twig', [
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,

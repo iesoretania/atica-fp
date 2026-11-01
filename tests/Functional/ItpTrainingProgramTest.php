@@ -78,6 +78,15 @@ class ItpTrainingProgramTest extends AppWebTestCase
         }
     }
 
+    public function testEditWithoutAcademicYearInTheUrlShowsTheDangerZone(): void
+    {
+        $this->login($this->getUser('alfa.admin'));
+
+        $crawler = $this->client->request('GET', '/formacion/plan/' . $this->programId());
+        self::assertResponseIsSuccessful();
+        self::assertGreaterThan(0, $crawler->filter('form[action*="/formacion/plan/eliminar/"]')->count());
+    }
+
     /**
      * @return iterable<string, array{string}>
      */
