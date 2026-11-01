@@ -1,0 +1,32 @@
+{#-
+  Lista de casillas (selección múltiple expandida) en tarjetas, de una columna, con un único enlace «Seleccionar todas» /
+  «Quitar todas» arriba a la derecha (mismo aspecto y comportamiento que el selector de alumnado por grupos).
+  Pensada para textos largos (p. ej. actividades del programa formativo). Uso, dentro de un bloque de widget del formulario:
+
+    {% import 'ui/form_checklist.html.twig' as cl %}
+    {% block _agreement_activities_widget %}
+        {{ cl.checklist(form, choices, 'form.select_all'|trans, 'form.select_none'|trans, 'form.no_activities'|trans) }}
+    {% endblock %}
+-#}
+{% macro checklist(form, choices, select_label, clear_label, empty_label) %}
+    <div id="{{ form.vars.id }}" data-controller="check-group"
+         data-check-group-select-label-value="{{ select_label }}" data-check-group-clear-label-value="{{ clear_label }}" class="mt-2">
+        {% if choices %}
+            <div class="mb-2 flex justify-end">
+                <button type="button" data-check-group-target="toggle" data-action="check-group#toggle"
+                        class="text-sm font-medium text-brand-700 hover:text-brand-900"></button>
+            </div>
+            <div class="grid grid-cols-1 gap-2">
+                {% for key, choice in choices %}
+                    <label for="{{ form[key].vars.id }}"
+                           class="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 transition hover:border-gray-300 has-checked:border-brand-500 has-checked:bg-brand-50 has-focus-visible:ring-2 has-focus-visible:ring-brand-500 has-disabled:cursor-not-allowed has-disabled:opacity-60">
+                        <span class="mt-0.5">{{ form_widget(form[key], {translation_domain: false}) }}</span>
+                        <span class="min-w-0">{{ form[key].vars.label }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-sm text-gray-500">{{ empty_label }}</p>
+        {% endif %}
+    </div>
+{% endmacro %}
