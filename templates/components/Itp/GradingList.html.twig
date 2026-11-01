@@ -1,0 +1,54 @@
+{% trans_default_domain 'itp_grading' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'itp_grading', base_url: this.baseUrl, back_url: this.backUrl, url_path: this.urlPath, report_path: this.reportPath} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block new_action %}{% endblock %}
+
+        {% block table_header %}
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'student' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.student'|trans({}, 'itp_grading'), 'student', this.sort, this.dir) }}</th>
+            <th aria-sort="{{ this.sort == 'workcenter' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.workcenter'|trans({}, 'itp_grading'), 'workcenter', this.sort, this.dir) }}</th>
+            <th>{{ 'header.educational_tutor'|trans({}, 'itp_grading') }}</th>
+            <th>{{ 'header.work_tutor'|trans({}, 'itp_grading') }}</th>
+            <th aria-sort="{{ this.sort == 'start' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.date_range'|trans({}, 'itp_grading'), 'start', this.sort, this.dir) }}</th>
+            <th>{{ 'header.activities'|trans({}, 'itp_grading') }}</th>
+            <th></th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                {% set spw = item[0] %}
+                {% set url = url_path ? path(url_path, {'studentProgramWorkcenter': spw.id}) : '#' %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ spw.studentProgram.studentEnrollment }}</a></td>
+                    <td>{{ spw.workcenter }}</td>
+                    <td>{{ spw.educationalTutor }}</td>
+                    <td>{{ spw.workTutor }}</td>
+                    <td class="whitespace-nowrap">
+                        {% if spw.startDate and spw.endDate %}
+                            {{ spw.startDate|date('format.date'|trans({}, 'general')) }} - {{ spw.endDate|date('format.date'|trans({}, 'general')) }}
+                        {% endif %}
+                    </td>
+                    <td class="whitespace-nowrap">
+                        {{ item.graded_activities }}/{{ item.total_activities }}
+                        {% if item.total_activities != 0 %}
+                            ({{ (item.graded_activities * 100.0 / item.total_activities)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %)
+                        {% endif %}
+                    </td>
+                    <td class="text-right">
+                        {% if item.graded_activities > 0 or item[0].workTutorRemarks %}{{ m.link_button_new(path(report_path, {'studentProgramWorkcenter': spw.id}), 'file-alt', 'btn-info btn-sm', 'form.report'|trans({}, 'itp_grading')) }}{% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="7" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+    {% endembed %}
+</div>

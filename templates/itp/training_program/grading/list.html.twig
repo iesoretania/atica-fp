@@ -1,62 +1,14 @@
 {% trans_default_domain 'itp_grading' %}
-{% extends 'ui/list.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block new_action %}{% endblock %}
-
-{% block table_header %}
-    <th>{{ 'header.student'|trans }}</th>
-    <th>{{ 'header.workcenter'|trans }}</th>
-    <th>{{ 'header.educational_tutor'|trans }}</th>
-    <th>{{ 'header.work_tutor'|trans }}</th>
-    <th>{{ 'header.date_range'|trans }}</th>
-    <th>{{ 'header.activities'|trans }}</th>
-    <th></th>
-{% endblock %}
-
-{% block table_body %}
-    {% for item in pager %}
-        {% set spw = item[0] %}
-        {% set url = url_path ? path(url_path, {'studentProgramWorkcenter': spw.id}) : '#' %}
-        <tr class="clickable-row" data-href="{{ url }}">
-            <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ spw.studentProgram.studentEnrollment }}</a></td>
-            <td>{{ spw.workcenter }}</td>
-            <td>{{ spw.educationalTutor }}</td>
-            <td>{{ spw.workTutor }}</td>
-            <td class="whitespace-nowrap">
-                {% if spw.startDate and spw.endDate %}
-                    {{ spw.startDate|date('format.date'|trans({}, 'general')) }} - {{ spw.endDate|date('format.date'|trans({}, 'general')) }}
-                {% endif %}
-            </td>
-            <td class="whitespace-nowrap">
-                {{ item.graded_activities }}/{{ item.total_activities }}
-                {% if item.total_activities != 0 %}
-                    ({{ (item.graded_activities * 100.0 / item.total_activities)|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %)
-                {% endif %}
-            </td>
-            <td class="text-right">
-                {% if item.graded_activities > 0 or item[0].workTutorRemarks %}{{ m.link_button_new(path(report_path, {'studentProgramWorkcenter': spw.id}), 'file-alt', 'btn-info btn-sm', 'form.report'|trans) }}{% endif %}
-            </td>
-        </tr>
-    {% else %}
-        <tr><td colspan="7" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
-    {% endfor %}
-{% endblock %}
-
-{% block before_filter %}
+{#- Listado dinámico (Live Component Itp:GradingList): por curso académico o, con program_group, de un grupo -#}
+{% block content %}
     {% if academic_years is defined %}
-        {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: app.current_route} %}
-    {% endif %}
-{% endblock %}
-
-{% block pagerfanta %}
-    {% if academic_years is defined %}
-        {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
+        <div data-controller="list">
+            {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: app.current_route} %}
+        </div>
+        {% include 'ui/_live_list.html.twig' with {component: 'Itp:GradingList', props: {academicYear: academic_year, urlPath: url_path, reportPath: report_path}} %}
     {% else %}
-        {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general')}) }}
+        {% include 'ui/_live_list.html.twig' with {component: 'Itp:GradingList', props: {programGroup: program_group, urlPath: url_path, reportPath: report_path}} %}
     {% endif %}
-{% endblock %}
-
-{% block after_table %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
 {% endblock %}

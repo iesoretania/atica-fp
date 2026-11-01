@@ -76,39 +76,13 @@ class GradingController extends AbstractController
         // el mismo permiso que la entrada «Valoración» del menú
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_VIEW_GRADES, $organization);
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        $q = $request->query->get('q');
-        $person = $this->getUser();
-        assert($person instanceof Person);
-
-        $queryBuilder = $studentProgramWorkcenterRepository->createGradingQueryBuilder(
-            $academicYear,
-            $person,
-            $isManager,
-            $q
-        );
-        assert($queryBuilder instanceof QueryBuilder);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'itp_grading');
 
         return $this->render('itp/training_program/grading/list.html.twig', [
             'title' => $title,
             'url_path' => 'in_company_training_phase_tracking_grading_form',
             'report_path' => 'in_company_training_phase_tracking_grading_report',
-            'pager' => $pager,
-            'q' => $q,
-            'domain' => 'itp_tracking',
+            'domain' => 'itp_grading',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
@@ -390,32 +364,11 @@ class GradingController extends AbstractController
 
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_VIEW_EVALUATION, $organization);
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        $q = $request->query->get('q');
-        $person = $this->getUser();
-        assert($person instanceof Person);
-
-        $studentProgramWorkcenters = $studentProgramWorkcenterRepository->findByAcademicYearPersonManagerAndQuery($academicYear, $person, $isManager, null, true);
-        $queryBuilder = $programGroupRepository->createGroupsFromStudentProgramWorkcenterStatsQueryBuilder($studentProgramWorkcenters, $q);
-
-        $adapter = new QueryAdapter($queryBuilder);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.group_list', [], 'itp_grading');
 
         return $this->render('itp/training_program/grading/group_list.html.twig', [
             'menu_path' => 'in_company_training_phase_tracking_grading_group_list',
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'itp_grading',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
@@ -437,31 +390,6 @@ class GradingController extends AbstractController
         // responsable económico no lo tienen y antes abrían aquí un listado vacío)
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_VIEW_EVALUATION, $organization);
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        $q = $request->query->get('q');
-        $person = $this->getUser();
-        assert($person instanceof Person);
-
-        $queryBuilder = $studentProgramWorkcenterRepository->createGradingProgramGroupQueryBuilder(
-            $programGroup,
-            $person,
-            $isManager,
-            $q,
-            true
-        );
-        assert($queryBuilder instanceof QueryBuilder);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $breadcrumb = [
             [
                 'fixed' => $translator->trans('title.group_list', [], 'itp_grading'),
@@ -479,9 +407,8 @@ class GradingController extends AbstractController
             'title' => $title,
             'url_path' => 'in_company_training_phase_tracking_grading_evaluation_detail',
             'report_path' => 'in_company_training_phase_tracking_grading_evaluation_report',
-            'pager' => $pager,
-            'q' => $q,
-            'domain' => 'itp_tracking'
+            'program_group' => $programGroup,
+            'domain' => 'itp_grading'
         ]);
     }
 

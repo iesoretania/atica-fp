@@ -1,40 +1,10 @@
 {% trans_default_domain 'itp_grading' %}
-{% extends 'ui/list.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block new_action %}{% endblock %}
-
-{% block table_header %}
-    <th>{{ 'header.group'|trans }}</th>
-    <th>{{ 'header.group_grade'|trans }}</th>
-    <th>{{ 'header.department'|trans }}</th>
-    <th>{{ 'header.managers'|trans }}</th>
-{% endblock %}
-
-{% block table_body %}
-    {% for item in pager %}
-        {% set url = path('in_company_training_phase_tracking_grading_group_student_list', {'programGroup': item.id}) %}
-        <tr class="clickable-row" data-href="{{ url }}">
-            <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.group.name }}</a></td>
-            <td>{{ item.group.grade.name }}</td>
-            <td>{{ item.group.grade.training.department }}</td>
-            <td>{{ item.managers|join(', ') }}</td>
-        </tr>
-    {% else %}
-        <tr><td colspan="4" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
-    {% endfor %}
-{% endblock %}
-
-{% block before_filter %}
-    {% if academic_years is defined %}
+{#- Listado dinámico (Live Component Itp:GradingGroupList); el selector de curso académico navega a otra página -#}
+{% block content %}
+    <div data-controller="list">
         {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: app.current_route} %}
-    {% endif %}
-{% endblock %}
-
-{% block pagerfanta %}
-    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
-{% endblock %}
-
-{% block after_table %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    </div>
+    {% include 'ui/_live_list.html.twig' with {component: 'Itp:GradingGroupList', props: {academicYear: academic_year}} %}
 {% endblock %}
