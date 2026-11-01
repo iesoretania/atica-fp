@@ -61,12 +61,26 @@ Piloto con dos pantallas: el listado de acuerdos (`Wpt:AgreementList`) y el form
   con sus bloques, y una página que la incluya. Dentro de un `embed` los bloques **no** heredan `trans_default_domain`.
 - **Historial del navegador** (`assets/controllers/live_history_controller.js`, mismo patrón que el árbol documental de ÁTICA
   Calidad): `url: true` de Live Components solo hace `replaceState`, así que el estado se guarda con `pushState` al cambiar de
-  página (escribir en el filtro reemplaza la entrada) y `popstate` llama a la acción `syncFromUrl`. Resultado: volver desde una
-  ficha o con «Atrás» deja el listado como estaba (`?q=...&page=...`).
+  página, de orden o de filtro (escribir en el buscador reemplaza la entrada) y `popstate` llama a la acción `syncFromUrl`.
+  Resultado: volver desde una ficha o con «Atrás» deja el listado como estaba
+  (`?q=...&page=...&sort=...&dir=...&f_filtro=...`). Las páginas lo incluyen con `ui/_live_list.html.twig` (usa la función
+  Twig `live_list_state()` para leer ese estado de la URL).
+- **Filtros propios, orden y selección**: un listado define `filterDefinitions()` (select o fecha; los valores se validan
+  siempre contra la definición con `filter('clave')`) y `sortableColumns()` (clave => expresión DQL o lista). La plantilla usa
+  las macros de `ui/live_macros.html.twig` para las cabeceras ordenables. Se muestran «chips» de los filtros activos, el
+  contador («Mostrando 1–20 de 27») y, sin resultados, un botón «Quitar filtros». Las acciones por lote (borrar, copiar) van en
+  el bloque `selection_actions`: aparecen en una barra con el número de filas marcadas.
+- **Filas clicables**: solo en listados de consulta (sin casillas ni botones en la fila). Con casillas y botones, la fila no es
+  un enlace: se abre con el enlace del nombre (así un clic al lado de un botón no abre la ficha sin querer). No se abre la
+  ficha si hay texto seleccionado.
 - **Formularios** (`ComponentWithFormTrait`): el componente solo repinta los campos dependientes mientras se edita; el
   guardado sigue siendo un envío normal al controlador. Una entidad nueva no se puede hidratar por id, así que el componente
   guarda el docente y los valores del formulario y construye la entidad en cada petición. La propiedad no puede llamarse como el
   formulario (`visit`). Los campos que pasan de `<select>` a casillas necesitan normalizar su valor a lista.
+- **Disposición de formularios** (sin dejar el componente Form): `ui/form_layout.html.twig` ofrece la macro `grid(form, filas,
+  opciones)`: cada fila es una lista de campos que se reparten el ancho a partes iguales (de 1 a 6 columnas; `null` reserva
+  una columna). Los campos que no se mencionan se añaden al final a todo el ancho. Mantiene validación, CSRF y los bloques
+  personalizados del tema.
 - **Seguridad**: cada actualización llega a `/_components/...` como una petición nueva, así que los permisos se comprueban en
   cada una (`authorize()`/`#[PostHydrate]`), no solo en el controlador de la página.
 
