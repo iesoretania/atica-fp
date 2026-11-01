@@ -36,11 +36,7 @@ use App\Security\OrganizationVoter;
 use App\Security\WltModule\OrganizationVoter as WltOrganizationVoter;
 use App\Security\WltModule\ProjectVoter;
 use App\Service\UserExtensionService;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use Pagerfanta\Exception\OutOfRangeCurrentPageException;
-use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -67,64 +63,10 @@ class ProjectController extends AbstractController
 
         $this->denyAccessUnlessGranted(WltOrganizationVoter::WLT_MANAGE, $organization);
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('p')
-            ->distinct()
-            ->from(Project::class, 'p')
-            ->leftJoin('p.manager', 'm')
-            ->join('p.groups', 'g')
-            ->join('g.grade', 'gr')
-            ->join('gr.training', 'tr')
-            ->leftJoin('tr.department', 'd')
-            ->leftJoin('d.head', 'h')
-            ->orderBy('p.name');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('p.name LIKE :tq')
-                ->orWhere('p.name LIKE :tq')
-                ->orWhere('m.firstName LIKE :tq')
-                ->orWhere('m.lastName LIKE :tq')
-                ->orWhere('m.uniqueIdentifier LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('p.organization = :organization')
-            ->setParameter('organization', $organization);
-
-        if (!$isManager) {
-            $queryBuilder
-                ->andWhere('p.manager = :manager OR (d.head IS NOT NULL AND h.person = :manager)')
-                ->setParameter('manager', $this->getUser());
-        }
-
-        $queryBuilder
-            ->andWhere('tr.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'wlt_project');
 
         return $this->render('wlt/project/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'wlt_project',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
@@ -213,6 +155,7 @@ class ProjectController extends AbstractController
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
+            'project' => $project,
             'form' => $form->createView()
         ]);
     }

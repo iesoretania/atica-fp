@@ -21,6 +21,7 @@ namespace App\Form\Type\WltModule;
 use App\Entity\Edu\Group;
 use App\Entity\Edu\StudentEnrollment;
 use App\Entity\WltModule\Project;
+use App\Form\Type\Edu\StudentEnrollmentChoiceType;
 use App\Repository\Edu\StudentEnrollmentRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -44,6 +45,7 @@ class ProjectStudentEnrollmentType extends AbstractType
         $builder
             ->add('groups', EntityType::class, [
                 'label' => 'form.groups',
+                'help' => 'form.groups.fixed_help',
                 'class' => Group::class,
                 'choice_translation_domain' => false,
                 'choices' => $groups,
@@ -57,19 +59,13 @@ class ProjectStudentEnrollmentType extends AbstractType
                 'required' => false,
                 'attr' => ['data-controller' => 'choice-select']
             ])
-            ->add('studentEnrollments', EntityType::class, [
+            ->add('studentEnrollments', StudentEnrollmentChoiceType::class, [
                 'label' => 'form.student_enrollments',
-                'class' => StudentEnrollment::class,
-                'choice_translation_domain' => false,
+                'help' => 'form.student_enrollments.help',
                 'choices' => $studentEnrollments,
-                'choice_label' => fn(StudentEnrollment $studentEnrollment): string => $studentEnrollment->getPerson()->getLastName() . ', '
-                    . $studentEnrollment->getPerson()->getFirstName() . ' ('
-                    . $studentEnrollment->getPerson()->getUniqueIdentifier() . ')',
                 'group_by' => fn(StudentEnrollment $studentEnrollment): string => $studentEnrollment
                         ->getGroup()->getGrade()->getTraining()->getAcademicYear()->getDescription() . ' - '
                     . $studentEnrollment->getGroup()->getName(),
-                'multiple' => true,
-                'expanded' => true,
                 'required' => false
             ]);
     }

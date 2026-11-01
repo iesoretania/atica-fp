@@ -1,0 +1,59 @@
+{% trans_default_domain 'wlt_project' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'wlt_project', base_url: this.baseUrl, back_url: this.backUrl} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block path_new %}{{ path('work_linked_training_project_new') }}{% endblock %}
+
+        {% block table_header %}
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'name' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600" aria-label="{{ 'selection.clear'|trans({}, 'general') }}">
+                    {{ lm.sort_button('header.name'|trans({}, domain), 'name', this.sort, this.dir) }}
+                </div>
+            </th>
+            <th aria-sort="{{ this.sort == 'manager' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.manager'|trans({}, domain), 'manager', this.sort, this.dir) }}</th>
+            <th>{{ 'header.student_count'|trans({}, domain) }}</th>
+            <th></th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                {% set url = path('work_linked_training_project_edit', {'id': item.id}) %}
+                <tr>
+                    <td class="align-top">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable size-4 rounded border-gray-300 text-brand-600">
+                            <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.name }}</a>
+                            {% if item.locked %}<twig:Ui:Icon name="lock" class="size-3.5 text-gray-400" />{% endif %}
+                        </label>
+                    </td>
+                    <td class="align-top">{{ item.manager }}</td>
+                    <td class="align-top">{{ item.studentEnrollments.count() }}</td>
+                    <td class="text-right">
+                        <div class="flex flex-wrap justify-end gap-2">
+                            {{ m.link_button(path('work_linked_training_project_activity_list', {'id': item.id}), 'book', 'btn-info btn-sm', 'table.learning_program'|trans({}, domain)) }}
+                            {{ m.link_button(path('work_linked_training_learning_program_list', {'project': item.id}), 'industry', 'btn-info btn-sm', 'table.learning_program_companies'|trans({}, domain)) }}
+                            {{ m.link_button(path('work_linked_training_project_student_enrollment', {'id': item.id}), 'users', 'btn-info btn-sm', 'table.student_enrollment'|trans({}, domain)) }}
+                            {{ m.link_button(path('work_linked_training_agreement_list', {'id': item.id}), 'handshake', 'btn-info btn-sm', 'table.agreements'|trans({}, domain)) }}
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('work_linked_training_project_operation') }}{% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+        {% block selection_actions %}
+            {% if not is_read_only() %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>

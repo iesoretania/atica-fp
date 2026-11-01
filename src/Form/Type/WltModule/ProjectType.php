@@ -64,10 +64,12 @@ class ProjectType extends AbstractType
         $builder
             ->add('name', null, [
                 'label' => 'form.name',
+                'help' => 'form.name.help',
                 'required' => true
             ])
             ->add('manager', EntityType::class, [
                 'label' => 'form.manager',
+                'help' => 'form.manager.help',
                 'class' => Person::class,
                 'choice_translation_domain' => false,
                 'choices' => $teacherPersons,
@@ -78,6 +80,7 @@ class ProjectType extends AbstractType
             ])
             ->add('groups', EntityType::class, [
                 'label' => 'form.groups',
+                'help' => 'form.groups.help',
                 'class' => Group::class,
                 'choice_translation_domain' => false,
                 'choices' => $groups,
@@ -100,6 +103,7 @@ class ProjectType extends AbstractType
             ])
             ->add('attendanceReportTemplate', EntityType::class, [
                 'label' => 'form.attendance_report_template',
+                'help' => 'form.attendance_report_template.help',
                 'class' => ReportTemplate::class,
                 'choice_label' => 'description',
                 'choice_translation_domain' => false,
@@ -109,6 +113,7 @@ class ProjectType extends AbstractType
             ])
             ->add('weeklyActivityReportTemplate', EntityType::class, [
                 'label' => 'form.weekly_activity_report_template',
+                'help' => 'form.weekly_activity_report_template.help',
                 'class' => ReportTemplate::class,
                 'choice_label' => 'description',
                 'choice_translation_domain' => false,
@@ -118,6 +123,7 @@ class ProjectType extends AbstractType
             ])
             ->add('performanceScale', EntityType::class, [
                 'label' => 'form.performance_scale',
+                'help' => 'form.performance_scale.help',
                 'class' => PerformanceScale::class,
                 'choice_label' => 'description',
                 'choice_translation_domain' => false,
@@ -127,6 +133,7 @@ class ProjectType extends AbstractType
             ])
             ->add('studentSurvey', EntityType::class, [
                 'label' => 'form.student_survey',
+                'help' => 'form.student_survey.help',
                 'class' => Survey::class,
                 'choice_label' => 'title',
                 'choice_translation_domain' => false,
@@ -136,6 +143,7 @@ class ProjectType extends AbstractType
             ])
             ->add('companySurvey', EntityType::class, [
                 'label' => 'form.company_survey',
+                'help' => 'form.company_survey.help',
                 'class' => Survey::class,
                 'choice_label' => 'title',
                 'choice_translation_domain' => false,
@@ -145,6 +153,7 @@ class ProjectType extends AbstractType
             ])
             ->add('educationalTutorSurvey', EntityType::class, [
                 'label' => 'form.educational_tutor_survey',
+                'help' => 'form.educational_tutor_survey.help',
                 'class' => Survey::class,
                 'choice_label' => 'title',
                 'choice_translation_domain' => false,
