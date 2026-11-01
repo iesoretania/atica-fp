@@ -19,5 +19,9 @@
     {{ m.end_button() }}
     {{ form_end(form) }}
 
+    {% if travel_expense.id and not read_only %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('in_company_training_phase_travel_expense_operation', {'id': travel_expense.teacher.id}), travel_expense.id) }}
+    {% endif %}
+
     {% include 'ui/new_travel_route_modal.html.twig' %}
 {% endblock %}

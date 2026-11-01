@@ -158,6 +158,7 @@ class TravelExpenseController extends AbstractController
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
+            'travel_expense' => $travelExpense,
             'form' => $form->createView()
         ]);
     }

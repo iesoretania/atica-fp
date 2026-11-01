@@ -17,4 +17,8 @@
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+
+    {% if student_program.id and not is_read_only() %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('in_company_training_phase_student_program_operation', {'programGroup': student_program.programGroup.id}), student_program.id) }}
+    {% endif %}
 {% endblock %}

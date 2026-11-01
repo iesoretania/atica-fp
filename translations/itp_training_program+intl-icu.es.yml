@@ -76,3 +76,6 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Planes de formación eliminados con éxito.
 message.delete_error: Ha ocurrido un error al eliminar los planes de formación.
+
+danger.title: "Peligro: eliminación del plan de formación"
+danger.text: Una vez eliminado el plan (con sus ciclos, actividades, empresas y estancias), no se podrá recuperar.

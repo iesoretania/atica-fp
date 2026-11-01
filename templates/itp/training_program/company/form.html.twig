@@ -18,6 +18,10 @@
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+
+    {% if company_program.id and not is_read_only() %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('in_company_training_phase_company_operation', {'programGrade': company_program.programGrade.id}), company_program.id) }}
+    {% endif %}
 {% endblock %}
 
 {% block _company_program_programActivities_widget %}

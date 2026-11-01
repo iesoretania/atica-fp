@@ -22,4 +22,8 @@
         {{ m.link_button(path('in_company_training_phase_training_program_list', {'academicYear': academic_year.id ?? null}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+
+    {% if training_program.id and not is_read_only() and is_granted(constant('App\\Security\\ItpModule\\TrainingProgramVoter::MANAGE'), training_program) %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('in_company_training_phase_training_program_operation', {'academicYear': academic_year.id}), training_program.id) }}
+    {% endif %}
 {% endblock %}

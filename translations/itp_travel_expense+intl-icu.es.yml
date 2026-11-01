@@ -51,3 +51,6 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Visitas eliminadas con éxito.
 message.delete_error: Ha ocurrido un error al eliminar los desplazamientos.
+
+danger.title: "Peligro: eliminación del desplazamiento"
+danger.text: Una vez eliminado el desplazamiento, no se podrá recuperar.

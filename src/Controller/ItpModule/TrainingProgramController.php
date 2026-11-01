@@ -189,6 +189,7 @@ class TrainingProgramController extends AbstractController
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'academic_year' => $academicYear,
+            'training_program' => $trainingProgram,
             'form' => $form->createView()
         ]);
     }

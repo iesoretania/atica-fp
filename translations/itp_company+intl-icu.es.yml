@@ -43,3 +43,6 @@ prompt.delete_confirm: |
     ¿Está seguro de que desea eliminar la participación de las siguientes empresas? Se eliminarán todos los datos asociados.
 
     Esta operación no se puede deshacer.
+
+danger.title: "Peligro: eliminación de la empresa del plan"
+danger.text: Una vez eliminada la empresa de este plan de formación, no se podrá recuperar.
