@@ -110,6 +110,44 @@
     {%- endif -%}
 {%- endblock choice_widget_expanded -%}
 
+{#- Alumnado (StudentEnrollmentChoiceType): bloques por grupo, tarjetas a dos columnas (una si la fila es estrecha) y un botón para
+    marcar o quitar a todo el grupo. Si no es múltiple y expandido, se dibuja como un desplegable normal. -#}
+{%- block student_enrollment_choice_widget -%}
+    {%- if expanded and multiple -%}
+        <div {{ block('widget_container_attributes') }} class="mt-2 space-y-5">
+            {%- for group_label, group in form.vars.choices -%}
+                {%- set grouped = group is iterable -%}
+                <div role="group" {% if grouped %}aria-labelledby="{{ id }}_group_{{ loop.index }}"{% endif %}
+                     data-controller="check-group"
+                     data-check-group-select-label-value="{{ 'selection.select_group'|trans({}, 'general') }}"
+                     data-check-group-clear-label-value="{{ 'selection.clear_group'|trans({}, 'general') }}">
+                    {%- if grouped %}
+                        <div class="mb-2 flex items-center justify-between gap-3">
+                            <h3 id="{{ id }}_group_{{ loop.index }}" class="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                                <twig:Ui:Icon name="users" class="size-4 text-gray-400" />
+                                {{ group_label }}
+                            </h3>
+                            <button type="button" data-check-group-target="toggle" data-action="check-group#toggle"
+                                    class="text-sm font-medium text-brand-700 hover:text-brand-900"></button>
+                        </div>
+                    {% endif -%}
+                    <div class="grid grid-cols-1 gap-2 @lg:grid-cols-2">
+                        {%- for key, choice in (grouped ? group : {(group_label): group}) %}
+                            <label for="{{ form[key].vars.id }}"
+                                   class="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 transition hover:border-gray-300 has-checked:border-brand-500 has-checked:bg-brand-50 has-focus-visible:ring-2 has-focus-visible:ring-brand-500 has-disabled:cursor-not-allowed has-disabled:opacity-60">
+                                {{- form_widget(form[key], {translation_domain: false}) -}}
+                                <span class="min-w-0">{{ form[key].vars.label }}</span>
+                            </label>
+                        {% endfor -%}
+                    </div>
+                </div>
+            {%- endfor -%}
+        </div>
+    {%- else -%}
+        {{- block('choice_widget') -}}
+    {%- endif -%}
+{%- endblock student_enrollment_choice_widget -%}
+
 {#- Select2EntityType con búsqueda remota: lo gestiona el controlador Stimulus entity-select (Tom Select) -#}
 {%- block tetranz_select2entity_widget -%}
     {%- set attr = attr|merge({

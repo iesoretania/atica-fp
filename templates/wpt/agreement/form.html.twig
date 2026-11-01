@@ -23,7 +23,8 @@
         ['signDate', 'startDate', 'endDate'],
         ['educationalTutor', 'workTutor'],
         ['defaultStartTime1', 'defaultEndTime1', 'defaultStartTime2', 'defaultEndTime2'],
-        ['studentEnrollments', 'activities'],
+        ['studentEnrollments'],
+        ['activities'],
     ], {}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}

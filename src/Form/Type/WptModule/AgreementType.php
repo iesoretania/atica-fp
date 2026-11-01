@@ -20,13 +20,13 @@ namespace App\Form\Type\WptModule;
 
 use App\Entity\Company;
 use App\Entity\Edu\AcademicYear;
-use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\Person;
 use App\Entity\Workcenter;
 use App\Entity\WptModule\Activity;
 use App\Entity\WptModule\Agreement;
 use App\Entity\WptModule\Shift;
+use App\Form\Type\Edu\StudentEnrollmentChoiceType;
 use App\Repository\CompanyRepository;
 use App\Repository\Edu\TeacherRepository;
 use App\Repository\WorkcenterRepository;
@@ -67,18 +67,14 @@ class AgreementType extends AbstractType
         $activities = $shift->getActivities();
 
         $form
-            ->add('studentEnrollments', EntityType::class, [
+            ->add('studentEnrollments', StudentEnrollmentChoiceType::class, [
                 'mapped' => false,
                 'label' => 'form.student_enrollments',
-                'class' => StudentEnrollment::class,
-                'choice_translation_domain' => false,
                 'choices' => $studentEnrollments,
                 'placeholder' => 'form.student_enrollment.none',
                 'constraints' => [
                     new Count(min: 1)
                 ],
-                'multiple' => true,
-                'expanded' => true,
                 'required' => true
             ])
             ->add('company', EntityType::class, [

@@ -19,11 +19,11 @@
 namespace App\Form\Type\WptModule;
 
 use App\Entity\Edu\AcademicYear;
-use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\Workcenter;
 use App\Entity\WptModule\Agreement;
 use App\Entity\WptModule\Contact;
+use App\Form\Type\Edu\StudentEnrollmentChoiceType;
 use App\Repository\WorkcenterRepository as WorkcenterRepositoryAlias;
 use App\Repository\WptModule\AgreementRepository;
 use App\Repository\WptModule\TeacherRepository as WptTeacherRepository;
@@ -136,9 +136,8 @@ class VisitType extends AbstractType
                 'placeholder' => 'form.agreements.none',
                 'required' => false
             ])
-            ->add('studentEnrollments', EntityType::class, [
+            ->add('studentEnrollments', StudentEnrollmentChoiceType::class, [
                 'label' => 'form.student_enrollments',
-                'class' => StudentEnrollment::class,
                 'choices' => $studentEnrollments,
                 'disabled' => !$canSelectStudentEnrollments,
                 'expanded' => $canSelectStudentEnrollments,
