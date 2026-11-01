@@ -16,10 +16,6 @@
                         <input type="checkbox" name="items[]" value="{{ agreement.id }}" class="size-4 rounded border-gray-300 text-brand-600{% if is_granted('WPT_AGREEMENT_MANAGE', agreement) %} selectable{% endif %}"{% if not is_granted('WPT_AGREEMENT_MANAGE', agreement) %} disabled{% endif %}>
                         <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ agreement.workCenter }}</a>
                     </label>
-                    {#- El calendario es del acuerdo (no de cada alumno): va bajo el centro de trabajo -#}
-                    <div class="mt-2 pl-6">
-                        {{ m.link_button(path('workplace_training_agreement_calendar_list', {'id': agreement.id}), 'calendar-alt', 'btn-light btn-sm', 'table.calendar'|trans) }}
-                    </div>
                 </td>
                 <td rowspan="{{ span }}" class="whitespace-nowrap align-top">
                     {{ agreement.startDate ? agreement.startDate|date('format.date'|trans({}, 'general')) }}
@@ -29,8 +25,12 @@
             <td><a href="{{ alt_url }}" class="hover:text-brand-700">{{ agreementEnrollment.studentEnrollment }}</a></td>
             <td><a href="{{ alt_url }}" class="hover:text-brand-700">{{ agreementEnrollment.educationalTutor }}</a></td>
             <td><a href="{{ alt_url }}" class="hover:text-brand-700">{{ agreementEnrollment.workTutor }}</a></td>
+            {#- Los dos botones, pegados: el calendario es del acuerdo, pero se repite en cada fila para que queden alineados -#}
             <td class="whitespace-nowrap text-right">
-                {{ m.link_button_new(path('workplace_training_agreement_program_report', {'id': agreementEnrollment.id}), 'file-alt', 'btn-primary btn-sm', 'table.program_report'|trans) }}
+                <div class="inline-flex gap-px">
+                    {{ m.link_button_new(path('workplace_training_agreement_program_report', {'id': agreementEnrollment.id}), 'file-alt', 'btn-primary btn-sm', 'table.program_report'|trans) }}
+                    {{ m.link_button(path('workplace_training_agreement_calendar_list', {'id': agreement.id}), 'calendar-alt', 'btn-light btn-sm', 'table.calendar'|trans) }}
+                </div>
             </td>
         </tr>
     {% endfor %}
