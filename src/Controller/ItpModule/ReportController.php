@@ -81,36 +81,10 @@ class ReportController extends AbstractController
 
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        $person = $this->getUser();
-        assert($person instanceof Person);
-
-        $q = $request->query->get('q');
-
-        $queryBuilder = $trainingProgramRepository->createByManagerQueryBuilder(
-            $academicYear,
-            $isManager,
-            $person,
-            $request->query->get('q')
-        );
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans($title, [], 'itp_report');
 
         return $this->render('itp/report/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'itp_training_program',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization),
