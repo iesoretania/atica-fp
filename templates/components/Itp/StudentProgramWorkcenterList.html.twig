@@ -1,0 +1,63 @@
+{% trans_default_domain 'itp_student_program_workcenter' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'itp_student_program_workcenter', base_url: this.baseUrl, back_url: this.backUrl, student_program: this.studentProgram, stats: this.stats} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block path_new %}{{ path('in_company_training_phase_student_program_workcenter_new', {'studentProgram': student_program.id}) }}{% endblock %}
+
+        {% block table_header %}
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'workcenter' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600" aria-label="{{ 'selection.clear'|trans({}, 'general') }}">
+                    {{ lm.sort_button('header.workcenter'|trans({}, domain), 'workcenter', this.sort, this.dir) }}
+                </div>
+            </th>
+            <th>{{ 'header.tutors'|trans({}, domain) }}</th>
+            <th aria-sort="{{ this.sort == 'start' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.date_range'|trans({}, domain), 'start', this.sort, this.dir) }}</th>
+            <th>{{ 'header.activities'|trans({}, domain) }}</th>
+            <th>{{ 'header.hours'|trans({}, domain) }}</th>
+            <th></th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                {% set url = path('in_company_training_phase_student_program_workcenter_edit', {'studentProgramWorkcenter': item.id}) %}
+                <tr>
+                    <td class="align-top">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable size-4 rounded border-gray-300 text-brand-600">
+                            <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.workcenter }}</a>
+                        </label>
+                    </td>
+                    <td class="align-top">
+                        <b>{{ 'header.educational_tutor'|trans({}, domain) }}: </b>{{ item.educationalTutor }}{% if item.additionalEducationalTutor %}, {{ item.additionalEducationalTutor }}{% endif %}
+                        <br>
+                        <b>{{ 'header.work_tutor'|trans({}, domain) }}</b>: {{ item.workTutor }}{% if item.additionalWorkTutor %}, {{ item.additionalWorkTutor }}{% endif %}
+                    </td>
+                    <td class="align-top whitespace-nowrap">
+                        {% if item.startDate and item.endDate %}
+                            {{ item.startDate|date('format.date'|trans({}, 'general')) }} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}
+                        {% endif %}
+                    </td>
+                    <td class="align-top">{{ stats[item.id].total_activities|default(0) }}</td>
+                    <td class="align-top">{{ ((stats[item.id].total_hours|default(0)) / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}</td>
+                    <td class="text-right">{{ m.link_button(path('in_company_training_phase_student_program_workcenter_calendar_list', {'studentProgramWorkcenter': item.id}), 'calendar-days', 'btn-info btn-sm', 'form.calendar'|trans({}, domain)) }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('in_company_training_phase_student_program_workcenter_operation', {'studentProgram': student_program.id}) }}{% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+        {% block selection_actions %}
+            {% if not is_read_only() %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>

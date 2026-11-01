@@ -79,3 +79,5 @@ prompt.copy_confirm: |
     Si ya existían jornadas no coincidentes con el calendario origen, se mantendrán.
 
     Esta operación no se puede deshacer.
+
+filters.group: Grupo

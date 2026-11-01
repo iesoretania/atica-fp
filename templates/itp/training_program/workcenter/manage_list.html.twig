@@ -1,55 +1,7 @@
 {% trans_default_domain 'itp_student_program_workcenter' %}
-{% extends 'ui/list.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block new_action %}{% endblock %}
-
-{% block table_header %}
-    <th><label class="flex items-center gap-2"><input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600"> {{ 'header.student'|trans }}</label></th>
-    <th>{{ 'header.workcenter'|trans }}</th>
-    <th>{{ 'header.tutors'|trans }}</th>
-    <th>{{ 'header.date_range'|trans }}</th>
-    <th>{{ 'header.activities'|trans }}</th>
-    <th>{{ 'header.hours'|trans }}</th>
-    <th></th>
-{% endblock %}
-
-{% block table_body %}
-    {% for item in pager %}
-        {% set url = path('in_company_training_phase_student_program_workcenter_manage_edit', {'studentProgramWorkcenter': item.id}) %}
-        <tr class="clickable-row" data-href="{{ url }}">
-            <td class="align-top">
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable size-4 rounded border-gray-300 text-brand-600">
-                    <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.studentProgram.studentEnrollment.person.lastFirstName }} ({{ item.studentProgram.studentEnrollment.group }})</a>
-                </label>
-            </td>
-            <td class="align-top">{{ item.workcenter }}</td>
-            <td class="align-top">
-                <b>{{ 'header.educational_tutor'|trans }}: </b>{{ item.educationalTutor }}{% if item.additionalEducationalTutor %}, {{ item.additionalEducationalTutor }}{% endif %}
-                <br>
-                <b>{{ 'header.work_tutor'|trans }}</b>: {{ item.workTutor }}{% if item.additionalWorkTutor %}, {{ item.additionalWorkTutor }}{% endif %}
-            </td>
-            <td class="align-top whitespace-nowrap">
-                {% if item.startDate and item.endDate %}
-                    {{ item.startDate|date('format.date'|trans({}, 'general')) }} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}
-                {% endif %}
-            </td>
-            <td class="align-top">{{ stats[item.id].total_activities }}</td>
-            <td class="align-top">{{ (stats[item.id].total_hours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}</td>
-            <td class="text-right">{{ m.link_button(path('in_company_training_phase_student_program_workcenter_manage_calendar_list', {'studentProgramWorkcenter': item.id}), 'calendar-days', 'btn-info btn-sm', 'form.calendar'|trans) }}</td>
-        </tr>
-    {% else %}
-        <tr><td colspan="7" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
-    {% endfor %}
-{% endblock %}
-
-{% block form_action %}{{ path('in_company_training_phase_student_program_workcenter_manage_operation', {'programGrade': program_grade.id}) }}{% endblock %}
-
-{% block after_table %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {% if not is_read_only() %}
-        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans, true) }}
-        {{ m.submit_button('copy', 'copy', 'btn-info enable-on-items', 'form.copy_calendars'|trans, true) }}
-    {% endif %}
+{#- Listado dinámico (Live Component Itp:StudentProgramWorkcenterManageList) -#}
+{% block content %}
+    {% include 'ui/_live_list.html.twig' with {component: 'Itp:StudentProgramWorkcenterManageList', props: {programGrade: program_grade}} %}
 {% endblock %}

@@ -55,28 +55,6 @@ class StudentProgramWorkcenterController extends AbstractController
         $programGrade = $programGroup->getProgramGrade();
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
 
-        $q = $request->query->get('q');
-
-        /** @var Person $person */
-        $person = $this->getUser();
-
-        $queryBuilder = $studentProgramWorkcenterRepository->createByStudentProgramQueryBuilder(
-            $studentProgram,
-            $q
-        );
-
-        $stats = $studentProgramWorkcenterRepository->getActivityAndHoursStatsByStudentProgramAndFilter($studentProgram, $q);
-
-        $adapter = new QueryAdapter($queryBuilder, true);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'itp_student_program_workcenter')
             . ' - ' . $studentProgram->getStudentEnrollment()->getPerson()->__toString();
 
@@ -103,11 +81,8 @@ class StudentProgramWorkcenterController extends AbstractController
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
-            'domain' => 'itp_student_program',
+            'domain' => 'itp_student_program_workcenter',
             'student_program' => $studentProgram,
-            'stats' => $stats
         ]);
     }
 
