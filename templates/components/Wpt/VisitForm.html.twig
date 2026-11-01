@@ -15,7 +15,7 @@
                 {{ form_row(form.workcenter, {row_attr: {class: 'md:col-span-6'}}) }}
                 {{ form_row(form.agreements, {row_attr: {class: 'md:col-span-3'}}) }}
                 {{ form_row(form.studentEnrollments, {row_attr: {class: 'md:col-span-3'}}) }}
-                {{ form_row(form.detail, {row_attr: {class: 'md:col-span-6'}, attr: {rows: 5}}) }}
+                {{ form_row(form.detail, {row_attr: {class: 'md:col-span-6 @container min-w-0', 'data-live-ignore': ''}, attr: {rows: 5}}) }}
             </div>
             {{ form_rest(form) }}
         </div>

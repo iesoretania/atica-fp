@@ -26,13 +26,13 @@ use App\Entity\WptModule\Contact;
 use App\Form\Type\Edu\StudentEnrollmentChoiceType;
 use App\Repository\WorkcenterRepository as WorkcenterRepositoryAlias;
 use App\Repository\WptModule\AgreementRepository;
+use App\Form\Type\RichTextType;
 use App\Repository\WptModule\TeacherRepository as WptTeacherRepository;
 use App\Repository\WptModule\WorkcenterRepository as WptWorkcenterRepository;
 use App\Service\UserExtensionService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -146,7 +146,7 @@ class VisitType extends AbstractType
                 'placeholder' => 'form.student_enrollments.none',
                 'required' => false
             ])
-            ->add('detail', TextareaType::class, [
+            ->add('detail', RichTextType::class, [
                 'label' => 'form.detail',
                 'required' => false,
                 'attr' => ['rows' => 10]
