@@ -1,34 +1,37 @@
 {% trans_default_domain 'calendar' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+
 {% block content %}
     <form method="post">
         {% for item in items %}
             <input type="hidden" name="items[]" value="{{ item.id }}">
         {% endfor %}
         <input type="hidden" name="confirm" value="ok">
-        <div class="alert alert-warning">{{ 'prompt.attendance_confirm'|trans|nl2br }}</div>
-        <div id="table" class="col-md-12 table-responsive">
-            <table id="list" class="table table-bordered table-hover table-striped">
-                <thead>
+        <twig:Ui:Alert type="warning" :message="'prompt.attendance_confirm'|trans|nl2br" />
+        <div class="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+            <table id="list" class="w-full text-left text-sm">
+                <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500 [&_th]:px-4 [&_th]:py-3">
                     <tr>
                         <th>{{ 'header.date'|trans }}</th>
                         <th>{{ 'header.hours'|trans }}</th>
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-100 [&_td]:px-4 [&_td]:py-3">
                     {% for item in items %}
-                        <tr {% if item.locked %}class="bg-danger"{% endif %}>
+                        <tr{% if item.locked %} class="bg-red-50"{% endif %}>
                             <td>{{ item.date|date('format.date'|trans({}, 'general')) }}</td>
                             <td>{{ 'caption.hours'|trans({'count': item.hours}) }}</td>
-                            <td>{{ item.locked ? 'header.locked'|trans }}</td>
+                            <td class="text-red-700">{{ item.locked ? 'header.locked'|trans }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-        {{ m.submit_button('submit', 'user-slash', 'btn-danger', 'form.attendance_confirm'|trans) }}
+        {{ m.start_button() }}
+            {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+            {{ m.submit_button('submit', 'user-slash', 'btn-danger', 'form.attendance_confirm'|trans) }}
+        {{ m.end_button() }}
     </form>
 {% endblock %}

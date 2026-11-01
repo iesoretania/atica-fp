@@ -33,7 +33,9 @@
                                     {% set all_unlocked = true %}
                                     {% for n, dayData in week.days %}
                                         {% set day = dayData ? dayData[0] : null %}
-                                        {% set tracked_day = dayData ? (dayData[1] ?? null) : null %}
+                                        {#- en FCT, dayData[1] es la jornada de seguimiento; en otros módulos puede ser un número (actividades) -#}
+                                        {% set tracked_candidate = dayData ? (dayData[1] ?? null) : null %}
+                                        {% set tracked_day = (tracked_candidate is not null and tracked_candidate.locked is defined) ? tracked_candidate : null %}
                                         {% if day %}
                                             {% set workday_exists = true %}
                                             {#- bloqueada: la jornada de seguimiento (FCT) o la propia jornada (FFEOE) -#}
@@ -42,7 +44,7 @@
                                         {% block day %}
                                             <td class="{{ day ? 'bg-brand-50 text-brand-900' : 'text-gray-400' }}">
                                                 {% if day %}
-                                                    <b>{{ n }}</b><br>{{ 'caption.hours'|trans({'count': day.hours / 100}) }}
+                                                    <b>{{ n }}</b><br>{{ 'caption.hours'|trans({'count': day.hours / (hours_divisor|default(100))}) }}
                                                 {% elseif n > 0 %}
                                                     {{ n }}
                                                 {% endif %}

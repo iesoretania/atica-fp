@@ -1,9 +1,17 @@
 {% trans_default_domain 'wlt_tracking' %}
+{#- Barras de progreso de las actividades y de las horas; al pulsar cada una se despliega el detalle -#}
+{#- Cada tramo de la barra es solo color (el texto, en una leyenda debajo, no se recorta aunque el tramo sea pequeño) -#}
+{% macro bar_segment(percentage, color, title) %}
+    <div role="progressbar" aria-valuenow="{{ percentage|round }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ percentage }}%" title="{{ title }}" class="h-full {{ color }}"></div>
+{% endmacro %}
+{% macro legend_item(color, text) %}
+    <li class="inline-flex items-center gap-1.5"><span class="size-2.5 shrink-0 rounded-full {{ color }}" aria-hidden="true"></span>{{ text }}</li>
+{% endmacro %}
+
 {% set activity_realizations_total = activity_realizations|length %}
 {% set activity_realizations_worked = worked_activity_realizations|length %}
 {% if activity_realizations_total %}
     {% set activity_realizations_graded = 0 %}
-    {% set activity_realizations_disabled_ungraded = 0 %}
     {% for activity_realization in activity_realizations %}
         {% if activity_realization.grade is not null %}{% set activity_realizations_graded = activity_realizations_graded + 1 %}{% endif %}
         {% if activity_realization.disabled and activity_realization.grade is null %}
@@ -14,115 +22,116 @@
         {% endif %}
     {% endfor %}
     {% set activity_realizations_worked = activity_realizations_worked - activity_realizations_graded %}
-    {% set percentage = 100 * activity_realizations_graded / activity_realizations_total %}
-    {% set worked_percentage = 100 * activity_realizations_worked / activity_realizations_total %}
-    <div class="progress progress-stat collapse-zone" data-toggle="collapse" data-target="#activities_stats" aria-expanded="false"
-         title="{{ 'form.stats.activities_hint' | trans({'count' : activity_realizations_graded, 'total' :activity_realizations_total}) }}">
-        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{ percentage }}"
-             aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage }}%">
-            {{ 'form.stats.activities_bar' | trans({'count' : activity_realizations_graded, 'total' :activity_realizations_total}) }}
+    {% set percentage = activity_realizations_total ? 100 * activity_realizations_graded / activity_realizations_total : 0 %}
+    {% set worked_percentage = activity_realizations_total ? 100 * activity_realizations_worked / activity_realizations_total : 0 %}
+    <details class="mb-4 rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+        <summary class="cursor-pointer list-none p-3" title="{{ 'form.stats.activities_hint'|trans({'count': activity_realizations_graded, 'total': activity_realizations_total}) }}">
+            <div class="flex h-3 overflow-hidden rounded-full bg-gray-100">
+                {{ _self.bar_segment(percentage, 'bg-emerald-600', '') }}
+                {{ _self.bar_segment(worked_percentage, 'bg-brand-500', '') }}
+            </div>
+            <ul class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-700">
+                {{ _self.legend_item('bg-emerald-600', 'form.stats.activities_bar'|trans({'count': activity_realizations_graded, 'total': activity_realizations_total})) }}
+                {{ _self.legend_item('bg-brand-500', 'form.stats.activities_bar'|trans({'count': activity_realizations_worked, 'total': activity_realizations_total})) }}
+            </ul>
+        </summary>
+        <div class="border-t border-gray-100 p-4">
+            <h2 class="mb-2 text-sm font-semibold text-gray-900">{{ 'form.stats.activities'|trans }}: {{ 'form.stats.activities_hint'|trans({'count': activity_realizations_graded, 'total': activity_realizations_total}) }}</h2>
+            <table class="w-full text-left text-sm [&_td]:px-3 [&_td]:py-2 [&_tr]:border-b [&_tr]:border-gray-100">
+                <tbody>
+                    {% for item in activity_realizations %}
+                        <tr class="{% if item.grade %}bg-emerald-50{% elseif item.disabled %}bg-amber-50{% elseif item in worked_activity_realizations %}bg-brand-50{% endif %}">
+                            <td class="whitespace-nowrap">
+                                {% if item.grade %}
+                                    <span title="{{ 'form.stats.activity.graded_hint'|trans }}"><twig:Ui:Icon name="award" class="mr-1 inline size-3.5 text-gray-700" /></span>
+                                {% elseif item in worked_activity_realizations %}
+                                    <span title="{{ 'form.stats.activity.worked_hint'|trans }}"><twig:Ui:Icon name="check" class="mr-1 inline size-3.5 text-gray-700" /></span>
+                                {% else %}
+                                    <span title="{{ 'form.stats.activity.unworked_hint'|trans }}"><twig:Ui:Icon name="times" class="mr-1 inline size-3.5 text-gray-700" /></span>
+                                {% endif %}
+                                {% if item.disabled or item.grade %}
+                                    <span title="{{ 'form.stats.activity.locked_hint'|trans }}"><twig:Ui:Icon name="lock" class="mr-1 inline size-3.5 text-gray-700" /></span>
+                                {% endif %}
+                                {{ item.activityRealization.code }}
+                            </td>
+                            <td>{{ item.activityRealization.description }}</td>
+                            <td>
+                                {% if item.disabled and not item.grade %}
+                                    {{ 'table.activity_realization.graded.disabled'|trans }}
+                                {% elseif selectable and item in worked_activity_realizations %}
+                                    {{ item.grade ? item.grade : ('table.activity_realization.graded.no'|trans) }}
+                                {% elseif item in worked_activity_realizations %}
+                                    {{ (item.grade ? 'table.activity_realization.graded.yes' : 'table.activity_realization.graded.no')|trans }}
+                                {% elseif item.disabled %}
+                                    {{ 'table.activity_realization.graded.disabled'|trans }}
+                                {% else %}
+                                    {{ 'table.activity_realization.graded.pending'|trans }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <div class="progress-bar" role="progressbar" aria-valuenow="{{ worked_percentage }}"
-             aria-valuemin="0" aria-valuemax="100" style="width:{{ worked_percentage }}%">
-            {{ 'form.stats.activities_bar' | trans({'count' : activity_realizations_worked, 'total' :activity_realizations_total}) }}
-        </div>
-    </div>
-    <div class="collapse" id="activities_stats">
-        <h3>{{ 'form.stats.activities'|trans }}: {{ 'form.stats.activities_hint' | trans({'count' : activity_realizations_graded, 'total' :activity_realizations_total}) }}</h3>
-        <table class="table table-striped table-sm">
-            <tbody>
-            {% for item in activity_realizations %}
-                <tr {% if item.grade %} class="bg-success"{% elseif item.disabled %} class="bg-warning"{% elseif item in worked_activity_realizations %} class="bg-info"{% endif %}>
-                    <td>
-                        {% if item.grade %}
-                            <i class="fas fa-award text-dark fa-fw" title="{{ 'form.stats.activity.graded_hint'|trans }}"></i>
-                        {% elseif item in worked_activity_realizations %}
-                            <i class="fas fa-check text-dark fa-fw" title="{{ 'form.stats.activity.worked_hint'|trans }}"></i>
-                        {% else %}
-                            <i class="fas fa-times text-dark fa-fw" title="{{ 'form.stats.activity.unworked_hint'|trans }}"></i>
-                        {% endif %}
-                        {% if item.disabled or item.grade %}
-                            <i class="fas fa-lock text-dark fa-fw" title="{{ 'form.stats.activity.locked_hint'|trans }}"></i>
-                        {% else %}
-                            <i class="fas fa-space text-dark fa-fw""></i>
-                        {% endif %}
-                        {{ item.activityRealization.code }}
-                    </td>
-                    <td>{{ item.activityRealization.description }}</td>
-                    <td>
-                        {% if item.disabled and not item.grade %}
-                            {{ 'table.activity_realization.graded.disabled'|trans }}
-                        {% elseif selectable and item in worked_activity_realizations %}
-                            {{ item.grade ? item.grade : ('table.activity_realization.graded.no'|trans) }}
-                        {% elseif item in worked_activity_realizations %}
-                            {{ (item.grade ? 'table.activity_realization.graded.yes' : 'table.activity_realization.graded.no')|trans }}
-                        {% elseif item.disabled %}
-                            {{ 'table.activity_realization.graded.disabled'|trans }}
-                        {% else %}
-                            {{ 'table.activity_realization.graded.pending'|trans }}
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    </details>
 {% endif %}
+
 {% if work_day_stats and work_day_stats[1] %}
     {% set percentage_locked = 100 * work_day_stats[2] / work_day_stats[1] %}
     {% set percentage_absence = 100 * work_day_stats[3] / work_day_stats[1] %}
     {% set percentage_justified_absence = 100 * work_day_stats[4] / work_day_stats[1] %}
-    <div class="progress progress-stat collapse-zone" data-toggle="collapse" data-target="#hours_stats" aria-expanded="false">
-        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{ percentage_locked }}"
-             aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_locked }}%"
-             title="{{ 'form.stats.hours_locked_hint' | trans({'count' : work_day_stats[2]}) }}">
-            {{ 'form.stats.hours_bar' | trans({'count' : work_day_stats[2], 'total' :work_day_stats[1]}) }}
+    <details class="mb-4 rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+        <summary class="cursor-pointer list-none p-3">
+            <div class="flex h-3 overflow-hidden rounded-full bg-gray-100">
+                {{ _self.bar_segment(percentage_locked, 'bg-emerald-600', 'form.stats.hours_locked_hint'|trans({'count': work_day_stats[2]})) }}
+                {% if work_day_stats[4] %}
+                    {{ _self.bar_segment(percentage_justified_absence, 'bg-amber-500', 'form.stats.hours_justified_absence_hint'|trans({'count': work_day_stats[4]})) }}
+                {% endif %}
+                {% if work_day_stats[3] %}
+                    {{ _self.bar_segment(percentage_absence, 'bg-red-600', 'form.stats.hours_absence_hint'|trans({'count': work_day_stats[3]})) }}
+                {% endif %}
+            </div>
+            <ul class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-700">
+                {{ _self.legend_item('bg-emerald-600', 'form.stats.hours_bar'|trans({'count': work_day_stats[2], 'total': work_day_stats[1]})) }}
+                {% if work_day_stats[4] %}
+                    {{ _self.legend_item('bg-amber-500', 'form.stats.hours_justified_absence_hint'|trans({'count': work_day_stats[4]})) }}
+                {% endif %}
+                {% if work_day_stats[3] %}
+                    {{ _self.legend_item('bg-red-600', 'form.stats.hours_absence_hint'|trans({'count': work_day_stats[3]})) }}
+                {% endif %}
+            </ul>
+        </summary>
+        <div class="border-t border-gray-100 p-4">
+            <h2 class="mb-2 text-sm font-semibold text-gray-900">{{ 'form.stats.hours'|trans }}</h2>
+            <table class="w-full text-left text-sm [&_td]:px-3 [&_td]:py-2 [&_th]:px-3 [&_th]:py-2 [&_tr]:border-b [&_tr]:border-gray-100">
+                <tbody>
+                    <tr class="font-semibold">
+                        <th>{{ 'form.stats.hours.total.caption'|trans }}</th>
+                        <th>{{ 'form.stats.hours.total.days'|trans({'count': work_day_stats[6]}) }}</th>
+                        <th>{{ 'form.stats.hours.total.hours'|trans({'count': work_day_stats[1]}) }}</th>
+                    </tr>
+                    <tr>
+                        <td>{{ 'form.stats.hours.locked.caption'|trans }}</td>
+                        <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[10], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[10]/work_day_stats[6])|number_format }} %){% endif %}</td>
+                        <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[5], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[5]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'form.stats.hours.worked.caption'|trans }}</td>
+                        <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[7], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[7]/work_day_stats[6])|number_format }} %){% endif %}</td>
+                        <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[2], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[2]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'form.stats.hours.absence.caption'|trans }}</td>
+                        <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[8], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[8]/work_day_stats[6])|number_format }} %){% endif %}</td>
+                        <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[3], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[3]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'form.stats.hours.justified_absence.caption'|trans }}</td>
+                        <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[9], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[9]/work_day_stats[6])|number_format }} %){% endif %}</td>
+                        <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[4], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[4]/work_day_stats[1])|number_format }} %){% endif %}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        {% if work_day_stats[4] %}
-        <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="{{ percentage_justified_absence }}"
-             aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_justified_absence }}%"
-             title="{{ 'form.stats.hours_justified_absence_hint' | trans({'count' : work_day_stats[4]}) }}">
-            {{ 'form.stats.hours_bar' | trans({'count' : work_day_stats[4], 'total' :work_day_stats[1]}) }}
-        </div>
-        {% endif %}
-        {% if work_day_stats[3] %}
-        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="{{ percentage_absence }}"
-             aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage_absence }}%"
-             title="{{ 'form.stats.hours_absence_hint' | trans({'count' : work_day_stats[3]}) }}">
-            {{ 'form.stats.hours_bar' | trans({'count' : work_day_stats[3], 'total' :work_day_stats[1]}) }}
-        </div>
-        {% endif %}
-    </div>
-    <div class="collapse" id="hours_stats">
-        <h3>{{ 'form.stats.hours'|trans }}</h3>
-        <table class="table table-striped table-sm">
-            <tbody>
-                <tr>
-                    <th>{{ 'form.stats.hours.total.caption'|trans }}</th>
-                    <th>{{ 'form.stats.hours.total.days'|trans({'count': work_day_stats[6]}) }}</th>
-                    <th>{{ 'form.stats.hours.total.hours'|trans({'count': work_day_stats[1]}) }}</th>
-                </tr>
-                <tr>
-                    <td>{{ 'form.stats.hours.locked.caption'|trans }}</td>
-                    <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[10], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[10]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[5], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[5]/work_day_stats[1])|number_format }} %){% endif %}</td>
-                </tr>
-                <tr>
-                    <td>{{ 'form.stats.hours.worked.caption'|trans }}</td>
-                    <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[7], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[7]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[2], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[2]/work_day_stats[1])|number_format }} %){% endif %}</td>
-                </tr>
-                <tr>
-                    <td>{{ 'form.stats.hours.absence.caption'|trans }}</td>
-                    <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[8], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[8]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[3], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[3]/work_day_stats[1])|number_format }} %){% endif %}</td>
-                </tr>
-                <tr>
-                    <td>{{ 'form.stats.hours.justified_absence.caption'|trans }}</td>
-                    <td>{{ 'form.stats.hours.locked.days'|trans({'count': work_day_stats[9], 'total': work_day_stats[6]}) }}{% if work_day_stats[6] %} ({{ (100*work_day_stats[9]/work_day_stats[6])|number_format }} %){% endif %}</td>
-                    <td>{{ 'form.stats.hours.locked.hours'|trans({'count': work_day_stats[4], 'total': work_day_stats[1]}) }}{% if work_day_stats[1] %} ({{ (100*work_day_stats[4]/work_day_stats[1])|number_format }} %){% endif %}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    </details>
 {% endif %}

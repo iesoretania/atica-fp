@@ -1,17 +1,24 @@
 {% trans_default_domain 'calendar' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
-{% form_theme form _self %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
     {% if read_only %}
-        <div class="alert alert-warning">{{ 'prompt.read_only_warning'|trans|nl2br }}</div>
-    {% else %}
-        {% if work_day.locked %}
-            <div class="alert alert-warning">{{ 'prompt.locked_warning'|trans|nl2br }}</div>
-        {% endif %}
+        <twig:Ui:Alert type="warning" :message="'prompt.read_only_warning'|trans|nl2br" />
+    {% elseif work_day.locked %}
+        <twig:Ui:Alert type="warning" :message="'prompt.locked_warning'|trans|nl2br" />
     {% endif %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['activityRealizations'],
+        ['absence'],
+        ['locked'],
+        ['startTime1', 'endTime1', 'startTime2', 'endTime2'],
+        ['otherActivities'],
+        ['notes'],
+    ], {activityRealizations: {label: false}, otherActivities: {attr: {rows: 3}}, notes: {attr: {rows: 3}}}, 'card.title.tracking'|trans) }}
     {{ m.start_button() }}
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
@@ -25,26 +32,17 @@
     {{ form_end(form) }}
 {% endblock %}
 
+{# Flechas para pasar al día anterior o siguiente junto al título #}
 {% block content_title %}
-    {% if previous_work_day %}
-        <a href="{{ path('work_linked_training_tracking_calendar_form', {'id': previous_work_day.id}) }}" class="btn btn-sm btn-info" title="{{ 'form.previous_work_day'|trans }}"><i class="fas fa-angle-left"></i></a>
-    {% endif %}
-    {{ parent() }}
-    {% if next_work_day %}
-        <a href="{{ path('work_linked_training_tracking_calendar_form', {'id': next_work_day.id}) }}" class="btn btn-sm btn-info" title="{{ 'form.next_work_day'|trans }}"><i class="fas fa-angle-right"></i></a>
-    {% endif %}
-{% endblock %}
-
-{% block _work_day_tracking_activityRealizations_widget %}
-    <div {{ block('widget_container_attributes') }}>
-        {% for name, choices in form.vars.choices %}
-            <h5 class="checkbox-category">
-                {{ name }}
-            </h5>
-            {% for key, choice in choices %}
-                {{ form_widget(form[key], {translation_domain: false}) }}
-                {{ form_label(form[key]) }}
-            {% endfor %}
-        {% endfor %}
-    </div>
+    <span class="inline-flex items-center gap-3">
+        {% if previous_work_day %}
+            <a href="{{ path('work_linked_training_tracking_calendar_form', {'id': previous_work_day.id}) }}" title="{{ 'form.previous_work_day'|trans }}"
+               class="rounded-lg p-2 text-gray-500 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"><twig:Ui:Icon name="angle-left" /></a>
+        {% endif %}
+        {{ parent() }}
+        {% if next_work_day %}
+            <a href="{{ path('work_linked_training_tracking_calendar_form', {'id': next_work_day.id}) }}" title="{{ 'form.next_work_day'|trans }}"
+               class="rounded-lg p-2 text-gray-500 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"><twig:Ui:Icon name="angle-right" /></a>
+        {% endif %}
+    </span>
 {% endblock %}
