@@ -111,6 +111,17 @@ select:not([multiple]):not([size]):disabled { opacity: .7; }
 .rich-editor-container:focus-within { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
 .rich-editor-container.is-invalid { outline: 2px solid var(--color-red-500); outline-offset: -2px; }
 
+/* Opciones de una lista de tarjetas (radio) en una sola fila si caben (13rem como mínimo cada una) y, si no, todas en vertical.
+   El contenedor de referencia es la fila del campo (clase @container). Una regla por número de opciones. */
+.choice-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+@container (min-width: 27rem) { .choice-row-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container (min-width: 41rem) { .choice-row-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@container (min-width: 55rem) { .choice-row-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@container (min-width: 68rem) { .choice-row-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+@container (min-width: 82rem) { .choice-row-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+@container (min-width: 96rem) { .choice-row-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
+@container (min-width: 110rem) { .choice-row-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+
 @media print {
     .no-print { display: none !important; }
 }

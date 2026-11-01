@@ -92,6 +92,22 @@ class OrganizationSelectionTest extends AppWebTestCase
         self::assertStringContainsString(DemoData::ORG_B_NAME, (string) $this->client->getResponse()->getContent());
     }
 
+    public function testSidebarOffersTheOtherOrganizationsNextToTheCurrentName(): void
+    {
+        $this->login($this->getAdmin());
+        $alfa = $this->getOrganization(DemoData::ORG_A_CODE);
+        $beta = $this->getOrganization(DemoData::ORG_B_CODE);
+        $this->client->request('GET', '/organizacion/' . $alfa->getId());
+
+        // una página ya migrada al diseño nuevo (la de «Gestión del centro» aún usa el diseño antiguo)
+        $crawler = $this->client->request('GET', '/dual/proyecto/listar');
+        self::assertResponseIsSuccessful();
+
+        // el nombre del centro actual es el resumen de un desplegable con un enlace por centro
+        self::assertCount(1, $crawler->filter('aside details > summary:contains("' . DemoData::ORG_A_NAME . '")'));
+        self::assertGreaterThan(0, $crawler->filter('aside details a[href="/organizacion/' . $beta->getId() . '"]')->count());
+    }
+
     public function testSwitchingToAnUnknownOrganizationChangesNothing(): void
     {
         $this->signIn(DemoData::USER_A_TEACHER);

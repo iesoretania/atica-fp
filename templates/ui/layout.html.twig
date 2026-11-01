@@ -33,24 +33,25 @@
 
         {# Centro educativo actual y cambio de centro #}
         {% set organizations = user_extension.organizations(app.user) %}
-        <div class="shrink-0 border-b border-white/10 px-5 py-3">
-            <div class="flex items-center gap-2">
-                <twig:Ui:Icon name="building" class="size-4 shrink-0 text-brand-300" />
-                <p class="min-w-0 flex-1 truncate text-xs font-medium text-white" title="{{ user_extension.currentOrganization }}">{{ user_extension.currentOrganization }}</p>
-                {% if organizations|length > 8 %}
-                    <a href="{{ path('login_organization') }}" title="{{ 'user.organization'|trans }}" aria-label="{{ 'user.organization'|trans }}"
-                       class="shrink-0 rounded-md p-1 text-brand-300 transition-colors hover:bg-brand-800 hover:text-white">
-                        <twig:Ui:Icon name="right-left" class="size-3.5" />
-                    </a>
-                {% endif %}
-            </div>
-            {% if organizations|length > 1 and organizations|length <= 8 %}
-                <details class="group mt-2">
-                    <summary class="flex cursor-pointer list-none items-center gap-1.5 text-xs text-brand-300 hover:text-white">
-                        <twig:Ui:Icon name="right-left" class="size-3" />
-                        {{ 'user.organization'|trans }}
+        <div class="shrink-0 border-b border-white/10 px-3 py-2">
+            {% if organizations|length > 8 %}
+                {#- Muchos centros: el nombre lleva a la pantalla de selección -#}
+                <a href="{{ path('login_organization') }}" title="{{ 'user.organization'|trans }}" aria-label="{{ 'user.organization'|trans }}"
+                   class="flex items-center gap-2 rounded-lg px-2 py-2 transition-colors hover:bg-brand-900">
+                    <twig:Ui:Icon name="building" class="size-4 shrink-0 text-brand-300" />
+                    <span class="min-w-0 flex-1 truncate text-xs font-medium text-white" title="{{ user_extension.currentOrganization }}">{{ user_extension.currentOrganization }}</span>
+                    <twig:Ui:Icon name="chevron-down" class="size-3.5 shrink-0 text-brand-300" />
+                </a>
+            {% elseif organizations|length > 1 %}
+                {#- Pocos centros: el nombre despliega la lista para cambiar de centro -#}
+                <details class="group">
+                    <summary class="flex cursor-pointer list-none items-center gap-2 rounded-lg px-2 py-2 transition-colors hover:bg-brand-900 [&::-webkit-details-marker]:hidden"
+                             title="{{ 'user.organization'|trans }}" aria-label="{{ 'user.organization'|trans }}">
+                        <twig:Ui:Icon name="building" class="size-4 shrink-0 text-brand-300" />
+                        <span class="min-w-0 flex-1 truncate text-xs font-medium text-white" title="{{ user_extension.currentOrganization }}">{{ user_extension.currentOrganization }}</span>
+                        <twig:Ui:Icon name="chevron-down" class="size-3.5 shrink-0 text-brand-300 transition-transform group-open:rotate-180" />
                     </summary>
-                    <div class="mt-2 space-y-0.5">
+                    <div class="mt-1 space-y-0.5">
                         {% for organization in organizations %}
                             <a href="{{ path('switch_organization', {'id': organization.id}) }}"
                                class="flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-xs text-brand-100 hover:bg-brand-900 hover:text-white">
@@ -60,6 +61,11 @@
                         {% endfor %}
                     </div>
                 </details>
+            {% else %}
+                <div class="flex items-center gap-2 px-2 py-2">
+                    <twig:Ui:Icon name="building" class="size-4 shrink-0 text-brand-300" />
+                    <p class="min-w-0 flex-1 truncate text-xs font-medium text-white" title="{{ user_extension.currentOrganization }}">{{ user_extension.currentOrganization }}</p>
+                </div>
             {% endif %}
         </div>
 

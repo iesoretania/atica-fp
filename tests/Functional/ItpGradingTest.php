@@ -2,6 +2,7 @@
 
 namespace App\Tests\Functional;
 
+use App\Entity\Edu\PerformanceScaleValue;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Entity\ItpModule\StudentProgramWorkcenterActivity;
 use App\Entity\ItpModule\StudentProgramWorkcenterActivityComment;
@@ -69,6 +70,31 @@ class ItpGradingTest extends AppWebTestCase
 
         self::assertResponseRedirects();
         self::assertSame('Observaciones de ' . $username, $this->stayOf('alfa.alumno7')->getWorkTutorRemarks());
+    }
+
+    public function testEachGradeIsACardWithItsDescriptionAsHelpText(): void
+    {
+        $em = $this->em();
+        $stay = $this->stayOf('alfa.alumno7');
+        $scale = $stay->getStudentProgram()->getProgramGroup()->getProgramGrade()->getTrainingProgram()->getPerformanceScale();
+        $values = $em->getRepository(PerformanceScaleValue::class)->findBy(['performanceScale' => $scale->getId()]);
+        self::assertNotEmpty($values);
+        foreach ($values as $value) {
+            $value->setNotes('Descripción de ' . $value->getDescription());
+        }
+        $em->flush();
+
+        $this->login($this->getUser('alfa.profesor'));
+        $crawler = $this->client->request('GET', $this->gradingUrl());
+        self::assertResponseIsSuccessful();
+
+        // las opciones van en una fila (.choice-row) con título y descripción; ya no hay tabla de valoraciones al principio
+        self::assertGreaterThan(0, $crawler->filter('.choice-row')->count());
+        self::assertSame(0, $crawler->filter('main table')->count(), 'La información de la escala ya no se muestra en una tabla');
+        $content = (string) $this->client->getResponse()->getContent();
+        foreach ($values as $value) {
+            self::assertStringContainsString('Descripción de ' . $value->getDescription(), $content);
+        }
     }
 
     /**

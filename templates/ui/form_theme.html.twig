@@ -144,7 +144,9 @@
     {%- else -%}
         {%- set count = form|length -%}
         {#- Las columnas dependen del ancho de la fila (la fila es un «@container»): 1 si es estrecha, 2 y, con tres opciones, 3 si es ancha -#}
-        <div {{ block('widget_container_attributes') }} class="mt-2 grid grid-cols-1 gap-3 {{ count == 3 ? '@md:grid-cols-2 @2xl:grid-cols-3' : (count == 1 ? '' : '@md:grid-cols-2') }}">
+        {#- Con attr 'data-layout' => 'row' (p. ej. valoraciones) las opciones van todas en la misma línea si caben y, si no, todas en vertical (ver .choice-row en app.css) -#}
+        {%- set row_layout = (attr['data-layout'] ?? '') == 'row' -%}
+        <div {{ block('widget_container_attributes') }} class="mt-2 {{ row_layout ? 'choice-row choice-row-' ~ min(count, 8) : 'grid grid-cols-1 gap-3 ' ~ (count == 3 ? '@md:grid-cols-2 @2xl:grid-cols-3' : (count == 1 ? '' : '@md:grid-cols-2')) }}">
             {%- for child in form %}
                 {%- set child_label = child.vars.label is same as(false) ? '' : (child.vars.label ?: child.vars.name|humanize) -%}
                 {#- Explicación de la opción (texto gris): «choice_attr» 'data-description' o, por convención, la traducción de «<etiqueta>.help» -#}

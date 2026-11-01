@@ -69,6 +69,9 @@ class StudentProgramWorkcenterActivityType extends AbstractType
                     'disabled' => $data->isDisabled() ||
                         !in_array($data, $this->submittedAgreementActivityRealizations, true),
                     'expanded' => true,
+                    // título = valoración, texto de ayuda = su descripción; todas en una línea si caben
+                    'choice_attr' => static fn (PerformanceScaleValue $value): array => ['data-description' => (string) $value->getNotes()],
+                    'attr' => ['data-layout' => 'row'],
                     'label_attr' => ['class' => 'radio-inline'],
                     'placeholder' => $this->translator->trans(
                         'form.grade_none',
