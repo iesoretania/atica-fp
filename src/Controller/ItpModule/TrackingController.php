@@ -57,36 +57,10 @@ class TrackingController extends AbstractController
 
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_TRACKING, $organization);
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        $q = $request->query->get('q');
-        $person = $this->getUser();
-        assert($person instanceof Person);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $studentProgramWorkcenterRepository->createTrackingQueryBuilder(
-            $academicYear,
-            $person,
-            $isManager,
-            $q
-        );
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'itp_tracking');
 
         return $this->render('itp/tracking/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'itp_tracking',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)

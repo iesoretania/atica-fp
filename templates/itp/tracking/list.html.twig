@@ -1,60 +1,10 @@
 {% trans_default_domain 'itp_tracking' %}
-{% extends 'ui/list.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block new_action %}{% endblock %}
-
-{% block table_header %}
-    <th>{{ 'header.student'|trans }}</th>
-    <th>{{ 'header.workcenter'|trans }}</th>
-    <th>{{ 'header.educational_tutor'|trans }}</th>
-    <th>{{ 'header.work_tutor'|trans }}</th>
-    <th>{{ 'header.date_range'|trans }}</th>
-    <th>{{ 'header.hours'|trans }}</th>
-    <th>{{ 'header.attendance'|trans }}</th>
-{% endblock %}
-
-{% block table_body %}
-    {% for item in pager %}
-        {% set spw = item[0] %}
-        {% set url = path('in_company_training_phase_tracking_calendar_list', {'studentProgramWorkcenter': spw.id}) %}
-        <tr class="clickable-row" data-href="{{ url }}">
-            <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ spw.studentProgram.studentEnrollment }}</a></td>
-            <td>{{ spw.workcenter }}</td>
-            <td>{{ spw.educationalTutor }}</td>
-            <td>{{ spw.workTutor }}</td>
-            <td class="whitespace-nowrap">
-                {% if spw.startDate and spw.endDate %}
-                    {{ spw.startDate|date('format.date'|trans({}, 'general')) }} - {{ spw.endDate|date('format.date'|trans({}, 'general')) }}
-                {% endif %}
-            </td>
-            <td>{{ (item.hours / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}</td>
-            <td>
-                {% if item.hours %}
-                    {{ item.locked_hours / 100 }}/{{ 'table.hours'|trans({'count': item.hours / 100}) }} ({{ (item.locked_hours*100/item.hours) | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
-                    {% if item.absences != 0 %}
-                        - {{ 'table.absences'|trans({'count': item.absences}) }}
-                        {% if item.justified_absences != 0 %}
-                            - {{ 'table.justified_absences'|trans({'count': item.justified_absences}) }}
-                        {% endif %}
-                    {% endif %}
-                {% endif %}
-            </td>
-        </tr>
-    {% else %}
-        <tr><td colspan="7" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
-    {% endfor %}
-{% endblock %}
-
-{% block before_filter %}
-    {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: app.current_route} %}
-{% endblock %}
-
-{% block pagerfanta %}
-    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
-{% endblock %}
-
-{% block after_table %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {{ m.link_button(path('in_company_training_phase_tracking_export', {'academicYear': academic_year.id, 'q': q}), 'file-alt', 'btn-primary', 'form.export'|trans) }}
+{#- Listado dinámico (Live Component Itp:TrackingList); el selector de curso académico navega a otra página -#}
+{% block content %}
+    <div data-controller="list">
+        {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'in_company_training_phase_tracking_list'} %}
+    </div>
+    {% include 'ui/_live_list.html.twig' with {component: 'Itp:TrackingList', props: {academicYear: academic_year}} %}
 {% endblock %}

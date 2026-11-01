@@ -1,0 +1,58 @@
+{% trans_default_domain 'itp_tracking' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'itp_tracking', base_url: this.baseUrl, back_url: this.backUrl, academic_year: this.academicYear, q: this.q} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block new_action %}{% endblock %}
+
+        {% block table_header %}
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'student' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.student'|trans({}, domain), 'student', this.sort, this.dir) }}</th>
+            <th aria-sort="{{ this.sort == 'workcenter' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.workcenter'|trans({}, domain), 'workcenter', this.sort, this.dir) }}</th>
+            <th>{{ 'header.educational_tutor'|trans({}, domain) }}</th>
+            <th>{{ 'header.work_tutor'|trans({}, domain) }}</th>
+            <th aria-sort="{{ this.sort == 'start' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.date_range'|trans({}, domain), 'start', this.sort, this.dir) }}</th>
+            <th>{{ 'header.hours'|trans({}, domain) }}</th>
+            <th>{{ 'header.attendance'|trans({}, domain) }}</th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                {% set spw = item[0] %}
+                {% set url = path('in_company_training_phase_tracking_calendar_list', {'studentProgramWorkcenter': spw.id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ spw.studentProgram.studentEnrollment }}</a></td>
+                    <td>{{ spw.workcenter }}</td>
+                    <td>{{ spw.educationalTutor }}</td>
+                    <td>{{ spw.workTutor }}</td>
+                    <td class="whitespace-nowrap">
+                        {% if spw.startDate and spw.endDate %}
+                            {{ spw.startDate|date('format.date'|trans({}, 'general')) }} - {{ spw.endDate|date('format.date'|trans({}, 'general')) }}
+                        {% endif %}
+                    </td>
+                    <td>{{ (item.hours / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}</td>
+                    <td>
+                        {% if item.hours %}
+                            {{ item.locked_hours / 100 }}/{{ 'table.hours'|trans({'count': item.hours / 100}, domain) }} ({{ (item.locked_hours*100/item.hours)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} %)
+                            {% if item.absences != 0 %}
+                                - {{ 'table.absences'|trans({'count': item.absences}, domain) }}
+                                {% if item.justified_absences != 0 %}
+                                    - {{ 'table.justified_absences'|trans({'count': item.justified_absences}, domain) }}
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="7" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+            {{ m.link_button(path('in_company_training_phase_tracking_export', {'academicYear': academic_year.id, 'q': q}), 'file-alt', 'btn-primary', 'form.export'|trans({}, domain)) }}
+        {% endblock %}
+    {% endembed %}
+</div>
