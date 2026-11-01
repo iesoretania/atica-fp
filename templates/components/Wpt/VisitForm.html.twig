@@ -7,8 +7,9 @@
 <div {{ attributes.defaults({'data-loading': 'addClass(opacity-60)'}) }}>
     {{ form_start(form, {action: this.submitUrl, method: 'POST'}) }}
         {{ form_errors(form) }}
-        <div class="max-w-5xl rounded-xl bg-white p-5 shadow-xs ring-1 ring-gray-200 sm:p-6">
-            <div class="grid grid-cols-1 gap-x-6 gap-y-5 md:grid-cols-6">
+        <div class="max-w-5xl overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+            <h2 class="border-b border-gray-100 px-5 py-4 text-sm font-semibold text-gray-900 sm:px-6">{{ 'card.title'|trans }}</h2>
+            <div class="grid grid-cols-1 gap-x-6 gap-y-5 p-5 sm:p-6 md:grid-cols-6">
                 {{ form_row(form.dateTime, {row_attr: {class: 'md:col-span-3'}}) }}
                 {{ form_row(form.teacher, {row_attr: {class: 'md:col-span-3'}}) }}
                 {{ form_row(form.workcenter, {row_attr: {class: 'md:col-span-6'}}) }}

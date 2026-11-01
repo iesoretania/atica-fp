@@ -6,7 +6,7 @@
 
 {% block content %}
     {{ form_start(form) }}
-    {{ fl.grid(form, [['date', 'hours']]) }}
+    {{ fl.grid(form, [['date', 'hours']], {}, 'card.title.work_day'|trans) }}
     {{ m.start_button() }}
         {% if not read_only|default(false) %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}

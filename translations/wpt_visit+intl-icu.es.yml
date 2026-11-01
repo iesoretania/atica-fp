@@ -36,6 +36,10 @@ table.no_teachers: No hay profesorado que mostrar
 table.visit_report: Registro de visitas
 
 header.datetime: Fecha y hora
+
+card.title: Registro de la visita
+danger.title: "Peligro: eliminación de la visita"
+danger.text: Una vez eliminada la visita, no se podrá recuperar.
 header.teacher: Tutor/a docente
 header.workcenter: Centro de trabajo
 header.agreements: Acuerdos

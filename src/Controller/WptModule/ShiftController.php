@@ -152,6 +152,8 @@ class ShiftController extends AbstractController
             'breadcrumb' => $breadcrumb,
             'title' => $title,
             'read_only' => $readOnly,
+            'shift' => $shift,
+            'academic_year' => $academicYear,
             'form' => $form->createView()
         ]);
     }

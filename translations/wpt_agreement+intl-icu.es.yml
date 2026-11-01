@@ -63,6 +63,11 @@ table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único r
 table.no_items: No hay acuerdos que mostrar
 table.filter: Filtrar...
 
+card.title: Condiciones de la colaboración
+card.title.enrollment: Tutorías y programa formativo del alumno
+danger.title: "Peligro: eliminación del acuerdo"
+danger.text: Una vez eliminado el acuerdo, no se podrá recuperar.
+
 filter.all_projects: Todos las convocatorias
 
 header.name: Nombre del convenio

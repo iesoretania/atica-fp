@@ -72,6 +72,10 @@ form.calendar_add.skip_non_working.help: No se incluyen jornadas en los días no
 form.calendar_add.include_non_working: Incluir todos los días
 form.calendar_add.include_non_working.help: Se ignora si el día de la jornada es lectivo o no.
 
+card.title.work_day: Datos de la jornada
+card.title.add_work_days: Horario de las jornadas a añadir
+card.title.tracking: Seguimiento de la jornada
+
 form.date: Fecha
 form.hours: Horas
 form.r_hours: "{count, plural, one {1 hora} other {# horas}}"

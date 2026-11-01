@@ -11,7 +11,7 @@
         ['code', null, null],
         ['description'],
         ['criteria'],
-    ]) }}
+    ], {}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {% if not read_only %}
             {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
@@ -19,6 +19,9 @@
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+    {% if activity.id and is_granted('WPT_SHIFT_MODIFY', activity.shift) %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('workplace_training_activity_operation', {'shift': activity.shift.id}), activity.id) }}
+    {% endif %}
 {% endblock %}
 
 {#- Criterios agrupados por resultado de aprendizaje -#}

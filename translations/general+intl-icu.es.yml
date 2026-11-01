@@ -20,6 +20,7 @@ filters.range: "Mostrando {from}–{to} de {total}"
 filters.sort_by: "Ordenar por {column}"
 filters.sorted_asc: "{column}: orden ascendente"
 filters.sorted_desc: "{column}: orden descendente"
+danger.delete: Eliminar
 selection.count: "{count, plural, one {# seleccionado} other {# seleccionados}}"
 selection.none: Ninguno seleccionado
 selection.clear: Quitar la selección

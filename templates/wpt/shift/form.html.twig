@@ -15,7 +15,7 @@
         ['attendanceReportTemplate', 'weeklyActivityReportTemplate'],
         ['activitySummaryReportTemplate', 'finalReportTemplate'],
         ['studentSurvey', 'companySurvey', 'educationalTutorSurvey'],
-    ]) }}
+    ], {}, 'card.title'|trans) }}
     <div class="mt-6 flex flex-wrap gap-2">
         {% if not read_only %}
             <twig:Ui:Button type="submit" name="submit" icon="check" label="{{ 'form.save'|trans }}" />
@@ -23,4 +23,7 @@
         <twig:Ui:Button href="{{ last_url }}" variant="secondary" icon="arrow-left" label="{{ 'form.back'|trans }}" />
     </div>
     {{ form_end(form) }}
+    {% if shift.id and academic_year and is_granted('WPT_SHIFT_MODIFY', shift) %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('workplace_training_shift_operation', {'academicYear': academic_year.id}), shift.id) }}
+    {% endif %}
 {% endblock %}

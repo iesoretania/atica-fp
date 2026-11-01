@@ -11,7 +11,7 @@
         ['educationalTutor', 'additionalEducationalTutor'],
         ['workTutor', 'additionalWorkTutor'],
         ['activities'],
-    ]) }}
+    ], {}, 'card.title.enrollment'|trans) }}
     {{ m.start_button() }}
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}

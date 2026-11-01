@@ -1,7 +1,11 @@
 {% trans_default_domain 'wpt_visit' %}
 {% extends 'ui/layout.html.twig' %}
+{% import 'ui/form_layout.html.twig' as fl %}
 
 {#- Los campos que dependen de otros (docente → centro de trabajo → acuerdos → alumnado) los recalcula el Live Component Wpt:VisitForm -#}
 {% block content %}
     <twig:Wpt:VisitForm :contact="visit.id ? visit : null" :teacher="visit.id ? null : visit.teacher" :form="form" :backUrl="last_url" />
+    {% if visit.id and is_granted('WPT_VISIT_MANAGE', visit) %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('workplace_training_visit_operation', {'id': visit.teacher.id}), visit.id) }}
+    {% endif %}
 {% endblock %}

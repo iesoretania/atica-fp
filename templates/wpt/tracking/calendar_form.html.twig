@@ -18,7 +18,7 @@
         ['startTime1', 'endTime1', 'startTime2', 'endTime2'],
         ['otherActivities'],
         ['notes'],
-    ], {trackedActivities: {label: false}, otherActivities: {attr: {rows: 3}}, notes: {attr: {rows: 3}}}) }}
+    ], {trackedActivities: {label: false}, otherActivities: {attr: {rows: 3}}, notes: {attr: {rows: 3}}}, 'card.title.tracking'|trans) }}
     {{ m.start_button() }}
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}

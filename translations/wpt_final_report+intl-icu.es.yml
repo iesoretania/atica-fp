@@ -37,6 +37,8 @@ form.grade_positive.help: El estudiante ha alcanzado el nivel esperado.
 form.grade_excellent: Excelente
 form.grade_excellent.help: El estudiante ha superado con creces el nivel esperado.
 
+card.title: Valoración del tutor/a laboral
+
 title.agreement.list: Acuerdos de colaboración
 title.report.fill: Cumplimentación del informe del tutor/a laboral
 title.report: Informe del tutor laboral

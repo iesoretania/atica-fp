@@ -54,6 +54,10 @@ table.filter: Filtrar...
 
 table.no_criteria: No tiene, no saldrá en el programa formativo
 header.code: Código
+
+card.title: Descripción y criterios de evaluación
+danger.title: "Peligro: eliminación de la actividad"
+danger.text: Una vez eliminada la actividad, no se podrá recuperar.
 header.description: Descripción de la actividad
 header.criteria: Criterios de evaluación asociados
 

@@ -24,12 +24,15 @@
         ['educationalTutor', 'workTutor'],
         ['defaultStartTime1', 'defaultEndTime1', 'defaultStartTime2', 'defaultEndTime2'],
         ['studentEnrollments', 'activities'],
-    ]) }}
+    ], {}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+    {% if agreement.id and is_granted('WPT_AGREEMENT_MANAGE', agreement) %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('workplace_training_agreement_operation', {'shift': agreement.shift.id}), agreement.id) }}
+    {% endif %}
 
     {% include 'ui/new_person_modal.html.twig' %}
 {% endblock %}

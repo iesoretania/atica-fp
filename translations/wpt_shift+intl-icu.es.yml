@@ -30,6 +30,10 @@ form.locked.no.help: Se pueden realizar cambios en la convocatoria.
 form.locked.yes: Bloqueada
 form.locked.yes.help: Sólo el equipo directivo puede realizar cambios en la convocatoria.
 
+card.title: Configuración de la convocatoria
+danger.title: "Peligro: eliminación de la convocatoria"
+danger.text: Se eliminarán también sus acuerdos y su programa formativo. Una vez eliminada, no se podrá recuperar.
+
 form.save: Guardar cambios
 form.delete: Eliminar las convocatorias seleccionadas
 form.back: Volver

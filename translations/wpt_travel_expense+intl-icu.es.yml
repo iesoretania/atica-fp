@@ -39,6 +39,10 @@ header.travel_count: Desplazamientos
 header.travel_route: Itinerario
 header.distance: Distancia
 header.verified: ¿Verificado?
+
+card.title: Itinerario y gastos
+danger.title: "Peligro: eliminación del desplazamiento"
+danger.text: Una vez eliminado el desplazamiento, no se podrá recuperar.
 header.agreements: Acuerdos
 header.other_expenses: Otros gastos
 

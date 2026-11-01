@@ -12,12 +12,15 @@
         ['agreements'],
         ['otherExpenses', 'otherExpensesDescription'],
         ['description'],
-    ], {otherExpensesDescription: {attr: {rows: 3}}, description: {attr: {rows: 4}}}) }}
+    ], {otherExpensesDescription: {attr: {rows: 3}}, description: {attr: {rows: 4}}}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+    {% if travel_expense.id and is_granted('WPT_TRAVEL_EXPENSE_MANAGE', travel_expense) %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('workplace_training_travel_expense_operation', {'id': travel_expense.teacher.id}), travel_expense.id) }}
+    {% endif %}
 
     {% include 'ui/new_travel_route_modal.html.twig' %}
 {% endblock %}
