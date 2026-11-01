@@ -9,7 +9,13 @@
         {% block path_new %}{{ path('workplace_training_activity_new', {'shift': shift.id}) }}{% endblock %}
 
         {% block table_header %}
-            <th class="w-1/6"><label class="flex items-center gap-2"><input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600"> {{ 'header.code'|trans({}, domain) }}</label></th>
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th class="w-1/6" aria-sort="{{ this.sort == 'code' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600" aria-label="{{ 'selection.clear'|trans({}, 'general') }}">
+                    {{ lm.sort_button('header.code'|trans({}, domain), 'code', this.sort, this.dir) }}
+                </div>
+            </th>
             <th class="w-1/4">{{ 'header.description'|trans({}, domain) }}</th>
             <th>{{ 'header.criteria'|trans({}, domain) }}</th>
         {% endblock %}
@@ -17,7 +23,7 @@
         {% block table_body %}
             {% for item in pager %}
                 {% set url = path('workplace_training_activity_edit', {'id': item.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
+                <tr>
                     <td class="align-top">
                         <label class="flex items-center gap-2">
                             <input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable size-4 rounded border-gray-300 text-brand-600">
@@ -48,11 +54,15 @@
             {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
             {# con la convocatoria bloqueada el programa formativo solo se consulta #}
             {% if is_granted('WPT_SHIFT_MODIFY', shift) %}
-                {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}
                 {{ m.link_button(path('workplace_training_activity_copy', {'id': shift.id}), 'copy', 'btn-primary', 'form.copy'|trans({}, domain)) }}
                 {% if is_granted(constant('App\\Security\\WltModule\\OrganizationVoter::WLT_MANAGER'), user_extension.currentOrganization) %}
                     {{ m.link_button(path('workplace_training_activity_worklinked_copy', {'id': shift.id}), 'copy', 'btn-primary', 'form.copy_wlt'|trans({}, domain)) }}
                 {% endif %}
+            {% endif %}
+        {% endblock %}
+        {% block selection_actions %}
+            {% if is_granted('WPT_SHIFT_MODIFY', shift) %}
+                {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

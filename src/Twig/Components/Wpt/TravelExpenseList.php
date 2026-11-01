@@ -36,6 +36,24 @@ final class TravelExpenseList extends AbstractListComponent
         }
     }
 
+    public function filterDefinitions(): array
+    {
+        return [
+            'verified' => [
+                'type' => 'select',
+                'label' => $this->translator->trans('header.verified', [], 'wpt_travel_expense'),
+                'choices' => ['1' => $this->translator->trans('filters.yes', [], 'general'), '0' => $this->translator->trans('filters.no', [], 'general')],
+            ],
+            'from' => ['type' => 'date', 'label' => $this->translator->trans('filters.date_from', [], 'general')],
+            'to' => ['type' => 'date', 'label' => $this->translator->trans('filters.date_to', [], 'general')],
+        ];
+    }
+
+    protected function sortableColumns(): array
+    {
+        return ['route' => 'tr.description', 'distance' => 'tr.distance', 'date' => 'te.fromDateTime'];
+    }
+
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()
@@ -54,6 +72,16 @@ final class TravelExpenseList extends AbstractListComponent
                 ->orWhere('a.name LIKE :tq')
                 ->orWhere('tr.description LIKE :tq')
                 ->setParameter('tq', '%' . $this->q . '%');
+        }
+
+        if (($verified = $this->filter('verified')) !== '') {
+            $queryBuilder->andWhere('tr.verified = :filter_verified')->setParameter('filter_verified', $verified === '1');
+        }
+        if (($from = $this->filter('from')) !== '') {
+            $queryBuilder->andWhere('te.fromDateTime >= :filter_from')->setParameter('filter_from', new \DateTime($from . ' 00:00:00'));
+        }
+        if (($to = $this->filter('to')) !== '') {
+            $queryBuilder->andWhere('te.fromDateTime < :filter_to')->setParameter('filter_to', (new \DateTime($to . ' 00:00:00'))->modify('+1 day'));
         }
 
         return $queryBuilder

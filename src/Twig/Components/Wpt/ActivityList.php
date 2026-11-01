@@ -31,6 +31,11 @@ final class ActivityList extends AbstractListComponent
         }
     }
 
+    protected function sortableColumns(): array
+    {
+        return ['code' => 'a.code'];
+    }
+
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()

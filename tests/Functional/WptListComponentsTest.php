@@ -106,7 +106,9 @@ class WptListComponentsTest extends AppWebTestCase
         $this->update($component, ['q' => 'zzzz-no-existe']);
         self::assertResponseIsSuccessful("$name: filtro");
         self::assertStringContainsString('id="search"', (string) $this->client->getResponse()->getContent());
-        self::assertSame(0, substr_count((string) $this->client->getResponse()->getContent(), 'data-href="'), "$name: el filtro sin coincidencias no deja filas");
+        $rows = (new Crawler((string) $this->client->getResponse()->getContent()))->filter('#list tbody tr');
+        self::assertCount(1, $rows, "$name: el filtro sin coincidencias solo deja la fila de «no hay resultados»");
+        self::assertCount(1, $rows->filter('td[colspan]'), "$name: la única fila es la de «no hay resultados»");
 
         $this->update($component, ['q' => '', 'page' => 99]);
         self::assertResponseIsSuccessful("$name: página fuera de rango");
@@ -155,6 +157,35 @@ class WptListComponentsTest extends AppWebTestCase
         self::assertResponseIsSuccessful();
         self::assertStringContainsString('data-live-action-param="clearFilter"', (string) $this->client->getResponse()->getContent());
         self::assertNotEmpty($this->firstColumn());
+    }
+
+    /**
+     * @return iterable<string, array{string, string, array<string, string>}>
+     */
+    public static function filteredListProvider(): iterable
+    {
+        yield 'visitas por fechas' => ['Wpt:VisitList', '/fct/visita/{teacher}/listar', ['from' => '2020-01-01', 'to' => '2099-12-31']];
+        yield 'desplazamientos por fechas y verificación' => ['Wpt:TravelExpenseList', '/fct/desplazamiento/{teacher}/listar', ['from' => '2020-01-01', 'to' => '2099-12-31', 'verified' => '0']];
+        yield 'convocatorias bloqueadas' => ['Wpt:ShiftList', '/fct/convocatoria/listar/{year}', ['locked' => '0']];
+        yield 'acuerdos por centro de trabajo' => ['Wpt:AgreementList', '/fct/acuerdo/{shift}/listar', ['workcenter' => '1']];
+    }
+
+    /**
+     * @dataProvider filteredListProvider
+     * @param array<string, string> $filters
+     */
+    public function testCustomFiltersAcceptValidValuesAndIgnoreInvalidOnes(string $name, string $template, array $filters): void
+    {
+        $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
+        $component = $this->component($name, $this->path($template));
+
+        $this->update($component, ['filters' => $filters]);
+        self::assertResponseIsSuccessful("$name: filtros válidos");
+
+        // fechas que no lo son y opciones inexistentes se ignoran sin error
+        $garbage = array_map(static fn (string $v): string => "'; DROP TABLE person; --", $filters);
+        $this->update($component, ['filters' => $garbage]);
+        self::assertResponseIsSuccessful("$name: filtros inválidos");
     }
 
     /**

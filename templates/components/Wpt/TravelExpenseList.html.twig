@@ -10,9 +10,15 @@
 
         {#- Los bloques de un embed no heredan trans_default_domain: se indica el dominio en cada traducción -#}
         {% block table_header %}
-            <th><label class="flex items-center gap-2"><input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600"> {{ 'header.travel_route'|trans({}, domain) }}</label></th>
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'route' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600" aria-label="{{ 'selection.clear'|trans({}, 'general') }}">
+                    {{ lm.sort_button('header.travel_route'|trans({}, domain), 'route', this.sort, this.dir) }}
+                </div>
+            </th>
             <th>{{ 'header.agreements'|trans({}, domain) }}</th>
-            <th>{{ 'header.distance'|trans({}, domain) }}</th>
+            {{ lm.sort_th('header.distance'|trans({}, domain), 'distance', this.sort, this.dir) }}
             <th>{{ 'header.other_expenses'|trans({}, domain) }}</th>
             <th>{{ 'header.verified'|trans({}, domain) }}</th>
         {% endblock %}
@@ -22,7 +28,7 @@
                 {% set item = data[0] %}
                 {% set url = path('workplace_training_travel_expense_edit', {'id': item.id}) %}
                 {% set row_read_only = not is_granted('WPT_TRAVEL_EXPENSE_MANAGE', item) %}
-                <tr class="clickable-row" data-href="{{ url }}">
+                <tr>
                     <td>
                         <label class="flex items-center gap-2">
                             <input type="checkbox" name="items[]" value="{{ item.id }}" class="size-4 rounded border-gray-300 text-brand-600{% if not row_read_only %} selectable{% endif %}"{% if row_read_only %} disabled{% endif %}>
@@ -43,6 +49,8 @@
 
         {% block after_table %}
             {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+        {% block selection_actions %}
             {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}
         {% endblock %}
     {% endembed %}

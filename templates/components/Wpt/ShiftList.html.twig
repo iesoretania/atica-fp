@@ -8,10 +8,16 @@
 
         {#- Los bloques de un embed no heredan trans_default_domain: se indica el dominio en cada traducción -#}
         {% block table_header %}
-            <th><label class="flex items-center gap-2"><input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600"> {{ 'header.name'|trans({}, domain) }}</label></th>
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'name' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600" aria-label="{{ 'selection.clear'|trans({}, 'general') }}">
+                    {{ lm.sort_button('header.name'|trans({}, domain), 'name', this.sort, this.dir) }}
+                </div>
+            </th>
             <th>{{ 'header.groups'|trans({}, domain) }}</th>
             <th>{{ 'header.type'|trans({}, domain) }}</th>
-            <th class="text-right">{{ 'header.hours'|trans({}, domain) }}</th>
+            {{ lm.sort_th('header.hours'|trans({}, domain), 'hours', this.sort, this.dir, 'text-right') }}
             <th class="text-right">{{ 'header.agreements'|trans({}, domain) }}</th>
             <th colspan="2"></th>
         {% endblock %}
@@ -19,7 +25,7 @@
         {% block table_body %}
             {% for item in pager %}
                 {% set url = path('workplace_training_shift_edit', {'id': item.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
+                <tr>
                     <td>
                         <label class="flex items-center gap-2">
                             <input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable size-4 rounded border-gray-300 text-brand-600">
@@ -49,6 +55,8 @@
 
         {% block after_table %}
             <twig:Ui:Button href="{{ back_url }}" variant="secondary" icon="arrow-left" label="{{ 'form.back'|trans({}, domain) }}" />
+        {% endblock %}
+        {% block selection_actions %}
             <twig:Ui:Button type="submit" name="delete" variant="danger" icon="trash" data-list-target="needsSelection" disabled label="{{ 'form.delete'|trans({}, domain) }}" />
         {% endblock %}
     {% endembed %}

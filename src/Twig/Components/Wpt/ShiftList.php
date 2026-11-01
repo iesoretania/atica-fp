@@ -21,6 +21,22 @@ final class ShiftList extends AbstractListComponent
         $this->denyUnlessAcademicYearIsCurrentOrganizations();
     }
 
+    public function filterDefinitions(): array
+    {
+        return [
+            'locked' => [
+                'type' => 'select',
+                'label' => $this->translator->trans('header.locked', [], 'wpt_shift'),
+                'choices' => ['1' => $this->translator->trans('filters.yes', [], 'general'), '0' => $this->translator->trans('filters.no', [], 'general')],
+            ],
+        ];
+    }
+
+    protected function sortableColumns(): array
+    {
+        return ['name' => 's.name', 'hours' => 's.hours'];
+    }
+
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()
@@ -48,6 +64,10 @@ final class ShiftList extends AbstractListComponent
             $queryBuilder
                 ->andWhere('d.head IS NOT NULL AND h.person = :manager')
                 ->setParameter('manager', $this->security->getUser());
+        }
+
+        if (($locked = $this->filter('locked')) !== '') {
+            $queryBuilder->andWhere('s.locked = :filter_locked')->setParameter('filter_locked', $locked === '1');
         }
 
         return $queryBuilder

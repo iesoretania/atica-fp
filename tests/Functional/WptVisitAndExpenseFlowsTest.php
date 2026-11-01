@@ -80,8 +80,9 @@ class WptVisitAndExpenseFlowsTest extends AppWebTestCase
         $this->client->request('GET', "$base/$teacher/listar/1", ['q' => 'zzzz-no-existe']);
         $none = (string) $this->client->getResponse()->getContent();
 
-        self::assertGreaterThan(0, substr_count($all, 'data-href="'), 'Sin filtro se ve el registro de las fixtures');
-        self::assertSame(0, substr_count($none, 'data-href="'), 'La búsqueda sin coincidencias oculta el registro');
+        // cada fila lleva su casilla de selección (name="items[]")
+        self::assertGreaterThan(0, substr_count($all, 'name="items[]"'), 'Sin filtro se ve el registro de las fixtures');
+        self::assertSame(0, substr_count($none, 'name="items[]"'), 'La búsqueda sin coincidencias oculta el registro');
     }
 
     /**

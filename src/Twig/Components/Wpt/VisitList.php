@@ -34,6 +34,19 @@ final class VisitList extends AbstractListComponent
         $this->denyUnlessGranted(VisitVoter::ACCESS, $visit);
     }
 
+    public function filterDefinitions(): array
+    {
+        return [
+            'from' => ['type' => 'date', 'label' => $this->translator->trans('filters.date_from', [], 'general')],
+            'to' => ['type' => 'date', 'label' => $this->translator->trans('filters.date_to', [], 'general')],
+        ];
+    }
+
+    protected function sortableColumns(): array
+    {
+        return ['datetime' => 'v.dateTime'];
+    }
+
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()
@@ -58,6 +71,13 @@ final class VisitList extends AbstractListComponent
                 ->orWhere('c.name LIKE :tq')
                 ->orWhere('(sep.firstName IS NOT NULL AND (sep.firstName LIKE :tq OR sep.lastName LIKE :tq))')
                 ->setParameter('tq', '%' . $this->q . '%');
+        }
+
+        if (($from = $this->filter('from')) !== '') {
+            $queryBuilder->andWhere('v.dateTime >= :filter_from')->setParameter('filter_from', new \DateTime($from . ' 00:00:00'));
+        }
+        if (($to = $this->filter('to')) !== '') {
+            $queryBuilder->andWhere('v.dateTime < :filter_to')->setParameter('filter_to', (new \DateTime($to . ' 00:00:00'))->modify('+1 day'));
         }
 
         return $queryBuilder

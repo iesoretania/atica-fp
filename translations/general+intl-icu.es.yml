@@ -11,6 +11,10 @@ format.thousand_separator: "."
 filters.clear: Quitar filtros
 filters.clear_one: "Quitar el filtro «{filter}»"
 filters.any: Todos
+filters.yes: Sí
+filters.no: No
+filters.date_from: Desde
+filters.date_to: Hasta
 filters.none_match: No hay resultados con estos filtros.
 filters.range: "Mostrando {from}–{to} de {total}"
 filters.sort_by: "Ordenar por {column}"
