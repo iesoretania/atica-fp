@@ -59,6 +59,17 @@ summary:focus-visible {
     outline-offset: 2px;
 }
 
+/* Desplegables nativos: chevron propio con margen respecto al borde (el del navegador queda pegado a él) */
+select:not([multiple]):not([size]) {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.6' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.875rem center;
+    background-size: 1.1rem;
+    padding-right: 2.5rem;
+}
+select:not([multiple]):not([size]):disabled { opacity: .7; }
+
 /* Tom Select (selectores con búsqueda): estilo propio con la paleta de la aplicación */
 .ts-wrapper { position: relative; margin-top: 0.25rem; }
 .ts-control {

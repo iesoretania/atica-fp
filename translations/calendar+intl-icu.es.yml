@@ -52,6 +52,26 @@ form.locked: Bloqueo
 form.locked.no: Se pueden realizar cambios en la jornada
 form.locked.yes: La jornada está bloqueada y no se pueden realizar cambios
 
+# Opciones de los formularios de FCT: título corto y, en «<clave>.help», la explicación que se muestra en gris bajo él
+form.attendance.present: Asistencia
+form.attendance.present.help: El estudiante ha acudido al centro de trabajo.
+form.attendance.unjustified: Falta injustificada
+form.attendance.unjustified.help: El estudiante no ha acudido al centro de trabajo y la ausencia no está justificada.
+form.attendance.justified: Falta justificada
+form.attendance.justified.help: El estudiante no ha acudido al centro de trabajo, pero la ausencia está justificada.
+form.day_lock.open: Abierta
+form.day_lock.open.help: Se pueden realizar cambios en la jornada.
+form.day_lock.closed: Bloqueada
+form.day_lock.closed.help: La jornada está bloqueada y no se pueden realizar cambios.
+form.calendar_add.overwrite: Sobrescribir
+form.calendar_add.overwrite.help: Se sustituyen las horas de las jornadas que ya existen en el calendario.
+form.calendar_add.sum: Sumar
+form.calendar_add.sum.help: Las horas nuevas se suman a las que ya tienen las jornadas existentes.
+form.calendar_add.skip_non_working: Respetar los días no lectivos
+form.calendar_add.skip_non_working.help: No se incluyen jornadas en los días no lectivos.
+form.calendar_add.include_non_working: Incluir todos los días
+form.calendar_add.include_non_working.help: Se ignora si el día de la jornada es lectivo o no.
+
 form.date: Fecha
 form.hours: Horas
 form.r_hours: "{count, plural, one {1 hora} other {# horas}}"

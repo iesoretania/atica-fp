@@ -58,7 +58,8 @@
 {%- endblock form_errors -%}
 
 {#- Listas expandidas. Selección única (radio): tarjetas seleccionables, con una descripción opcional bajo la etiqueta
-    (opción «choice_attr» del campo: 'data-description' => 'texto o clave de traducción'). Selección múltiple (casillas): lista simple.
+    (por convención, la traducción de «<etiqueta de la opción>.help» en el mismo dominio; o la opción «choice_attr» del campo:
+    'data-description' => 'texto o clave de traducción'). Selección múltiple (casillas): lista simple.
     form_label() no dibuja nada para los hijos de una lista expandida en el tema Tailwind de Symfony; la etiqueta se pinta a mano. -#}
 {%- block choice_widget_expanded -%}
     {%- if multiple -%}
@@ -79,7 +80,17 @@
         <div {{ block('widget_container_attributes') }} class="mt-2 grid grid-cols-1 gap-3 {{ count == 3 ? '@md:grid-cols-2 @2xl:grid-cols-3' : (count == 1 ? '' : '@md:grid-cols-2') }}">
             {%- for child in form %}
                 {%- set child_label = child.vars.label is same as(false) ? '' : (child.vars.label ?: child.vars.name|humanize) -%}
+                {#- Explicación de la opción (texto gris): «choice_attr» 'data-description' o, por convención, la traducción de «<etiqueta>.help» -#}
                 {%- set description = child.vars.attr['data-description'] ?? null -%}
+                {%- set description_translated = false -%}
+                {%- if description is null and child.vars.translation_domain is not same as(false) and child.vars.label is not iterable and child.vars.label is not same as(false) and child.vars.label is not empty -%}
+                    {%- set help_key = child.vars.label ~ '.help' -%}
+                    {%- set help_text = help_key|trans(child.vars.label_translation_parameters|default({}), child.vars.translation_domain) -%}
+                    {%- if help_text != help_key -%}
+                        {%- set description = help_text -%}
+                        {%- set description_translated = true -%}
+                    {%- endif -%}
+                {%- endif -%}
                 <label for="{{ child.vars.id }}"
                        class="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 bg-white p-4 text-sm transition hover:border-gray-300 has-checked:border-brand-500 has-checked:bg-brand-50 has-focus-visible:ring-2 has-focus-visible:ring-brand-500 has-disabled:cursor-not-allowed has-disabled:opacity-60">
                     <span class="mt-0.5">{{- form_widget(child) -}}</span>
@@ -89,7 +100,7 @@
                         </span>
                         {%- if description %}
                             <span class="mt-0.5 block text-gray-500">
-                                {{- child.vars.translation_domain is same as(false) ? description : description|trans({}, child.vars.translation_domain) -}}
+                                {{- (description_translated or child.vars.translation_domain is same as(false)) ? description : description|trans({}, child.vars.translation_domain) -}}
                             </span>
                         {% endif -%}
                     </span>
