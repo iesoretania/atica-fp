@@ -17,6 +17,21 @@
     {{- parent() -}}
 {%- endblock widget_attributes -%}
 
+{#- Fecha y hora (dos campos «single_text») en la misma línea en vez de apilados -#}
+{%- block datetime_widget -%}
+    {%- if widget == 'single_text' -%}
+        {{- block('form_widget_simple') -}}
+    {%- else -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' grid grid-cols-2 gap-3')|trim}) -%}
+        <div {{ block('widget_container_attributes') }}>
+            {{- form_errors(form.date) -}}
+            {{- form_errors(form.time) -}}
+            {{- form_widget(form.date) -}}
+            {{- form_widget(form.time) -}}
+        </div>
+    {%- endif -%}
+{%- endblock datetime_widget -%}
+
 {%- block form_label -%}
     {%- set label_attr = label_attr|merge({class: label_attr.class|default('block text-sm font-medium text-gray-700')}) -%}
     {{- parent() -}}

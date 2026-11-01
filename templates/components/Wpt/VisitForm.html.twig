@@ -2,13 +2,25 @@
 {% import 'ui/macros.html.twig' as m %}
 {% form_theme form 'ui/form_theme.html.twig' %}
 {#- Formulario de visita (Live Component). Al cambiar un campo, el servidor recalcula los campos que dependen de él (docente → centro → acuerdos → alumnado).
-    El guardado es un envío normal del formulario al controlador (action). -#}
+    El guardado es un envío normal del formulario al controlador (action). La disposición es una rejilla de 6 columnas:
+    cada fila de Symfony (form_row) indica su anchura con row_attr (col-span). -#}
 <div {{ attributes.defaults({'data-loading': 'addClass(opacity-60)'}) }}>
     {{ form_start(form, {action: this.submitUrl, method: 'POST'}) }}
-        {{ form_widget(form) }}
+        {{ form_errors(form) }}
+        <div class="max-w-5xl rounded-xl bg-white p-5 shadow-xs ring-1 ring-gray-200 sm:p-6">
+            <div class="grid grid-cols-1 gap-x-6 gap-y-5 md:grid-cols-6">
+                {{ form_row(form.dateTime, {row_attr: {class: 'md:col-span-3'}}) }}
+                {{ form_row(form.teacher, {row_attr: {class: 'md:col-span-3'}}) }}
+                {{ form_row(form.workcenter, {row_attr: {class: 'md:col-span-6'}}) }}
+                {{ form_row(form.agreements, {row_attr: {class: 'md:col-span-3'}}) }}
+                {{ form_row(form.studentEnrollments, {row_attr: {class: 'md:col-span-3'}}) }}
+                {{ form_row(form.detail, {row_attr: {class: 'md:col-span-6'}, attr: {rows: 5}}) }}
+            </div>
+            {{ form_rest(form) }}
+        </div>
         {{ m.start_button() }}
             {% if not this.readOnly %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
             {{ m.link_button(this.backUrl, 'arrow-left', 'btn-info', 'form.back'|trans) }}
         {{ m.end_button() }}
-    {{ form_end(form) }}
+    {{ form_end(form, {render_rest: false}) }}
 </div>
