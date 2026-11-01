@@ -68,39 +68,10 @@ class TrainingProgramController extends AbstractController
 
         $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
 
-        $q = $request->query->get('q');
-
-        /** @var Person $person */
-        $person = $this->getUser();
-        $teacher = $teacherRepository->findOneByAcademicYearAndPerson($academicYear, $person);
-
-        // Precargar grupos y niveles de los programas formativos del curso académico
-        $groupRepository->findByAcademicYear($academicYear);
-
-        $queryBuilder = $trainingProgramRepository->createProgramRepositoryQueryBuilder(
-            $academicYear,
-            $isManager,
-            $person,
-            $teacher,
-            $q
-        );
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'itp_training_program');
 
         return $this->render('itp/training_program/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'itp_training_program',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)

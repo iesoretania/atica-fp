@@ -1,42 +1,7 @@
 {% trans_default_domain 'itp_company' %}
-{% extends 'ui/list.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block path_new %}{{ path('in_company_training_phase_company_new', {'programGrade': program_grade.id}) }}{% endblock %}
-
-{% block table_header %}
-    <th><label class="flex items-center gap-2"><input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600"> {{ 'header.code'|trans }}</label></th>
-    <th>{{ 'header.name'|trans }}</th>
-    <th>{{ 'header.agreement_number'|trans }}</th>
-    <th>{{ 'header.activities'|trans }}</th>
-    <th>{{ 'header.learning_outcomes'|trans }}</th>
-    <th>{{ 'header.criteria'|trans }}</th>
-{% endblock %}
-
-{% block table_body %}
-    {% for item in pager %}
-        {% set url = path('in_company_training_phase_company_edit', {'id': item.id}) %}
-        <tr class="clickable-row" data-href="{{ url }}">
-            <td>
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable size-4 rounded border-gray-300 text-brand-600">
-                    <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.company.code }}</a>
-                </label>
-            </td>
-            <td>{{ item.company.name }}</td>
-            <td>{{ item.agreementNumber }}</td>
-            <td>{{ stats[item.id].activity_count }}</td>
-            <td>{{ stats[item.id].learning_outcome_count }}</td>
-            <td>{{ stats[item.id].criteria_count }}</td>
-        </tr>
-    {% else %}
-        <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
-    {% endfor %}
-{% endblock %}
-
-{% block form_action %}{{ path('in_company_training_phase_company_operation', {'programGrade': program_grade.id}) }}{% endblock %}
-
-{% block after_table %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {% if not is_read_only() %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans, true) }}{% endif %}
+{#- Listado dinámico (Live Component Itp:CompanyList) -#}
+{% block content %}
+    {% include 'ui/_live_list.html.twig' with {component: 'Itp:CompanyList', props: {programGrade: program_grade}} %}
 {% endblock %}

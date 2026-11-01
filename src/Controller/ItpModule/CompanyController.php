@@ -53,28 +53,6 @@ class CompanyController extends AbstractController
         assert($programGrade instanceof ProgramGrade);
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
 
-        $q = $request->query->get('q');
-
-        /** @var Person $person */
-        $person = $this->getUser();
-
-        $queryBuilder = $companyProgramRepository->createByProgramGradeQueryBuilder(
-            $programGrade,
-            $q
-        );
-
-        $adapter = new QueryAdapter($queryBuilder, true);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
-        $stats = $companyProgramRepository->getCompanyProgramStats($programGrade);
-
         $title = $translator->trans('title.list', [], 'itp_company')
             . ' - ' . $programGrade->getGrade()->__toString();
 
@@ -92,11 +70,8 @@ class CompanyController extends AbstractController
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'itp_company',
             'program_grade' => $programGrade,
-            'stats' => $stats
         ]);
     }
 

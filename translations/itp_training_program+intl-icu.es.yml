@@ -69,6 +69,7 @@ header.grades: Cursos
 header.groups: Grupos asociados
 header.target_hours: Horas previstas
 header.modality: Modalidad
+header.locked: Bloqueado
 header.training_program: Plan de formación
 
 message.saved: Datos actualizados con éxito.
