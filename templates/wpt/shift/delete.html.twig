@@ -1,22 +1,22 @@
 {% trans_default_domain 'wpt_shift' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+
 {% block content %}
     <form method="post">
         {% for item in items %}
             <input type="hidden" name="items[]" value="{{ item.id }}">
         {% endfor %}
         <input type="hidden" name="confirm" value="ok">
-        <div class="alert alert-warning">{{ 'prompt.delete_confirm'|trans|nl2br }}</div>
-        <div id="table" class="col-md-12 table-responsive">
-            <table id="list" class="table table-bordered table-hover table-striped">
-                <thead>
+        <twig:Ui:Alert type="warning" :message="'prompt.delete_confirm'|trans|nl2br" />
+        <div class="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+            <table id="list" class="w-full text-left text-sm">
+                <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500 [&_th]:px-4 [&_th]:py-3">
                     <tr>
-                        <th>{{ 'header.name'|trans }}</label></th>
-                        <th>{{ 'header.groups'|trans }}</label></th>
+                        <th>{{ 'header.name'|trans }}</th>
+                        <th>{{ 'header.groups'|trans }}</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-100 [&_td]:px-4 [&_td]:py-3">
                     {% for item in items %}
                         <tr>
                             <td>{{ item.name }}</td>
@@ -26,7 +26,9 @@
                 </tbody>
             </table>
         </div>
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-        {{ m.submit_button('delete', 'trash', 'btn-danger', 'form.delete_confirm'|trans) }}
+        <div class="mt-6 flex flex-wrap gap-2">
+            <twig:Ui:Button href="{{ last_url }}" variant="secondary" icon="arrow-left" label="{{ 'form.back'|trans }}" />
+            <twig:Ui:Button type="submit" name="delete" variant="danger" icon="trash" label="{{ 'form.delete_confirm'|trans }}" />
+        </div>
     </form>
 {% endblock %}

@@ -1,0 +1,20 @@
+{#- Aviso. Tipos: info | success | warning | danger. Con dismissible=true se puede cerrar. -#}
+{#- El texto traducido se pasa con «message» (ver nota de Ui:Button sobre trans_default_domain). -#}
+{%- props type = 'info', dismissible = false, message = '' -%}
+{%- set styles = {
+    info: 'bg-brand-50 text-brand-900 ring-brand-200',
+    success: 'bg-emerald-50 text-emerald-900 ring-emerald-200',
+    warning: 'bg-amber-50 text-amber-900 ring-amber-200',
+    danger: 'bg-red-50 text-red-900 ring-red-200',
+} -%}
+{%- set icons = {info: 'info-circle', success: 'check-circle', warning: 'exclamation-triangle', danger: 'exclamation-circle'} -%}
+<div role="{{ type == 'danger' ? 'alert' : 'status' }}" {{ attributes.without('class') }} data-controller="dismiss"
+     class="mb-4 flex items-start gap-3 rounded-lg p-3 text-sm ring-1 ring-inset {{ styles[type] }} {{ attributes.render('class') }}">
+    <twig:Ui:Icon name="{{ icons[type] }}" class="mt-0.5 size-4" />
+    <div class="grow">{{ message }}{% block content %}{% endblock %}</div>
+    {% if dismissible %}
+        <button type="button" data-action="dismiss#close" aria-label="{{ 'hint.close'|trans({}, 'layout') }}" class="rounded p-0.5 opacity-60 hover:opacity-100">
+            <twig:Ui:Icon name="times" />
+        </button>
+    {% endif %}
+</div>

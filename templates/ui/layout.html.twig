@@ -1,0 +1,147 @@
+{#-
+  Layout del diseño nuevo (Tailwind + Stimulus). Mantiene los mismos bloques y variables que
+  layout.html.twig (title, content_header, content, menu, breadcrumb, last_url...) para que las
+  plantillas se puedan migrar cambiando solo el «extends».
+-#}
+{% trans_default_domain 'layout' %}
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% if title is defined and title is not empty %}{{ title }} - {% endif %}
+    {{ user_extension.currentOrganization.name }}
+{%- endblock %}
+
+{# Solo puede haber una llamada a importmap() por página: el diseño nuevo carga «app_v2», nunca «app» #}
+{% block importmap %}{{ importmap(['app_v2']|merge(js_entries|default([]))) }}{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-50 text-gray-800 antialiased" data-controller="sidebar" style="font-family: var(--font-sans)">
+
+    {# Fondo oscuro al abrir el menú en móvil #}
+    <div class="fixed inset-0 z-30 hidden bg-gray-900/50 lg:hidden" data-sidebar-target="overlay" data-action="click->sidebar#close"></div>
+
+    <aside class="no-print fixed inset-y-0 left-0 z-40 flex w-64 -translate-x-full flex-col bg-brand-950 text-brand-100 transition-transform lg:translate-x-0"
+           data-sidebar-target="panel">
+        <a href="{{ path('frontpage') }}" class="flex h-16 shrink-0 items-center gap-2 px-5 text-lg font-semibold text-white">
+            {% if app_logo_navbar %}<img src="{{ asset(app_logo_navbar) }}" alt="" class="h-7 w-auto">{% endif %}
+            {{ app_name }}
+        </a>
+        <nav class="grow space-y-1 overflow-y-auto px-3 py-2" aria-label="{{ 'hint.toggle'|trans }}">
+            {% for item in module_extension.menu.children %}
+                {% set active = item.routeName and app.current_route starts with item.routeName %}
+                <a href="{{ item.routeName ? path(item.routeName) : '#' }}"
+                   title="{{ (item.caption ~ '.detail')|trans({}, item.module ? 'module_' ~ item.module : 'menu') }}"
+                   {% if active %}aria-current="page"{% endif %}
+                   class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition {{ active ? 'bg-brand-800 text-white' : 'text-brand-100 hover:bg-brand-900 hover:text-white' }}">
+                    <twig:Ui:Icon name="{{ item.icon }}" class="size-4 opacity-80" />
+                    {{ item.caption|trans({}, item.module ? 'module_' ~ item.module : 'menu') }}
+                </a>
+            {% endfor %}
+        </nav>
+    </aside>
+
+    <div class="lg:pl-64">
+        <header class="no-print sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-gray-200 bg-white/90 px-4 backdrop-blur sm:px-6">
+            <button type="button" class="rounded-lg p-2 text-gray-600 hover:bg-gray-100 lg:hidden" data-action="sidebar#toggle" aria-label="{{ 'hint.toggle'|trans }}">
+                <twig:Ui:Icon name="bars" class="size-5" />
+            </button>
+
+            <div class="ml-auto flex items-center gap-1 text-sm">
+                {% set organizations = user_extension.organizations(app.user) %}
+                {% if organizations|length > 1 %}
+                    <details class="relative">
+                        <summary class="flex cursor-pointer list-none items-center gap-2 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100">
+                            <twig:Ui:Icon name="building" class="size-4 text-gray-400" />
+                            <span class="hidden max-w-60 truncate sm:inline">{{ user_extension.currentOrganization }}</span>
+                            <twig:Ui:Icon name="chevron-down" class="size-3 text-gray-400" />
+                        </summary>
+                        <div class="absolute right-0 z-30 mt-1 w-72 rounded-lg bg-white p-1 shadow-lg ring-1 ring-gray-200">
+                            {% if organizations|length < 8 %}
+                                {% for organization in organizations %}
+                                    <a href="{{ path('switch_organization', {'id': organization.id}) }}" class="flex items-center justify-between rounded-md px-3 py-2 text-gray-700 hover:bg-gray-100">
+                                        {{ organization }}
+                                        {% if organization.id == user_extension.currentOrganization.id %}<twig:Ui:Icon name="check" class="text-brand-600" />{% endif %}
+                                    </a>
+                                {% endfor %}
+                            {% else %}
+                                <a href="{{ path('login_organization') }}" class="block rounded-md px-3 py-2 text-gray-700 hover:bg-gray-100">{{ 'user.organization'|trans }}</a>
+                            {% endif %}
+                        </div>
+                    </details>
+                {% endif %}
+
+                {% if app.user %}
+                    <a href="{{ path('personal_data') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100">
+                        <twig:Ui:Icon name="user" class="size-4 text-gray-400" />
+                        <span class="hidden sm:inline">{{ app.user }}</span>
+                    </a>
+                {% endif %}
+
+                {% if is_granted('IS_IMPERSONATOR') %}
+                    <a href="{{ path('admin_user_list', {'_switch_user': '_exit'}) }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-amber-700 hover:bg-amber-50">
+                        <twig:Ui:Icon name="user-slash" class="size-4" />
+                        <span class="hidden sm:inline">{{ 'user.exit_impersonation'|trans }}</span>
+                    </a>
+                {% else %}
+                    <a href="{{ path('logout') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
+                        <twig:Ui:Icon name="power-off" class="size-4" />
+                        <span class="hidden sm:inline">{{ 'user.logout'|trans }}</span>
+                    </a>
+                {% endif %}
+            </div>
+        </header>
+
+        <main role="main" class="px-4 py-6 sm:px-6">
+            <ol class="no-print mb-4 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-gray-500">
+                {#- «last_url» (URL del último enlace de las migas) la usan las plantillas hijas para el botón «Volver» -#}
+                {% set last_url = '' %}
+                {% set crumbs = [] %}
+                {% for menu_item in module_extension.pathByRouteName(menu_path|default(app.current_route)) %}
+                    {% set crumb_url = (not loop.last or (breadcrumb is defined and breadcrumb)) ? path(menu_item.routeName, menu_item.routeParams) : null %}
+                    {% set last_url = crumb_url ?? last_url %}
+                    {% set crumbs = crumbs|merge([{
+                        url: crumb_url,
+                        icon: menu_item.icon,
+                        text: loop.first ? user_extension.currentOrganization.name : (menu_item.caption ? menu_item.caption|trans({}, menu_item.module is not empty ? 'module_' ~ menu_item.module : 'menu') : ''),
+                    }]) %}
+                {% endfor %}
+                {% for item in breadcrumb|default([]) %}
+                    {% set crumb_url = item.routeName is defined ? path(item.routeName, item.routeParams ?: {}) : null %}
+                    {% set last_url = crumb_url ?? last_url %}
+                    {% set crumbs = crumbs|merge([{
+                        url: crumb_url,
+                        icon: item.icon|default(null),
+                        text: (item.caption is defined ? item.caption|trans({}, item.module is defined and item.module is not empty ? 'module_' ~ item.module : 'menu') : '') ~ item.fixed|default(''),
+                    }]) %}
+                {% endfor %}
+                {% for crumb in crumbs %}
+                    {% if not loop.first %}<li aria-hidden="true" class="text-gray-300">/</li>{% endif %}
+                    <li class="inline-flex items-center gap-1.5{% if loop.last %} font-medium text-gray-700{% endif %}"{% if loop.last %} aria-current="page"{% endif %}>
+                        {% if crumb.url %}<a href="{{ crumb.url }}" class="inline-flex items-center gap-1.5 hover:text-brand-700">{% endif %}
+                        {% if crumb.icon %}<twig:Ui:Icon name="{{ crumb.icon }}" class="size-3.5" />{% endif %}
+                        {{ crumb.text }}
+                        {% if crumb.url %}</a>{% endif %}
+                    </li>
+                {% endfor %}
+            </ol>
+
+            {% block content_header %}
+                {% if title is defined and (show_title is not defined or show_title == true) %}
+                    <h1 class="mb-6 text-2xl font-semibold tracking-tight text-gray-900">{% block content_title %}{{ title }}{% endblock %}</h1>
+                {% endif %}
+                {% include 'ui/partial_flash.html.twig' %}
+            {% endblock %}
+
+            {% if menu ?? false %}
+                {% include 'ui/partial_menu.html.twig' %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="no-print px-4 pb-8 pt-4 text-xs text-gray-400 sm:px-6" role="contentinfo">
+            {% block footer %}&copy; 2018{% if 'now'|date('Y') > 2018 %}-{{ 'now'|date('Y') }}{% endif %}, Luis Ramón López López{% endblock %}
+        </footer>
+    </div>
+</div>
+{% endblock %}

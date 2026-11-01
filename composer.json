@@ -47,12 +47,18 @@
         "symfony/rate-limiter": "7.4.*",
         "symfony/runtime": "7.4.*",
         "symfony/security-bundle": "7.4.*",
+        "symfony/stimulus-bundle": "*",
         "symfony/translation": "7.4.*",
         "symfony/twig-bundle": "7.4.*",
+        "symfony/ux-autocomplete": "*",
+        "symfony/ux-icons": "*",
+        "symfony/ux-live-component": "*",
         "symfony/validator": "7.4.*",
         "symfony/yaml": "7.4.*",
+        "symfonycasts/tailwind-bundle": "*",
         "tetranz/select2entity-bundle": "^3.1",
         "twig/extra-bundle": "^2.12|^3.0",
+        "twig/html-extra": "*",
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {

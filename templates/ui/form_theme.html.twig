@@ -1,0 +1,62 @@
+{#- Tema de formularios del diseño nuevo (sobre el tema Tailwind de Symfony). Uso: {% form_theme form 'ui/form_theme.html.twig' %} -#}
+{% extends 'tailwind_2_layout.html.twig' %}
+
+{%- block form_row -%}
+    {%- set row_attr = row_attr|merge({class: row_attr.class|default('mb-5 max-w-2xl')}) -%}
+    {{- parent() -}}
+{%- endblock form_row -%}
+
+{%- block widget_attributes -%}
+    {%- if 'checkbox' in block_prefixes or 'radio' in block_prefixes -%}
+        {%- set attr = attr|merge({class: attr.class|default('size-4 border-gray-300 text-brand-600 focus:ring-brand-500 ' ~ ('radio' in block_prefixes ? 'rounded-full' : 'rounded'))}) -%}
+    {%- else -%}
+        {%- set attr = attr|merge({class: attr.class|default('mt-1 block w-full rounded-lg border-0 bg-white px-3 py-2 text-sm text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-brand-500 disabled:bg-gray-100')}) -%}
+    {%- endif -%}
+    {{- parent() -}}
+{%- endblock widget_attributes -%}
+
+{%- block form_label -%}
+    {%- set label_attr = label_attr|merge({class: label_attr.class|default('block text-sm font-medium text-gray-700')}) -%}
+    {{- parent() -}}
+{%- endblock form_label -%}
+
+{%- block form_help -%}
+    {%- set help_attr = help_attr|merge({class: help_attr.class|default('mt-1 text-xs text-gray-500')}) -%}
+    {{- parent() -}}
+{%- endblock form_help -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <ul class="mt-1">
+            {%- for error in errors -%}
+                <li class="text-sm text-red-700" id="{{ id ~ '_error' ~ loop.index }}">{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{%- endblock form_errors -%}
+
+{%- block choice_widget_expanded -%}
+    <div {{ block('widget_container_attributes') }} class="mt-2 space-y-2">
+        {%- for child in form %}
+            <div class="flex items-center gap-2">
+                {{- form_widget(child) -}}
+                {#- form_label() no dibuja nada para los hijos de una lista expandida en el tema Tailwind de Symfony; se pinta a mano -#}
+                {%- set child_label = child.vars.label is same as(false) ? '' : (child.vars.label ?: child.vars.name|humanize) -%}
+                <label for="{{ child.vars.id }}" class="text-sm text-gray-700">
+                    {{- child.vars.translation_domain is same as(false) ? child_label : child_label|trans(child.vars.label_translation_parameters|default({}), child.vars.translation_domain) -}}
+                </label>
+            </div>
+        {% endfor -%}
+    </div>
+{%- endblock choice_widget_expanded -%}
+
+{%- block checkbox_row -%}
+    <div class="mb-5 max-w-2xl">
+        {{- form_errors(form) -}}
+        <div class="inline-flex items-center gap-2">
+            {{- form_widget(form) -}}
+            {{- form_label(form, null, {label_attr: {class: 'text-sm text-gray-700'}}) -}}
+        </div>
+        {{- form_help(form) -}}
+    </div>
+{%- endblock checkbox_row -%}

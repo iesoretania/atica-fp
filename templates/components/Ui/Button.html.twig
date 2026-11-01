@@ -1,0 +1,28 @@
+{#-
+  Botón o enlace con aspecto de botón. Con «href» se dibuja un <a>; sin él, un <button>.
+  Variantes: primary | secondary | danger | ghost. Tamaños: sm | md.
+  Uso: <twig:Ui:Button href="{{ path('x') }}" variant="secondary" icon="arrow-left" label="{{ 'form.back'|trans }}" />
+
+  IMPORTANTE: el texto traducido debe pasarse con «label» (se evalúa en la plantilla de la página y respeta su
+  trans_default_domain). Un «|trans» dentro del contenido del componente usaría el dominio «messages».
+-#}
+{%- props href = null, variant = 'primary', size = 'md', icon = null, type = 'button', label = '' -%}
+{%- set variants = {
+    primary: 'bg-brand-600 text-white hover:bg-brand-700',
+    secondary: 'bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50',
+    danger: 'bg-red-600 text-white hover:bg-red-700',
+    ghost: 'text-gray-600 hover:bg-gray-100',
+} -%}
+{%- set sizes = {sm: 'px-2.5 py-1.5 text-xs', md: 'px-3.5 py-2 text-sm'} -%}
+{%- set classes = 'inline-flex items-center justify-center gap-2 rounded-lg font-medium shadow-xs transition disabled:pointer-events-none disabled:opacity-50 ' ~ variants[variant] ~ ' ' ~ sizes[size] ~ ' ' ~ attributes.render('class') -%}
+{%- if href -%}
+<a href="{{ href }}" {{ attributes.without('class') }} class="{{ classes }}">
+    {%- if icon %}<twig:Ui:Icon name="{{ icon }}" />{% endif -%}
+    {{- label -}}{%- block content %}{% endblock -%}
+</a>
+{%- else -%}
+<button type="{{ type }}" {{ attributes.without('class') }} class="{{ classes }}">
+    {%- if icon %}<twig:Ui:Icon name="{{ icon }}" />{% endif -%}
+    {{- label -}}{{- block('content') -}}
+</button>
+{%- endif -%}

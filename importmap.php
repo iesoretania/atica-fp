@@ -16,6 +16,16 @@ return [
         'path' => './assets/js/app.js',
         'entrypoint' => true,
     ],
+    'app_v2' => [
+        'path' => './assets/app_v2.js',
+        'entrypoint' => true,
+    ],
+    '@symfony/stimulus-bundle' => [
+        'path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js',
+    ],
+    '@symfony/ux-live-component' => [
+        'path' => './vendor/symfony/ux-live-component/assets/dist/live_controller.js',
+    ],
     'select2entity' => [
         'path' => './assets/js/select2entity.js',
         'entrypoint' => true,
@@ -148,6 +158,34 @@ return [
     ],
     'quill/dist/quill.snow.css' => [
         'version' => '2.0.3',
+        'type' => 'css',
+    ],
+    '@hotwired/stimulus' => [
+        'version' => '3.2.2',
+    ],
+    'tom-select' => [
+        'version' => '2.6.2',
+    ],
+    '@orchidjs/sifter' => [
+        'version' => '1.1.0',
+    ],
+    '@orchidjs/unicode-variants' => [
+        'version' => '1.1.2',
+    ],
+    'tom-select/dist/css/tom-select.default.min.css' => [
+        'version' => '2.6.2',
+        'type' => 'css',
+    ],
+    'tom-select/dist/css/tom-select.default.css' => [
+        'version' => '2.6.2',
+        'type' => 'css',
+    ],
+    'tom-select/dist/css/tom-select.bootstrap4.css' => [
+        'version' => '2.6.2',
+        'type' => 'css',
+    ],
+    'tom-select/dist/css/tom-select.bootstrap5.css' => [
+        'version' => '2.6.2',
         'type' => 'css',
     ],
 ];

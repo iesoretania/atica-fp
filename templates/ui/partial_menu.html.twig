@@ -1,0 +1,21 @@
+{% trans_default_domain 'menu' %}
+{#- Menú de módulo/sección en forma de tarjetas -#}
+{% set menu_item = module_extension.getMenuByRouteName(menu_path|default(app.current_route)) %}
+<div class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    {% for item in menu_item.children %}
+        {% set domain = item.module is not empty ? 'module_' ~ item.module : 'menu' %}
+        <a href="{{ path(item.routeName, item.routeParams) }}" title="{{ item.description|trans({}, domain) }}"
+           class="group flex items-center gap-4 rounded-xl bg-white p-5 shadow-xs ring-1 ring-gray-200 transition hover:-translate-y-0.5 hover:shadow-md hover:ring-brand-300">
+            <span class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
+                <twig:Ui:Icon name="{{ item.icon }}" class="size-6" />
+            </span>
+            <span class="font-medium text-gray-900">{{ item.caption|trans({}, domain) }}</span>
+        </a>
+    {% endfor %}
+    {% if last_url|default(false) %}
+        <a href="{{ last_url }}" class="group flex items-center gap-4 rounded-xl bg-white p-5 shadow-xs ring-1 ring-gray-200 transition hover:shadow-md hover:ring-brand-300 lg:hidden">
+            <span class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-500"><twig:Ui:Icon name="arrow-left" class="size-6" /></span>
+            <span class="font-medium text-gray-900">{{ 'menu.back'|trans }}</span>
+        </a>
+    {% endif %}
+</div>

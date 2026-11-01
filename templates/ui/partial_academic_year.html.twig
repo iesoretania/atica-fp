@@ -1,0 +1,9 @@
+{#- Selector del curso académico. Cada opción lleva su URL (variable «academic_year_url»: función o ruta con {id}) -#}
+<div class="mb-4 max-w-sm">
+    <select id="item" name="project" data-action="change->list#navigate" aria-label="{{ academic_year.description }}"
+            class="block w-full rounded-lg border-0 bg-white px-3 py-2 text-sm shadow-xs ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-brand-500">
+        {% for item in academic_years %}
+            <option value="{{ item.id }}" data-url="{{ path(academic_year_route, academic_year_route_params|default({})|merge({(academic_year_param|default('academicYear')): item.id})) }}"{% if academic_year.id == item.id %} selected{% endif %}>{{ item.description }}</option>
+        {% endfor %}
+    </select>
+</div>

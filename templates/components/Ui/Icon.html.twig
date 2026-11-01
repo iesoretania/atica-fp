@@ -1,0 +1,15 @@
+{#-
+  Icono SVG local (conjunto Font Awesome 6 sólido, importado con «bin/console ux:icons:import fa6-solid:nombre»).
+  Admite también los nombres antiguos de Font Awesome 5 que usa el menú de los módulos.
+  Uso: <twig:Ui:Icon name="plus" />
+-#}
+{%- props name, class = 'size-4' -%}
+{%- set renamed = {
+    'broadcast-tower': 'tower-broadcast', 'calendar-alt': 'calendar-days', 'calendar-times': 'calendar-xmark',
+    'chalkboard-teacher': 'chalkboard-user', 'file-alt': 'file-lines', 'home': 'house', 'store-alt': 'shop',
+    'tools': 'screwdriver-wrench', 'user-friends': 'user-group', 'search': 'magnifying-glass',
+    'check-circle': 'circle-check', 'info-circle': 'circle-info', 'exclamation-circle': 'circle-exclamation',
+    'exclamation-triangle': 'triangle-exclamation', 'times': 'xmark', 'edit': 'pen-to-square',
+    'save': 'floppy-disk', 'check-square': 'square-check',
+} -%}
+{{- ux_icon('fa6-solid:' ~ (renamed[name] ?? name), {class: class ~ ' shrink-0 ' ~ attributes.render('class'), 'aria-hidden': 'true'}) -}}

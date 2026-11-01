@@ -1,0 +1,7 @@
+symfonycasts_tailwind:
+    # Versión exacta de Tailwind CSS (el binario autónomo se descarga solo, no hace falta Node.js)
+    binary_version: 'v4.1.11'
+
+    # Hoja de entrada (el resultado compilado sustituye a esta ruta en AssetMapper)
+    input_css:
+        - '%kernel.project_dir%/assets/styles/app.css'

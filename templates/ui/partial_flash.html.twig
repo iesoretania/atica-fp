@@ -1,0 +1,5 @@
+{% for type, alert in {'info': 'info', 'error': 'danger', 'success': 'success'} %}
+    {% for message in app.session.flashbag.get(type) %}
+        <twig:Ui:Alert type="{{ alert }}" :dismissible="true" :message="message" />
+    {% endfor %}
+{% endfor %}
