@@ -38,6 +38,8 @@ class WltListComponentsTest extends AppWebTestCase
         yield 'concreciones' => ['Wlt:ActivityRealizationList', '/dual/proyecto/programa/{activity}/concrecion'];
         yield 'empresas del proyecto' => ['Wlt:LearningProgramList', '/dual/programa/{project}/listar'];
         yield 'reuniones' => ['Wlt:MeetingList', '/dual/reunion/listar/{year}'];
+        yield 'desplazamientos' => ['Wlt:TravelExpenseList', '/dual/desplazamiento/{teacher}/listar'];
+        yield 'resumen de desplazamientos' => ['Wlt:TravelExpenseTeacherList', '/dual/desplazamiento/resumen/{year}'];
         yield 'seguimiento' => ['Wlt:TrackingList', '/dual/seguimiento/acuerdo/listar/{year}'];
         yield 'valoración' => ['Wlt:EvaluationList', '/dual/convenio/evaluar/listar/{year}'];
         yield 'resultados del alumnado' => ['Wlt:EvaluationSummaryList', '/dual/resultado/estudiante/listar/{year}'];
@@ -53,6 +55,7 @@ class WltListComponentsTest extends AppWebTestCase
             '{year}' => (string) $this->year(),
             '{project}' => (string) $this->first('wlt_project'),
             '{activity}' => (string) $this->first('wlt_activity'),
+            '{teacher}' => (string) $this->connection()->fetchOne('SELECT t.id FROM edu_teacher t JOIN person p ON p.id = t.person_id WHERE p.login_username = ?', ['alfa.tutor']),
         ]);
     }
 
@@ -108,6 +111,7 @@ class WltListComponentsTest extends AppWebTestCase
     public static function filteredListProvider(): iterable
     {
         yield 'proyectos bloqueados' => ['Wlt:ProjectList', '/dual/proyecto/listar/{year}', ['locked' => '0']];
+        yield 'desplazamientos por fechas y verificación' => ['Wlt:TravelExpenseList', '/dual/desplazamiento/{teacher}/listar', ['from' => '2020-01-01', 'to' => '2099-12-31', 'verified' => '0']];
         yield 'convenios por grupo' => ['Wlt:AgreementList', '/dual/acuerdo/{project}/listar', ['group' => '1']];
         yield 'contactos por forma y fechas' => ['Wlt:ContactList', '/dual/contacto/listar/{year}', ['method' => '0', 'from' => '2020-01-01', 'to' => '2099-12-31']];
         yield 'reuniones por proyecto y fechas' => ['Wlt:MeetingList', '/dual/reunion/listar/{year}', ['project' => '1', 'from' => '2020-01-01', 'to' => '2099-12-31']];

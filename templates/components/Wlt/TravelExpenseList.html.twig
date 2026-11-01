@@ -1,0 +1,56 @@
+{% trans_default_domain 'wlt_travel_expense' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'wlt_travel_expense', base_url: this.baseUrl, back_url: this.backUrl, teacher: this.teacher, allow_new: this.allowNew} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block path_new %}{{ path('work_linked_training_travel_expense_new', {'id': teacher.id}) }}{% endblock %}
+        {% block new_action %}{% if allow_new %}{{ parent() }}{% endif %}{% endblock %}
+
+        {% block table_header %}
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'route' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600" aria-label="{{ 'selection.clear'|trans({}, 'general') }}">
+                    {{ lm.sort_button('header.travel_route'|trans({}, domain), 'route', this.sort, this.dir) }}
+                </div>
+            </th>
+            <th>{{ 'header.agreements'|trans({}, domain) }}</th>
+            {{ lm.sort_th('header.distance'|trans({}, domain), 'distance', this.sort, this.dir) }}
+            <th>{{ 'header.other_expenses'|trans({}, domain) }}</th>
+            <th>{{ 'header.verified'|trans({}, domain) }}</th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for data in pager %}
+                {% set item = data[0] %}
+                {% set url = path('work_linked_training_travel_expense_edit', {'id': item.id}) %}
+                {% set row_read_only = not is_granted('WLT_TRAVEL_EXPENSE_MANAGE', item) %}
+                <tr>
+                    <td>
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" name="items[]" value="{{ item.id }}" class="size-4 rounded border-gray-300 text-brand-600{% if not row_read_only %} selectable{% endif %}"{% if row_read_only %} disabled{% endif %}>
+                            <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.travelRoute }}</a>
+                        </label>
+                    </td>
+                    <td>{{ data[1] }}</td>
+                    <td class="whitespace-nowrap">{{ item.travelRoute.distance ? item.travelRoute.distance|number_format ~ ' ' ~ 'suffix.distance'|trans({}, 'general') : '---' }}</td>
+                    <td class="whitespace-nowrap">{{ (item.otherExpenses/100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} {{ 'format.currency'|trans({}, 'general') }}</td>
+                    <td>{{ (item.travelRoute.verified ? 'table.verified_yes' : 'table.verified_no')|trans({}, domain) }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('work_linked_training_travel_expense_operation', {'id': teacher.id}) }}{% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+        {% block selection_actions %}
+            {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}
+        {% endblock %}
+    {% endembed %}
+</div>

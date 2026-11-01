@@ -1,0 +1,40 @@
+{% trans_default_domain 'wlt_travel_expense' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'wlt_travel_expense', base_url: this.baseUrl, back_url: this.backUrl} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block new_action %}{% endblock %}
+
+        {% block table_header %}
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'teacher' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">{{ lm.sort_button('header.teacher'|trans({}, domain), 'teacher', this.sort, this.dir) }}</th>
+            <th>{{ 'header.travel_count'|trans({}, domain) }}</th>
+            <th>{{ 'header.distance'|trans({}, domain) }}</th>
+            <th>{{ 'header.other_expenses'|trans({}, domain) }}</th>
+            <th>{{ 'header.verified'|trans({}, domain) }}</th>
+            <th></th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                {% set url = path('work_linked_training_travel_expense_detail_list', {'id': item[0].id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item[0].person }}</a></td>
+                    <td>{{ item[1] }}</td>
+                    <td class="whitespace-nowrap">{{ item[2]|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} {{ 'suffix.distance'|trans({}, 'general') }}</td>
+                    <td class="whitespace-nowrap">{{ (item[4]/100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} {{ 'format.currency'|trans({}, 'general') }}</td>
+                    <td>{{ (item[3] > 0 and item[3] == item[1] ? 'table.verified_yes' : 'table.verified_no')|trans({}, domain) }}</td>
+                    <td class="text-right">{{ m.link_button_new(path('work_linked_training_travel_expense_report', {'id': item[0].id}), 'file-alt', 'btn-primary btn-sm', 'table.travel_expense_report'|trans({}, domain)) }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_teachers'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+    {% endembed %}
+</div>
