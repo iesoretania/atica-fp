@@ -65,33 +65,16 @@ class FinalReportController extends AbstractController
 
         $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_FILL_REPORT, $organization);
 
-        $q = $request->query->get('q');
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-        $person = $this->getUser();
-        $maxPerPage = $this->getParameter('page.size');
-
-        $pager = TrackingController::generateAgreementPaginator(
-            $groupRepository,
-            $teacherRepository,
-            $academicYear,
-            $queryBuilder,
-            $person,
-            $isManager,
-            $q,
-            $page,
-            $maxPerPage
-        );
+        // el listado lo dibuja el componente Wpt:FinalReportList, que parte de estos valores (?q=...&page=...)
+        $q = trim((string) $request->query->get('q'));
+        $page = $request->query->getInt('page', $page);
 
         $title = $translator->trans('title.agreement.list', [], 'wpt_final_report');
 
         return $this->render('wpt/final_report/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
+            'page' => $page,
             'q' => $q,
-            'domain' => 'wpt_final_report',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);

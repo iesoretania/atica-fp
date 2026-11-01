@@ -1,0 +1,29 @@
+{% trans_default_domain 'wpt_survey' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'wpt_survey', base_url: this.baseUrl, back_url: this.backUrl} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block new_action %}{% endblock %}
+
+        {#- Los bloques de un embed no heredan trans_default_domain: se indica el dominio en cada traducción -#}
+        {% block table_header %}
+            <th>{{ 'header.student'|trans({}, domain) }}</th>
+            <th>{{ 'header.shift'|trans({}, domain) }}</th>
+            <th>{{ 'header.workcenter'|trans({}, domain) }}</th>
+            <th>{{ 'header.work_tutor'|trans({}, domain) }}</th>
+            <th>{{ 'header.dates'|trans({}, domain) }}</th>
+            <th>{{ 'header.status'|trans({}, domain) }}</th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% import 'wpt/survey/_rows.html.twig' as rows %}
+            {{ rows.draw_all(pager, 'student') }}
+        {% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+    {% endembed %}
+</div>

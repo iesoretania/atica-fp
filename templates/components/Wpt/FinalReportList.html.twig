@@ -1,0 +1,50 @@
+{% trans_default_domain 'wpt_final_report' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'wpt_final_report', base_url: this.baseUrl, back_url: this.backUrl} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block new_action %}{% endblock %}
+
+        {% block table_header %}
+            <th>{{ 'header.student'|trans({}, domain) }}</th>
+            <th>{{ 'header.shift'|trans({}, domain) }}</th>
+            <th>{{ 'header.workcenter'|trans({}, domain) }}</th>
+            <th>{{ 'header.work_tutor'|trans({}, domain) }}</th>
+            <th>{{ 'header.educational_tutor'|trans({}, domain) }}</th>
+            <th>{{ 'header.dates'|trans({}, domain) }}</th>
+            <th></th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                {% set url = path('workplace_training_final_report_edit', {'id': item[0].id}) %}
+                <tr class="clickable-row" data-href="{{ url }}">
+                    <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item[0].studentEnrollment }}</a></td>
+                    <td>
+                        {{ item[0].agreement.shift }}
+                        {% if item[0].agreement.shift.locked %}<twig:Ui:Icon name="lock" class="ml-1 inline size-3.5 text-gray-400" />{% endif %}
+                    </td>
+                    <td>{{ item[0].agreement.workcenter }}</td>
+                    <td>{{ item[0].workTutor }}</td>
+                    <td>{{ item[0].educationalTutor }}</td>
+                    <td class="whitespace-nowrap">{{ item[0].agreement.startDate ? item[0].agreement.startDate|date('format.date'|trans({}, 'general')) }}{{ item[0].agreement.endDate ? ' - ' ~ (item[0].agreement.endDate|date('format.date'|trans({}, 'general'))) }}</td>
+                    <td class="text-right">
+                        {% if item[0].report %}
+                            {{ m.link_button_new(path('workplace_training_final_report_report', {'id': item[0].id}), 'file-alt', 'btn-info btn-sm', 'table.generate_report'|trans({}, domain)) }}
+                        {% else %}
+                            <span class="text-gray-500">{{ 'table.no_report'|trans({}, domain) }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="7" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+    {% endembed %}
+</div>

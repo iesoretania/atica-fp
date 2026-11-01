@@ -41,7 +41,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route(path: '/fct/seguimiento')]
 class TrackingController extends AbstractController
 {
-    private static function generateAgreementQueryBuilder(
+    /** Consulta de los acuerdos del alumnado que puede ver una persona; la usan también los listados Live Component de seguimiento e informe final. */
+    public static function generateAgreementQueryBuilder(
         WptGroupRepository  $groupRepository,
         TeacherRepository   $teacherRepository,
         AcademicYear        $academicYear,
@@ -148,40 +149,6 @@ class TrackingController extends AbstractController
         return $queryBuilder;
     }
 
-    public static function generateAgreementPaginator(
-        WptGroupRepository  $groupRepository,
-        TeacherRepository   $teacherRepository,
-        AcademicYear        $academicYear,
-        QueryBuilder        $queryBuilder,
-                            $person,
-                            $isManager,
-        ?string             $q,
-        int                 $page,
-        int                 $maxPerPage
-    ): Pagerfanta
-    {
-        $queryBuilder = self::generateAgreementQueryBuilder(
-            $groupRepository,
-            $teacherRepository,
-            $academicYear,
-            $queryBuilder,
-            $person,
-            $isManager,
-            $q
-        );
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($maxPerPage)
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-        return $pager;
-    }
-
     #[Route(path: '/acuerdo/listar/{academicYear}/{page}', name: 'workplace_training_tracking_list', requirements: ['academicYear' => '\d+', 'page' => '\d+'], methods: ['GET'])]
     public function list(
         Request                $request,
@@ -201,33 +168,16 @@ class TrackingController extends AbstractController
 
         $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_ACCESS, $organization);
 
-        $q = $request->query->get('q');
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-        $person = $this->getUser();
-        $maxPerPage = $this->getParameter('page.size');
-
-        $pager = self::generateAgreementPaginator(
-            $groupRepository,
-            $teacherRepository,
-            $academicYear,
-            $queryBuilder,
-            $person,
-            $isManager,
-            $q,
-            $page,
-            $maxPerPage
-        );
+        // el listado lo dibuja el componente Wpt:TrackingList, que parte de estos valores (?q=...&page=...)
+        $q = trim((string) $request->query->get('q'));
+        $page = $request->query->getInt('page', $page);
 
         $title = $translator->trans('title.agreement.list', [], 'wpt_tracking');
 
         return $this->render('wpt/tracking/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
+            'page' => $page,
             'q' => $q,
-            'domain' => 'wpt_tracking',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);

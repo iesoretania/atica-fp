@@ -111,24 +111,14 @@ class SurveyController extends AbstractController
         /** @var Person $person */
         $person = $this->getUser();
 
-        $q = $request->query->get('q');
-
-        $queryBuilder = $studentAnsweredSurveyRepository->findByAcademicYearAndPersonFilterQueryBuilder(
-            $q,
-            $academicYear,
-            $person
-        );
-
-        $pageSize = $this->getParameter('page.size');
-
-        $pager = $this->getPager($queryBuilder, $pageSize, $page);
+        // el listado lo dibuja el componente Wpt:SurveyStudentList, que parte de estos valores (?q=...&page=...)
+        $q = trim((string) $request->query->get('q'));
+        $page = $request->query->getInt('page', $page);
 
         return $this->render('wpt/survey/student_list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
+            'page' => $page,
             'q' => $q,
-            'domain' => 'wpt_survey',
-            'route_name' => 'workplace_training_survey_student_form',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
@@ -240,39 +230,14 @@ class SurveyController extends AbstractController
         /** @var Person $person */
         $person = $this->getUser();
 
-        $q = $request->query->get('q');
-
-        $queryBuilder = $agreementEnrollmentRepository->findByAcademicYearAndPersonFilterQueryBuilder(
-            $q,
-            $academicYear,
-            $person
-        );
-
-        $queryBuilder
-            ->leftJoin(
-                WorkTutorAnsweredSurvey::class,
-                'was',
-                'WITH',
-                '(was.workTutor = wt OR was.workTutor = awt) AND was.shift = shi'
-            )
-            ->addSelect('COUNT(was), awt')
-            ->addGroupBy('ae')
-            ->addOrderBy('wt.lastName')
-            ->addOrderBy('wt.firstName')
-            ->addOrderBy('wt.id')
-            ->addOrderBy('awt.id', 'DESC')
-            ->addOrderBy('shi.name');
-
-        $pageSize = $this->getParameter('page.size');
-
-        $pager = $this->getPager($queryBuilder, $pageSize, $page);
+        // el listado lo dibuja el componente Wpt:SurveyWorkTutorList, que parte de estos valores (?q=...&page=...)
+        $q = trim((string) $request->query->get('q'));
+        $page = $request->query->getInt('page', $page);
 
         return $this->render('wpt/survey/work_tutor_list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
+            'page' => $page,
             'q' => $q,
-            'domain' => 'wpt_survey',
-            'route_name' => 'workplace_training_survey_student_form',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
@@ -404,23 +369,14 @@ class SurveyController extends AbstractController
         /** @var Person $person */
         $person = $this->getUser();
 
-        $q = $request->query->get('q');
-
-        $teacher = $teacherRepository->findOneByPersonAndAcademicYear($person, $academicYear);
-
-        $queryBuilder = $wptTeacherRepository->findTeachersShiftDataByAcademicYearAndTeacherFilteredQueryBuilder(
-            $q,
-            $academicYear,
-            $teacher
-        );
-
-        $pager = $this->getPager($queryBuilder, $this->getParameter('page.size'), $page);
+        // el listado lo dibuja el componente Wpt:SurveyEducationalTutorList, que parte de estos valores (?q=...&page=...)
+        $q = trim((string) $request->query->get('q'));
+        $page = $request->query->getInt('page', $page);
 
         return $this->render('wpt/survey/educational_tutor_list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
+            'page' => $page,
             'q' => $q,
-            'domain' => 'wpt_survey',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);

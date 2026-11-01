@@ -81,57 +81,16 @@ class ReportController extends AbstractController
 
         $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_MANAGER, $organization);
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('s')
-            ->distinct()
-            ->from(Shift::class, 's')
-            ->join('s.subject', 'su')
-            ->join('su.grade', 'gr')
-            ->join('gr.training', 'tr')
-            ->leftJoin('tr.department', 'd')
-            ->leftJoin('d.head', 'h')
-            ->orderBy('s.name');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('gr.name LIKE :tq')
-                ->orWhere('s.name LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        if (!$isManager) {
-            $queryBuilder
-                ->andWhere('(d.head IS NOT NULL AND h.person = :manager)')
-                ->setParameter('manager', $this->getUser());
-        }
-
-        $queryBuilder
-            ->andWhere('tr.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
+        // el listado lo dibuja el componente Wpt:ReportList, que parte de estos valores (?q=...&page=...)
+        $q = trim((string) $request->query->get('q'));
+        $page = $request->query->getInt('page', $page);
 
         $title = $translator->trans($title, [], 'wpt_report');
 
         return $this->render('wpt/report/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
+            'page' => $page,
             'q' => $q,
-            'domain' => 'wpt_shift',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization),
             'route_name' => $routeName

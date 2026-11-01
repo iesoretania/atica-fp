@@ -1,39 +1,11 @@
 {% trans_default_domain 'wpt_survey' %}
-{% extends 'ui/list.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block new_action %}{% endblock %}
-
-{% block table_header %}
-    <th>{{ 'header.educational_tutor'|trans }}</th>
-    <th>{{ 'header.shift'|trans }}</th>
-    <th>{{ 'header.status'|trans }}</th>
-{% endblock %}
-
-{% block table_body %}
-    {% for item in pager %}
-        {% set url = path('workplace_training_survey_educational_tutor_form', {'id': item.shiftId, 'teacher': item.teacherId}) %}
-        <tr class="clickable-row" data-href="{{ url }}">
-            <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.lastName }}, {{ item.firstName }}</a></td>
-            <td>
-                {{ item.shiftName }}
-                {% if item.shiftLocked %}<twig:Ui:Icon name="lock" class="ml-1 inline size-3.5 text-gray-400" />{% endif %}
-            </td>
-            <td>{{ (item[1] ? 'table.answered.yes' : 'table.answered.no')|trans }}</td>
-        </tr>
-    {% else %}
-        <tr><td colspan="3" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
-    {% endfor %}
-{% endblock %}
-
-{% block before_filter %}
-    {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'workplace_training_survey_educational_tutor_list'} %}
-{% endblock %}
-
-{% block pagerfanta %}
-    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
-{% endblock %}
-
-{% block after_table %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{#- Listado dinámico (Live Component Wpt:SurveyEducationalTutorList); el selector de curso académico navega a otra página -#}
+{% block content %}
+    <div data-controller="list">
+        {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'workplace_training_survey_educational_tutor_list'} %}
+    </div>
+    {% set base_url = path(app.current_route, app.request.attributes.get('_route_params')|filter((v, k) => k != 'page')) %}
+    <twig:Wpt:SurveyEducationalTutorList :academicYear="academic_year" :q="q|default('')" :page="page|default(1)" :baseUrl="base_url" :backUrl="last_url" />
 {% endblock %}

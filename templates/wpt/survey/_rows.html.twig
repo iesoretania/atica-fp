@@ -1,0 +1,77 @@
+{% trans_default_domain 'wpt_survey' %}
+{#- Filas de las listas de encuestas del alumnado y de la tutoría laboral (alumno/tutor, convocatoria y estado se combinan con rowspan) -#}
+{% macro student_row(data, additional) %}
+    {% set url = path('workplace_training_survey_student_form', {'id': data[0].id}) %}
+    {% for datum in data %}
+        <tr>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}" class="align-top"><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.studentEnrollment }}</a></td>
+                <td rowspan="{{ data|length }}" class="align-top">
+                    {{ datum.agreement.shift }}
+                    {% if datum.agreement.shift.locked %}<twig:Ui:Icon name="lock" class="ml-1 inline size-3.5 text-gray-400" />{% endif %}
+                </td>
+            {% endif %}
+            <td>{{ datum.agreement.workcenter }}</td>
+            <td>{{ datum.workTutor }}</td>
+            <td class="whitespace-nowrap">
+                {{ datum.agreement.startDate ? datum.agreement.startDate|date('format.date'|trans({}, 'general')) }}
+                {% if datum.agreement.endDate %} - {{ datum.agreement.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
+            </td>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}" class="align-top">{{ (additional ? 'table.answered.yes' : 'table.answered.no')|trans }}</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+{% endmacro %}
+
+{% macro work_tutor_row(data, additional) %}
+    {% for datum in data %}
+        <tr>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}" class="align-top">
+                    <a href="{{ path('workplace_training_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].workTutor.id}) }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.workTutor }}</a>
+                    {% if datum.additionalWorkTutor %}
+                        <br><a href="{{ path('workplace_training_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].additionalWorkTutor.id}) }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.additionalWorkTutor }}</a>
+                    {% endif %}
+                </td>
+                <td rowspan="{{ data|length }}" class="align-top">
+                    {{ datum.agreement.shift }}
+                    {% if datum.agreement.shift.locked %}<twig:Ui:Icon name="lock" class="ml-1 inline size-3.5 text-gray-400" />{% endif %}
+                </td>
+            {% endif %}
+            <td>{{ datum.studentEnrollment }}</td>
+            <td>{{ datum.agreement.workcenter }}</td>
+            <td class="whitespace-nowrap">
+                {{ datum.agreement.startDate ? datum.agreement.startDate|date('format.date'|trans({}, 'general')) }}
+                {% if datum.agreement.endDate %} - {{ datum.agreement.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
+            </td>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}" class="align-top">{{ (additional > 0 ? 'table.answered.yes' : 'table.answered.no')|trans }}</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+{% endmacro %}
+
+{#- Agrupa los resultados consecutivos con la misma clave (alumno+acuerdo, o tutor laboral+convocatoria) y dibuja cada grupo -#}
+{% macro draw_all(pager, kind) %}
+    {% set last_id = 0 %}
+    {% set data = [] %}
+    {% set additional = 0 %}
+    {% for item in pager %}
+        {% set key = kind == 'student' ? item[0].studentEnrollment.id ~ '-' ~ item[0].agreement.id : item[0].workTutor.id ~ '-' ~ item[0].agreement.shift.id %}
+        {% if last_id != key %}
+            {% if last_id != 0 %}{{ kind == 'student' ? _self.student_row(data, additional) : _self.work_tutor_row(data, additional) }}{% endif %}
+            {% set last_id = key %}
+            {% set data = [item[0]] %}
+            {% set additional = item[1] %}
+        {% else %}
+            {% set data = data|merge([item[0]]) %}
+            {% set additional = additional + item[1] %}
+        {% endif %}
+    {% else %}
+        <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
+    {% endfor %}
+    {% if last_id != 0 %}
+        {{ kind == 'student' ? _self.student_row(data, additional) : _self.work_tutor_row(data, additional) }}
+    {% endif %}
+{% endmacro %}

@@ -1,73 +1,11 @@
 {% trans_default_domain 'wpt_survey' %}
-{% extends 'ui/list.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block new_action %}{% endblock %}
-
-{% block table_header %}
-    <th>{{ 'header.student'|trans }}</th>
-    <th>{{ 'header.shift'|trans }}</th>
-    <th>{{ 'header.workcenter'|trans }}</th>
-    <th>{{ 'header.work_tutor'|trans }}</th>
-    <th>{{ 'header.dates'|trans }}</th>
-    <th>{{ 'header.status'|trans }}</th>
-{% endblock %}
-
-{#- Una fila por convenio del alumno; alumno, convocatoria y estado se combinan con rowspan -#}
-{% macro row(data, additional) %}
-    {% set url = path('workplace_training_survey_student_form', {'id': data[0].id}) %}
-    {% for datum in data %}
-        <tr>
-            {% if loop.first %}
-                <td rowspan="{{ data|length }}" class="align-top"><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.studentEnrollment }}</a></td>
-                <td rowspan="{{ data|length }}" class="align-top">
-                    {{ datum.agreement.shift }}
-                    {% if datum.agreement.shift.locked %}<twig:Ui:Icon name="lock" class="ml-1 inline size-3.5 text-gray-400" />{% endif %}
-                </td>
-            {% endif %}
-            <td>{{ datum.agreement.workcenter }}</td>
-            <td>{{ datum.workTutor }}</td>
-            <td class="whitespace-nowrap">
-                {{ datum.agreement.startDate ? datum.agreement.startDate|date('format.date'|trans({}, 'general')) }}
-                {% if datum.agreement.endDate %} - {{ datum.agreement.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
-            </td>
-            {% if loop.first %}
-                <td rowspan="{{ data|length }}" class="align-top">{{ (additional ? 'table.answered.yes' : 'table.answered.no')|trans }}</td>
-            {% endif %}
-        </tr>
-    {% endfor %}
-{% endmacro %}
-
-{% block table_body %}
-    {% set last_id = 0 %}
-    {% set data = [] %}
-    {% set additional = 0 %}
-    {% for item in pager %}
-        {% if last_id != item[0].studentEnrollment.id ~ '-' ~ item[0].agreement.id %}
-            {% if last_id != 0 %}{{ _self.row(data, additional) }}{% endif %}
-            {% set last_id = item[0].studentEnrollment.id ~ '-' ~ item[0].agreement.id %}
-            {% set data = [item[0]] %}
-            {% set additional = item[1] %}
-        {% else %}
-            {% set data = data|merge([item[0]]) %}
-            {% set additional = additional + item[1] %}
-        {% endif %}
-    {% else %}
-        <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
-    {% endfor %}
-    {% if last_id != 0 %}
-        {{ _self.row(data, additional) }}
-    {% endif %}
-{% endblock %}
-
-{% block before_filter %}
-    {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'workplace_training_survey_student_list'} %}
-{% endblock %}
-
-{% block pagerfanta %}
-    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
-{% endblock %}
-
-{% block after_table %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{#- Listado dinámico (Live Component Wpt:SurveyStudentList); el selector de curso académico navega a otra página -#}
+{% block content %}
+    <div data-controller="list">
+        {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'workplace_training_survey_student_list'} %}
+    </div>
+    {% set base_url = path(app.current_route, app.request.attributes.get('_route_params')|filter((v, k) => k != 'page')) %}
+    <twig:Wpt:SurveyStudentList :academicYear="academic_year" :q="q|default('')" :page="page|default(1)" :baseUrl="base_url" :backUrl="last_url" />
 {% endblock %}
