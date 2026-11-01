@@ -83,7 +83,8 @@ class TrainingProgramType extends AbstractType
                 'disabled' => !$options['can_manage_permissions'],
                 'multiple' => true,
                 'expanded' => false,
-                'required' => true
+                'required' => true,
+                'attr' => ['data-controller' => 'choice-select']
             ])
             ->add('modality', ChoiceType::class, [
                 'label' => 'form.modality',

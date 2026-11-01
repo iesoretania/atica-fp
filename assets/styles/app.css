@@ -82,12 +82,15 @@ select:not([multiple]):not([size]):disabled { opacity: .7; }
 .ts-wrapper.disabled .ts-control { background: var(--color-gray-100); opacity: .7; }
 .ts-control > input { flex: 1 1 4rem; min-width: 4rem; border: 0; outline: 0; background: transparent; padding: 0; font: inherit; }
 .ts-wrapper.single .ts-control .item { color: var(--color-gray-900); }
-.ts-wrapper.multi .ts-control .item {
+/* [data-value] iguala la especificidad del tema por defecto de Tom Select (degradado azul), que se carga después */
+.ts-wrapper.multi .ts-control div.item[data-value] {
     display: inline-flex; align-items: center; gap: 0.35rem;
     padding: 0.1rem 0.5rem; border-radius: 0.375rem;
     background: var(--color-brand-50); color: var(--color-brand-900);
+    text-shadow: none;
     box-shadow: 0 0 0 1px var(--color-brand-200) inset;
 }
+.ts-wrapper.multi .ts-control div.item[data-value].active { background: var(--color-brand-100); }
 .ts-wrapper .remove { color: var(--color-gray-500); text-decoration: none; padding: 0 0.15rem; }
 .ts-wrapper .remove:hover { color: var(--color-red-600); }
 .ts-dropdown {
