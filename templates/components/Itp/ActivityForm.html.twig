@@ -1,0 +1,21 @@
+{% trans_default_domain 'itp_activity' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' 'itp/training_program/activity/_theme.html.twig' %}
+{#- Formulario de actividad (Live Component). Al marcar módulos o resultados de aprendizaje, el servidor recalcula las opciones de los
+    campos siguientes. El guardado es un envío normal del formulario al controlador (action). -#}
+<div {{ attributes.defaults({'data-loading': 'addClass(opacity-60)'}) }}>
+    {{ form_start(form, {action: this.submitUrl, method: 'POST'}) }}
+        {{ fl.grid(form, [
+            ['code:1', 'name:4'],
+            ['description'],
+            ['subjects'],
+            ['learningOutcomes'],
+            ['criteria'],
+        ], {description: {attr: {rows: 4}}}, 'card.title'|trans) }}
+        {{ m.start_button() }}
+            {% if not is_read_only() %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
+            {{ m.link_button(this.backUrl, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.end_button() }}
+    {{ form_end(form, {render_rest: false}) }}
+</div>

@@ -1,109 +1,11 @@
 {% trans_default_domain 'itp_activity' %}
 {% extends 'ui/layout.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
 {% import 'ui/form_layout.html.twig' as fl %}
-{% form_theme form 'ui/form_theme.html.twig' _self %}
 
+{#- Cascada módulos → resultados de aprendizaje → criterios: la recalcula el Live Component Itp:ActivityForm -#}
 {% block content %}
-    {#- Cascada: asignaturas → resultados de aprendizaje → criterios. El servidor devuelve el formulario recalculado y el controlador sustituye solo los campos afectados. -#}
-    {% set common = ['#activity_code', '#activity_name', '#activity_description', '#activity_subjects', '#activity_learningOutcomes', '#activity_criteria'] %}
-    {{ form_start(form, {'attr': {
-        'data-controller': 'dependent-fields',
-        'data-dependent-fields-rules-value': ([
-            {on: ['#activity_subjects input'], send: common, replace: ['#activity_learningOutcomes', '#activity_criteria']},
-            {on: ['#activity_learningOutcomes input'], send: common, replace: ['#activity_criteria']},
-        ])|json_encode,
-    }}) }}
-    {{ fl.grid(form, [
-        ['code:1', 'name:4'],
-        ['description'],
-        ['subjects'],
-        ['learningOutcomes'],
-        ['criteria'],
-    ], {description: {attr: {rows: 4}}}, 'card.title'|trans) }}
-    {{ m.start_button() }}
-        {% if not is_read_only() %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {{ m.end_button() }}
-    {{ form_end(form) }}
-{% endblock %}
-
-{#- Resultados de aprendizaje agrupados por asignatura (un cuadro por asignatura) -#}
-{% block _activity_learningOutcomes_widget %}
-    {% set groups = {} %}
-    {% for key, option in form.children %}
-        {% set item = form.vars.choices[key].data %}
-        {% set group_key = 's' ~ item.subject.id %}
-        {% set group = groups[group_key] ?? {subject: item.subject, keys: []} %}
-        {% set groups = groups|merge({(group_key): group|merge({keys: group.keys|merge([key])})}) %}
-    {% endfor %}
-    <div id="{{ id }}" class="mt-2 space-y-4">
-        {% for group in groups %}
-            <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-xs" data-controller="check-group"
-                 data-check-group-select-label-value="{{ 'selection.select_group'|trans({}, 'general') }}" data-check-group-clear-label-value="{{ 'selection.clear_group'|trans({}, 'general') }}">
-                <div class="mb-2 flex items-start justify-between gap-3">
-                    <h4 class="text-sm font-semibold text-gray-700">{{ group.subject }}{% if group.subject.code %} ({{ group.subject.code }}){% endif %}</h4>
-                    {% if group.keys|length > 1 %}
-                        <button type="button" data-check-group-target="toggle" data-action="check-group#toggle" class="shrink-0 text-sm font-medium text-brand-700 hover:text-brand-900"></button>
-                    {% endif %}
-                </div>
-                <div class="grid grid-cols-1 gap-2">
-                    {% for key in group.keys %}
-                        <label for="{{ form[key].vars.id }}" class="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 transition hover:border-gray-300 has-checked:border-brand-500 has-checked:bg-brand-50 has-disabled:cursor-not-allowed has-disabled:opacity-60">
-                            <span class="mt-0.5">{{ form_widget(form[key]) }}</span>
-                            <span class="min-w-0">{{ form[key].vars.label }}</span>
-                        </label>
-                    {% endfor %}
-                </div>
-            </div>
-        {% else %}
-            <p class="text-sm text-gray-500">{{ 'form.no_learning_outcomes'|trans }}</p>
-        {% endfor %}
-    </div>
-{% endblock %}
-
-{#- Criterios agrupados por asignatura y resultado de aprendizaje; cada resultado con varios criterios lleva su enlace «seleccionar todos» -#}
-{% block _activity_criteria_widget %}
-    {% set subjects = {} %}
-    {% for key, option in form.children %}
-        {% set item = form.vars.choices[key].data %}
-        {% set outcome = item.learningOutcome %}
-        {% set subject_key = 's' ~ outcome.subject.id %}
-        {% set outcome_key = 'o' ~ outcome.id %}
-        {% set subject = subjects[subject_key] ?? {subject: outcome.subject, outcomes: {}} %}
-        {% set entry = subject.outcomes[outcome_key] ?? {outcome: outcome, keys: []} %}
-        {% set entry = entry|merge({keys: entry.keys|merge([key])}) %}
-        {% set subject = subject|merge({outcomes: subject.outcomes|merge({(outcome_key): entry})}) %}
-        {% set subjects = subjects|merge({(subject_key): subject}) %}
-    {% endfor %}
-    <div id="{{ id }}" class="mt-2 space-y-4">
-        {% for subject in subjects %}
-            <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-xs">
-                <h4 class="mb-3 text-sm font-semibold text-gray-700">{{ subject.subject }}{% if subject.subject.code %} ({{ subject.subject.code }}){% endif %}</h4>
-                <div class="space-y-4">
-                    {% for entry in subject.outcomes %}
-                        <div data-controller="check-group"
-                             data-check-group-select-label-value="{{ 'form.criteria.all'|trans }}" data-check-group-clear-label-value="{{ 'form.criteria.none'|trans }}">
-                            <div class="mb-2 flex items-start justify-between gap-3">
-                                <h5 class="text-sm font-medium text-gray-900">{{ entry.outcome.code }}. {{ entry.outcome.description }}</h5>
-                                {% if entry.keys|length > 1 %}
-                                    <button type="button" data-check-group-target="toggle" data-action="check-group#toggle" class="shrink-0 text-sm font-medium text-brand-700 hover:text-brand-900"></button>
-                                {% endif %}
-                            </div>
-                            <div class="grid grid-cols-1 gap-2">
-                                {% for key in entry.keys %}
-                                    <label for="{{ form[key].vars.id }}" class="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 transition hover:border-gray-300 has-checked:border-brand-500 has-checked:bg-brand-50 has-disabled:cursor-not-allowed has-disabled:opacity-60">
-                                        <span class="mt-0.5">{{ form_widget(form[key]) }}</span>
-                                        <span class="min-w-0">{{ form[key].vars.label }}</span>
-                                    </label>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        {% else %}
-            <p class="text-sm text-gray-500">{{ 'form.no_criteria'|trans }}</p>
-        {% endfor %}
-    </div>
+    <twig:Itp:ActivityForm :activityEntity="activity.id ? activity : null" :programGrade="activity.id ? null : activity.programGrade" :form="form" :backUrl="last_url" />
+    {% if activity.id and not is_read_only() %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('in_company_training_phase_activity_operation', {'programGrade': activity.programGrade.id}), activity.id) }}
+    {% endif %}
 {% endblock %}

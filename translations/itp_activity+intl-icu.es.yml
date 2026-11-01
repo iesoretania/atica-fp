@@ -84,3 +84,6 @@ report.activity: "Actividad formativa"
 report.learning_outcome: "Resultado de aprendizaje"
 report.criterium: "Criterio de evaluación"
 
+
+danger.title: "Peligro: eliminación de la actividad"
+danger.text: Una vez eliminada la actividad formativa, no se podrá recuperar.
