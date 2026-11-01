@@ -35,6 +35,7 @@ prompt.delete_confirm: |
 
 title.edit: Datos del contacto
 title.new: Nuevo contacto
+card.title: Registro del contacto
 title.delete: Eliminar contactos
 
 title.workcenter_report: Informe de contactos del centro de trabajo

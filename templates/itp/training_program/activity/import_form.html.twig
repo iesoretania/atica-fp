@@ -1,12 +1,22 @@
 {% trans_default_domain 'itp_activity' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
-{% import 'admin/organization/import/import_macros.html.twig' as im %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
     {% if not stats %}
-        {{ im.show_import_instructions(columns, 'activity', 'itp_activity') }}
+        <div class="mb-4 max-w-5xl rounded-xl bg-brand-50 p-4 text-sm text-brand-900 ring-1 ring-brand-200">
+            <p><b>{{ 'instructions.navigation'|trans({}, 'import') }}</b> {{ 'instructions.path.activity'|trans }}</p>
+            <p class="mt-1">
+                <b>{{ 'instructions.columns'|trans({}, 'import') }}</b>
+                {% for column_data in columns %}
+                    {{ column_data.column }}{% if not column_data.mandatory %} {{ 'columns.optional'|trans }}{% endif %}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        </div>
         {{ form_start(form) }}
-        {{ form_widget(form) }}
+        {{ fl.grid(form, []) }}
         {{ m.start_button() }}
             {% if not is_read_only() %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.do_import'|trans) }}{% endif %}
             {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
@@ -15,12 +25,14 @@
     {% elseif stats.error is defined %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {% else %}
-        <h4>{{ 'report.stats'|trans }}</h4>
-        <ul>
-            <li>{{ 'report.new_activities'|trans }}: {{ stats.new_items }}</li>
-            <li>{{ 'report.updated_activities'|trans }}: {{ stats.old_items }}</li>
-            <li>{{ 'report.unknown_criteria'|trans }}: {{ stats.unknown_items }}</li>
-        </ul>
+        <div class="mb-4 max-w-2xl rounded-xl bg-white p-5 shadow-xs ring-1 ring-gray-200">
+            <h2 class="mb-2 text-sm font-semibold text-gray-900">{{ 'report.stats'|trans }}</h2>
+            <ul class="list-disc space-y-1 pl-5 text-sm text-gray-700">
+                <li>{{ 'report.new_activities'|trans }}: {{ stats.new_items }}</li>
+                <li>{{ 'report.updated_activities'|trans }}: {{ stats.old_items }}</li>
+                <li>{{ 'report.unknown_criteria'|trans }}: {{ stats.unknown_items }}</li>
+            </ul>
+        </div>
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {% endif %}
 {% endblock %}

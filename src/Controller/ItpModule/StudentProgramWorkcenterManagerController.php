@@ -114,7 +114,7 @@ class StudentProgramWorkcenterManagerController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()
             && $studentProgramWorkcenterRepository->countByStudentEnrollmentsProgramGroupAndWorkcenter(
-                $form->get('students')->getData(),
+                $form->get('students')->getData()->toArray(),
                 $programGroup,
                 $studentProgramWorkcenter->getWorkcenter()
             ) > 0

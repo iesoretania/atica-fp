@@ -1,37 +1,23 @@
 {% trans_default_domain 'itp_travel_expense' %}
-{% extends 'layout.html.twig' %}
-{% set js_entries = ['select2entity', 'edu_travel_route'] %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['fromDateTime', 'toDateTime'],
+        ['travelRoute'],
+        ['trainingPrograms'],
+        ['otherExpenses', 'otherExpensesDescription'],
+        ['description'],
+    ], {otherExpensesDescription: {attr: {rows: 3}}, description: {attr: {rows: 4}}}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
 
-    <input type="hidden" id="new-travelRoute-label" value="{{ 'title.new'|trans({}, 'edu_travel_route') }}" />
-    {% include 'organization/travel_route/new_travel_route_modal.partial.html.twig' %}
+    {% include 'ui/new_travel_route_modal.html.twig' %}
 {% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script type="module">
-        $(document).ready(function () {
-            $('.select2entity[data-autostart="true"]').select2('destroy');
-            $('.select2entity[data-autostart="true"]').select2entity({
-                theme: "bootstrap",
-                language: {
-                    inputTooShort: function () {
-                        return "{{ 'input.too_short'|trans({}, 'edu_travel_route') }}";
-                    },
-                    searching: function () {
-                        return "{{ 'input.searching'|trans({}, 'edu_travel_route') }}";
-                    }
-                }
-            });
-        });
-    </script>
-{% endblock %}
-

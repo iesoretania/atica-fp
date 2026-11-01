@@ -20,7 +20,7 @@ namespace App\Form\Type\ItpModule;
 
 use App\Entity\Company;
 use App\Entity\Edu\Group;
-use App\Entity\Edu\StudentEnrollment;
+use App\Form\Type\Edu\StudentEnrollmentChoiceType;
 use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\Activity;
 use App\Entity\ItpModule\ProgramGrade;
@@ -34,9 +34,9 @@ use App\Repository\ItpModule\ActivityRepository;
 use App\Repository\ItpModule\CompanyRepository;
 use App\Repository\WorkcenterRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -121,16 +121,10 @@ class StudentProgramWorkcenterBatchType extends AbstractType
     private function addElements(FormInterface $form, array $companies, array $workcenters, array $teachers, array $activities, array $students): void
     {
         $form
-            ->add('students', ChoiceType::class, [
+            ->add('students', StudentEnrollmentChoiceType::class, [
                 'mapped' => false,
                 'label' => 'form.students',
-                'multiple' => true,
-                'expanded' => true,
                 'choices' => $students,
-                'choice_translation_domain' => false,
-                'choice_label' => function (StudentEnrollment $studentEnrollment) {
-                    return $studentEnrollment->__toString();
-                },
                 'constraints' => [
                     new Count(min: 1, minMessage: 'selection.count.invalid.min')
                 ],

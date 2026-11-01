@@ -1,6 +1,6 @@
 {% trans_default_domain 'itp_survey' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/list.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
 
 {% block new_action %}{% endblock %}
 
@@ -13,38 +13,31 @@
     <th>{{ 'header.status'|trans }}</th>
 {% endblock %}
 
+{#- Una fila por alumno; el tutor laboral, el plan de formación y el estado se combinan con rowspan -#}
 {% macro row(data, additional) %}
+    {% set training_program = data[0].studentProgram.programGroup.programGrade.trainingProgram %}
     {% for datum in data %}
-        {% set training_program = data[0].studentProgram.programGroup.programGrade.trainingProgram %}
         <tr>
             {% if loop.first %}
-                <td rowspan="{{ data|length }}">
-                    {% set url = path('in_company_training_phase_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].workTutor.id}) %}
-                    <a href="{{ url }}">{{ datum.workTutor }}</a>
+                <td rowspan="{{ data|length }}" class="align-top">
+                    <a href="{{ path('in_company_training_phase_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].workTutor.id}) }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.workTutor }}</a>
                     {% if datum.additionalWorkTutor %}
-                        {% set url = path('in_company_training_phase_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].additionalWorkTutor.id}) %}
-                        <br/><a href="{{ url }}">{{ datum.additionalWorkTutor }}</a>
+                        <br><a href="{{ path('in_company_training_phase_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].additionalWorkTutor.id}) }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.additionalWorkTutor }}</a>
                     {% endif %}
                 </td>
-                <td rowspan="{{ data|length }}">
+                <td rowspan="{{ data|length }}" class="align-top">
                     {{ training_program }}
-                    {% if training_program.locked %} <i class="fa fa-lock"></i>{% endif %}
+                    {% if training_program.locked %}<twig:Ui:Icon name="lock" class="ml-1 inline size-3.5 text-gray-400" />{% endif %}
                 </td>
             {% endif %}
-            <td>
-                {{ datum.studentProgram.studentEnrollment }}
-            </td>
-            <td>
-                {{ datum.workcenter }}
-            </td>
-            <td>
+            <td>{{ datum.studentProgram.studentEnrollment }}</td>
+            <td>{{ datum.workcenter }}</td>
+            <td class="whitespace-nowrap">
                 {{ datum.startDate ? datum.startDate|date('format.date'|trans({}, 'general')) }}
                 {% if datum.endDate %} - {{ datum.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
             </td>
             {% if loop.first %}
-                <td rowspan="{{ data|length }}">
-                    {{ (additional ? 'table.answered.yes' : 'table.answered.no')|trans }}
-                </td>
+                <td rowspan="{{ data|length }}" class="align-top">{{ (additional ? 'table.answered.yes' : 'table.answered.no')|trans }}</td>
             {% endif %}
         </tr>
     {% endfor %}
@@ -66,9 +59,7 @@
             {% set additional = additional + item[1] %}
         {% endif %}
     {% else %}
-        <tr>
-            <td colspan="6">{{ 'table.no_items'|trans }}</td>
-        </tr>
+        <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
     {% endfor %}
     {% if last_id != 0 %}
         {{ _self.row(data, additional) }}
@@ -76,14 +67,13 @@
 {% endblock %}
 
 {% block before_filter %}
-    {% include 'organization/partial_academic_year.html.twig' %}
+    {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: app.current_route} %}
 {% endblock %}
 
 {% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
+    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
 {% endblock %}
 
 {% block after_table %}
-    <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
 {% endblock %}

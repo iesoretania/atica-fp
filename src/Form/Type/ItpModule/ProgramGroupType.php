@@ -19,6 +19,7 @@
 namespace App\Form\Type\ItpModule;
 
 use App\Entity\Edu\StudentEnrollment;
+use App\Form\Type\Edu\StudentEnrollmentChoiceType;
 use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\ProgramGroup;
 use App\Repository\Edu\StudentEnrollmentRepository;
@@ -79,10 +80,9 @@ class ProgramGroupType extends AbstractType
                     'multiple' => true,
                     'required' => false
                 ])
-                ->add('currentStudentPrograms', EntityType::class, [
+                ->add('currentStudentPrograms', StudentEnrollmentChoiceType::class, [
                     'mapped' => false,
                     'label' => 'form.students',
-                    'class' => StudentEnrollment::class,
                     'choices' => $students,
                     'choice_attr' => fn(StudentEnrollment $se): array => (in_array($se, $currentStudentEnrollments, true)) ?
                         ['disabled' => 'disabled'] :

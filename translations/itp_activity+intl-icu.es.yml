@@ -24,6 +24,7 @@ form.criteria.none: Ninguno
 title.list: Actividades del plan de formación
 title.detail: Plan de formación
 title.new: Nueva actividad formativa
+card.title: Descripción y criterios de evaluación
 title.edit: Detalles de la actividad formativa
 title.delete: Eliminar actividades formativas
 title.import: Importar plan de formación inicial

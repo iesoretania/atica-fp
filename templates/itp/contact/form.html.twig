@@ -1,17 +1,29 @@
 {% trans_default_domain 'itp_contact' %}
-{% extends 'layout.html.twig' %}
-{% set js_entries = ['itp_contact'] %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {#- Cascada: fecha/centro de trabajo → planes de formación → alumnado. El servidor devuelve el formulario recalculado y el controlador sustituye solo los campos afectados. -#}
+    {% set common = ['#contact_dateTime_date', '#contact_dateTime_time', '#contact_teacher', '#contact_workcenter'] %}
+    {{ form_start(form, {'attr': {
+        'data-controller': 'dependent-fields',
+        'data-dependent-fields-rules-value': ([
+            {on: ['#contact_dateTime_date', '#contact_workcenter'], send: common, replace: ['#contact_trainingPrograms', '#contact_studentEnrollments']},
+            {on: ['#contact_trainingPrograms input'], send: common|merge(['#contact_trainingPrograms']), replace: ['#contact_studentEnrollments']},
+        ])|json_encode,
+    }}) }}
+    {{ fl.grid(form, [
+        ['dateTime', 'teacher'],
+        ['workcenter', 'method'],
+        ['trainingPrograms'],
+        ['studentEnrollments'],
+        ['detail'],
+    ], {detail: {attr: {rows: 5}}}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
-        {{ m.link_button( path('in_company_training_phase_contact_list', {'academicYear': academic_year.id}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
+        {{ m.link_button(path('in_company_training_phase_contact_list', {'academicYear': academic_year.id}), 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
 {% endblock %}

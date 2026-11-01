@@ -1,9 +1,22 @@
 {% trans_default_domain 'itp_training_program' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['name'],
+        ['grades'],
+        ['modality', 'totalHours', 'targetHours'],
+        ['locked'],
+        ['performanceScale'],
+        ['attendanceReportTemplate', 'weeklyActivityReportTemplate'],
+        ['weeklyActivityReportTemplateType'],
+        ['finalReportTemplate', 'activitySummaryReportTemplate'],
+        ['studentSurvey', 'companySurvey', 'educationalTutorSurvey'],
+    ], {}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {% if not is_read_only() %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(path('in_company_training_phase_training_program_list', {'academicYear': academic_year.id ?? null}), 'arrow-left', 'btn-info', 'form.back'|trans) }}

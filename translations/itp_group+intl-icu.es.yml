@@ -25,6 +25,7 @@ form.no_activity: No hay actividades definidas en el plan de formación y debe s
 
 title.list: Grupos del nivel
 title.new: Nueva incorporación
+card.title: Responsables y alumnado del grupo
 title.edit: Detalles del grupo
 
 table.new: Incorporar nueva empresa

@@ -59,6 +59,12 @@ export default class extends Controller {
         this.updateButtons();
     }
 
+    // Envía el formulario de filtros (GET) al cambiar cualquiera de sus controles (p. ej. el filtro por forma de contacto)
+    submitForm(event) {
+        const form = event.target.closest('form');
+        if (form) form.requestSubmit();
+    }
+
     // Cambio de elemento padre (p. ej. curso académico): cada opción lleva su URL en data-url
     navigate(event) {
         const option = event.target.selectedOptions[0];

@@ -1,50 +1,106 @@
 {% trans_default_domain 'itp_tracking' %}
-{% extends 'layout.html.twig' %}
-{% set js_entries = ['list'] %}
-{% import 'macros.html.twig' as m %}
-{% block content %}
-<h1>
-    {{ title }}
-    {% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_GRADE', student_program_workcenter) %}
-        <a href="#" data-toggle="collapse" data-target="#tutor_info" aria-expanded="false"><i class="fas fa-info-circle fa-sm"></i></a>
-    {% endif %}
-    {% if work_day_today %} {{ m.link_button(path('in_company_training_phase_tracking_calendar_form', {'workDay': work_day_today.id}), 'calendar-day', 'btn-primary', 'form.today'|trans) }}{% endif %}
-    {% include 'itp/tracking/calendar_info_partial.html.twig' %}
-</h1>
-{% include 'itp/tracking/calendar_stats_partial.html.twig' %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
 
-<section id="exchange">
-    <form action="{{ path('in_company_training_phase_tracking_calendar_operation', {'id': student_program_workcenter.id}) }}" class="list" method="post">
-    {% embed 'itp/tracking/calendar_partial.html.twig' %}
-        {% block day %}
-            {% set url = day ? path('in_company_training_phase_tracking_calendar_form', {'workDay': day.id}) : '' %}
-            {% set error = day ? day.timeHours != day.hours : false %}
-            <td class="w-13{% if day %} clickable-row {{ day.absence ? (day.absence == 1 ? 'absence' : 'justified-absence') : ((dayData['activity_count'] == 0 and day.otherActivities is empty) ? 'workday' : (error ? 'submitted-warning' : 'submitted')) }}" data-href="{{ url }}{% endif %}">
-                {% if day %}
-                    {% if not read_only|default(false) and selectable %}<label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> {% endif %}<a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a>{% if selectable %}</label>{% endif %}{% if day and day.locked %} <i class="fas fa-lock"></i>{% endif %}<br/>
-                    {% if error %}{{ 'caption.actual_hours'|trans({'count': day.timeHours / 100}, 'calendar') }}/{% endif %}{{ 'caption.hours'|trans({'count': day.hours / 100}, 'calendar') }}
-                {% elseif n > 0 %}
-                    {{ n }}
-                {% endif %}
-            </td>
-        {% endblock %}
-    {% endembed %}
-
-    {{ m.link_button(back_url|default(last_url), 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {% if not read_only|default(false) %}
-        {% if selectable %}{{ m.link_button('', 'check-square', 'btn-primary', 'form.select_deselect'|trans, 'toggle') }}{% endif %}
-        {% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_LOCK', student_program_workcenter) %}
-            {{ m.submit_button('lock', 'lock', 'btn-info enable-on-items', 'form.lock_action'|trans) }}
-            {{ m.submit_button('unlock', 'lock-open', 'btn-info enable-on-items', 'form.unlock_action'|trans) }}
-            {{ m.submit_button('justified-absence', 'user-check', 'btn-warning enable-on-items', 'form.justify_action'|trans) }}
+{# El título lleva a su derecha el botón «hoy» #}
+{% block content_header %}
+    <div class="mb-6 flex flex-wrap items-center gap-3">
+        <h1 class="text-2xl font-semibold tracking-tight text-gray-900">{{ title }}</h1>
+        {% if work_day_today %}
+            {{ m.link_button(path('in_company_training_phase_tracking_calendar_form', {'workDay': work_day_today.id}), 'calendar-day', 'btn-primary btn-sm', 'form.today'|trans) }}
         {% endif %}
-        {% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_ATTENDANCE', student_program_workcenter) %}{{ m.submit_button('unjustified-absence', 'user-slash', 'btn-danger enable-on-items', 'form.attendance'|trans) }}{% endif %}
-    {% endif %}
-    {{ m.link_button_new(path('in_company_training_phase_tracking_calendar_attendance_report', {'studentProgramWorkcenter': student_program_workcenter.id}), 'file-alt', 'btn-primary', 'form.attendance_report'|trans, null, null) }}
-    </form>
-</section>
+    </div>
+    {% include 'ui/partial_flash.html.twig' %}
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
+{% block content %}
+    {% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_ACCESS', student_program_workcenter) %}
+        {% set workcenter = student_program_workcenter.workcenter %}
+        <details class="mb-4 rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+            <summary class="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700">
+                <twig:Ui:Icon name="info-circle" class="text-brand-600" /> {{ student_program_workcenter.studentProgram.studentEnrollment }}
+            </summary>
+            <dl class="grid gap-x-6 gap-y-2 border-t border-gray-100 p-4 text-sm sm:grid-cols-[max-content_1fr]">
+                {% if student_program_workcenter.studentProgram.studentEnrollment.person.emailAddress %}
+                    <dt class="font-medium text-gray-500">{{ 'form.student_email'|trans }}</dt><dd>{{ student_program_workcenter.studentProgram.studentEnrollment.person.emailAddress }}</dd>
+                {% endif %}
+                <dt class="font-medium text-gray-500">{{ 'form.work_center'|trans }}</dt>
+                <dd>{{ workcenter }}{% if workcenter.zipCode %} - {{ workcenter.zipCode }}{% endif %}{% if workcenter.city %} - {{ workcenter.city }}{% endif %}</dd>
+                {% if workcenter.address %}<dt class="font-medium text-gray-500">{{ 'form.work_center.address'|trans }}</dt><dd>{{ workcenter.address }}</dd>{% endif %}
+                {% if workcenter.phoneNumber %}<dt class="font-medium text-gray-500">{{ 'form.work_center.phone_number'|trans }}</dt><dd>{{ workcenter.phoneNumber }}</dd>{% endif %}
+                {% if workcenter.faxNumber %}<dt class="font-medium text-gray-500">{{ 'form.work_center.fax_number'|trans }}</dt><dd>{{ workcenter.faxNumber }}</dd>{% endif %}
+                {% if workcenter.emailAddress %}<dt class="font-medium text-gray-500">{{ 'form.work_center.email'|trans }}</dt><dd>{{ workcenter.emailAddress }}</dd>{% endif %}
+                <dt class="font-medium text-gray-500">{{ 'form.work_tutor'|trans }}</dt>
+                <dd>{{ student_program_workcenter.workTutor }}{% if student_program_workcenter.workTutor.emailAddress %} - {{ student_program_workcenter.workTutor.emailAddress }}{% endif %}</dd>
+                {% if student_program_workcenter.additionalWorkTutor %}
+                    <dt class="font-medium text-gray-500">{{ 'form.work_tutor'|trans }}</dt>
+                    <dd>{{ student_program_workcenter.additionalWorkTutor }}{% if student_program_workcenter.additionalWorkTutor.emailAddress %} - {{ student_program_workcenter.additionalWorkTutor.emailAddress }}{% endif %}</dd>
+                {% endif %}
+                <dt class="font-medium text-gray-500">{{ 'form.educational_tutor'|trans }}</dt>
+                <dd>{{ student_program_workcenter.educationalTutor }}{% if student_program_workcenter.educationalTutor.person.emailAddress %} - {{ student_program_workcenter.educationalTutor.person.emailAddress }}{% endif %}</dd>
+                {% if student_program_workcenter.additionalEducationalTutor %}
+                    <dt class="font-medium text-gray-500">{{ 'form.educational_tutor'|trans }}</dt>
+                    <dd>{{ student_program_workcenter.additionalEducationalTutor }}{% if student_program_workcenter.additionalEducationalTutor.person.emailAddress %} - {{ student_program_workcenter.additionalEducationalTutor.person.emailAddress }}{% endif %}</dd>
+                {% endif %}
+            </dl>
+        </details>
+    {% endif %}
+
+    {% include 'itp/tracking/calendar_stats_partial.html.twig' %}
+
+    <div data-controller="list">
+        <section id="exchange">
+            <form action="{{ path('in_company_training_phase_tracking_calendar_operation', {'id': student_program_workcenter.id}) }}" method="post">
+                {% embed 'ui/calendar.html.twig' with {week_operations: true, lock_manager: is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_LOCK', student_program_workcenter)} %}
+                    {% block day %}
+                        {% set url = day ? path('in_company_training_phase_tracking_calendar_form', {'workDay': day.id}) : '' %}
+                        {% if day %}
+                            {% set error = day.timeHours != day.hours %}
+                            {% if day.absence %}
+                                {% set state = day.absence == 1 ? 'bg-red-100 text-red-900' : 'bg-amber-100 text-amber-900' %}
+                            {% elseif dayData['activity_count'] == 0 and day.otherActivities is empty %}
+                                {% set state = 'bg-brand-50 text-brand-900' %}
+                            {% else %}
+                                {% set state = error ? 'bg-orange-100 text-orange-900' : 'bg-emerald-100 text-emerald-900' %}
+                            {% endif %}
+                            <td class="clickable-row cursor-pointer transition hover:brightness-95 {{ state }}" data-href="{{ url }}">
+                                <div class="flex items-center justify-between gap-1">
+                                    <label class="flex items-center gap-1">
+                                        {% if not read_only|default(false) and selectable %}<input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable size-3.5 rounded border-gray-300 text-brand-600">{% endif %}
+                                        <a href="{{ url }}" class="text-sm font-bold">{{ day.date|date('d') }}</a>
+                                    </label>
+                                    {% if day.locked %}<twig:Ui:Icon name="lock" class="size-3 opacity-60" />{% endif %}
+                                </div>
+                                <div class="mt-1">{% if error %}{{ 'caption.actual_hours'|trans({'count': day.timeHours / 100}, 'calendar') }}/{% endif %}{{ 'caption.hours'|trans({'count': day.hours / 100}, 'calendar') }}</div>
+                            </td>
+                        {% else %}
+                            <td class="text-gray-400">{% if n > 0 %}{{ n }}{% endif %}</td>
+                        {% endif %}
+                    {% endblock %}
+                {% endembed %}
+
+                <div class="mb-4 mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600" aria-hidden="true">
+                    <span class="flex items-center gap-1.5"><span class="size-3 rounded bg-brand-50 ring-1 ring-brand-200"></span>{{ 'legend.pending'|trans({}, 'calendar') }}</span>
+                    <span class="flex items-center gap-1.5"><span class="size-3 rounded bg-emerald-100 ring-1 ring-emerald-300"></span>{{ 'legend.complete'|trans({}, 'calendar') }}</span>
+                    <span class="flex items-center gap-1.5"><span class="size-3 rounded bg-orange-100 ring-1 ring-orange-300"></span>{{ 'legend.partial'|trans({}, 'calendar') }}</span>
+                    <span class="flex items-center gap-1.5"><span class="size-3 rounded bg-amber-100 ring-1 ring-amber-300"></span>{{ 'legend.justified'|trans({}, 'calendar') }}</span>
+                    <span class="flex items-center gap-1.5"><span class="size-3 rounded bg-red-100 ring-1 ring-red-300"></span>{{ 'legend.absence'|trans({}, 'calendar') }}</span>
+                </div>
+
+                <div class="mt-4 flex flex-wrap gap-2">
+                    {{ m.link_button(back_url|default(last_url), 'arrow-left', 'btn-info', 'form.back'|trans) }}
+                    {% if not read_only|default(false) %}
+                        {% if selectable %}<twig:Ui:Button type="button" variant="secondary" icon="check-square" data-action="list#toggle" :label="'form.select_deselect'|trans" />{% endif %}
+                        {% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_LOCK', student_program_workcenter) %}
+                            {{ m.submit_button('lock', 'lock', 'btn-info enable-on-items', 'form.lock_action'|trans, true) }}
+                            {{ m.submit_button('unlock', 'unlock', 'btn-info enable-on-items', 'form.unlock_action'|trans, true) }}
+                            {{ m.submit_button('justified-absence', 'user-check', 'btn-warning enable-on-items', 'form.justify_action'|trans, true) }}
+                        {% endif %}
+                        {% if is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_ATTENDANCE', student_program_workcenter) %}{{ m.submit_button('unjustified-absence', 'user-slash', 'btn-danger enable-on-items', 'form.attendance'|trans, true) }}{% endif %}
+                    {% endif %}
+                    {{ m.link_button_new(path('in_company_training_phase_tracking_calendar_attendance_report', {'studentProgramWorkcenter': student_program_workcenter.id}), 'file-alt', 'btn-primary', 'form.attendance_report'|trans) }}
+                </div>
+            </form>
+        </section>
+    </div>
 {% endblock %}

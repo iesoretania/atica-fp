@@ -1,6 +1,6 @@
 {% trans_default_domain 'itp_survey' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/list.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
 
 {% block new_action %}{% endblock %}
 
@@ -18,42 +18,29 @@
         {% set item = data[0] %}
         {% set url = path('in_company_training_phase_survey_student_form', {'id': item.id}) %}
         <tr>
-            <td>
-                <a href="{{ url }}">{{ item.studentProgram.studentEnrollment }}</a>
-            </td>
-            <td>
-                {{ item.studentProgram.programGroup.programGrade.trainingProgram }}
-            </td>
-            <td>
-                {{ item.workcenter }}
-            </td>
-            <td>
-                {{ item.workTutor }}
-            </td>
-            <td>
+            <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.studentProgram.studentEnrollment }}</a></td>
+            <td>{{ item.studentProgram.programGroup.programGrade.trainingProgram }}</td>
+            <td>{{ item.workcenter }}</td>
+            <td>{{ item.workTutor }}</td>
+            <td class="whitespace-nowrap">
                 {{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}
                 {% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
             </td>
-            <td>
-                {{ data[1] ? 'table.answered.yes'|trans : 'table.answered.no'|trans }}
-            </td>
+            <td>{{ data[1] ? 'table.answered.yes'|trans : 'table.answered.no'|trans }}</td>
         </tr>
     {% else %}
-        <tr>
-            <td colspan="6">{{ 'table.no_items'|trans }}</td>
-        </tr>
+        <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
     {% endfor %}
 {% endblock %}
 
 {% block before_filter %}
-    {% include 'organization/partial_academic_year.html.twig' %}
+    {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: app.current_route} %}
 {% endblock %}
 
 {% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
+    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
 {% endblock %}
 
 {% block after_table %}
-    <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
 {% endblock %}

@@ -1,10 +1,17 @@
 {% trans_default_domain 'itp_student_program' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
-{% form_theme form _self %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['authorizationNeeded'],
+        ['authorizationDescription'],
+        ['adaptationNeeded'],
+        ['adaptationDescription'],
+    ], {authorizationDescription: {attr: {rows: 3}}, adaptationDescription: {attr: {rows: 3}}}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {% if not is_read_only() %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}

@@ -1,52 +1,39 @@
 {% trans_default_domain 'itp_group' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/list.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
 
 {% block new_action %}{% endblock %}
 
 {% block table_header %}
-    <th class="w-10">{{ 'header.name'|trans }}</th>
-    <th class="w-20">{{ 'header.managers'|trans }}</th>
-    <th class="w-5">{{ 'header.target_hours'|trans }}</th>
-    <th class="w-15"></th>
-    <th class="w-15"></th>
-    <th class="w-15"></th>
+    <th>{{ 'header.name'|trans }}</th>
+    <th>{{ 'header.managers'|trans }}</th>
+    <th>{{ 'header.target_hours'|trans }}</th>
+    <th colspan="3"></th>
 {% endblock %}
 
 {% block table_body %}
-            {% for item in pager %}
-                {% set url = path('in_company_training_phase_student_program_list', {'programGroup': item.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
-                    <td>
-                        <a href="{{ url }}">{{ item.group.name }}</a>
-                    </td>
-                    <td>
-                        {{ item.managers|join(', ') }}
-                    </td>
-                    <td>
-                        {{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
-                    </td>
-                    <td>
-                        {% if not is_read_only() %}{{ m.link_button(path('in_company_training_phase_student_program_workcenter_manage_new', {'programGroup': item.id}), 'add', 'btn-info btn-sm btn-block', 'form.add'|trans) }}{% endif %}
-                    </td>
-                    <td>
-                        {{ m.link_button(path('in_company_training_phase_group_edit', {'id': item.id}), 'edit', 'btn-info btn-sm btn-block', 'form.edit'|trans) }}
-                    </td>
-                    <td>
-                        {{ m.link_button(path('in_company_training_phase_student_program_list', {'programGroup': item.id}), 'person-chalkboard', 'btn-info btn-sm btn-block', 'form.programs'|trans) }}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
-                </tr>
-            {% endfor %}
+    {% for item in pager %}
+        {% set url = path('in_company_training_phase_student_program_list', {'programGroup': item.id}) %}
+        <tr class="clickable-row" data-href="{{ url }}">
+            <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.group.name }}</a></td>
+            <td>{{ item.managers|join(', ') }}</td>
+            <td>{{ (item.targetHours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}</td>
+            <td class="text-right">
+                <div class="inline-flex flex-wrap justify-end gap-2">
+                    {% if not is_read_only() %}{{ m.link_button(path('in_company_training_phase_student_program_workcenter_manage_new', {'programGroup': item.id}), 'plus', 'btn-info btn-sm', 'form.add'|trans) }}{% endif %}
+                    {{ m.link_button(path('in_company_training_phase_group_edit', {'id': item.id}), 'pen-to-square', 'btn-info btn-sm', 'form.edit'|trans) }}
+                    {{ m.link_button(path('in_company_training_phase_student_program_list', {'programGroup': item.id}), 'chalkboard-user', 'btn-info btn-sm', 'form.programs'|trans) }}
+                </div>
+            </td>
+        </tr>
+    {% else %}
+        <tr><td colspan="4" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
+    {% endfor %}
 {% endblock %}
 
 {% block filter %}{% endblock %}
 
 {% block after_table %}
-    <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.link_button(path('in_company_training_phase_student_program_workcenter_manage_list', {'programGrade': program_grade.id}), 'list-check', 'btn-warning', 'form.manage_student_programs'|trans) }}
 {% endblock %}

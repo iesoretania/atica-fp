@@ -23,6 +23,7 @@ prompt.delete_confirm: |
 
 title.edit: Datos del desplazamiento
 title.new: Nuevo desplazamiento
+card.title: Itinerario y gastos
 title.delete: Eliminar desplazamiento
 
 title.teacher_list: Resumen de desplazamientos

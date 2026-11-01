@@ -1,12 +1,18 @@
 {% trans_default_domain 'itp_company' %}
-{% extends 'layout.html.twig' %}
-{% set js_entries = ['itp_company'] %}
-{% import 'macros.html.twig' as m %}
-{% form_theme form _self %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% import 'ui/form_checklist.html.twig' as cl %}
+{% form_theme form 'ui/form_theme.html.twig' _self %}
 
 {% block content %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['company'],
+        ['agreementNumber'],
+        ['monitoringInstruments'],
+        ['programActivities'],
+    ], {monitoringInstruments: {attr: {rows: 4}}}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {% if not is_read_only() %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
@@ -14,16 +20,6 @@
     {{ form_end(form) }}
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-{% endblock %}
-
 {% block _company_program_programActivities_widget %}
-    {% if form.children is empty %}
-        <h5><b>{{ 'form.no_activity'|trans }}</b></h5>
-    {% else %}
-        <button type="button" id="select_all" class="btn btn-sm btn-secondary" title="{{ 'form.activities.all'|trans }}"><i class="fa fa-square-check"></i></button>
-        <button type="button" id="select_none" class="btn btn-sm btn-secondary" title="{{ 'form.activities.none'|trans }}"><i class="fa fa-square"></i></button>
-        {{ form_widget(form) }}
-    {% endif %}
+    {{ cl.checklist(form, choices, 'form.activities.all'|trans, 'form.activities.none'|trans, 'form.no_activity'|trans) }}
 {% endblock %}

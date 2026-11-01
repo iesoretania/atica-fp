@@ -9,7 +9,8 @@
 
 {% if calendar is not empty %}
     {% set week_ops = week_operations|default(false) %}
-    {% set lock_manager = week_ops and is_granted('WPT_AGREEMENT_ENROLLMENT_LOCK', agreement_enrollment) %}
+    {#- «lock_manager» (booleano) puede pasarlo quien incluye el calendario; por defecto, el permiso de bloqueo de FCT -#}
+    {% set lock_manager = lock_manager ?? (week_ops and is_granted('WPT_AGREEMENT_ENROLLMENT_LOCK', agreement_enrollment)) %}
     <div class="grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">
         {% for num, month in calendar %}
             {% set year = num // 12 %}
@@ -32,10 +33,11 @@
                                     {% set all_unlocked = true %}
                                     {% for n, dayData in week.days %}
                                         {% set day = dayData ? dayData[0] : null %}
-                                        {% set tracked_day = dayData ? dayData[1] : null %}
+                                        {% set tracked_day = dayData ? (dayData[1] ?? null) : null %}
                                         {% if day %}
                                             {% set workday_exists = true %}
-                                            {% if tracked_day and tracked_day.locked %}{% set all_unlocked = false %}{% else %}{% set all_locked = false %}{% endif %}
+                                            {#- bloqueada: la jornada de seguimiento (FCT) o la propia jornada (FFEOE) -#}
+                                            {% if (tracked_day and tracked_day.locked) or (not tracked_day and (day.locked ?? false)) %}{% set all_unlocked = false %}{% else %}{% set all_locked = false %}{% endif %}
                                         {% endif %}
                                         {% block day %}
                                             <td class="{{ day ? 'bg-brand-50 text-brand-900' : 'text-gray-400' }}">

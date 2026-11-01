@@ -1,10 +1,15 @@
 {% trans_default_domain 'itp_grading' %}
-{% import 'macros.html.twig' as m %}
-{% extends 'layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
 {% block title %}{{ 'title.evaluation_report'|trans }} - {{ student_program_workcenter }}{% endblock %}
 
 {% block content %}
-    {% include 'itp/training_program/grading/evaluation_data_partial.html.twig' %}
+    {#- La parcial se comparte con el informe PDF (que usa sus propios estilos): aquí se le dan estilos con selectores del contenedor -#}
+    <div class="mb-6 max-w-5xl overflow-x-auto rounded-xl bg-white p-4 text-sm shadow-xs ring-1 ring-gray-200
+                [&_table]:mb-4 [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-gray-200 [&_td]:p-3 [&_td]:align-top
+                [&_th]:border [&_th]:border-gray-200 [&_th]:bg-gray-50 [&_th]:p-3 [&_th]:text-left [&_ul]:list-disc [&_ul]:pl-5">
+        {% include 'itp/training_program/grading/evaluation_data_partial.html.twig' %}
+    </div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
 {% endblock %}

@@ -15,6 +15,7 @@ form.no_learning_outcome: No hay RAs que mostrar en los módulos profesionales s
 
 title.list: Plan de formación inicial
 title.learning_outcomes: Resultados de aprendizaje
+card.title: Horas objetivo
 
 table.total: "{count, plural, =0 {No hay resultados} one {Encontrado un único resultado} other {Encontrados # resultados}}"
 table.no_items: No hay cursos con resultados de aprendizaje registrados

@@ -20,7 +20,7 @@ namespace App\Form\Type\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\ContactMethod;
-use App\Entity\Edu\StudentEnrollment;
+use App\Form\Type\Edu\StudentEnrollmentChoiceType;
 use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\Contact;
 use App\Entity\ItpModule\TrainingProgram;
@@ -127,9 +127,8 @@ class ContactType extends AbstractType
                 'placeholder' => 'form.training_programs.none',
                 'required' => false
             ])
-            ->add('studentEnrollments', EntityType::class, [
+            ->add('studentEnrollments', StudentEnrollmentChoiceType::class, [
                 'label' => 'form.student_enrollments',
-                'class' => StudentEnrollment::class,
                 'choices' => $studentEnrollments,
                 'disabled' => !$canSelectStudentEnrollments,
                 'expanded' => $canSelectStudentEnrollments,

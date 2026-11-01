@@ -47,6 +47,7 @@ prompt.delete_confirm: |
 
 title.edit: Modificar plan de formación
 title.new: Nuevo plan de formación
+card.title: Configuración del plan de formación
 title.delete: Eliminar plan de formación
 
 title.list: Planes de formación
