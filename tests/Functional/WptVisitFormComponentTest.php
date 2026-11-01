@@ -69,6 +69,44 @@ class WptVisitFormComponentTest extends AppWebTestCase
         self::assertStringContainsString('visit[agreements][]', $html, 'Aparecen los acuerdos del centro como casillas');
     }
 
+    public function testChangingTheTeacherAfterChoosingAWorkcenterSelectsTheNewTeachersFirstWorkcenter(): void
+    {
+        $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
+        $component = $this->componentFor('/fct/visita/nueva/' . $this->teacherId('alfa.tutor'));
+
+        $teachers = $component['crawler']->filter('select[name="visit[teacher]"] option')->extract(['value']);
+        $teachers = array_values(array_filter($teachers, static fn (string $v): bool => $v !== ''));
+        self::assertGreaterThan(1, count($teachers), 'Hay más de un docente');
+        $current = $component['crawler']->filter('select[name="visit[teacher]"] option[selected]')->attr('value');
+        $other = current(array_filter($teachers, static fn (string $v): bool => $v !== $current));
+
+        // 1) se elige un centro de trabajo del docente actual
+        $workcenters = $component['crawler']->filter('select[name="visit[workcenter]"] option')->extract(['value']);
+        $workcenters = array_values(array_filter($workcenters, static fn (string $v): bool => $v !== ''));
+        $this->update($component, ['visit.workcenter' => $workcenters[0]]);
+        self::assertResponseIsSuccessful();
+
+        // 2) se cambia de docente con las propiedades devueltas por la primera actualización: el centro elegido ya no vale
+        $crawler = new Crawler((string) $this->client->getResponse()->getContent());
+        $root = $crawler->filter('[data-live-name-value="Wpt:VisitForm"]');
+        $this->update([
+            'url' => $component['url'],
+            'props' => $root->attr('data-live-props-value'),
+            'csrf' => $root->attr('data-live-csrf-value'),
+        ], ['visit.teacher' => $other]);
+
+        self::assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringNotContainsString('La opción seleccionada no es válida', $html);
+        $result = new Crawler($html);
+        self::assertSame($other, $result->filter('select[name="visit[teacher]"] option[selected]')->attr('value'));
+        $options = array_filter($result->filter('select[name="visit[workcenter]"] option')->extract(['value']), static fn (string $v): bool => $v !== '');
+        if ($options !== []) {
+            self::assertCount(1, $result->filter('select[name="visit[workcenter]"] option[selected]'), 'Se elige el primer centro del nuevo docente');
+            self::assertNotSame('', $result->filter('select[name="visit[workcenter]"] option[selected]')->attr('value'));
+        }
+    }
+
     public function testExistingVisitPageUsesTheComponent(): void
     {
         $this->login($this->getUser('alfa.tutor'));

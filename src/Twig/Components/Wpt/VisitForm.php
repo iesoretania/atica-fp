@@ -90,11 +90,14 @@ final class VisitForm extends AbstractController
     }
 
     /**
-     * «acuerdos» y «alumnado» empiezan siendo un <select> deshabilitado (valor texto) y pasan a ser casillas (lista)
-     * cuando hay opciones; el navegador guarda el primer valor como texto. Se convierte en lista antes de enviar el formulario.
+     * Prepara los valores ANTES de que el formulario se envíe (el trait lo hace con prioridad 0):
+     *  - «acuerdos» y «alumnado» empiezan siendo un <select> deshabilitado (valor texto) y pasan a ser casillas (lista)
+     *    cuando hay opciones; el navegador guarda el primer valor como texto, así que se convierte en lista.
+     *  - Si se ha cambiado el docente, el centro de trabajo, los acuerdos y el alumnado elegidos ya no valen: se vacían
+     *    (y se quita su validación) para que no aparezca «la opción seleccionada no es válida».
      */
     #[PreReRender(priority: 10)]
-    public function normalizeMultipleValues(): void
+    public function prepareValues(): void
     {
         foreach (['agreements', 'studentEnrollments'] as $field) {
             $value = $this->formValues[$field] ?? [];
@@ -102,6 +105,23 @@ final class VisitForm extends AbstractController
                 $this->formValues[$field] = $value === '' || $value === null ? [] : [$value];
             }
         }
+
+        $teacher = (string) ($this->formValues['teacher'] ?? '');
+        if ($teacher === $this->lastTeacher) {
+            return;
+        }
+        $this->lastTeacher = $teacher;
+        $this->teacherChanged = true;
+
+        $dependent = ['workcenter', 'agreements', 'studentEnrollments'];
+        $this->formValues['workcenter'] = '';
+        $this->formValues['agreements'] = [];
+        $this->formValues['studentEnrollments'] = [];
+        $paths = array_map(fn (string $field): string => $this->getFormName() . '.' . $field, $dependent);
+        $this->validatedFields = array_values(array_filter(
+            $this->validatedFields,
+            static fn (string $path): bool => !in_array($path, $paths, true),
+        ));
     }
 
     #[PostMount(priority: -1)]
@@ -111,19 +131,13 @@ final class VisitForm extends AbstractController
     }
 
     /**
-     * Si se ha cambiado el docente, se elige el primer centro de trabajo que le corresponda y se recalcula el resto
-     * (antes lo hacía el JavaScript). Solo cuando cambia el docente, para respetar que se deje en blanco a propósito.
+     * Tras cambiar el docente se elige el primer centro de trabajo que le corresponda y se recalcula el resto (antes lo
+     * hacía el JavaScript). Solo cuando cambia el docente, para respetar que se deje en blanco a propósito.
      */
     #[PreReRender(priority: -10)]
     public function selectFirstWorkcenterWhenTeacherChanges(): void
     {
-        $teacher = (string) ($this->formValues['teacher'] ?? '');
-        if ($teacher === $this->lastTeacher) {
-            return;
-        }
-        $this->lastTeacher = $teacher;
-
-        if ($teacher === '' || ($this->formValues['workcenter'] ?? '') !== '') {
+        if (!$this->teacherChanged || ($this->formValues['teacher'] ?? '') === '') {
             return;
         }
         foreach ($this->getFormView()->children['workcenter']->vars['choices'] as $choice) {
@@ -144,6 +158,9 @@ final class VisitForm extends AbstractController
     }
 
     private ?Contact $newVisit = null;
+
+    /** Se ha cambiado el docente en esta petición. */
+    private bool $teacherChanged = false;
 
     private function currentVisit(): Contact
     {
