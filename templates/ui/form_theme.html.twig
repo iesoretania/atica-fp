@@ -164,6 +164,12 @@
     {%- endif -%}
 {%- endblock student_enrollment_choice_widget -%}
 
+{#- RichTextType: el controlador Stimulus rich-editor lo sustituye por un editor Quill (el textarea sigue siendo el campo enviado) -#}
+{%- block rich_text_widget -%}
+    {%- set attr = attr|merge({'data-controller': (attr['data-controller']|default('') ~ ' rich-editor')|trim}) -%}
+    {{- block('textarea_widget') -}}
+{%- endblock rich_text_widget -%}
+
 {#- Select2EntityType con búsqueda remota: lo gestiona el controlador Stimulus entity-select (Tom Select) -#}
 {%- block tetranz_select2entity_widget -%}
     {%- set attr = attr|merge({
