@@ -16,8 +16,8 @@ form.company_survey: Modelo de encuesta de satisfacción de empresa colaboradora
 form.educational_tutor_survey: Modelo de encuesta de satisfacción de tutoría docente
 
 form.grades.help: Cursos de la enseñanza a los que se aplica este plan. Los grupos de esos cursos quedan asociados al plan.
-form.modality.general.help: Las estancias se reparten a lo largo del curso con el horario habitual.
-form.modality.intensive.help: Las estancias se concentran en un periodo corto con jornada completa.
+form.modality.general.help: La formación en la empresa dura entre el 25 % y el 35 % de la duración total de la enseñanza (puede ser menos en ofertas de nivel 1) y se relaciona con un máximo del 20 % de los resultados de aprendizaje del currículo.
+form.modality.intensive.help: Se alterna el centro con la actividad productiva, con contrato laboral de formación retribuido. La formación en la empresa supera el 35 % de la duración total y se relaciona con más del 30 % de los resultados de aprendizaje o módulos profesionales.
 form.performance_scale.help: Escala con la que el tutor o tutora de la empresa valora el desempeño del alumnado.
 form.attendance_report_template.help: Documento que se genera para registrar la asistencia de cada estancia.
 form.weekly_activity_report_template.help: Documento que resume las actividades realizadas cada semana.
