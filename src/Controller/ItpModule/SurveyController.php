@@ -49,20 +49,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route(path: '/formacion/encuesta', name: 'in_company_training_phase_survey')]
 class SurveyController extends AbstractController
 {
-    private function getPager(QueryBuilder $queryBuilder, int $pageSize, int $page): Pagerfanta
-    {
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($pageSize)
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-        return $pager;
-    }
-
     #[Route(path: '/', name: '', methods: ['GET'])]
     public function index(UserExtensionService $userExtensionService): Response
     {
@@ -370,28 +356,8 @@ class SurveyController extends AbstractController
 
         $title = $translator->trans('title.survey.student_program_workcenter.list', [], 'itp_survey');
 
-        $person = $this->getUser();
-        assert($person instanceof Person);
-
-        $q = $request->query->get('q');
-
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        $queryBuilder = $studentAnsweredSurveyRepository->createStatsByAcademicYearAndPersonFilterQueryBuilder(
-            $academicYear,
-            $isManager,
-            $person,
-            $q
-        );
-
-        $pageSize = $this->getParameter('page.size');
-
-        $pager = $this->getPager($queryBuilder, $pageSize, $page);
-
         return $this->render('itp/survey/student_list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'itp_survey',
             'route_name' => 'in_company_training_phase_survey_student_form',
             'academic_year' => $academicYear,
@@ -417,28 +383,8 @@ class SurveyController extends AbstractController
 
         $title = $translator->trans('title.survey.work_tutor.list', [], 'itp_survey');
 
-        $person = $this->getUser();
-        assert($person instanceof Person);
-
-        $q = $request->query->get('q');
-
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        $queryBuilder = $workTutorAnsweredSurveyRepository->createStatsByAcademicYearAndPersonFilterQueryBuilder(
-            $academicYear,
-            $isManager,
-            $person,
-            $q
-        );
-
-        $pageSize = $this->getParameter('page.size');
-
-        $pager = $this->getPager($queryBuilder, $pageSize, $page);
-
         return $this->render('itp/survey/work_tutor_list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'itp_survey',
             'route_name' => 'in_company_training_phase_survey_work_tutor_form',
             'academic_year' => $academicYear,
@@ -465,28 +411,8 @@ class SurveyController extends AbstractController
 
         $title = $translator->trans('title.survey.educational_tutor.list', [], 'itp_survey');
 
-        $person = $this->getUser();
-        assert($person instanceof Person);
-
-        $q = $request->query->get('q');
-
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-        $isItpManager = $this->isGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);
-
-        $queryBuilder = $educationalTutorAnsweredSurveyRepository->createStatsByAcademicYearAndPersonFilterQueryBuilder(
-            $academicYear,
-            $isManager,
-            $isItpManager,
-            $person,
-            $q
-        );
-
-        $pager = $this->getPager($queryBuilder, $this->getParameter('page.size'), $page);
-
         return $this->render('itp/survey/educational_tutor_list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'itp_survey',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)

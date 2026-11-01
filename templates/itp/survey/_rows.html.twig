@@ -1,0 +1,63 @@
+{% trans_default_domain 'itp_survey' %}
+{#- Filas de los listados de encuestas de tutoría laboral y docente: una fila por estancia; el tutor, el plan de formación y el estado se combinan con rowspan.
+    kind: 'work_tutor' o 'educational_tutor' -#}
+{% macro group(data, additional, kind) %}
+    {% set training_program = data[0].studentProgram.programGroup.programGrade.trainingProgram %}
+    {% for datum in data %}
+        <tr>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}" class="align-top">
+                    {% if kind == 'work_tutor' %}
+                        <a href="{{ path('in_company_training_phase_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].workTutor.id}) }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.workTutor }}</a>
+                        {% if datum.additionalWorkTutor %}
+                            <br><a href="{{ path('in_company_training_phase_survey_work_tutor_form', {'id': data[0].id, 'workTutor': data[0].additionalWorkTutor.id}) }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.additionalWorkTutor }}</a>
+                        {% endif %}
+                    {% else %}
+                        {% set url = path('in_company_training_phase_survey_educational_tutor_form', {'id': data[0].id, 'teacher': data[0].educationalTutor.id}) %}
+                        <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.educationalTutor }}</a>
+                        {% if datum.additionalEducationalTutor %}
+                            <br><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.additionalEducationalTutor }}</a>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td rowspan="{{ data|length }}" class="align-top">
+                    {{ training_program }}
+                    {% if training_program.locked %}<twig:Ui:Icon name="lock" class="ml-1 inline size-3.5 text-gray-400" />{% endif %}
+                </td>
+            {% endif %}
+            <td>{{ datum.studentProgram.studentEnrollment }}</td>
+            <td>{{ datum.workcenter }}</td>
+            <td class="whitespace-nowrap">
+                {{ datum.startDate ? datum.startDate|date('format.date'|trans({}, 'general')) }}
+                {% if datum.endDate %} - {{ datum.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
+            </td>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}" class="align-top">{{ (additional ? 'table.answered.yes' : 'table.answered.no')|trans }}</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+{% endmacro %}
+
+{% macro draw_all(pager, kind) %}
+    {% set last_id = 0 %}
+    {% set data = [] %}
+    {% set additional = 0 %}
+    {% for item in pager %}
+        {% set training_program = item[0].studentProgram.programGroup.programGrade.trainingProgram %}
+        {% set tutor = kind == 'work_tutor' ? item[0].workTutor : item[0].educationalTutor %}
+        {% if last_id != tutor.id ~ '-' ~ training_program.id %}
+            {% if last_id != 0 %}{{ _self.group(data, additional, kind) }}{% endif %}
+            {% set last_id = tutor.id ~ '-' ~ training_program.id %}
+            {% set data = [item[0]] %}
+            {% set additional = item[1] %}
+        {% else %}
+            {% set data = data|merge([item[0]]) %}
+            {% set additional = additional + item[1] %}
+        {% endif %}
+    {% else %}
+        <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
+    {% endfor %}
+    {% if last_id != 0 %}
+        {{ _self.group(data, additional, kind) }}
+    {% endif %}
+{% endmacro %}

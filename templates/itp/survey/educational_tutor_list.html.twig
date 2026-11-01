@@ -1,80 +1,10 @@
 {% trans_default_domain 'itp_survey' %}
-{% extends 'ui/list.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block new_action %}{% endblock %}
-
-{% block table_header %}
-    <th>{{ 'header.educational_tutor'|trans }}</th>
-    <th>{{ 'header.training_program'|trans }}</th>
-    <th>{{ 'header.student'|trans }}</th>
-    <th>{{ 'header.workcenter'|trans }}</th>
-    <th>{{ 'header.dates'|trans }}</th>
-    <th>{{ 'header.status'|trans }}</th>
-{% endblock %}
-
-{#- Una fila por alumno; el tutor docente, el plan de formación y el estado se combinan con rowspan -#}
-{% macro row(data, additional) %}
-    {% set training_program = data[0].studentProgram.programGroup.programGrade.trainingProgram %}
-    {% for datum in data %}
-        <tr>
-            {% if loop.first %}
-                <td rowspan="{{ data|length }}" class="align-top">
-                    {% set url = path('in_company_training_phase_survey_educational_tutor_form', {'id': data[0].id, 'teacher': data[0].educationalTutor.id}) %}
-                    <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.educationalTutor }}</a>
-                    {% if datum.additionalEducationalTutor %}
-                        <br><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.additionalEducationalTutor }}</a>
-                    {% endif %}
-                </td>
-                <td rowspan="{{ data|length }}" class="align-top">
-                    {{ training_program }}
-                    {% if training_program.locked %}<twig:Ui:Icon name="lock" class="ml-1 inline size-3.5 text-gray-400" />{% endif %}
-                </td>
-            {% endif %}
-            <td>{{ datum.studentProgram.studentEnrollment }}</td>
-            <td>{{ datum.workcenter }}</td>
-            <td class="whitespace-nowrap">
-                {{ datum.startDate ? datum.startDate|date('format.date'|trans({}, 'general')) }}
-                {% if datum.endDate %} - {{ datum.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
-            </td>
-            {% if loop.first %}
-                <td rowspan="{{ data|length }}" class="align-top">{{ (additional ? 'table.answered.yes' : 'table.answered.no')|trans }}</td>
-            {% endif %}
-        </tr>
-    {% endfor %}
-{% endmacro %}
-
-{% block table_body %}
-    {% set last_id = 0 %}
-    {% set data = [] %}
-    {% set additional = 0 %}
-    {% for item in pager %}
-        {% set training_program = item[0].studentProgram.programGroup.programGrade.trainingProgram %}
-        {% if last_id != item[0].educationalTutor.id  ~ '-' ~ training_program.id %}
-            {% if last_id != 0 %}{{ _self.row(data, additional) }}{% endif %}
-            {% set last_id = item[0].educationalTutor.id ~ '-' ~ training_program.id %}
-            {% set data = [item[0]] %}
-            {% set additional = item[1] %}
-        {% else %}
-            {% set data = data|merge([item[0]]) %}
-            {% set additional = additional + item[1] %}
-        {% endif %}
-    {% else %}
-        <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
-    {% endfor %}
-    {% if last_id != 0 %}
-        {{ _self.row(data, additional) }}
-    {% endif %}
-{% endblock %}
-
-{% block before_filter %}
-    {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: app.current_route} %}
-{% endblock %}
-
-{% block pagerfanta %}
-    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
-{% endblock %}
-
-{% block after_table %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{#- Listado dinámico (Live Component Itp:SurveyEducationalTutorList); el selector de curso académico navega a otra página -#}
+{% block content %}
+    <div data-controller="list">
+        {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: app.current_route} %}
+    </div>
+    {% include 'ui/_live_list.html.twig' with {component: 'Itp:SurveyEducationalTutorList', props: {academicYear: academic_year}} %}
 {% endblock %}

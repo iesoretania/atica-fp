@@ -1,0 +1,43 @@
+{% trans_default_domain 'itp_survey' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'itp_survey', base_url: this.baseUrl, back_url: this.backUrl} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% block new_action %}{% endblock %}
+
+        {% block table_header %}
+            <th>{{ 'header.student'|trans({}, domain) }}</th>
+            <th>{{ 'header.training_program'|trans({}, domain) }}</th>
+            <th>{{ 'header.workcenter'|trans({}, domain) }}</th>
+            <th>{{ 'header.work_tutor'|trans({}, domain) }}</th>
+            <th>{{ 'header.dates'|trans({}, domain) }}</th>
+            <th>{{ 'header.status'|trans({}, domain) }}</th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for data in pager %}
+                {% set item = data[0] %}
+                {% set url = path('in_company_training_phase_survey_student_form', {'id': item.id}) %}
+                <tr>
+                    <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.studentProgram.studentEnrollment }}</a></td>
+                    <td>{{ item.studentProgram.programGroup.programGrade.trainingProgram }}</td>
+                    <td>{{ item.workcenter }}</td>
+                    <td>{{ item.workTutor }}</td>
+                    <td class="whitespace-nowrap">
+                        {{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}
+                        {% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
+                    </td>
+                    <td>{{ data[1] ? 'table.answered.yes'|trans({}, domain) : 'table.answered.no'|trans({}, domain) }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block after_table %}
+            {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+    {% endembed %}
+</div>

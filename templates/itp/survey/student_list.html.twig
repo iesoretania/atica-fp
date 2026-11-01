@@ -1,46 +1,10 @@
 {% trans_default_domain 'itp_survey' %}
-{% extends 'ui/list.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block new_action %}{% endblock %}
-
-{% block table_header %}
-    <th>{{ 'header.student'|trans }}</th>
-    <th>{{ 'header.training_program'|trans }}</th>
-    <th>{{ 'header.workcenter'|trans }}</th>
-    <th>{{ 'header.work_tutor'|trans }}</th>
-    <th>{{ 'header.dates'|trans }}</th>
-    <th>{{ 'header.status'|trans }}</th>
-{% endblock %}
-
-{% block table_body %}
-    {% for data in pager %}
-        {% set item = data[0] %}
-        {% set url = path('in_company_training_phase_survey_student_form', {'id': item.id}) %}
-        <tr>
-            <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.studentProgram.studentEnrollment }}</a></td>
-            <td>{{ item.studentProgram.programGroup.programGrade.trainingProgram }}</td>
-            <td>{{ item.workcenter }}</td>
-            <td>{{ item.workTutor }}</td>
-            <td class="whitespace-nowrap">
-                {{ item.startDate ? item.startDate|date('format.date'|trans({}, 'general')) }}
-                {% if item.endDate %} - {{ item.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
-            </td>
-            <td>{{ data[1] ? 'table.answered.yes'|trans : 'table.answered.no'|trans }}</td>
-        </tr>
-    {% else %}
-        <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
-    {% endfor %}
-{% endblock %}
-
-{% block before_filter %}
-    {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: app.current_route} %}
-{% endblock %}
-
-{% block pagerfanta %}
-    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
-{% endblock %}
-
-{% block after_table %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{#- Listado dinámico (Live Component Itp:SurveyStudentList); el selector de curso académico navega a otra página -#}
+{% block content %}
+    <div data-controller="list">
+        {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: app.current_route} %}
+    </div>
+    {% include 'ui/_live_list.html.twig' with {component: 'Itp:SurveyStudentList', props: {academicYear: academic_year}} %}
 {% endblock %}
