@@ -1,6 +1,8 @@
 {% trans_default_domain 'calendar' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
     {{ form_start(form) }}
     {{ form_widget(form) }}
@@ -12,7 +14,7 @@
     {{ form_end(form) }}
 
     {% if calendar %}
-        <h1>{{ 'title.preview'|trans }}</h1>
-        {% include 'wpt/agreement/calendar_partial.html.twig' %}
+        <h2 class="mb-3 mt-8 text-lg font-semibold text-gray-900">{{ 'title.preview'|trans }}</h2>
+        {% include 'ui/calendar.html.twig' %}
     {% endif %}
 {% endblock %}

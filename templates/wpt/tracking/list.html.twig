@@ -1,6 +1,6 @@
 {% trans_default_domain 'wpt_tracking' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/list.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
 
 {% block new_action %}{% endblock %}
 
@@ -15,50 +15,44 @@
 {% endblock %}
 
 {% block table_body %}
-            {% for item in pager %}
-                {% set agreementEnrollment = item[0] %}
-                {% set agreement = item[0].agreement %}
-                {% set url = path('workplace_training_tracking_calendar_list', {'id': agreementEnrollment.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
-                    <td>
-                        <a href="{{ url }}">{{ agreementEnrollment.studentEnrollment }}</a>
-                    </td>
-                    <td>
-                        {{ agreement.shift }}
-                        {% if agreement.shift.locked %} <i class="fa fa-lock"></i>{% endif %}
-                    </td>
-                    <td>{{ agreement.workcenter }}</td>
-                    <td>{{ agreementEnrollment.workTutor }}</td>
-                    <td>{{ agreementEnrollment.educationalTutor }}</td>
-                    <td>{{ agreement.startDate ? agreement.startDate|date('format.date'|trans({}, 'general')) }}{{ agreement.endDate ? ' - ' ~ (agreement.endDate|date('format.date'|trans({}, 'general'))) }}</td>
-                    <td>
-                        {% if item[1] %}
-                            {{ 'table.number'|trans({'count': item[2] / 100}) }}/{{ 'table.hours'|trans({'count': item[1] / 100}) }} ({{ (item[2]*100/item[1]) | number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %)
-                            {% if item[3] != 0 %}
-                                - {{ 'table.absences'|trans({'count': item[3]}) }}
-                                {% if item[4] != 0 %}
-                                    - {{ 'table.justified_absences'|trans({'count': item[4]}) }}
-                                {% endif %}
-                            {% endif %}
-                        {% endif %}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="7">{{ 'table.no_items'|trans }}</td>
-                </tr>
-            {% endfor %}
+    {% for item in pager %}
+        {% set agreementEnrollment = item[0] %}
+        {% set agreement = item[0].agreement %}
+        {% set url = path('workplace_training_tracking_calendar_list', {'id': agreementEnrollment.id}) %}
+        <tr class="clickable-row" data-href="{{ url }}">
+            <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ agreementEnrollment.studentEnrollment }}</a></td>
+            <td>
+                {{ agreement.shift }}
+                {% if agreement.shift.locked %}<twig:Ui:Icon name="lock" class="ml-1 inline size-3.5 text-gray-400" />{% endif %}
+            </td>
+            <td>{{ agreement.workcenter }}</td>
+            <td>{{ agreementEnrollment.workTutor }}</td>
+            <td>{{ agreementEnrollment.educationalTutor }}</td>
+            <td class="whitespace-nowrap">{{ agreement.startDate ? agreement.startDate|date('format.date'|trans({}, 'general')) }}{{ agreement.endDate ? ' - ' ~ (agreement.endDate|date('format.date'|trans({}, 'general'))) }}</td>
+            <td>
+                {% if item[1] %}
+                    {{ 'table.number'|trans({'count': item[2] / 100}) }}/{{ 'table.hours'|trans({'count': item[1] / 100}) }}
+                    <span class="font-medium">({{ (item[2]*100/item[1])|number_format(2, 'format.decimal_separator'|trans({}, 'general')) }} %)</span>
+                    {% if item[3] != 0 %}
+                        - {{ 'table.absences'|trans({'count': item[3]}) }}
+                        {% if item[4] != 0 %}- {{ 'table.justified_absences'|trans({'count': item[4]}) }}{% endif %}
+                    {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+    {% else %}
+        <tr><td colspan="7" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
+    {% endfor %}
 {% endblock %}
 
 {% block before_filter %}
-    {% include 'organization/partial_academic_year.html.twig' %}
+    {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'workplace_training_tracking_list'} %}
 {% endblock %}
 
 {% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
+    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
 {% endblock %}
 
 {% block after_table %}
-        <div class="clearfix"></div>
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
 {% endblock %}

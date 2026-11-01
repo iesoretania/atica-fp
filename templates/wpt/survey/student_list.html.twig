@@ -1,6 +1,6 @@
 {% trans_default_domain 'wpt_survey' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/list.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
 
 {% block new_action %}{% endblock %}
 
@@ -13,36 +13,28 @@
     <th>{{ 'header.status'|trans }}</th>
 {% endblock %}
 
+{#- Una fila por convenio del alumno; alumno, convocatoria y estado se combinan con rowspan -#}
 {% macro row(data, additional) %}
     {% set url = path('workplace_training_survey_student_form', {'id': data[0].id}) %}
     {% for datum in data %}
-    <tr>
-        {% if loop.first %}
-            <td rowspan="{{ data|length }}">
-                <a href="{{ url }}">{{ datum.studentEnrollment }}</a>
+        <tr>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}" class="align-top"><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ datum.studentEnrollment }}</a></td>
+                <td rowspan="{{ data|length }}" class="align-top">
+                    {{ datum.agreement.shift }}
+                    {% if datum.agreement.shift.locked %}<twig:Ui:Icon name="lock" class="ml-1 inline size-3.5 text-gray-400" />{% endif %}
+                </td>
+            {% endif %}
+            <td>{{ datum.agreement.workcenter }}</td>
+            <td>{{ datum.workTutor }}</td>
+            <td class="whitespace-nowrap">
+                {{ datum.agreement.startDate ? datum.agreement.startDate|date('format.date'|trans({}, 'general')) }}
+                {% if datum.agreement.endDate %} - {{ datum.agreement.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
             </td>
-            <td rowspan="{{ data|length }}">
-                {{ datum.agreement.shift }}
-                {% if datum.agreement.shift.locked %} <i class="fa fa-lock"></i>{% endif %}
-            </td>
-            </td>
-        {% endif %}
-        <td>
-            {{ datum.agreement.workcenter }}
-        </td>
-        <td>
-            {{ datum.workTutor }}
-        </td>
-        <td>
-            {{ datum.agreement.startDate ? datum.agreement.startDate|date('format.date'|trans({}, 'general')) }}
-            {% if datum.agreement.endDate %} - {{ datum.agreement.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
-        </td>
-        {% if loop.first %}
-            <td rowspan="{{ data|length }}">
-                {{ (additional ? 'table.answered.yes' : 'table.answered.no')|trans }}
-            </td>
-        {% endif %}
-    </tr>
+            {% if loop.first %}
+                <td rowspan="{{ data|length }}" class="align-top">{{ (additional ? 'table.answered.yes' : 'table.answered.no')|trans }}</td>
+            {% endif %}
+        </tr>
     {% endfor %}
 {% endmacro %}
 
@@ -61,9 +53,7 @@
             {% set additional = additional + item[1] %}
         {% endif %}
     {% else %}
-        <tr>
-            <td colspan="6">{{ 'table.no_items'|trans }}</td>
-        </tr>
+        <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
     {% endfor %}
     {% if last_id != 0 %}
         {{ _self.row(data, additional) }}
@@ -71,14 +61,13 @@
 {% endblock %}
 
 {% block before_filter %}
-    {% include 'organization/partial_academic_year.html.twig' %}
+    {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'workplace_training_survey_student_list'} %}
 {% endblock %}
 
 {% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
+    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
 {% endblock %}
 
 {% block after_table %}
-        <div class="clearfix"></div>
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
 {% endblock %}

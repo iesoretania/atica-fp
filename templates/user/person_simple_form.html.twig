@@ -1,5 +1,8 @@
 {% trans_default_domain 'person' %}
+{#- Con ?ui=1 (modal del diseño nuevo) se usa el tema Tailwind; sin él, el de Bootstrap de las pantallas antiguas -#}
+{% set ui = app.request.query.getBoolean('ui') %}
+{% if ui %}{% form_theme form 'ui/form_theme.html.twig' %}{% endif %}
 
-{{ form_start(form) }}
+{{ form_start(form, ui ? {'action': path('api_person_new', {'ui': 1})} : {}) }}
 {{ form_widget(form) }}
 {{ form_end(form) }}

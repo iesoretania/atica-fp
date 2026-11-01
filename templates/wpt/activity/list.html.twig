@@ -1,76 +1,71 @@
 {% trans_default_domain 'wpt_activity' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/list.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
 
 {% block path_new %}{{ path('workplace_training_activity_new', {'shift': shift.id}) }}{% endblock %}
 
 {% block table_header %}
-    <th class="w-15"><label><input type="checkbox" id="select"> {{ 'header.code'|trans }}</label></th>
-    <th class="w-25">{{ 'header.description'|trans }}</th>
-    <th class="w-60">{{ 'header.criteria'|trans }}</th>
+    <th class="w-1/6"><label class="flex items-center gap-2"><input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600"> {{ 'header.code'|trans }}</label></th>
+    <th class="w-1/4">{{ 'header.description'|trans }}</th>
+    <th>{{ 'header.criteria'|trans }}</th>
 {% endblock %}
 
 {% block table_body %}
-            {% for item in pager %}
-                {% set url = path('workplace_training_activity_edit', {'id': item.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
-                    <td>
-                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable">
-                            <a href="{{ url }}">{{ item.code }}</a>
-                        </label>
-                    </td>
-                    <td>
-                        {{ item.description|nl2br }}
-                    </td>
-                    <td>
-                        {% if item.criteria|length %}
-                        <p>
-                            <ul>
-                            {% for criterium in item.criteria %}
-                                <li>{{ criterium.learningOutcome.code }}: {{ criterium }}</li>
-                            {% endfor %}
-                            </ul>
-                        </p>
-                        {% else %}
-                            {{ 'table.no_criteria'|trans }}
-                        {% endif %}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
-                </tr>
-            {% endfor %}
+    {% for item in pager %}
+        {% set url = path('workplace_training_activity_edit', {'id': item.id}) %}
+        <tr class="clickable-row" data-href="{{ url }}">
+            <td class="align-top">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable size-4 rounded border-gray-300 text-brand-600">
+                    <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.code }}</a>
+                </label>
+            </td>
+            <td class="align-top">{{ item.description|nl2br }}</td>
+            <td class="align-top">
+                {% if item.criteria|length %}
+                    <ul class="list-disc space-y-1 pl-5">
+                        {% for criterium in item.criteria %}
+                            <li>{{ criterium.learningOutcome.code }}: {{ criterium }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <span class="text-gray-500">{{ 'table.no_criteria'|trans }}</span>
+                {% endif %}
+            </td>
+        </tr>
+    {% else %}
+        <tr><td colspan="3" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
+    {% endfor %}
 {% endblock %}
 
 {% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'id': shift.id }}) }}
+    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'id': shift.id}}) }}
 {% endblock %}
 
-{% block before_table %}
-    <form action="{{ path('workplace_training_activity_operation', {'shift': shift.id}) }}" method="post">
-{% endblock %}
+{% block form_action %}{{ path('workplace_training_activity_operation', {'shift': shift.id}) }}{% endblock %}
 
 {% block after_table %}
-    <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {# con la convocatoria bloqueada el programa formativo solo se consulta #}
     {% if is_granted('WPT_SHIFT_MODIFY', shift) %}
-    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
-    {{ m.link_button(path('workplace_training_activity_copy', {'id': shift.id}), 'copy', 'btn-primary', 'form.copy'|trans) }}
-    {% if is_granted(constant('App\\Security\\WltModule\\OrganizationVoter::WLT_MANAGER'), user_extension.currentOrganization) %}
-    {{ m.link_button(path('workplace_training_activity_worklinked_copy', {'id': shift.id}), 'copy', 'btn-primary', 'form.copy_wlt'|trans) }}
+        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans, true) }}
+        {{ m.link_button(path('workplace_training_activity_copy', {'id': shift.id}), 'copy', 'btn-primary', 'form.copy'|trans) }}
+        {% if is_granted(constant('App\\Security\\WltModule\\OrganizationVoter::WLT_MANAGER'), user_extension.currentOrganization) %}
+            {{ m.link_button(path('workplace_training_activity_worklinked_copy', {'id': shift.id}), 'copy', 'btn-primary', 'form.copy_wlt'|trans) }}
+        {% endif %}
     {% endif %}
-    {% endif %}
-</form>
+{% endblock %}
 
-{% if is_granted('WPT_SHIFT_MODIFY', shift) %}
-<p class="clearfix"></p>
-<h4>{{ 'title.import'|trans }}</h4>
-<form action="{{ path('workplace_training_activity_import', {'id': shift.id}) }}" method="post">
-    <textarea class="form form-control" name="data" rows="10" placeholder="{{ 'form.import.placeholder'|trans }}"></textarea>
-    <p class="clearfix"></p>
-    {{ m.submit_button('import', 'download', 'btn-warning', 'form.import'|trans) }}
-</form>
-{% endif %}
+{% block table_footer %}{% endblock %}
+
+{% block content %}
+    {{ parent() }}
+    {% if is_granted('WPT_SHIFT_MODIFY', shift) %}
+        <h2 class="mb-3 mt-8 text-lg font-semibold text-gray-900">{{ 'title.import'|trans }}</h2>
+        <form action="{{ path('workplace_training_activity_import', {'id': shift.id}) }}" method="post" class="max-w-3xl">
+            <textarea name="data" rows="10" placeholder="{{ 'form.import.placeholder'|trans }}"
+                      class="mb-3 block w-full rounded-lg border-0 bg-white px-3 py-2 text-sm shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-brand-500"></textarea>
+            {{ m.submit_button('import', 'download', 'btn-warning', 'form.import'|trans) }}
+        </form>
+    {% endif %}
 {% endblock %}

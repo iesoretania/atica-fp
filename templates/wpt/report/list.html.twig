@@ -1,6 +1,6 @@
 {% trans_default_domain 'wpt_shift' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/list.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
 
 {% block new_action %}{% endblock %}
 
@@ -11,35 +11,26 @@
 {% endblock %}
 
 {% block table_body %}
-            {% for item in pager %}
-                {% set url = path(route_name, {'shift': item.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}" data-target="_blank">
-                    <td>
-                        <a href="{{ url }}" {% if new_window|default(true) %}target="_blank"{% endif %}>{{ item.name }}</a>
-                    </td>
-                    <td>
-                        {{ item.subject.grade }}
-                    </td>
-                    <td>
-                        {{ item.agreements | length }}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="3">{{ 'table.no_items'|trans }}</td>
-                </tr>
-            {% endfor %}
+    {% for item in pager %}
+        {% set url = path(route_name, {'shift': item.id}) %}
+        <tr class="clickable-row" data-href="{{ url }}" data-target="_blank">
+            <td><a href="{{ url }}" {% if new_window|default(true) %}target="_blank"{% endif %} class="font-medium text-gray-900 hover:text-brand-700">{{ item.name }}</a></td>
+            <td>{{ item.subject.grade }}</td>
+            <td>{{ item.agreements|length }}</td>
+        </tr>
+    {% else %}
+        <tr><td colspan="3" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
+    {% endfor %}
 {% endblock %}
 
 {% block before_filter %}
-    {% include 'organization/partial_academic_year.html.twig' %}
+    {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: app.current_route} %}
 {% endblock %}
 
 {% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
+    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
 {% endblock %}
 
 {% block after_table %}
-    <div class="clearfix"></div>
     {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
 {% endblock %}

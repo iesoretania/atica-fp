@@ -1,0 +1,20 @@
+{% trans_default_domain 'person' %}
+{#- Modal de alta de persona del diseño nuevo (la búsqueda de personas lo abre al no encontrar a nadie) -#}
+<div data-controller="create-modal" data-create-modal-selector-value="select.person"
+     data-create-modal-term-field-value="new_person_uniqueIdentifier" data-create-modal-term-email-field-value="new_person_userEmailAddress"
+     data-create-modal-focus-field-value="new_person_firstName">
+    <dialog data-create-modal-target="dialog" aria-labelledby="new-person-label"
+            class="m-auto w-full max-w-2xl rounded-xl p-0 shadow-xl backdrop:bg-gray-900/50">
+        <div class="flex items-center justify-between border-b border-gray-200 px-5 py-3">
+            <h2 id="new-person-label" class="text-lg font-semibold text-gray-900">{{ 'title.new'|trans }}</h2>
+            <button type="button" data-action="create-modal#close" aria-label="{{ 'form.new_person.close'|trans }}" class="rounded p-1 text-gray-400 hover:text-gray-600"><twig:Ui:Icon name="times" /></button>
+        </div>
+        <div data-create-modal-target="body" class="max-h-[70vh] overflow-y-auto p-5">
+            {{ render(controller('App\\Controller\\API\\PersonAPIController::apiNewPerson', {}, {ui: 1})) }}
+        </div>
+        <div class="flex justify-end gap-2 border-t border-gray-200 px-5 py-3">
+            <twig:Ui:Button type="button" variant="secondary" data-action="create-modal#close" :label="'form.new_person.close'|trans" />
+            <twig:Ui:Button type="button" data-action="create-modal#save" :label="'form.new_person.save'|trans" />
+        </div>
+    </dialog>
+</div>

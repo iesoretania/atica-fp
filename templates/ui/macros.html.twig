@@ -1,0 +1,62 @@
+{#-
+  Macros compatibles con macros.html.twig (mismos nombres y argumentos) que dibujan los botones con el diseño nuevo.
+  Permiten migrar una plantilla cambiando solo el import: {% import 'ui/macros.html.twig' as m %}.
+  Las clases Bootstrap que se pasan (btn-danger, btn-sm, enable-on-items...) se traducen a variantes del componente.
+
+  OJO: un atributo con valor null se dibuja como atributo vacío (p. ej. «disabled»), por eso solo se pasan los definidos.
+-#}
+{% macro variant(class) %}
+    {%- if 'btn-danger' in class -%}danger
+    {%- elseif 'btn-primary' in class or 'btn-success' in class or 'btn-warning' in class -%}primary
+    {%- else -%}secondary{%- endif -%}
+{% endmacro %}
+
+{% macro start_button() %}
+    <div class="mt-6 flex flex-wrap gap-2">
+{% endmacro %}
+
+{% macro end_button() %}
+    </div>
+{% endmacro %}
+
+{% macro submit_button(name, icon = null, class = 'btn-success', caption = '', disabled = false, value = null) %}
+    {% set attrs = {
+        name: name,
+        value: value,
+        disabled: disabled ? true : null,
+        'data-list-target': 'enable-on-items' in class ? 'needsSelection' : null,
+    }|filter(v => v is not null) %}
+    {{ component('Ui:Button', {
+        type: 'submit',
+        icon: icon,
+        label: caption,
+        variant: _self.variant(class)|trim,
+        size: 'btn-sm' in class ? 'sm' : 'md',
+    }|merge(attrs)) }}
+{% endmacro %}
+
+{% macro submit_button_new(name, icon = null, class = 'btn-success', caption = '', disabled = false, value = null, new_window = false) %}
+    {{ _self.submit_button(name, icon, class, caption, disabled, true) }}
+{% endmacro %}
+
+{% macro link_button(href, icon = null, class = 'btn-success', caption = '', id = null, responsive = null, new_window = false) %}
+    {% set attrs = {
+        id: id,
+        target: new_window ? '_blank' : null,
+    }|filter(v => v is not null) %}
+    {{ component('Ui:Button', {
+        href: href,
+        icon: icon,
+        label: caption,
+        variant: _self.variant(class)|trim,
+        size: 'btn-sm' in class ? 'sm' : 'md',
+    }|merge(attrs)) }}
+{% endmacro %}
+
+{% macro link_toolbar_button(href, icon = null, class = 'btn-success', caption = '', id = null, responsive = null, new_window = false) %}
+    {{ _self.link_button(href, icon, class, caption, id, responsive, new_window) }}
+{% endmacro %}
+
+{% macro link_button_new(href, icon = null, class = 'btn-success', caption = '', id = null, responsive = null) %}
+    {{ _self.link_button(href, icon, class, caption, id, responsive, true) }}
+{% endmacro %}

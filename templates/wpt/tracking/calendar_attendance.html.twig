@@ -1,40 +1,43 @@
 {% trans_default_domain 'calendar' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+
 {% block content %}
     <form method="post">
         {% for item in items %}
             <input type="hidden" name="items[]" value="{{ item.workDay.id }}">
         {% endfor %}
         <input type="hidden" name="confirm" value="ok">
-        <div class="alert alert-warning">{{ 'prompt.attendance_confirm'|trans|nl2br }}</div>
-        <div id="table" class="col-md-12 table-responsive">
-            <table id="list" class="table table-bordered table-hover table-striped">
-                <thead>
-                <tr>
-                    <th>{{ 'header.date'|trans }}</th>
-                    <th>{{ 'header.hours'|trans }}</th>
-                    <th>{{ 'header.absence_type'|trans }}</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for item in items %}
-                    <tr {% if item.locked %}class="bg-danger"{% endif %}>
-                        <td>{{ item.workDay.date|date('format.date'|trans({}, 'general')) }}</td>
-                        <td>{{ 'caption.hours'|trans({'count': item.workDay.hours / 100}) }}</td>
-                        <td>{{ ('table.type_'~type)|trans }}</td>
-                        <td>{{ item.locked ? 'header.locked'|trans }}</td>
+        <twig:Ui:Alert type="warning" :message="'prompt.attendance_confirm'|trans|nl2br" />
+        <div class="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+            <table id="list" class="w-full text-left text-sm">
+                <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500 [&_th]:px-4 [&_th]:py-3">
+                    <tr>
+                        <th>{{ 'header.date'|trans }}</th>
+                        <th>{{ 'header.hours'|trans }}</th>
+                        <th>{{ 'header.absence_type'|trans }}</th>
+                        <th></th>
                     </tr>
-                {% endfor %}
+                </thead>
+                <tbody class="divide-y divide-gray-100 [&_td]:px-4 [&_td]:py-3">
+                    {% for item in items %}
+                        <tr{% if item.locked %} class="bg-red-50"{% endif %}>
+                            <td>{{ item.workDay.date|date('format.date'|trans({}, 'general')) }}</td>
+                            <td>{{ 'caption.hours'|trans({'count': item.workDay.hours / 100}) }}</td>
+                            <td>{{ ('table.type_' ~ type)|trans }}</td>
+                            <td class="text-red-700">{{ item.locked ? 'header.locked'|trans }}</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-        {% if type == 'unjustified' %}
-            {{ m.submit_button('submit-unjustified', 'user-slash', 'btn-danger', 'form.unjustified_absence_confirm'|trans) }}
-        {% else %}
-            {{ m.submit_button('submit-justified', 'user-check', 'btn-warning', 'form.justified_absence_confirm'|trans) }}
-        {% endif %}
+        <div class="mt-6 flex flex-wrap gap-2">
+            {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+            {% if type == 'unjustified' %}
+                {{ m.submit_button('submit-unjustified', 'user-slash', 'btn-danger', 'form.unjustified_absence_confirm'|trans) }}
+            {% else %}
+                {{ m.submit_button('submit-justified', 'user-check', 'btn-warning', 'form.justified_absence_confirm'|trans) }}
+            {% endif %}
+        </div>
     </form>
 {% endblock %}

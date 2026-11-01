@@ -1,11 +1,22 @@
 {% trans_default_domain 'wpt_agreement' %}
-{% extends 'layout.html.twig' %}
-{% set js_entries = ['select2entity', 'wpt_agreement', 'person'] %}
-{% import 'macros.html.twig' as m %}
-{% form_theme form _self %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% form_theme form 'ui/form_theme.html.twig' _self %}
 
 {% block content %}
-    {{ form_start(form, {'attr': {'data-ajax': path('workplace_training_agreement_new', {'shift': agreement.shift.id})}}) }}
+    {% set ajax_url = path('workplace_training_agreement_new', {'shift': agreement.shift.id}) %}
+    {# Al cambiar la empresa se recalculan sus centros de trabajo (selecciona el primero) #}
+    {{ form_start(form, {'attr': {
+        'data-ajax': ajax_url,
+        'data-controller': 'dependent-fields',
+        'data-dependent-fields-url-value': ajax_url,
+        'data-dependent-fields-rules-value': ([{
+            on: ['#agreement_company'],
+            send: ['#agreement_company', '#agreement_workcenter'],
+            replace: ['#agreement_workcenter'],
+            selectFirst: '#agreement_workcenter',
+        }])|json_encode,
+    }}) }}
     {{ form_widget(form) }}
     {{ m.start_button() }}
         {% if not read_only %}{{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}{% endif %}
@@ -13,41 +24,26 @@
     {{ m.end_button() }}
     {{ form_end(form) }}
 
-    <input type="hidden" id="new-person-label" value="{{ 'title.new'|trans({}, 'person') }}" />
-    {% include 'user/new_person_modal.partial.html.twig' %}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script type="module">
-        $(document).ready(function () {
-            $('.select2entity[data-autostart="true"]').select2('destroy');
-            $('.select2entity[data-autostart="true"]').select2entity({
-                theme: "bootstrap",
-                language: {
-                    inputTooShort: function () {
-                        return "{{ 'input.unique_identifier'|trans({}, 'person') }}";
-                    },
-                    searching: function () {
-                        return "{{ 'input.searching'|trans({}, 'person') }}";
-                    }
-                }
-            });
-        });
-    </script>
+    {% include 'ui/new_person_modal.html.twig' %}
 {% endblock %}
 
 {% block _agreement_activities_widget %}
-    <div {{ block('widget_container_attributes') }}>
+    <div {{ block('widget_container_attributes') }} data-controller="check-all" class="mt-2 rounded-lg bg-white p-4 ring-1 ring-gray-200">
         {% if choices %}
-            <button type="button" id="select_all" class="btn btn-sm btn-secondary" title="{{ 'form.select_all'|trans }}"><i class="fa fa-check-square"></i></button>
-            <button type="button" id="select_none" class="btn btn-sm btn-secondary" title="{{ 'form.select_none'|trans }}"><i class="fa fa-square"></i></button>
+            <div class="mb-3 flex gap-2">
+                <twig:Ui:Button type="button" variant="secondary" size="sm" icon="check-square" data-action="check-all#all" :title="'form.select_all'|trans" :label="'form.select_all'|trans" />
+                <twig:Ui:Button type="button" variant="secondary" size="sm" icon="square" data-action="check-all#none" :title="'form.select_none'|trans" :label="'form.select_none'|trans" />
+            </div>
         {% endif %}
-        {% for key, choice in choices %}
-            {{ form_widget(form[key], {translation_domain: false}) }}
-            {{ form_label(form[key]) }}
-        {% else %}
-            <h5>{{ 'form.no_activities'|trans }}</h5>
-        {% endfor %}
+        <div class="space-y-2">
+            {% for key, choice in choices %}
+                <div class="flex items-start gap-2">
+                    {{ form_widget(form[key], {translation_domain: false}) }}
+                    <label for="{{ form[key].vars.id }}" class="text-sm text-gray-700">{{ form[key].vars.label }}</label>
+                </div>
+            {% else %}
+                <p class="text-sm text-gray-500">{{ 'form.no_activities'|trans }}</p>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

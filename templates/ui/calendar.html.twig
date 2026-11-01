@@ -1,0 +1,76 @@
+{#-
+  Calendario por meses del diseño nuevo. Se usa con {% embed 'ui/calendar.html.twig' %} y un bloque «day» que dibuja
+  cada celda (<td>); dentro del bloque están disponibles day, n, dayData y tracked_day.
+  Variables: calendar (meses > semanas > días) y, opcionalmente, week_operations=true para añadir por semana los
+  botones de bloquear, desbloquear e informe (requiere agreement_enrollment).
+  Estados de celda, como clases en el bloque «day»: ver macro cell_class.
+-#}
+{% trans_default_domain 'calendar' %}
+
+{% if calendar is not empty %}
+    {% set week_ops = week_operations|default(false) %}
+    {% set lock_manager = week_ops and is_granted('WPT_AGREEMENT_ENROLLMENT_LOCK', agreement_enrollment) %}
+    <div class="grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">
+        {% for num, month in calendar %}
+            {% set year = num // 12 %}
+            <div class="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+                <div class="overflow-x-auto">
+                    <table class="w-full table-fixed text-center text-sm">
+                        <thead>
+                            <tr><th colspan="{{ week_ops ? 8 : 7 }}" class="bg-brand-50 px-3 py-2 text-sm font-semibold uppercase tracking-wide text-brand-900">{{ ('month' ~ (num % 12))|trans }} {{ year }}</th></tr>
+                            <tr class="text-xs font-medium uppercase text-gray-500 [&_th]:py-2">
+                                {% for d in 0..6 %}<th>{{ ('dow' ~ d)|trans }}</th>{% endfor %}
+                                {% if week_ops %}<th class="w-16"></th>{% endif %}
+                            </tr>
+                        </thead>
+                        <tbody class="[&_td]:h-16 [&_td]:border [&_td]:border-gray-100 [&_td]:p-1.5 [&_td]:align-top [&_td]:text-xs">
+                            {% for week_number, week in month %}
+                                <tr>
+                                    {% set workday_exists = false %}
+                                    {% set all_locked = true %}
+                                    {% set all_unlocked = true %}
+                                    {% for n, dayData in week.days %}
+                                        {% set day = dayData ? dayData[0] : null %}
+                                        {% set tracked_day = dayData ? dayData[1] : null %}
+                                        {% if day %}
+                                            {% set workday_exists = true %}
+                                            {% if tracked_day and tracked_day.locked %}{% set all_unlocked = false %}{% else %}{% set all_locked = false %}{% endif %}
+                                        {% endif %}
+                                        {% block day %}
+                                            <td class="{{ day ? 'bg-brand-50 text-brand-900' : 'text-gray-400' }}">
+                                                {% if day %}
+                                                    <b>{{ n }}</b><br>{{ 'caption.hours'|trans({'count': day.hours / 100}) }}
+                                                {% elseif n > 0 %}
+                                                    {{ n }}
+                                                {% endif %}
+                                            </td>
+                                        {% endblock %}
+                                    {% endfor %}
+                                    {% if week.days|length < 7 %}
+                                        {% for n in 6..week.days|length %}<td></td>{% endfor %}
+                                    {% endif %}
+                                    {% if week_ops %}
+                                        <td class="!align-middle">
+                                            {% if workday_exists %}
+                                                {% set week_code = year * 100 + week_number %}
+                                                <div class="flex flex-col items-center gap-0.5">
+                                                    {% if lock_manager %}
+                                                        {% if not all_locked %}<button type="submit" name="lock_week" value="{{ week_code }}" title="{{ 'form.lock_week_action'|trans }}" class="rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-brand-700"><twig:Ui:Icon name="lock" /></button>{% endif %}
+                                                        {% if not all_unlocked %}<button type="submit" name="unlock_week" value="{{ week_code }}" title="{{ 'form.unlock_week_action'|trans }}" class="rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-brand-700"><twig:Ui:Icon name="unlock" /></button>{% endif %}
+                                                    {% endif %}
+                                                    <button type="submit" name="week_report" value="{{ week_code }}" formtarget="_blank" title="{{ 'form.activity_report'|trans }}" class="rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-brand-700"><twig:Ui:Icon name="print" /></button>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <twig:Ui:Alert type="warning" :message="'prompt.empty'|trans|nl2br" />
+{% endif %}

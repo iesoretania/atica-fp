@@ -39,6 +39,15 @@ export default class extends Controller {
         this.reload();
     }
 
+    // Invierte la selección de todas las casillas .selectable (botón «seleccionar/deseleccionar»)
+    toggle(event) {
+        event.preventDefault();
+        this.element.querySelectorAll('input[type="checkbox"].selectable:not(:disabled)').forEach((box) => {
+            box.checked = !box.checked;
+        });
+        this.updateButtons();
+    }
+
     // Cambio de elemento padre (p. ej. curso académico): cada opción lleva su URL en data-url
     navigate(event) {
         const option = event.target.selectedOptions[0];

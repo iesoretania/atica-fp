@@ -1,6 +1,6 @@
 {% trans_default_domain 'wpt_survey' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/list.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
 
 {% block new_action %}{% endblock %}
 
@@ -11,36 +11,29 @@
 {% endblock %}
 
 {% block table_body %}
-            {% for item in pager %}
-                {% set url = path('workplace_training_survey_educational_tutor_form', {'id': item.shiftId, 'teacher': item.teacherId}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
-                    <td>
-                        <a href="{{ url }}">{{ item.lastName }}, {{ item.firstName }}</a>
-                    </td>
-                    <td>
-                        {{ item.shiftName }}
-                        {% if item.shiftLocked %} <i class="fa fa-lock"></i>{% endif %}
-                    </td>
-                    <td>
-                        {{ (item[1] ? 'table.answered.yes' : 'table.answered.no')|trans }}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
-                </tr>
-            {% endfor %}
+    {% for item in pager %}
+        {% set url = path('workplace_training_survey_educational_tutor_form', {'id': item.shiftId, 'teacher': item.teacherId}) %}
+        <tr class="clickable-row" data-href="{{ url }}">
+            <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.lastName }}, {{ item.firstName }}</a></td>
+            <td>
+                {{ item.shiftName }}
+                {% if item.shiftLocked %}<twig:Ui:Icon name="lock" class="ml-1 inline size-3.5 text-gray-400" />{% endif %}
+            </td>
+            <td>{{ (item[1] ? 'table.answered.yes' : 'table.answered.no')|trans }}</td>
+        </tr>
+    {% else %}
+        <tr><td colspan="3" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
+    {% endfor %}
 {% endblock %}
 
 {% block before_filter %}
-    {% include 'organization/partial_academic_year.html.twig' %}
+    {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'workplace_training_survey_educational_tutor_list'} %}
 {% endblock %}
 
 {% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
+    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
 {% endblock %}
 
 {% block after_table %}
-        <div class="clearfix"></div>
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
 {% endblock %}

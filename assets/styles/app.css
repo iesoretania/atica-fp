@@ -59,6 +59,36 @@ summary:focus-visible {
     outline-offset: 2px;
 }
 
+/* Tom Select (selectores con búsqueda): estilo propio con la paleta de la aplicación */
+.ts-wrapper { position: relative; margin-top: 0.25rem; }
+.ts-control {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem;
+    min-height: 2.375rem; padding: 0.35rem 0.75rem; cursor: text;
+    border-radius: 0.5rem; background: #fff; font-size: 0.875rem;
+    box-shadow: 0 0 0 1px var(--color-gray-300) inset;
+}
+.ts-wrapper.focus .ts-control { box-shadow: 0 0 0 2px var(--color-brand-500) inset; }
+.ts-wrapper.disabled .ts-control { background: var(--color-gray-100); opacity: .7; }
+.ts-control > input { flex: 1 1 4rem; min-width: 4rem; border: 0; outline: 0; background: transparent; padding: 0; font: inherit; }
+.ts-wrapper.single .ts-control .item { color: var(--color-gray-900); }
+.ts-wrapper.multi .ts-control .item {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.1rem 0.5rem; border-radius: 0.375rem;
+    background: var(--color-brand-50); color: var(--color-brand-900);
+    box-shadow: 0 0 0 1px var(--color-brand-200) inset;
+}
+.ts-wrapper .remove { color: var(--color-gray-500); text-decoration: none; padding: 0 0.15rem; }
+.ts-wrapper .remove:hover { color: var(--color-red-600); }
+.ts-dropdown {
+    position: absolute; z-index: 50; left: 0; right: 0; margin-top: 0.25rem;
+    overflow: hidden; border-radius: 0.5rem; background: #fff; font-size: 0.875rem;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / .1), 0 0 0 1px var(--color-gray-200);
+}
+.ts-dropdown .ts-dropdown-content { max-height: 16rem; overflow-y: auto; }
+.ts-dropdown .option, .ts-dropdown .no-results { padding: 0.5rem 0.75rem; cursor: pointer; }
+.ts-dropdown .active { background: var(--color-brand-50); color: var(--color-brand-900); }
+.ts-dropdown .no-results { color: var(--color-gray-500); cursor: default; }
+
 @media print {
     .no-print { display: none !important; }
 }

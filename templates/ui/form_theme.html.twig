@@ -7,7 +7,9 @@
 {%- endblock form_row -%}
 
 {%- block widget_attributes -%}
-    {%- if 'checkbox' in block_prefixes or 'radio' in block_prefixes -%}
+    {%- if 'hidden' in block_prefixes -%}
+        {#- los campos ocultos no llevan estilo -#}
+    {%- elseif 'checkbox' in block_prefixes or 'radio' in block_prefixes -%}
         {%- set attr = attr|merge({class: attr.class|default('size-4 border-gray-300 text-brand-600 focus:ring-brand-500 ' ~ ('radio' in block_prefixes ? 'rounded-full' : 'rounded'))}) -%}
     {%- else -%}
         {%- set attr = attr|merge({class: attr.class|default('mt-1 block w-full rounded-lg border-0 bg-white px-3 py-2 text-sm text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-brand-500 disabled:bg-gray-100')}) -%}
@@ -49,6 +51,32 @@
         {% endfor -%}
     </div>
 {%- endblock choice_widget_expanded -%}
+
+{#- Select2EntityType con búsqueda remota: lo gestiona el controlador Stimulus entity-select (Tom Select) -#}
+{%- block tetranz_select2entity_widget -%}
+    {%- set attr = attr|merge({
+        'data-controller': 'entity-select',
+        'data-entity-select-url-value': remote_path,
+        'data-entity-select-min-length-value': minimum_input_length,
+        'data-entity-select-placeholder-value': placeholder ? placeholder|trans({}, translation_domain) : '',
+        'data-entity-select-field-name-value': name,
+        'data-entity-select-class-type-value': class_type ?? '',
+        'data-entity-select-scroll-value': scroll ? 'true' : 'false',
+        'data-entity-select-allow-clear-value': allow_clear ? 'true' : 'false',
+        'data-entity-select-render-html-value': render_html ? 'true' : 'false',
+        'data-entity-select-query-parameters-value': (query_parameters ?: {})|json_encode,
+        'data-entity-select-req-params-value': attr['data-req_params'] ?? '{}',
+    }) -%}
+    {%- if multiple -%}{%- set attr = attr|merge({multiple: 'multiple'}) -%}{%- endif -%}
+    <select {{ block('widget_attributes') }}>
+        {%- if allow_clear %}<option value=""></option>{% endif -%}
+        {%- if value is iterable -%}
+            {%- for id, label in value -%}
+                <option value="{{ id }}" selected="selected">{{ label }}</option>
+            {%- endfor -%}
+        {%- endif -%}
+    </select>
+{%- endblock tetranz_select2entity_widget -%}
 
 {%- block checkbox_row -%}
     <div class="mb-5 max-w-2xl">

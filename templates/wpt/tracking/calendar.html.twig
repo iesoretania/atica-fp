@@ -1,76 +1,108 @@
 {% trans_default_domain 'calendar' %}
-{% extends 'layout.html.twig' %}
-{% set js_entries = ['list'] %}
-{% import 'macros.html.twig' as m %}
-{% block content %}
-<h1>
-    {{ title }}
-    {% if is_granted('WPT_AGREEMENT_ENROLLMENT_ATTENDANCE', agreement_enrollment) %}
-        <a href="#" data-toggle="collapse" data-target="#tutor_info" aria-expanded="false"><i class="fas fa-info-circle fa-sm"></i></a>
-    {% endif %}
-    {% if work_day_today %} {{ m.link_button(path('workplace_training_tracking_calendar_form', {'agreementEnrollment': agreement_enrollment.id, 'workDay': work_day_today.id}), 'calendar-day', 'btn-primary', 'form.today'|trans) }}{% endif %}
-    {% if is_granted('WPT_AGREEMENT_ENROLLMENT_ACCESS', agreement_enrollment) %}
-        <div class="collapse alert alert-light" id="tutor_info">
-            {% set agreement = agreement_enrollment.agreement %}
-            <h4>{{ agreement_enrollment.studentEnrollment }}</h4>
-            {% if agreement_enrollment.studentEnrollment.person.emailAddress %}<b>{{ 'form.student_email'|trans }}: </b> {{ agreement_enrollment.studentEnrollment.person.emailAddress }}<br/>{% endif %}
-            <b>{{ 'form.work_center'|trans }}: </b>{{ agreement.workcenter }}
-            {% if agreement.workcenter.zipCode %} - {{ agreement.workcenter.zipCode }}{% endif %}
-            {% if agreement.workcenter.city %} - {{ agreement.workcenter.city }}{% endif %}
-            {% if agreement.workcenter.address %}<br/><b>{{ 'form.work_center.address'|trans }}: </b>{{ agreement.workcenter.address }}{% endif %}
-            {% if agreement.workcenter.phoneNumber %}<br/><b>{{ 'form.work_center.phone_number'|trans }}: </b>{{ agreement.workcenter.phoneNumber }}{% endif %}
-            {% if agreement.workcenter.faxNumber %}<br/><b>{{ 'form.work_center.fax_number'|trans }}: </b>{{ agreement.workcenter.faxNumber }}{% endif %}
-            {% if agreement.workcenter.emailAddress %}<br/><b>{{ 'form.work_center.email'|trans }}: </b>{{ agreement.workcenter.emailAddress }}{% endif %}
-            <br/><b>{{ 'form.work_tutor'|trans }}: </b>{{ agreement_enrollment.workTutor }}
-            {% if agreement_enrollment.workTutor.emailAddress %} - {{ agreement_enrollment.workTutor.emailAddress }}{% endif %}
-            {% if agreement_enrollment.additionalWorkTutor %}
-                <br/><b>{{ 'form.work_tutor'|trans }}: </b>{{ agreement_enrollment.additionalWorkTutor }}
-                {% if agreement_enrollment.additionalWorkTutor.emailAddress %} - {{ agreement_enrollment.additionalWorkTutor.emailAddress }}{% endif %}
-            {% endif %}
-            <br/><b>{{ 'form.educational_tutor'|trans }}: </b>{{ agreement_enrollment.educationalTutor }}
-            {% if agreement_enrollment.educationalTutor.person.emailAddress %} - {{ agreement_enrollment.educationalTutor.person.emailAddress }}{% endif %}
-            {% if agreement_enrollment.additionalEducationalTutor %}
-                <br/><b>{{ 'form.educational_tutor'|trans }}: </b>{{ agreement_enrollment.additionalEducationalTutor }}
-                {% if agreement_enrollment.additionalEducationalTutor.person.emailAddress %} - {{ agreement_enrollment.additionalEducationalTutor.person.emailAddress }}{% endif %}
-            {% endif %}
-        </div>
-    {% endif %}
-</h1>
-{% include 'wpt/tracking/calendar_stats_partial.html.twig' %}
-<section id="exchange">
-    <form action="{{ path('workplace_training_tracking_calendar_operation', {'id': agreement_enrollment.id}) }}" class="list" method="post">
-    {% embed 'wpt/tracking/calendar_partial.html.twig' %}
-        {% block day %}
-            {% set url = day ? path('workplace_training_tracking_calendar_form', {'workDay': day.id, 'agreementEnrollment': agreement_enrollment.id}) : '' %}
-            <td class="w-13{% if day %} clickable-row {{ tracked_day and tracked_day.absence ? (tracked_day.absence == 1 ? 'absence' : 'justified-absence') : ((dayData[2] is not null or (tracked_day and tracked_day.otherActivities is not empty)) ? (dayData[2] == day.hours ? 'submitted-ok' : 'submitted-warning') : 'workday') }}" data-href="{{ url }}{% endif %}">
-                {% if day %}
-                    {% if not read_only|default(false) and selectable %}<label><input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable"> {% endif %}<a href="{{ url }}"><b>{{ day.date|date('d') }}</b></a>{% if selectable %}</label>{% endif %}{% if tracked_day and tracked_day.locked %} <i class="fas fa-lock"></i>{% endif %}<br/>
-                    {{ dayData[2] ? 'caption.number'|trans({'count': dayData[2] / 100}, 'calendar') : '0' }}/{{ 'caption.hours'|trans({'count': day.hours / 100}, 'calendar') }}
-                {% elseif n > 0 %}
-                    {{ n }}
-                {% endif %}
-            </td>
-        {% endblock %}
-    {% endembed %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
 
-    {{ m.link_button(back_url|default(last_url), 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {% if not read_only|default(false) %}
-        {% if selectable %}{{ m.link_button('', 'check-square', 'btn-primary', 'form.select_deselect'|trans, 'toggle') }}{% endif %}
-        {% if is_granted('WPT_AGREEMENT_ENROLLMENT_LOCK', agreement_enrollment) %}
-            {{ m.submit_button('lock', 'lock', 'btn-info enable-on-items', 'form.lock_action'|trans) }}
-            {{ m.submit_button('unlock', 'lock-open', 'btn-info enable-on-items', 'form.unlock_action'|trans) }}
-            {{ m.submit_button('justified-absence', 'user-check', 'btn-warning enable-on-items', 'form.justify_action'|trans) }}
+{# El título lleva a su derecha el botón «hoy» y, para quien pueda ver los datos de contacto, el del panel de información #}
+{% block content_header %}
+    <div class="mb-6 flex flex-wrap items-center gap-3">
+        <h1 class="text-2xl font-semibold tracking-tight text-gray-900">{{ title }}</h1>
+        {% if work_day_today %}
+            {{ m.link_button(path('workplace_training_tracking_calendar_form', {'agreementEnrollment': agreement_enrollment.id, 'workDay': work_day_today.id}), 'calendar-day', 'btn-primary btn-sm', 'form.today'|trans) }}
         {% endif %}
-        {% if is_granted('WPT_AGREEMENT_ENROLLMENT_ATTENDANCE', agreement_enrollment) %}{{ m.submit_button('unjustified-absence', 'user-slash', 'btn-danger enable-on-items', 'form.absence_action'|trans) }}{% endif %}
-    {% endif %}
-    {{ m.link_button_new(path('workplace_training_tracking_calendar_attendance_report', {'id': agreement_enrollment.id}), 'file-alt', 'btn-primary', 'form.attendance_report'|trans) }}
-    {% if is_granted('WPT_AGREEMENT_ENROLLMENT_VIEW_ACTIVITY_REPORT', agreement_enrollment) %}
-        {{ m.link_button_new(path('workplace_training_tracking_calendar_activity_summary_report', {'id': agreement_enrollment.id}), 'file-alt', 'btn-primary', 'form.activity_summary_report'|trans) }}
-    {% endif %}
-    </form>
-</section>
+    </div>
+    {% include 'ui/partial_flash.html.twig' %}
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
+{% block content %}
+    {% if is_granted('WPT_AGREEMENT_ENROLLMENT_ACCESS', agreement_enrollment) %}
+        {% set agreement = agreement_enrollment.agreement %}
+        <details class="mb-4 rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+            <summary class="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700">
+                <twig:Ui:Icon name="info-circle" class="text-brand-600" /> {{ agreement_enrollment.studentEnrollment }}
+            </summary>
+            <dl class="grid gap-x-6 gap-y-2 border-t border-gray-100 p-4 text-sm sm:grid-cols-[max-content_1fr]">
+                {% if agreement_enrollment.studentEnrollment.person.emailAddress %}
+                    <dt class="font-medium text-gray-500">{{ 'form.student_email'|trans }}</dt><dd>{{ agreement_enrollment.studentEnrollment.person.emailAddress }}</dd>
+                {% endif %}
+                <dt class="font-medium text-gray-500">{{ 'form.work_center'|trans }}</dt>
+                <dd>{{ agreement.workcenter }}{% if agreement.workcenter.zipCode %} - {{ agreement.workcenter.zipCode }}{% endif %}{% if agreement.workcenter.city %} - {{ agreement.workcenter.city }}{% endif %}</dd>
+                {% if agreement.workcenter.address %}<dt class="font-medium text-gray-500">{{ 'form.work_center.address'|trans }}</dt><dd>{{ agreement.workcenter.address }}</dd>{% endif %}
+                {% if agreement.workcenter.phoneNumber %}<dt class="font-medium text-gray-500">{{ 'form.work_center.phone_number'|trans }}</dt><dd>{{ agreement.workcenter.phoneNumber }}</dd>{% endif %}
+                {% if agreement.workcenter.faxNumber %}<dt class="font-medium text-gray-500">{{ 'form.work_center.fax_number'|trans }}</dt><dd>{{ agreement.workcenter.faxNumber }}</dd>{% endif %}
+                {% if agreement.workcenter.emailAddress %}<dt class="font-medium text-gray-500">{{ 'form.work_center.email'|trans }}</dt><dd>{{ agreement.workcenter.emailAddress }}</dd>{% endif %}
+                <dt class="font-medium text-gray-500">{{ 'form.work_tutor'|trans }}</dt>
+                <dd>{{ agreement_enrollment.workTutor }}{% if agreement_enrollment.workTutor.emailAddress %} - {{ agreement_enrollment.workTutor.emailAddress }}{% endif %}</dd>
+                {% if agreement_enrollment.additionalWorkTutor %}
+                    <dt class="font-medium text-gray-500">{{ 'form.work_tutor'|trans }}</dt>
+                    <dd>{{ agreement_enrollment.additionalWorkTutor }}{% if agreement_enrollment.additionalWorkTutor.emailAddress %} - {{ agreement_enrollment.additionalWorkTutor.emailAddress }}{% endif %}</dd>
+                {% endif %}
+                <dt class="font-medium text-gray-500">{{ 'form.educational_tutor'|trans }}</dt>
+                <dd>{{ agreement_enrollment.educationalTutor }}{% if agreement_enrollment.educationalTutor.person.emailAddress %} - {{ agreement_enrollment.educationalTutor.person.emailAddress }}{% endif %}</dd>
+                {% if agreement_enrollment.additionalEducationalTutor %}
+                    <dt class="font-medium text-gray-500">{{ 'form.educational_tutor'|trans }}</dt>
+                    <dd>{{ agreement_enrollment.additionalEducationalTutor }}{% if agreement_enrollment.additionalEducationalTutor.person.emailAddress %} - {{ agreement_enrollment.additionalEducationalTutor.person.emailAddress }}{% endif %}</dd>
+                {% endif %}
+            </dl>
+        </details>
+    {% endif %}
+
+    {% include 'wpt/tracking/calendar_stats_partial.html.twig' %}
+
+    <div data-controller="list">
+        <section id="exchange">
+            <form action="{{ path('workplace_training_tracking_calendar_operation', {'id': agreement_enrollment.id}) }}" method="post">
+                {% embed 'ui/calendar.html.twig' with {week_operations: true} %}
+                    {% block day %}
+                        {% set url = day ? path('workplace_training_tracking_calendar_form', {'workDay': day.id, 'agreementEnrollment': agreement_enrollment.id}) : '' %}
+                        {% if day %}
+                            {% if tracked_day and tracked_day.absence %}
+                                {% set state = tracked_day.absence == 1 ? 'bg-red-100 text-red-900' : 'bg-amber-100 text-amber-900' %}
+                            {% elseif dayData[2] is not null or (tracked_day and tracked_day.otherActivities is not empty) %}
+                                {% set state = dayData[2] == day.hours ? 'bg-emerald-100 text-emerald-900' : 'bg-orange-100 text-orange-900' %}
+                            {% else %}
+                                {% set state = 'bg-brand-50 text-brand-900' %}
+                            {% endif %}
+                            <td class="clickable-row cursor-pointer transition hover:brightness-95 {{ state }}" data-href="{{ url }}">
+                                <div class="flex items-center justify-between gap-1">
+                                    <label class="flex items-center gap-1">
+                                        {% if not read_only|default(false) and selectable %}<input type="checkbox" name="items[]" value="{{ day.id }}" class="selectable size-3.5 rounded border-gray-300 text-brand-600">{% endif %}
+                                        <a href="{{ url }}" class="text-sm font-bold">{{ day.date|date('d') }}</a>
+                                    </label>
+                                    {% if tracked_day and tracked_day.locked %}<twig:Ui:Icon name="lock" class="size-3 opacity-60" />{% endif %}
+                                </div>
+                                <div class="mt-1">{{ dayData[2] ? 'caption.number'|trans({'count': dayData[2] / 100}, 'calendar') : '0' }}/{{ 'caption.hours'|trans({'count': day.hours / 100}, 'calendar') }}</div>
+                            </td>
+                        {% else %}
+                            <td class="text-gray-400">{% if n > 0 %}{{ n }}{% endif %}</td>
+                        {% endif %}
+                    {% endblock %}
+                {% endembed %}
+
+                <div class="mb-4 mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600" aria-hidden="true">
+                    <span class="flex items-center gap-1.5"><span class="size-3 rounded bg-brand-50 ring-1 ring-brand-200"></span>{{ 'legend.pending'|trans }}</span>
+                    <span class="flex items-center gap-1.5"><span class="size-3 rounded bg-emerald-100 ring-1 ring-emerald-300"></span>{{ 'legend.complete'|trans }}</span>
+                    <span class="flex items-center gap-1.5"><span class="size-3 rounded bg-orange-100 ring-1 ring-orange-300"></span>{{ 'legend.partial'|trans }}</span>
+                    <span class="flex items-center gap-1.5"><span class="size-3 rounded bg-amber-100 ring-1 ring-amber-300"></span>{{ 'legend.justified'|trans }}</span>
+                    <span class="flex items-center gap-1.5"><span class="size-3 rounded bg-red-100 ring-1 ring-red-300"></span>{{ 'legend.absence'|trans }}</span>
+                </div>
+
+                <div class="mt-4 flex flex-wrap gap-2">
+                    {{ m.link_button(back_url|default(last_url), 'arrow-left', 'btn-info', 'form.back'|trans) }}
+                    {% if not read_only|default(false) %}
+                        {% if selectable %}<twig:Ui:Button type="button" variant="secondary" icon="check-square" data-action="list#toggle" :label="'form.select_deselect'|trans" />{% endif %}
+                        {% if is_granted('WPT_AGREEMENT_ENROLLMENT_LOCK', agreement_enrollment) %}
+                            {{ m.submit_button('lock', 'lock', 'btn-info enable-on-items', 'form.lock_action'|trans, true) }}
+                            {{ m.submit_button('unlock', 'unlock', 'btn-info enable-on-items', 'form.unlock_action'|trans, true) }}
+                            {{ m.submit_button('justified-absence', 'user-check', 'btn-warning enable-on-items', 'form.justify_action'|trans, true) }}
+                        {% endif %}
+                        {% if is_granted('WPT_AGREEMENT_ENROLLMENT_ATTENDANCE', agreement_enrollment) %}{{ m.submit_button('unjustified-absence', 'user-slash', 'btn-danger enable-on-items', 'form.absence_action'|trans, true) }}{% endif %}
+                    {% endif %}
+                    {{ m.link_button_new(path('workplace_training_tracking_calendar_attendance_report', {'id': agreement_enrollment.id}), 'file-alt', 'btn-primary', 'form.attendance_report'|trans) }}
+                    {% if is_granted('WPT_AGREEMENT_ENROLLMENT_VIEW_ACTIVITY_REPORT', agreement_enrollment) %}
+                        {{ m.link_button_new(path('workplace_training_tracking_calendar_activity_summary_report', {'id': agreement_enrollment.id}), 'file-alt', 'btn-primary', 'form.activity_summary_report'|trans) }}
+                    {% endif %}
+                </div>
+            </form>
+        </section>
+    </div>
 {% endblock %}

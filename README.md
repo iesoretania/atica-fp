@@ -92,6 +92,9 @@ desarrollo ni la de producción.
   pruebas de intrusión entre centros y de robustez de los formularios, que tardan varios minutos.
 - Cada test se revierte al terminar, por lo que no hace falta recrear la base de datos entre ejecuciones.
 - En GitHub Actions se ejecutan automáticamente (`.github/workflows/tests.yml`), con MySQL 8.4.
+- `bin/preview` arranca un servidor local con los datos de demostración (en una base de datos propia, sufijo
+  `_preview`) accesible desde otros dispositivos de la red, para revisar el aspecto desde el móvil o la tableta.
+  `bin/preview --reset` recarga los datos desde cero y `PORT=9000 bin/preview` cambia el puerto.
 - `composer demo:regenerate` regenera `docker/demo.sql` (los datos de la prueba rápida con Docker) a partir de esos
   mismos datos de prueba.
 

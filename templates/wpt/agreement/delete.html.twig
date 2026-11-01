@@ -1,44 +1,26 @@
+{% extends 'ui/delete.html.twig' %}
+{% set domain = 'wpt_agreement' %}
 {% trans_default_domain 'wpt_agreement' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
-{% block content %}
-    <form method="post">
-        {% for item in items %}
-            <input type="hidden" name="items[]" value="{{ item.id }}">
+
+{% block delete_header %}
+    <th>{{ 'header.name'|trans }}</th>
+    <th>{{ 'header.work_tutor'|trans }}</th>
+    <th>{{ 'header.educational_tutor'|trans }}</th>
+    <th>{{ 'header.dates'|trans }}</th>
+{% endblock %}
+
+{% block delete_rows %}
+    {% for group_items in items %}
+        {% for item in group_items.agreementEnrollments %}
+            <tr>
+                <td>{{ item }}</td>
+                <td>{{ item.workTutor }}</td>
+                <td>{{ item.educationalTutor.person }}</td>
+                <td class="whitespace-nowrap">
+                    {{ item.agreement.startDate ? item.agreement.startDate|date('format.date'|trans({}, 'general')) }}
+                    {% if item.agreement.endDate %} - {{ item.agreement.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
+                </td>
+            </tr>
         {% endfor %}
-        <input type="hidden" name="confirm" value="ok">
-        <div class="alert alert-warning">{{ 'prompt.delete_confirm'|trans|nl2br }}</div>
-        <div id="table" class="col-md-12 table-responsive">
-            <table id="list" class="table table-bordered table-hover table-striped">
-                <thead>
-                    <tr>
-                        <th>{{ 'header.name'|trans }}</th>
-                        <th>{{ 'header.work_tutor'|trans }}</th>
-                        <th>{{ 'header.educational_tutor'|trans }}</th>
-                        <th>{{ 'header.dates'|trans }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for group_items in items %}
-                        {% for item in group_items.agreementEnrollments %}
-                            <tr>
-                                <td>{{ item }}</td>
-                                <td>
-                                    {{ item.workTutor }}
-                                </td>
-                                <td>
-                                    {{ item.educationalTutor.person }}
-                                </td>
-                                <td>{{ item.agreement.startDate ? item.agreement.startDate|date('format.date'|trans({}, 'general')) }}
-                                    {% if item.agreement.endDate %} - {{ item.agreement.endDate|date('format.date'|trans({}, 'general')) }}{% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-        {{ m.submit_button('delete', 'trash', 'btn-danger', 'form.delete_confirm'|trans) }}
-    </form>
+    {% endfor %}
 {% endblock %}

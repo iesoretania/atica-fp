@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+#
+# Servidor local de vista previa con datos de demostración, accesible desde otros dispositivos de la red
+# (móvil, tableta...) para revisar el aspecto de la aplicación.
+#
+#   bin/preview            arranca en el puerto 8080 (PORT=9000 bin/preview para cambiarlo)
+#   bin/preview --reset    vuelve a cargar los datos de demostración desde cero
+#
+# Usa una base de datos propia («<la de .env.local>_preview»), de modo que no toca la de desarrollo ni la de tests.
+# Requisitos: PHP, el cliente «mysql» y la misma conexión a MySQL que ya usan los tests.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+PORT="${PORT:-8080}"
+export APP_ENV=dev
+export APP_DEBUG=1
+
+# Conexión a la base de datos de vista previa (el nombre de la base de datos lleva el sufijo _preview)
+PREVIEW_URL="$(php -r '
+    require "vendor/autoload.php";
+    (new Symfony\Component\Dotenv\Dotenv())->bootEnv(".env");
+    $url = $_SERVER["DATABASE_URL"] ?? "";
+    if ($url === "") { fwrite(STDERR, "No se ha encontrado DATABASE_URL en .env.local\n"); exit(1); }
+    echo preg_match("#_preview(\?.*)?$#", $url) ? $url : preg_replace("#/([^/?]+)(\?.*)?$#", "/$1_preview$2", $url);
+')"
+export DATABASE_URL="$PREVIEW_URL"
+
+# Parámetros del cliente mysql (la contraseña viaja por entorno, no se muestra)
+eval "$(php -r '
+    $p = parse_url(getenv("DATABASE_URL"));
+    echo "MYSQL_HOST=" . escapeshellarg($p["host"] ?? "127.0.0.1") . "\n";
+    echo "MYSQL_PORT=" . escapeshellarg((string) ($p["port"] ?? 3306)) . "\n";
+    echo "MYSQL_USER=" . escapeshellarg(urldecode($p["user"] ?? "root")) . "\n";
+    echo "export MYSQL_PWD=" . escapeshellarg(urldecode($p["pass"] ?? "")) . "\n";
+    echo "DB_NAME=" . escapeshellarg(ltrim($p["path"] ?? "", "/")) . "\n";
+')"
+MYSQL=(mysql --host="$MYSQL_HOST" --port="$MYSQL_PORT" --user="$MYSQL_USER")
+
+if [[ "${1:-}" == "--reset" ]]; then
+    echo "Eliminando la base de datos de vista previa..."
+    "${MYSQL[@]}" -e "DROP DATABASE IF EXISTS \`$DB_NAME\`"
+fi
+
+php bin/console doctrine:database:create --if-not-exists --quiet
+
+TABLES="$("${MYSQL[@]}" -N -s -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_name = 'person'")"
+if [[ "$TABLES" == "0" ]]; then
+    echo "Cargando los datos de demostración (docker/demo.sql)..."
+    "${MYSQL[@]}" "$DB_NAME" < docker/demo.sql
+fi
+php bin/console doctrine:migrations:migrate --no-interaction --quiet
+
+# Hoja de estilos de Tailwind (en macOS el binario descargado necesita una firma local para poder ejecutarse)
+if ! php bin/console tailwind:build --quiet 2>/dev/null; then
+    if [[ "$(uname)" == "Darwin" ]]; then
+        for binary in var/tailwind/*/tailwindcss-*; do codesign --force --sign - "$binary" 2>/dev/null || true; done
+    fi
+    php bin/console tailwind:build --quiet
+fi
+
+echo
+echo "=============================================================="
+echo " ÁTICA FP - vista previa con datos de demostración"
+echo "=============================================================="
+echo " En este equipo:        http://localhost:$PORT"
+for iface in en0 en1 eth0 wlan0; do
+    ip="$(ipconfig getifaddr "$iface" 2>/dev/null || ip -4 -o addr show "$iface" 2>/dev/null | awk '{print $4}' | cut -d/ -f1 || true)"
+    [[ -n "$ip" ]] && echo " Desde otros equipos:   http://$ip:$PORT   (mismo wifi/red)"
+done
+echo
+echo " Usuarios (contraseña demo1234): alfa.admin, alfa.jefe, alfa.tutor, alfa.profesor,"
+echo "                                 alfa.alumno1, alfa.tutorlaboral"
+echo " Detener: Ctrl+C"
+echo "=============================================================="
+echo
+
+# Varios procesos para que la página y sus recursos carguen en paralelo
+export PHP_CLI_SERVER_WORKERS="${PHP_CLI_SERVER_WORKERS:-4}"
+exec php -d variables_order=EGPCS -d memory_limit=512M -S "0.0.0.0:$PORT" -t public public/index.php

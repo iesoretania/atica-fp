@@ -1,34 +1,17 @@
+{% extends 'ui/delete.html.twig' %}
+{% set domain = 'wpt_shift' %}
 {% trans_default_domain 'wpt_shift' %}
-{% extends 'ui/layout.html.twig' %}
 
-{% block content %}
-    <form method="post">
-        {% for item in items %}
-            <input type="hidden" name="items[]" value="{{ item.id }}">
-        {% endfor %}
-        <input type="hidden" name="confirm" value="ok">
-        <twig:Ui:Alert type="warning" :message="'prompt.delete_confirm'|trans|nl2br" />
-        <div class="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
-            <table id="list" class="w-full text-left text-sm">
-                <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500 [&_th]:px-4 [&_th]:py-3">
-                    <tr>
-                        <th>{{ 'header.name'|trans }}</th>
-                        <th>{{ 'header.groups'|trans }}</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 [&_td]:px-4 [&_td]:py-3">
-                    {% for item in items %}
-                        <tr>
-                            <td>{{ item.name }}</td>
-                            <td>{{ item.grade.groups|join(', ') }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="mt-6 flex flex-wrap gap-2">
-            <twig:Ui:Button href="{{ last_url }}" variant="secondary" icon="arrow-left" label="{{ 'form.back'|trans }}" />
-            <twig:Ui:Button type="submit" name="delete" variant="danger" icon="trash" label="{{ 'form.delete_confirm'|trans }}" />
-        </div>
-    </form>
+{% block delete_header %}
+    <th>{{ 'header.name'|trans }}</th>
+    <th>{{ 'header.groups'|trans }}</th>
+{% endblock %}
+
+{% block delete_rows %}
+    {% for item in items %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.grade.groups|join(', ') }}</td>
+        </tr>
+    {% endfor %}
 {% endblock %}

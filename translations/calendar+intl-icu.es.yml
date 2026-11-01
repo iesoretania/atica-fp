@@ -96,6 +96,12 @@ form.delete_confirm: Confirmar borrado
 form.back: Volver
 form.today: Ir a hoy
 
+legend.pending: Pendiente de rellenar
+legend.complete: Horas completas
+legend.partial: Horas incompletas
+legend.justified: Falta justificada
+legend.absence: Falta sin justificar
+
 header.date: Fecha
 header.hours: Horas asignadas
 header.locked: BLOQUEADA, no cambiará

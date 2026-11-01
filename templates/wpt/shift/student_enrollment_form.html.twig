@@ -1,7 +1,7 @@
 {% trans_default_domain 'wlt_project' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
-{% form_theme form _self %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% form_theme form 'ui/form_theme.html.twig' _self %}
 
 {% block content %}
     {{ form_start(form) }}
@@ -14,17 +14,21 @@
 {% endblock %}
 
 {% block _project_student_enrollment_studentEnrollments_widget %}
-    <div {{ block('widget_container_attributes') }}>
+    <div {{ block('widget_container_attributes') }} class="mt-2 space-y-4 rounded-lg bg-white p-4 ring-1 ring-gray-200">
         {% for name, choices in form.vars.choices %}
-            <h5 class="checkbox-category">
-                {{ name }}
-            </h5>
-            {% for key, choice in choices %}
-                {{ form_widget(form[key], {translation_domain: false}) }}
-                {{ form_label(form[key]) }}
-            {% endfor %}
+            <fieldset>
+                <legend class="mb-2 text-sm font-semibold text-gray-900">{{ name }}</legend>
+                <div class="space-y-2">
+                    {% for key, choice in choices %}
+                        <div class="flex items-center gap-2">
+                            {{ form_widget(form[key], {translation_domain: false}) }}
+                            <label for="{{ form[key].vars.id }}" class="text-sm text-gray-700">{{ form[key].vars.label }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </fieldset>
         {% else %}
-            <h5>{{ 'form.no_student_enrollments'|trans }}</h5>
+            <p class="text-sm text-gray-500">{{ 'form.no_student_enrollments'|trans }}</p>
         {% endfor %}
     </div>
 {% endblock %}

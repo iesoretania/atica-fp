@@ -1,30 +1,35 @@
 {% trans_default_domain 'wpt_activity' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
-{% form_theme form _self %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% form_theme form 'ui/form_theme.html.twig' _self %}
 
 {% block content %}
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ m.start_button() }}
         {% if not read_only %}
-        {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
+            {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
         {% endif %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
 {% endblock %}
 
+{#- Criterios agrupados por resultado de aprendizaje -#}
 {% block _activity_criteria_widget %}
-    <div {{ block('widget_container_attributes') }}>
+    <div {{ block('widget_container_attributes') }} class="mt-2 space-y-4 rounded-lg bg-white p-4 ring-1 ring-gray-200">
         {% for name, choices in form.vars.choices %}
-            <h5 class="checkbox-category">
-                {{ name }}
-            </h5>
-            {% for key, choice in choices %}
-                {{ form_widget(form[key], {translation_domain: false}) }}
-                {{ form_label(form[key]) }}
-            {% endfor %}
+            <fieldset>
+                <legend class="mb-2 text-sm font-semibold text-gray-900">{{ name }}</legend>
+                <div class="space-y-2">
+                    {% for key, choice in choices %}
+                        <div class="flex items-start gap-2">
+                            {{ form_widget(form[key], {translation_domain: false}) }}
+                            <label for="{{ form[key].vars.id }}" class="text-sm text-gray-700">{{ form[key].vars.label }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </fieldset>
         {% endfor %}
     </div>
 {% endblock %}
