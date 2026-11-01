@@ -10,7 +10,8 @@
         ['code', null, null],                   {# un campo que ocupa solo un tercio: null reserva la columna #}
     ]) }}
 
-  - Cada fila tiene de 1 a 6 columnas iguales (en pantallas pequeñas se apilan).
+  - Cada fila tiene de 1 a 6 columnas, iguales por defecto (en pantallas pequeñas se apilan). Con «campo:peso» una columna
+    es proporcionalmente más ancha: ['code:1', 'name:4'] → código corto y nombre largo.
   - Los grupos de radio (tarjetas seleccionables) van siempre solos en su fila: la macro los separa de los demás campos.
   - Tercer argumento opcional: opciones de form_row por campo, p. ej. {description: {attr: {rows: 4}}}.
   - Los campos que no aparecen en la disposición se añaden al final, a todo el ancho; así nunca se pierde un campo.
@@ -25,12 +26,13 @@
     {% set rows = [] %}
     {% for row in layout %}
         {% set others = [] %}
-        {% for name in row %}
+        {% for entry in row %}
+            {% set name = entry is null ? null : (entry|split(':'))[0] %}
             {% if name is not null and form[name] is defined and (form[name].vars.expanded|default(false)) and not (form[name].vars.multiple|default(false)) %}
                 {% if others|filter(n => n is not null) %}{% set rows = rows|merge([others]) %}{% set others = [] %}{% endif %}
                 {% set rows = rows|merge([[name]]) %}
             {% else %}
-                {% set others = others|merge([name]) %}
+                {% set others = others|merge([entry]) %}
             {% endif %}
         {% endfor %}
         {% if others|filter(n => n is not null) %}{% set rows = rows|merge([others]) %}{% endif %}
@@ -41,15 +43,20 @@
         <div class="space-y-5 p-5 sm:p-6">
         {% for row in rows %}
             {% set fields = [] %}
-            {% for name in row %}
+            {% set tracks = [] %}
+            {% for entry in row %}
+                {% set name = entry is null ? null : (entry|split(':'))[0] %}
+                {% set tracks = tracks|merge(['minmax(0,' ~ (entry is null ? 1 : ((entry|split(':'))[1] ?? 1)) ~ 'fr)']) %}
                 {% if name is not null %}
                     {% set placed = placed|merge([name]) %}
                     {% if form[name] is defined and not form[name].rendered %}{% set fields = fields|merge([name]) %}{% endif %}
                 {% endif %}
             {% endfor %}
             {% if fields %}
-                <div class="grid grid-cols-1 gap-x-6 gap-y-5 {{ columns[row|length] }}">
-                    {% for name in row %}
+                {#- «campo:3» da a la columna un ancho proporcional (p. ej. ['code:1', 'name:4']: código corto y nombre largo) -#}
+                <div class="grid grid-cols-1 gap-x-6 gap-y-5 md:grid-cols-(--cols)" style="--cols: {{ tracks|join(' ') }}">
+                    {% for entry in row %}
+                        {% set name = entry is null ? null : (entry|split(':'))[0] %}
                         {% if name is null %}
                             <div class="hidden md:block" aria-hidden="true"></div>
                         {% elseif name in fields %}

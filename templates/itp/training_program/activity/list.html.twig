@@ -1,69 +1,7 @@
 {% trans_default_domain 'itp_activity' %}
-{% extends 'ui/list.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block path_new %}{{ path('in_company_training_phase_activity_new', {'programGrade': program_grade.id}) }}{% endblock %}
-
-{% block table_header %}
-    <th><label class="flex items-center gap-2"><input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600"> {{ 'header.code'|trans }}</label></th>
-    <th>{{ 'header.name'|trans }}</th>
-    <th>{{ 'header.description'|trans }}</th>
-    <th>{{ 'header.learning_outcomes_and_criteria'|trans }}</th>
-{% endblock %}
-
-{% block table_body %}
-    {% for item in pager %}
-        {% set url = path('in_company_training_phase_activity_edit', {'id': item.id}) %}
-        <tr class="clickable-row" data-href="{{ url }}">
-            <td class="align-top">
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable size-4 rounded border-gray-300 text-brand-600">
-                    <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.code }}</a>
-                </label>
-            </td>
-            <td class="align-top">{{ item.name }}</td>
-            <td class="align-top">{{ item.description|nl2br }}</td>
-            <td class="align-top">
-                {% if item.criteria %}
-                    <ul class="list-disc space-y-1 pl-4">
-                        {% set last_subject_id = null %}
-                        {% set last_learning_outcome_id = null %}
-                        {% set criteria_set = [] %}
-                        {% set criteria = item.criteria|sort((a,b) => a.learningOutcome.subject.name == b.learningOutcome.subject.name ? (a.learningOutcome.code == b.learningOutcome.code ? a.code <=> b.code : a.learningOutcome.code <=> b.learningOutcome.code) : (a.learningOutcome.subject.name <=> b.learningOutcome.subject.name)) %}
-                        {% for criterium in criteria %}
-                            {% if criteria_set is not empty and (last_learning_outcome_id != criterium.learningOutcome.id) %}
-                                (<i>{{ criteria_set|join(', ') }}</i>)
-                                {% set criteria_set = [] %}
-                            {%- endif -%}
-                            {% if last_subject_id != criterium.learningOutcome.subject.id %}
-                                <li><strong>{{ criterium.learningOutcome.subject.code ? criterium.learningOutcome.subject.code ~ ' - ' }}{{ criterium.learningOutcome.subject }}</strong>:
-                            {% endif %}
-                            {% if last_learning_outcome_id != criterium.learningOutcome.id %}
-                                {%- if last_subject_id == criterium.learningOutcome.subject.id %}, {% endif %}
-                                {{ criterium.learningOutcome.code }}
-                            {%- endif -%}
-                            {% set last_learning_outcome_id = criterium.learningOutcome.id %}
-                            {% set last_subject_id = criterium.learningOutcome.subject.id %}
-                            {% set criteria_set = criteria_set | merge([criterium.code]) %}
-                        {% endfor %}
-                        {% if criteria_set is not empty %}(<i>{{ criteria_set|join(', ') }}</i>){% endif %}
-                        {% if last_subject_id is not null %}</li>{% endif %}
-                    </ul>
-                {% endif %}
-            </td>
-        </tr>
-    {% else %}
-        <tr><td colspan="4" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
-    {% endfor %}
-{% endblock %}
-
-{% block form_action %}{{ path('in_company_training_phase_activity_operation', {'programGrade': program_grade.id}) }}{% endblock %}
-
-{% block after_table %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {% if not is_read_only() %}
-        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans, true) }}
-        {{ m.link_button(path('in_company_training_phase_activity_import_form', {'programGrade': program_grade.id}), 'download', 'btn-warning', 'form.import'|trans) }}
-    {% endif %}
-    {{ m.link_button(path('in_company_training_phase_activity_report', {'programGrade': program_grade.id}), 'file-lines', 'btn-info', 'form.generate'|trans) }}
+{#- Listado dinámico (Live Component Itp:ActivityList) -#}
+{% block content %}
+    {% include 'ui/_live_list.html.twig' with {component: 'Itp:ActivityList', props: {programGrade: program_grade}} %}
 {% endblock %}

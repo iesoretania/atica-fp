@@ -34,9 +34,6 @@ use App\Security\ItpModule\OrganizationVoter as ItpOrganizationVoter;
 use App\Security\ItpModule\TrainingProgramVoter;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
-use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use Pagerfanta\Exception\OutOfRangeCurrentPageException;
-use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -66,26 +63,6 @@ class ActivityController extends AbstractController
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_MANAGER, $organization);
         $this->denyAccessUnlessGranted(TrainingProgramVoter::MANAGE, $programGrade->getTrainingProgram());
 
-        $q = $request->query->get('q');
-
-        /** @var Person $person */
-        $person = $this->getUser();
-
-        $queryBuilder = $activityRepository->createActivityByProgramGradeQueryBuilder(
-            $programGrade,
-            $q
-        );
-
-        $adapter = new QueryAdapter($queryBuilder, true);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'itp_activity')
             . ' - ' . $programGrade->getGrade()->__toString();
 
@@ -103,8 +80,6 @@ class ActivityController extends AbstractController
             'menu_path' => 'in_company_training_phase_training_program_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'itp_activity',
             'program_grade' => $programGrade
         ]);

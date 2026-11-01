@@ -125,6 +125,12 @@ abstract class AbstractListComponent
         return [];
     }
 
+    /** true si la consulta hace «fetch join» de colecciones (el paginador debe contar solo las entidades principales). */
+    protected function fetchJoinCollection(): bool
+    {
+        return false;
+    }
+
     protected function organization(): Organization
     {
         return $this->userExtensionService->getCurrentOrganization();
@@ -211,7 +217,7 @@ abstract class AbstractListComponent
             $this->authorize();
             $queryBuilder = $this->createQueryBuilder();
             $this->applySort($queryBuilder);
-            $pager = new Pagerfanta(new QueryAdapter($queryBuilder, false));
+            $pager = new Pagerfanta(new QueryAdapter($queryBuilder, $this->fetchJoinCollection()));
             $pager->setMaxPerPage($this->pageSize);
             try {
                 $pager->setCurrentPage(max(1, $this->page));
