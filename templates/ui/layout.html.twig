@@ -20,75 +20,115 @@
     {# Fondo oscuro al abrir el menú en móvil #}
     <div class="fixed inset-0 z-30 hidden bg-gray-900/50 lg:hidden" data-sidebar-target="overlay" data-action="click->sidebar#close"></div>
 
-    <aside class="no-print fixed inset-y-0 left-0 z-40 flex w-64 -translate-x-full flex-col bg-brand-950 text-brand-100 transition-transform lg:translate-x-0"
+    <aside class="no-print fixed inset-y-0 left-0 z-40 flex w-64 -translate-x-full flex-col bg-brand-950 text-brand-100 transition-transform duration-300 ease-in-out lg:translate-x-0"
            data-sidebar-target="panel">
-        <a href="{{ path('frontpage') }}" class="flex h-16 shrink-0 items-center gap-2 px-5 text-lg font-semibold text-white">
-            {% if app_logo_navbar %}<img src="{{ asset(app_logo_navbar) }}" alt="" class="h-7 w-auto">{% endif %}
-            {{ app_name }}
+        {# Cabecera: logo y nombre de la aplicación #}
+        <a href="{{ path('frontpage') }}" class="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-5 transition-colors hover:bg-brand-900">
+            {% if app_logo_navbar %}<img src="{{ asset(app_logo_navbar) }}" alt="" class="h-8 w-auto shrink-0">{% endif %}
+            <span class="min-w-0">
+                <span class="block truncate text-sm font-semibold leading-none text-white">{{ app_name }}</span>
+                {% if app_version %}<span class="mt-1 block text-xs text-brand-300">v{{ app_version }}</span>{% endif %}
+            </span>
         </a>
-        <nav class="grow space-y-1 overflow-y-auto px-3 py-2" aria-label="{{ 'hint.toggle'|trans }}">
+
+        {# Centro educativo actual y cambio de centro #}
+        {% set organizations = user_extension.organizations(app.user) %}
+        <div class="shrink-0 border-b border-white/10 px-5 py-3">
+            <div class="flex items-center gap-2">
+                <twig:Ui:Icon name="building" class="size-4 shrink-0 text-brand-300" />
+                <p class="min-w-0 flex-1 truncate text-xs font-medium text-white" title="{{ user_extension.currentOrganization }}">{{ user_extension.currentOrganization }}</p>
+                {% if organizations|length > 8 %}
+                    <a href="{{ path('login_organization') }}" title="{{ 'user.organization'|trans }}" aria-label="{{ 'user.organization'|trans }}"
+                       class="shrink-0 rounded-md p-1 text-brand-300 transition-colors hover:bg-brand-800 hover:text-white">
+                        <twig:Ui:Icon name="right-left" class="size-3.5" />
+                    </a>
+                {% endif %}
+            </div>
+            {% if organizations|length > 1 and organizations|length <= 8 %}
+                <details class="group mt-2">
+                    <summary class="flex cursor-pointer list-none items-center gap-1.5 text-xs text-brand-300 hover:text-white">
+                        <twig:Ui:Icon name="right-left" class="size-3" />
+                        {{ 'user.organization'|trans }}
+                    </summary>
+                    <div class="mt-2 space-y-0.5">
+                        {% for organization in organizations %}
+                            <a href="{{ path('switch_organization', {'id': organization.id}) }}"
+                               class="flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-xs text-brand-100 hover:bg-brand-900 hover:text-white">
+                                <span class="truncate">{{ organization }}</span>
+                                {% if organization.id == user_extension.currentOrganization.id %}<twig:Ui:Icon name="check" class="size-3 shrink-0 text-brand-300" />{% endif %}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </details>
+            {% endif %}
+        </div>
+
+        {# Navegación principal #}
+        <nav class="grow space-y-0.5 overflow-y-auto px-3 py-4" aria-label="{{ 'hint.toggle'|trans }}">
             {% for item in module_extension.menu.children %}
                 {% set active = item.routeName and app.current_route starts with item.routeName %}
                 <a href="{{ item.routeName ? path(item.routeName) : '#' }}"
                    title="{{ (item.caption ~ '.detail')|trans({}, item.module ? 'module_' ~ item.module : 'menu') }}"
                    {% if active %}aria-current="page"{% endif %}
-                   class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition {{ active ? 'bg-brand-800 text-white' : 'text-brand-100 hover:bg-brand-900 hover:text-white' }}">
-                    <twig:Ui:Icon name="{{ item.icon }}" class="size-4 opacity-80" />
-                    {{ item.caption|trans({}, item.module ? 'module_' ~ item.module : 'menu') }}
+                   class="group flex items-center gap-3 rounded-lg border-l-2 px-3 py-2 text-sm font-medium transition-colors duration-150 {{ active ? 'border-brand-300 bg-brand-800 text-white' : 'border-transparent text-brand-100 hover:bg-brand-900 hover:text-white' }}">
+                    <twig:Ui:Icon name="{{ item.icon }}" class="size-4 shrink-0 opacity-80" />
+                    <span class="truncate">{{ item.caption|trans({}, item.module ? 'module_' ~ item.module : 'menu') }}</span>
                 </a>
             {% endfor %}
         </nav>
+
+        {# Persona conectada, perfil y desconexión #}
+        {% if app.user %}
+            <div class="shrink-0 space-y-3 border-t border-white/10 p-4">
+                {% if is_granted('IS_IMPERSONATOR') %}
+                    <div class="rounded-lg border border-amber-400/25 bg-amber-500/15 px-3 py-2.5">
+                        <p class="mb-2 flex items-center gap-2 text-xs font-medium text-amber-200">
+                            <twig:Ui:Icon name="user-secret" class="size-3.5 shrink-0 text-amber-300" />
+                            <span class="truncate">{{ 'user.logged.as'|trans({'user': app.user}) }}</span>
+                        </p>
+                        <a href="{{ path('admin_user_list', {'_switch_user': '_exit'}) }}"
+                           class="inline-flex items-center gap-1.5 rounded-md bg-amber-400/20 px-2.5 py-1 text-xs font-medium text-amber-200 transition-colors hover:bg-amber-400/30 hover:text-white">
+                            <twig:Ui:Icon name="user-slash" class="size-3.5" />
+                            {{ 'user.exit_impersonation'|trans }}
+                        </a>
+                    </div>
+                {% endif %}
+
+                <div class="flex min-w-0 items-center gap-3">
+                    <div class="flex size-9 shrink-0 select-none items-center justify-center rounded-full bg-brand-700 text-sm font-semibold text-white" aria-hidden="true">
+                        {{ ((app.user.firstName ?? '')|first ?: app.user.userIdentifier|first)|upper }}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="truncate text-sm font-medium leading-none text-white">{{ app.user }}</p>
+                        <p class="mt-1 truncate text-xs text-brand-300">@{{ app.user.userIdentifier }}</p>
+                    </div>
+                </div>
+
+                <div class="space-y-0.5">
+                    <a href="{{ path('personal_data') }}"
+                       class="flex items-center gap-2.5 rounded-md px-2 py-2.5 text-xs font-medium transition-colors lg:py-1.5 {{ app.current_route == 'personal_data' ? 'bg-brand-800 text-white' : 'text-brand-100 hover:bg-brand-900 hover:text-white' }}">
+                        <twig:Ui:Icon name="user" class="size-4 shrink-0" />
+                        {{ 'user.data'|trans }}
+                    </a>
+                    {% if not is_granted('IS_IMPERSONATOR') %}
+                        <a href="{{ path('logout') }}"
+                           class="flex items-center gap-2.5 rounded-md px-2 py-2.5 text-xs font-medium text-brand-100 transition-colors hover:bg-red-500/15 hover:text-red-300 lg:py-1.5">
+                            <twig:Ui:Icon name="power-off" class="size-4 shrink-0" />
+                            {{ 'user.logout'|trans }}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
     </aside>
 
     <div class="lg:pl-64">
-        <header class="no-print sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-gray-200 bg-white/90 px-4 backdrop-blur sm:px-6">
-            <button type="button" class="rounded-lg p-2 text-gray-600 hover:bg-gray-100 lg:hidden" data-action="sidebar#toggle" aria-label="{{ 'hint.toggle'|trans }}">
+        {# Cabecera: solo en pantallas pequeñas (en las grandes todo está en la barra lateral) #}
+        <header class="no-print sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-gray-200 bg-white px-4 sm:px-6 lg:hidden">
+            <button type="button" class="-ml-2 flex size-11 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700" data-action="sidebar#toggle" aria-label="{{ 'hint.toggle'|trans }}">
                 <twig:Ui:Icon name="bars" class="size-5" />
             </button>
-
-            <div class="ml-auto flex items-center gap-1 text-sm">
-                {% set organizations = user_extension.organizations(app.user) %}
-                {% if organizations|length > 1 %}
-                    <details class="relative">
-                        <summary class="flex cursor-pointer list-none items-center gap-2 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100">
-                            <twig:Ui:Icon name="building" class="size-4 text-gray-400" />
-                            <span class="hidden max-w-60 truncate sm:inline">{{ user_extension.currentOrganization }}</span>
-                            <twig:Ui:Icon name="chevron-down" class="size-3 text-gray-400" />
-                        </summary>
-                        <div class="absolute right-0 z-30 mt-1 w-72 rounded-lg bg-white p-1 shadow-lg ring-1 ring-gray-200">
-                            {% if organizations|length < 8 %}
-                                {% for organization in organizations %}
-                                    <a href="{{ path('switch_organization', {'id': organization.id}) }}" class="flex items-center justify-between rounded-md px-3 py-2 text-gray-700 hover:bg-gray-100">
-                                        {{ organization }}
-                                        {% if organization.id == user_extension.currentOrganization.id %}<twig:Ui:Icon name="check" class="text-brand-600" />{% endif %}
-                                    </a>
-                                {% endfor %}
-                            {% else %}
-                                <a href="{{ path('login_organization') }}" class="block rounded-md px-3 py-2 text-gray-700 hover:bg-gray-100">{{ 'user.organization'|trans }}</a>
-                            {% endif %}
-                        </div>
-                    </details>
-                {% endif %}
-
-                {% if app.user %}
-                    <a href="{{ path('personal_data') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100">
-                        <twig:Ui:Icon name="user" class="size-4 text-gray-400" />
-                        <span class="hidden sm:inline">{{ app.user }}</span>
-                    </a>
-                {% endif %}
-
-                {% if is_granted('IS_IMPERSONATOR') %}
-                    <a href="{{ path('admin_user_list', {'_switch_user': '_exit'}) }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-amber-700 hover:bg-amber-50">
-                        <twig:Ui:Icon name="user-slash" class="size-4" />
-                        <span class="hidden sm:inline">{{ 'user.exit_impersonation'|trans }}</span>
-                    </a>
-                {% else %}
-                    <a href="{{ path('logout') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
-                        <twig:Ui:Icon name="power-off" class="size-4" />
-                        <span class="hidden sm:inline">{{ 'user.logout'|trans }}</span>
-                    </a>
-                {% endif %}
-            </div>
+            <a href="{{ path('frontpage') }}" class="text-sm font-semibold text-brand-900">{{ app_name }}</a>
         </header>
 
         <main role="main" class="px-4 py-6 sm:px-6">

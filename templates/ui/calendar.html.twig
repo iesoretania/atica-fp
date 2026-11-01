@@ -19,7 +19,8 @@
                         <thead>
                             <tr><th colspan="{{ week_ops ? 8 : 7 }}" class="bg-brand-50 px-3 py-2 text-sm font-semibold uppercase tracking-wide text-brand-900">{{ ('month' ~ (num % 12))|trans }} {{ year }}</th></tr>
                             <tr class="text-xs font-medium uppercase text-gray-500 [&_th]:py-2">
-                                {% for d in 0..6 %}<th>{{ ('dow' ~ d)|trans }}</th>{% endfor %}
+                                {#- En pantallas pequeñas solo la inicial (L M X J V S D; la X evita confundir martes y miércoles) -#}
+                                {% for d in 0..6 %}<th scope="col" title="{{ ('dow' ~ d)|trans }}"><span class="sm:hidden" aria-hidden="true">{{ ['L', 'M', 'X', 'J', 'V', 'S', 'D'][d] }}</span><span class="max-sm:sr-only">{{ ('dow' ~ d)|trans }}</span></th>{% endfor %}
                                 {% if week_ops %}<th class="w-16"></th>{% endif %}
                             </tr>
                         </thead>

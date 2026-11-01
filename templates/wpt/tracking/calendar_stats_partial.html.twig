@@ -1,8 +1,11 @@
 {% trans_default_domain 'wpt_tracking' %}
 {#- Barras de progreso de horas y de actividades; al pulsar cada una se despliega el detalle -#}
-{% macro bar_segment(percentage, color, title, text) %}
-    <div role="progressbar" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ percentage }}%" title="{{ title }}"
-         class="flex items-center justify-center overflow-hidden whitespace-nowrap px-2 text-xs font-medium text-white {{ color }}">{{ text }}</div>
+{#- Cada tramo de la barra es solo color (el texto, en una leyenda debajo, no se recorta aunque el tramo sea pequeño) -#}
+{% macro bar_segment(percentage, color, title) %}
+    <div role="progressbar" aria-valuenow="{{ percentage|round }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ percentage }}%" title="{{ title }}" class="h-full {{ color }}"></div>
+{% endmacro %}
+{% macro legend_item(color, text) %}
+    <li class="inline-flex items-center gap-1.5"><span class="size-2.5 shrink-0 rounded-full {{ color }}" aria-hidden="true"></span>{{ text }}</li>
 {% endmacro %}
 
 {% if work_day_stats and work_day_stats[1] %}
@@ -12,15 +15,24 @@
     {% set percentage_justified_absence = 100 * work_day_stats[4] / work_day_stats[1] %}
     <details class="group mb-4 rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
         <summary class="cursor-pointer list-none p-3">
-            <div class="flex h-6 overflow-hidden rounded-full bg-gray-100">
-                {{ _self.bar_segment(percentage_locked, 'bg-emerald-600', 'form.stats.hours_locked_hint'|trans({'count': work_day_real_stats / 100}), 'form.stats.hours_bar'|trans({'count': work_day_real_stats / 100, 'total': work_day_stats[1] / 100})) }}
+            <div class="flex h-3 overflow-hidden rounded-full bg-gray-100">
+                {{ _self.bar_segment(percentage_locked, 'bg-emerald-600', 'form.stats.hours_locked_hint'|trans({'count': work_day_real_stats / 100})) }}
                 {% if work_day_stats[4] %}
-                    {{ _self.bar_segment(percentage_justified_absence, 'bg-amber-500', 'form.stats.hours_justified_absence_hint'|trans({'count': work_day_stats[4] / 100}), 'form.stats.hours_bar'|trans({'count': work_day_stats[4] / 100, 'total': work_day_stats[1] / 100})) }}
+                    {{ _self.bar_segment(percentage_justified_absence, 'bg-amber-500', 'form.stats.hours_justified_absence_hint'|trans({'count': work_day_stats[4] / 100})) }}
                 {% endif %}
                 {% if work_day_stats[3] %}
-                    {{ _self.bar_segment(percentage_absence, 'bg-red-600', 'form.stats.hours_absence_hint'|trans({'count': work_day_stats[3] / 100}), 'form.stats.hours_bar'|trans({'count': work_day_stats[3] / 100, 'total': work_day_stats[1] / 100})) }}
+                    {{ _self.bar_segment(percentage_absence, 'bg-red-600', 'form.stats.hours_absence_hint'|trans({'count': work_day_stats[3] / 100})) }}
                 {% endif %}
             </div>
+            <ul class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-700">
+                {{ _self.legend_item('bg-emerald-600', 'form.stats.hours_bar'|trans({'count': work_day_real_stats / 100, 'total': work_day_stats[1] / 100})) }}
+                {% if work_day_stats[4] %}
+                    {{ _self.legend_item('bg-amber-500', 'form.stats.hours_justified_absence_hint'|trans({'count': work_day_stats[4] / 100})) }}
+                {% endif %}
+                {% if work_day_stats[3] %}
+                    {{ _self.legend_item('bg-red-600', 'form.stats.hours_absence_hint'|trans({'count': work_day_stats[3] / 100})) }}
+                {% endif %}
+            </ul>
         </summary>
         <div class="border-t border-gray-100 p-4">
             <h2 class="mb-2 text-sm font-semibold text-gray-900">{{ 'form.stats.hours'|trans }}</h2>
@@ -60,12 +72,18 @@
     {% set percentage = 100 * activity_tracked_count / activity_total_count %}
     <details class="group mb-4 rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
         <summary class="cursor-pointer list-none p-3">
-            <div class="flex h-6 overflow-hidden rounded-full bg-gray-100">
-                {{ _self.bar_segment(percentage, 'bg-emerald-600', 'form.stats.activities_hint'|trans({'count': activity_tracked_count, 'total': activity_total_count}), 'form.stats.activities_bar'|trans({'count': activity_tracked_count, 'total': activity_total_count})) }}
+            <div class="flex h-3 overflow-hidden rounded-full bg-gray-100">
+                {{ _self.bar_segment(percentage, 'bg-emerald-600', 'form.stats.activities_hint'|trans({'count': activity_tracked_count, 'total': activity_total_count})) }}
                 {% if percentage < 100 %}
-                    {{ _self.bar_segment(100 - percentage, 'bg-red-600', 'form.stats.activities_not_done_hint'|trans({'count': activity_total_count - activity_tracked_count, 'total': activity_total_count}), 'form.stats.activities_not_done_bar'|trans({'count': activity_total_count - activity_tracked_count})) }}
+                    {{ _self.bar_segment(100 - percentage, 'bg-red-600', 'form.stats.activities_not_done_hint'|trans({'count': activity_total_count - activity_tracked_count, 'total': activity_total_count})) }}
                 {% endif %}
             </div>
+            <ul class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-700">
+                {{ _self.legend_item('bg-emerald-600', 'form.stats.activities_bar'|trans({'count': activity_tracked_count, 'total': activity_total_count})) }}
+                {% if percentage < 100 %}
+                    {{ _self.legend_item('bg-red-600', 'form.stats.activities_not_done_bar'|trans({'count': activity_total_count - activity_tracked_count})) }}
+                {% endif %}
+            </ul>
         </summary>
         <div class="border-t border-gray-100 p-4">
             <h2 class="mb-2 text-sm font-semibold text-gray-900">{{ 'form.stats.activities'|trans }}: {{ 'form.stats.activities_hint'|trans({'count': activity_tracked_count, 'total': activity_total_count}) }}</h2>
