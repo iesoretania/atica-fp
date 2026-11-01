@@ -58,8 +58,7 @@ class RoleAssignType extends AbstractType
                     'class' => Person::class,
                     'data' => $currentPersons,
                     'multiple' => true,
-                    'required' => false,
-                    'attr' => ['data-controller' => 'choice-select']
+                    'required' => false
                 ]);
         }
     }
