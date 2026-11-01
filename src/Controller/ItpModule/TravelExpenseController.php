@@ -175,23 +175,6 @@ class TravelExpenseController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_EXPENSE, $organization);
 
-        $allowNew = $this->isGranted(ItpOrganizationVoter::ITP_CREATE_EXPENSE, $organization)
-            && $this->isGranted(TravelExpenseVoter::MANAGE, (new TravelExpense())->setTeacher($teacher));
-
-        $q = $request->query->get('q');
-
-        $qb = $travelExpenseRepository->createStatsByTeacherOrderByDateTimeFilterQueryBuilder($teacher, $q);
-
-        $adapter = new QueryAdapter($qb, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $teacher->__toString() . ' - ' . $translator->trans('title.list', [], 'itp_travel_expense');
 
         $breadcrumb = [
@@ -204,10 +187,7 @@ class TravelExpenseController extends AbstractController
             'menu_path' => 'in_company_training_phase_travel_expense_teacher_list',
             'title' => $title,
             'breadcrumb' => $breadcrumb,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'itp_travel_expense',
-            'allow_new' => $allowNew,
             'teacher' => $teacher
         ]);
     }
@@ -229,37 +209,10 @@ class TravelExpenseController extends AbstractController
 
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_EXPENSE, $organization);
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization) ||
-            $this->isGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
-
-        $person = $this->getUser();
-        assert($person instanceof Person);
-
-        $q = $request->query->get('q');
-
-        $queryBuilder = $travelExpenseRepository->createTeacherTravelExpenseStatsByPersonAndAcademicYearQueryBuilder(
-            $academicYear,
-            $isManager,
-            $person,
-            $q
-        );
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.teacher_list', [], 'itp_travel_expense');
 
         return $this->render('itp/travel_expense/teacher_list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'itp_travel_expense',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
