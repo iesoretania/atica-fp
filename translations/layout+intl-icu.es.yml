@@ -4,7 +4,7 @@ hint.toggle: Abrir/cerrar
 
 user.logged.as: "Conectado como {user}"
 user.logout: Desconectar
-user.data: Ver datos personales
+user.data: Mi perfil
 user.administrate: Administrar la plataforma
 user.impersonate.exit: Volver al usuario normal
 user.organization: Cambiar de centro educativo

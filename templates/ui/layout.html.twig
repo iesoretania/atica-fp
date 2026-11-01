@@ -68,6 +68,10 @@
             {#- «Datos personales» no va en el menú: ya está en el bloque de la persona, abajo -#}
             {% for item in module_extension.menu.children|filter(item => item.routeName != 'personal_data') %}
                 {% set active = item.routeName and app.current_route starts with item.routeName %}
+                {#- «Empresas colaboradoras» y «Gestión del centro» van separadas de los módulos -#}
+                {% if not loop.first and item.routeName in ['company', 'organization'] %}
+                    <div role="separator" class="my-2 border-t border-white/10"></div>
+                {% endif %}
                 <a href="{{ item.routeName ? path(item.routeName) : '#' }}"
                    title="{{ (item.caption ~ '.detail')|trans({}, item.module ? 'module_' ~ item.module : 'menu') }}"
                    {% if active %}aria-current="page"{% endif %}

@@ -17,6 +17,14 @@
     {{- parent() -}}
 {%- endblock widget_attributes -%}
 
+{#- Desplegables (selección única y múltiple): todos son selectores con búsqueda (controlador Stimulus choice-select) -#}
+{%- block choice_widget_collapsed -%}
+    {%- if attr['data-controller'] is not defined -%}
+        {%- set attr = attr|merge({'data-controller': 'choice-select'}) -%}
+    {%- endif -%}
+    {{- parent() -}}
+{%- endblock choice_widget_collapsed -%}
+
 {#- Fecha y hora (dos campos «single_text») en la misma línea en vez de apilados -#}
 {%- block datetime_widget -%}
     {%- if widget == 'single_text' -%}
