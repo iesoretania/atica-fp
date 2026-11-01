@@ -54,7 +54,8 @@ class ProjectStudentEnrollmentType extends AbstractType
                         ->getDescription() . ' - ' . $group->getName(),
                 'multiple' => true,
                 'disabled' => true,
-                'required' => false
+                'required' => false,
+                'attr' => ['data-controller' => 'choice-select']
             ])
             ->add('studentEnrollments', EntityType::class, [
                 'label' => 'form.student_enrollments',

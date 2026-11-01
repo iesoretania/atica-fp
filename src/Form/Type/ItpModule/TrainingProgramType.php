@@ -74,6 +74,7 @@ class TrainingProgramType extends AbstractType
             ->add('grades', EntityType::class, [
                 'mapped' => false,
                 'label' => 'form.grades',
+                'help' => 'form.grades.help',
                 'class' => Grade::class,
                 'choice_translation_domain' => false,
                 'choice_label' => function (Grade $g) {
@@ -124,6 +125,7 @@ class TrainingProgramType extends AbstractType
             ])
             ->add('performanceScale', EntityType::class, [
                 'label' => 'form.performance_scale',
+                'help' => 'form.performance_scale.help',
                 'class' => PerformanceScale::class,
                 'choice_translation_domain' => false,
                 'choice_label' => 'description',
@@ -133,6 +135,7 @@ class TrainingProgramType extends AbstractType
             ])
             ->add('attendanceReportTemplate', EntityType::class, [
                 'label' => 'form.attendance_report_template',
+                'help' => 'form.attendance_report_template.help',
                 'class' => ReportTemplate::class,
                 'choice_label' => 'description',
                 'choice_translation_domain' => false,
@@ -142,6 +145,7 @@ class TrainingProgramType extends AbstractType
             ])
             ->add('weeklyActivityReportTemplate', EntityType::class, [
                 'label' => 'form.weekly_activity_report_template',
+                'help' => 'form.weekly_activity_report_template.help',
                 'class' => ReportTemplate::class,
                 'choice_label' => 'description',
                 'choice_translation_domain' => false,
@@ -160,6 +164,7 @@ class TrainingProgramType extends AbstractType
             ])
             ->add('finalReportTemplate', EntityType::class, [
                 'label' => 'form.final_report_template',
+                'help' => 'form.final_report_template.help',
                 'class' => ReportTemplate::class,
                 'choice_label' => 'description',
                 'choice_translation_domain' => false,
@@ -169,6 +174,7 @@ class TrainingProgramType extends AbstractType
             ])
             ->add('activitySummaryReportTemplate', EntityType::class, [
                 'label' => 'form.activity_summary_report_template',
+                'help' => 'form.activity_summary_report_template.help',
                 'class' => ReportTemplate::class,
                 'choice_label' => 'description',
                 'choice_translation_domain' => false,
@@ -178,6 +184,7 @@ class TrainingProgramType extends AbstractType
             ])
             ->add('studentSurvey', EntityType::class, [
                 'label' => 'form.student_survey',
+                'help' => 'form.student_survey.help',
                 'class' => Survey::class,
                 'choice_label' => 'title',
                 'choice_translation_domain' => false,
@@ -187,6 +194,7 @@ class TrainingProgramType extends AbstractType
             ])
             ->add('companySurvey', EntityType::class, [
                 'label' => 'form.company_survey',
+                'help' => 'form.company_survey.help',
                 'class' => Survey::class,
                 'choice_label' => 'title',
                 'choice_translation_domain' => false,
@@ -196,6 +204,7 @@ class TrainingProgramType extends AbstractType
             ])
             ->add('educationalTutorSurvey', EntityType::class, [
                 'label' => 'form.educational_tutor_survey',
+                'help' => 'form.educational_tutor_survey.help',
                 'class' => Survey::class,
                 'choice_label' => 'title',
                 'choice_translation_domain' => false,

@@ -106,7 +106,8 @@ class MeetingType extends AbstractType
                     new Count(min: 1)
                 ],
                 'multiple' => true,
-                'required' => true
+                'required' => true,
+                'attr' => ['data-controller' => 'choice-select']
             ])
             ->add('detail', TextareaType::class, [
                 'label' => 'form.detail',

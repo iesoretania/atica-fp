@@ -78,7 +78,8 @@ class ProgramGroupType extends AbstractType
                     'disabled' => !$options['can_manage_permissions'],
                     'expanded' => false,
                     'multiple' => true,
-                    'required' => false
+                    'required' => false,
+                    'attr' => ['data-controller' => 'choice-select']
                 ])
                 ->add('currentStudentPrograms', StudentEnrollmentChoiceType::class, [
                     'mapped' => false,

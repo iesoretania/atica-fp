@@ -68,7 +68,8 @@ class ActivityRealizationType extends AbstractType
                 'choice_translation_domain' => false,
                 'choices' => $learningOutcomes,
                 'multiple' => true,
-                'required' => false
+                'required' => false,
+                'attr' => ['data-controller' => 'choice-select']
             ]);
     }
 

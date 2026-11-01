@@ -87,7 +87,8 @@ class ProjectType extends AbstractType
                         ->getAcademicYear()
                         ->getDescription() . ' - ' . $group->getName(),
                 'multiple' => true,
-                'required' => true
+                'required' => true,
+                'attr' => ['data-controller' => 'choice-select']
             ])
             ->add('locked', ChoiceType::class, [
                 'label' => 'form.locked',

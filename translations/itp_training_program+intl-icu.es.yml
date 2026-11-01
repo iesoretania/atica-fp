@@ -15,6 +15,24 @@ form.student_survey: Modelo de encuesta de satisfacción de alumnado
 form.company_survey: Modelo de encuesta de satisfacción de empresa colaboradora
 form.educational_tutor_survey: Modelo de encuesta de satisfacción de tutoría docente
 
+form.grades.help: Cursos de la enseñanza a los que se aplica este plan. Los grupos de esos cursos quedan asociados al plan.
+form.modality.general.help: Las estancias se reparten a lo largo del curso con el horario habitual.
+form.modality.intensive.help: Las estancias se concentran en un periodo corto con jornada completa.
+form.performance_scale.help: Escala con la que el tutor o tutora de la empresa valora el desempeño del alumnado.
+form.attendance_report_template.help: Documento que se genera para registrar la asistencia de cada estancia.
+form.weekly_activity_report_template.help: Documento que resume las actividades realizadas cada semana.
+form.final_report_template.help: Documento con el que el tutor o tutora dual de la empresa valora al estudiante al terminar.
+form.activity_summary_report_template.help: Registro único que recoge todas las actividades realizadas en la estancia.
+form.student_survey.help: Encuesta que responde el alumnado al finalizar la estancia.
+form.company_survey.help: Encuesta que responde la empresa colaboradora sobre la estancia.
+form.educational_tutor_survey.help: Encuesta que responde la tutoría docente sobre el seguimiento.
+
+form.weekly_activity_report_template_type.5_days_week.help: De lunes a viernes.
+form.weekly_activity_report_template_type.7_days_week.help: De lunes a domingo, para empresas que trabajan los fines de semana.
+
+form.locked.no.help: El profesorado con permiso sobre el plan puede modificarlo.
+form.locked.yes.help: El plan queda protegido y solo lo puede cambiar el equipo directivo.
+
 form.weekly_activity_report_template_type: Tipo de plantilla semanal
 form.weekly_activity_report_template_type.5_days_week: Semana de 5 días
 form.weekly_activity_report_template_type.7_days_week: Semana de 7 días
