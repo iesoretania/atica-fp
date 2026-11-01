@@ -185,53 +185,12 @@ class ContactController extends AbstractController
         }
 
         $this->denyAccessUnlessGranted(ItpOrganizationVoter::ITP_ACCESS_VISIT, $organization);
-        $allowNew = $this->isGranted(ItpOrganizationVoter::ITP_CREATE_VISIT, $organization);
-
-        $mf = $request->query->get('mf');
-
-        $methodCollection = [];
-        if (null !== $mf) {
-            $methodIdsCollection = explode(',', (string) $mf);
-            $methodCollection = $contactMethodRepository
-                ->findAllInListByIdAndAcademicYear($methodIdsCollection, $academicYear);
-            if (in_array('0', $methodIdsCollection, true)) {
-                $methodCollection[] = null;
-            }
-        }
-
-        $isManager = $security->isGranted(OrganizationVoter::MANAGE, $organization);
-        $person = $this->getUser();
-        assert($person instanceof Person);
-
-        $q = $request->query->get('q');
-
-        $queryBuilder = $contactRepository->createContactQueryBuilder($academicYear, $person, $isManager, $methodCollection, $q);
-
-        $adapter = new QueryAdapter($queryBuilder, true);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
 
         $title = $translator->trans('title.list', [], 'itp_contact');
 
-        $methods = $contactMethodRepository->findEnabledByAcademicYear($academicYear);
-
-        $activeMethods = [];
-        $activeMethods = array_merge($activeMethods, $methodCollection);
-
         return $this->render('itp/contact/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'itp_contact',
-            'allow_new' => $allowNew,
-            'methods' => $methods,
-            'active_methods' => $activeMethods,
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
