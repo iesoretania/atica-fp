@@ -9,8 +9,14 @@
         {% block path_new %}{{ path('workplace_training_agreement_new', {'shift': this.shift.id}) }}{% endblock %}
         {#- Los bloques de un embed no heredan trans_default_domain: se indica el dominio en cada traducción -#}
         {% block table_header %}
-            <th><label class="flex items-center gap-2"><input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600"> {{ 'header.workcenter'|trans({}, domain) }}</label></th>
-            <th>{{ 'header.dates'|trans({}, domain) }}</th>
+            {% import 'ui/live_macros.html.twig' as lm %}
+            <th aria-sort="{{ this.sort == 'workcenter' ? (this.dir == 'desc' ? 'descending' : 'ascending') : 'none' }}">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600" aria-label="{{ 'selection.clear'|trans({}, 'general') }}">
+                    {{ lm.sort_button('header.workcenter'|trans({}, domain), 'workcenter', this.sort, this.dir) }}
+                </div>
+            </th>
+            {{ lm.sort_th('header.dates'|trans({}, domain), 'dates', this.sort, this.dir) }}
             <th>{{ 'header.student_enrollments'|trans({}, domain) }}</th>
             <th>{{ 'header.educational_tutor'|trans({}, domain) }}</th>
             <th>{{ 'header.work_tutor'|trans({}, domain) }}</th>
@@ -23,6 +29,9 @@
         {% block form_action %}{{ path('workplace_training_agreement_operation', {'shift': this.shift.id}) }}{% endblock %}
         {% block after_table %}
             {{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}
+        {% endblock %}
+        {#- Acciones sobre las filas marcadas: aparecen en una barra al seleccionar -#}
+        {% block selection_actions %}
             {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}
             {{ m.submit_button('copy', 'copy', 'btn-primary enable-on-items', 'form.calendar_copy'|trans({}, domain), true) }}
         {% endblock %}

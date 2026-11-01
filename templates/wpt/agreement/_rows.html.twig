@@ -6,7 +6,8 @@
     {% set span = items|length %}
     {% for agreementEnrollment in items %}
         {% set alt_url = path('workplace_training_agreement_enrollment_edit', {'id': agreementEnrollment.id}) %}
-        <tr class="clickable-row {{ loop.last ? '' : 'border-b-0' }}" data-href="{{ loop.first ? url : alt_url }}">
+        {#- Con casillas y botones en la fila, no es clicable entera: se abre con el enlace del nombre -#}
+        <tr class="{{ loop.last ? '' : 'border-b-0' }}">
             {% if loop.first %}
                 <td rowspan="{{ span }}" class="align-top">
                     <label class="flex items-center gap-2">

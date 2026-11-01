@@ -3,6 +3,5 @@
 
 {#- Listado dinámico (Live Component Wpt:VisitList) -#}
 {% block content %}
-    {% set base_url = path(app.current_route, app.request.attributes.get('_route_params')|filter((v, k) => k != 'page')) %}
-    <twig:Wpt:VisitList :teacher="teacher" :q="q|default('')" :page="page|default(1)" :baseUrl="base_url" :backUrl="last_url" />
+    {% include 'ui/_live_list.html.twig' with {component: 'Wpt:VisitList', props: {teacher: teacher}} %}
 {% endblock %}

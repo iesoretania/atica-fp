@@ -5,6 +5,7 @@ namespace App\Tests\Functional;
 use App\Entity\WptModule\Shift;
 use App\Tests\Fixtures\DemoData;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\UX\LiveComponent\Test\InteractsWithLiveComponents;
 
@@ -32,20 +33,26 @@ class WptAgreementListComponentTest extends AppWebTestCase
             ->setMaxResults(1)->getQuery()->getSingleResult();
     }
 
+    private function table(string $html): string
+    {
+        return (new Crawler($html))->filter('#list')->text();
+    }
+
     public function testFilterAndClearQuery(): void
     {
         $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
         $component = $this->createLiveComponent('Wpt:AgreementList', ['shift' => $this->shift()], $this->client);
 
-        $html = $component->render()->toString();
+        // se mira solo la tabla: el desplegable de filtro por centro de trabajo lista todos los centros
+        $html = $this->table($component->render()->toString());
         self::assertStringContainsString('Tecnologías del Sur', $html);
         self::assertStringContainsString('Consultoría del Norte', $html);
 
-        $html = $component->set('q', 'Consultoría')->render()->toString();
+        $html = $this->table($component->set('q', 'Consultoría')->render()->toString());
         self::assertStringContainsString('Consultoría del Norte', $html);
         self::assertStringNotContainsString('Tecnologías del Sur', $html);
 
-        $html = $component->call('clearQuery')->render()->toString();
+        $html = $this->table($component->call('clearQuery')->render()->toString());
         self::assertStringContainsString('Tecnologías del Sur', $html);
         self::assertSame('', $component->component()->q);
     }
@@ -55,12 +62,12 @@ class WptAgreementListComponentTest extends AppWebTestCase
         $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
         $component = $this->createLiveComponent('Wpt:AgreementList', ['shift' => $this->shift()], $this->client);
 
-        $html = $component->call('syncFromUrl', ['q' => 'Consultoría', 'page' => 1])->render()->toString();
+        $html = $this->table($component->call('syncFromUrl', ['q' => 'Consultoría', 'page' => 1])->render()->toString());
         self::assertStringContainsString('Consultoría del Norte', $html);
         self::assertStringNotContainsString('Tecnologías del Sur', $html);
 
         // una página inexistente (p. ej. un enlace guardado) no falla: vuelve a la primera
-        $html = $component->call('syncFromUrl', ['q' => '', 'page' => 999])->render()->toString();
+        $html = $this->table($component->call('syncFromUrl', ['q' => '', 'page' => 999])->render()->toString());
         self::assertStringContainsString('Tecnologías del Sur', $html);
     }
 

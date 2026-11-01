@@ -1,0 +1,17 @@
+{#- Macros para las cabeceras de los listados dinámicos con columnas ordenables (ver AbstractListComponent::sortableColumns) -#}
+{% macro sort_button(label, key, sort, dir) %}
+    {% set active = sort == key %}
+    <button type="button" data-action="live#action:prevent" data-live-action-param="sortBy" data-live-column-param="{{ key }}"
+            class="inline-flex items-center gap-1 font-semibold uppercase tracking-wide hover:text-gray-900{{ active ? ' text-gray-900' : '' }}"
+            title="{{ (active ? (dir == 'desc' ? 'filters.sorted_desc' : 'filters.sorted_asc') : 'filters.sort_by')|trans({'column': label}, 'general') }}">
+        {{- label -}}
+        <twig:Ui:Icon name="{{ active ? (dir == 'desc' ? 'sort-down' : 'sort-up') : 'sort' }}" class="size-3{{ active ? '' : ' opacity-40' }}" />
+    </button>
+{% endmacro %}
+
+{#- <th> con una columna ordenable: lm.sort_th('Nombre', 'name', this.sort, this.dir) -#}
+{% macro sort_th(label, key, sort, dir, class = '') %}
+    <th aria-sort="{{ sort == key ? (dir == 'desc' ? 'descending' : 'ascending') : 'none' }}"{% if class %} class="{{ class }}"{% endif %}>
+        {{ _self.sort_button(label, key, sort, dir) }}
+    </th>
+{% endmacro %}

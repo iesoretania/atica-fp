@@ -1,0 +1,12 @@
+{#- Incluye un listado dinámico con el estado de la URL (?q=...&page=...&sort=...&f_filtro=...). Uso:
+    {% include 'ui/_live_list.html.twig' with {component: 'Wpt:ShiftList', props: {academicYear: academic_year}} %} -#}
+{% set state = live_list_state() %}
+{{ component(component, {
+    q: state.q,
+    page: state.page,
+    sort: state.sort,
+    dir: state.dir,
+    filters: state.filters,
+    baseUrl: state.baseUrl,
+    backUrl: last_url,
+}|merge(props|default({}))) }}

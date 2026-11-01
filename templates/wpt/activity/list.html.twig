@@ -4,8 +4,7 @@
 
 {#- Listado dinámico (Live Component Wpt:ActivityList) y, debajo, el formulario para importar el programa formativo -#}
 {% block content %}
-    {% set base_url = path(app.current_route, app.request.attributes.get('_route_params')|filter((v, k) => k != 'page')) %}
-    <twig:Wpt:ActivityList :shift="shift" :q="q|default('')" :page="page|default(1)" :baseUrl="base_url" :backUrl="last_url" />
+    {% include 'ui/_live_list.html.twig' with {component: 'Wpt:ActivityList', props: {shift: shift}} %}
 
     {% if is_granted('WPT_SHIFT_MODIFY', shift) %}
         <h2 class="mb-3 mt-8 text-lg font-semibold text-gray-900">{{ 'title.import'|trans }}</h2>

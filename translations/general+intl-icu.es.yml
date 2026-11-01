@@ -8,6 +8,18 @@ format.currency: €
 format.decimal_separator: ","
 format.thousand_separator: "."
 
+filters.clear: Quitar filtros
+filters.clear_one: "Quitar el filtro «{filter}»"
+filters.any: Todos
+filters.none_match: No hay resultados con estos filtros.
+filters.range: "Mostrando {from}–{to} de {total}"
+filters.sort_by: "Ordenar por {column}"
+filters.sorted_asc: "{column}: orden ascendente"
+filters.sorted_desc: "{column}: orden descendente"
+selection.count: "{count, plural, one {# seleccionado} other {# seleccionados}}"
+selection.none: Ninguno seleccionado
+selection.clear: Quitar la selección
+
 paginator.prev: "← Anterior"
 paginator.next: "Siguiente →"
 

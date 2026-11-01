@@ -1,24 +1,44 @@
 {#-
   Cuerpo de un listado dinámico (Live Component). Se usa con {% embed 'ui/live_list.html.twig' %} dentro de la plantilla del
   componente (que dibuja el elemento raíz con los controladores «live-history» y «list») y mantiene los mismos bloques que
-  ui/list.html.twig: path_new, more_actions, table_header, table_body, before_table, after_table, form_action y pagerfanta.
+  ui/list.html.twig: path_new, more_actions, new_action, table_header, table_body, before_table, after_table, form_action y pagerfanta.
+  Bloque nuevo: selection_actions, los botones de las operaciones por lote (borrar, copiar...), que se muestran en una barra
+  cuando hay filas seleccionadas.
 
-  Variables: this (el componente, con q y page), pager, domain (dominio de traducción).
-  El buscador y el paginador usan data-model/data-live-action-param; el paginador conserva href="?page=N" para funcionar sin JavaScript.
+  Variables: this (el componente, con q, page, sort, dir y filters), pager, domain (dominio de traducción).
+  Los filtros propios (this.filterDefinitions), los «chips» de filtros activos, el buscador y el paginador usan
+  data-model/data-live-action-param; el paginador conserva href="?page=N" para funcionar sin JavaScript.
 -#}
 {% trans_default_domain domain %}
-<div class="mb-4 flex flex-wrap items-center gap-3">
+<div class="mb-4 flex flex-wrap items-end gap-3">
     <div class="relative w-full sm:max-w-sm">
         <twig:Ui:Icon name="search" class="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-gray-400" />
         <input type="search" id="search" name="q" data-model="debounce(350)|q" autocomplete="off"
                value="{{ this.q }}" placeholder="{{ 'table.filter'|trans }}"
                class="block w-full rounded-lg border-0 bg-white py-2 pl-9 pr-9 text-sm [&::-webkit-search-cancel-button]:hidden shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-brand-500">
         {% if this.q != '' %}
-            <button type="button" data-action="live#action:prevent" data-live-action-param="clearQuery" aria-label="{{ 'table.filter'|trans }}" class="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-gray-400 hover:text-gray-600">
+            <button type="button" data-action="live#action:prevent" data-live-action-param="clearQuery" aria-label="{{ 'filters.clear'|trans({}, 'general') }}" class="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-gray-400 hover:text-gray-600">
                 <twig:Ui:Icon name="times" class="size-3.5" />
             </button>
         {% endif %}
     </div>
+    {#- Filtros propios del listado (this.filterDefinitions), en la misma fila que el buscador -#}
+    {% for key, definition in this.filterDefinitions %}
+        <label class="text-xs font-medium text-gray-600">
+            <span class="mb-1 block">{{ definition.label }}</span>
+            {% if definition.type == 'select' %}
+                <select data-model="filters.{{ key }}" class="block w-full min-w-40 max-w-64 rounded-lg border-0 bg-white py-2 pl-3 pr-8 text-sm text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-brand-500">
+                    <option value="">{{ 'filters.any'|trans({}, 'general') }}</option>
+                    {% for value, text in definition.choices %}
+                        <option value="{{ value }}"{% if (this.filters[key]|default(''))|trim == value|trim %} selected{% endif %}>{{ text }}</option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <input type="date" data-model="filters.{{ key }}" value="{{ this.filters[key]|default('') }}"
+                       class="block rounded-lg border-0 bg-white px-3 py-2 text-sm text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-brand-500">
+            {% endif %}
+        </label>
+    {% endfor %}
     {% block new_action %}
         {% if not (read_only|default(false) or is_read_only()) %}
             <twig:Ui:Button href="{% block path_new %}{% endblock %}" icon="plus" label="{{ 'table.new'|trans }}" />
@@ -27,13 +47,36 @@
     {% endblock %}
 </div>
 
+{#- Filtros activos («chips») y botón para quitarlos todos -#}
+{% set active_filters = this.activeFilters %}
+{% if active_filters or this.q != '' %}
+    <div class="mb-3 flex flex-wrap items-center gap-2 text-xs">
+        {% for active in active_filters %}
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 py-1 pl-3 pr-1.5 text-brand-900 ring-1 ring-brand-200">
+                <span>{{ active.label }}: <strong class="font-semibold">{{ active.display }}</strong></span>
+                <button type="button" data-action="live#action:prevent" data-live-action-param="clearFilter" data-live-key-param="{{ active.key }}"
+                        aria-label="{{ 'filters.clear_one'|trans({'filter': active.label}, 'general') }}" class="rounded-full p-1 text-brand-700 hover:bg-brand-100">
+                    <twig:Ui:Icon name="times" class="size-3" />
+                </button>
+            </span>
+        {% endfor %}
+        <button type="button" data-action="live#action:prevent" data-live-action-param="clearFilters" class="rounded px-1 font-medium text-brand-700 underline underline-offset-2 hover:text-brand-900">{{ 'filters.clear'|trans({}, 'general') }}</button>
+    </div>
+{% endif %}
+
 {#- URL del formulario de operaciones por lote (borrar, copiar...); si está vacía no se dibuja <form> -#}
 {% set form_action_url %}{% block form_action %}{% endblock %}{% endset %}
+{% set selection_html %}{% block selection_actions %}{% endblock %}{% endset %}
 <section id="exchange" data-loading="addClass(opacity-50)" class="transition-opacity">
     {% if form_action_url|trim %}<form method="post" action="{{ form_action_url|trim }}">{% endif %}
     {% block before_table %}{% endblock %}
     <div class="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
-        <p class="border-b border-gray-200 px-4 py-2.5 text-sm text-gray-500">{{ 'table.total'|trans({'count': pager.count}) }}</p>
+        <p class="border-b border-gray-200 px-4 py-2.5 text-sm text-gray-500">
+            {{ 'table.total'|trans({'count': pager.count}) }}
+            {% if pager.haveToPaginate %}
+                <span class="text-gray-400">· {{ 'filters.range'|trans({'from': pager.currentPageOffsetStart, 'to': pager.currentPageOffsetEnd, 'total': pager.count}, 'general') }}</span>
+            {% endif %}
+        </p>
         <div class="overflow-x-auto">
             <table id="list" class="w-full text-left text-sm">
                 <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500 [&_th]:px-4 [&_th]:py-3">
@@ -44,6 +87,12 @@
                 </tbody>
             </table>
         </div>
+        {% if pager.count == 0 and (active_filters or this.q != '') %}
+            <div class="border-t border-gray-100 px-4 py-6 text-center text-sm text-gray-500">
+                {{ 'filters.none_match'|trans({}, 'general') }}
+                <button type="button" data-action="live#action:prevent" data-live-action-param="clearFilters" class="ml-1 font-medium text-brand-700 underline underline-offset-2 hover:text-brand-900">{{ 'filters.clear'|trans({}, 'general') }}</button>
+            </div>
+        {% endif %}
     </div>
     {% if pager.haveToPaginate %}
         {% block pagerfanta %}
@@ -79,5 +128,16 @@
     <div class="mt-6 flex flex-wrap gap-2">
         {% block after_table %}{% endblock %}
     </div>
+
+    {#- Barra de acciones por lote: aparece al marcar filas (data-list-target="selectionBar") -#}
+    {% if selection_html|trim %}
+        <div data-list-target="selectionBar" data-list-one-label-value="{{ 'selection.count'|trans({'count': 1}, 'general') }}"
+             data-list-other-label-value="{{ 'selection.count'|trans({'count': 7}, 'general') }}" hidden
+             class="sticky bottom-4 z-10 mt-4 flex flex-wrap items-center gap-3 rounded-xl bg-brand-950 px-4 py-3 text-sm text-white shadow-lg">
+            <span data-list-target="selectionCount" class="font-medium" aria-live="polite"></span>
+            <div class="flex flex-wrap gap-2">{{ selection_html }}</div>
+            <button type="button" data-action="list#clearSelection" class="ml-auto rounded px-1 text-brand-100 underline underline-offset-2 hover:text-white">{{ 'selection.clear'|trans({}, 'general') }}</button>
+        </div>
+    {% endif %}
     {% if form_action_url|trim %}</form>{% endif %}
 </section>

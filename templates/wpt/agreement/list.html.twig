@@ -3,6 +3,5 @@
 
 {#- El listado es un Live Component: el filtro y la paginación se actualizan sin recargar y el estado queda en la URL (?q=...&page=...) -#}
 {% block content %}
-    {% set base_url = path(app.current_route, app.request.attributes.get('_route_params')|filter((v, k) => k != 'page')) %}
-    <twig:Wpt:AgreementList :shift="shift" :q="q|default('')" :page="page|default(1)" :baseUrl="base_url" :backUrl="last_url" />
+    {% include 'ui/_live_list.html.twig' with {component: 'Wpt:AgreementList', props: {shift: shift}} %}
 {% endblock %}

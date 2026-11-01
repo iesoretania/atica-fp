@@ -10,7 +10,7 @@ import { getComponent } from '@symfony/ux-live-component';
  * - Los elementos con data-list-target="needsSelection" solo se activan si hay algo marcado.
  */
 export default class extends Controller {
-    static targets = ['search', 'selectAll', 'needsSelection'];
+    static targets = ['search', 'selectAll', 'needsSelection', 'selectionBar'];
 
     connect() {
         this.timer = null;
@@ -96,6 +96,8 @@ export default class extends Controller {
         const row = event.target.closest('.clickable-row');
         if (!row || !this.element.contains(row)) return;
         if (event.target.closest('a, button, input, label, select, textarea')) return;
+        // si se ha seleccionado texto de la fila (para copiarlo), no se abre la ficha
+        if (window.getSelection && window.getSelection().toString() !== '') return;
         if (row.dataset.href) {
             window.location.assign(row.dataset.href);
         }
@@ -112,9 +114,28 @@ export default class extends Controller {
     }
 
     updateButtons() {
-        const any = this.element.querySelectorAll('input[type="checkbox"].selectable:checked').length > 0;
+        const count = this.element.querySelectorAll('input[type="checkbox"].selectable:checked').length;
         this.element.querySelectorAll('[data-list-target="needsSelection"]').forEach((button) => {
-            button.disabled = !any;
+            button.disabled = count === 0;
         });
+
+        // barra de acciones por lote: visible solo con filas marcadas, con el número de seleccionadas
+        this.selectionBarTargets.forEach((bar) => {
+            bar.hidden = count === 0;
+            const label = bar.querySelector('[data-list-target="selectionCount"]');
+            if (label && count > 0) {
+                label.textContent = count === 1
+                    ? bar.dataset.listOneLabelValue
+                    : bar.dataset.listOtherLabelValue.replace('7', String(count)); // el texto se genera con 7 como plantilla
+            }
+        });
+    }
+
+    // Quita la marca de todas las filas
+    clearSelection() {
+        this.element.querySelectorAll('input[type="checkbox"].selectable:checked, [data-list-target="selectAll"]:checked').forEach((box) => {
+            box.checked = false;
+        });
+        this.updateButtons();
     }
 }

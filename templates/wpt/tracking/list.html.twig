@@ -6,6 +6,5 @@
     <div data-controller="list">
         {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'workplace_training_tracking_list'} %}
     </div>
-    {% set base_url = path(app.current_route, app.request.attributes.get('_route_params')|filter((v, k) => k != 'page')) %}
-    <twig:Wpt:TrackingList :academicYear="academic_year" :q="q|default('')" :page="page|default(1)" :baseUrl="base_url" :backUrl="last_url" />
+    {% include 'ui/_live_list.html.twig' with {component: 'Wpt:TrackingList', props: {academicYear: academic_year}} %}
 {% endblock %}

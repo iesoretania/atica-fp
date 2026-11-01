@@ -8,12 +8,13 @@
         {% block new_action %}{% endblock %}
 
         {% block table_header %}
-            <th>{{ 'header.student'|trans({}, domain) }}</th>
-            <th>{{ 'header.shift'|trans({}, domain) }}</th>
-            <th>{{ 'header.workcenter'|trans({}, domain) }}</th>
+            {% import 'ui/live_macros.html.twig' as lm %}
+            {{ lm.sort_th('header.student'|trans({}, domain), 'student', this.sort, this.dir) }}
+            {{ lm.sort_th('header.shift'|trans({}, domain), 'shift', this.sort, this.dir) }}
+            {{ lm.sort_th('header.workcenter'|trans({}, domain), 'workcenter', this.sort, this.dir) }}
             <th>{{ 'header.work_tutor'|trans({}, domain) }}</th>
             <th>{{ 'header.educational_tutor'|trans({}, domain) }}</th>
-            <th>{{ 'header.dates'|trans({}, domain) }}</th>
+            {{ lm.sort_th('header.dates'|trans({}, domain), 'dates', this.sort, this.dir) }}
             <th></th>
         {% endblock %}
 

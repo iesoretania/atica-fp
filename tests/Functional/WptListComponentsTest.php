@@ -113,6 +113,51 @@ class WptListComponentsTest extends AppWebTestCase
     }
 
     /**
+     * @return list<string> texto de la primera columna de cada fila de la tabla
+     */
+    private function firstColumn(): array
+    {
+        $crawler = new Crawler((string) $this->client->getResponse()->getContent());
+
+        return $crawler->filter('#list tbody tr td:first-child')->each(static fn (Crawler $td): string => trim(preg_replace('/\s+/', ' ', $td->text())));
+    }
+
+    public function testTrackingListSortsAndFiltersWithOnlyValidValues(): void
+    {
+        $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
+        $component = $this->component('Wpt:TrackingList', $this->path('/fct/seguimiento/acuerdo/listar/{year}'));
+
+        $this->update($component, []);
+        $unfiltered = $this->firstColumn();
+        self::assertGreaterThan(1, count($unfiltered), 'Las fixtures tienen varios acuerdos');
+
+        // orden por estudiante, ascendente y descendente
+        $this->update($component, ['sort' => 'student', 'dir' => 'asc']);
+        $ascending = $this->firstColumn();
+        $this->update($component, ['sort' => 'student', 'dir' => 'desc']);
+        self::assertSame(array_reverse($ascending), $this->firstColumn(), 'El sentido descendente invierte el orden');
+
+        // una columna que no es ordenable se ignora (no llega a la consulta)
+        $this->update($component, ['sort' => 'p.lastName); DROP TABLE person; --']);
+        self::assertResponseIsSuccessful();
+        self::assertSame($unfiltered, $this->firstColumn());
+
+        // un valor de filtro que no es una opción del listado se ignora
+        $this->update($component, ['filters' => ['shift' => '999999', 'group' => "1' OR '1'='1"]]);
+        self::assertResponseIsSuccessful();
+        self::assertSame($unfiltered, $this->firstColumn());
+
+        // un valor válido filtra: aparece el chip y el filtro «Quitar filtros»
+        $crawler = new Crawler((string) $this->client->getResponse()->getContent());
+        $groups = array_values(array_filter($crawler->filter('select[data-model="filters.group"] option')->extract(['value']), static fn (string $v): bool => $v !== ''));
+        self::assertNotEmpty($groups);
+        $this->update($component, ['filters' => ['group' => $groups[0]]]);
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('data-live-action-param="clearFilter"', (string) $this->client->getResponse()->getContent());
+        self::assertNotEmpty($this->firstColumn());
+    }
+
+    /**
      * @dataProvider listProvider
      */
     public function testAnotherOrganizationCannotReplayTheRequest(string $name, string $template): void
