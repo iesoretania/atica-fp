@@ -39,8 +39,14 @@
     {% endfor %}
     <div id="{{ id }}" class="mt-2 space-y-4">
         {% for group in groups %}
-            <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-xs">
-                <h4 class="mb-2 text-sm font-semibold text-gray-700">{{ group.subject }}{% if group.subject.code %} ({{ group.subject.code }}){% endif %}</h4>
+            <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-xs" data-controller="check-group"
+                 data-check-group-select-label-value="{{ 'selection.select_group'|trans({}, 'general') }}" data-check-group-clear-label-value="{{ 'selection.clear_group'|trans({}, 'general') }}">
+                <div class="mb-2 flex items-start justify-between gap-3">
+                    <h4 class="text-sm font-semibold text-gray-700">{{ group.subject }}{% if group.subject.code %} ({{ group.subject.code }}){% endif %}</h4>
+                    {% if group.keys|length > 1 %}
+                        <button type="button" data-check-group-target="toggle" data-action="check-group#toggle" class="shrink-0 text-sm font-medium text-brand-700 hover:text-brand-900"></button>
+                    {% endif %}
+                </div>
                 <div class="grid grid-cols-1 gap-2">
                     {% for key in group.keys %}
                         <label for="{{ form[key].vars.id }}" class="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 transition hover:border-gray-300 has-checked:border-brand-500 has-checked:bg-brand-50 has-disabled:cursor-not-allowed has-disabled:opacity-60">

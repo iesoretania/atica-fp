@@ -63,16 +63,31 @@
     form_label() no dibuja nada para los hijos de una lista expandida en el tema Tailwind de Symfony; la etiqueta se pinta a mano. -#}
 {%- block choice_widget_expanded -%}
     {%- if multiple -%}
-        <div {{ block('widget_container_attributes') }} class="mt-2 space-y-2">
-            {%- for child in form %}
-                <div class="flex items-center gap-2">
-                    {{- form_widget(child) -}}
-                    {%- set child_label = child.vars.label is same as(false) ? '' : (child.vars.label ?: child.vars.name|humanize) -%}
-                    <label for="{{ child.vars.id }}" class="text-sm text-gray-700">
-                        {{- child.vars.translation_domain is same as(false) ? child_label : child_label|trans(child.vars.label_translation_parameters|default({}), child.vars.translation_domain) -}}
-                    </label>
+        {#- Lista de casillas: recuadro con tarjetas y un único enlace «Seleccionar todos / Quitar todos» (si hay más de una opción).
+            Es el aspecto general de cualquier selección múltiple expandida; las listas con textos propios pueden usar ui/form_checklist. -#}
+        {%- set count = form|length -%}
+        <div {{ block('widget_container_attributes') }} data-controller="check-group"
+             data-check-group-select-label-value="{{ 'selection.select_group'|trans({}, 'general') }}"
+             data-check-group-clear-label-value="{{ 'selection.clear_group'|trans({}, 'general') }}"
+             class="mt-2 rounded-2xl border border-gray-200 bg-white p-4 shadow-xs">
+            {%- if count > 1 %}
+                <div class="mb-2 flex justify-end">
+                    <button type="button" data-check-group-target="toggle" data-action="check-group#toggle"
+                            class="text-sm font-medium text-brand-700 hover:text-brand-900"></button>
                 </div>
-            {% endfor -%}
+            {% endif -%}
+            <div class="grid grid-cols-1 gap-2 {{ count > 6 ? '@lg:grid-cols-2' : '' }}">
+                {%- for child in form %}
+                    {%- set child_label = child.vars.label is same as(false) ? '' : (child.vars.label ?: child.vars.name|humanize) -%}
+                    <label for="{{ child.vars.id }}"
+                           class="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 transition hover:border-gray-300 has-checked:border-brand-500 has-checked:bg-brand-50 has-focus-visible:ring-2 has-focus-visible:ring-brand-500 has-disabled:cursor-not-allowed has-disabled:opacity-60">
+                        <span class="mt-0.5">{{- form_widget(child) -}}</span>
+                        <span class="min-w-0">
+                            {{- child.vars.translation_domain is same as(false) ? child_label : child_label|trans(child.vars.label_translation_parameters|default({}), child.vars.translation_domain) -}}
+                        </span>
+                    </label>
+                {% endfor -%}
+            </div>
         </div>
     {%- else -%}
         {%- set count = form|length -%}
