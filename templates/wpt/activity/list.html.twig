@@ -1,65 +1,12 @@
 {% trans_default_domain 'wpt_activity' %}
-{% extends 'ui/list.html.twig' %}
+{% extends 'ui/layout.html.twig' %}
 {% import 'ui/macros.html.twig' as m %}
 
-{% block path_new %}{{ path('workplace_training_activity_new', {'shift': shift.id}) }}{% endblock %}
-
-{% block table_header %}
-    <th class="w-1/6"><label class="flex items-center gap-2"><input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600"> {{ 'header.code'|trans }}</label></th>
-    <th class="w-1/4">{{ 'header.description'|trans }}</th>
-    <th>{{ 'header.criteria'|trans }}</th>
-{% endblock %}
-
-{% block table_body %}
-    {% for item in pager %}
-        {% set url = path('workplace_training_activity_edit', {'id': item.id}) %}
-        <tr class="clickable-row" data-href="{{ url }}">
-            <td class="align-top">
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable size-4 rounded border-gray-300 text-brand-600">
-                    <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.code }}</a>
-                </label>
-            </td>
-            <td class="align-top">{{ item.description|nl2br }}</td>
-            <td class="align-top">
-                {% if item.criteria|length %}
-                    <ul class="list-disc space-y-1 pl-5">
-                        {% for criterium in item.criteria %}
-                            <li>{{ criterium.learningOutcome.code }}: {{ criterium }}</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <span class="text-gray-500">{{ 'table.no_criteria'|trans }}</span>
-                {% endif %}
-            </td>
-        </tr>
-    {% else %}
-        <tr><td colspan="3" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
-    {% endfor %}
-{% endblock %}
-
-{% block pagerfanta %}
-    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'id': shift.id}}) }}
-{% endblock %}
-
-{% block form_action %}{{ path('workplace_training_activity_operation', {'shift': shift.id}) }}{% endblock %}
-
-{% block after_table %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {# con la convocatoria bloqueada el programa formativo solo se consulta #}
-    {% if is_granted('WPT_SHIFT_MODIFY', shift) %}
-        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans, true) }}
-        {{ m.link_button(path('workplace_training_activity_copy', {'id': shift.id}), 'copy', 'btn-primary', 'form.copy'|trans) }}
-        {% if is_granted(constant('App\\Security\\WltModule\\OrganizationVoter::WLT_MANAGER'), user_extension.currentOrganization) %}
-            {{ m.link_button(path('workplace_training_activity_worklinked_copy', {'id': shift.id}), 'copy', 'btn-primary', 'form.copy_wlt'|trans) }}
-        {% endif %}
-    {% endif %}
-{% endblock %}
-
-{% block table_footer %}{% endblock %}
-
+{#- Listado dinámico (Live Component Wpt:ActivityList) y, debajo, el formulario para importar el programa formativo -#}
 {% block content %}
-    {{ parent() }}
+    {% set base_url = path(app.current_route, app.request.attributes.get('_route_params')|filter((v, k) => k != 'page')) %}
+    <twig:Wpt:ActivityList :shift="shift" :q="q|default('')" :page="page|default(1)" :baseUrl="base_url" :backUrl="last_url" />
+
     {% if is_granted('WPT_SHIFT_MODIFY', shift) %}
         <h2 class="mb-3 mt-8 text-lg font-semibold text-gray-900">{{ 'title.import'|trans }}</h2>
         <form action="{{ path('workplace_training_activity_import', {'id': shift.id}) }}" method="post" class="max-w-3xl">

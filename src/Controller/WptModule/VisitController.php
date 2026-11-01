@@ -168,49 +168,9 @@ class VisitController extends AbstractController
 
         $this->denyAccessUnlessGranted(VisitVoter::ACCESS, $visit);
 
-        $allowNew = $this->isGranted(WptOrganizationVoter::WPT_CREATE_VISIT, $organization);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-        $queryBuilder
-            ->select('v')
-            ->distinct()
-            ->addSelect('a')
-            ->addSelect('w')
-            ->addSelect('c')
-            ->addSelect('se')
-            ->from(Contact::class, 'v')
-            ->join('v.workcenter', 'w')
-            ->join('w.company', 'c')
-            ->leftJoin('v.agreements', 'a')
-            ->leftJoin('v.studentEnrollments', 'se')
-            ->leftJoin('se.person', 'sep')
-            ->addOrderBy('v.dateTime', 'DESC');
-
-        $q = $request->query->get('q');
-
-        if ($q) {
-            $queryBuilder
-                ->orWhere('a.name LIKE :tq')
-                ->orWhere('w.name LIKE :tq')
-                ->orWhere('c.name LIKE :tq')
-                ->orWhere('(sep.firstName IS NOT NULL AND (sep.firstName LIKE :tq OR sep.lastName LIKE :tq))')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('v.teacher = :teacher')
-            ->setParameter('teacher', $teacher);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
+        // el listado lo dibuja el componente Wpt:VisitList, que parte de estos valores (?q=...&page=...)
+        $q = trim((string) $request->query->get('q'));
+        $page = $request->query->getInt('page', $page);
 
         $title = $teacher->__toString() . ' - ' . $translator->trans('title.list', [], 'wpt_visit');
 
@@ -224,10 +184,8 @@ class VisitController extends AbstractController
             'menu_path' => 'workplace_training_visit_teacher_list',
             'title' => $title,
             'breadcrumb' => $breadcrumb,
-            'pager' => $pager,
+            'page' => $page,
             'q' => $q,
-            'domain' => 'wpt_visit',
-            'allow_new' => $allowNew,
             'teacher' => $teacher
         ]);
     }
@@ -250,53 +208,16 @@ class VisitController extends AbstractController
 
         $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_ACCESS_VISIT, $organization);
 
-        $teachers = $teacherProvider->forAcademicYear($academicYear, false);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-        $queryBuilder
-            ->select('t')
-            ->addSelect('p')
-            ->addSelect('COUNT(v)')
-            ->addSelect('COUNT(DISTINCT a)')
-            ->from(Teacher::class, 't')
-            ->join('t.person', 'p')
-            ->leftJoin(Contact::class, 'v', 'WITH', 'v.teacher = t')
-            ->leftJoin('v.agreements', 'a')
-            ->groupBy('t')
-            ->addOrderBy('p.lastName')
-            ->addOrderBy('p.firstName');
-
-        $q = $request->query->get('q');
-
-        if ($q) {
-            $queryBuilder
-                ->orWhere('p.firstName LIKE :tq')
-                ->orWhere('p.lastName LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('t IN (:teachers)')
-            ->setParameter('teachers', $teachers);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
+        // el listado lo dibuja el componente Wpt:VisitTeacherList, que parte de estos valores (?q=...&page=...)
+        $q = trim((string) $request->query->get('q'));
+        $page = $request->query->getInt('page', $page);
 
         $title = $translator->trans('title.teacher_list', [], 'wpt_visit');
 
         return $this->render('wpt/visit/teacher_list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
+            'page' => $page,
             'q' => $q,
-            'domain' => 'wpt_travel_expense',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);

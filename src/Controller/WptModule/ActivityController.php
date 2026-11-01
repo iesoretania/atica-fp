@@ -156,35 +156,9 @@ class ActivityController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('a')
-            ->from(Activity::class, 'a')
-            ->orderBy('a.code');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('a.code LIKE :tq')
-                ->orWhere('a.description LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('a.shift = :shift')
-            ->setParameter('shift', $shift);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
+        // el listado lo dibuja el componente Wpt:ActivityList, que parte de estos valores (?q=...&page=...)
+        $q = trim((string) $request->query->get('q'));
+        $page = $request->query->getInt('page', $page);
 
         $title = $translator->trans('title.list', [], 'wpt_activity');
 
@@ -199,9 +173,8 @@ class ActivityController extends AbstractController
             'menu_path' => 'workplace_training_shift_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
+            'page' => $page,
             'q' => $q,
-            'domain' => 'wpt_activity',
             'shift' => $shift
         ]);
     }

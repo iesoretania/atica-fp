@@ -61,58 +61,15 @@ class ShiftController extends AbstractController
 
         $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_MANAGER, $organization);
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('s')
-            ->distinct()
-            ->from(Shift::class, 's')
-            ->join('s.subject', 'su')
-            ->leftJoin('su.grade', 'gr')
-            ->leftJoin('gr.groups', 'g')
-            ->join('gr.training', 'tr')
-            ->leftJoin('tr.department', 'd')
-            ->leftJoin('d.head', 'h')
-            ->orderBy('s.name');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('s.name LIKE :tq')
-                ->orWhere('gr.name LIKE :tq')
-                ->orWhere('tr.name LIKE :tq')
-                ->orWhere('g.name LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        if (!$isManager) {
-            $queryBuilder
-                ->andWhere('d.head IS NOT NULL AND h.person = :manager')
-                ->setParameter('manager', $this->getUser());
-        }
-
-        $queryBuilder
-            ->andWhere('tr.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
+        // el listado lo dibuja el componente Wpt:ShiftList, que parte de estos valores (?q=...&page=...)
+        $q = trim((string) $request->query->get('q'));
+        $page = $request->query->getInt('page', $page);
 
         $title = $translator->trans('title.list', [], 'wpt_shift');
 
         return $this->render('wpt/shift/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
+            'page' => $page,
             'q' => $q,
             'domain' => 'wpt_shift',
             'academic_year' => $academicYear,

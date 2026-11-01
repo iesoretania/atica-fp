@@ -1,45 +1,8 @@
 {% trans_default_domain 'wpt_visit' %}
-{% extends 'ui/list.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block path_new %}{{ path('workplace_training_visit_new', {'id': teacher.id}) }}{% endblock %}
-
-{% block new_action %}{% if allow_new %}{{ parent() }}{% endif %}{% endblock %}
-
-{% block table_header %}
-    <th><label class="flex items-center gap-2"><input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600"> {{ 'header.datetime'|trans }}</label></th>
-    <th>{{ 'header.workcenter'|trans }}</th>
-    <th>{{ 'header.agreements'|trans }}</th>
-    <th>{{ 'header.student_enrollments'|trans }}</th>
-{% endblock %}
-
-{% block table_body %}
-    {% for item in pager %}
-        {% set url = path('workplace_training_visit_edit', {'id': item.id}) %}
-        {% set row_read_only = not is_granted('WPT_VISIT_MANAGE', item) %}
-        <tr class="clickable-row" data-href="{{ url }}">
-            <td class="align-top">
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" name="items[]" value="{{ item.id }}" class="size-4 rounded border-gray-300 text-brand-600{% if not row_read_only %} selectable{% endif %}"{% if row_read_only %} disabled{% endif %}>
-                    <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item.datetime|date('format.datetime'|trans({}, 'general')) }}</a>
-                </label>
-            </td>
-            <td class="align-top">{{ item.workcenter }}</td>
-            <td class="align-top">{{ item.agreements|join("\n")|nl2br }}</td>
-            <td class="align-top">{{ item.studentEnrollments|join(', ') }}</td>
-        </tr>
-    {% else %}
-        <tr><td colspan="4" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans }}</td></tr>
-    {% endfor %}
-{% endblock %}
-
-{% block form_action %}{{ path('workplace_training_visit_operation', {'id': teacher.id}) }}{% endblock %}
-
-{% block pagerfanta %}
-    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'id': teacher.id}}) }}
-{% endblock %}
-
-{% block after_table %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans, true) }}
+{#- Listado dinámico (Live Component Wpt:VisitList) -#}
+{% block content %}
+    {% set base_url = path(app.current_route, app.request.attributes.get('_route_params')|filter((v, k) => k != 'page')) %}
+    <twig:Wpt:VisitList :teacher="teacher" :q="q|default('')" :page="page|default(1)" :baseUrl="base_url" :backUrl="last_url" />
 {% endblock %}

@@ -65,7 +65,8 @@
 
         {# Navegación principal #}
         <nav class="grow space-y-0.5 overflow-y-auto px-3 py-4" aria-label="{{ 'hint.toggle'|trans }}">
-            {% for item in module_extension.menu.children %}
+            {#- «Datos personales» no va en el menú: ya está en el bloque de la persona, abajo -#}
+            {% for item in module_extension.menu.children|filter(item => item.routeName != 'personal_data') %}
                 {% set active = item.routeName and app.current_route starts with item.routeName %}
                 <a href="{{ item.routeName ? path(item.routeName) : '#' }}"
                    title="{{ (item.caption ~ '.detail')|trans({}, item.module ? 'module_' ~ item.module : 'menu') }}"

@@ -7,10 +7,8 @@ namespace App\Twig\Components\Wpt;
 use App\Entity\WptModule\Shift;
 use App\Repository\WptModule\AgreementEnrollmentRepository;
 use App\Security\WptModule\ShiftVoter;
-use App\Service\UserExtensionService;
 use App\Twig\Components\AbstractListComponent;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
@@ -22,21 +20,14 @@ final class AgreementList extends AbstractListComponent
     #[LiveProp]
     public Shift $shift;
 
-    public function __construct(
-        private readonly AgreementEnrollmentRepository $repository,
-        private readonly UserExtensionService $userExtensionService,
-        private readonly AuthorizationCheckerInterface $authorizationChecker,
-    ) {
+    public function __construct(private readonly AgreementEnrollmentRepository $repository)
+    {
     }
 
     protected function authorize(): void
     {
-        // se vuelve a comprobar en cada actualización, igual que hace el controlador de la página
-        $organization = $this->userExtensionService->getCurrentOrganization();
-        if (
-            !$this->authorizationChecker->isGranted(ShiftVoter::MANAGE, $this->shift)
-            || $this->shift->getGrade()->getTraining()->getAcademicYear()->getOrganization() !== $organization
-        ) {
+        $this->denyUnlessGranted(ShiftVoter::MANAGE, $this->shift);
+        if ($this->shift->getGrade()->getTraining()->getAcademicYear()->getOrganization() !== $this->organization()) {
             throw new AccessDeniedException();
         }
     }

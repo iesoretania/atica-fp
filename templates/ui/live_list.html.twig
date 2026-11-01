@@ -19,10 +19,12 @@
             </button>
         {% endif %}
     </div>
-    {% if not (read_only|default(false) or is_read_only()) %}
-        <twig:Ui:Button href="{% block path_new %}{% endblock %}" icon="plus" label="{{ 'table.new'|trans }}" />
-    {% endif %}
-    {% block more_actions %}{% endblock %}
+    {% block new_action %}
+        {% if not (read_only|default(false) or is_read_only()) %}
+            <twig:Ui:Button href="{% block path_new %}{% endblock %}" icon="plus" label="{{ 'table.new'|trans }}" />
+        {% endif %}
+        {% block more_actions %}{% endblock %}
+    {% endblock %}
 </div>
 
 {#- URL del formulario de operaciones por lote (borrar, copiar...); si está vacía no se dibuja <form> -#}

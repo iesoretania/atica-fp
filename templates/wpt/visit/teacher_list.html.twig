@@ -1,38 +1,11 @@
 {% trans_default_domain 'wpt_visit' %}
-{% extends 'ui/list.html.twig' %}
-{% import 'ui/macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block new_action %}{% endblock %}
-
-{% block table_header %}
-    <th>{{ 'header.teacher'|trans }}</th>
-    <th>{{ 'header.visit_count'|trans }}</th>
-    <th>{{ 'header.agreements'|trans }}</th>
-    <th></th>
-{% endblock %}
-
-{% block table_body %}
-    {% for item in pager %}
-        {% set url = path('workplace_training_visit_detail_list', {'id': item[0].id}) %}
-        <tr class="clickable-row" data-href="{{ url }}">
-            <td><a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700">{{ item[0].person }}</a></td>
-            <td>{{ item[1] }}</td>
-            <td>{{ item[2] }}</td>
-            <td class="text-right">{{ m.link_button_new(path('workplace_training_visit_report', {'id': item[0].id}), 'file-alt', 'btn-primary btn-sm', 'table.visit_report'|trans) }}</td>
-        </tr>
-    {% else %}
-        <tr><td colspan="4" class="py-8 text-center text-gray-500">{{ 'table.no_teachers'|trans }}</td></tr>
-    {% endfor %}
-{% endblock %}
-
-{% block before_filter %}
-    {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'workplace_training_visit_teacher_list'} %}
-{% endblock %}
-
-{% block pagerfanta %}
-    {{ pagerfanta(pager, 'tailwind', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id}}) }}
-{% endblock %}
-
-{% block after_table %}
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
+{#- Listado dinámico (Live Component Wpt:VisitTeacherList); el selector de curso académico navega a otra página -#}
+{% block content %}
+    <div data-controller="list">
+        {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'workplace_training_visit_teacher_list'} %}
+    </div>
+    {% set base_url = path(app.current_route, app.request.attributes.get('_route_params')|filter((v, k) => k != 'page')) %}
+    <twig:Wpt:VisitTeacherList :academicYear="academic_year" :q="q|default('')" :page="page|default(1)" :baseUrl="base_url" :backUrl="last_url" />
 {% endblock %}

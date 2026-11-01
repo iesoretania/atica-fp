@@ -166,44 +166,9 @@ class TravelExpenseController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_ACCESS_EXPENSE, $organization);
 
-        $allowNew = $this->isGranted(WptOrganizationVoter::WPT_CREATE_EXPENSE, $organization)
-            && $this->isGranted(TravelExpenseVoter::MANAGE, (new TravelExpense())->setTeacher($teacher));
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-        $queryBuilder
-            ->select('te')
-            ->addSelect('tr')
-            ->addSelect('COUNT(a)')
-            ->distinct()
-            ->from(TravelExpense::class, 'te')
-            ->join('te.travelRoute', 'tr')
-            ->leftJoin('te.agreements', 'a')
-            ->groupBy('te')
-            ->addOrderBy('te.fromDateTime', 'DESC');
-
-        $q = $request->query->get('q');
-
-        if ($q) {
-            $queryBuilder
-                ->orWhere('a.name LIKE :tq')
-                ->orWhere('tr.description LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-                ->andWhere('te.teacher = :teacher')
-                ->setParameter('teacher', $teacher);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
+        // el listado lo dibuja el componente Wpt:TravelExpenseList, que parte de estos valores (?q=...&page=...)
+        $q = trim((string) $request->query->get('q'));
+        $page = $request->query->getInt('page', $page);
 
         $title = $teacher->__toString() . ' - ' . $translator->trans('title.list', [], 'wpt_travel_expense');
 
@@ -217,10 +182,8 @@ class TravelExpenseController extends AbstractController
             'menu_path' => 'workplace_training_travel_expense_teacher_list',
             'title' => $title,
             'breadcrumb' => $breadcrumb,
-            'pager' => $pager,
+            'page' => $page,
             'q' => $q,
-            'domain' => 'wpt_travel_expense',
-            'allow_new' => $allowNew,
             'teacher' => $teacher
         ]);
     }
@@ -244,65 +207,16 @@ class TravelExpenseController extends AbstractController
 
         $this->denyAccessUnlessGranted(WptOrganizationVoter::WPT_ACCESS_EXPENSE, $organization);
 
-        $isManager = $this->isGranted(OrganizationVoter::MANAGE, $organization) ||
-            $this->isGranted(EduOrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-        $queryBuilder
-            ->select('t')
-            ->addSelect('p')
-            ->addSelect('COUNT(te)')
-            ->addSelect('SUM(tr.distance)')
-            ->addSelect('SUM(tr.verified)')
-            ->addSelect('SUM(te.otherExpenses)')
-            ->from(Teacher::class, 't')
-            ->join('t.person', 'p')
-            ->leftJoin(TravelExpense::class, 'te', 'WITH', 'te.teacher = t')
-            ->leftJoin('te.travelRoute', 'tr')
-            ->groupBy('t')
-            ->addOrderBy('p.lastName')
-            ->addOrderBy('p.firstName');
-
-        $q = $request->query->get('q');
-
-        if ($q) {
-            $queryBuilder
-                ->orWhere('p.firstName LIKE :tq')
-                ->orWhere('p.lastName LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        /** @var Person $person */
-        /** @var Person $person */
-        $person = $this->getUser();
-        if (!$isManager) {
-            $teachers = [$teacherRepository->findOneByPersonAndAcademicYear($person, $academicYear)];
-        } else {
-            $teachers = $WptTeacherRepository->findByAcademicYear($academicYear);
-        }
-
-        $queryBuilder
-                ->andWhere('t IN (:teachers)')
-                ->setParameter('teachers', $teachers);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
+        // el listado lo dibuja el componente Wpt:TravelExpenseTeacherList, que parte de estos valores (?q=...&page=...)
+        $q = trim((string) $request->query->get('q'));
+        $page = $request->query->getInt('page', $page);
 
         $title = $translator->trans('title.teacher_list', [], 'wpt_travel_expense');
 
         return $this->render('wpt/travel_expense/teacher_list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
+            'page' => $page,
             'q' => $q,
-            'domain' => 'wpt_travel_expense',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
         ]);
