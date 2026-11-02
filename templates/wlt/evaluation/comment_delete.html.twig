@@ -5,7 +5,7 @@
 {% block content %}
     <form method="post">
         <input type="hidden" name="confirm" value="ok">
-        <twig:Ui:Alert type="warning" :message="'prompt.delete_confirm'|trans|nl2br" />
+        <twig:Ui:Alert type="warning" :message="'prompt.delete_confirm'|trans" />
         <div class="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
             <div class="p-4 text-sm text-gray-800">{{ comment.comment|nl2br }}</div>
             <div class="border-t border-gray-100 bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-600">{{ comment.timestamp|date('format.datetime'|trans({}, 'general')) }} - {{ comment.person }}</div>

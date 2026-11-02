@@ -37,7 +37,7 @@
         {% endblock %}
 
         {% block before_table %}
-            {% if locked %}<twig:Ui:Alert type="warning" :message="'prompt.locked_warning'|trans({}, domain)|nl2br" />{% endif %}
+            {% if locked %}<twig:Ui:Alert type="warning" :message="'prompt.locked_warning'|trans({}, domain)" />{% endif %}
         {% endblock %}
         {% block form_action %}{{ path('organization_survey_question_operation', {'id': survey.id}) }}{% endblock %}
         {% block after_table %}{{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}{% endblock %}

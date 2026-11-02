@@ -7,7 +7,7 @@
     {% if survey %}
         {{ form_start(form) }}
         {% if read_only %}
-            <twig:Ui:Alert type="warning" :message="'prompt.read_only_warning'|trans|nl2br" />
+            <twig:Ui:Alert type="warning" :message="'prompt.read_only_warning'|trans" />
         {% endif %}
         <div class="mb-4 overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
             <div class="border-b border-gray-200 bg-gray-50 px-5 py-4">
@@ -70,7 +70,7 @@
         </div>
         {{ form_end(form) }}
     {% else %}
-        <twig:Ui:Alert type="danger" :message="'prompt.no_survey'|trans|nl2br" />
+        <twig:Ui:Alert type="danger" :message="'prompt.no_survey'|trans" />
         {{ m.link_button(back_url|default(last_url), 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {% endif %}
 {% endblock %}

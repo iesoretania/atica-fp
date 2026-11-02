@@ -14,7 +14,7 @@
         {% endfor %}
         <input type="hidden" name="confirm" value="ok">
         {% block delete_hidden %}{% endblock %}
-        <twig:Ui:Alert type="warning" :message="(prompt_key|default('prompt.delete_confirm'))|trans|nl2br" />
+        <twig:Ui:Alert type="warning" :message="(prompt_key|default('prompt.delete_confirm'))|trans" />
         <div class="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
             <div class="overflow-x-auto">
                 <table id="list" class="w-full text-left text-sm">

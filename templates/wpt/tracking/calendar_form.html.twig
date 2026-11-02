@@ -6,9 +6,9 @@
 
 {% block content %}
     {% if read_only %}
-        <twig:Ui:Alert type="warning" :message="'prompt.read_only_warning'|trans|nl2br" />
+        <twig:Ui:Alert type="warning" :message="'prompt.read_only_warning'|trans" />
     {% elseif tracked_work_day.locked %}
-        <twig:Ui:Alert type="warning" :message="'prompt.locked_warning'|trans|nl2br" />
+        <twig:Ui:Alert type="warning" :message="'prompt.locked_warning'|trans" />
     {% endif %}
     {{ form_start(form) }}
     {{ fl.grid(form, [

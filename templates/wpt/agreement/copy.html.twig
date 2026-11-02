@@ -32,7 +32,7 @@
             </tbody>
         </table>
     </div>
-    <twig:Ui:Alert type="warning" :message="'prompt.copy_confirm'|trans|nl2br" />
+    <twig:Ui:Alert type="warning" :message="'prompt.copy_confirm'|trans" />
     {{ m.start_button() }}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
         {{ m.submit_button('copy', 'copy', 'btn-success', 'form.copy_confirm'|trans) }}

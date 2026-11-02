@@ -5,7 +5,7 @@
 {% form_theme form 'ui/form_theme.html.twig' %}
 
 {% block content %}
-    <twig:Ui:Alert type="warning" :message="'prompt.at_your_own_risk_warning'|trans|nl2br" />
+    <twig:Ui:Alert type="warning" :message="'prompt.at_your_own_risk_warning'|trans" />
     {{ form_start(form) }}
     {{ fl.grid(form, [
         ['group'],

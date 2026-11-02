@@ -8,7 +8,7 @@
             <input type="hidden" name="items[]" value="{{ item.workDay.id }}">
         {% endfor %}
         <input type="hidden" name="confirm" value="ok">
-        <twig:Ui:Alert type="warning" :message="'prompt.attendance_confirm'|trans|nl2br" />
+        <twig:Ui:Alert type="warning" :message="'prompt.attendance_confirm'|trans" />
         <div class="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
             <table id="list" class="w-full text-left text-sm">
                 <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500 [&_th]:px-4 [&_th]:py-3">

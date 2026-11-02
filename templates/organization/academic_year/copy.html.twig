@@ -5,7 +5,7 @@
 {% form_theme form 'ui/form_theme.html.twig' %}
 
 {% block content %}
-    <twig:Ui:Alert type="info" :message="'prompt.copy_information'|trans|nl2br" />
+    <twig:Ui:Alert type="info" :message="'prompt.copy_information'|trans" />
     {{ form_start(form) }}
     {{ fl.grid(form, [], {}, 'form.copy_to'|trans({'academic_year': academic_year})) }}
     {{ m.start_button() }}

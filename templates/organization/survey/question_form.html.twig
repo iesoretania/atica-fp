@@ -5,7 +5,7 @@
 {% form_theme form 'ui/form_theme.html.twig' %}
 
 {% block content %}
-    {% if locked %}<twig:Ui:Alert type="warning" :message="'prompt.locked_warning'|trans|nl2br" />{% endif %}
+    {% if locked %}<twig:Ui:Alert type="warning" :message="'prompt.locked_warning'|trans" />{% endif %}
     {{ form_start(form) }}
     {{ fl.grid(form, [
         ['description'],

@@ -3,7 +3,7 @@
 {% import 'ui/macros.html.twig' as m %}
 
 {% block content %}
-    <twig:Ui:Alert type="warning" :message="'prompt.no_survey_warning'|trans|nl2br" />
+    <twig:Ui:Alert type="warning" :message="'prompt.no_survey_warning'|trans" />
 
     {{ m.link_button(menu_path is defined ? path(menu_path) : last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
 {% endblock %}
