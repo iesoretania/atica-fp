@@ -100,6 +100,11 @@ Las entradas del módulo, y quién las ve, son estas:
 
 ![Menú de formación en empresa de la administración del centro: planes de formación, seguimiento de actividad, valoración del desempeño de actividades, resumen de evaluación, contactos con empresas, dietas de desplazamiento, encuestas e informes](img/ffe-inicio-gestion.png)
 
+!!! tip "Resumen en el escritorio"
+    Si tienes acceso al seguimiento, el escritorio de inicio incluye un panel de **FFEOE** con contadores
+    (en prácticas ahora, empiezan pronto, finalizadas sin cerrar y con faltas sin justificar) y el enlace
+    **Ver seguimiento**. Lo explica [Primeros pasos](02-primeros-pasos.md#el-escritorio).
+
 !!! note "Quien no tiene nada que hacer en el módulo, no lo ve"
     El módulo aparece en el menú solo a quien interviene en él: si no eres administración, jefatura ni gestión de la
     FFEOE y no tienes ninguna estancia ni das clase al alumnado del plan, no verás **Formación en empresa**.

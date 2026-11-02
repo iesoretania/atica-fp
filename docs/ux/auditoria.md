@@ -145,7 +145,20 @@ Cambios de tema que se aplican a todos los módulos:
 - **Administración** (`Admin:OrganizationList`, `Admin:UserList`, importaciones): solo `ROLE_ADMIN`, comprobado en cada
   renderizado.
 - **Acceso**: pantallas previas al acceso (`security/login_*`) con el diseño nuevo y datos personales / cambio de contraseña
-  forzado con `ui/layout`.
+  forzado con `ui/layout`. Todas extienden `security/login_base.html.twig` (panel de marca con el motivo de
+  `_login_motif.html.twig` en pantallas grandes y cabecera de marca en las pequeñas; bloques `login_title`, `login_heading`,
+  `login_subtitle` y `login_content`) y usan los controles de `login_macros.html.twig`. El campo de contraseña lleva el
+  controlador Stimulus `password-visibility`, y `input[type=password]` usa la tipografía del sistema porque el Inter local
+  no incluye el carácter con el que algunos móviles ocultan el texto.
+- **Escritorio (`/`)**: saludo según la hora y el género del perfil y un panel por módulo (`Dashboard:ItpPanel`,
+  `Dashboard:FctPanel`, `Dashboard:WltPanel`, en ese orden, sobre `AbstractTrackingPanel`). Cada panel solo se dibuja con
+  acceso al seguimiento del módulo y reutiliza las mismas consultas acotadas que los listados (`WltModule\TrackingQueryFactory`
+  para FP dual), de modo que cada rol cuenta solo lo que ya ve. «Datos personales» sale del menú y se abre desde el bloque de
+  la persona de la barra lateral; los menús de sección (`ui/partial_menu.html.twig`) muestran la descripción de cada opción
+  bajo el título en vez de un tooltip.
+- **Migas**: se componen en `ui/layout.html.twig` (inicio con el nombre del centro, apartado y pantalla, con `>` como
+  separador). Los elementos del `breadcrumb` de cada controlador que no son enlaces (persona, empresa, curso) pasan a
+  subtítulo del título, salvo que el título ya los contenga.
 - **Macros comunes de listados**: `lm.select_th` y `lm.select_cell` (casilla «seleccionar todo» y enlace a la ficha; admiten
   nombre de campo distinto de `items[]` y filas deshabilitadas).
 - Cambios de nombre de parámetro: el borrado de profesorado lee `items[]` (antes `users[]`), como el resto.

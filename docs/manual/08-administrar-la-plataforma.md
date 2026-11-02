@@ -19,7 +19,7 @@ La administración de la plataforma es una cuenta con el permiso de **administra
 ![Listado de centros: «I.E.S. Ada Lovelace» (el activo, con una marca) e «I.E.S. Miguel Hernández», con su código, ciudad, correo y teléfono, y el botón «Cambiar a» en el que no está activo](img/plataforma-organizaciones.png)
 
 - **Cambiar a** hace que pases a trabajar en ese centro (también puedes hacerlo desde el nombre del
-  centro, arriba a la derecha). El centro en el que estás aparece marcado como **Activo**.
+  centro, arriba del menú lateral). El centro en el que estás aparece marcado como **Activo**.
 - **Nuevo centro** da de alta un centro. Desde el instalador también se puede crear el primero
   ([Instalación y puesta en marcha](01-instalacion-y-puesta-en-marcha.md)).
 - Pulsa el nombre de un centro para editar sus datos.
@@ -77,8 +77,8 @@ Además de los datos personales, la ficha tiene opciones que solo ve la administ
 
 Cuando alguien tiene un problema que no logras reproducir, puedes ver la aplicación **tal como la ve esa
 persona**. En su ficha, pulsa **Acceder como el usuario**. Pasarás a trabajar con su cuenta, con su menú y
-sus permisos, y un enlace **Volver al usuario normal** (arriba a la derecha, donde antes estaba
-«Desconectar») te devuelve a la tuya.
+sus permisos, y un enlace **Volver al usuario normal** (abajo en el menú lateral, donde antes
+estaba «Desconectar») te devuelve a la tuya.
 
 !!! warning "Es una suplantación"
     Mientras accedes como otra persona, **todo lo que haces queda a su nombre** (registros de jornada,

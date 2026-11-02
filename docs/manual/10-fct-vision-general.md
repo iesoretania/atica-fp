@@ -97,6 +97,12 @@ Al entrar en **FCT**, cada persona ve solo las opciones de su perfil. El módulo
 
 ![Menú de FCT de la administración del centro, con las siete entradas: convocatorias, seguimiento de actividad, informe del tutor laboral, visitas a empresas, dietas de desplazamiento, encuestas e informes](img/fct-inicio-gestion.png)
 
+!!! tip "Resumen en el escritorio"
+    Si tienes acceso al seguimiento, el escritorio de inicio incluye un panel de **FCT** con contadores
+    (en prácticas ahora, empiezan pronto, finalizadas sin cerrar, con faltas sin justificar y, para la
+    administración y la jefatura, convenios sin firmar) y el enlace **Ver seguimiento**. Lo explica
+    [Primeros pasos](02-primeros-pasos.md#el-escritorio).
+
 Si el módulo **FCT no aparece** en tu menú, puede ser porque no está activo en el curso o porque tu
 usuario no interviene en ninguna convocatoria. Mira
 [Resolución de problemas](90-resolucion-de-problemas.md).

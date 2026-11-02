@@ -7,9 +7,12 @@ la aplicación y cómo cuidar tus datos y tu contraseña.
 ## Entrar en la aplicación
 
 Abre en el navegador la dirección que te haya dado tu centro. La pantalla de acceso te pide tu
-**nombre de usuario o tu correo electrónico** y tu **contraseña**.
+**nombre de usuario o tu correo electrónico** y tu **contraseña**. En una pantalla ancha, a la izquierda
+verás el panel con el nombre de la aplicación y, a la derecha, el formulario; en un móvil, el panel pasa a
+ser una cabecera sobre el formulario. El **ojo** del campo de la contraseña la muestra u oculta mientras
+la escribes, algo útil en el móvil.
 
-![Pantalla de acceso de ÁTICA FP: campos «Nombre de usuario o correo electrónico» y «Contraseña», el botón «Acceder a la aplicación» y el enlace «¿Olvidó la contraseña?»](img/primeros-pasos-acceso.png)
+![Pantalla de acceso de ÁTICA FP: panel con el nombre de la aplicación a la izquierda y, a la derecha, los campos «Nombre de usuario o correo electrónico» y «Contraseña» (con el botón para verla), el enlace «¿Olvidó la contraseña?» y el botón «Acceder a la aplicación»](img/primeros-pasos-acceso.png)
 
 Según quién seas, tu usuario te lo habrá dado una persona distinta:
 
@@ -35,8 +38,9 @@ cuál quieres trabajar.
 ![Selección de centro: dos centros con casilla de opción y el botón «Entrar en el centro seleccionado»](img/primeros-pasos-seleccion-centro.png)
 
 Marca el centro y pulsa **Entrar en el centro seleccionado**. Más tarde puedes cambiar de centro desde
-el nombre del centro que aparece arriba, a la derecha, junto a tu nombre. Si perteneces a un único
-centro entras directamente, sin esta pantalla.
+el nombre del centro que aparece **arriba del menú lateral**: pulsa en él y elige otro de la lista (si
+perteneces a muchos centros, te lleva de nuevo a esta pantalla). Si perteneces a un único centro entras
+directamente, sin esta pantalla, y el nombre del centro es solo informativo.
 
 !!! warning "«El usuario no pertenece a ningún centro»"
     Si ves este mensaje, tu usuario existe pero no está dado de alta como docente ni como alumnado en el
@@ -44,18 +48,42 @@ centro entras directamente, sin esta pantalla.
 
 ## La pantalla de inicio y el menú
 
-Al entrar ves la **pantalla de inicio** de tu centro. A la izquierda está el **menú lateral**, con
-un icono por cada apartado al que tienes acceso (en pantallas anchas, también su nombre; al pasar el
-ratón por encima aparece su descripción). Arriba, a la derecha, tienes tu nombre (que lleva a tus datos
-personales) y **Desconectar**.
+Al entrar ves el **escritorio** de tu centro. A la izquierda está el **menú lateral**, con el icono y el
+nombre de cada apartado al que tienes acceso; en un móvil se oculta y se abre con el botón de las tres
+rayas de la cabecera. En la parte de **arriba** del menú aparece el **centro** en el que trabajas, y
+en la de **abajo** tu nombre, **Mi perfil** (tus datos personales) y **Desconectar**.
 
-![Pantalla de inicio de la administración del centro: menú lateral con un icono por apartado y, arriba a la derecha, el nombre de la persona y «Desconectar»](img/primeros-pasos-inicio.png)
+![Escritorio de la administración del centro: saludo, menú lateral con el centro arriba y el nombre de la persona, «Mi perfil» y «Desconectar» abajo, y un panel de seguimiento por cada módulo](img/primeros-pasos-inicio.png)
 
 **El menú es distinto para cada persona.** Solo aparece lo que tu perfil puede usar: una persona de
 la administración ve la gestión del centro, las empresas y los tres módulos; el alumnado ve únicamente
 su seguimiento. Por eso es normal que alguien de tu centro tenga opciones que tú no ves.
 
-Los apartados posibles son:
+### El escritorio
+
+Lo primero que ves es un **saludo** con tu nombre, que cambia según la hora (buenos días, buenas
+tardes o buenas noches) y concuerda con el **sexo** que indicaste en tus datos personales («Bienvenido»,
+«Bienvenida» o «Te damos la bienvenida» si no lo indicaste).
+
+Debajo aparece un **panel de seguimiento por cada módulo** en el que participas, en este orden: **FFEOE**,
+**FCT** y **FP dual**. Cada panel resume el curso activo con unos contadores y el enlace **Ver seguimiento**
+abre el listado completo:
+
+| Contador | Qué cuenta |
+| --- | --- |
+| **En prácticas ahora** | Estancias cuyas fechas incluyen hoy |
+| **Empiezan pronto** | Estancias que empiezan en los próximos 15 días |
+| **Finalizadas sin cerrar** | Estancias ya terminadas con jornadas aún sin bloquear |
+| **Con faltas sin justificar** | Estudiantes con ausencias sin justificar |
+| **Convenios sin firmar** | Acuerdos sin fecha de firma; **solo en FCT** y **solo para la administración y la jefatura** |
+
+Los contadores respetan tus permisos: cuentan únicamente lo que ya puedes ver en el seguimiento (todo el
+centro, tu departamento, tus grupos o tus estudiantes, según tu perfil). Si eres **alumnado**, el panel
+muestra tu propio progreso (**Mis prácticas**, con las horas realizadas y las ausencias) en lugar de los
+contadores del equipo. Un módulo no aparece si no está activo en el curso o si tu perfil no tiene acceso a
+su seguimiento. Si no participas en ninguno, solo ves el saludo.
+
+Los apartados posibles del menú son:
 
 | Apartado | Para qué sirve | Quién lo ve |
 | --- | --- | --- |
@@ -63,11 +91,17 @@ Los apartados posibles son:
 | **Gestión del centro** | Profesorado, alumnado, grupos, enseñanzas, importaciones... | Administración del centro; el responsable económico, solo sus itinerarios ([capítulo 4](04-administrar-el-centro.md)) |
 | **Empresas colaboradoras** | Empresas y sus centros de trabajo | Administración del centro, jefaturas de departamento, coordinación de FP dual y gestión de la FFEOE ([capítulo 6](06-empresas-y-centros-de-trabajo.md)) |
 | **FCT**, **FP dual**, **FFEOE** | Cada módulo de formación en empresa | Quien interviene en ese módulo; solo si el módulo está activo en el curso |
-| **Datos personales** | Tus datos y tu contraseña | Todo el mundo |
+Tus datos y tu contraseña no están entre los apartados: se abren con **Mi perfil**, abajo en el menú
+lateral (ver [Tus datos personales](#tus-datos-personales)).
 
-Cada página muestra arriba una **ruta de navegación** (por ejemplo, «I.E.S. Ada Lovelace › Gestión
-del centro › Cursos académicos»). Pulsa en cualquiera de sus partes para volver atrás sin usar el botón
-del navegador.
+Cada página muestra arriba una **ruta de navegación** corta: el icono de la casa (que lleva al
+escritorio) y, separados por **>**, el apartado y la pantalla en la que estás (por ejemplo, «🏠 > Gestión del
+centro > Cursos académicos»). Pulsa en cualquiera de sus partes para volver atrás sin usar el botón del
+navegador. Los datos concretos de la pantalla (la persona, la empresa, el curso...) no van en la ruta:
+aparecen como **subtítulo** debajo del título de la página.
+
+En los apartados con varias opciones (**Gestión del centro**, **Empresas colaboradoras**, cada módulo...)
+verás una **tarjeta por opción**, con su nombre y debajo una breve descripción de lo que hace.
 
 ### Los listados
 
@@ -85,7 +119,7 @@ se va a borrar; no se borra hasta que la confirmas.
 
 ## Tus datos personales
 
-Pulsa tu nombre, arriba a la derecha (o el apartado **Datos personales**), para ver tus datos.
+Pulsa **Mi perfil**, abajo en el menú lateral (bajo tu nombre), para ver tus datos.
 
 ![Datos personales: identificador, nombre de usuario, nombre y apellidos (solo lectura), sexo y correo electrónico editables, y debajo los campos para cambiar la contraseña](img/primeros-pasos-datos-personales.png)
 

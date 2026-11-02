@@ -96,3 +96,8 @@ Las entradas del módulo, y quién las ve, son estas:
 | **Informes** | Informes de resultados y encuestas del proyecto | Administración, coordinación y jefatura |
 
 ![Menú de FP dual de la administración del centro, con las entradas de proyectos, seguimiento, valoración, resumen de evaluación, contactos, dietas, reuniones, encuestas e informes](img/dual-inicio-gestion.png)
+
+!!! tip "Resumen en el escritorio"
+    Si tienes acceso al seguimiento, el escritorio de inicio incluye un panel de **FP dual** con contadores
+    (en prácticas ahora, empiezan pronto, finalizadas sin cerrar y con faltas sin justificar) y el enlace
+    **Ver seguimiento**. Lo explica [Primeros pasos](02-primeros-pasos.md#el-escritorio).
