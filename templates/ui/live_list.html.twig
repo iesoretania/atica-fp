@@ -41,7 +41,9 @@
     {% endfor %}
     {% block new_action %}
         {% if not (read_only|default(false) or is_read_only()) %}
-            <twig:Ui:Button href="{% block path_new %}{% endblock %}" icon="plus" label="{{ 'table.new'|trans }}" />
+            {#- La URL se captura en una variable: un «{% block %}» dentro del atributo de un componente no se evalúa -#}
+            {% set new_url %}{% block path_new %}{% endblock %}{% endset %}
+            <twig:Ui:Button :href="new_url|trim" icon="plus" label="{{ 'table.new'|trans }}" />
         {% endif %}
         {% block more_actions %}{% endblock %}
     {% endblock %}
