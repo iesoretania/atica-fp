@@ -8,7 +8,7 @@ durante el período de alternancia de FP dual.
 
 Puedes seguir el desarrollo de esta herramienta vía X (antes Twitter) siguiendo a [@aticaFP].
 
-Este proyecto está desarrollado en PHP utilizando [Symfony] 6.4 y otros muchos componentes que se instalan usando
+Este proyecto está desarrollado en PHP utilizando [Symfony] 7.4 y otros muchos componentes que se instalan usando
 [Composer]. Los assets de frontend se gestionan con AssetMapper de Symfony, sin Node.js.
 
 **IMPORTANTE: Si vas a actualizar desde la versión 6.x a la 7.x, por favor, lee el fichero [`UPGRADE-7.0.md`](UPGRADE-7.0.md) para

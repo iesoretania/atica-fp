@@ -15,8 +15,8 @@ Si tu centro ya tiene la aplicación en marcha, puedes saltarte este capítulo y
 - **Servidor web Apache2** con `mod_rewrite` activado (con nginx podría funcionar, pero no se ha
   probado).
 - **MySQL 8.0.28 o superior**, o un derivado equivalente (MariaDB, Percona...).
-- **Composer** y **Node.js** (versión 18 a 20) para instalar las dependencias y generar los
-  ficheros de la interfaz.
+- **Composer** para instalar las dependencias. **No hace falta Node.js**: los ficheros de la
+  interfaz los genera la propia aplicación.
 - Una cuenta de correo desde la que la aplicación pueda enviar mensajes (recuperación de
   contraseña y avisos). Sin ella la aplicación funciona, pero esos mensajes no llegan.
 
@@ -47,7 +47,7 @@ contraseña `demo1234`.
    variables:
     - `APP_SECRET`: pon un valor aleatorio y largo. No dejes el del ejemplo.
     - `DATABASE_URL`: los datos de acceso a tu base de datos.
-3. **Genera los ficheros de la interfaz:** `npm install` y después `npm run build`.
+3. **Genera los ficheros de la interfaz:** `php bin/console asset-map:compile`.
 4. **Apunta Apache a la carpeta `public/`.** El `DocumentRoot` de tu sitio debe ser la carpeta
    `public/` dentro de la instalación.
 5. **Crea la base de datos y las tablas:**

@@ -4,6 +4,21 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+8.0.0 (2026-11-02)
+------------------
+* feat: Nueva interfaz en toda la aplicación (Tailwind CSS, menú lateral, listados y formularios dinámicos, selectores con búsqueda y editor de texto enriquecido Quill); se retiran Bootstrap, jQuery, Select2, Font Awesome y CKEditor
+* feat: La página de inicio pasa a ser un escritorio con un saludo según la hora y el género del perfil y un panel de seguimiento por módulo (FFEOE, FCT y FP dual) con contadores acotados a lo que cada perfil puede ver
+* feat: Los menús de sección muestran la descripción de cada opción en la propia tarjeta y «Datos personales» se abre desde «Mi perfil», en la barra lateral
+* feat: Migas de pan más cortas (inicio > sección > subsección), con los datos de contexto como subtítulo del título
+* feat: Nuevas pantallas de acceso (con panel de marca, campos con etiqueta y botón para ver la contraseña) y de error 403, 404 y 500
+* feat: Nuevo icono de la aplicación
+* feat: Los menús de FFEOE, FCT y FP dual siguen ese orden, igual que el escritorio
+* feat: El calendario de FFEOE muestra solo de lunes a viernes si el plan de formación es de 5 días, salvo que haya jornadas en fin de semana
+* chore: Los assets pasan de Webpack Encore a AssetMapper: ya no se necesita Node.js (ver UPGRADE-8.0.md)
+* chore: Migración a Symfony 7.4 manteniendo PHP 8.2
+* fix: En los campos de contraseña de los móviles se muestran puntos en lugar de un símbolo raro
+* docs: El manual de usuario describe la interfaz nueva y se regeneran sus capturas
+
 7.7.0 (2026-10-31)
 ------------------
 * feat: Permitir exportar estado de estancias de FFEOE en formato CSV
