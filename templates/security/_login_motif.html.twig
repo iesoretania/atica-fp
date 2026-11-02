@@ -1,0 +1,33 @@
+{#- Motivo decorativo de las pantallas de acceso: un itinerario que enlaza centros, empresas y alumnado (puntos unidos por
+    una ruta discontinua) sobre arcos concéntricos. Se pinta con «currentColor», así que hereda el color del contenedor. -#}
+<svg viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" class="absolute inset-0 size-full text-white" aria-hidden="true" focusable="false">
+    {# Arcos concéntricos #}
+    <g fill="none" stroke="currentColor" stroke-width="1" opacity="0.10">
+        <circle cx="0" cy="800" r="170" />
+        <circle cx="0" cy="800" r="250" />
+        <circle cx="0" cy="800" r="330" />
+        <circle cx="0" cy="800" r="410" />
+        <circle cx="400" cy="0" r="120" />
+        <circle cx="400" cy="0" r="200" />
+    </g>
+    {# Ruta entre los puntos #}
+    <path d="M-20,690 C 110,650 90,540 190,480 S 340,400 300,270 S 150,210 215,80 S 380,20 430,-10"
+          fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="2 9" stroke-linecap="round" opacity="0.38" />
+    {# Cuadrícula de puntos #}
+    <g fill="currentColor" opacity="0.12">
+        {% for x in [40, 80, 120, 160] %}{% for y in [610, 650, 690, 730] %}<circle cx="{{ x }}" cy="{{ y }}" r="1.6" />{% endfor %}{% endfor %}
+        {% for x in [290, 330, 370] %}{% for y in [120, 160, 200] %}<circle cx="{{ x }}" cy="{{ y }}" r="1.6" />{% endfor %}{% endfor %}
+    </g>
+    {# Puntos del itinerario: centro, empresas y estudiantes #}
+    <g fill="currentColor">
+        <circle cx="190" cy="480" r="9" opacity="0.30" />
+        <circle cx="190" cy="480" r="22" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.22" />
+        <circle cx="300" cy="270" r="6" opacity="0.34" />
+        <circle cx="300" cy="270" r="16" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.20" />
+        <circle cx="215" cy="80" r="11" opacity="0.28" />
+        <circle cx="215" cy="80" r="26" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.18" />
+        <circle cx="92" cy="545" r="4" opacity="0.40" />
+        <circle cx="330" cy="395" r="4" opacity="0.40" />
+        <circle cx="150" cy="212" r="4" opacity="0.40" />
+    </g>
+</svg>

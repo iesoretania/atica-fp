@@ -1,5 +1,6 @@
 {% trans_default_domain "security" %}
-{#- Base de las pantallas previas al acceso (inicio de sesión, restablecer contraseña...), con el diseño nuevo.
+{#- Base de las pantallas previas al acceso (inicio de sesión, restablecer contraseña...), con el diseño nuevo: panel de
+    marca a la izquierda en pantallas grandes y, en las pequeñas, una cabecera de marca sobre el formulario.
     Clases de los controles: ver security/login_macros.html.twig -#}
 {% extends 'base.html.twig' %}
 {% import 'security/login_macros.html.twig' as lm %}
@@ -12,14 +13,49 @@
 {% block importmap %}{{ importmap(['app_v2']|merge(js_entries|default([]))) }}{% endblock %}
 
 {% block body %}
-    <main class="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 py-10 text-gray-800 antialiased" style="font-family: var(--font-sans)">
-        <div class="w-full max-w-sm">
-            {% if app_logo %}
-                <div class="mb-6 text-center"><img src="{{ asset(app_logo) }}" alt="{{ app_name }}" class="mx-auto max-h-24 w-auto"></div>
-            {% endif %}
-            <div class="rounded-2xl bg-white p-8 shadow-xs ring-1 ring-gray-200">
-                <h1 class="text-center text-lg font-semibold tracking-wide text-gray-900">{{ app_name|upper }}</h1>
-                <h2 class="mb-6 mt-1 text-center text-sm text-gray-500">{% block login_heading %}{% endblock %}</h2>
+    {% set logo %}
+        {% if app_logo %}
+            <img src="{{ asset(app_logo) }}" alt="{{ app_name }}" class="max-h-full max-w-full object-contain">
+        {% else %}
+            <twig:Ui:Icon name="graduation-cap" class="size-1/2 text-white" />
+        {% endif %}
+    {% endset %}
+    <div class="flex min-h-screen flex-col bg-white text-gray-800 antialiased lg:flex-row" style="font-family: var(--font-sans)">
+
+        {# Panel de marca (pantallas grandes) #}
+        <aside class="relative hidden flex-col justify-between overflow-hidden bg-linear-to-br from-brand-950 via-brand-900 to-brand-800 p-12 lg:flex lg:w-5/12 xl:w-2/5">
+            {% include 'security/_login_motif.html.twig' %}
+            <div class="relative flex items-start gap-4">
+                <span class="flex size-24 shrink-0 items-center justify-center rounded-3xl bg-white/10 p-4 shadow-lg ring-1 ring-white/20">{{ logo }}</span>
+                {% if app_version %}<span class="mt-1 text-xs font-medium text-white/60" title="{{ app_pub_date }}">v{{ app_version }}</span>{% endif %}
+            </div>
+            <div class="relative">
+                <p class="mb-4 text-sm font-medium uppercase tracking-widest text-brand-200">{{ 'form.login.platform'|trans }}</p>
+                <h1 class="mb-4 text-4xl font-bold leading-tight text-white">{{ app_name }}</h1>
+                <p class="text-lg leading-relaxed text-brand-100">{{ 'form.login.hero'|trans }}</p>
+            </div>
+            <p class="relative text-sm text-brand-300">&copy; {{ 'now'|date('Y') }} Luis Ramón López López</p>
+        </aside>
+
+        {# Cabecera de marca (pantallas pequeñas) #}
+        <header class="relative overflow-hidden bg-linear-to-br from-brand-950 via-brand-900 to-brand-800 px-6 pb-14 pt-8 lg:hidden">
+            {% include 'security/_login_motif.html.twig' %}
+            <div class="relative flex items-center gap-4">
+                <span class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-white/10 p-2.5 shadow-lg ring-1 ring-white/20">{{ logo }}</span>
+                <div>
+                    <p class="text-xl font-bold leading-tight text-white">{{ app_name }}</p>
+                    <p class="text-xs text-brand-200">{{ 'form.login.platform'|trans }}{% if app_version %} · <span title="{{ app_pub_date }}">v{{ app_version }}</span>{% endif %}</p>
+                </div>
+            </div>
+        </header>
+
+        {# Formulario #}
+        <main class="relative -mt-6 flex flex-1 flex-col justify-between rounded-t-3xl bg-white px-6 pb-6 pt-8 sm:px-10 lg:mt-0 lg:rounded-none lg:p-12">
+            <div class="mx-auto flex w-full max-w-md flex-1 flex-col justify-start py-4 lg:justify-center">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900">{% block login_heading %}{% endblock %}</h2>
+                    {% block login_subtitle %}{% endblock %}
+                </div>
                 {% include 'ui/partial_flash.html.twig' %}
                 {% if login_error is defined and login_error %}
                     <twig:Ui:Alert type="danger" :message="login_error.messageKey|trans(login_error.messageData)" />
@@ -29,10 +65,9 @@
                 {% endif %}
                 {% block login_content %}{% endblock %}
             </div>
-        </div>
-        <footer class="no-print mt-8 text-center text-xs text-gray-500" role="contentinfo">
-            {{ 'form.login.footer.first'|trans }} <a href="{{ app_repository }}" class="font-medium text-brand-700 hover:underline">{{ 'form.login.footer.link.caption'|trans }}</a> {{ 'form.login.footer.second'|trans }} <a href="https://www.gnu.org/licenses/agpl-3.0.html" class="font-medium text-brand-700 hover:underline">{{ 'form.login.footer.link.agpl_caption'|trans }}</a>
-            {% if app_version %} - <span title="{{ app_pub_date }}">v{{ app_version }}</span>{% endif %}
-        </footer>
-    </main>
+            <footer class="no-print mx-auto mt-6 w-full max-w-md text-center text-xs text-gray-500" role="contentinfo">
+                {{ 'form.login.footer.first'|trans }} <a href="{{ app_repository }}" class="font-medium text-brand-700 hover:underline">{{ 'form.login.footer.link.caption'|trans }}</a> {{ 'form.login.footer.second'|trans }} <a href="https://www.gnu.org/licenses/agpl-3.0.html" class="font-medium text-brand-700 hover:underline">{{ 'form.login.footer.link.agpl_caption'|trans }}</a>
+            </footer>
+        </main>
+    </div>
 {% endblock %}

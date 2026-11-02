@@ -1,9 +1,9 @@
 {#- Controles de las pantallas previas al acceso -#}
-{% macro input_class() %}block w-full rounded-lg border-0 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-brand-500{% endmacro %}
+{% macro input_class() %}block w-full rounded-xl border-0 bg-gray-50 px-3 py-3 text-sm text-gray-900 ring-1 ring-inset ring-gray-200 transition placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-brand-500{% endmacro %}
 
 {% macro submit(label, tabindex = 5) %}
     <button type="submit" name="login" tabindex="{{ tabindex }}"
-            class="w-full rounded-lg bg-brand-600 px-3 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-brand-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600">{{ label }}</button>
+            class="w-full rounded-xl bg-brand-600 px-3 py-3 text-sm font-semibold text-white transition hover:bg-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600">{{ label }}</button>
 {% endmacro %}
 
 {% macro link(href, label, tabindex = 4) %}
