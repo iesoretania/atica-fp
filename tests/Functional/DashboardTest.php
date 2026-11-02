@@ -53,10 +53,12 @@ class DashboardTest extends AppWebTestCase
         $crawler = $this->client->request('GET', '/');
         $panels = $crawler->filter('main section')->each(fn ($n) => $n->text());
         self::assertCount(3, $panels);
-        self::assertStringContainsString('Empiezan pronto', $panels[0]);
-        self::assertStringContainsString('Con faltas sin justificar', $panels[0]);
-        self::assertStringContainsString('Convenios sin firmar', $panels[0]);
-        self::assertStringNotContainsString('Convenios sin firmar', $panels[1]);
+        // Orden de los paneles: FFEOE, FCT y FP dual
+        self::assertStringContainsString('Empiezan pronto', $panels[1]);
+        self::assertStringContainsString('Con faltas sin justificar', $panels[1]);
+        self::assertStringContainsString('Convenios sin firmar', $panels[1]);
+        self::assertStringNotContainsString('Convenios sin firmar', $panels[0]);
+        self::assertStringNotContainsString('Convenios sin firmar', $panels[2]);
     }
 
     public function testTeachersDoNotSeeUnsignedAgreements(): void
