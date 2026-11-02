@@ -17,7 +17,7 @@
         {% if app_logo %}
             <img src="{{ asset(app_logo) }}" alt="{{ app_name }}" class="max-h-full max-w-full object-contain">
         {% else %}
-            <twig:Ui:Icon name="graduation-cap" class="size-1/2 text-white" />
+            <img src="{{ asset('logo-icon.png') }}" alt="{{ app_name }}" class="size-full rounded-xl object-contain">
         {% endif %}
     {% endset %}
     <div class="flex min-h-screen flex-col bg-white text-gray-800 antialiased lg:flex-row" style="font-family: var(--font-sans)">
