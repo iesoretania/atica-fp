@@ -8,6 +8,11 @@ Puedes seguir el desarrollo de esta herramienta vía X (antes Twitter) siguiendo
 Este proyecto está desarrollado en PHP utilizando [Symfony] 6.4 y otros muchos componentes que se instalan usando
 [Composer] y [npmjs].
 
+**NOVEDAD: Ya está disponible la versión 8 de la plataforma, con una interfaz completamente nueva, en la rama
+[`v8`](https://github.com/iesoretania/atica-fp/tree/v8). Esta rama (`v7`) pasa a ser de mantenimiento: seguirá
+funcionando, pero no recibirá nuevas características. Las instalaciones existentes no cambian de versión por sí solas;
+para pasar a la 8, consulta el fichero `UPGRADE-8.0.md` de la rama `v8`.**
+
 **IMPORTANTE: Si vas a actualizar desde la versión 6.x a la 7.x, por favor, lee el fichero [`UPGRADE-7.0.md`](UPGRADE-7.0.md) para
 conocer los cambios necesarios.**
 
