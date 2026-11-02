@@ -1,0 +1,46 @@
+{% trans_default_domain 'organization' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'organization', base_url: this.baseUrl, back_url: this.backUrl, current_id: this.currentOrganizationId} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% import 'ui/live_macros.html.twig' as lm %}
+        {% block path_new %}{{ path('admin_organization_form_new') }}{% endblock %}
+
+        {% block table_header %}
+            {{ lm.select_th('header.name'|trans({}, domain), 'name', this.sort, this.dir) }}
+            {{ lm.sort_th('header.code'|trans({}, domain), 'code', this.sort, this.dir) }}
+            {{ lm.sort_th('header.city'|trans({}, domain), 'city', this.sort, this.dir) }}
+            <th>{{ 'header.email'|trans({}, domain) }}</th>
+            <th>{{ 'header.phone_number'|trans({}, domain) }}</th>
+            <th></th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for organization in pager %}
+                {% set url = path('admin_organization_form_edit', {'id': organization.id}) %}
+                <tr>
+                    {{ lm.select_cell(organization.id, url, organization.name, false, 'organizations[]', organization.id == current_id) }}
+                    <td class="align-top"><a href="{{ url }}" class="text-brand-700 hover:underline">{{ organization.code }}</a></td>
+                    <td class="align-top">{{ organization.city }}</td>
+                    <td class="align-top">{{ organization.emailAddress }}</td>
+                    <td class="align-top">{{ organization.phoneNumber }}</td>
+                    <td class="align-top">
+                        {% if organization.id != current_id %}
+                            {{ m.submit_button('switch', 'power-off', 'btn-primary btn-sm', 'table.switch'|trans({}, domain), false, organization.id) }}
+                        {% else %}
+                            <span class="inline-flex items-center gap-1.5 text-emerald-700"><twig:Ui:Icon name="check" /> {{ 'table.active'|trans({}, domain) }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('admin_organization_operation') }}{% endblock %}
+        {% block after_table %}{{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}{% endblock %}
+        {% block selection_actions %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endblock %}
+    {% endembed %}
+</div>

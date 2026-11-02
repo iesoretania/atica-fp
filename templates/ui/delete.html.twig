@@ -10,7 +10,7 @@
 {% block content %}
     <form method="post">
         {% for item in items|default([]) %}
-            <input type="hidden" name="items[]" value="{{ item.id }}">
+            <input type="hidden" name="{{ items_name|default('items') }}[]" value="{{ item.id }}">
         {% endfor %}
         <input type="hidden" name="confirm" value="ok">
         {% block delete_hidden %}{% endblock %}

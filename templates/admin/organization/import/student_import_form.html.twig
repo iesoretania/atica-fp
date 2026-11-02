@@ -1,12 +1,14 @@
 {% trans_default_domain 'import' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
 {% import 'admin/organization/import/import_macros.html.twig' as im %}
+{% form_theme form 'ui/form_theme.html.twig' %}
 {% block content %}
     {% if not stats %}
         {{ im.show_import_instructions(columns, 'student') }}
         {{ form_start(form) }}
-        {{ form_widget(form) }}
+        {{ fl.grid(form, [], {}, 'title.student.import'|trans) }}
         {{ m.start_button() }}
             {{ m.submit_button('submit', 'check', 'btn-success', 'form.student.do_import'|trans) }}
             {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
@@ -15,6 +17,7 @@
     {% elseif stats.error is defined %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {% else %}
+        {{ im.result_start() }}
         <h4>{{ 'report.stats'|trans }}</h4>
         <ul>
             <li>{{ 'report.student.new'|trans }}: {{ stats.new_items }}</li>
@@ -28,6 +31,7 @@
                 {% endfor %}
             </ul>
         {% endif %}
+        {{ im.result_end() }}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {% endif %}
 {% endblock %}

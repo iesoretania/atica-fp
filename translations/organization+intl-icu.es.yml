@@ -54,3 +54,15 @@ header.city: Ciudad
 header.phone_number: Teléfono
 
 role.global_administrator: Administrador global
+
+card.title: Centro educativo
+form.name.help: Nombre completo del centro educativo.
+form.code.help: Código del centro en Séneca. Debe ser único.
+form.email_address.help: Correo de contacto del centro.
+form.web_site.help: Dirección de la web del centro.
+form.phone_number.help: Teléfono de contacto.
+form.fax_number.help: Número de fax, si lo hay.
+form.address.help: Dirección postal del centro.
+form.description.help: Notas internas sobre el centro; no aparecen en los informes.
+danger.title: "Peligro: eliminación del centro"
+danger.text: Se eliminarán todos los datos del centro (cursos, personas matriculadas, seguimiento, informes...). Esta operación no se puede deshacer.

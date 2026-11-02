@@ -1,9 +1,21 @@
 {% trans_default_domain 'user' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['uniqueIdentifier', 'loginUsername'],
+        ['firstName', 'lastName'],
+        ['emailAddress', 'gender'],
+        ['enabled'],
+        ['globalAdministrator'],
+        ['allowExternalCheck'],
+        ['externalCheck'],
+        ['forcePasswordChange'],
+    ], {}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
         {% if user.id and app.user.id != user.id and is_granted('ROLE_ALLOWED_TO_SWITCH') %}
@@ -11,4 +23,8 @@
         {% endif %}
     {{ m.end_button() }}
     {{ form_end(form) }}
+
+    {% if user.id and app.user.id != user.id %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('admin_user_delete'), user.id, 'users') }}
+    {% endif %}
 {% endblock %}

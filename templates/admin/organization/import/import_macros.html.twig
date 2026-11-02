@@ -1,10 +1,20 @@
 {% trans_default_domain 'import' %}
+{#- Instrucciones previas a la importación: dónde está el formulario y qué columnas lleva el archivo -#}
 {% macro show_import_instructions(columns, section, domain = 'import') %}
-<div class="alert alert-info">
-    <b>{{ 'instructions.navigation'|trans }}</b> {{ ('instructions.path.' ~ section) |trans({}, domain) }}<br>
-    <b>{{ 'instructions.columns'|trans }}</b>
-    {% for column_data in columns %}
-        {{ column_data.column }}{% if not column_data.mandatory %} {{ 'columns.optional'|trans({}, domain) }}{% endif %}{% if not loop.last %}, {% endif %}
-    {% endfor %}
-</div>
+    <twig:Ui:Alert type="info">
+        <b>{{ 'instructions.navigation'|trans({}, domain) }}</b> {{ ('instructions.path.' ~ section)|trans({}, domain) }}<br>
+        <b>{{ 'instructions.columns'|trans({}, domain) }}</b>
+        {% for column_data in columns %}
+            {{ column_data.column }}{% if not column_data.mandatory %} {{ 'columns.optional'|trans({}, domain) }}{% endif %}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    </twig:Ui:Alert>
+{% endmacro %}
+
+{#- Tarjeta de resultados: se abre con result_start y se cierra con result_end -#}
+{% macro result_start() %}
+    <div class="max-w-5xl space-y-4 rounded-xl bg-white p-5 text-sm shadow-xs ring-1 ring-gray-200 sm:p-6 [&_h4]:mt-2 [&_h4]:text-sm [&_h4]:font-semibold [&_h4]:text-gray-900 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5">
+{% endmacro %}
+
+{% macro result_end() %}
+    </div>
 {% endmacro %}

@@ -1,41 +1,38 @@
 {% trans_default_domain "security" %}
+{#- Base de las pantallas previas al acceso (inicio de sesión, restablecer contraseña...), con el diseño nuevo.
+    Clases de los controles: ver security/login_macros.html.twig -#}
 {% extends 'base.html.twig' %}
-{% import 'layout/macros_layout.html.twig' as ml %}
+{% import 'security/login_macros.html.twig' as lm %}
 
 {% block title %}
     {% block login_title %}{% endblock %}
 {% endblock title %}
+
+{# El diseño nuevo carga «app_v2», nunca «app» #}
+{% block importmap %}{{ importmap(['app_v2']|merge(js_entries|default([]))) }}{% endblock %}
+
 {% block body %}
-    <section class="login-form">
-        {% if app_logo %}
-            <div class="text-center">
-                <img src="{{ asset(app_logo) }}" alt="{{ app_name }}" class="img-responsive" />
-            </div>
-        {% endif %}
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <h1 class="text-center">
-                    <p class="app-name">{{ app_name|upper }} </p>
-                </h1>
-                {{ ml.flash_message('success', 'success') }}
-                {{ ml.flash_message('error', 'danger') }}
+    <main class="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 py-10 text-gray-800 antialiased" style="font-family: var(--font-sans)">
+        <div class="w-full max-w-sm">
+            {% if app_logo %}
+                <div class="mb-6 text-center"><img src="{{ asset(app_logo) }}" alt="{{ app_name }}" class="mx-auto max-h-24 w-auto"></div>
+            {% endif %}
+            <div class="rounded-2xl bg-white p-8 shadow-xs ring-1 ring-gray-200">
+                <h1 class="text-center text-lg font-semibold tracking-wide text-gray-900">{{ app_name|upper }}</h1>
+                <h2 class="mb-6 mt-1 text-center text-sm text-gray-500">{% block login_heading %}{% endblock %}</h2>
+                {% include 'ui/partial_flash.html.twig' %}
                 {% if login_error is defined and login_error %}
-                    <div class="alert alert-danger alert-dismissable">{{ login_error.messageKey|trans(login_error.messageData) }}</div>
+                    <twig:Ui:Alert type="danger" :message="login_error.messageKey|trans(login_error.messageData)" />
                 {% endif %}
                 {% if error is defined and error %}
-                    <div class="alert alert-danger alert-dismissable">{{ error }}</div>
+                    <twig:Ui:Alert type="danger" :message="error" />
                 {% endif %}
                 {% block login_content %}{% endblock %}
             </div>
         </div>
-    </section>
-
-    <footer class="footer no-print" role="contentinfo">
-        <div class="container">
-            <p class="text-muted text-center">
-                {{ 'form.login.footer.first'|trans }} <a href="{{ app_repository }}">{{ 'form.login.footer.link.caption'|trans }}</a> {{ 'form.login.footer.second'|trans }} <a href="https://www.gnu.org/licenses/agpl-3.0.html">{{ 'form.login.footer.link.agpl_caption'|trans }}</a>
-                {% if app_version %} - <span title="{{ app_pub_date }}">v{{ app_version }}</span>{% endif %}
-            </p>
-        </div>
-    </footer>
+        <footer class="no-print mt-8 text-center text-xs text-gray-500" role="contentinfo">
+            {{ 'form.login.footer.first'|trans }} <a href="{{ app_repository }}" class="font-medium text-brand-700 hover:underline">{{ 'form.login.footer.link.caption'|trans }}</a> {{ 'form.login.footer.second'|trans }} <a href="https://www.gnu.org/licenses/agpl-3.0.html" class="font-medium text-brand-700 hover:underline">{{ 'form.login.footer.link.agpl_caption'|trans }}</a>
+            {% if app_version %} - <span title="{{ app_pub_date }}">v{{ app_version }}</span>{% endif %}
+        </footer>
+    </main>
 {% endblock %}

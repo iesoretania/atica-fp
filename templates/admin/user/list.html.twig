@@ -1,59 +1,7 @@
 {% trans_default_domain 'user' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block path_new %}{{ path('admin_user_form_new') }}{% endblock %}
-
-{% block table_header %}
-    <th class="w-30"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
-    <th class="w-20">{{ 'header.username'|trans }}</th>
-    <th class="w-20">{{ 'header.unique_identifier'|trans }}</th>
-    <th class="w-20">{{ 'header.email'|trans }}</th>
-    <th class="w-10">{{ 'header.last_login'|trans }}</th>
-{% endblock %}
-
-{% block table_body %}
-            {% for user in pager %}
-                {% set url = path('admin_user_form_edit', {'id': user.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
-                    <td>
-                        <label><input type="checkbox" name="users[]" value="{{ user.id }}" {% if user.id == app.user.id %} disabled="disabled"{% else %} class="selectable"{% endif %}> <a href="{{ url }}">{{ user.lastName }}, {{ user.firstName }}</a></label>
-                        {%- if user.globalAdministrator %} <i class="fas fa-cogs"></i>{% endif -%}
-                        {%- if user.forcePasswordChange and not user.externalCheck %} <i class="fas fa-recycle"></i>{% endif -%}
-                        {%- if user.externalCheck %} <i class="fas fa-external-link-alt"></i>{% endif -%}
-                        {%- if not user.enabled %} <i class="fas fa-ban"></i>{% endif -%}
-                    </td>
-                    <td>
-                        <a href="{{ url }}">{{ user.loginUsername }}</a>{% if user.externalCheck and user.allowExternalCheck %} <i class="fa fa-sign-out"></i>{% endif -%}
-                    </td>
-                    <td>
-                        <a href="{{ url }}">
-                            {{ user.uniqueIdentifier }}
-                        </a>
-                    </td>
-                    <td>
-                        <a href="{{ url }}">
-                            {{ user.emailAddress }}
-                        </a>
-                    </td>
-                    <td>
-                        {{ user.lastAccess ? user.lastAccess|date('format.datetime'|trans({}, 'general')) }}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="5">{{ 'table.no_users'|trans }}</td>
-                </tr>
-            {% endfor %}
-{% endblock %}
-
-{% block before_table %}
-    <form action="{{ path('admin_user_delete') }}" method="post">
-{% endblock %}
-
-{% block after_table %}
-        <div class="clearfix"></div>
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
-    </form>
+{#- Listado dinámico (Live Component Admin:UserList) -#}
+{% block content %}
+    {% include 'ui/_live_list.html.twig' with {component: 'Admin:UserList'} %}
 {% endblock %}

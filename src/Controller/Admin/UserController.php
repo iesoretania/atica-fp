@@ -100,43 +100,10 @@ class UserController extends AbstractController
         int $page = 1
     ): Response
     {
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('p')
-            ->from(Person::class, 'p')
-            ->orderBy('p.lastName')
-            ->addOrderBy('p.firstName');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('p.id = :q')
-                ->orWhere('p.loginUsername LIKE :tq')
-                ->orWhere('p.firstName LIKE :tq')
-                ->orWhere('p.lastName LIKE :tq')
-                ->orWhere('p.emailAddress LIKE :tq')
-                ->setParameter('tq', '%' . $q . '%')
-                ->setParameter('q', $q);
-        }
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'user');
 
         return $this->render('admin/user/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'user'
         ]);
     }
@@ -191,7 +158,7 @@ class UserController extends AbstractController
             'menu_path' => 'admin_user_list',
             'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'user')]],
             'title' => $translator->trans('title.delete', [], 'user'),
-            'users' => $users
+            'items' => $users
         ]);
     }
 

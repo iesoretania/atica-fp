@@ -1,12 +1,14 @@
 {% trans_default_domain 'import' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
 {% import 'admin/organization/import/import_macros.html.twig' as im %}
+{% form_theme form 'ui/form_theme.html.twig' %}
 {% block content %}
     {% if not stats %}
         {{ im.show_import_instructions(columns, 'teacher') }}
         {{ form_start(form) }}
-        {{ form_widget(form) }}
+        {{ fl.grid(form, [], {}, 'title.teacher.import'|trans) }}
         {{ m.start_button() }}
             {{ m.submit_button('submit', 'check', 'btn-success', 'form.teacher.do_import'|trans) }}
             {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
@@ -15,6 +17,7 @@
     {% elseif stats.error is defined %}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {% else %}
+        {{ im.result_start() }}
         <h4>{{ 'report.stats'|trans }}</h4>
         <ul>
             <li>{{ 'report.teacher.existing_teachers'|trans }}: {{ stats.existing_user_count }}</li>
@@ -24,13 +27,14 @@
             <h4>{{ 'report.teacher.list'|trans }}</h4>
             <ul>
                 {% for teacher in stats.user_collection %}
-                <li>{{ teacher }}</li>
+                    <li>{{ teacher }}</li>
                 {% endfor %}
             </ul>
             {% if generate_password %}
-                <div class="alert alert-warning">{{ 'message.teacher.password_info'|trans }}</div>
+                <twig:Ui:Alert type="warning" :message="'message.teacher.password_info'|trans" />
             {% endif %}
         {% endif %}
+        {{ im.result_end() }}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {% endif %}
 {% endblock %}

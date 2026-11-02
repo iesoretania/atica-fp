@@ -25,7 +25,7 @@ class LoginTest extends AppWebTestCase
         );
         $this->client->followRedirect();
 
-        self::assertSelectorTextContains('.alert-danger', 'Token CSRF no válido');
+        self::assertSelectorTextContains('[role="alert"]', 'Token CSRF no válido');
     }
 
     public function testUnknownUserAndWrongPasswordGiveSameMessageAndAreThrottled(): void
@@ -42,7 +42,7 @@ class LoginTest extends AppWebTestCase
                 '_csrf_token' => $token
             ], [], ['REMOTE_ADDR' => $ip]);
             $crawler = $this->client->followRedirect();
-            $messages[] = trim($crawler->filter('.alert-danger')->text());
+            $messages[] = trim($crawler->filter('[role="alert"]')->text());
         }
 
         self::assertSame($messages[0], $messages[1], 'No debe distinguirse entre usuario inexistente y contraseña incorrecta');
@@ -57,7 +57,7 @@ class LoginTest extends AppWebTestCase
                 '_csrf_token' => $token
             ], [], ['REMOTE_ADDR' => $ip]);
             $crawler = $this->client->followRedirect();
-            $last = trim($crawler->filter('.alert-danger')->text());
+            $last = trim($crawler->filter('[role="alert"]')->text());
         }
         self::assertStringContainsString('Demasiados intentos', $last);
     }

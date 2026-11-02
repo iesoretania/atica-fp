@@ -75,3 +75,11 @@ header.profiles: Perfiles
 header.last_login: Últ. conexión
 
 role.global_administrator: Administrador global
+
+card.title: Datos de la persona
+card.password_title: Nueva contraseña
+table.force_password_change: Cambio de contraseña pendiente
+table.external_check: Contraseña comprobada en Séneca
+table.disabled: Acceso denegado
+danger.title: "Peligro: eliminación del usuario"
+danger.text: Se eliminará la persona con todos sus datos asociados. Si tiene datos en algún centro, no se podrá eliminar. Esta operación no se puede deshacer.

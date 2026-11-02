@@ -29,7 +29,7 @@ class ImpersonationTest extends AppWebTestCase
             $this->client->followRedirect();
         }
 
-        return trim(preg_replace('/\s+/', ' ', $this->client->getCrawler()->filter('.navbar')->text('')));
+        return trim(preg_replace('/\s+/', ' ', $this->client->getCrawler()->filter('.navbar, [data-sidebar-target="panel"]')->text('')));
     }
 
     /**

@@ -80,12 +80,12 @@
 {#- Zona de peligro: tarjeta roja bajo el formulario para eliminar el registro. Envía el id a la operación de borrado del
     listado (que pide confirmación). Debe ir FUERA del <form> principal (no se pueden anidar formularios).
         {{ fl.danger_zone('Peligro: eliminación de la visita', 'Una vez eliminada, no se podrá recuperar.', path('...operation', {...}), visit.id) }} -#}
-{% macro danger_zone(title, text, action, id) %}
+{% macro danger_zone(title, text, action, id, name = 'items') %}
     <div class="mt-8 max-w-5xl overflow-hidden rounded-xl bg-white ring-1 ring-red-200">
         <h2 class="border-b border-red-100 bg-red-50 px-5 py-4 text-sm font-semibold text-red-900 sm:px-6">{{ title }}</h2>
         <form method="post" action="{{ action }}" class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-6">
             <p class="text-sm text-gray-600">{{ text }}</p>
-            <input type="hidden" name="items[]" value="{{ id }}">
+            <input type="hidden" name="{{ name }}[]" value="{{ id }}">
             <button type="submit" name="delete"
                     class="inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium text-red-700 shadow-xs ring-1 ring-inset ring-red-300 transition hover:bg-red-50">
                 <twig:Ui:Icon name="trash" />

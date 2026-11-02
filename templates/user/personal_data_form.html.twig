@@ -1,19 +1,25 @@
 {% trans_default_domain 'user' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
     {% if user.tokenType is not null and user.tokenType != 'password' and user.tokenExpiration > date() %}
-        <div class="alert alert-warning">
-            {{ 'prompt.email_change_warning'|trans({
-                'email': user.tokenType,
-                'date': user.tokenExpiration|date('format.date'|trans({}, 'general')),
-                'time': user.tokenExpiration|date('format.time'|trans({}, 'general'))
-            })
-            }}
-        </div>
+        <twig:Ui:Alert type="warning" :message="'prompt.email_change_warning'|trans({
+            'email': user.tokenType,
+            'date': user.tokenExpiration|date('format.date'|trans({}, 'general')),
+            'time': user.tokenExpiration|date('format.time'|trans({}, 'general'))
+        })" />
     {% endif %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['uniqueIdentifier', 'loginUsername'],
+        ['firstName', 'lastName'],
+        ['emailAddress', 'gender'],
+        ['allowExternalCheck'],
+        ['externalCheck'],
+    ], {}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}

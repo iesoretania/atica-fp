@@ -1,22 +1,22 @@
 {% trans_default_domain "security" %}
 {% extends 'security/login_base.html.twig' %}
+{% import 'security/login_macros.html.twig' as lm %}
 
 {% block title 'form.change_email.email.subject'|trans %}
 
 {% block login_title %}{{ 'form.change_email.email.subject'|trans }}{% endblock %}
+{% block login_heading %}{{ 'form.change_email.email.subject'|trans }}{% endblock %}
 
 {% block login_action %}{% endblock %}
 
 {% block login_content %}
-    <form method="post">
-        <div class="alert alert-warning">
+    <form method="post" class="space-y-4">
+        <twig:Ui:Alert type="warning">
             {{ 'form.change_email.email.warning'|trans({'name': user.firstName}) }}
             <b>{{ user.tokenType }}</b>
             {{ 'form.change_email.email.warning2'|trans({'name': user.firstName}) }}
-        </div>
-        <div class="form-group">
-            <button type="submit" name="login" class="btn btn-info btn-block" tabindex="5">{{ 'form.change_email.email.submit'|trans }}</button>
-            <div class="extra-action"><a href="{{ path('login') }}" tabindex="3">{{ 'form.reset.back'|trans }}</a></div>
-        </div>
+        </twig:Ui:Alert>
+        {{ lm.submit('form.change_email.email.submit'|trans) }}
+        {{ lm.link(path('login'), 'form.reset.back'|trans, 3) }}
     </form>
 {% endblock %}

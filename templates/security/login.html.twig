@@ -1,25 +1,27 @@
 {% trans_default_domain "security" %}
 {% extends 'security/login_base.html.twig' %}
+{% import 'security/login_macros.html.twig' as lm %}
 
 {% block login_title %}{{ 'form.login.title'|trans }}{% endblock %}
+{% block login_heading %}{{ 'form.login.title'|trans }}{% endblock %}
 
 {% block login_action %}{{ path('login_check') }}{% endblock %}
 
 {% block login_content %}
-<form method="post" action="{{ path('login_check') }}" role="form">
+<form method="post" action="{{ path('login_check') }}" class="space-y-4">
     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-    <div class="form-group">
-        <input type="text" name="_username" id="email" required="" class="form-control" tabindex="1"
-               autocorrect="off" autocapitalize="none" value="{{ last_username | default('') }}"
-               {% if not last_username %}autofocus="" {% endif %} placeholder="{{ 'form.login.username_email'|trans }}">
+    <div>
+        <label for="email" class="sr-only">{{ 'form.login.username_email'|trans }}</label>
+        <input type="text" name="_username" id="email" required class="{{ lm.input_class() }}" tabindex="1"
+               autocorrect="off" autocapitalize="none" autocomplete="username" value="{{ last_username|default('') }}"
+               {% if not last_username %}autofocus {% endif %}placeholder="{{ 'form.login.username_email'|trans }}">
     </div>
-    <div class="form-group">
-        <input type="password" name="_password" id="password" required="" class="form-control" tabindex="2"
-               {% if last_username %}autofocus="" {% endif %} placeholder="{{ 'form.login.password'|trans }}">
+    <div>
+        <label for="password" class="sr-only">{{ 'form.login.password'|trans }}</label>
+        <input type="password" name="_password" id="password" required class="{{ lm.input_class() }}" tabindex="2" autocomplete="current-password"
+               {% if last_username %}autofocus {% endif %}placeholder="{{ 'form.login.password'|trans }}">
     </div>
-    <div class="form-group">
-        <button type="submit" name="login" class="btn btn-info btn-block" tabindex="4">{{ 'form.login.submit'|trans }}</button>
-    </div>
-    <div class="extra-action"><a href="{{ path('login_password_reset') }}" tabindex="4">{{ 'form.login.password.reset'|trans }}</a></div>
+    {{ lm.submit('form.login.submit'|trans, 4) }}
 </form>
+{{ lm.link(path('login_password_reset'), 'form.login.password.reset'|trans) }}
 {% endblock %}

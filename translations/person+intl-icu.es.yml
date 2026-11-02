@@ -10,23 +10,31 @@ form.gender.female: Mujer
 form.email_address: Correo electrónico
 
 form.enabled: Acceso
-form.enabled.no: El acceso a la aplicación le está denegado
-form.enabled.yes: El acceso a la aplicación le está permitido
+form.enabled.no: Denegado
+form.enabled.no.help: No puede entrar en la aplicación.
+form.enabled.yes: Permitido
+form.enabled.yes.help: Puede entrar en la aplicación.
 form.global_administrator: El usuario puede administrar todos los centros
 
 form.force_password_change: Forzar cambio de contraseña en el próximo inicio
 form.force_password_change.no: No
-form.force_password_change.yes: Sí, se forzará un cambio de contraseña en el próximo inicio de sesión
+form.force_password_change.no.help: Mantiene su contraseña actual.
+form.force_password_change.yes: Sí
+form.force_password_change.yes.help: Se le pedirá una contraseña nueva en el próximo inicio de sesión.
 
 form.disconnect: Salir de la aplicación
 
 form.allow_external_check: Permitir comprobación de contraseña externa
-form.allow_external_check.yes: "El usuario puede activar la autenticación desde Séneca. NOTA: el nombre de usuario deberá ser su usuario IdEA"
-form.allow_external_check.no: El usuario solamente puede utilizar la contraseña almacenada en local
+form.allow_external_check.yes: Permitir
+form.allow_external_check.yes.help: Puede activar la autenticación desde Séneca. Su nombre de usuario deberá ser su usuario IdEA.
+form.allow_external_check.no: No permitir
+form.allow_external_check.no.help: Solamente puede utilizar la contraseña almacenada en local.
 
 form.external_check: Comprobación de contraseña
-form.external_check.yes: Se comprobará primero en Séneca y luego en local si Séneca no está disponible
-form.external_check.no: Sólo se comprobará en local
+form.external_check.yes: En Séneca
+form.external_check.yes.help: Se comprobará primero en Séneca y luego en local si Séneca no está disponible.
+form.external_check.no: Solo en local
+form.external_check.no.help: Se comprobará únicamente la contraseña almacenada en la aplicación.
 
 form.save: Guardar cambios
 form.delete: Eliminar personas seleccionadas
@@ -84,3 +92,14 @@ input.unique_identifier: 'Introduzca el identificador o la dirección de correo 
 input.searching: 'Buscando...'
 
 role.global_administrator: Administrador global
+
+form.user_name.help: Nombre con el que entra en la aplicación.
+form.first_name.help: Nombre de la persona.
+form.last_name.help: Apellidos de la persona.
+form.unique_identifier.help: Documento de identidad o identificador IdEA de la persona.
+form.gender.help: Se usa para concordar los textos de los informes.
+form.email_address.help: Correo electrónico al que se envían los avisos y los enlaces para restablecer la contraseña.
+form.enabled.help: Si se le deniega, no podrá entrar en la aplicación, pero sus datos se conservan.
+form.global_administrator.help: Una persona administradora global puede gestionar todos los centros.
+form.force_password_change.help: Se le pedirá una contraseña nueva la próxima vez que entre.
+form.external_check.help: Cuando se comprueba en Séneca, solo se usa la contraseña local si Séneca no responde.

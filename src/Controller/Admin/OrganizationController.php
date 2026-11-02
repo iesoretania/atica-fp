@@ -95,43 +95,10 @@ class OrganizationController extends AbstractController
         int $page = 1
     ): Response
     {
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('o')
-            ->from(Organization::class, 'o')
-            ->orderBy('o.name');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('o.id = :q')
-                ->orWhere('o.name LIKE :tq')
-                ->orWhere('o.code LIKE :tq')
-                ->orWhere('o.emailAddress LIKE :tq')
-                ->orWhere('o.phoneNumber LIKE :tq')
-                ->orWhere('o.city LIKE :tq')
-                ->setParameter('tq', '%' . $q . '%')
-                ->setParameter('q', $q);
-        }
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'organization');
 
         return $this->render('admin/organization/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'organization'
         ]);
     }
@@ -154,7 +121,7 @@ class OrganizationController extends AbstractController
             'menu_path' => 'admin_organization_list',
             'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'organization')]],
             'title' => $translator->trans('title.delete', [], 'organization'),
-            'selected_organizations' => $organizations
+            'items' => $organizations
         ]);
     }
 

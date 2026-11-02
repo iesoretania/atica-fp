@@ -129,6 +129,26 @@ Cambios de tema que se aplican a todos los módulos:
 - **Calendarios**: `ui/calendar.html.twig` admite `hours_divisor` (FP dual guarda horas, FCT y FFEOE centésimas).
 - **Barra lateral**: separadores sobre «Empresas colaboradoras» y «Gestión del centro», «Mi perfil» y selector de centro con
   chevron.
+- **Calendarios de 5 días**: `ui/calendar.html.twig` admite `five_day_week`; muestra solo de lunes a viernes salvo que haya
+  jornadas en sábado o domingo (FFEOE lo activa según el tipo de plantilla semanal del plan de formación).
+
+### Organización, empresas, administración y acceso
+
+- **Organización** (`src/Twig/Components/Organization/`): listados Live de tipos de contacto, departamentos, niveles, grupos,
+  días no lectivos, enseñanzas, módulos, profesorado, matrículas, escalas, plantillas de informe, encuestas, cursos académicos
+  e itinerarios, y los listados que cuelgan de otro elemento (valores de una escala, preguntas de una encuesta, competencias,
+  resultados de aprendizaje y criterios). `AbstractAcademicYearList` y `AbstractOrganizationList` fijan la autorización común;
+  los que llevan la entidad padre en las propiedades (escala, encuesta, enseñanza, módulo, resultado) comprueban en cada
+  renderizado que sea del centro actual. Formularios con tarjeta, ayudas y zona de peligro; confirmaciones de borrado con
+  `ui/delete.html.twig` (admite `prompt_key`, `confirm_key`, `items_name` y el bloque `delete_hidden`).
+- **Empresas y centros de trabajo** (`Company:*List`): compartidos por todos los centros; basta con poder gestionar empresas.
+- **Administración** (`Admin:OrganizationList`, `Admin:UserList`, importaciones): solo `ROLE_ADMIN`, comprobado en cada
+  renderizado.
+- **Acceso**: pantallas previas al acceso (`security/login_*`) con el diseño nuevo y datos personales / cambio de contraseña
+  forzado con `ui/layout`.
+- **Macros comunes de listados**: `lm.select_th` y `lm.select_cell` (casilla «seleccionar todo» y enlace a la ficha; admiten
+  nombre de campo distinto de `items[]` y filas deshabilitadas).
+- Cambios de nombre de parámetro: el borrado de profesorado lee `items[]` (antes `users[]`), como el resto.
 
 ## 5. Riesgos y mitigación
 

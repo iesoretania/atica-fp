@@ -27,10 +27,10 @@
 {% endmacro %}
 
 {#- Primera celda de una fila con casilla: casilla + enlace a la ficha (tachado si struck) -#}
-{% macro select_cell(id, url, text, struck = false) %}
+{% macro select_cell(id, url, text, struck = false, name = 'items[]', disabled = false) %}
     <td class="align-top">
         <label class="flex items-center gap-2">
-            <input type="checkbox" name="items[]" value="{{ id }}" class="selectable size-4 rounded border-gray-300 text-brand-600">
+            <input type="checkbox" name="{{ name }}" value="{{ id }}" class="size-4 rounded border-gray-300 text-brand-600{{ disabled ? '' : ' selectable' }}"{{ disabled ? ' disabled' : '' }}>
             <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700{{ struck ? ' line-through text-gray-500' : '' }}">{{ text }}</a>
         </label>
     </td>
