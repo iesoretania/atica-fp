@@ -6,6 +6,8 @@ use App\Entity\Edu\ReportTemplate;
 use App\Tests\Fixtures\DemoData;
 use App\Tests\Fixtures\EduFixtures;
 use Doctrine\ORM\EntityManagerInterface;
+use Mpdf\Mpdf;
+use Mpdf\Output\Destination;
 
 /**
  * Administración de las plantillas de informe: alta, edición con subida de PDF, validación del fichero y borrado.
@@ -40,6 +42,22 @@ class ReportTemplateAdminTest extends AppWebTestCase
         return $path;
     }
 
+    /**
+     * Genera un PDF real con el número de páginas indicado
+     */
+    private static function pdf(int $pages): string
+    {
+        $mpdf = new Mpdf(['tempDir' => sys_get_temp_dir()]);
+        for ($page = 1; $page <= $pages; $page++) {
+            if ($page > 1) {
+                $mpdf->AddPage();
+            }
+            $mpdf->WriteHTML('<p>Plantilla de prueba, página ' . $page . '</p>');
+        }
+
+        return $mpdf->Output('', Destination::STRING_RETURN);
+    }
+
     private function templateCount(): int
     {
         return $this->em()->getRepository(ReportTemplate::class)->count([]);
@@ -68,7 +86,8 @@ class ReportTemplateAdminTest extends AppWebTestCase
         $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
         $before = $this->templateCount();
 
-        $this->submitTemplate('/centro/plantilla/nueva', 'Informe de seguimiento', $this->tempFile(EduFixtures::MINIMAL_PDF));
+        $pdf = self::pdf(1);
+        $this->submitTemplate('/centro/plantilla/nueva', 'Informe de seguimiento', $this->tempFile($pdf));
 
         self::assertResponseRedirects('/centro/plantilla/listar');
         self::assertSame($before + 1, $this->templateCount());
@@ -76,7 +95,32 @@ class ReportTemplateAdminTest extends AppWebTestCase
         self::assertSame($this->getOrganization()->getId(), $template->getOrganization()->getId());
 
         $this->client->request('GET', '/centro/plantilla/descarga/' . $template->getId());
-        self::assertSame(EduFixtures::MINIMAL_PDF, $this->client->getInternalResponse()->getContent());
+        self::assertSame($pdf, $this->client->getInternalResponse()->getContent());
+    }
+
+    public function testPdfWithSeveralPagesIsRejected(): void
+    {
+        $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
+        $before = $this->templateCount();
+
+        $this->submitTemplate('/centro/plantilla/nueva', 'Dos páginas', $this->tempFile(self::pdf(2)));
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertSelectorTextContains('body', 'única página');
+        self::assertSame($before, $this->templateCount());
+    }
+
+    public function testUnreadablePdfIsRejected(): void
+    {
+        $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
+        $before = $this->templateCount();
+
+        // cabecera de PDF pero sin estructura: el tipo MIME es de PDF pero no se puede usar como plantilla
+        $this->submitTemplate('/centro/plantilla/nueva', 'Dañado', $this->tempFile("%PDF-1.4\nesto no es un pdf\n"));
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertSelectorTextContains('body', 'No se puede leer');
+        self::assertSame($before, $this->templateCount());
     }
 
     public function testFileThatIsNotAPdfIsRejected(): void
@@ -119,14 +163,14 @@ class ReportTemplateAdminTest extends AppWebTestCase
         $this->submitTemplate('/centro/plantilla/nueva', 'Sin fichero', null);
         self::assertSame($before, $this->templateCount());
 
-        $this->submitTemplate('/centro/plantilla/nueva', '', $this->tempFile(EduFixtures::MINIMAL_PDF));
+        $this->submitTemplate('/centro/plantilla/nueva', '', $this->tempFile(self::pdf(1)));
         self::assertSame($before, $this->templateCount());
     }
 
     public function testAdministratorReplacesTheStoredFile(): void
     {
         $template = $this->templateOf(DemoData::ORG_A_CODE);
-        $newPdf = EduFixtures::MINIMAL_PDF . "\n% revisado";
+        $newPdf = self::pdf(1);
         $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
 
         $this->submitTemplate('/centro/plantilla/' . $template->getId(), 'Descripción nueva', $this->tempFile($newPdf));

@@ -14,6 +14,8 @@ en las distintas versiones de la misma.
 * feat: Nuevo icono de la aplicación
 * feat: Los menús de FFEOE, FCT y FP dual siguen ese orden, igual que el escritorio
 * feat: El calendario de FFEOE muestra solo de lunes a viernes si el plan de formación es de 5 días, salvo que haya jornadas en fin de semana
+* feat: Los informes en PDF usan por defecto el tipo de letra Source Sans Pro
+* feat: Al subir una plantilla de informe se comprueba que el PDF se pueda leer y que tenga una sola página, porque se repite como fondo de todas las hojas del informe
 * chore: Los assets pasan de Webpack Encore a AssetMapper: ya no se necesita Node.js (ver UPGRADE-8.0.md)
 * chore: Migración a Symfony 7.4 manteniendo PHP 8.2
 * fix: En los campos de contraseña de los móviles se muestran puntos en lugar de un símbolo raro

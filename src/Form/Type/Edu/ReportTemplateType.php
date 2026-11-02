@@ -19,6 +19,7 @@
 namespace App\Form\Type\Edu;
 
 use App\Entity\Edu\ReportTemplate;
+use App\Validator\ReportTemplatePdf;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -46,7 +47,8 @@ class ReportTemplateType extends AbstractType
                             'application/pdf',
                             'application/x-pdf',
                         ]
-                    )
+                    ),
+                    new ReportTemplatePdf()
                 ],
                 'required' => true
             ]);

@@ -93,6 +93,14 @@ Prepara el PDF con el mismo tamaño y orientación que los informes que va a ser
 **vertical** para los documentos en vertical y otra **apaisada** para los apaisados (por ejemplo, el
 informe de visitas). Puedes descargarlo de nuevo desde la ficha para revisarlo.
 
+!!! warning "El PDF debe tener una sola página"
+    La aplicación comprueba el fichero al subirlo. Debe poder leerse como PDF (no estar dañado ni protegido
+    con contraseña) y tener **una única página**, porque esa página se repite como fondo de todas las hojas
+    de cada informe. Si no cumple alguna de las dos condiciones, la ficha muestra el motivo y no se guarda.
+    El tamaño y la orientación no se comprueban al subirlo: de eso te encargas tú.
+
+Todos los informes en PDF que genera la aplicación usan el tipo de letra **Source Sans Pro**.
+
 ### Dónde se usan
 
 Las plantillas no se eligen en cada informe: se **predeterminan por curso académico**. En

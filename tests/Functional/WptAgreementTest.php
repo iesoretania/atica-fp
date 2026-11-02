@@ -227,6 +227,10 @@ class WptAgreementTest extends AppWebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSame('application/pdf', $this->client->getResponse()->headers->get('Content-Type'));
-        self::assertStringStartsWith('%PDF-', $this->client->getInternalResponse()->getContent());
+        $pdf = $this->client->getInternalResponse()->getContent();
+        self::assertStringStartsWith('%PDF-', $pdf);
+        // los informes usan Source Sans Pro, no la fuente por defecto de mPDF
+        self::assertStringContainsString('SourceSansPro', $pdf);
+        self::assertStringNotContainsString('DejaVuSans', $pdf);
     }
 }

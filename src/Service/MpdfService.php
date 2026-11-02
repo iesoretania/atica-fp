@@ -18,15 +18,22 @@
 
 namespace App\Service;
 
+use Mpdf\Config\ConfigVariables;
+use Mpdf\Config\FontVariables;
 use Mpdf\Mpdf;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Pequeño envoltorio sobre mPDF. Sustituye al bundle abandonado tfox/mpdf-port-bundle
  * (incompatible con Symfony 7 y 8), conservando el mismo comportamiento y API.
+ *
+ * Todos los documentos usan por defecto el tipo de letra Source Sans Pro (config/pdf/fonts/).
  */
 class MpdfService
 {
+    /** Clave de la fuente en mPDF: minúsculas y sin espacios, como las que trae mPDF (dejavusans...) */
+    public const string FONT_NAME = 'sourcesanspro';
+
     private bool $addDefaultConstructorArgs = true;
 
     /**
@@ -41,7 +48,40 @@ class MpdfService
             $allConstructorArgs = [array_merge(['utf-8', 'A4'], $allConstructorArgs)];
         }
 
+        // Si quien llama indica alguna opción de fuente, prevalece sobre la de por defecto
+        if (is_array($allConstructorArgs[0] ?? null)) {
+            $allConstructorArgs[0] += self::fontConfig();
+        }
+
         return new Mpdf(...$allConstructorArgs);
+    }
+
+    /**
+     * Registra Source Sans Pro como fuente de mPDF y la establece como fuente por defecto del documento, de modo
+     * que los informes la usen sin pedirla cada uno.
+     *
+     * @return array<string, mixed>
+     */
+    public static function fontConfig(): array
+    {
+        $configDefaults = (new ConfigVariables())->getDefaults();
+        $fontDefaults = (new FontVariables())->getDefaults();
+
+        $fontDirs = is_array($configDefaults['fontDir'] ?? null) ? $configDefaults['fontDir'] : [];
+        $fontData = is_array($fontDefaults['fontdata'] ?? null) ? $fontDefaults['fontdata'] : [];
+
+        return [
+            'fontDir' => array_merge($fontDirs, [dirname(__DIR__, 2) . '/config/pdf/fonts']),
+            'fontdata' => $fontData + [
+                self::FONT_NAME => [
+                    'R' => 'SourceSansPro-Regular.ttf',
+                    'B' => 'SourceSansPro-Bold.ttf',
+                    'I' => 'SourceSansPro-It.ttf',
+                    'BI' => 'SourceSansPro-BoldIt.ttf',
+                ],
+            ],
+            'default_font' => self::FONT_NAME,
+        ];
     }
 
     /**

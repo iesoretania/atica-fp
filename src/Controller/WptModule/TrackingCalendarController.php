@@ -550,7 +550,7 @@ class TrackingCalendarController extends AbstractController
                 );
                 $mpdf->SetDocTemplate($tmp, true);
             }
-            $mpdf->SetFont('DejaVuSansCondensed');
+            $mpdf->SetFont(MpdfService::FONT_NAME);
             $mpdf->SetFontSize(9);
 
             $activities = [];
@@ -773,7 +773,7 @@ class TrackingCalendarController extends AbstractController
             if (!$isLocked) {
                 $mpdf->SetWatermarkText($translator->trans('form.draft', [], 'calendar'), 0.1);
                 $mpdf->showWatermarkText = true;
-                $mpdf->watermark_font = 'DejaVuSansCondensed';
+                $mpdf->watermark_font = MpdfService::FONT_NAME;
             }
 
             $title = $translator->trans('title.weekly_activities', [], 'wpt_report')

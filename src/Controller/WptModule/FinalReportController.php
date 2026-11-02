@@ -166,7 +166,7 @@ class FinalReportController extends AbstractController
                 file_put_contents($tmp, $template->getData());
                 $mpdf->SetDocTemplate($tmp, true);
             }
-            $mpdf->SetFont('DejaVuSansCondensed');
+            $mpdf->SetFont(MpdfService::FONT_NAME);
             $mpdf->SetFontSize(9);
             $mpdf->AddPage();
             $mpdf->WriteText(40, 40.8, $agreementEnrollment->getStudentEnrollment()->getPerson()->__toString());

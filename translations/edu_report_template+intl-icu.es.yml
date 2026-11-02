@@ -26,6 +26,9 @@ table.filter: Filtrar...
 header.description: Descripción
 header.data: Plantilla PDF asociada
 
+error.invalid_pdf: No se puede leer el fichero como PDF. Comprueba que no esté dañado ni protegido con contraseña.
+error.multi_page: La plantilla debe tener una única página, porque se repite como fondo de todas las hojas del informe.
+
 message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Plantillas eliminadas con éxito.

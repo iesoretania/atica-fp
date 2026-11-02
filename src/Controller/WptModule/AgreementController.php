@@ -464,7 +464,7 @@ class AgreementController extends AbstractController
                 $mpdf->SetDocTemplate($tmp, true);
             }
 
-            $mpdf->SetFont('DejaVuSansCondensed');
+            $mpdf->SetFont(MpdfService::FONT_NAME);
             $mpdf->SetFontSize(9);
 
             $mpdf->WriteHTML($twig->render('wpt/agreement/training_program_report.html.twig', [

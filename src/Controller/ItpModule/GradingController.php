@@ -320,7 +320,7 @@ class GradingController extends AbstractController
                 $mpdf->SetDocTemplate($tmp, true);
             }
 
-            $mpdf->SetFont('DejaVuSansCondensed');
+            $mpdf->SetFont(MpdfService::FONT_NAME);
             $mpdf->SetFontSize(9);
 
             $mpdf->WriteHTML($engine->render('itp/training_program/grading/report.html.twig', [
@@ -504,7 +504,7 @@ class GradingController extends AbstractController
                 $mpdf->SetDocTemplate($tmp, true);
             }
 
-            $mpdf->SetFont('DejaVuSansCondensed');
+            $mpdf->SetFont(MpdfService::FONT_NAME);
             $mpdf->SetFontSize(9);
 
             $mpdf->WriteHTML($engine->render('itp/training_program/grading/evaluation_report.html.twig', [
