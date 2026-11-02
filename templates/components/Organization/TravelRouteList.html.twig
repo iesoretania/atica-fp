@@ -1,0 +1,33 @@
+{% trans_default_domain 'edu_travel_route' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'edu_travel_route', base_url: this.baseUrl, back_url: this.backUrl} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% import 'ui/live_macros.html.twig' as lm %}
+        {% block path_new %}{{ path('organization_travel_route_new') }}{% endblock %}
+
+        {% block table_header %}
+            {{ lm.select_th('header.description'|trans({}, domain), 'description', this.sort, this.dir) }}
+            {{ lm.sort_th('header.distance'|trans({}, domain), 'distance', this.sort, this.dir) }}
+            {{ lm.sort_th('header.verified'|trans({}, domain), 'verified', this.sort, this.dir) }}
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                <tr>
+                    {{ lm.select_cell(item.id, path('organization_travel_route_edit', {'id': item.id}), item.description) }}
+                    <td class="align-top">{{ item.distance|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }} {{ 'suffix.distance'|trans({}, 'general') }}</td>
+                    <td class="align-top">{{ (item.verified ? 'table.verified_yes' : 'table.verified_no')|trans({}, domain) }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="3" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('organization_travel_route_operation') }}{% endblock %}
+        {% block after_table %}{{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}{% endblock %}
+        {% block selection_actions %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endblock %}
+    {% endembed %}
+</div>

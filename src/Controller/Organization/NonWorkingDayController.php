@@ -125,42 +125,10 @@ class NonWorkingDayController extends AbstractController
 
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('n')
-            ->from(NonWorkingDay::class, 'n')
-            ->orderBy('n.date');
-
-        $q = $request->query->get('q');
-
-        if ($q) {
-            $queryBuilder
-                ->where('n.description LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('n.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'edu_non_working_day');
 
         return $this->render('organization/non_working_day/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'edu_non_working_day',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)

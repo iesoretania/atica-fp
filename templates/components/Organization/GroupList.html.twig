@@ -1,0 +1,35 @@
+{% trans_default_domain 'edu_group' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'edu_group', base_url: this.baseUrl, back_url: this.backUrl, academic_year: this.academicYear} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% import 'ui/live_macros.html.twig' as lm %}
+        {% block path_new %}{{ path('organization_group_new') }}{% endblock %}
+
+        {% block table_header %}
+            {{ lm.select_th('header.name'|trans({}, domain), 'name', this.sort, this.dir) }}
+            {{ lm.sort_th('header.grade'|trans({}, domain), 'grade', this.sort, this.dir) }}
+            <th>{{ 'header.tutors'|trans({}, domain) }}</th>
+            <th>{{ 'header.students'|trans({}, domain) }}</th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for group in pager %}
+                <tr>
+                    {{ lm.select_cell(group.id, path('organization_group_edit', {'id': group.id}), group.name) }}
+                    <td class="align-top">{{ group.grade.name }}</td>
+                    <td class="align-top">{{ group.tutors|join(', ') }}</td>
+                    <td class="align-top">{{ group.students|length }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('organization_group_delete', {'academicYear': academic_year.id}) }}{% endblock %}
+        {% block after_table %}{{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}{% endblock %}
+        {% block selection_actions %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endblock %}
+    {% endembed %}
+</div>

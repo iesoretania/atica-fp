@@ -117,41 +117,10 @@ class DepartmentController extends AbstractController
 
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('d')
-            ->from(Department::class, 'd')
-            ->orderBy('d.name');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('d.name LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('d.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'edu_department');
 
         return $this->render('organization/department/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'edu_department',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
@@ -198,7 +167,7 @@ class DepartmentController extends AbstractController
             'menu_path' => 'organization_department_list',
             'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'edu_department')]],
             'title' => $translator->trans('title.delete', [], 'edu_department'),
-            'departments' => $departments
+            'items' => $departments
         ]);
     }
 }

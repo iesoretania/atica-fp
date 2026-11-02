@@ -15,3 +15,23 @@
         {{ _self.sort_button(label, key, sort, dir) }}
     </th>
 {% endmacro %}
+
+{#- Primera cabecera de un listado con casillas: casilla «seleccionar todo» + título ordenable (o fijo si key está vacía) -#}
+{% macro select_th(label, key, sort, dir) %}
+    <th{% if key %} aria-sort="{{ sort == key ? (dir == 'desc' ? 'descending' : 'ascending') : 'none' }}"{% endif %}>
+        <div class="flex items-center gap-2">
+            <input type="checkbox" data-list-target="selectAll" class="size-4 rounded border-gray-300 text-brand-600" aria-label="{{ 'selection.clear'|trans({}, 'general') }}">
+            {% if key %}{{ _self.sort_button(label, key, sort, dir) }}{% else %}<span class="font-semibold uppercase tracking-wide">{{ label }}</span>{% endif %}
+        </div>
+    </th>
+{% endmacro %}
+
+{#- Primera celda de una fila con casilla: casilla + enlace a la ficha (tachado si struck) -#}
+{% macro select_cell(id, url, text, struck = false) %}
+    <td class="align-top">
+        <label class="flex items-center gap-2">
+            <input type="checkbox" name="items[]" value="{{ id }}" class="selectable size-4 rounded border-gray-300 text-brand-600">
+            <a href="{{ url }}" class="font-medium text-gray-900 hover:text-brand-700{{ struck ? ' line-through text-gray-500' : '' }}">{{ text }}</a>
+        </label>
+    </td>
+{% endmacro %}

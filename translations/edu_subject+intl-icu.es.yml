@@ -43,3 +43,11 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Materias eliminadas del centro.
 message.delete_error: Ha ocurrido un error al eliminar las materias del centro.
+
+card.title: Módulo profesional
+form.grade.help: Nivel en el que se imparte el módulo.
+form.name.help: Nombre completo del módulo profesional.
+form.code.help: Abreviatura que se usa en listados e informes.
+form.internal_code.help: Código del módulo en Séneca. Solo puede modificarlo la administración.
+danger.title: "Peligro: eliminación del módulo profesional"
+danger.text: Si tiene docentes asignados, resultados de aprendizaje o actividades asociadas no se podrá eliminar. Una vez eliminado, no se podrá recuperar.

@@ -32,3 +32,10 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Niveles eliminados del centro.
 message.delete_error: Ha ocurrido un error al eliminar los niveles del centro.
+
+card.title: Nivel
+form.grade.help: Enseñanza a la que pertenece el nivel.
+form.name.help: Nombre del nivel, por ejemplo 1.º curso.
+form.internal_code.help: Código del nivel en Séneca. Solo puede modificarlo la administración.
+danger.title: "Peligro: eliminación del nivel"
+danger.text: Si tiene grupos o módulos asociados no se podrá eliminar. Una vez eliminado, no se podrá recuperar.

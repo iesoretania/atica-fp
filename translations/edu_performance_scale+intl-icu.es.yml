@@ -1,7 +1,9 @@
 form.description: Descripción
 form.enabled: ¿Activa?
-form.enabled.yes: Sí, puede seleccionarse
-form.enabled.no: No, no puede seleccionarse
+form.enabled.yes: Activa
+form.enabled.yes.help: Puede seleccionarse en los programas formativos.
+form.enabled.no: Inactiva
+form.enabled.no.help: No puede seleccionarse en programas formativos nuevos.
 
 form.copy_from: Copiar desde
 form.copy_from.none: Ninguna, crear desde cero
@@ -37,3 +39,9 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Escalas eliminadas con éxito del centro.
 message.delete_error: Ha ocurrido un error al eliminar las escalas seleccionadas.
+
+card.title: Escala de valoración
+form.description.help: Nombre de la escala, que se elige al configurar los programas formativos.
+form.copy_from.help: Opcional. Copia los valores de otra escala; después podrá modificarlos.
+danger.title: "Peligro: eliminación de la escala"
+danger.text: Si está en uso en algún programa formativo no se podrá eliminar. Una vez eliminada, no se podrá recuperar.

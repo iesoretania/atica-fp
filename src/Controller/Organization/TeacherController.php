@@ -165,49 +165,10 @@ class TeacherController extends AbstractController
         }
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('t')
-            ->addSelect('p')
-            ->from(Teacher::class, 't')
-            ->orderBy('p.lastName')
-            ->addOrderBy('p.firstName')
-            ->innerJoin('t.person', 'p');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->andWhere('p.id = :q')
-                ->orWhere('p.loginUsername LIKE :tq')
-                ->orWhere('p.firstName LIKE :tq')
-                ->orWhere('p.lastName LIKE :tq')
-                ->orWhere('p.emailAddress LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%')
-                ->setParameter('q', $q);
-        }
-
-        $queryBuilder
-            ->andWhere('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'edu_teacher');
 
         return $this->render('organization/teacher/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'edu_teacher',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
@@ -226,7 +187,7 @@ class TeacherController extends AbstractController
 
         $em = $managerRegistry->getManager();
 
-        $items = $request->request->all('users');
+        $items = $request->request->all('items');
         if ((is_countable($items) ? count($items) : 0) === 0) {
             return $this->redirectToRoute('organization_teacher_list', ['academicYear' => $academicYear->getId()]);
         }
@@ -255,7 +216,7 @@ class TeacherController extends AbstractController
             'menu_path' => 'organization_teacher_list',
             'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'edu_teacher')]],
             'title' => $translator->trans('title.delete', [], 'edu_teacher'),
-            'teachers' => $teachers
+            'items' => $teachers
         ]);
     }
 }

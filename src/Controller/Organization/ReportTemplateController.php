@@ -132,41 +132,10 @@ class ReportTemplateController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('rt')
-            ->from(ReportTemplate::class, 'rt')
-            ->orderBy('rt.description');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('rt.description LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('rt.organization = :organization')
-            ->setParameter('organization', $organization);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'edu_report_template');
 
         return $this->render('organization/report_template/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'edu_report_template'
         ]);
     }

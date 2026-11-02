@@ -1,0 +1,36 @@
+{% trans_default_domain 'edu_student_enrollment' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'edu_student_enrollment', base_url: this.baseUrl, back_url: this.backUrl, academic_year: this.academicYear} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% import 'ui/live_macros.html.twig' as lm %}
+        {% block path_new %}{{ path('organization_import_student_form') }}{% endblock %}
+
+        {% block table_header %}
+            {{ lm.select_th('header.name'|trans({}, domain), 'name', this.sort, this.dir) }}
+            <th>{{ 'header.unique_identifier'|trans({}, domain) }}</th>
+            {{ lm.sort_th('header.group'|trans({}, domain), 'group', this.sort, this.dir) }}
+            <th>{{ 'header.user'|trans({}, domain) }}</th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for student_enrollment in pager %}
+                {% set person = student_enrollment.person %}
+                <tr>
+                    {{ lm.select_cell(student_enrollment.id, path('organization_student_enrollment_edit', {'id': student_enrollment.id}), person.lastName ~ ', ' ~ person.firstName) }}
+                    <td class="align-top">{{ person.uniqueIdentifier }}</td>
+                    <td class="align-top">{{ student_enrollment.group }}</td>
+                    <td class="align-top">{{ person.usernameAndEmailAddress }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4" class="py-8 text-center text-gray-500">{{ 'table.no_users'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('organization_student_enrollment_operation', {'academicYear': academic_year.id}) }}{% endblock %}
+        {% block after_table %}{{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}{% endblock %}
+        {% block selection_actions %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endblock %}
+    {% endembed %}
+</div>

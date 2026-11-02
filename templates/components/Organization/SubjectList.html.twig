@@ -1,0 +1,38 @@
+{% trans_default_domain 'edu_subject' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'edu_subject', base_url: this.baseUrl, back_url: this.backUrl, academic_year: this.academicYear} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% import 'ui/live_macros.html.twig' as lm %}
+        {% block path_new %}{{ path('organization_subject_new') }}{% endblock %}
+
+        {% block table_header %}
+            {{ lm.select_th('header.name'|trans({}, domain), 'name', this.sort, this.dir) }}
+            {{ lm.sort_th('header.grade'|trans({}, domain), 'grade', this.sort, this.dir) }}
+            <th>{{ 'header.teachers'|trans({}, domain) }}</th>
+            <th class="w-40"></th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for subject in pager %}
+                <tr>
+                    {{ lm.select_cell(subject.id, path('organization_subject_edit', {'id': subject.id}), subject.name) }}
+                    <td class="align-top">{{ subject.grade }}</td>
+                    <td class="align-top">
+                        {% for teaching in subject.teachings %}<a href="{{ path('organization_teaching_edit', {'id': teaching.id}) }}" class="text-brand-700 hover:underline">{{ teaching.teacher }} ({{ teaching.group }})</a>{% if not loop.last %}, {% endif %}{% endfor %}
+                        <a href="{{ path('organization_teaching_new', {'id': subject.id}) }}" class="ml-1 inline-flex align-middle text-brand-700" title="{{ 'table.add_teaching'|trans({}, domain) }}"><twig:Ui:Icon name="plus" /></a>
+                    </td>
+                    <td class="align-top">{{ m.link_button(path('organization_training_learning_outcome_list', {'id': subject.id}), 'list-check', 'btn-info btn-sm', 'table.learning_outcomes'|trans({}, domain)) }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('organization_subject_delete', {'academicYear': academic_year.id}) }}{% endblock %}
+        {% block after_table %}{{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}{% endblock %}
+        {% block selection_actions %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endblock %}
+    {% endembed %}
+</div>

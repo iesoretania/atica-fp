@@ -120,41 +120,10 @@ class TravelRouteController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::EDU_FINANCIAL_MANAGER, $organization);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-        $queryBuilder
-            ->select('tr')
-            ->from(TravelRoute::class, 'tr')
-            ->addOrderBy('tr.description', 'ASC');
-
-        $q = $request->query->get('q');
-
-        if ($q) {
-            $queryBuilder
-                ->orWhere('tr.description LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-                ->andWhere('tr.organization = :organization')
-                ->setParameter('organization', $organization);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'edu_travel_route');
 
         return $this->render('organization/travel_route/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'edu_travel_route'
         ]);
     }

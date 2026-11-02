@@ -125,50 +125,10 @@ class AcademicYearController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('ay')
-            ->from(AcademicYear::class, 'ay')
-            ->leftJoin('ay.financialManager', 'fm')
-            ->leftJoin('fm.person', 'fmp')
-            ->leftJoin('ay.principal', 'p')
-            ->leftJoin('p.person', 'pp')
-            ->orderBy('ay.description', 'DESC');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->andWhere('ay.description LIKE :tq')
-                ->orWhere('pp.firstName LIKE :tq')
-                ->orWhere('pp.lastName LIKE :tq')
-                ->orWhere('fmp.firstName LIKE :tq')
-                ->orWhere('fmp.lastName LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('ay.organization = :organization')
-            ->setParameter('organization', $organization);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'edu_academic_year');
 
         return $this->render('organization/academic_year/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
-            'current' => $organization->getCurrentAcademicYear(),
             'domain' => 'edu_academic_year'
         ]);
     }
@@ -201,7 +161,7 @@ class AcademicYearController extends AbstractController
             'menu_path' => 'organization_academic_year_list',
             'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'edu_academic_year')]],
             'title' => $translator->trans('title.delete', [], 'edu_academic_year'),
-            'academic_years' => $academicYears
+            'items' => $academicYears
         ]);
     }
 

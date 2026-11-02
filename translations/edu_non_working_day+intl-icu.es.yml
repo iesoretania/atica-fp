@@ -30,3 +30,9 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Días lectivos eliminados del centro.
 message.delete_error: Ha ocurrido un error al eliminar los días lectivos.
+
+card.title: Día no lectivo
+form.date.help: Día en el que no hay actividad lectiva. Las jornadas de formación en empresa se saltan estos días si así se indica al añadirlas.
+form.description.help: Motivo, por ejemplo festivo local o día de libre disposición.
+danger.title: "Peligro: eliminación del día no lectivo"
+danger.text: Las jornadas ya creadas en los calendarios no se modifican.

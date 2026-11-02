@@ -2,8 +2,10 @@ form.description: Descripción del itinerario
 form.description.placeholder: "Ej: Linares > Jaén > Linares"
 form.distance: Distancia (km)
 form.verified: ¿Verificado?
-form.verified.yes: Sí, el kilometraje es correcto
-form.verified.no: No, aún no se ha verificado el kilometraje
+form.verified.yes: Verificado
+form.verified.yes.help: El kilometraje es correcto.
+form.verified.no: Sin verificar
+form.verified.no.help: Aún no se ha comprobado el kilometraje.
 
 title.new: "Registrar nuevo itinerario"
 form.new_travel_route.save: Registrar itinerario
@@ -44,3 +46,10 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Itinerarios eliminados con éxito.
 message.delete_error: Ha ocurrido un error al eliminar los itinerarios.
+
+card.title: Itinerario
+form.description.help: Origen y destino del itinerario, tal como se elegirá en los desplazamientos.
+form.distance.help: Distancia del trayecto de ida en kilómetros.
+form.verified.help: Marque los itinerarios cuya distancia ha sido comprobada por la secretaría.
+danger.title: "Peligro: eliminación del itinerario"
+danger.text: Si está en uso en algún desplazamiento no se podrá eliminar. Una vez eliminado, no se podrá recuperar.

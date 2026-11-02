@@ -121,44 +121,10 @@ class SubjectController extends AbstractController
 
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('s')
-            ->from(Subject::class, 's')
-            ->join('s.grade', 'g')
-            ->join('g.training', 't')
-            ->orderBy('s.name');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('s.name LIKE :tq')
-                ->orWhere('g.name LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'edu_subject');
 
         return $this->render('organization/subject/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'edu_subject',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
@@ -205,7 +171,7 @@ class SubjectController extends AbstractController
             'menu_path' => 'organization_subject_list',
             'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'edu_subject')]],
             'title' => $translator->trans('title.delete', [], 'edu_subject'),
-            'subjects' => $subjects
+            'items' => $subjects
         ]);
     }
 

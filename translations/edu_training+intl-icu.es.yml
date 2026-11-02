@@ -36,3 +36,10 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Enseñanzas eliminadas del centro.
 message.delete_error: Ha ocurrido un error al eliminar las enseñanzas del centro.
+
+card.title: Enseñanza
+form.department.help: Familia profesional a la que pertenece. Déjelo sin asignar si no es una enseñanza de FP.
+form.name.help: Nombre completo de la enseñanza.
+form.internal_code.help: Código de la enseñanza en Séneca. Solo puede modificarlo la administración.
+danger.title: "Peligro: eliminación de la enseñanza"
+danger.text: Si tiene niveles, competencias o programas formativos asociados no se podrá eliminar. Una vez eliminada, no se podrá recuperar.

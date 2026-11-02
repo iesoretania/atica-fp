@@ -58,3 +58,15 @@ message.delete_error: Ha ocurrido un error al eliminar los elementos.
 message.switched: Activado el curso académico indicado.
 message.copied: Datos copiados al curso académico.
 message.copy_error: Ha ocurrido un error al copiar los datos del curso académico.
+
+card.title: Curso académico
+form.description.help: Nombre del curso, por ejemplo 2025/2026.
+form.start_date.help: Primer día del curso.
+form.end_date.help: Último día del curso.
+form.principal.help: Docente que ejerce la dirección del centro en este curso.
+form.financial_manager.help: Docente que ejerce la secretaría; gestiona los desplazamientos y las indemnizaciones.
+form.enabled_modules.help: Módulos de la aplicación que estarán disponibles durante este curso.
+form.default_portrait_template.help: Plantilla de fondo de los informes en vertical.
+form.default_landscape_template.help: Plantilla de fondo de los informes en apaisado.
+danger.title: "Peligro: eliminación del curso académico"
+danger.text: Se eliminarán también todos los datos asociados al curso. Una vez eliminado, no se podrá recuperar.

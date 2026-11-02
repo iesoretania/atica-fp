@@ -135,26 +135,10 @@ class PerformanceScaleController extends AbstractController
         $organization = $userExtensionService->getCurrentOrganization();
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $organization);
 
-        $q = $request->query->get('q');
-
-        $queryBuilder = $performanceScaleRepository->findByOrganizationAndPartialStringQueryBuilder($organization, $q);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'edu_performance_scale');
 
         return $this->render('organization/performance_scale/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'edu_performance_scale'
         ]);
     }

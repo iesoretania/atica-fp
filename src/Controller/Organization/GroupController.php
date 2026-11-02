@@ -113,46 +113,10 @@ class GroupController extends AbstractController
 
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('g')
-            ->addSelect('gr')
-            ->addSelect('t')
-            ->from(Group::class, 'g')
-            ->orderBy('g.name')
-            ->innerJoin('g.grade', 'gr')
-            ->innerJoin('gr.training', 't');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('g.name LIKE :tq')
-                ->orWhere('gr.name LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'edu_group');
 
         return $this->render('organization/group/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'edu_group',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)
@@ -199,7 +163,7 @@ class GroupController extends AbstractController
             'menu_path' => 'organization_group_list',
             'breadcrumb' => [['fixed' => $translator->trans('title.delete', [], 'edu_group')]],
             'title' => $translator->trans('title.delete', [], 'edu_group'),
-            'groups' => $groups
+            'items' => $groups
         ]);
     }
 }

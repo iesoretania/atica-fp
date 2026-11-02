@@ -48,3 +48,11 @@ header.title: Título
 header.start_timestamp: Inicio
 header.end_timestamp: Fin
 header.answer_count: Encuestas respondidas
+
+card.title: Encuesta
+form.title.help: Título que verá quien responda a la encuesta.
+form.copy_from.help: Opcional. Copia las preguntas de otra encuesta; después podrá modificarlas.
+form.start_timestamp.help: A partir de este momento se pueden contestar las encuestas.
+form.end_timestamp.help: Pasado este momento ya no se admiten respuestas.
+danger.title: "Peligro: eliminación de la encuesta"
+danger.text: Se eliminarán también sus preguntas y todas las respuestas recogidas. Esta operación no se puede deshacer.

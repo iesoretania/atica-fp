@@ -1,0 +1,31 @@
+{% trans_default_domain 'edu_contact_method' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'edu_contact_method', base_url: this.baseUrl, back_url: this.backUrl, academic_year: this.academicYear} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% import 'ui/live_macros.html.twig' as lm %}
+        {% block path_new %}{{ path('organization_contact_method_new') }}{% endblock %}
+
+        {% block table_header %}
+            {{ lm.select_th('header.description'|trans({}, domain), 'description', this.sort, this.dir) }}
+            {{ lm.sort_th('header.enabled'|trans({}, domain), 'enabled', this.sort, this.dir) }}
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                <tr>
+                    {{ lm.select_cell(item.id, path('organization_contact_method_edit', {'id': item.id}), item.description, not item.enabled) }}
+                    <td class="align-top">{{ (item.enabled ? 'form.yes' : 'form.no')|trans({}, domain) }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="2" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('organization_contact_method_delete', {'academicYear': academic_year.id}) }}{% endblock %}
+        {% block after_table %}{{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}{% endblock %}
+        {% block selection_actions %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endblock %}
+    {% endembed %}
+</div>

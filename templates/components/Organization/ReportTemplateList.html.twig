@@ -1,0 +1,31 @@
+{% trans_default_domain 'edu_report_template' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'edu_report_template', base_url: this.baseUrl, back_url: this.backUrl} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% import 'ui/live_macros.html.twig' as lm %}
+        {% block path_new %}{{ path('organization_report_template_new') }}{% endblock %}
+
+        {% block table_header %}
+            {{ lm.select_th('header.description'|trans({}, domain), 'description', this.sort, this.dir) }}
+            <th class="w-40">{{ 'header.data'|trans({}, domain) }}</th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for template in pager %}
+                <tr>
+                    {{ lm.select_cell(template.id, path('organization_report_template_edit', {'id': template.id}), template.description) }}
+                    <td class="align-top">{{ m.link_button(path('organization_report_template_download', {'id': template.id}), 'download', 'btn-info btn-sm', 'form.download'|trans({}, domain)) }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="2" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('organization_report_template_delete') }}{% endblock %}
+        {% block after_table %}{{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}{% endblock %}
+        {% block selection_actions %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endblock %}
+    {% endembed %}
+</div>

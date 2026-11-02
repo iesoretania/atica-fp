@@ -53,3 +53,11 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Matrículas eliminadas del centro.
 message.delete_error: Ha ocurrido un error al eliminar las matrículas del centro.
+
+card.title: Matrícula
+form.group.help: Grupo en el que está matriculado el estudiante.
+form.first_name.help: Nombre de la persona.
+form.last_name.help: Apellidos de la persona.
+form.gender.help: Se usa para concordar los textos de los informes.
+danger.title: "Peligro: eliminación de la matrícula"
+danger.text: Si el estudiante tiene datos asociados (seguimiento, valoraciones o encuestas) no se podrá eliminar. Una vez eliminada, no se podrá recuperar.

@@ -105,55 +105,10 @@ class StudentEnrollmentController extends AbstractController
         }
         $this->denyAccessUnlessGranted(AcademicYearVoter::MANAGE, $academicYear);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('se')
-            ->addSelect('p')
-            ->addSelect('g')
-            ->from(StudentEnrollment::class, 'se')
-            ->orderBy('p.lastName')
-            ->addOrderBy('p.firstName')
-            ->innerJoin('se.person', 'p')
-            ->innerJoin('se.group', 'g')
-            ->innerJoin('g.grade', 'gr')
-            ->innerJoin('gr.training', 't');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->andWhere('p.id = :q')
-                ->orWhere('p.loginUsername LIKE :tq')
-                ->orWhere('p.firstName LIKE :tq')
-                ->orWhere('p.lastName LIKE :tq')
-                ->orWhere('p.emailAddress LIKE :tq')
-                ->orWhere('g.name LIKE :tq')
-                ->orWhere('p.uniqueIdentifier LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%')
-                ->setParameter('q', $q);
-        }
-
-        $queryBuilder
-            ->andWhere('t.academicYear = :academic_year')
-            ->setParameter('academic_year', $academicYear);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'edu_student_enrollment');
 
         return $this->render('organization/student_enrollment/list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'edu_student_enrollment',
             'academic_year' => $academicYear,
             'academic_years' => $academicYearRepository->findAllByOrganization($organization)

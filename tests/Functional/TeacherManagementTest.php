@@ -89,7 +89,7 @@ class TeacherManagementTest extends AppWebTestCase
             $this->client->request('GET', $url);
             self::assertResponseStatusCodeSame(403, $url);
         }
-        $this->client->request('POST', '/centro/profesorado/eliminar/' . $this->year(), ['users' => [$teacher->getId()], 'confirm' => 'ok']);
+        $this->client->request('POST', '/centro/profesorado/eliminar/' . $this->year(), ['items' =>[$teacher->getId()], 'confirm' => 'ok']);
         self::assertResponseStatusCodeSame(403);
 
         self::assertNotNull($this->teacherOf('alfa.profesor'));
@@ -189,7 +189,7 @@ class TeacherManagementTest extends AppWebTestCase
 
         $this->client->request('GET', '/centro/profesorado/' . $teacher->getId());
         self::assertResponseStatusCodeSame(403);
-        $this->client->request('POST', '/centro/profesorado/eliminar/' . $this->year(), ['users' => [$teacher->getId()], 'confirm' => 'ok']);
+        $this->client->request('POST', '/centro/profesorado/eliminar/' . $this->year(), ['items' =>[$teacher->getId()], 'confirm' => 'ok']);
 
         self::assertNotNull($this->teacherOf('alfa.profesor'));
     }
@@ -209,7 +209,7 @@ class TeacherManagementTest extends AppWebTestCase
 
         // el administrador de Alfa lo incluye en el borrado de su propio curso
         $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
-        $this->client->request('POST', '/centro/profesorado/eliminar/' . $this->year(), ['users' => [$foreign], 'confirm' => 'ok']);
+        $this->client->request('POST', '/centro/profesorado/eliminar/' . $this->year(), ['items' =>[$foreign], 'confirm' => 'ok']);
 
         self::assertNotNull($this->em()->getRepository(Teacher::class)->find($foreign), 'El docente de Beta sigue existiendo');
     }
@@ -220,11 +220,11 @@ class TeacherManagementTest extends AppWebTestCase
         $this->addTeacher($this->personId('alfa.alumno3'));
         $id = $this->teacherOf('alfa.alumno3')->getId();
 
-        $this->client->request('POST', '/centro/profesorado/eliminar/' . $this->year(), ['users' => [$id]]);
+        $this->client->request('POST', '/centro/profesorado/eliminar/' . $this->year(), ['items' =>[$id]]);
         self::assertResponseIsSuccessful();
         self::assertNotNull($this->teacherOf('alfa.alumno3'));
 
-        $this->client->request('POST', '/centro/profesorado/eliminar/' . $this->year(), ['users' => [$id], 'confirm' => 'ok']);
+        $this->client->request('POST', '/centro/profesorado/eliminar/' . $this->year(), ['items' =>[$id], 'confirm' => 'ok']);
         self::assertResponseRedirects();
         self::assertNull($this->teacherOf('alfa.alumno3'));
     }
@@ -235,7 +235,7 @@ class TeacherManagementTest extends AppWebTestCase
         $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
 
         // tiene asignaciones de docencia y estancias: no se borra, pero tampoco falla el servidor
-        $this->client->request('POST', '/centro/profesorado/eliminar/' . $this->year(), ['users' => [$teacher->getId()], 'confirm' => 'ok']);
+        $this->client->request('POST', '/centro/profesorado/eliminar/' . $this->year(), ['items' =>[$teacher->getId()], 'confirm' => 'ok']);
 
         self::assertLessThan(500, $this->client->getResponse()->getStatusCode());
     }

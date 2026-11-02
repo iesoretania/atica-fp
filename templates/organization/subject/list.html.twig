@@ -1,56 +1,10 @@
 {% trans_default_domain 'edu_subject' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block path_new %}{{ path('organization_subject_new') }}{% endblock %}
-
-{% block table_header %}
-    <th class="w-30"><label><input type="checkbox" id="select"> {{ 'header.name'|trans }}</label></th>
-    <th class="w-20">{{ 'header.grade'|trans }}</th>
-    <th class="w-30">{{ 'header.teachers'|trans }}</th>
-    <th class="w-20"></th>
-{% endblock %}
-
-{% block table_body %}
-            {% for subject in pager %}
-                {% set url = path('organization_subject_edit', {'id': subject.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
-                    <td>
-                        <label><input type="checkbox" name="items[]" value="{{ subject.id }}" class="selectable"> <a href="{{ url }}">{{ subject.name }}</a></label>
-                    </td>
-                    <td>
-                        {{ subject.grade }}
-                    </td>
-                    <td>
-                        {% for teaching in subject.teachings %}<a href="{{ path('organization_teaching_edit', {'id': teaching.id}) }}">{{ teaching.teacher }} ({{ teaching.group }})</a>{% if not loop.last %}, {% endif %}{% endfor %}
-                        &nbsp;<a href="{{ path('organization_teaching_new', {'id': subject.id}) }}"><i class="fas fa-plus-square"></i></a>
-                    </td>
-                    <td>
-                        {{ m.link_button(path('organization_training_learning_outcome_list', {'id': subject.id}), 'toolbox', 'btn-info btn-sm btn-block', 'table.learning_outcomes'|trans, null, 'd-md-none d-lg-inline') }}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="4">{{ 'table.no_items'|trans }}</td>
-                </tr>
-            {% endfor %}
-{% endblock %}
-
-{% block before_filter %}
-    {% include 'organization/partial_academic_year.html.twig' %}
-{% endblock %}
-
-{% block before_table %}
-    <form action="{{ path('organization_subject_delete', {'academicYear': academic_year.id}) }}" method="post">
-{% endblock %}
-
-{% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
-{% endblock %}
-
-{% block after_table %}
-        <div class="clearfix"></div>
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
-    </form>
+{#- Listado dinámico (Live Component Organization:SubjectList); el selector de curso académico navega a otra página -#}
+{% block content %}
+    <div data-controller="list">
+        {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'organization_subject_list'} %}
+    </div>
+    {% include 'ui/_live_list.html.twig' with {component: 'Organization:SubjectList', props: {academicYear: academic_year}} %}
 {% endblock %}

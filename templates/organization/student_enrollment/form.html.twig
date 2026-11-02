@@ -1,13 +1,25 @@
 {% trans_default_domain 'edu_student_enrollment' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
-    <div class="alert alert-warning">{{ 'prompt.at_your_own_risk_warning'|trans|nl2br }}</div>
+    <twig:Ui:Alert type="warning" :message="'prompt.at_your_own_risk_warning'|trans|nl2br" />
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['group'],
+        ['personFirstName', 'personLastName'],
+        ['personGender'],
+    ], {}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+
+    {% set entity = form.vars.data %}
+    {% if entity.id %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('organization_student_enrollment_operation', {'academicYear': entity.group.grade.training.academicYear.id}), entity.id) }}
+    {% endif %}
 {% endblock %}

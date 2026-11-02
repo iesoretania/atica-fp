@@ -31,3 +31,10 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Departamentos eliminados del centro.
 message.delete_error: Ha ocurrido un error al eliminar los departamentos del centro.
+
+card.title: Departamento
+form.name.help: Nombre del departamento tal como aparece en los listados.
+form.head.help: Docente que ejerce la jefatura. Puede consultar los datos de la formación en empresa de las enseñanzas del departamento.
+form.internal_code.help: Código del departamento en Séneca. Solo puede modificarlo la administración.
+danger.title: "Peligro: eliminación del departamento"
+danger.text: Si tiene enseñanzas asociadas no se podrá eliminar. Una vez eliminado, no se podrá recuperar.

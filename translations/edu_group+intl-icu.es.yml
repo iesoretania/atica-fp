@@ -42,3 +42,13 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Grupos eliminados del centro.
 message.delete_error: Ha ocurrido un error al eliminar los grupos del centro.
+
+card.title: Grupo
+form.grade.help: Nivel al que pertenece el grupo.
+form.name.help: Nombre del grupo, por ejemplo 1.º A.
+form.tutors.help: Docentes que ejercen la tutoría del grupo. Pueden consultar los datos de seguimiento de su alumnado.
+form.internal_code.help: Código del grupo en Séneca. Solo puede modificarlo la administración.
+table.no_students: No hay alumnado en este grupo.
+table.no_teachings: No hay docentes asignados a módulos de este grupo.
+danger.title: "Peligro: eliminación del grupo"
+danger.text: Si tiene alumnado matriculado o docentes asignados no se podrá eliminar. Una vez eliminado, no se podrá recuperar.

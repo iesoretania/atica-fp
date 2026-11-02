@@ -30,3 +30,9 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Plantillas eliminadas con éxito.
 message.delete_error: Ha ocurrido un error al eliminar las plantillas del centro. Compruebe que no están siendo utilizadas.
+
+card.title: Plantilla de informe
+form.description.help: Nombre con el que se elige la plantilla al generar informes.
+form.data.help: Archivo PDF de fondo que se usa en los informes generados con esta plantilla.
+danger.title: "Peligro: eliminación de la plantilla"
+danger.text: Los informes ya generados no se modifican. Una vez eliminada, no se podrá recuperar.

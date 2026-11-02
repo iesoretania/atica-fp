@@ -1,47 +1,10 @@
 {% trans_default_domain 'edu_non_working_day' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block path_new %}{{ path('organization_non_working_day_new', {'academicYear': academic_year.id}) }}{% endblock %}
-
-{% block table_header %}
-    <th class="w-25"><label><input type="checkbox" id="select"> {{ 'header.date'|trans }}</label></th>
-    <th class="w-75">{{ 'header.description'|trans }}</th>
-{% endblock %}
-
-{% block table_body %}
-            {% for item in pager %}
-                {% set url = path('organization_non_working_day_edit', {'id': item.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
-                    <td>
-                        <label><input type="checkbox" name="items[]" value="{{ item.id }}" class="selectable"> <a href="{{ url }}">{{ item.date|date('format.date'|trans({}, 'general')) }}</a></label>
-                    </td>
-                    <td>
-                        {{ item.description }}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="2">{{ 'table.no_items'|trans }}</td>
-                </tr>
-            {% endfor %}
-{% endblock %}
-
-{% block before_filter %}
-    {% include 'organization/partial_academic_year.html.twig' %}
-{% endblock %}
-
-{% block before_table %}
-    <form action="{{ path('organization_non_working_day_delete', {'academicYear': academic_year.id}) }}" method="post">
-{% endblock %}
-
-{% block pagerfanta %}
-    {{ pagerfanta(pager, 'twitter_bootstrap4', {'prev_message': 'paginator.prev'|trans([], 'general'), 'next_message': 'paginator.next'|trans([], 'general'), 'routeParams': {'academicYear': academic_year.id }}) }}
-{% endblock %}
-
-{% block after_table %}
-        <div class="clearfix"></div>
-        {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-        {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
-    </form>
+{#- Listado dinámico (Live Component Organization:NonWorkingDayList); el selector de curso académico navega a otra página -#}
+{% block content %}
+    <div data-controller="list">
+        {% include 'ui/partial_academic_year.html.twig' with {academic_year_route: 'organization_non_working_day_list'} %}
+    </div>
+    {% include 'ui/_live_list.html.twig' with {component: 'Organization:NonWorkingDayList', props: {academicYear: academic_year}} %}
 {% endblock %}
