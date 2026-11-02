@@ -49,7 +49,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: ctype, curl, dom, gd, iconv, intl, libxml, mbstring, pdo_mysql, xml, zip
-          ini-values: memory_limit=1G
+          ini-values: memory_limit=2G
           # PCOV solo en el trabajo principal: el de intrusión no necesita medir cobertura
           coverage: ${{ matrix.suite.extras && 'pcov' || 'none' }}
           tools: composer:v2
@@ -64,9 +64,16 @@ jobs:
           key: composer-${{ matrix.php }}-${{ hashFiles('composer.lock') }}
           restore-keys: composer-${{ matrix.php }}-
 
-      # Sin scripts: no hace falta descargar CKEditor ni instalar assets para ejecutar los tests
+      # Sin scripts: se instalan aparte los assets que necesita el diseño para pintar las páginas
       - name: Instalar dependencias
         run: composer install --prefer-dist --no-progress --no-interaction --no-scripts
+
+      # Sin las librerías de JavaScript ni el CSS de Tailwind compilado, cualquier página devuelve un error 500
+      # («Unable to find asset "tailwindcss"»); el binario de Tailwind se descarga solo (no hace falta Node.js)
+      - name: Preparar los assets (importmap y Tailwind CSS)
+        run: |
+          php bin/console importmap:install
+          php bin/console tailwind:build
 
       - name: Crear la base de datos de tests, migrarla y cargar las fixtures
         run: composer test:reset-db
