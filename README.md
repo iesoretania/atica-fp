@@ -44,7 +44,9 @@ conocer los cambios necesarios.**
 
 ## Instalación en un servidor
 
-- Clonar el repositorio en la carpeta deseada.
+- Clonar el repositorio en la carpeta deseada **indicando la rama de la versión que se quiere instalar**:
+  `git clone -b v8 https://github.com/iesoretania/atica-fp.git` (la rama `v8` contiene la versión 8; la rama `v7`,
+  en modo de mantenimiento, la versión 7). Sin `-b` se obtiene la rama por defecto del repositorio, que puede cambiar.
 - Ejecutar `composer install` desde la carpeta del proyecto.
 - Hacer una copia del fichero `.env.local.sample` en `.env.local`
   - Modifica la configuración cambiando el contenido de `.env.local`
@@ -72,7 +74,10 @@ conocer los cambios necesarios.**
 
 Cuando se publique una nueva versión de la plataforma, se deberán seguir los siguientes pasos para actualizar:
 
-- Incorporar al repositorio los cambios de la última versión oficial (```git pull```).
+- Incorporar al repositorio los cambios de la última versión oficial (```git pull```). Cada versión mayor tiene su
+  propia rama (```v7```, ```v8```...): la instalación sigue en la rama en la que se clonó y no cambia de versión
+  mayor por sí sola. Para pasar a la siguiente se cambia de rama (```git fetch``` y ```git checkout v8```) siguiendo
+  el documento ```UPGRADE-X.0.md``` correspondiente.
 - Ejecutar `composer install` desde la carpeta del proyecto.
 - Actualizar la base de datos (se sacará una copia de seguridad automáticamente):
   - `php bin/console app:safe-migrate -n`

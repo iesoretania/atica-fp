@@ -41,8 +41,9 @@ contraseña `demo1234`.
 
 ## Instalarla en un servidor
 
-1. **Descarga la aplicación** en la carpeta que quieras, con `git clone`, y ejecuta
-   `composer install` dentro de ella.
+1. **Descarga la aplicación** en la carpeta que quieras, con `git clone -b v8 <dirección del repositorio>`,
+   y ejecuta `composer install` dentro de ella. Cada versión mayor tiene su propia rama (`v8` para esta versión);
+   indícala siempre con `-b`, porque la rama por defecto del repositorio puede cambiar con el tiempo.
 2. **Configura el entorno.** Copia `.env.local.sample` como `.env.local` y cambia, al menos, dos
    variables:
     - `APP_SECRET`: pon un valor aleatorio y largo. No dejes el del ejemplo.
