@@ -4,8 +4,7 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     form_themes:
-        - 'bootstrap_4_horizontal_layout.html.twig'
-        - '@TetranzSelect2Entity/Form/fields.html.twig'
+        - 'ui/form_theme.html.twig'
     globals:
         app_name: '%env(APP_NAME)%'
         app_repository: 'https://github.com/iesoretania/atica-fp'

@@ -130,7 +130,7 @@ class MenuLinksTest extends AppWebTestCase
         }
 
         $links = [];
-        foreach ($crawler->filter('nav a[href], main a.card[href], main .card a[href], main .menu a[href]') as $anchor) {
+        foreach ($crawler->filter('nav a[href], main a.card[href], main a.group[href], main .card a[href], main .menu a[href]') as $anchor) {
             $href = $anchor->getAttribute('href');
             if ($href === '' || $href === '#' || !str_starts_with($href, '/') || str_contains($href, 'salir') || str_contains($href, '_switch_user')) {
                 continue;

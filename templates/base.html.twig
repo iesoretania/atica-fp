@@ -7,7 +7,7 @@
     <title>{% block title %}{{ 'title.welcome'|trans({}, 'layout') }}{% endblock %} - {{ app_name }}</title>
     {# Hojas de estilo y módulos JavaScript. Cada página añade los suyos con la variable js_entries
        (nombres definidos en importmap.php); solo puede haber una llamada a importmap() por página #}
-    {% block importmap %}{{ importmap(['app']|merge(js_entries|default([]))) }}{% endblock %}
+    {% block importmap %}{{ importmap(['app_v2']|merge(js_entries|default([]))) }}{% endblock %}
     <link rel="icon" type="image/png" href="{{ asset('favicon-96x96.png') }}" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
