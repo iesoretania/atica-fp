@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso denegado · ÁTICA FP</title>
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <style>
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: url('/static/fonts/inter-latin.woff2') format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: url('/static/fonts/inter-latin-ext.woff2') format('woff2');
+            unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --brand-200: #afe6ee;
+            --brand-300: #78d2e1;
+            --brand-400: #3bb6cd;
+            --brand-500: #1f9ab3;
+            --brand-600: #187b95;
+            --brand-700: #19637a;
+            --brand-800: #1b5266;
+            --brand-900: #1b4556;
+            --brand-950: #0b2c3a;
+            --amber-400: #d69b3b;
+            --amber-300: #e4b15c;
+        }
+
+        html, body { height: 100%; }
+
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+            background: var(--brand-950);
+            color: white;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Anillos y rombos con parallax ───────────────────────────────── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            background: transparent;
+            pointer-events: none;
+            will-change: transform;
+        }
+        .orb-a { width: 540px; height: 540px; top: -180px; right: -180px; border: 3px solid rgba(255,255,255,0.18); }
+        .orb-b { width: 360px; height: 360px; top: -100px; right: -100px; border: 3px solid rgba(255,255,255,0.10); }
+        .orb-c { width: 300px; height: 300px; top: 38%;    right: -80px;  border: 3px solid rgba(59,182,205,0.38); background: rgba(31,154,179,0.07); }
+        .orb-d { width: 460px; height: 460px; bottom: -130px; left: -130px; border: 3px solid rgba(255,255,255,0.15); }
+        .orb-e { width: 200px; height: 200px; bottom: 20%; left: -40px;   border: 3px solid rgba(120,210,225,0.30); }
+
+        .diamond {
+            position: fixed;
+            pointer-events: none;
+            will-change: transform;
+        }
+        /* Grupo inferior-derecha (3, algo solapados) */
+        .diamond-a { width: 64px; height: 64px; bottom: 13%; right: 7%;  background: rgba(31,154,179,0.13);   transform: rotate(45deg); }
+        .diamond-b { width: 44px; height: 44px; bottom: 16%; right: 11%; background: rgba(255,255,255,0.07); transform: rotate(45deg); }
+        .diamond-c { width: 30px; height: 30px; bottom: 10%; right: 9%;  background: rgba(120,210,225,0.11); transform: rotate(45deg); }
+        /* Grupo superior-izquierda (2, algo solapados) */
+        .diamond-d { width: 48px; height: 48px; top: 10%; left: 6%;  background: rgba(255,255,255,0.06); transform: rotate(45deg); }
+        .diamond-e { width: 32px; height: 32px; top: 13%; left: 9%;  background: rgba(31,154,179,0.11);   transform: rotate(45deg); }
+        /* Aislados */
+        .diamond-f { width: 22px; height: 22px; top: 54%; right: 6%; background: rgba(120,210,225,0.10); transform: rotate(45deg); }
+        .diamond-g { width: 16px; height: 16px; top: 30%; left: 44%; background: rgba(255,255,255,0.05); transform: rotate(45deg); }
+
+        /* ── Content ──────────────────────────────────────────────────────── */
+        .page {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+
+        /* ── Shield with repulsion effect ────────────────────────────────── */
+        .shield-scene {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Concentric ripple rings that pulse outward */
+        .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(59,182,205,0.25);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: ring-expand 3s ease-out infinite;
+            pointer-events: none;
+        }
+        .ring:nth-child(1) { animation-delay: 0s; }
+        .ring:nth-child(2) { animation-delay: 1s; }
+        .ring:nth-child(3) { animation-delay: 2s; }
+
+        @keyframes ring-expand {
+            0%   { width:  72px; height:  72px; opacity: 0.9; }
+            100% { width: 250px; height: 250px; opacity: 0;   }
+        }
+
+        .shield-icon {
+            position: relative;
+            z-index: 10;
+            width: 88px;
+            height: 88px;
+            color: var(--brand-400);
+            will-change: transform;
+            transition: filter 0.2s ease;
+            filter: drop-shadow(0 0 14px rgba(31,154,179,0.25));
+            animation: shield-idle 6s ease-in-out infinite;
+        }
+
+        @keyframes shield-idle {
+            0%, 100% { transform: translateY(0)    scale(1);    }
+            50%       { transform: translateY(-6px) scale(1.02); }
+        }
+
+        /* Glow that intensifies as mouse approaches */
+        .shield-glow {
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(31,154,179,0.28) 0%, transparent 65%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        /* ── Error code badge ─────────────────────────────────────────────── */
+        .code-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--brand-500);
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        /* ── Typography ───────────────────────────────────────────────────── */
+        .title {
+            margin-top: 1.75rem;
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: white;
+        }
+
+        .subtitle {
+            margin-top: 0.625rem;
+            font-size: 1rem;
+            line-height: 1.65;
+            color: var(--brand-400);
+            max-width: 26rem;
+        }
+
+        /* ── Actions ──────────────────────────────────────────────────────── */
+        .actions {
+            margin-top: 2.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--brand-600);
+            color: white;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.15s, box-shadow 0.2s;
+        }
+        .btn-primary:hover {
+            background: var(--brand-700);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(24,123,149,0.4);
+        }
+        .btn-primary:active { transform: translateY(0); }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            color: var(--brand-400);
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--brand-800);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.15s, border-color 0.15s, transform 0.15s;
+        }
+        .btn-ghost:hover {
+            color: var(--brand-300);
+            border-color: var(--brand-600);
+            transform: translateY(-1px);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .ring { animation: none; }
+            .shield-icon { animation: none; }
+            .btn-primary:hover, .btn-ghost:hover { transform: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb-a" data-speed="30"></div>
+    <div class="orb orb-b" data-speed="18"></div>
+    <div class="orb orb-c" data-speed="50"></div>
+    <div class="orb orb-d" data-speed="36"></div>
+    <div class="orb orb-e" data-speed="62"></div>
+    <div class="diamond diamond-a" data-speed="44"></div>
+    <div class="diamond diamond-b" data-speed="55"></div>
+    <div class="diamond diamond-c" data-speed="68"></div>
+
+    <main class="page">
+        <div class="shield-scene" id="shield-scene">
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="shield-glow" id="shield-glow"></div>
+            <!-- Heroicons shield-exclamation (outline) -->
+            <svg class="shield-icon" id="shield-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+        </div>
+
+        <p class="code-badge">Error 403</p>
+        <h1 class="title">Acceso denegado</h1>
+        <p class="subtitle">No tienes permiso para acceder a esta sección. Si crees que es un error, contacta con el administrador.</p>
+
+        <div class="actions">
+            <button type="button" onclick="history.back()" class="btn-primary">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/>
+                </svg>
+                Volver atrás
+            </button>
+            <a href="/" class="btn-ghost">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>
+                </svg>
+                Ir al inicio
+            </a>
+        </div>
+    </main>
+
+    <script>
+    (function () {
+        var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var els    = document.querySelectorAll('[data-speed]');
+        var shield = document.getElementById('shield-icon');
+        var glow   = document.getElementById('shield-glow');
+        var scene  = document.getElementById('shield-scene');
+
+        var tx = 0, ty = 0, cx = 0, cy = 0;
+        var sx = 0, sy = 0, scx = 0, scy = 0;
+
+        document.addEventListener('mousemove', function (e) {
+            tx = e.clientX / window.innerWidth  - 0.5;
+            ty = e.clientY / window.innerHeight - 0.5;
+
+            if (!reducedMotion) {
+                var rect  = scene.getBoundingClientRect();
+                var midX  = rect.left + rect.width  / 2;
+                var midY  = rect.top  + rect.height / 2;
+                var dx    = e.clientX - midX;
+                var dy    = e.clientY - midY;
+                var dist  = Math.sqrt(dx * dx + dy * dy);
+                var reach = 220;
+
+                if (dist < reach) {
+                    var force = Math.pow(1 - dist / reach, 1.5) * 40;
+                    var ang   = Math.atan2(dy, dx);
+                    sx = -Math.cos(ang) * force;
+                    sy = -Math.sin(ang) * force;
+                    glow.style.opacity = (1 - dist / reach) * 0.85;
+                } else {
+                    sx = 0; sy = 0;
+                    glow.style.opacity = 0;
+                }
+            }
+        });
+
+        (function tick() {
+            if (!reducedMotion) {
+                cx  += (tx  - cx)  * 0.06;
+                cy  += (ty  - cy)  * 0.06;
+                scx += (sx  - scx) * 0.10;
+                scy += (sy  - scy) * 0.10;
+
+                els.forEach(function (o) {
+                    var s = +o.dataset.speed;
+                    o.style.transform = 'translate(' + (cx*s).toFixed(1) + 'px,' + (cy*s).toFixed(1) + 'px)';
+                });
+                shield.style.transform = 'translate(' + scx.toFixed(1) + 'px,' + scy.toFixed(1) + 'px)';
+            }
+            requestAnimationFrame(tick);
+        }());
+    }());
+    </script>
+</body>
+</html>
