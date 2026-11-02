@@ -32,3 +32,10 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Niveles eliminados de la escala.
 message.delete_error: Ha ocurrido un error al eliminar los niveles.
+
+card.title: Valor de la escala
+form.description.help: Nombre del nivel de logro, por ejemplo Excelente o Insuficiente.
+form.numeric_grade.help: Nota numérica asociada al valor. Se usa para calcular las medias de las valoraciones.
+form.notes.help: Descripción de cuándo corresponde este valor; se muestra a quien valora.
+danger.title: "Peligro: eliminación del valor"
+danger.text: Si hay valoraciones que usan este valor no se podrá eliminar. Una vez eliminado, no se podrá recuperar.

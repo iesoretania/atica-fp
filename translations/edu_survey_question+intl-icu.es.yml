@@ -3,8 +3,10 @@ form.type: Tipo de respuesta
 form.items: Lista de ítems
 form.items.placeholder: Elementos separados por un punto y coma
 form.mandatory: Obligatoriedad
-form.mandatory.yes: Es de contestación obligatoria
-form.mandatory.no: No es obligatorio contestarla
+form.mandatory.yes: Obligatoria
+form.mandatory.yes.help: Hay que contestarla para poder enviar la encuesta.
+form.mandatory.no: Opcional
+form.mandatory.no.help: Se puede dejar sin contestar.
 
 form.save: Guardar cambios
 form.back: Volver
@@ -52,3 +54,11 @@ type.range_0_10: Número del 0 al 10
 type.range_1_5: Número del 1 al 5
 type.range_1_10: Número del 1 al 10
 type.fixed: Texto fijo (sin respuesta)
+
+card.title: Pregunta de la encuesta
+form.description.help: Enunciado de la pregunta que verá quien responda.
+form.type.help: Cómo se contesta la pregunta, por ejemplo con un texto libre o eligiendo una opción.
+form.mandatory.help: Si es obligatoria, no se puede enviar la encuesta sin contestarla.
+form.items.help: Opciones entre las que se elige, separadas por un punto y coma. Solo se usan en las preguntas de elección.
+danger.title: "Peligro: eliminación de la pregunta"
+danger.text: Solo se pueden eliminar preguntas de encuestas sin respuestas. Una vez eliminada, no se podrá recuperar.

@@ -38,3 +38,10 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Resultados de aprendizaje eliminados con éxito.
 message.delete_error: Ha ocurrido un error al eliminar los resultados de aprendizaje.
+
+card.title: Resultado de aprendizaje
+form.subject.help: Módulo profesional al que pertenece el resultado.
+form.code.help: Identificador del resultado dentro del módulo, por ejemplo RA1.
+form.description.help: Texto completo del resultado de aprendizaje.
+danger.title: "Peligro: eliminación del resultado de aprendizaje"
+danger.text: Se eliminarán también sus criterios de evaluación. Si se usa en alguna actividad no se podrá eliminar.

@@ -1,18 +1,20 @@
 {#-
   Confirmación de borrado. La plantilla hija debe indicar su dominio de traducción con {% set domain = '...' %}
   (para los textos «prompt.delete_confirm», «form.back» y «form.delete_confirm») y rellenar los bloques
-  delete_header (cabeceras de la tabla) y delete_rows (filas).
+  delete_header (cabeceras de la tabla) y delete_rows (filas). Opcionalmente, {% set prompt_key = '...' %} y
+  {% set confirm_key = '...' %} cambian el texto del aviso y del botón (p. ej. al vaciar las respuestas de una encuesta).
 -#}
 {% trans_default_domain domain %}
 {% extends 'ui/layout.html.twig' %}
 
 {% block content %}
     <form method="post">
-        {% for item in items %}
+        {% for item in items|default([]) %}
             <input type="hidden" name="items[]" value="{{ item.id }}">
         {% endfor %}
         <input type="hidden" name="confirm" value="ok">
-        <twig:Ui:Alert type="warning" :message="'prompt.delete_confirm'|trans|nl2br" />
+        {% block delete_hidden %}{% endblock %}
+        <twig:Ui:Alert type="warning" :message="(prompt_key|default('prompt.delete_confirm'))|trans|nl2br" />
         <div class="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
             <div class="overflow-x-auto">
                 <table id="list" class="w-full text-left text-sm">
@@ -27,7 +29,7 @@
         </div>
         <div class="mt-6 flex flex-wrap gap-2">
             <twig:Ui:Button href="{{ last_url }}" variant="secondary" icon="arrow-left" :label="'form.back'|trans" />
-            <twig:Ui:Button type="submit" name="delete" variant="danger" icon="trash" :label="'form.delete_confirm'|trans" />
+            <twig:Ui:Button type="submit" name="delete" variant="danger" icon="trash" :label="(confirm_key|default('form.delete_confirm'))|trans" />
         </div>
     </form>
 {% endblock %}

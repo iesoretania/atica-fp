@@ -1,0 +1,33 @@
+{% trans_default_domain 'edu_performance_scale_value' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'edu_performance_scale_value', base_url: this.baseUrl, back_url: this.backUrl, performance_scale: this.performanceScale} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% import 'ui/live_macros.html.twig' as lm %}
+        {% block path_new %}{{ path('organization_performance_scale_value_new', {'id': performance_scale.id}) }}{% endblock %}
+
+        {% block table_header %}
+            {{ lm.select_th('header.grade'|trans({}, domain), 'grade', this.sort, this.dir) }}
+            {{ lm.sort_th('header.numeric_grade'|trans({}, domain), 'numeric', this.sort, this.dir) }}
+            <th>{{ 'header.description'|trans({}, domain) }}</th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                <tr>
+                    {{ lm.select_cell(item.id, path('organization_performance_scale_value_edit', {'id': item.id}), item.description) }}
+                    <td class="align-top">{{ (item.numericGrade / 100.0)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}</td>
+                    <td class="align-top">{{ item.notes|nl2br }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="3" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('organization_performance_scale_value_operation', {'id': performance_scale.id}) }}{% endblock %}
+        {% block after_table %}{{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}{% endblock %}
+        {% block selection_actions %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endblock %}
+    {% endembed %}
+</div>

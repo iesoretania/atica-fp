@@ -1,13 +1,25 @@
 {% trans_default_domain 'edu_survey_question' %}
-{% extends 'layout.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
-    {% if locked %}<div class="alert alert-warning">{{ 'prompt.locked_warning'|trans|nl2br }}</div>{% endif %}
+    {% if locked %}<twig:Ui:Alert type="warning" :message="'prompt.locked_warning'|trans|nl2br" />{% endif %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['description'],
+        ['type', 'mandatory'],
+        ['items'],
+    ], {}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
+
+    {% set entity = form.vars.data %}
+    {% if entity.id and not locked %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('organization_survey_question_operation', {'id': survey.id}), entity.id) }}
+    {% endif %}
 {% endblock %}

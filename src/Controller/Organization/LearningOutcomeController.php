@@ -129,36 +129,6 @@ class LearningOutcomeController extends AbstractController
     {
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $subject->getGrade()->getTraining());
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('l')
-            ->from(LearningOutcome::class, 'l')
-            ->orderBy('l.code');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('l.code LIKE :tq')
-                ->orWhere('l.description LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('l.subject = :subject')
-            ->setParameter('subject', $subject);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $subject->getName() . ' - ' . $translator->trans('title.list', [], 'edu_learning_outcome');
 
         $breadcrumb = [
@@ -173,8 +143,6 @@ class LearningOutcomeController extends AbstractController
             'menu_path' => 'organization_subject_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'subject' => $subject,
             'domain' => 'edu_learning_outcome'
         ]);
@@ -232,7 +200,7 @@ class LearningOutcomeController extends AbstractController
             'menu_path' => 'organization_subject_list',
             'breadcrumb' => $breadcrumb,
             'title' => $translator->trans('title.delete', [], 'edu_learning_outcome'),
-            'learning_outcomes' => $learningOutcomes
+            'items' => $learningOutcomes
         ]);
     }
 

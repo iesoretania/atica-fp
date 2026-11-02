@@ -37,9 +37,68 @@ class OrganizationListComponentsTest extends AppWebTestCase
         yield 'itinerarios' => ['Organization:TravelRouteList', '/centro/itinerario/listar'];
     }
 
+    private function first(string $table): int
+    {
+        return (int) static::getContainer()->get('doctrine')->getConnection()->fetchOne("SELECT id FROM $table ORDER BY id LIMIT 1");
+    }
+
+    /** El centro de demostración no trae encuestas: se crea una para probar sus preguntas. */
+    private function surveyOfOrganizationA(): int
+    {
+        $em = static::getContainer()->get('doctrine')->getManager();
+        $survey = (new \App\Entity\Survey())
+            ->setOrganization($this->getOrganization())
+            ->setTitle('Encuesta de prueba');
+        $em->persist($survey);
+        $em->flush();
+
+        return $survey->getId();
+    }
+
     private function path(string $template): string
     {
-        return strtr($template, ['{year}' => (string) $this->year()]);
+        return strtr($template, [
+            '{year}' => (string) $this->year(),
+            '{scale}' => (string) $this->first('edu_performance_scale'),
+            '{survey}' => str_contains($template, '{survey}') ? (string) $this->surveyOfOrganizationA() : '0',
+            '{training}' => (string) $this->first('edu_training'),
+            '{subject}' => (string) $this->first('edu_subject'),
+            '{outcome}' => (string) $this->first('edu_learning_outcome'),
+        ]);
+    }
+
+    /**
+     * Listados de los elementos que cuelgan de otro (valores de una escala, preguntas de una encuesta...): la entidad
+     * padre viaja en las propiedades y debe ser del centro de quien pide.
+     *
+     * @return iterable<string, array{string, string}>
+     */
+    public static function childListProvider(): iterable
+    {
+        yield 'valores de una escala' => ['Organization:PerformanceScaleValueList', '/centro/escala/valor/{scale}/listar/1/'];
+        yield 'preguntas de una encuesta' => ['Organization:SurveyQuestionList', '/centro/encuesta/pregunta/listar/{survey}/resultado/1'];
+        yield 'competencias de una enseñanza' => ['Organization:CompetencyList', '/centro/ensenanza/{training}/competencial/1/'];
+        yield 'resultados de aprendizaje de un módulo' => ['Organization:LearningOutcomeList', '/centro/ensenanza/materia/{subject}/resultado/1/'];
+        yield 'criterios de un resultado' => ['Organization:CriterionList', '/centro/ensenanza/materia/resultado/{outcome}/criterio/1/'];
+    }
+
+    /**
+     * @dataProvider childListProvider
+     */
+    public function testChildListsFilterAndRejectAnotherOrganization(string $name, string $template): void
+    {
+        $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
+        $component = $this->component($name, $this->path($template));
+
+        $this->update($component, ['q' => 'zzzz-no-existe']);
+        self::assertResponseIsSuccessful("$name: filtro");
+        $this->update($component, ['q' => '', 'page' => 99]);
+        self::assertResponseIsSuccessful("$name: página fuera de rango");
+
+        $this->client->getCookieJar()->clear();
+        $this->login($this->getUser(DemoData::USER_B_LOCAL_ADMIN), true, DemoData::ORG_B_CODE);
+        $this->update($component, ['q' => 'x']);
+        self::assertResponseStatusCodeSame(403, "$name: otro centro no puede repetir la petición");
     }
 
     /**

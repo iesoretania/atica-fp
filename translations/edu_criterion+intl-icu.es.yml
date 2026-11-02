@@ -40,3 +40,11 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Criterios de evaluación eliminados con éxito.
 message.delete_error: Ha ocurrido un error al eliminar los criterios de evaluación.
+
+card.title: Criterio de evaluación
+form.learning_outcome.help: Resultado de aprendizaje al que pertenece el criterio.
+form.code.help: Identificador del criterio dentro del resultado de aprendizaje, por ejemplo a).
+form.name.help: Título breve del criterio.
+form.description.help: Texto completo del criterio de evaluación.
+danger.title: "Peligro: eliminación del criterio"
+danger.text: Si se usa en alguna actividad de un programa formativo no se podrá eliminar. Una vez eliminado, no se podrá recuperar.

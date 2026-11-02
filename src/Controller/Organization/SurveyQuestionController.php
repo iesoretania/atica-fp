@@ -132,35 +132,6 @@ class SurveyQuestionController extends AbstractController
     {
         $this->denyAccessUnlessGranted(SurveyVoter::MANAGE, $survey);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('sq')
-            ->from(SurveyQuestion::class, 'sq')
-            ->orderBy('sq.orderNr');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('sq.description LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('sq.survey = :survey')
-            ->setParameter('survey', $survey);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'edu_survey_question') . ' - ' . $survey->getTitle();
 
         $breadcrumb = [
@@ -173,11 +144,8 @@ class SurveyQuestionController extends AbstractController
             'menu_path' => 'organization_survey_list',
             'title' => $title,
             'breadcrumb' => $breadcrumb,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'edu_survey_question',
-            'survey' => $survey,
-            'locked' => $survey->getAnswers()->count() > 0
+            'survey' => $survey
         ]);
     }
 

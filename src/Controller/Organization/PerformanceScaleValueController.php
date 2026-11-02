@@ -120,20 +120,6 @@ class PerformanceScaleValueController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted(PerformanceScaleVoter::MANAGE, $performanceScale);
 
-        $q = $request->query->get('q');
-
-        $queryBuilder = $performanceScaleValueRepository->findByPerformanceScaleAndPartialStringQueryBuilder($performanceScale, $q);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'edu_performance_scale_value');
         $breadcrumb = [
             [
@@ -148,8 +134,6 @@ class PerformanceScaleValueController extends AbstractController
             'menu_path' => 'organization_performance_scale_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'edu_performance_scale_value',
             'performance_scale' => $performanceScale
         ]);

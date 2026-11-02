@@ -1,0 +1,46 @@
+{% trans_default_domain 'edu_survey_question' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'edu_survey_question', base_url: this.baseUrl, back_url: this.backUrl, survey: this.survey, locked: this.locked} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% import 'ui/live_macros.html.twig' as lm %}
+        {% block new_action %}{% if not locked %}{{ parent() }}{% endif %}{% endblock %}
+        {% block path_new %}{{ path('organization_survey_question_new', {'id': survey.id}) }}{% endblock %}
+
+        {% block table_header %}
+            {{ lm.select_th('header.description'|trans({}, domain), '', this.sort, this.dir) }}
+            <th>{{ 'header.type'|trans({}, domain) }}</th>
+            <th>{{ 'header.mandatory'|trans({}, domain) }}</th>
+            <th class="w-28"></th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for item in pager %}
+                <tr>
+                    {{ lm.select_cell(item.id, path('organization_survey_question_edit', {'id': item.id}), item.description|striptags) }}
+                    <td class="align-top">{{ ('type.' ~ item.type)|trans({}, domain) }}</td>
+                    <td class="align-top">{{ (item.mandatory ? 'table.mandatory.yes' : 'table.mandatory.no')|trans({}, domain) }}</td>
+                    <td class="align-top">
+                        {% if not locked %}
+                            <div class="flex gap-1">
+                                {{ m.submit_button('up', 'sort-up', 'btn-link', null, false, item.id) }}
+                                {{ m.submit_button('down', 'sort-down', 'btn-link', null, false, item.id) }}
+                            </div>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block before_table %}
+            {% if locked %}<twig:Ui:Alert type="warning" :message="'prompt.locked_warning'|trans({}, domain)|nl2br" />{% endif %}
+        {% endblock %}
+        {% block form_action %}{{ path('organization_survey_question_operation', {'id': survey.id}) }}{% endblock %}
+        {% block after_table %}{{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}{% endblock %}
+        {% block selection_actions %}{% if not locked %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endif %}{% endblock %}
+    {% endembed %}
+</div>

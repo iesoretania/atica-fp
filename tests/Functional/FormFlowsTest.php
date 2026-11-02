@@ -276,7 +276,7 @@ class FormFlowsTest extends AppWebTestCase
 
         // antes de TypeErrorTolerantDataMapper esto era un error 500 ("null given" en una propiedad string)
         self::assertResponseStatusCodeSame(200);
-        self::assertGreaterThan(0, $crawler->filter('.invalid-feedback, .form-error-message, .help-block, .has-error')->count(), 'No se muestra el error');
+        self::assertGreaterThan(0, $crawler->filter('.invalid-feedback, .form-error-message, .help-block, .has-error, li.text-red-700')->count(), 'No se muestra el error');
         self::assertSame('Informática', $this->em()->find(Department::class, $id)->getName());
     }
 

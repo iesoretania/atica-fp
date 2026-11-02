@@ -128,36 +128,6 @@ class CompetencyController extends AbstractController
     {
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE, $training->getAcademicYear()->getOrganization());
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('c')
-            ->from(Competency::class, 'c')
-            ->orderBy('c.code');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('c.code LIKE :tq')
-                ->orWhere('c.description LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('c.training = :training')
-            ->setParameter('training', $training);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $training->getName() . ' - ' . $translator->trans('title.list', [], 'edu_competency');
 
         $breadcrumb = [
@@ -171,8 +141,6 @@ class CompetencyController extends AbstractController
             'menu_path' => 'organization_training_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'training' => $training,
             'domain' => 'edu_competency'
         ]);
@@ -223,7 +191,7 @@ class CompetencyController extends AbstractController
             'menu_path' => 'organization_training_list',
             'breadcrumb' => $breadcrumb,
             'title' => $translator->trans('title.delete', [], 'edu_competency'),
-            'competencies' => $competencies
+            'items' => $competencies
         ]);
     }
 

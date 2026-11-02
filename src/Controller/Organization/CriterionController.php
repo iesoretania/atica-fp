@@ -121,37 +121,6 @@ class CriterionController extends AbstractController
         $subject = $learningOutcome->getSubject();
         $this->denyAccessUnlessGranted(TrainingVoter::MANAGE, $subject->getGrade()->getTraining());
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('c')
-            ->from(Criterion::class, 'c')
-            ->orderBy('c.code');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('c.code LIKE :tq')
-                ->orWhere('c.name LIKE :tq')
-                ->orWhere('c.description LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $queryBuilder
-            ->andWhere('c.learningOutcome = :learning_outcome')
-            ->setParameter('learning_outcome', $learningOutcome);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $learningOutcome->getCode() . ' - ' . $translator->trans('title.list', [], 'edu_criterion');
 
         $breadcrumb = [
@@ -175,8 +144,6 @@ class CriterionController extends AbstractController
             'menu_path' => 'organization_subject_list',
             'breadcrumb' => $breadcrumb,
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'learning_outcome' => $learningOutcome,
             'domain' => 'edu_criterion'
         ]);
@@ -240,7 +207,7 @@ class CriterionController extends AbstractController
             'menu_path' => 'organization_subject_list',
             'breadcrumb' => $breadcrumb,
             'title' => $translator->trans('title.delete', [], 'edu_learning_outcome'),
-            'criteria' => $criteria
+            'items' => $criteria
         ]);
     }
 

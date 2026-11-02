@@ -37,3 +37,10 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Competencias eliminadas con éxito.
 message.delete_error: Ha ocurrido un error al eliminar las competencias.
+
+card.title: Competencia
+form.training.help: Enseñanza a la que pertenece la competencia.
+form.code.help: Identificador corto de la competencia, por ejemplo a) o CPPS.
+form.description.help: Texto completo de la competencia.
+danger.title: "Peligro: eliminación de la competencia"
+danger.text: Una vez eliminada, no se podrá recuperar.

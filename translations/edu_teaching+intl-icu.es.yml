@@ -21,3 +21,13 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Asociación eliminada con éxito.
 message.delete_error: Ha ocurrido un error al eliminar la asociación.
+
+card.title: Asociación de docencia
+form.subject.help: Módulo profesional que se imparte.
+form.group.help: Grupo al que se imparte el módulo.
+form.teacher.help: Docente que imparte el módulo a ese grupo.
+header.teacher: Profesor/a
+header.subject: Materia
+header.group: Grupo
+danger.title: "Peligro: eliminación de la asociación"
+danger.text: El docente dejará de aparecer como profesor del módulo en ese grupo.
