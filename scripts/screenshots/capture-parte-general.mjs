@@ -106,7 +106,7 @@ await shot(anonimo, 'primeros-pasos-recuperar-contrasena');
 const plataforma = await newSession();
 await login(plataforma, 'plataforma');
 // quien tiene acceso a varios centros elige uno al entrar
-await shot(plataforma, 'primeros-pasos-seleccion-centro', { clip: { x: 380, y: 0, width: 600, height: 380 } });
+await shot(plataforma, 'primeros-pasos-seleccion-centro');
 await plataforma.locator('input[type="radio"]').first().check();
 await plataforma.click('button[type="submit"]');
 await plataforma.waitForLoadState('networkidle');
