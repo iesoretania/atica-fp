@@ -1,0 +1,37 @@
+{% trans_default_domain 'company' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'company', base_url: this.baseUrl, back_url: this.backUrl} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% import 'ui/live_macros.html.twig' as lm %}
+        {% block path_new %}{{ path('company_new') }}{% endblock %}
+
+        {% block table_header %}
+            {{ lm.select_th('header.code'|trans({}, domain), 'code', this.sort, this.dir) }}
+            {{ lm.sort_th('header.name'|trans({}, domain), 'name', this.sort, this.dir) }}
+            {{ lm.sort_th('header.city'|trans({}, domain), 'city', this.sort, this.dir) }}
+            <th>{{ 'header.email_address'|trans({}, domain) }}</th>
+            <th>{{ 'header.manager'|trans({}, domain) }}</th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for company in pager %}
+                <tr>
+                    {{ lm.select_cell(company.id, path('company_edit', {'id': company.id}), company.code) }}
+                    <td class="align-top">{{ company.name }}</td>
+                    <td class="align-top">{{ company.city }}</td>
+                    <td class="align-top">{{ company.emailAddress }}</td>
+                    <td class="align-top">{{ company.manager }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('company_delete') }}{% endblock %}
+        {% block after_table %}{{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}{% endblock %}
+        {% block selection_actions %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endblock %}
+    {% endembed %}
+</div>

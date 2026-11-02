@@ -122,41 +122,10 @@ class CompanyController extends AbstractController
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('c')
-            ->from(Company::class, 'c')
-            ->orderBy('c.name')
-            ->addOrderBy('c.city');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('c.code LIKE :tq')
-                ->orWhere('c.name LIKE :tq')
-                ->orWhere('c.city LIKE :tq')
-                ->orWhere('c.emailAddress LIKE :tq')
-                ->setParameter('tq', '%'.$q.'%');
-        }
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $translator->trans('title.list', [], 'company');
 
         return $this->render('company/company_list.html.twig', [
             'title' => $title,
-            'pager' => $pager,
-            'q' => $q,
             'domain' => 'company'
         ]);
     }

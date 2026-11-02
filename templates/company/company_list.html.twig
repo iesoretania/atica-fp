@@ -1,51 +1,7 @@
 {% trans_default_domain 'company' %}
-{% extends 'generic/list.html.twig' %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
 
-{% block path_new %}{{ path('company_new') }}{% endblock %}
-
-{% block table_header %}
-    <th>{{ 'header.code'|trans }}</th>
-    <th>{{ 'header.name'|trans }}</th>
-    <th>{{ 'header.city'|trans }}</th>
-    <th>{{ 'header.email_address'|trans }}</th>
-    <th>{{ 'header.manager'|trans }}</th>
-{% endblock %}
-
-{% block table_body %}
-            {% for company in pager %}
-                {% set url = path('company_edit', {'id': company.id}) %}
-                <tr class="clickable-row" data-href="{{ url }}">
-                    <td>
-                        <label><input type="checkbox" name="items[]" value="{{ company.id }}"> <a href="{{ url }}">{{ company.code }}</a></label>
-                    </td>
-                    <td>
-                        {{ company.name }}
-                    </td>
-                    <td>
-                        {{ company.city }}
-                    </td>
-                    <td>
-                        {{ company.emailAddress }}
-                    </td>
-                    <td>
-                        {{ company.manager }}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="5">{{ 'table.no_items'|trans }}</td>
-                </tr>
-            {% endfor %}
-{% endblock %}
-
-{% block before_table %}
-<form action="{{ path('company_delete') }}" method="post">
-{% endblock %}
-
-{% block after_table %}
-    <div class="clearfix"></div>
-    {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
-    {{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans) }}
-</form>
+{#- Listado dinámico (Live Component Company:CompanyList) -#}
+{% block content %}
+    {% include 'ui/_live_list.html.twig' with {component: 'Company:CompanyList'} %}
 {% endblock %}

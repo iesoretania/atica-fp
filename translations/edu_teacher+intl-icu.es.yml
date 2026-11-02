@@ -57,3 +57,17 @@ message.error: No se han podido guardar los cambios.
 message.repeated_error: El docente ya existe en el curso académico indicado.
 message.deleted: Profesorado eliminado del centro.
 message.delete_error: Ha ocurrido un error al eliminar el profesorado del centro.
+
+card.title: Docente
+form.person.help: Busque a la persona por su identificador. Si todavía no existe, puede crearla desde el propio formulario.
+form.unique_identifier.help: Documento de identidad de la persona.
+form.user_name.help: Nombre con el que entra en la aplicación.
+form.first_name.help: Nombre de la persona.
+form.last_name.help: Apellidos de la persona.
+form.email_address.help: Correo electrónico al que se envían los avisos.
+form.gender.help: Se usa para concordar los textos de los informes.
+form.enabled.help: Si se le deniega, el docente no podrá entrar en la aplicación, pero sus datos se conservan.
+form.wlt_educational_tutor.help: Marque a quienes hacen el seguimiento del alumnado de FP dual.
+form.allow_external_check.help: Permite que la contraseña se compruebe contra un servicio externo en lugar de la almacenada aquí.
+danger.title: "Peligro: eliminación del docente"
+danger.text: Si tiene docencia, estancias o acuerdos asociados no se podrá eliminar. Una vez eliminado del curso, no se podrá recuperar.

@@ -1,0 +1,33 @@
+{% trans_default_domain 'workcenter' %}
+<div {{ attributes.defaults({
+    'data-controller': 'live-history list',
+    'data-live-history-base-url-value': this.baseUrl,
+}) }}>
+    {% embed 'ui/live_list.html.twig' with {pager: this.pager, domain: 'workcenter', base_url: this.baseUrl, back_url: this.backUrl, company: this.company} %}
+        {% import 'ui/macros.html.twig' as m %}
+        {% import 'ui/live_macros.html.twig' as lm %}
+        {% block path_new %}{{ path('company_workcenter_new', {'id': company.id}) }}{% endblock %}
+
+        {% block table_header %}
+            {{ lm.select_th('header.name'|trans({}, domain), 'name', this.sort, this.dir) }}
+            {{ lm.sort_th('header.city'|trans({}, domain), 'city', this.sort, this.dir) }}
+            <th>{{ 'header.email_address'|trans({}, domain) }}</th>
+        {% endblock %}
+
+        {% block table_body %}
+            {% for workcenter in pager %}
+                <tr>
+                    {{ lm.select_cell(workcenter.id, path('company_workcenter_edit', {'id': workcenter.id}), workcenter.name) }}
+                    <td class="align-top">{{ workcenter.city }}</td>
+                    <td class="align-top">{{ workcenter.emailAddress }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="3" class="py-8 text-center text-gray-500">{{ 'table.no_items'|trans({}, domain) }}</td></tr>
+            {% endfor %}
+        {% endblock %}
+
+        {% block form_action %}{{ path('company_workcenter_delete', {'id': company.id}) }}{% endblock %}
+        {% block after_table %}{{ m.link_button(back_url, 'arrow-left', 'btn-info', 'form.back'|trans({}, domain)) }}{% endblock %}
+        {% block selection_actions %}{{ m.submit_button('delete', 'trash', 'btn-danger enable-on-items', 'form.delete'|trans({}, domain), true) }}{% endblock %}
+    {% endembed %}
+</div>

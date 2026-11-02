@@ -126,38 +126,6 @@ class WorkcenterController extends AbstractController
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
 
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
-
-        $queryBuilder
-            ->select('w')
-            ->from(Workcenter::class, 'w')
-            ->orderBy('w.name')
-            ->addOrderBy('w.city');
-
-        $q = $request->query->get('q');
-        if ($q) {
-            $queryBuilder
-                ->where('w.name LIKE :tq')
-                ->orWhere('w.city LIKE :tq')
-                ->orWhere('w.emailAddress LIKE :tq')
-                ->setParameter('tq', '%' . $q . '%');
-        }
-
-        $queryBuilder
-            ->andWhere('w.company = :company')
-            ->setParameter('company', $company);
-
-        $adapter = new QueryAdapter($queryBuilder, false);
-        $pager = new Pagerfanta($adapter);
-        try {
-            $pager
-                ->setMaxPerPage($this->getParameter('page.size'))
-                ->setCurrentPage($page);
-        } catch (OutOfRangeCurrentPageException) {
-            $pager->setCurrentPage(1);
-        }
-
         $title = $company->getName() . ' - ' . $translator->trans('title.list', [], 'workcenter');
 
         $breadcrumb = [
@@ -175,8 +143,6 @@ class WorkcenterController extends AbstractController
             'menu_path' => 'company',
             'title' => $title,
             'breadcrumb' => $breadcrumb,
-            'pager' => $pager,
-            'q' => $q,
             'company' => $company,
             'domain' => 'workcenter'
         ]);

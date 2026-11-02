@@ -38,3 +38,13 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Sedes eliminadas del centro.
 message.delete_error: Ha ocurrido un error al eliminar las sedes.
+
+card.title: Centro de trabajo
+form.name.help: Nombre del centro de trabajo, por ejemplo la localidad o la dependencia.
+form.manager.help: Persona responsable del centro de trabajo. Busque por su identificador; si no existe, puede crearla desde el propio formulario.
+form.email_address.help: Correo de contacto del centro de trabajo.
+form.phone_number.help: Teléfono de contacto.
+form.fax_number.help: Número de fax, si lo hay.
+form.address.help: Dirección postal del centro de trabajo.
+danger.title: "Peligro: eliminación del centro de trabajo"
+danger.text: Si tiene convenios o acuerdos asociados no se podrá eliminar. Una vez eliminado, no se podrá recuperar.

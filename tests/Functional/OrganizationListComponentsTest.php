@@ -83,6 +83,40 @@ class OrganizationListComponentsTest extends AppWebTestCase
     }
 
     /**
+     * Empresas y centros de trabajo son compartidos por todos los centros: basta con poder gestionarlos.
+     *
+     * @return iterable<string, array{string, string}>
+     */
+    public static function companyListProvider(): iterable
+    {
+        yield 'empresas' => ['Company:CompanyList', '/empresa/listar/1'];
+        yield 'centros de trabajo' => ['Company:WorkcenterList', '/empresa/{company}/sede/listar/1'];
+    }
+
+    /**
+     * @dataProvider companyListProvider
+     */
+    public function testCompanyListsFilterAndRejectPeopleWhoCannotManageCompanies(string $name, string $template): void
+    {
+        $this->login($this->getUser(DemoData::USER_A_LOCAL_ADMIN));
+        $path = strtr($template, ['{company}' => (string) $this->first('company')]);
+        $component = $this->component($name, $path);
+
+        $this->update($component, ['q' => 'zzzz-no-existe']);
+        self::assertResponseIsSuccessful("$name: filtro");
+        $rows = (new Crawler((string) $this->client->getResponse()->getContent()))->filter('#list tbody tr');
+        self::assertCount(1, $rows->filter('td[colspan]'), "$name: sin coincidencias solo queda la fila de «no hay resultados»");
+        $this->update($component, ['q' => '', 'page' => 99]);
+        self::assertResponseIsSuccessful("$name: página fuera de rango");
+
+        // quien no puede gestionar empresas no puede repetir la petición aunque tenga las propiedades firmadas
+        $this->client->getCookieJar()->clear();
+        $this->login($this->getUser(DemoData::USER_A_TEACHER));
+        $this->update($component, ['q' => 'x']);
+        self::assertResponseStatusCodeSame(403, "$name: el profesorado sin permiso no puede gestionar empresas");
+    }
+
+    /**
      * @dataProvider childListProvider
      */
     public function testChildListsFilterAndRejectAnotherOrganization(string $name, string $template): void

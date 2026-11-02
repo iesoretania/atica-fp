@@ -43,3 +43,15 @@ message.saved: Datos actualizados con éxito.
 message.error: No se han podido guardar los cambios.
 message.deleted: Empresas eliminadas del centro.
 message.delete_error: Ha ocurrido un error al eliminar las empresas.
+
+card.title: Empresa colaboradora
+form.code.help: CIF de la empresa o código del centro de trabajo. Debe ser único.
+form.name.help: Nombre con el que aparece la empresa en convenios e informes.
+form.manager.help: Persona que ejerce la gerencia. Busque por su identificador; si no existe, puede crearla desde el propio formulario.
+form.email_address.help: Correo de contacto de la empresa.
+form.web_site.help: Dirección de la web de la empresa, si la tiene.
+form.phone_number.help: Teléfono de contacto.
+form.fax_number.help: Número de fax, si lo hay.
+form.address.help: Dirección postal de la sede principal.
+danger.title: "Peligro: eliminación de la empresa"
+danger.text: Si tiene centros de trabajo con convenios o acuerdos no se podrá eliminar. Una vez eliminada, no se podrá recuperar.

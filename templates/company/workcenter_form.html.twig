@@ -1,36 +1,29 @@
 {% trans_default_domain 'workcenter' %}
-{% extends 'layout.html.twig' %}
-{% set js_entries = ['select2entity', 'person'] %}
-{% import 'macros.html.twig' as m %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
 {% block content %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ fl.grid(form, [
+        ['name'],
+        ['manager'],
+        ['emailAddress'],
+        ['phoneNumber', 'faxNumber'],
+        ['address'],
+        ['city', 'zipCode'],
+    ], {}, 'card.title'|trans) }}
     {{ m.start_button() }}
         {{ m.submit_button('submit', 'check', 'btn-success', 'form.save'|trans) }}
         {{ m.link_button(last_url, 'arrow-left', 'btn-info', 'form.back'|trans) }}
     {{ m.end_button() }}
     {{ form_end(form) }}
 
-    <input type="hidden" id="new-person-label" value="{{ 'title.new'|trans({}, 'person') }}" />
-    {% include 'user/new_person_modal.partial.html.twig' %}
-{% endblock %}
+    {% include 'ui/new_person_modal.html.twig' %}
 
-{% block javascripts %}
-    {{ parent() }}
-    <script type="module">
-        $(document).ready(function () {
-            $('.select2entity[data-autostart="true"]').select2('destroy');
-            $('.select2entity[data-autostart="true"]').select2entity({
-                theme: "bootstrap",
-                language: {
-                    inputTooShort: function () {
-                        return "{{ 'input.unique_identifier'|trans({}, 'person') }}";
-                    },
-                    searching: function () {
-                        return "{{ 'input.searching'|trans({}, 'person') }}";
-                    }
-                }
-            });
-        });
-    </script>
+    {% set entity = form.vars.data %}
+    {% if entity.id %}
+        {{ fl.danger_zone('danger.title'|trans, 'danger.text'|trans, path('company_workcenter_delete', {'id': entity.company.id}), entity.id) }}
+    {% endif %}
 {% endblock %}
