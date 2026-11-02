@@ -47,7 +47,7 @@ class WltModule implements ModuleBuilderInterface
                 ->setCaption('menu.work_linked_training')
                 ->setDescription('menu.work_linked_training.detail')
                 ->setIcon('briefcase')
-                ->setPriority(4000);
+                ->setPriority(5000);
 
             $root[] = $menu1;
 

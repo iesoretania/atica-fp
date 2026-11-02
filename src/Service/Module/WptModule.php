@@ -45,7 +45,7 @@ class WptModule implements ModuleBuilderInterface
                 ->setCaption('menu.workplace_training')
                 ->setDescription('menu.workplace_training.detail')
                 ->setIcon('store-alt')
-                ->setPriority(5000);
+                ->setPriority(4000);
 
             $root[] = $menu1;
 
