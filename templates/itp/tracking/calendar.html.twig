@@ -51,7 +51,7 @@
     <div data-controller="list">
         <section id="exchange">
             <form action="{{ path('in_company_training_phase_tracking_calendar_operation', {'id': student_program_workcenter.id}) }}" method="post">
-                {% embed 'ui/calendar.html.twig' with {week_operations: true, lock_manager: is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_LOCK', student_program_workcenter)} %}
+                {% embed 'ui/calendar.html.twig' with {five_day_week: student_program_workcenter.studentProgram.programGroup.programGrade.trainingProgram.weeklyActivityReportTemplateType == constant('App\\Entity\\ItpModule\\TrainingProgram::WEEK_5_DAYS'), week_operations: true, lock_manager: is_granted('ITP_STUDENT_PROGRAM_WORKCENTER_LOCK', student_program_workcenter)} %}
                     {% block day %}
                         {% set url = day ? path('in_company_training_phase_tracking_calendar_form', {'workDay': day.id}) : '' %}
                         {% if day %}

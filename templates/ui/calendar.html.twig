@@ -11,6 +11,12 @@
     {% set week_ops = week_operations|default(false) %}
     {#- «lock_manager» (booleano) puede pasarlo quien incluye el calendario; por defecto, el permiso de bloqueo de FCT -#}
     {% set lock_manager = lock_manager ?? (week_ops and is_granted('WPT_AGREEMENT_ENROLLMENT_LOCK', agreement_enrollment)) %}
+    {#- «five_day_week»: solo columnas de lunes a viernes, salvo que el calendario tenga jornadas en fin de semana -#}
+    {% set weekend_used = false %}
+    {% if five_day_week|default(false) %}
+        {% for month in calendar %}{% for week in month %}{% for n, dayData in week.days %}{% if loop.index0 >= 5 and dayData and dayData[0] %}{% set weekend_used = true %}{% endif %}{% endfor %}{% endfor %}{% endfor %}
+    {% endif %}
+    {% set cols = (five_day_week|default(false) and not weekend_used) ? 5 : 7 %}
     <div class="grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">
         {% for num, month in calendar %}
             {% set year = num // 12 %}
@@ -18,10 +24,10 @@
                 <div class="overflow-x-auto">
                     <table class="w-full table-fixed text-center text-sm">
                         <thead>
-                            <tr><th colspan="{{ week_ops ? 8 : 7 }}" class="bg-brand-50 px-3 py-2 text-sm font-semibold uppercase tracking-wide text-brand-900">{{ ('month' ~ (num % 12))|trans }} {{ year }}</th></tr>
+                            <tr><th colspan="{{ week_ops ? cols + 1 : cols }}" class="bg-brand-50 px-3 py-2 text-sm font-semibold uppercase tracking-wide text-brand-900">{{ ('month' ~ (num % 12))|trans }} {{ year }}</th></tr>
                             <tr class="text-xs font-medium uppercase text-gray-500 [&_th]:py-2">
                                 {#- En pantallas pequeñas solo la inicial (L M X J V S D; la X evita confundir martes y miércoles) -#}
-                                {% for d in 0..6 %}<th scope="col" title="{{ ('dow' ~ d)|trans }}"><span class="sm:hidden" aria-hidden="true">{{ ['L', 'M', 'X', 'J', 'V', 'S', 'D'][d] }}</span><span class="max-sm:sr-only 2xl:sr-only">{{ ('dow' ~ d)|trans }}</span><span class="hidden 2xl:inline" aria-hidden="true">{{ ('dow' ~ d)|trans|slice(0, 3) }}</span></th>{% endfor %}
+                                {% for d in 0..(cols - 1) %}<th scope="col" title="{{ ('dow' ~ d)|trans }}"><span class="sm:hidden" aria-hidden="true">{{ ['L', 'M', 'X', 'J', 'V', 'S', 'D'][d] }}</span><span class="max-sm:sr-only 2xl:sr-only">{{ ('dow' ~ d)|trans }}</span><span class="hidden 2xl:inline" aria-hidden="true">{{ ('dow' ~ d)|trans|slice(0, 3) }}</span></th>{% endfor %}
                                 {% if week_ops %}<th class="w-16"></th>{% endif %}
                             </tr>
                         </thead>
@@ -41,7 +47,7 @@
                                             {#- bloqueada: la jornada de seguimiento (FCT) o la propia jornada (FFEOE) -#}
                                             {% if (tracked_day and tracked_day.locked) or (not tracked_day and (day.locked ?? false)) %}{% set all_unlocked = false %}{% else %}{% set all_locked = false %}{% endif %}
                                         {% endif %}
-                                        {% block day %}
+                                        {% if loop.index0 < cols %}{% block day %}
                                             <td class="{{ day ? 'bg-brand-50 text-brand-900' : 'text-gray-400' }}">
                                                 {% if day %}
                                                     <b>{{ n }}</b><br>{{ 'caption.hours'|trans({'count': day.hours / (hours_divisor|default(100))}) }}
@@ -49,10 +55,10 @@
                                                     {{ n }}
                                                 {% endif %}
                                             </td>
-                                        {% endblock %}
+                                        {% endblock %}{% endif %}
                                     {% endfor %}
-                                    {% if week.days|length < 7 %}
-                                        {% for n in 6..week.days|length %}<td></td>{% endfor %}
+                                    {% if week.days|length < cols %}
+                                        {% for n in (cols - 1)..week.days|length %}<td></td>{% endfor %}
                                     {% endif %}
                                     {% if week_ops %}
                                         <td class="!align-middle">

@@ -5,7 +5,7 @@
 {% block content %}
     <div data-controller="list">
         <form action="{{ path('in_company_training_phase_student_program_workcenter_manage_calendar_delete', {'studentProgramWorkcenter': student_program_workcenter.id}) }}" method="post">
-            {% embed 'ui/calendar.html.twig' %}
+            {% embed 'ui/calendar.html.twig' with {five_day_week: student_program_workcenter.studentProgram.programGroup.programGrade.trainingProgram.weeklyActivityReportTemplateType == constant('App\\Entity\\ItpModule\\TrainingProgram::WEEK_5_DAYS')} %}
                 {% block day %}
                     {% if day %}
                         {% set url = path('in_company_training_phase_student_program_workcenter_manage_calendar_form', {'workDay': day.id}) %}

@@ -3,6 +3,7 @@
 namespace App\Tests\Functional;
 
 use App\Entity\ItpModule\StudentProgramWorkcenter;
+use App\Entity\ItpModule\TrainingProgram;
 use App\Entity\ItpModule\WorkDay;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -76,6 +77,28 @@ class ItpTrackingCalendarTest extends AppWebTestCase
         $crawler = $this->client->request('GET', $this->formUrl($workDay));
 
         return $crawler->filter('input[name="work_day_tracking[_token]"]')->attr('value');
+    }
+
+    public function testFiveDayPlansShowOnlyWeekdaysUnlessThereAreWeekendDays(): void
+    {
+        $stay = $this->stayOf('alfa.alumno7');
+        $trainingProgram = $stay->getStudentProgram()->getProgramGroup()->getProgramGrade()->getTrainingProgram();
+        $hasWeekend = (bool) array_filter(
+            $this->em()->getRepository(WorkDay::class)->findBy(['studentProgramWorkcenter' => $stay]),
+            static fn (WorkDay $w): bool => (int) $w->getDate()->format('N') >= 6
+        );
+        $this->login($this->getUser('alfa.tutor'));
+        $url = $this->router()->generate('in_company_training_phase_tracking_calendar_list', ['studentProgramWorkcenter' => $stay->getId()]);
+
+        foreach ([TrainingProgram::WEEK_5_DAYS => ($hasWeekend ? 8 : 6), TrainingProgram::WEEK_7_DAYS => 8] as $type => $columns) {
+            $this->em()->getConnection()->executeStatement(
+                'UPDATE itp_training_program SET weekly_activity_report_template_type = ? WHERE id = ?',
+                [$type, $trainingProgram->getId()]
+            );
+            $crawler = $this->client->request('GET', $url);
+            self::assertResponseIsSuccessful();
+            self::assertCount($columns, $crawler->filter('thead tr:nth-child(2) th')->first()->closest('tr')->filter('th'), "tipo $type");
+        }
     }
 
     public function testStudentFillsTheirOwnDay(): void

@@ -184,6 +184,7 @@ class StudentProgramWorkcenterManagerCalendarController extends AbstractControll
             'breadcrumb' => $breadcrumb,
             'form' => $form->createView(),
             'title' => $title,
+            'five_day_week' => $trainingProgram->getWeeklyActivityReportTemplateType() === TrainingProgram::WEEK_5_DAYS,
             'calendar' => $workDayRepository::groupByMonthAndWeekNumber($workDays)
         ]);
     }
