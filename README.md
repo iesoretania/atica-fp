@@ -1,4 +1,7 @@
-![ÁTICA-FP](public/logo-atica-fp.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="public/logo-atica-fp-dark.png">
+  <img alt="ÁTICA-FP" src="public/logo-atica-fp.png">
+</picture>
 
 Aplicación web para ayudar en el seguimiento del alumnado de FP durante la Formación en Centros de Trabajo y
 durante el período de alternancia de FP dual.
