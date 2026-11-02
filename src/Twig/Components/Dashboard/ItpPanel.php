@@ -53,10 +53,13 @@ final class ItpPanel extends AbstractTrackingPanel
     protected function expressions(): array
     {
         return [
-            'spw.startDate',
-            'spw.endDate',
-            'SUM(wd.hours)',
-            'SUM(CASE WHEN wd.absence = 0 THEN wd.locked * wd.hours ELSE 0 END)',
+            'start' => 'spw.startDate',
+            'end' => 'spw.endDate',
+            'hours' => 'SUM(wd.hours)',
+            'locked' => 'SUM(CASE WHEN wd.absence = 0 THEN wd.locked * wd.hours ELSE 0 END)',
+            'absences' => 'SUM(CASE WHEN wd.absence != 0 THEN 1 ELSE 0 END)',
+            'justified' => 'SUM(CASE WHEN wd.absence = 2 THEN 1 ELSE 0 END)',
+            'sign' => null,
         ];
     }
 

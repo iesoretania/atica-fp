@@ -64,10 +64,13 @@ final class FctPanel extends AbstractTrackingPanel
     protected function expressions(): array
     {
         return [
-            'a.startDate',
-            'a.endDate',
-            'SUM(wd.hours)',
-            'SUM(CASE WHEN twd.absence = 0 THEN twd.locked * wd.hours ELSE 0 END)',
+            'start' => 'a.startDate',
+            'end' => 'a.endDate',
+            'hours' => 'SUM(wd.hours)',
+            'locked' => 'SUM(CASE WHEN twd.absence = 0 THEN twd.locked * wd.hours ELSE 0 END)',
+            'absences' => 'SUM(CASE WHEN twd.absence != 0 THEN 1 ELSE 0 END)',
+            'justified' => 'SUM(CASE WHEN twd.absence = 2 THEN 1 ELSE 0 END)',
+            'sign' => 'a.signDate',
         ];
     }
 

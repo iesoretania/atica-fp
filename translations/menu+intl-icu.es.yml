@@ -204,3 +204,10 @@ dashboard.tracking.upcoming: Empiezan pronto
 dashboard.tracking.upcoming.help: En los próximos 15 días
 dashboard.tracking.pending: Finalizadas sin cerrar
 dashboard.tracking.pending.help: Con jornadas aún sin bloquear
+dashboard.tracking.unjustified: Con faltas sin justificar
+dashboard.tracking.unjustified.help: Estudiantes con ausencias sin justificar
+dashboard.tracking.unsigned: Convenios sin firmar
+dashboard.tracking.unsigned.help: Sin fecha de firma
+dashboard.tracking.own: Mis prácticas
+dashboard.tracking.hours: "{count, plural, one {# hora} other {# horas}}"
+dashboard.tracking.own.absences: "{count, plural, =0 {Sin ausencias} one {# ausencia} other {# ausencias}}{count, plural, =0 {} other { ({unjustified, plural, =0 {todas justificadas} one {# sin justificar} other {# sin justificar}})}}"

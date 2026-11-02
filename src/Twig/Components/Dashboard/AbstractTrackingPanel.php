@@ -21,6 +21,7 @@ namespace App\Twig\Components\Dashboard;
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Organization;
 use App\Entity\Person;
+use App\Security\OrganizationVoter as BaseOrganizationVoter;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -31,7 +32,10 @@ use Symfony\Bundle\SecurityBundle\Security;
  *
  * Los indicadores se calculan sobre la MISMA consulta que usa el listado de seguimiento, de modo que cada persona solo
  * cuenta lo que ya puede ver en él (su alcance según el rol). Cada fila de la consulta es una asignación de estudiante
- * a un centro de trabajo con sus fechas y sus horas totales y bloqueadas.
+ * a un centro de trabajo con sus fechas, sus horas y sus ausencias.
+ *
+ * Hay dos vistas: la personal del alumnado (sus propias horas y ausencias) y la de equipo para el resto (dirección,
+ * jefatura, tutorías y profesorado), con contadores sobre el alumnado de su ámbito.
  */
 abstract class AbstractTrackingPanel
 {
@@ -48,20 +52,27 @@ abstract class AbstractTrackingPanel
     /** Permiso necesario para ver el seguimiento del módulo. */
     abstract protected function accessAttribute(): string;
 
-    /**
-     * Consulta de seguimiento visible para la persona, ya con las uniones del listado.
-     * Debe permitir añadir selecciones con los alias de fechas y horas indicados en {@see self::rows()}.
-     */
+    /** Consulta de seguimiento visible para la persona, ya con las uniones del listado (alias p = persona del alumno). */
     abstract protected function visibleQueryBuilder(AcademicYear $academicYear, Person $person, bool $isManager): QueryBuilder;
 
-    /** Alias DQL de la fecha de inicio, de la fecha de fin y de las horas totales (SUM) y bloqueadas (SUM). */
+    /**
+     * Expresiones DQL de la consulta de seguimiento: fechas de inicio y fin, horas totales y bloqueadas (SUM, en
+     * centésimas), ausencias y ausencias justificadas (SUM) y, si existe, fecha de firma del convenio (null si no).
+     *
+     * @return array{start: string, end: string, hours: string, locked: string, absences: string, justified: string, sign: string|null}
+     */
     abstract protected function expressions(): array;
 
     abstract public function listRoute(): string;
 
     abstract public function module(): string;
 
-    /** @return array{current: int, upcoming: int, pending: int, total: int, year: int|null}|null null si la persona no puede ver el panel */
+    /**
+     * @return array{
+     *     year: int|null, total: int, own: array{hours: int, locked: int, absences: int, unjustified: int, count: int}|null,
+     *     team: array<string, int>|null
+     * }|null null si la persona no puede ver el panel
+     */
     public function summary(): ?array
     {
         $organization = $this->userExtensionService->getCurrentOrganization();
@@ -75,33 +86,70 @@ abstract class AbstractTrackingPanel
             return null;
         }
 
-        [$start, $end, $hours, $lockedHours] = $this->expressions();
-        $queryBuilder = $this->visibleQueryBuilder(
-            $academicYear,
-            $person,
-            $this->security->isGranted(\App\Security\OrganizationVoter::MANAGE, $organization)
-        );
+        $isManager = $this->security->isGranted(BaseOrganizationVoter::MANAGE, $organization);
+        $e = $this->expressions();
+        $queryBuilder = $this->visibleQueryBuilder($academicYear, $person, $isManager);
         $queryBuilder
-            ->select($start . ' AS start_date', $end . ' AS end_date', $hours . ' AS hours', $lockedHours . ' AS locked_hours')
+            ->select(
+                $e['start'] . ' AS start_date',
+                $e['end'] . ' AS end_date',
+                $e['hours'] . ' AS hours',
+                $e['locked'] . ' AS locked_hours',
+                $e['absences'] . ' AS absences',
+                $e['justified'] . ' AS justified',
+                ($e['sign'] ?? 'p.id') . ' AS sign_date',
+                'p.id AS student_id'
+            )
+            ->addGroupBy('p.id')
             ->resetDQLPart('orderBy');
 
         $today = new \DateTimeImmutable('today');
         $limit = $today->modify('+' . self::UPCOMING_DAYS . ' days');
-        $summary = ['current' => 0, 'upcoming' => 0, 'pending' => 0, 'total' => 0, 'year' => $academicYear->getId()];
+        $summary = ['year' => $academicYear->getId(), 'total' => 0, 'own' => null, 'team' => null];
+        $team = ['total' => 0, 'current' => 0, 'upcoming' => 0, 'pending' => 0, 'unjustified' => 0, 'unsigned' => 0];
 
         foreach ($queryBuilder->getQuery()->getArrayResult() as $row) {
+            $summary['total']++;
+            $absences = (int) $row['absences'];
+            $unjustified = max(0, $absences - (int) $row['justified']);
+
+            if ((int) $row['student_id'] === $person->getId()) {
+                $own = $summary['own'] ?? ['hours' => 0, 'locked' => 0, 'absences' => 0, 'unjustified' => 0, 'count' => 0];
+                $own['hours'] += (int) $row['hours'];
+                $own['locked'] += (int) $row['locked_hours'];
+                $own['absences'] += $absences;
+                $own['unjustified'] += $unjustified;
+                $own['count']++;
+                $summary['own'] = $own;
+                continue;
+            }
+
             $from = $row['start_date'] instanceof \DateTimeInterface ? \DateTimeImmutable::createFromInterface($row['start_date']) : null;
             $to = $row['end_date'] instanceof \DateTimeInterface ? \DateTimeImmutable::createFromInterface($row['end_date']) : null;
-            $summary['total']++;
+            $team['total']++;
             if ($from !== null && $from > $today && $from <= $limit) {
-                $summary['upcoming']++;
+                $team['upcoming']++;
             }
             if (($from === null || $from <= $today) && ($to === null || $to >= $today)) {
-                $summary['current']++;
+                $team['current']++;
             }
             if ($to !== null && $to < $today && (int) $row['hours'] > (int) $row['locked_hours']) {
-                $summary['pending']++;
+                $team['pending']++;
             }
+            if ($unjustified > 0) {
+                $team['unjustified']++;
+            }
+            if ($e['sign'] !== null && $row['sign_date'] === null) {
+                $team['unsigned']++;
+            }
+        }
+
+        if ($team['total'] > 0) {
+            // «sin firmar» solo lo gestionan la dirección y la jefatura
+            if (!$isManager || $e['sign'] === null) {
+                unset($team['unsigned']);
+            }
+            $summary['team'] = $team;
         }
 
         return $summary;

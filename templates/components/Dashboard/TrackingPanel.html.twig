@@ -10,13 +10,37 @@
             </div>
             <a href="{{ url }}" class="text-sm font-medium text-brand-700 hover:text-brand-900">{{ 'dashboard.tracking.open'|trans({}, 'menu') }}</a>
         </header>
+
         {% if s.total == 0 %}
             <p class="px-5 py-6 text-sm text-gray-500">{{ 'dashboard.tracking.empty'|trans({}, 'menu') }}</p>
-        {% else %}
-            <dl class="grid grid-cols-3 divide-x divide-gray-200">
-                {% for key, tone in {current: 'text-brand-700', upcoming: 'text-gray-900', pending: (s.pending > 0 ? 'text-amber-600' : 'text-gray-900')} %}
-                    <a href="{{ url }}" class="block px-5 py-4 transition hover:bg-gray-50">
-                        <dd class="text-3xl font-semibold tracking-tight {{ tone }}">{{ attribute(s, key) }}</dd>
+        {% endif %}
+
+        {% if s.own %}
+            {% set percent = s.own.hours > 0 ? (s.own.locked * 100 / s.own.hours)|round : 0 %}
+            <a href="{{ url }}" class="block px-5 py-4 transition hover:bg-gray-50{% if s.team %} border-b border-gray-200{% endif %}">
+                <p class="text-sm font-medium text-gray-900">{{ 'dashboard.tracking.own'|trans({}, 'menu') }}</p>
+                <div class="mt-2 flex items-baseline justify-between text-sm text-gray-600">
+                    <span><span class="text-3xl font-semibold tracking-tight text-brand-700">{{ (s.own.locked / 100)|round }}</span> / {{ 'dashboard.tracking.hours'|trans({count: s.own.hours / 100}, 'menu') }}</span>
+                    <span>{{ percent }} %</span>
+                </div>
+                <div class="mt-2 h-2 overflow-hidden rounded-full bg-gray-100" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ percent }}">
+                    <div class="h-full rounded-full bg-brand-600" style="width: {{ percent }}%"></div>
+                </div>
+                <p class="mt-2 text-xs {{ s.own.unjustified > 0 ? 'text-amber-600' : 'text-gray-400' }}">
+                    {{ 'dashboard.tracking.own.absences'|trans({count: s.own.absences, unjustified: s.own.unjustified}, 'menu') }}
+                </p>
+            </a>
+        {% endif %}
+
+        {% if s.team %}
+            {% set keys = ['current', 'upcoming', 'pending', 'unjustified'] %}
+            {% if s.team.unsigned is defined %}{% set keys = keys|merge(['unsigned']) %}{% endif %}
+            {% set warn = {pending: true, unjustified: true, unsigned: true} %}
+            <dl class="grid grid-cols-2 divide-x divide-y divide-gray-200 {{ keys|length > 4 ? 'sm:grid-cols-5' : 'sm:grid-cols-4' }} sm:divide-y-0">
+                {% for key in keys %}
+                    {% set value = attribute(s.team, key) %}
+                    <a href="{{ url }}" class="block px-4 py-4 transition hover:bg-gray-50">
+                        <dd class="text-3xl font-semibold tracking-tight {{ value > 0 and warn[key]|default(false) ? 'text-amber-600' : (key == 'current' ? 'text-brand-700' : 'text-gray-900') }}">{{ value }}</dd>
                         <dt class="mt-1 text-sm text-gray-600">{{ ('dashboard.tracking.' ~ key)|trans({}, 'menu') }}</dt>
                         <p class="mt-0.5 text-xs text-gray-400">{{ ('dashboard.tracking.' ~ key ~ '.help')|trans({}, 'menu') }}</p>
                     </a>
