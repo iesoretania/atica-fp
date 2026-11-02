@@ -17,7 +17,7 @@
         {% if app_logo %}
             <img src="{{ asset(app_logo) }}" alt="{{ app_name }}" class="max-h-full max-w-full object-contain">
         {% else %}
-            <img src="{{ asset('logo-icon.png') }}" alt="{{ app_name }}" class="size-full rounded-xl object-contain">
+            <img src="{{ asset('logo-icon.png') }}" alt="{{ app_name }}" class="size-full rounded-[inherit] object-contain">
         {% endif %}
     {% endset %}
     <div class="flex min-h-screen flex-col bg-white text-gray-800 antialiased lg:flex-row" style="font-family: var(--font-sans)">
@@ -26,7 +26,7 @@
         <aside class="relative hidden flex-col justify-between overflow-hidden bg-linear-to-br from-brand-950 via-brand-900 to-brand-800 p-12 lg:flex lg:w-5/12 xl:w-2/5">
             {% include 'security/_login_motif.html.twig' %}
             <div class="relative flex items-start gap-4">
-                <span class="flex size-24 shrink-0 items-center justify-center rounded-3xl bg-white/10 p-4 shadow-lg ring-1 ring-white/20">{{ logo }}</span>
+                <span class="flex size-24 shrink-0 items-center justify-center rounded-3xl shadow-lg ring-1 ring-white/20{{ app_logo ? ' bg-white/10 p-4' : '' }}">{{ logo }}</span>
                 {% if app_version %}<span class="mt-1 text-xs font-medium text-white/60" title="{{ app_pub_date }}">v{{ app_version }}</span>{% endif %}
             </div>
             <div class="relative">
@@ -41,7 +41,7 @@
         <header class="relative overflow-hidden bg-linear-to-br from-brand-950 via-brand-900 to-brand-800 px-6 pb-14 pt-8 lg:hidden">
             {% include 'security/_login_motif.html.twig' %}
             <div class="relative flex items-center gap-4">
-                <span class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-white/10 p-2.5 shadow-lg ring-1 ring-white/20">{{ logo }}</span>
+                <span class="flex size-14 shrink-0 items-center justify-center rounded-2xl shadow-lg ring-1 ring-white/20{{ app_logo ? ' bg-white/10 p-2.5' : '' }}">{{ logo }}</span>
                 <div>
                     <p class="text-xl font-bold leading-tight text-white">{{ app_name }}</p>
                     <p class="text-xs text-brand-200">{{ 'form.login.platform'|trans }}{% if app_version %} · <span title="{{ app_pub_date }}">v{{ app_version }}</span>{% endif %}</p>
