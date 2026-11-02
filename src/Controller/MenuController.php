@@ -30,7 +30,8 @@ class MenuController extends AbstractController
         return $this->render(
             'default/index.html.twig',
             [
-                'menu' => true
+                'menu' => true,
+                'dashboard' => true
             ]
         );
     }

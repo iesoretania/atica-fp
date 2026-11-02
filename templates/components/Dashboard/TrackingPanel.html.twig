@@ -1,0 +1,27 @@
+{% set s = this.summary %}
+{% if s is not null %}
+    {% set domain = 'module_' ~ this.module %}
+    {% set url = path(this.listRoute, {academicYear: s.year, page: 1}) %}
+    <section class="rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+        <header class="flex items-center justify-between gap-3 border-b border-gray-200 px-5 py-3">
+            <div>
+                <h2 class="text-sm font-semibold text-gray-900">{{ 'module.initials'|trans({}, domain) }}</h2>
+                <p class="text-xs text-gray-500">{{ 'module.description'|trans({}, domain) }}</p>
+            </div>
+            <a href="{{ url }}" class="text-sm font-medium text-brand-700 hover:text-brand-900">{{ 'dashboard.tracking.open'|trans({}, 'menu') }}</a>
+        </header>
+        {% if s.total == 0 %}
+            <p class="px-5 py-6 text-sm text-gray-500">{{ 'dashboard.tracking.empty'|trans({}, 'menu') }}</p>
+        {% else %}
+            <dl class="grid grid-cols-3 divide-x divide-gray-200">
+                {% for key, tone in {current: 'text-brand-700', upcoming: 'text-gray-900', pending: (s.pending > 0 ? 'text-amber-600' : 'text-gray-900')} %}
+                    <a href="{{ url }}" class="block px-5 py-4 transition hover:bg-gray-50">
+                        <dd class="text-3xl font-semibold tracking-tight {{ tone }}">{{ attribute(s, key) }}</dd>
+                        <dt class="mt-1 text-sm text-gray-600">{{ ('dashboard.tracking.' ~ key)|trans({}, 'menu') }}</dt>
+                        <p class="mt-0.5 text-xs text-gray-400">{{ ('dashboard.tracking.' ~ key ~ '.help')|trans({}, 'menu') }}</p>
+                    </a>
+                {% endfor %}
+            </dl>
+        {% endif %}
+    </section>
+{% endif %}

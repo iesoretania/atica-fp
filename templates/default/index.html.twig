@@ -1,3 +1,10 @@
 {% extends 'ui/layout.html.twig' %}
 {% block content %}
+    {% if dashboard|default(false) %}
+        {#- Escritorio: cada panel solo se dibuja si la persona tiene acceso al seguimiento del módulo -#}
+        <div class="mb-6 grid gap-4 xl:grid-cols-2">
+            <twig:Dashboard:FctPanel />
+            <twig:Dashboard:ItpPanel />
+        </div>
+    {% endif %}
 {% endblock %}

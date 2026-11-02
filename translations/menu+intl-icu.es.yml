@@ -195,3 +195,12 @@ menu.personal_data.detail: Modificar los datos personales
 
 menu.back: Volver
 menu.back.detail: Volver a la pantalla anterior
+
+dashboard.tracking.open: Ver seguimiento
+dashboard.tracking.empty: No hay estudiantes en prácticas en este curso dentro de tu ámbito.
+dashboard.tracking.current: En prácticas ahora
+dashboard.tracking.current.help: Con fechas que incluyen hoy
+dashboard.tracking.upcoming: Empiezan pronto
+dashboard.tracking.upcoming.help: En los próximos 15 días
+dashboard.tracking.pending: Finalizadas sin cerrar
+dashboard.tracking.pending.help: Con jornadas aún sin bloquear
