@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import TomSelect from 'tom-select';
 
 /*
- * Selector con búsqueda remota para los campos Select2EntityType (sustituye a select2entity + Select2, que usaban jQuery).
+ * Selector con búsqueda remota para los campos RemoteEntityType (sustituye a select2entity + Select2, que usaban jQuery).
  *
  * Mantiene el contrato del servidor: GET url?q=...&field_name=...&class_type=... (+ page si hay scroll,
  * + parámetros de req_params y query_parameters) que devuelve [{id, text}] o {results: [...], more: bool}.

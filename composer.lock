@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f822b4c338e0aa669aad0e906a9963a0",
+    "content-hash": "65aa8f4c0a732b5c88770f06a09f00b9",
     "packages": [
         {
             "name": "babdev/pagerfanta-bundle",
@@ -8869,56 +8869,6 @@
                 }
             ],
             "time": "2026-07-23T02:04:59+00:00"
-        },
-        {
-            "name": "tetranz/select2entity-bundle",
-            "version": "3.1.1",
-            "dist": {
-                "type": "path",
-                "url": "packages/select2entity-bundle",
-                "reference": "d4969b26ed870723e2c3ac0084d0acc547ca3772"
-            },
-            "require": {
-                "doctrine/orm": ">=2.4",
-                "php": ">=8.2",
-                "symfony/config": "^7.4 || ^8.0",
-                "symfony/dependency-injection": "^7.4 || ^8.0",
-                "symfony/form": "^7.4 || ^8.0",
-                "symfony/http-kernel": "^7.4 || ^8.0",
-                "symfony/property-access": "^7.4 || ^8.0",
-                "symfony/routing": "^7.4 || ^8.0",
-                "symfony/yaml": "^7.4 || ^8.0",
-                "twig/twig": ">=2.9"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": []
-            },
-            "autoload": {
-                "psr-4": {
-                    "Tetranz\\Select2EntityBundle\\": ""
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ross Keatinge",
-                    "email": "tetranz@gmail.com"
-                }
-            ],
-            "description": "A Symfony bundle that integrates Select2 as a drop-in replacement for a standard entity field on a Symfony form.",
-            "keywords": [
-                "autocomplete",
-                "select2",
-                "symfony",
-                "typeahead"
-            ],
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
         },
         {
             "name": "twig/extra-bundle",

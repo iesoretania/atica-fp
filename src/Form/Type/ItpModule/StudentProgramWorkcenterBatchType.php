@@ -44,7 +44,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
-use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
+use App\Form\Type\RemoteEntityType;
 
 class StudentProgramWorkcenterBatchType extends AbstractType
 {
@@ -164,7 +164,7 @@ class StudentProgramWorkcenterBatchType extends AbstractType
                 'placeholder' => 'form.additional_educational_tutor.none',
                 'required' => false
             ])
-            ->add('workTutor', Select2EntityType::class, [
+            ->add('workTutor', RemoteEntityType::class, [
                 'label' => 'form.work_tutor',
                 'multiple' => false,
                 'text_property' => 'fullDisplayName',
@@ -175,7 +175,7 @@ class StudentProgramWorkcenterBatchType extends AbstractType
                 'attr' => ['class' => 'person'],
                 'required' => true
             ])
-            ->add('additionalWorkTutor', Select2EntityType::class, [
+            ->add('additionalWorkTutor', RemoteEntityType::class, [
                 'label' => 'form.additional_work_tutor',
                 'multiple' => false,
                 'text_property' => 'fullDisplayName',

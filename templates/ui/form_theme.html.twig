@@ -224,8 +224,8 @@
     {{- block('textarea_widget') -}}
 {%- endblock rich_text_widget -%}
 
-{#- Select2EntityType con búsqueda remota: lo gestiona el controlador Stimulus entity-select (Tom Select) -#}
-{%- block tetranz_select2entity_widget -%}
+{#- RemoteEntityType con búsqueda remota: lo gestiona el controlador Stimulus entity-select (Tom Select) -#}
+{%- block remote_entity_widget -%}
     {%- set attr = attr|merge({
         'data-controller': 'entity-select',
         'data-entity-select-url-value': remote_path,
@@ -248,7 +248,7 @@
             {%- endfor -%}
         {%- endif -%}
     </select>
-{%- endblock tetranz_select2entity_widget -%}
+{%- endblock remote_entity_widget -%}
 
 {%- block checkbox_row -%}
     <div class="mb-5 max-w-2xl">

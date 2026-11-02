@@ -23,7 +23,6 @@ use App\Entity\Workcenter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class WorkcenterType extends AbstractType
 {
@@ -54,7 +53,7 @@ class WorkcenterType extends AbstractType
             ->add('faxNumber', null, [
                 'label' => 'form.fax_number'
             ])
-            ->add('manager', Select2EntityType::class, [
+            ->add('manager', RemoteEntityType::class, [
                 'label' => 'form.manager',
                 'multiple' => false,
                 'text_property' => 'fullDisplayName',

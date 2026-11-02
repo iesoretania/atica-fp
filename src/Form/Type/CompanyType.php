@@ -24,7 +24,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class CompanyType extends AbstractType
 {
@@ -61,7 +60,7 @@ class CompanyType extends AbstractType
             ->add('webSite', null, [
                 'label' => 'form.web_site'
             ])
-            ->add('manager', Select2EntityType::class, [
+            ->add('manager', RemoteEntityType::class, [
                 'label' => 'form.manager',
                 'multiple' => false,
                 'text_property' => 'fullDisplayName',

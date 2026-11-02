@@ -28,7 +28,7 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
+use App\Form\Type\RemoteEntityType;
 
 class TravelExpenseType extends AbstractType
 {
@@ -64,7 +64,7 @@ class TravelExpenseType extends AbstractType
                 'choices' => $options['agreements'],
                 'required' => false
             ])
-            ->add('travelRoute', Select2EntityType::class, [
+            ->add('travelRoute', RemoteEntityType::class, [
                 'label' => 'form.travel_route',
                 'class' => TravelRoute::class,
                 'minimum_input_length' => 2,

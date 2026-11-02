@@ -40,7 +40,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
-use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
+use App\Form\Type\RemoteEntityType;
 
 class AgreementType extends AbstractType
 {
@@ -163,7 +163,7 @@ class AgreementType extends AbstractType
                 'placeholder' => 'form.educational_tutor.none',
                 'required' => $new
             ])
-            ->add('workTutor', Select2EntityType::class, [
+            ->add('workTutor', RemoteEntityType::class, [
                 'mapped' => false,
                 'label' => 'form.default_work_tutor',
                 'multiple' => false,

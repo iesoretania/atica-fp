@@ -23,7 +23,7 @@ use App\Entity\Person;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
+use App\Form\Type\RemoteEntityType;
 
 class NewTeacherType extends AbstractType
 {
@@ -37,7 +37,7 @@ class NewTeacherType extends AbstractType
                 'label' => 'form.academic_year',
                 'disabled' => true
             ])
-            ->add('person', Select2EntityType::class, [
+            ->add('person', RemoteEntityType::class, [
                 'label' => 'form.person',
                 'multiple' => false,
                 'text_property' => 'fullDisplayName',

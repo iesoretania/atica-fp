@@ -1039,26 +1039,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         ...<string, mixed>
  *     },
  * }
- * @psalm-type TetranzSelect2EntityConfig = array{
- *     minimum_input_length?: int|Param, // Default: 1
- *     scroll?: bool|Param, // Default: false
- *     page_limit?: int|Param, // Default: 10
- *     allow_clear?: bool|Param, // Default: false
- *     allow_add?: array{
- *         enabled?: bool|Param, // Default: false
- *         new_tag_text?: scalar|Param|null, // Default: " (NEW)"
- *         new_tag_prefix?: scalar|Param|null, // Default: "__"
- *         tag_separators?: scalar|Param|null, // Default: "[\",\", \" \"]"
- *     },
- *     delay?: int|Param, // Default: 250
- *     language?: scalar|Param|null, // Default: "en"
- *     theme?: scalar|Param|null, // Default: "default"
- *     cache?: bool|Param, // Default: true
- *     cache_timeout?: int|Param, // Default: 60000
- *     width?: scalar|Param|null, // Default: null
- *     object_manager?: scalar|Param|null, // Default: null
- *     render_html?: bool|Param, // Default: false
- * }
  * @psalm-type SimpleThingsEntityAuditConfig = array{
  *     connection?: scalar|Param|null, // Default: "default"
  *     entity_manager?: scalar|Param|null, // Default: "default"
@@ -1622,7 +1602,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     doctrine_migrations?: DoctrineMigrationsConfig,
  *     twig?: TwigConfig,
  *     twig_extra?: TwigExtraConfig,
- *     tetranz_select2_entity?: TetranzSelect2EntityConfig,
  *     simple_things_entity_audit?: SimpleThingsEntityAuditConfig,
  *     security?: SecurityConfig,
  *     monolog?: MonologConfig,
@@ -1642,7 +1621,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig?: TwigConfig,
  *         web_profiler?: WebProfilerConfig,
  *         twig_extra?: TwigExtraConfig,
- *         tetranz_select2_entity?: TetranzSelect2EntityConfig,
  *         simple_things_entity_audit?: SimpleThingsEntityAuditConfig,
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
@@ -1664,7 +1642,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         twig?: TwigConfig,
  *         twig_extra?: TwigExtraConfig,
- *         tetranz_select2_entity?: TetranzSelect2EntityConfig,
  *         simple_things_entity_audit?: SimpleThingsEntityAuditConfig,
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
@@ -1685,7 +1662,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig?: TwigConfig,
  *         web_profiler?: WebProfilerConfig,
  *         twig_extra?: TwigExtraConfig,
- *         tetranz_select2_entity?: TetranzSelect2EntityConfig,
  *         simple_things_entity_audit?: SimpleThingsEntityAuditConfig,
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,

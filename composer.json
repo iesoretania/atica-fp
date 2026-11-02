@@ -3,15 +3,6 @@
     "license": "AGPL-3.0-only",
     "type": "project",
     "description": "Aplicación web para el seguimiento del alumnado durante el período de alternancia y en la FCT",
-    "repositories": [
-        {
-            "type": "path",
-            "url": "packages/select2entity-bundle",
-            "options": {
-                "symlink": false
-            }
-        }
-    ],
     "require": {
         "php": ">=8.2",
         "ext-ctype": "*",
@@ -56,7 +47,6 @@
         "symfony/validator": "7.4.*",
         "symfony/yaml": "7.4.*",
         "symfonycasts/tailwind-bundle": "*",
-        "tetranz/select2entity-bundle": "^3.1",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/html-extra": "*",
         "twig/twig": "^2.12|^3.0"

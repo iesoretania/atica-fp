@@ -40,7 +40,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
+use App\Form\Type\RemoteEntityType;
 
 class AgreementType extends AbstractType
 {
@@ -128,7 +128,7 @@ class AgreementType extends AbstractType
                 'placeholder' => 'form.workcenter.none',
                 'required' => true
             ])
-            ->add('workTutor', Select2EntityType::class, [
+            ->add('workTutor', RemoteEntityType::class, [
                 'label' => 'form.work_tutor',
                 'multiple' => false,
                 'text_property' => 'fullDisplayName',
@@ -139,7 +139,7 @@ class AgreementType extends AbstractType
                 'attr' => ['class' => 'person'],
                 'required' => true
             ])
-            ->add('additionalWorkTutor', Select2EntityType::class, [
+            ->add('additionalWorkTutor', RemoteEntityType::class, [
                 'label' => 'form.additional_work_tutor',
                 'multiple' => false,
                 'text_property' => 'fullDisplayName',
