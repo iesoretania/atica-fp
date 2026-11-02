@@ -1,13 +1,17 @@
 form.datetime: Fecha y hora
 form.teacher: Docente
+form.teacher.help: Docente que ha realizado el contacto.
 form.teacher.none: Seleccione un docente
 form.workcenter: Centro de trabajo
+form.workcenter.help: Centro de trabajo con el que se ha tenido el contacto. Condiciona los programas formativos disponibles.
 form.workcenter.none: Seleccione uno para continuar
 form.workcenter.all: Todos los centros de trabajo
 form.method: Tipo de contacto
+form.method.help: Forma en que se ha realizado el contacto.
 form.methods: Tipos de contacto a incluir
 form.method.on-site: Presencial
 form.training_programs: Programas formativos
+form.training_programs.help: Programas formativos del centro de trabajo a los que se refiere el contacto. Sin marcas, el contacto no se asocia a ninguno.
 form.training_programs.to_report: Programas formativos a incluir (sin marcas = todo)
 form.training_programs.none: No hay programas formativos asociados al centro de trabajo
 form.training_programs.not_specified: Contactos no asociados a un programa formativo

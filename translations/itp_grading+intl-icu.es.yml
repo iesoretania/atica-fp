@@ -18,8 +18,11 @@ table.activity_realization.graded.disabled: "Deshabilitada"
 table.activity_realization.graded.pending: "Por realizar"
 
 form.disabled: Deshabilitar actividad no valorada
-form.disabled.false: El estudiante puede seleccionar la actividad
-form.disabled.true: El estudiante no puede seleccionar la actividad. Las jornadas que la tengan marcadas se mantienen
+form.disabled.help: Controla si el estudiante puede seguir seleccionando esta actividad en sus jornadas.
+form.disabled.false: Habilitada
+form.disabled.false.help: El estudiante puede seleccionar la actividad.
+form.disabled.true: Deshabilitada
+form.disabled.true.help: El estudiante no puede seleccionar la actividad. Las jornadas que la tengan marcada se mantienen.
 
 form.report: Generar informe
 

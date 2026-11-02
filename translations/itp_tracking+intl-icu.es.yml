@@ -60,18 +60,28 @@ form.stats.hours.absence.caption: "Ausencias"
 form.stats.hours.justified_absence.caption: "Ausencias justificadas"
 
 form.activities: Actividades realizadas
+form.activities.help: Actividades del programa formativo que el estudiante ha realizado durante la jornada.
 
 form.work_day.attendance: Asistencia
-form.work_day.attendance.no_absence: El estudiante ha acudido al centro de trabajo
-form.work_day.attendance.unjustified_absence: El estudiante no ha acudido al centro de trabajo (falta injustificada)
-form.work_day.attendance.justified_absence: El estudiante no ha acudido al centro de trabajo (falta justificada)
+form.work_day.attendance.help: Indique si el estudiante ha acudido al centro de trabajo. Con una falta no se registran horas ni actividades.
+form.work_day.attendance.no_absence: Asistencia
+form.work_day.attendance.no_absence.help: El estudiante ha acudido al centro de trabajo.
+form.work_day.attendance.unjustified_absence: Falta injustificada
+form.work_day.attendance.unjustified_absence.help: El estudiante no ha acudido al centro de trabajo y la ausencia no está justificada.
+form.work_day.attendance.justified_absence: Falta justificada
+form.work_day.attendance.justified_absence.help: El estudiante no ha acudido al centro de trabajo, pero la ausencia está justificada.
 
 form.locked: Bloqueo
-form.locked.no: Se pueden realizar cambios en la jornada
-form.locked.yes: La jornada está bloqueada y no se pueden realizar cambios
+form.locked.help: Una jornada bloqueada ya no puede modificarse.
+form.locked.no: Abierta
+form.locked.no.help: Se pueden realizar cambios en la jornada.
+form.locked.yes: Bloqueada
+form.locked.yes.help: La jornada está bloqueada y no se pueden realizar cambios.
 
 form.other_activities: Otras actividades realizadas
+form.other_activities.help: Tareas realizadas que no figuran en el programa formativo.
 form.notes: Anotaciones sobre la jornada
+form.notes.help: Observaciones sobre la jornada que el tutor docente quiera dejar anotadas.
 
 form.start_time_1: Hora de entrada (tramo inicial)
 form.end_time_1: Hora de salida (tramo inicial)

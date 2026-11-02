@@ -5,12 +5,18 @@ form.modality: Modalidad
 form.modality.general: General
 form.modality.intensive: Intensiva
 form.authorization_needed: Necesita autorización
+form.authorization_needed.help: Indique si la estancia requiere alguna autorización previa, por ejemplo de la familia o de una administración.
 form.authorization_needed.no: No
-form.authorization_needed.yes: Sí, se describe más abajo
+form.authorization_needed.no.help: No se necesita ninguna autorización.
+form.authorization_needed.yes: Sí
+form.authorization_needed.yes.help: Se describe la autorización requerida en el campo siguiente.
 form.authorization_description: Descripción de la autorización requerida
 form.adaptation_needed: Necesita adaptación o medidas especiales
+form.adaptation_needed.help: Indique si el estudiante necesita adaptaciones del puesto, del horario o medidas de apoyo durante la estancia.
 form.adaptation_needed.no: No
-form.adaptation_needed.yes: Sí, se describen más abajo
+form.adaptation_needed.no.help: No se necesita ninguna adaptación.
+form.adaptation_needed.yes: Sí
+form.adaptation_needed.yes.help: Se describen las adaptaciones o medidas en el campo siguiente.
 form.adaptation_description: Descripción de las adaptaciones y/o medidas necesarias
 
 form.save: Guardar cambios

@@ -21,6 +21,7 @@ form.source_project: Proyecto desde el que copiar
 form.source_project.none: Seleccione un proyecto compatible...
 form.source_project.help: Solo se ofrecen proyectos de la misma enseñanza.
 form.copy_learning_program: Copiar programa formativo de las empresas
+form.copy_learning_program.help: Elija si, además de las actividades, se traen las empresas colaboradoras del proyecto origen.
 form.copy_learning_program.yes: Incorporar las empresas del proyecto origen y sus programas
 form.copy_learning_program.yes.help: Se copian también las empresas colaboradoras y las concreciones que hace cada una.
 form.copy_learning_program.no: No incorporar las empresas del proyecto origen

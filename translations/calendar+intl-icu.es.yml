@@ -8,7 +8,9 @@ form.group: Grupo
 form.training: Enseñanza
 
 form.activity_realizations: Actividades realizadas
+form.activity_realizations.help: Concreciones del programa formativo que el estudiante ha realizado durante la jornada.
 form.work_day.attendance: Asistencia
+form.work_day.attendance.help: Indique si el estudiante ha acudido al centro de trabajo. Con una falta no se registran horas ni actividades.
 form.work_day.attendance.no_absence: El estudiante ha acudido al centro de trabajo
 form.work_day.attendance.unjustified_absence: El estudiante no ha acudido al centro de trabajo (falta injustificada)
 form.work_day.attendance.justified_absence: El estudiante no ha acudido al centro de trabajo (falta justificada)
@@ -53,14 +55,19 @@ form.source_agreement: Acuerdo origen
 form.source_agreement.none: Seleccione un acuerdo existente
 
 form.overwrite_action: Jornadas que ya existen en calendario
-form.overwrite_action.replace: Sobreescribir el valor anterior
-form.overwrite_action.add: Sumar horas a las ya existentes
+form.overwrite_action.replace: Sobrescribir
+form.overwrite_action.replace.help: Se sustituyen las horas de las jornadas que ya existen en el calendario.
+form.overwrite_action.add: Sumar
+form.overwrite_action.add.help: Las horas nuevas se suman a las que ya tienen las jornadas existentes.
 
 form.ignore_non_working_days: Días no lectivos
-form.ignore_non_working_days.no: No incluir jornadas en días no lectivos
-form.ignore_non_working_days.yes: Ignorar si el día de la jornada es lectivo o no
+form.ignore_non_working_days.no: Respetar los días no lectivos
+form.ignore_non_working_days.no.help: No se incluyen jornadas en los días no lectivos.
+form.ignore_non_working_days.yes: Incluir todos los días
+form.ignore_non_working_days.yes.help: Se ignora si el día de la jornada es lectivo o no.
 
 form.locked: Bloqueo
+form.locked.help: Una jornada bloqueada ya no puede modificarse.
 form.locked.no: Se pueden realizar cambios en la jornada
 form.locked.yes: La jornada está bloqueada y no se pueden realizar cambios
 
@@ -93,7 +100,9 @@ form.hours: Horas
 form.r_hours: "{count, plural, one {1 hora} other {# horas}}"
 form.no_sessions: No hay sesiones
 form.other_activities: Otras actividades realizadas
+form.other_activities.help: Tareas realizadas que no figuran en el programa formativo.
 form.notes: Anotaciones sobre la jornada
+form.notes.help: Observaciones sobre la jornada que el tutor docente quiera dejar anotadas.
 form.no_activities: Sin actividad registrada
 form.absence: Falta de asistencia
 form.no_workday: No incluido en el programa formativo

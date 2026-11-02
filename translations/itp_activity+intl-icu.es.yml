@@ -2,8 +2,11 @@ form.code: Código
 form.name: Nombre
 form.description: Descripción
 form.subjects: Módulos profesionales
+form.subjects.help: Módulos profesionales a los que se asocia la actividad. Condicionan los resultados de aprendizaje disponibles.
 form.learning_outcomes: Resultados de aprendizaje
+form.learning_outcomes.help: Resultados de aprendizaje de los módulos seleccionados que se trabajan con esta actividad.
 form.criteria: Criterios de evaluación
+form.criteria.help: Criterios de evaluación de los resultados de aprendizaje seleccionados con los que se valora la actividad.
 
 form.save: Guardar cambios
 form.delete: Eliminar actividades formativas

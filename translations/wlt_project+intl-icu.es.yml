@@ -27,6 +27,7 @@ form.educational_tutor_survey.help: Encuesta que responde el centro educativo so
 form.student_enrollments.help: Alumnado de los grupos del proyecto que participa en él.
 
 form.locked: Bloqueo del proyecto
+form.locked.help: Un proyecto bloqueado queda protegido frente a cambios.
 form.locked.no: Se pueden realizar cambios
 form.locked.no.help: El coordinador y la jefatura con permiso pueden modificar el proyecto.
 form.locked.yes: Sólo el coordinador puede realizar cambios

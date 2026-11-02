@@ -241,6 +241,28 @@ class WltTrackingCalendarTest extends AppWebTestCase
         self::assertSame($expectedStatus === 302, $this->reload($workDay)->isLocked());
     }
 
+    /**
+     * @dataProvider lockProvider
+     */
+    public function testCalendarShowsTheWeekButtonsAccordingToThePermission(string $username, int $lockStatus): void
+    {
+        $workDay = $this->workDayOf('alfa.alumno5');
+        $this->login($this->getUser($username));
+
+        $crawler = $this->client->request('GET', $this->router()->generate('work_linked_training_tracking_calendar_list', [
+            'id' => $workDay->getAgreement()->getId(),
+        ]));
+
+        if ($lockStatus === 403 && $username === 'alfa.tutorlaboral2') {
+            self::assertResponseStatusCodeSame(403);
+
+            return;
+        }
+        self::assertResponseIsSuccessful();
+        self::assertGreaterThan(0, $crawler->filter('button[name="week_report"]')->count(), 'Falta el botón de la ficha semanal');
+        self::assertSame($lockStatus === 302, $crawler->filter('button[name="lock_week"], button[name="unlock_week"]')->count() > 0);
+    }
+
     public function testTutorLocksAndUnlocksSelectedDaysOfTheAgreementOnly(): void
     {
         $mine = $this->workDayOf('alfa.alumno5');

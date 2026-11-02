@@ -1,6 +1,7 @@
 form.from_datetime: Fecha y hora de salida del centro
 form.to_datetime: Fecha y hora de llegada al centro
 form.training_programs: Planes de formación
+form.training_programs.help: Planes de formación a los que se imputa el desplazamiento.
 form.travel_route: Itinerario
 form.travel_route.placeholder: Busque dentro del itinerario...
 form.other_expenses_description: Descripción de los gastos reintegrables

@@ -3,8 +3,11 @@ form.grade: Valoración
 
 form.grade_none: Sin valorar
 form.disabled: Deshabilitar concreción no valorada
-form.disabled.false: El estudiante puede seleccionar la concreción
-form.disabled.true: El estudiante no puede seleccionar la concreción. Las jornadas que la tengan marcadas se mantienen
+form.disabled.help: Controla si el estudiante puede seguir seleccionando esta concreción en sus jornadas.
+form.disabled.false: Habilitada
+form.disabled.false.help: El estudiante puede seleccionar la concreción.
+form.disabled.true: Deshabilitada
+form.disabled.true.help: El estudiante no puede seleccionar la concreción. Las jornadas que la tengan marcada se mantienen.
 
 form.comments: Comentarios
 form.new_comment: Añadir nuevo comentario

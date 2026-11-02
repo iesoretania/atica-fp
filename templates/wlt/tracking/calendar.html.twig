@@ -51,7 +51,7 @@
     <div data-controller="list">
         <section id="exchange">
             <form action="{{ path('work_linked_training_tracking_calendar_operation', {'id': agreement.id}) }}" method="post">
-                {% embed 'ui/calendar.html.twig' with {hours_divisor: 1} %}
+                {% embed 'ui/calendar.html.twig' with {hours_divisor: 1, week_operations: true, lock_manager: is_granted('WLT_AGREEMENT_LOCK', agreement)} %}
                     {% block day %}
                         {% set url = day ? path('work_linked_training_tracking_calendar_form', {'id': day.id}) : '' %}
                         {% if day %}

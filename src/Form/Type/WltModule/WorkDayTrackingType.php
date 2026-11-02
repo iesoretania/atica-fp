@@ -93,8 +93,8 @@ class WorkDayTrackingType extends AbstractType
                     'required' => true,
                     'expanded' => true,
                     'choices' => [
-                        'form.locked.no' => false,
-                        'form.locked.yes' => true
+                        'form.day_lock.open' => false,
+                        'form.day_lock.closed' => true
                     ]
                 ]);
         }
@@ -105,13 +105,14 @@ class WorkDayTrackingType extends AbstractType
                     'label' => 'form.work_day.attendance',
                     'required' => true,
                     'expanded' => true,
+                    // textos cortos: la explicación de cada opción está en «<clave>.help» (ver el tema de formularios)
                     'choices' => $lockManager ? [
-                        'form.work_day.attendance.no_absence' => WorkDay::NO_ABSENCE,
-                        'form.work_day.attendance.unjustified_absence' => WorkDay::UNJUSTIFIED_ABSENCE,
-                        'form.work_day.attendance.justified_absence' => WorkDay::JUSTIFIED_ABSENCE
+                        'form.attendance.present' => WorkDay::NO_ABSENCE,
+                        'form.attendance.unjustified' => WorkDay::UNJUSTIFIED_ABSENCE,
+                        'form.attendance.justified' => WorkDay::JUSTIFIED_ABSENCE
                     ] : [
-                        'form.work_day.attendance.no_absence' => WorkDay::NO_ABSENCE,
-                        'form.work_day.attendance.unjustified_absence' => WorkDay::UNJUSTIFIED_ABSENCE
+                        'form.attendance.present' => WorkDay::NO_ABSENCE,
+                        'form.attendance.unjustified' => WorkDay::UNJUSTIFIED_ABSENCE
                     ],
                     'disabled' => $locked
                 ]);

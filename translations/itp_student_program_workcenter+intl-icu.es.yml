@@ -1,13 +1,18 @@
 form.students: Estudiantes de la estancia
 form.company: Empresa u organismo equiparable
+form.company.help: Empresa u organismo donde el estudiante realiza la estancia.
 form.workcenter: Centro de trabajo
+form.workcenter.help: Centro de trabajo de la empresa donde se realiza la estancia. Condiciona los tutores de empresa y las actividades disponibles.
 form.educational_tutor: Docente responsable del seguimiento
+form.educational_tutor.help: Docente del centro educativo que realiza el seguimiento de la estancia.
 form.additional_educational_tutor: Docente responsable del seguimiento adicional
+form.additional_educational_tutor.help: Opcional. Segundo docente que comparte el seguimiento de la estancia.
 form.work_tutor: Tutor/a dual de empresa
 form.additional_work_tutor: Tutor/a dual de empresa adicional
 form.start_date: Fecha de inicio
 form.end_date: Fecha de fin
 form.activities: Actividades a desarrollar
+form.activities.help: Actividades de la empresa que el estudiante desarrollará durante la estancia.
 form.no_activity: No hay actividades asociadas a la empresa. Deben asociarse primero.
 
 form.back: Volver
@@ -56,6 +61,7 @@ header.learning_outcomes: RAs
 header.criteria: CEs
 
 form.source_student_program_workcenter: Estancia origen
+form.source_student_program_workcenter.help: El calendario de esa estancia se copia a la estancia actual.
 form.source_student_program_workcenter.none: Seleccione una estancia existente
 
 form.overwrite_action: Jornadas que ya existen en calendario
