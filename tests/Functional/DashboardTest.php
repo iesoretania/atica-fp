@@ -135,6 +135,32 @@ class DashboardTest extends AppWebTestCase
         return $counters;
     }
 
+    public static function genderProvider(): iterable
+    {
+        yield 'sin especificar' => [0, 'Te damos la bienvenida'];
+        yield 'hombre' => [1, 'Bienvenido,'];
+        yield 'mujer' => [2, 'Bienvenida,'];
+    }
+
+    /**
+     * @dataProvider genderProvider
+     */
+    public function testFrontPageGreetsThePersonByNameAndGender(int $gender, string $expected): void
+    {
+        $user = $this->getUser('alfa.profesor');
+        $user->setGender($gender);
+        static::getContainer()->get('doctrine')->getManager()->flush();
+        $this->login($user);
+        $crawler = $this->client->request('GET', '/');
+        self::assertResponseIsSuccessful();
+        $heading = $crawler->filter('main h2')->first()->text();
+        self::assertStringContainsString($expected, $heading);
+        self::assertStringContainsString($user->getFirstName(), $heading);
+        self::assertMatchesRegularExpression('/Buenos días|Buenas tardes|Buenas noches/', $crawler->filter('main')->text());
+        // el menú ya está en la barra lateral: la portada no repite las tarjetas
+        self::assertSame(0, $crawler->filter('main a.group')->count());
+    }
+
     public function testPersonalDataIsNotOfferedInTheMainMenuCards(): void
     {
         $this->login($this->getUser('alfa.profesor'));

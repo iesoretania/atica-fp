@@ -211,3 +211,9 @@ dashboard.tracking.unsigned.help: Sin fecha de firma
 dashboard.tracking.own: Mis prácticas
 dashboard.tracking.hours: "{count, plural, one {# hora} other {# horas}}"
 dashboard.tracking.own.absences: "{count, plural, =0 {Sin ausencias} one {# ausencia} other {# ausencias}}{count, plural, =0 {} other { ({unjustified, plural, =0 {todas justificadas} one {# sin justificar} other {# sin justificar}})}}"
+
+dashboard.greeting.morning: Buenos días
+dashboard.greeting.afternoon: Buenas tardes
+dashboard.greeting.evening: Buenas noches
+dashboard.welcome: "{gender, select, male {Bienvenido} female {Bienvenida} other {Te damos la bienvenida}}"
+dashboard.welcome.help: Este es tu escritorio. Usa el menú lateral para acceder al resto de apartados.

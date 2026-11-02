@@ -1,6 +1,15 @@
 {% extends 'ui/layout.html.twig' %}
 {% block content %}
     {% if dashboard|default(false) %}
+        {% set hour = 'now'|date('G') %}
+        {% set period = hour >= 6 and hour < 13 ? 'morning' : (hour >= 13 and hour < 21 ? 'afternoon' : 'evening') %}
+        {% set gender = app.user.gender == 1 ? 'male' : (app.user.gender == 2 ? 'female' : 'other') %}
+        <div class="mb-6 rounded-xl bg-white p-6 shadow-xs ring-1 ring-gray-200">
+            <p class="text-sm font-medium text-brand-700">{{ ('dashboard.greeting.' ~ period)|trans({}, 'menu') }}</p>
+            <h2 class="mt-1 text-2xl font-semibold tracking-tight text-gray-900">{{ 'dashboard.welcome'|trans({gender: gender}, 'menu') }}, {{ app.user.firstName }}</h2>
+            <p class="mt-1 text-sm text-gray-500">{{ 'dashboard.welcome.help'|trans({}, 'menu') }}</p>
+        </div>
+
         {#- Escritorio: cada panel solo se dibuja si la persona tiene acceso al seguimiento del módulo -#}
         <div class="mb-6 grid gap-4 xl:grid-cols-2">
             <twig:Dashboard:FctPanel />
