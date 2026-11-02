@@ -63,6 +63,12 @@ abstract class AbstractTrackingPanel
      */
     abstract protected function expressions(): array;
 
+    /** Unidades en que se guardan las horas por cada hora (100 en FCT y FFEOE, 1 en FP dual). */
+    public function hoursDivisor(): int
+    {
+        return 100;
+    }
+
     abstract public function listRoute(): string;
 
     abstract public function module(): string;

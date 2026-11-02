@@ -20,7 +20,7 @@
             <a href="{{ url }}" class="block px-5 py-4 transition hover:bg-gray-50{% if s.team %} border-b border-gray-200{% endif %}">
                 <p class="text-sm font-medium text-gray-900">{{ 'dashboard.tracking.own'|trans({}, 'menu') }}</p>
                 <div class="mt-2 flex items-baseline justify-between text-sm text-gray-600">
-                    <span><span class="text-3xl font-semibold tracking-tight text-brand-700">{{ (s.own.locked / 100)|round }}</span> / {{ 'dashboard.tracking.hours'|trans({count: s.own.hours / 100}, 'menu') }}</span>
+                    <span><span class="text-3xl font-semibold tracking-tight text-brand-700">{{ (s.own.locked / this.hoursDivisor)|round }}</span> / {{ 'dashboard.tracking.hours'|trans({count: (s.own.hours / this.hoursDivisor)|round}, 'menu') }}</span>
                     <span>{{ percent }} %</span>
                 </div>
                 <div class="mt-2 h-2 overflow-hidden rounded-full bg-gray-100" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ percent }}">

@@ -52,7 +52,7 @@ class DashboardTest extends AppWebTestCase
         $this->login($this->getUser('alfa.admin'));
         $crawler = $this->client->request('GET', '/');
         $panels = $crawler->filter('main section')->each(fn ($n) => $n->text());
-        self::assertCount(2, $panels);
+        self::assertCount(3, $panels);
         self::assertStringContainsString('Empiezan pronto', $panels[0]);
         self::assertStringContainsString('Con faltas sin justificar', $panels[0]);
         self::assertStringContainsString('Convenios sin firmar', $panels[0]);
@@ -66,6 +66,73 @@ class DashboardTest extends AppWebTestCase
         $text = $crawler->filter('main')->text();
         self::assertStringContainsString('Con faltas sin justificar', $text);
         self::assertStringNotContainsString('Convenios sin firmar', $text);
+    }
+
+    public static function datedTablesProvider(): iterable
+    {
+        yield 'FCT' => ['FCT', 'wpt_agreement'];
+        yield 'FFEOE' => ['FFEOE', 'itp_student_program_workcenter'];
+        yield 'FP dual' => ['Dual', 'wlt_agreement'];
+    }
+
+    /**
+     * Los contadores dependen de las fechas: se cambian las de todos los convenios y se comprueba que las cifras se
+     * reparten entre «en prácticas ahora», «empiezan pronto» y «finalizadas sin cerrar».
+     *
+     * @dataProvider datedTablesProvider
+     */
+    public function testCountersFollowTheDatesOfTheAssignments(string $panelTitle, string $table): void
+    {
+        $connection = static::getContainer()->get('doctrine')->getConnection();
+        $today = new \DateTimeImmutable('today');
+        $setDates = static fn (string $from, string $to) => $connection->executeStatement(
+            "UPDATE $table SET start_date = ?, end_date = ?",
+            [$today->modify($from)->format('Y-m-d'), $today->modify($to)->format('Y-m-d')]
+        );
+        $this->login($this->getUser('alfa.admin'));
+
+        $setDates('-5 days', '+5 days');
+        $now = $this->counters($panelTitle);
+        self::assertGreaterThan(0, $now['En prácticas ahora'], 'el administrador de demostración tiene asignaciones');
+        self::assertSame(0, $now['Empiezan pronto']);
+
+        $setDates('+5 days', '+30 days');
+        $soon = $this->counters($panelTitle);
+        self::assertSame(0, $soon['En prácticas ahora']);
+        self::assertSame($now['En prácticas ahora'], $soon['Empiezan pronto']);
+
+        $setDates('+60 days', '+90 days');
+        $later = $this->counters($panelTitle);
+        self::assertSame(0, $later['En prácticas ahora']);
+        self::assertSame(0, $later['Empiezan pronto']);
+
+        $setDates('-60 days', '-1 day');
+        $past = $this->counters($panelTitle);
+        self::assertSame(0, $past['En prácticas ahora']);
+        self::assertSame(0, $past['Empiezan pronto']);
+        self::assertGreaterThan(0, $past['Finalizadas sin cerrar'], 'con jornadas sin bloquear');
+        self::assertLessThanOrEqual($now['En prácticas ahora'], $past['Finalizadas sin cerrar']);
+    }
+
+    /** @return array<string, int> cifra de cada contador del panel cuyo título empieza por $panelTitle */
+    private function counters(string $panelTitle): array
+    {
+        $crawler = $this->client->request('GET', '/');
+        self::assertResponseIsSuccessful();
+        $counters = [];
+        foreach ($crawler->filter('main section') as $section) {
+            $node = new \Symfony\Component\DomCrawler\Crawler($section);
+            if (!str_starts_with(trim($node->filter('h2')->text()), $panelTitle)) {
+                continue;
+            }
+            foreach ($node->filter('dl a') as $tile) {
+                $tile = new \Symfony\Component\DomCrawler\Crawler($tile);
+                $counters[trim($tile->filter('dt')->text())] = (int) trim($tile->filter('dd')->text());
+            }
+        }
+        self::assertNotEmpty($counters, "no hay panel «$panelTitle»");
+
+        return $counters;
     }
 
     public function testPersonalDataIsNotOfferedInTheMainMenuCards(): void
