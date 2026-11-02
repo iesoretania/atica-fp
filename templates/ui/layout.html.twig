@@ -147,30 +147,35 @@
                 {#- «last_url» (URL del último enlace de las migas) la usan las plantillas hijas para el botón «Volver» -#}
                 {% set last_url = '' %}
                 {% set crumbs = [] %}
+                {#- Datos de contexto sin enlace (persona, empresa, curso...): salen como subtítulo, no en la miga -#}
+                {% set context = [] %}
+                {% set page_title = title is defined ? title : '' %}
                 {% for menu_item in module_extension.pathByRouteName(menu_path|default(app.current_route)) %}
                     {% set crumb_url = (not loop.last or (breadcrumb is defined and breadcrumb)) ? path(menu_item.routeName, menu_item.routeParams) : null %}
                     {% set last_url = crumb_url ?? last_url %}
                     {% set crumbs = crumbs|merge([{
                         url: crumb_url,
-                        icon: menu_item.icon,
+                        icon: loop.first ? 'house' : menu_item.icon,
+                        home: loop.first,
                         text: loop.first ? user_extension.currentOrganization.name : (menu_item.caption ? menu_item.caption|trans({}, menu_item.module is not empty ? 'module_' ~ menu_item.module : 'menu') : ''),
                     }]) %}
                 {% endfor %}
                 {% for item in breadcrumb|default([]) %}
                     {% set crumb_url = item.routeName is defined ? path(item.routeName, item.routeParams ?: {}) : null %}
                     {% set last_url = crumb_url ?? last_url %}
-                    {% set crumbs = crumbs|merge([{
-                        url: crumb_url,
-                        icon: item.icon|default(null),
-                        text: (item.caption is defined ? item.caption|trans({}, item.module is defined and item.module is not empty ? 'module_' ~ item.module : 'menu') : '') ~ item.fixed|default(''),
-                    }]) %}
+                    {% set crumb_text = (item.caption is defined ? item.caption|trans({}, item.module is defined and item.module is not empty ? 'module_' ~ item.module : 'menu') : '') ~ item.fixed|default('') %}
+                    {% if crumb_url %}
+                        {% set crumbs = crumbs|merge([{url: crumb_url, icon: item.icon|default(null), home: false, text: crumb_text}]) %}
+                    {% elseif crumb_text != '' and crumb_text|lower not in page_title|lower %}
+                        {% set context = context|merge([crumb_text]) %}
+                    {% endif %}
                 {% endfor %}
                 {% for crumb in crumbs %}
-                    {% if not loop.first %}<li aria-hidden="true" class="text-gray-300">/</li>{% endif %}
-                    <li class="inline-flex items-center gap-1.5{% if loop.last %} font-medium text-gray-700{% endif %}"{% if loop.last %} aria-current="page"{% endif %}>
-                        {% if crumb.url %}<a href="{{ crumb.url }}" class="inline-flex items-center gap-1.5 hover:text-brand-700">{% endif %}
-                        {% if crumb.icon %}<twig:Ui:Icon name="{{ crumb.icon }}" class="size-3.5" />{% endif %}
-                        {{ crumb.text }}
+                    {% if not loop.first %}<li aria-hidden="true" class="text-gray-400">&gt;</li>{% endif %}
+                    <li class="inline-flex min-w-0 items-center gap-1.5{% if loop.last %} font-medium text-gray-700{% endif %}"{% if loop.last and not crumb.url %} aria-current="page"{% endif %}>
+                        {% if crumb.url %}<a href="{{ crumb.url }}" class="inline-flex min-w-0 items-center gap-1.5 hover:text-brand-700"{% if crumb.home %} aria-label="{{ crumb.text }}" title="{{ crumb.text }}"{% endif %}>{% endif %}
+                        {% if crumb.icon %}<twig:Ui:Icon name="{{ crumb.icon }}" class="size-3.5 shrink-0" />{% endif %}
+                        {% if crumb.home %}<span class="sr-only">{{ crumb.text }}</span>{% else %}<span class="max-w-[16rem] truncate" title="{{ crumb.text }}">{{ crumb.text }}</span>{% endif %}
                         {% if crumb.url %}</a>{% endif %}
                     </li>
                 {% endfor %}
@@ -178,7 +183,10 @@
 
             {% block content_header %}
                 {% if title is defined and (show_title is not defined or show_title == true) %}
-                    <h1 class="mb-6 text-2xl font-semibold tracking-tight text-gray-900">{% block content_title %}{{ title }}{% endblock %}</h1>
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-semibold tracking-tight text-gray-900">{% block content_title %}{{ title }}{% endblock %}</h1>
+                        {% if context %}<p class="mt-1 text-sm text-gray-500">{{ context|join(' · ') }}</p>{% endif %}
+                    </div>
                 {% endif %}
                 {% include 'ui/partial_flash.html.twig' %}
             {% endblock %}

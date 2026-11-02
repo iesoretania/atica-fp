@@ -4,11 +4,14 @@
 
 {# El título lleva a su derecha el botón «hoy» #}
 {% block content_header %}
-    <div class="mb-6 flex flex-wrap items-center gap-3">
-        <h1 class="text-2xl font-semibold tracking-tight text-gray-900">{{ title }}</h1>
-        {% if work_day_today %}
-            {{ m.link_button(path('in_company_training_phase_tracking_calendar_form', {'workDay': work_day_today.id}), 'calendar-day', 'btn-primary btn-sm', 'form.today'|trans) }}
-        {% endif %}
+    <div class="mb-6">
+        <div class="flex flex-wrap items-center gap-3">
+            <h1 class="text-2xl font-semibold tracking-tight text-gray-900">{{ title }}</h1>
+            {% if work_day_today %}
+                {{ m.link_button(path('in_company_training_phase_tracking_calendar_form', {'workDay': work_day_today.id}), 'calendar-day', 'btn-primary btn-sm', 'form.today'|trans) }}
+            {% endif %}
+        </div>
+        {% if context %}<p class="mt-1 text-sm text-gray-500">{{ context|join(' · ') }}</p>{% endif %}
     </div>
     {% include 'ui/partial_flash.html.twig' %}
 {% endblock %}
