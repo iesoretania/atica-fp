@@ -35,6 +35,7 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
     public function findByGroups($groups)
     {
         return $this->createQueryBuilder('se')
+            ->addSelect('s', 'g', 'gr', 't', 'a')
             ->join('se.person', 's')
             ->join('se.group', 'g')
             ->join('g.grade', 'gr')
@@ -57,6 +58,7 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
     public function findInListByAcademicYear($items, AcademicYear $academicYear)
     {
         return $this->createQueryBuilder('se')
+            ->addSelect('p', 'g', 'gr', 't')
             ->join('se.person', 'p')
             ->join('se.group', 'g')
             ->join('g.grade', 'gr')
@@ -89,6 +91,7 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
     public function findByAcademicYearNameAndSurname(AcademicYear $academicYear, $firstName, $lastName)
     {
         return $this->createQueryBuilder('se')
+            ->addSelect('p', 'g', 'gr', 't')
             ->join('se.person', 'p')
             ->join('se.group', 'g')
             ->join('g.grade', 'gr')
@@ -105,6 +108,7 @@ class StudentEnrollmentRepository extends ServiceEntityRepository
     public function findByGroup(Group $getGroup): array
     {
         return $this->createQueryBuilder('se')
+            ->addSelect('g', 'p')
             ->join('se.group', 'g')
             ->join('se.person', 'p')
             ->where('g = :group')

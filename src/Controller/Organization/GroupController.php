@@ -20,6 +20,8 @@ namespace App\Controller\Organization;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Group;
+use App\Entity\Edu\StudentEnrollment;
+use App\Entity\Edu\Teaching;
 use App\Form\Type\Edu\GroupType;
 use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\Edu\GroupRepository;
@@ -57,6 +59,17 @@ class GroupController extends AbstractController
         if (!$group instanceof Group) {
             $group = new Group();
             $em->persist($group);
+        }
+
+        if ($group->getId() !== null) {
+            // El alumnado y la docencia del grupo se muestran en la pantalla: se cargan ya con sus personas y
+            // materias para no lanzar una consulta por cada fila
+            $em->createQuery('SELECT se, p FROM ' . StudentEnrollment::class . ' se JOIN se.person p WHERE se.group = :group')
+                ->setParameter('group', $group)
+                ->getResult();
+            $em->createQuery('SELECT t, su, te, tp FROM ' . Teaching::class . ' t JOIN t.subject su JOIN t.teacher te JOIN te.person tp WHERE t.group = :group')
+                ->setParameter('group', $group)
+                ->getResult();
         }
 
         $form = $this->createForm(GroupType::class, $group);

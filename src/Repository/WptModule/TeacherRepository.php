@@ -44,6 +44,7 @@ class TeacherRepository extends EduTeacherRepository
     public function findByAcademicYear(AcademicYear $academicYear)
     {
         return $this->createQueryBuilder('t')
+            ->addSelect('p')
             ->join('t.person', 'p')
             ->join(
                 AgreementEnrollment::class,

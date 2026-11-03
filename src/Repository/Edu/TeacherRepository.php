@@ -65,6 +65,7 @@ class TeacherRepository extends ServiceEntityRepository
     public function findOneByAcademicYearAndPerson(AcademicYear $academicYear, Person $person)
     {
         return $this->createQueryBuilder('t')
+            ->addSelect('p')
             ->join('t.person', 'p')
             ->where('p = :person')
             ->andWhere('t.academicYear = :academic_year')
@@ -78,6 +79,7 @@ class TeacherRepository extends ServiceEntityRepository
     {
         try {
             return $this->createQueryBuilder('t')
+                ->addSelect('p')
                 ->join('t.person', 'p')
                 ->andWhere('t.academicYear = :academic_year')
                 ->andWhere('p.internalCode = :internal_code')
@@ -94,6 +96,8 @@ class TeacherRepository extends ServiceEntityRepository
     public function findByGroups($groups)
     {
         return $this->createQueryBuilder('t')
+            ->addSelect('p')
+            ->join('t.person', 'p')
             ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
             ->andWhere('te.group IN (:groups)')
             ->setParameter('groups', $groups)
@@ -104,6 +108,7 @@ class TeacherRepository extends ServiceEntityRepository
     public function findByGroup(Group $group): array
     {
         return $this->createQueryBuilder('t')
+            ->addSelect('p')
             ->join('t.person', 'p')
             ->join(Teaching::class, 'te', 'WITH', 'te.teacher = t')
             ->andWhere('te.group = :group')
@@ -119,6 +124,7 @@ class TeacherRepository extends ServiceEntityRepository
         AcademicYear $academicYear
     ) {
         return $this->createQueryBuilder('t')
+            ->addSelect('p')
             ->join('t.person', 'p')
             ->where('t.id IN (:items)')
             ->andWhere('t.academicYear = :academic_year')

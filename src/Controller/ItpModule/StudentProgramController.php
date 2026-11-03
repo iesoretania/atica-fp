@@ -67,6 +67,8 @@ class StudentProgramController extends AbstractController
             $q
         );
 
+        $studentProgramRepository->preloadWorkcentersByProgramGroup($programGroup);
+
         $totalActivities = $programGradeRepository->countActivities($programGroup->getProgramGrade());
         $workDaysStats = $programGroupRepository->getStudentEnrollmentWorkDaysStats($programGroup);
         $activitiesStats = $programGroupRepository->getStudentEnrollmentActivitiesStats($programGroup);

@@ -4,6 +4,12 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.7.1 (2026-11-03)
+------------------
+* perf: Se eliminan las consultas N+1 en los listados y formularios de alumnado, profesorado, grupos y estancias de la FFEOE: las personas, asignaciones docentes y estancias se cargan junto a la lista en lugar de una consulta por fila
+* perf: La lista de centros del usuario se calcula una vez por petición
+* chore: Una prueba nueva detecta las consultas repetidas en las pantallas con listas
+
 7.7.0 (2026-10-31)
 ------------------
 * feat: Permitir exportar estado de estancias de FFEOE en formato CSV

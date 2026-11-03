@@ -19,9 +19,13 @@
 namespace App\Service\Organization;
 
 use App\Entity\Person;
+use Symfony\Contracts\Service\ResetInterface;
 
-class OrganizationBuilderChain
+class OrganizationBuilderChain implements ResetInterface
 {
+    /** @var array<int, array> organizaciones ya calculadas en esta petición, por persona */
+    private array $cache = [];
+
     /**
      * @param OrganizationBuilderInterface[] $organizationBuilders
      */
@@ -29,7 +33,30 @@ class OrganizationBuilderChain
     {
     }
 
+    public function reset(): void
+    {
+        $this->cache = [];
+    }
+
+    /**
+     * Cada constructor lanza varias consultas y la lista se pide varias veces en la misma petición (menú, selector
+     * de centro, comprobaciones...): se calcula una sola vez por persona.
+     */
     final public function getOrganizations(Person $person) : array
+    {
+        $key = (int) $person->getId();
+        if ($key !== 0 && isset($this->cache[$key])) {
+            return $this->cache[$key];
+        }
+        $organizations = $this->buildOrganizations($person);
+        if ($key !== 0) {
+            $this->cache[$key] = $organizations;
+        }
+
+        return $organizations;
+    }
+
+    private function buildOrganizations(Person $person): array
     {
         $organizations = [];
         foreach ($this->organizationBuilders as $organizationBuilder) {

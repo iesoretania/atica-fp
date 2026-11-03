@@ -63,6 +63,26 @@ class StudentProgramRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Carga en memoria las estancias del grupo con su centro de trabajo, empresa y tutores, de modo que
+     * mostrarlas en una lista no lance una consulta por cada estudiante.
+     */
+    public function preloadWorkcentersByProgramGroup(ProgramGroup $programGroup): void
+    {
+        $this->createQueryBuilder('sp')
+            ->select('sp', 'spw', 'wc', 'co', 'et', 'etp', 'wt')
+            ->join('sp.studentProgramWorkcenters', 'spw')
+            ->leftJoin('spw.workcenter', 'wc')
+            ->leftJoin('wc.company', 'co')
+            ->leftJoin('spw.educationalTutor', 'et')
+            ->leftJoin('et.person', 'etp')
+            ->leftJoin('spw.workTutor', 'wt')
+            ->where('sp.programGroup = :programGroup')
+            ->setParameter('programGroup', $programGroup)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function persist(StudentProgram $studentProgram): void
     {
         $this->getEntityManager()->persist($studentProgram);
@@ -87,6 +107,7 @@ class StudentProgramRepository extends ServiceEntityRepository
     final public function findAllInListByIdAndProgramGroup(array $items, ProgramGroup $programGroup): array
     {
         return $this->createQueryBuilder('sp')
+            ->addSelect('se', 'p')
             ->join('sp.studentEnrollment', 'se')
             ->join('se.person', 'p')
             ->where('sp.programGroup = :program_group')

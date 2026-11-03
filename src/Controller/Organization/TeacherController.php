@@ -170,11 +170,15 @@ class TeacherController extends AbstractController
 
         $queryBuilder
             ->select('t')
-            ->addSelect('p')
+            ->addSelect('p', 'te', 'su', 'g')
             ->from(Teacher::class, 't')
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName')
-            ->innerJoin('t.person', 'p');
+            ->innerJoin('t.person', 'p')
+            // la docencia de cada profesor se muestra en la tabla: se carga junto a la lista
+            ->leftJoin('t.teachings', 'te')
+            ->leftJoin('te.subject', 'su')
+            ->leftJoin('te.group', 'g');
 
         $q = $request->get('q');
         if ($q) {
@@ -192,7 +196,8 @@ class TeacherController extends AbstractController
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear);
 
-        $adapter = new QueryAdapter($queryBuilder, false);
+        // la consulta trae una colección (docencia): la paginación debe contar profesores, no filas
+        $adapter = new QueryAdapter($queryBuilder, true);
         $pager = new Pagerfanta($adapter);
         try {
             $pager
