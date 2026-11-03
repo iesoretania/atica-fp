@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 class MpdfService
 {
     /** Clave de la fuente en mPDF: minúsculas y sin espacios, como las que trae mPDF (dejavusans...) */
-    public const string FONT_NAME = 'sourcesanspro';
+    public const FONT_NAME = 'sourcesanspro';
 
     private bool $addDefaultConstructorArgs = true;
 

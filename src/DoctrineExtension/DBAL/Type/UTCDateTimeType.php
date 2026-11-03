@@ -6,8 +6,8 @@
 namespace App\DoctrineExtension\DBAL\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\DateTimeType;
-use Doctrine\DBAL\Types\Exception\InvalidFormat;
 
 class UTCDateTimeType extends DateTimeType
 {
@@ -41,7 +41,7 @@ class UTCDateTimeType extends DateTimeType
         $val = \DateTime::createFromFormat($platform->getDateTimeFormatString(), $value, self::$utc);
 
         if (!$val) {
-            throw InvalidFormat::new($value, self::class, $platform->getDateTimeFormatString());
+            throw ConversionException::conversionFailedFormat($value, $this->getName(), $platform->getDateTimeFormatString());
         }
 
         return $val;

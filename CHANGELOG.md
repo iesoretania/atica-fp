@@ -4,6 +4,14 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+8.0.1 (2026-11-03)
+------------------
+* fix: Los avisos muestran los saltos de línea como saltos reales en lugar de «<br />»
+* fix: El botón «Nuevo...» de los listados apunta a su formulario
+* fix: Los campos de fecha y hora se ven en móviles táctiles (iOS no dibujaba su marco)
+* fix: Un valor de fecha no válido en la base de datos lanza la excepción de conversión de Doctrine en lugar de un error de clase inexistente
+* ci: Los tests instalan las librerías de JavaScript y compilan Tailwind antes de ejecutarse, con más memoria, y el análisis estático pasa de nuevo
+
 8.0.0 (2026-11-02)
 ------------------
 * feat: Nueva interfaz en toda la aplicación (Tailwind CSS, menú lateral, listados y formularios dinámicos, selectores con búsqueda y editor de texto enriquecido Quill); se retiran Bootstrap, jQuery, Select2, Font Awesome y CKEditor
