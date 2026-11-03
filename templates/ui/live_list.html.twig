@@ -23,7 +23,7 @@
         {% endif %}
     </div>
     {#- Filtros propios del listado (this.filterDefinitions), en la misma fila que el buscador -#}
-    {% for key, definition in this.filterDefinitions %}
+    {% for key, definition in this.definedFilters %}
         <label class="text-xs font-medium text-gray-600">
             <span class="mb-1 block">{{ definition.label }}</span>
             {% if definition.type == 'select' %}

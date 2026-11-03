@@ -61,6 +61,12 @@ final class StudentProgramList extends AbstractListComponent
         ];
     }
 
+    /** La consulta trae también las estancias de cada estudiante (colección). */
+    protected function fetchJoinCollection(): bool
+    {
+        return true;
+    }
+
     protected function sortableColumns(): array
     {
         return ['student' => ['s.lastName', 's.firstName']];
@@ -70,6 +76,14 @@ final class StudentProgramList extends AbstractListComponent
     {
         $queryBuilder = $this->studentProgramRepository
             ->createByProgramGroupQueryBuilder($this->programGroup, $this->q !== '' ? $this->q : null)
+            // estancias de cada estudiante con su centro de trabajo, empresa y tutores (se muestran en la tabla)
+            ->addSelect('spw', 'wc', 'co', 'et', 'etp', 'wt')
+            ->leftJoin('sp.studentProgramWorkcenters', 'spw')
+            ->leftJoin('spw.workcenter', 'wc')
+            ->leftJoin('wc.company', 'co')
+            ->leftJoin('spw.educationalTutor', 'et')
+            ->leftJoin('et.person', 'etp')
+            ->leftJoin('spw.workTutor', 'wt')
             ->orderBy('s.lastName')
             ->addOrderBy('s.firstName');
 

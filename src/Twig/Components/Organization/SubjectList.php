@@ -17,13 +17,23 @@ final class SubjectList extends AbstractAcademicYearList
         return ['name' => 's.name', 'grade' => 'g.name'];
     }
 
+    /** La consulta trae también las asignaciones docentes de cada materia (colección). */
+    protected function fetchJoinCollection(): bool
+    {
+        return true;
+    }
+
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()
-            ->select('s', 'g')
+            ->select('s', 'g', 'te', 'tt', 'tp', 'tg')
             ->from(Subject::class, 's')
             ->join('s.grade', 'g')
             ->join('g.training', 't')
+            ->leftJoin('s.teachings', 'te')
+            ->leftJoin('te.teacher', 'tt')
+            ->leftJoin('tt.person', 'tp')
+            ->leftJoin('te.group', 'tg')
             ->orderBy('s.name');
 
         if ($this->q !== '') {

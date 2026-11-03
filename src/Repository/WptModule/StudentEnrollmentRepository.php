@@ -27,6 +27,7 @@ class StudentEnrollmentRepository extends EduStudentEnrollmentRepository
         Shift $shift
     ) {
         return $this->createQueryBuilder('se')
+            ->addSelect('s', 'g', 'gr', 't', 'a')
             ->join('se.person', 's')
             ->join('se.group', 'g')
             ->join('g.grade', 'gr')

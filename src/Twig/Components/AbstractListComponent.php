@@ -81,6 +81,9 @@ abstract class AbstractListComponent
 
     private ?Pagerfanta $pager = null;
 
+    /** @var array<string, array{type: string, label: string, choices?: array<string, string>}>|null */
+    private ?array $filterDefinitionsCache = null;
+
     #[Required]
     public function setListDependencies(
         ManagerRegistry $registry,
@@ -112,6 +115,17 @@ abstract class AbstractListComponent
     public function filterDefinitions(): array
     {
         return [];
+    }
+
+    /**
+     * filterDefinitions() calculada una sola vez por renderizado: las opciones de los filtros salen de consultas
+     * y se necesitan varias veces (plantilla, validación de cada filtro, «chips» activos...).
+     *
+     * @return array<string, array{type: string, label: string, choices?: array<string, string>}>
+     */
+    public function definedFilters(): array
+    {
+        return $this->filterDefinitionsCache ??= $this->filterDefinitions();
     }
 
     /**
@@ -162,7 +176,7 @@ abstract class AbstractListComponent
      */
     protected function filter(string $key): string
     {
-        $definition = $this->filterDefinitions()[$key] ?? null;
+        $definition = $this->definedFilters()[$key] ?? null;
         $value = $this->filters[$key] ?? '';
         if ($definition === null || !is_scalar($value) || (string) $value === '') {
             return '';
@@ -184,7 +198,7 @@ abstract class AbstractListComponent
     public function activeFilters(): array
     {
         $active = [];
-        foreach ($this->filterDefinitions() as $key => $definition) {
+        foreach ($this->definedFilters() as $key => $definition) {
             $value = $this->filter($key);
             if ($value !== '') {
                 $active[] = [
@@ -208,7 +222,7 @@ abstract class AbstractListComponent
     /** @return list<string> claves de los filtros definidos (las usa live-history para leer la URL) */
     public function filterKeys(): array
     {
-        return array_keys($this->filterDefinitions());
+        return array_keys($this->definedFilters());
     }
 
     public function getPager(): Pagerfanta

@@ -17,12 +17,21 @@ final class TeacherList extends AbstractAcademicYearList
         return ['name' => ['p.lastName', 'p.firstName']];
     }
 
+    /** La consulta trae también las asignaciones docentes de cada profesor (colección). */
+    protected function fetchJoinCollection(): bool
+    {
+        return true;
+    }
+
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()
-            ->select('t', 'p')
+            ->select('t', 'p', 'te', 'su', 'g')
             ->from(Teacher::class, 't')
             ->innerJoin('t.person', 'p')
+            ->leftJoin('t.teachings', 'te')
+            ->leftJoin('te.subject', 'su')
+            ->leftJoin('te.group', 'g')
             ->orderBy('p.lastName')
             ->addOrderBy('p.firstName');
 

@@ -87,6 +87,7 @@ class StudentProgramRepository extends ServiceEntityRepository
     final public function findAllInListByIdAndProgramGroup(array $items, ProgramGroup $programGroup): array
     {
         return $this->createQueryBuilder('sp')
+            ->addSelect('se', 'p')
             ->join('sp.studentEnrollment', 'se')
             ->join('se.person', 'p')
             ->where('sp.programGroup = :program_group')
