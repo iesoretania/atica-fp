@@ -4,6 +4,12 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+8.0.2 (2026-11-03)
+------------------
+* perf: Se eliminan las consultas N+1 en los listados y formularios de alumnado, profesorado, materias, grupos y estancias de la FFEOE: las personas, asignaciones docentes y estancias se cargan junto a la lista en lugar de una consulta por fila
+* perf: Los listados dinámicos calculan sus filtros una vez por renderizado y la lista de centros del usuario se calcula una vez por petición
+* chore: Una prueba nueva detecta las consultas repetidas en las pantallas con listas
+
 8.0.1 (2026-11-03)
 ------------------
 * fix: Los avisos muestran los saltos de línea como saltos reales en lugar de «<br />»
