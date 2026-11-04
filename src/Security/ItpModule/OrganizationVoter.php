@@ -33,9 +33,13 @@ use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
+use Symfony\Contracts\Service\ResetInterface;
 
-class OrganizationVoter extends CachedVoter
+class OrganizationVoter extends CachedVoter implements ResetInterface
 {
+    /** @var array<string, array<string, bool>> relaciones ya calculadas en esta petición, por persona y organización */
+    private array $relationshipsCache = [];
+
     public const ITP_ACCESS_SECTION = 'ORGANIZATION_ACCESS_IN_COMPANY_TRAINING_PHASE';
     public const ITP_MANAGER = 'ORGANIZATION_MANAGE_IN_COMPANY_TRAINING_PHASE';
 
@@ -65,6 +69,47 @@ class OrganizationVoter extends CachedVoter
         private readonly TeacherRepository $teacherRepository,
     ) {
         parent::__construct($cacheItemPoolItemPool);
+    }
+
+    public function reset(): void
+    {
+        $this->relationshipsCache = [];
+    }
+
+    /**
+     * Relaciones de la persona con las estancias de FFEOE del curso actual. Cada atributo del voter las necesita
+     * todas y se evalúan varios por petición (menús, escritorio, pantallas): se calculan una sola vez por petición.
+     *
+     * @return array{isItpStudent: bool, isItpManager: bool, isGroupTutor: bool, isEducationalTutor: bool, isItpTeacher: bool, isWorkTutor: bool}
+     */
+    private function relationships(Person $user, Organization $organization): array
+    {
+        $academicYear = $organization->getCurrentAcademicYear();
+        $key = $user->getId() . '_' . $organization->getId() . '_' . $academicYear?->getId();
+        if (isset($this->relationshipsCache[$key])) {
+            return $this->relationshipsCache[$key];
+        }
+
+        $teacher = $this->teacherRepository->findOneByPersonAndAcademicYear($user, $academicYear);
+        $isItpManager = false;
+        $isGroupTutor = false;
+        $isEducationalTutor = false;
+        $isItpTeacher = false;
+        if ($teacher instanceof Teacher) {
+            $isItpManager = count($this->programGroupRepository->findByManager($teacher)) > 0;
+            $isGroupTutor = count($this->programGroupRepository->findByTutor($teacher)) > 0;
+            $isEducationalTutor = count($this->studentProgramWorkcenterRepository->findByEducationalTutorOrAdditionalEducationalTutor($teacher)) > 0;
+            $isItpTeacher = $this->programGroupRepository->countByTeacher($teacher) > 0;
+        }
+
+        return $this->relationshipsCache[$key] = [
+            'isItpStudent' => $this->studentProgramWorkcenterRepository->countByStudentAndAcademicYear($user, $academicYear) > 0,
+            'isItpManager' => $isItpManager,
+            'isGroupTutor' => $isGroupTutor,
+            'isEducationalTutor' => $isEducationalTutor,
+            'isItpTeacher' => $isItpTeacher,
+            'isWorkTutor' => count($this->studentProgramWorkcenterRepository->findByWorkTutorOrAdditionalWorkTutorAndAcademicYear($user, $academicYear)) > 0,
+        ];
     }
 
     /**
@@ -128,21 +173,15 @@ class OrganizationVoter extends CachedVoter
             return true;
         }
 
-        $teacher = $this->teacherRepository->findOneByPersonAndAcademicYear($user, $subject->getCurrentAcademicYear());
         $isDepartmentHead = $this->decisionManager->decide($token, [EduOrganizationVoter::EDU_DEPARTMENT_HEAD], $subject);
-        $isItpStudent = $this->studentProgramWorkcenterRepository->countByStudentAndAcademicYear($user, $subject->getCurrentAcademicYear()) > 0;
-        if ($teacher instanceof Teacher) {
-            $isItpManager =  count($this->programGroupRepository->findByManager($teacher)) > 0;
-            $isGroupTutor = count($this->programGroupRepository->findByTutor($teacher)) > 0;
-            $isStudentProgramWorkcenterEducationalTutor = count($this->studentProgramWorkcenterRepository->findByEducationalTutorOrAdditionalEducationalTutor($teacher)) > 0;
-            $isItpTeacher = $this->programGroupRepository->countByTeacher($teacher) > 0;
-        } else {
-            $isItpManager = false;
-            $isGroupTutor = false;
-            $isStudentProgramWorkcenterEducationalTutor = false;
-            $isItpTeacher = false;
-        }
-        $isStudentProgramWorkcenterWorkTutor = count($this->studentProgramWorkcenterRepository->findByWorkTutorOrAdditionalWorkTutorAndAcademicYear($user, $subject->getCurrentAcademicYear())) > 0;
+        [
+            'isItpStudent' => $isItpStudent,
+            'isItpManager' => $isItpManager,
+            'isGroupTutor' => $isGroupTutor,
+            'isEducationalTutor' => $isStudentProgramWorkcenterEducationalTutor,
+            'isItpTeacher' => $isItpTeacher,
+            'isWorkTutor' => $isStudentProgramWorkcenterWorkTutor,
+        ] = $this->relationships($user, $subject);
 
         switch ($attribute) {
             case self::ITP_STUDENT:
