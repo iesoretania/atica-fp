@@ -29,6 +29,18 @@ class QueryCountTest extends AppWebTestCase
             '/formacion/plan/curso/grupo/estudiante/listar/1',
             '/dual/contacto/listar/1',
             '/dual/reunion/listar/1',
+            '/centro/ensenanza/listar/1',
+            '/centro/nivel/listar/1',
+            '/centro/cursoacademico/listar',
+            '/centro/encuesta/listar',
+            '/empresa/listar',
+            '/fct/convocatoria/listar/1',
+            '/fct/seguimiento/acuerdo/listar/1',
+            '/formacion/plan/listar/1',
+            '/formacion/contacto/listar/1',
+            '/formacion/valoracion/evaluacion/1',
+            '/dual/proyecto/listar',
+            '/',
         ] as $url) {
             yield $url => [$url];
         }
