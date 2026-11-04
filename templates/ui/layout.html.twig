@@ -24,7 +24,11 @@
            data-sidebar-target="panel">
         {# Cabecera: logo y nombre de la aplicación #}
         <a href="{{ path('frontpage') }}" class="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-5 transition-colors hover:bg-brand-900">
-            {% if app_logo_navbar %}<img src="{{ asset(app_logo_navbar) }}" alt="" class="h-8 w-auto shrink-0">{% endif %}
+            {% if app_logo_navbar %}
+                <img src="{{ asset(app_logo_navbar) }}" alt="" class="h-9 w-auto max-w-12 shrink-0 object-contain">
+            {% else %}
+                <img src="{{ asset('logo-icon.png') }}" alt="" class="size-9 shrink-0 rounded-lg object-contain">
+            {% endif %}
             <span class="min-w-0">
                 <span class="block truncate text-sm font-semibold leading-none text-white">{{ app_name }}</span>
                 {% if app_version %}<span class="mt-1 block text-xs text-brand-300">v{{ app_version }}</span>{% endif %}
