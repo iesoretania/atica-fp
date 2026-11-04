@@ -145,6 +145,16 @@ abstract class AbstractListComponent
         return false;
     }
 
+    /**
+     * Gancho para cargar de una vez lo que la plantilla muestra de cada fila de la página (colecciones, recuentos...)
+     * y no lanzar una consulta por fila. Recibe las filas de la página actual.
+     *
+     * @param list<mixed> $items
+     */
+    protected function preload(array $items): void
+    {
+    }
+
     protected function organization(): Organization
     {
         return $this->userExtensionService->getCurrentOrganization();
@@ -240,6 +250,10 @@ abstract class AbstractListComponent
                 $this->page = 1;
             }
             $this->pager = $pager;
+            $items = iterator_to_array($pager->getCurrentPageResults(), false);
+            if ($items !== []) {
+                $this->preload($items);
+            }
         }
 
         return $this->pager;

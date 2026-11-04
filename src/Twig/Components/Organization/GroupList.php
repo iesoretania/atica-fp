@@ -17,6 +17,29 @@ final class GroupList extends AbstractAcademicYearList
         return ['name' => 'g.name', 'grade' => 'gr.name'];
     }
 
+    /** La tabla muestra la tutoría y el alumnado de cada grupo: se cargan de una vez con sus personas. */
+    protected function preload(array $items): void
+    {
+        $this->newQueryBuilder()
+            ->select('g', 'tu', 'tup')
+            ->from(Group::class, 'g')
+            ->leftJoin('g.tutors', 'tu')
+            ->leftJoin('tu.person', 'tup')
+            ->where('g IN (:groups)')
+            ->setParameter('groups', $items)
+            ->getQuery()
+            ->getResult();
+        $this->newQueryBuilder()
+            ->select('g', 'se', 'sep')
+            ->from(Group::class, 'g')
+            ->leftJoin('g.enrollments', 'se')
+            ->leftJoin('se.person', 'sep')
+            ->where('g IN (:groups)')
+            ->setParameter('groups', $items)
+            ->getQuery()
+            ->getResult();
+    }
+
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()

@@ -38,6 +38,7 @@ class GroupRepository extends ServiceEntityRepository
     public function findByOrganization(Organization $organization)
     {
         return $this->createQueryBuilder('g')
+            ->addSelect('gr', 't', 'a')
             ->innerJoin('g.grade', 'gr')
             ->innerJoin('gr.training', 't')
             ->join('t.academicYear', 'a')

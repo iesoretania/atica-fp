@@ -34,10 +34,23 @@ final class LearningProgramList extends AbstractListComponent
         return ['company' => 'c.name', 'items' => 'items'];
     }
 
+    /** La tabla muestra el número de realizaciones de cada programa: se cargan de una vez. */
+    protected function preload(array $items): void
+    {
+        $this->newQueryBuilder()
+            ->select('cp', 'ar')
+            ->from(LearningProgram::class, 'cp')
+            ->leftJoin('cp.activityRealizations', 'ar')
+            ->where('cp IN (:programs)')
+            ->setParameter('programs', $items)
+            ->getQuery()
+            ->getResult();
+    }
+
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()
-            ->select('cp')
+            ->select('cp', 'c')
             ->addSelect('SIZE(cp.activityRealizations) AS HIDDEN items')
             ->from(LearningProgram::class, 'cp')
             ->join('cp.company', 'c')

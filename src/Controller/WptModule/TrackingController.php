@@ -62,12 +62,17 @@ class TrackingController extends AbstractController
             ->addSelect('g')
             ->addSelect('wt')
             ->addSelect('et')
+            ->addSelect('etp')
+            // el informe es el lado inverso de una relación 1:1: Doctrine lo carga con una consulta por fila si no
+            // se trae en esta
+            ->addSelect('r')
             ->addSelect('SUM(wd.hours)')
             ->addSelect('SUM(CASE WHEN twd.absence = 0 THEN twd.locked * wd.hours ELSE 0 END)')
             ->addSelect('SUM(CASE WHEN twd.absence != 0 THEN 1 ELSE 0 END)')
             ->addSelect('SUM(CASE WHEN twd.absence = 2 THEN 1 ELSE 0 END)')
             ->from(AgreementEnrollment::class, 'ae')
             ->join('ae.agreement', 'a')
+            ->leftJoin('ae.report', 'r')
             ->join('a.workDays', 'wd')
             ->leftJoin('ae.trackedWorkDays', 'twd', 'WITH', 'twd.workDay = wd')
             ->join('a.shift', 'shi')

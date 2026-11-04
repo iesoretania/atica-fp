@@ -17,11 +17,25 @@ final class TrainingList extends AbstractAcademicYearList
         return ['name' => 't.name'];
     }
 
+    /** La tabla muestra los cursos de cada enseñanza: se cargan de una vez. */
+    protected function preload(array $items): void
+    {
+        $this->newQueryBuilder()
+            ->select('t', 'g')
+            ->from(Training::class, 't')
+            ->leftJoin('t.grades', 'g')
+            ->where('t IN (:trainings)')
+            ->setParameter('trainings', $items)
+            ->getQuery()
+            ->getResult();
+    }
+
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()
-            ->select('t')
+            ->select('t', 'd')
             ->from(Training::class, 't')
+            ->leftJoin('t.department', 'd')
             ->orderBy('t.name');
 
         if ($this->q !== '') {

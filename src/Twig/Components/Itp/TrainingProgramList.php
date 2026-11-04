@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Twig\Components\Itp;
 
+use App\Entity\Edu\Grade;
 use App\Entity\Person;
 use App\Repository\Edu\GroupRepository;
 use App\Repository\Edu\TeacherRepository;
@@ -58,6 +59,28 @@ final class TrainingProgramList extends AbstractListComponent
                 'choices' => ['1' => $this->translator->trans('filters.yes', [], 'general'), '0' => $this->translator->trans('filters.no', [], 'general')],
             ],
         ];
+    }
+
+    /** La tabla muestra los grupos de cada curso de cada plan: se cargan de una vez. */
+    protected function preload(array $items): void
+    {
+        $grades = [];
+        foreach ($items as $trainingProgram) {
+            foreach ($trainingProgram->getTrainingProgramGrades() as $programGrade) {
+                $grades[$programGrade->getGrade()->getId()] = $programGrade->getGrade();
+            }
+        }
+        if ($grades === []) {
+            return;
+        }
+        $this->newQueryBuilder()
+            ->select('gr', 'g')
+            ->from(Grade::class, 'gr')
+            ->leftJoin('gr.groups', 'g')
+            ->where('gr IN (:grades)')
+            ->setParameter('grades', array_values($grades))
+            ->getQuery()
+            ->getResult();
     }
 
     protected function sortableColumns(): array

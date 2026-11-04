@@ -17,12 +17,26 @@ final class GradeList extends AbstractAcademicYearList
         return ['name' => 'g.name', 'training' => 't.name'];
     }
 
+    /** La tabla muestra los grupos de cada curso: se cargan de una vez. */
+    protected function preload(array $items): void
+    {
+        $this->newQueryBuilder()
+            ->select('g', 'gr')
+            ->from(Grade::class, 'g')
+            ->leftJoin('g.groups', 'gr')
+            ->where('g IN (:grades)')
+            ->setParameter('grades', $items)
+            ->getQuery()
+            ->getResult();
+    }
+
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()
-            ->select('g', 't')
+            ->select('g', 't', 'd')
             ->from(Grade::class, 'g')
             ->innerJoin('g.training', 't')
+            ->leftJoin('t.department', 'd')
             ->orderBy('g.name');
 
         if ($this->q !== '') {

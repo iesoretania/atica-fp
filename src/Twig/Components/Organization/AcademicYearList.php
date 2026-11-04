@@ -25,7 +25,7 @@ final class AcademicYearList extends AbstractOrganizationList
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()
-            ->select('ay')
+            ->select('ay', 'fm', 'fmp', 'p', 'pp')
             ->from(AcademicYear::class, 'ay')
             ->leftJoin('ay.financialManager', 'fm')
             ->leftJoin('fm.person', 'fmp')

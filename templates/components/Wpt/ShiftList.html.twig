@@ -36,7 +36,7 @@
                     <td>{{ item.grade.groups|join(', ') }}</td>
                     <td>{{ item.type }}</td>
                     <td class="text-right tabular-nums">{{ (item.hours / 100)|number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}</td>
-                    <td class="text-right tabular-nums">{{ item.agreements.count() }}</td>
+                    <td class="text-right tabular-nums">{{ this.agreementCount(item) }}</td>
                     <td class="text-right">
                         <twig:Ui:Button href="{{ path('workplace_training_activity_list', {'id': item.id}) }}" variant="secondary" size="sm" icon="book" label="{{ 'table.learning_program'|trans({}, domain) }}" />
                     </td>

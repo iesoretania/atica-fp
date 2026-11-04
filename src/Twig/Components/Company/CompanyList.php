@@ -27,8 +27,9 @@ final class CompanyList extends AbstractListComponent
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()
-            ->select('c')
+            ->select('c', 'm')
             ->from(Company::class, 'c')
+            ->leftJoin('c.manager', 'm')
             ->orderBy('c.name')
             ->addOrderBy('c.city');
 

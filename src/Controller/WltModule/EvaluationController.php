@@ -68,6 +68,20 @@ class EvaluationController extends AbstractController
 
         $readOnly = !$this->isGranted(AgreementVoter::GRADE, $agreement);
 
+        // La pantalla muestra, por cada actividad evaluada, su actividad, sus realizaciones y sus comentarios con
+        // la persona que los escribió: se cargan de una vez para no lanzar varias consultas por fila
+        $em->createQueryBuilder()
+            ->select('aar', 'ar', 'a', 'c', 'cp')
+            ->from(AgreementActivityRealization::class, 'aar')
+            ->join('aar.activityRealization', 'ar')
+            ->join('ar.activity', 'a')
+            ->leftJoin('aar.comments', 'c')
+            ->leftJoin('c.person', 'cp')
+            ->where('aar.agreement = :agreement')
+            ->setParameter('agreement', $agreement)
+            ->getQuery()
+            ->getResult();
+
         $form = $this->createForm(AgreementEvaluationType::class, $agreement, [
             'disabled' => $readOnly
         ]);

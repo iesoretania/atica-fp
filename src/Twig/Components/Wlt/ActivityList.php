@@ -35,6 +35,19 @@ final class ActivityList extends AbstractListComponent
         return ['code' => 'a.code'];
     }
 
+    /** La tabla muestra las competencias de cada actividad: se cargan de una vez. */
+    protected function preload(array $items): void
+    {
+        $this->newQueryBuilder()
+            ->select('a', 'co')
+            ->from(Activity::class, 'a')
+            ->leftJoin('a.competencies', 'co')
+            ->where('a IN (:activities)')
+            ->setParameter('activities', $items)
+            ->getQuery()
+            ->getResult();
+    }
+
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()

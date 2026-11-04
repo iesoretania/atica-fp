@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Twig\Components\Wpt;
 
+use App\Entity\Edu\Grade;
+use App\Entity\WptModule\Agreement;
 use App\Entity\WptModule\Shift;
 use App\Security\OrganizationVoter;
 use App\Security\WptModule\OrganizationVoter as WptOrganizationVoter;
@@ -37,10 +39,45 @@ final class ShiftList extends AbstractListComponent
         return ['name' => 's.name', 'hours' => 's.hours'];
     }
 
+    /** @var array<int, int> acuerdos de cada convocatoria de la página, por identificador */
+    private array $agreementCounts = [];
+
+    /** Los grupos de cada curso y el número de acuerdos de cada convocatoria se cargan de una vez. */
+    protected function preload(array $items): void
+    {
+        $grades = array_values(array_filter(array_map(static fn (Shift $shift) => $shift->getGrade(), $items)));
+        if ($grades !== []) {
+            $this->newQueryBuilder()
+                ->select('gr', 'g')
+                ->from(Grade::class, 'gr')
+                ->leftJoin('gr.groups', 'g')
+                ->where('gr IN (:grades)')
+                ->setParameter('grades', $grades)
+                ->getQuery()
+                ->getResult();
+        }
+        $rows = $this->newQueryBuilder()
+            ->select('IDENTITY(a.shift) AS shift_id', 'COUNT(a.id) AS total')
+            ->from(Agreement::class, 'a')
+            ->where('a.shift IN (:shifts)')
+            ->setParameter('shifts', $items)
+            ->groupBy('a.shift')
+            ->getQuery()
+            ->getArrayResult();
+        foreach ($rows as $row) {
+            $this->agreementCounts[(int) $row['shift_id']] = (int) $row['total'];
+        }
+    }
+
+    public function agreementCount(Shift $shift): int
+    {
+        return $this->agreementCounts[$shift->getId()] ?? 0;
+    }
+
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->newQueryBuilder()
-            ->select('s')
+            ->select('s', 'su', 'gr')
             ->distinct()
             ->from(Shift::class, 's')
             ->join('s.subject', 'su')

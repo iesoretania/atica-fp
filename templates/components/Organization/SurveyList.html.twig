@@ -22,7 +22,7 @@
                     {{ lm.select_cell(survey.id, path('organization_survey_edit', {'id': survey.id}), survey.title) }}
                     <td class="align-top">{{ survey.startTimestamp ? survey.startTimestamp|date('format.datetime'|trans({}, 'general')) }}</td>
                     <td class="align-top">{{ survey.endTimestamp ? survey.endTimestamp|date('format.datetime'|trans({}, 'general')) }}</td>
-                    <td class="align-top">{{ survey.answers|length }}</td>
+                    <td class="align-top">{{ this.answerCount(survey) }}</td>
                     <td class="align-top">{{ m.link_button(path('organization_survey_question_list', {'id': survey.id}), 'clipboard-list', 'btn-info btn-sm', 'table.questions'|trans({}, domain)) }}</td>
                 </tr>
             {% else %}
