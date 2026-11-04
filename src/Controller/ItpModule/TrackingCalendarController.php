@@ -324,9 +324,11 @@ class TrackingCalendarController extends AbstractController
     public function attendanceReport(
         Environment $engine,
         TranslatorInterface $translator,
+        WorkDayRepository $workDayRepository,
         StudentProgramWorkcenter $studentProgramWorkcenter
     ): Response {
         $this->denyAccessUnlessGranted(StudentProgramWorkcenterVoter::ACCESS, $studentProgramWorkcenter);
+        $workDayRepository->preloadActivitiesByStudentProgramWorkcenter($studentProgramWorkcenter);
         $mpdfService = new MpdfService();
         $mpdfService->setAddDefaultConstructorArgs(false);
         ini_set("pcre.backtrack_limit", "5000000");
