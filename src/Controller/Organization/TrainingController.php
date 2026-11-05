@@ -123,8 +123,9 @@ class TrainingController extends AbstractController
         $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
-            ->select('t')
+            ->select('t', 'd')
             ->from(Training::class, 't')
+            ->leftJoin('t.department', 'd')
             ->orderBy('t.name');
 
         $q = $request->get('q');
@@ -147,6 +148,19 @@ class TrainingController extends AbstractController
                 ->setCurrentPage($page);
         } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
+        }
+
+        // la tabla muestra los cursos de cada enseñanza: se cargan de una vez
+        $pageItems = iterator_to_array($pager->getCurrentPageResults(), false);
+        if ($pageItems !== []) {
+            $managerRegistry->getManager()->createQueryBuilder()
+                ->select('t', 'g')
+                ->from(Training::class, 't')
+                ->leftJoin('t.grades', 'g')
+                ->where('t IN (:trainings)')
+                ->setParameter('trainings', $pageItems)
+                ->getQuery()
+                ->getResult();
         }
 
         $title = $translator->trans('title.list', [], 'edu_training');

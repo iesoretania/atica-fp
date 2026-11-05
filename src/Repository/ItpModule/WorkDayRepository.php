@@ -20,6 +20,21 @@ class WorkDayRepository extends ServiceEntityRepository
         parent::__construct($registry, WorkDay::class);
     }
 
+    /**
+     * Carga de una vez las actividades de todas las jornadas de la estancia: los informes recorren las jornadas y
+     * consultan las actividades de cada una (una consulta por jornada si no se cargan antes).
+     */
+    final public function preloadActivitiesByStudentProgramWorkcenter(StudentProgramWorkcenter $studentProgramWorkcenter): void
+    {
+        $this->createQueryBuilder('wd')
+            ->select('wd', 'a')
+            ->leftJoin('wd.activities', 'a')
+            ->where('wd.studentProgramWorkcenter = :studentProgramWorkcenter')
+            ->setParameter('studentProgramWorkcenter', $studentProgramWorkcenter)
+            ->getQuery()
+            ->getResult();
+    }
+
     final public function getCalendarByStudentProgramWorkcenter(StudentProgramWorkcenter $studentProgramWorkcenter): array
     {
         $data = $this->getStatsByStudentProgramWorkcenter($studentProgramWorkcenter);

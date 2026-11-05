@@ -86,13 +86,14 @@ class ContactRepository extends ServiceEntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->from(Workcenter::class, 'w')
-            ->select('w, COUNT(c), COUNT(c.method)')
+            ->select('w, co, COUNT(c), COUNT(c.method)')
             ->leftJoin(Contact::class, 'c', 'WITH', 'c.workcenter = w')
             ->leftJoin('w.company', 'co')
             ->leftJoin('c.teacher', 't')
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear)
             ->groupBy('w')
+            ->addGroupBy('co')
             ->orderBy('co.name')
             ->addOrderBy('w.name');
 

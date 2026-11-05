@@ -57,7 +57,14 @@ class ContactRepository extends ServiceEntityRepository
 
     public function findByTeacherOrderByDateTime(Teacher $teacher)
     {
+        // el informe muestra el centro de trabajo y el alumnado de cada visita: se cargan junto a las visitas
         return $this->createQueryBuilder('v')
+            ->addSelect('w', 'co', 'se', 'sep', 'seg')
+            ->leftJoin('v.workcenter', 'w')
+            ->leftJoin('w.company', 'co')
+            ->leftJoin('v.studentEnrollments', 'se')
+            ->leftJoin('se.person', 'sep')
+            ->leftJoin('se.group', 'seg')
             ->where('v.teacher = :teacher')
             ->setParameter('teacher', $teacher)
             ->orderBy('v.dateTime', 'ASC')

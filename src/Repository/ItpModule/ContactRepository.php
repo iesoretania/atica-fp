@@ -176,7 +176,7 @@ class ContactRepository extends ServiceEntityRepository
         ?string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('c')
-            ->select('c', 't', 'tp', 'p', 'se', 'sep', 'w', 'co')
+            ->select('c', 't', 'tp', 'p', 'se', 'sep', 'seg', 'm', 'w', 'co')
             ->distinct()
             ->join('c.teacher', 't')
             ->join('t.person', 'p')

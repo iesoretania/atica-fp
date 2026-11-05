@@ -161,6 +161,19 @@ class ActivityController extends AbstractController
             $pager->setCurrentPage(1);
         }
 
+        // la tabla muestra las competencias de cada actividad: se cargan de una vez
+        $pageItems = iterator_to_array($pager->getCurrentPageResults(), false);
+        if ($pageItems !== []) {
+            $managerRegistry->getManager()->createQueryBuilder()
+                ->select('a', 'co')
+                ->from(Activity::class, 'a')
+                ->leftJoin('a.competencies', 'co')
+                ->where('a IN (:activities)')
+                ->setParameter('activities', $pageItems)
+                ->getQuery()
+                ->getResult();
+        }
+
         $title = $project->getName() . ' - ' . $translator->trans('title.list', [], 'wlt_activity');
 
         $breadcrumb = [

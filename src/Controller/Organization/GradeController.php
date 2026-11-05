@@ -119,10 +119,11 @@ class GradeController extends AbstractController
         $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
-            ->select('g')
+            ->select('g', 't', 'd')
             ->from(Grade::class, 'g')
             ->orderBy('g.name')
-            ->innerJoin('g.training', 't');
+            ->innerJoin('g.training', 't')
+            ->leftJoin('t.department', 'd');
 
         $q = $request->get('q');
         if ($q) {
@@ -144,6 +145,19 @@ class GradeController extends AbstractController
                 ->setCurrentPage($page);
         } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
+        }
+
+        // la tabla muestra los grupos de cada curso: se cargan de una vez
+        $pageItems = iterator_to_array($pager->getCurrentPageResults(), false);
+        if ($pageItems !== []) {
+            $managerRegistry->getManager()->createQueryBuilder()
+                ->select('g', 'gr')
+                ->from(Grade::class, 'g')
+                ->leftJoin('g.groups', 'gr')
+                ->where('g IN (:grades)')
+                ->setParameter('grades', $pageItems)
+                ->getQuery()
+                ->getResult();
         }
 
         $title = $translator->trans('title.list', [], 'edu_grade');

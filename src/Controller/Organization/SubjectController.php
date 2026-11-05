@@ -125,10 +125,15 @@ class SubjectController extends AbstractController
         $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
-            ->select('s')
+            ->select('s', 'g', 'te', 'tt', 'tp', 'tg')
             ->from(Subject::class, 's')
             ->join('s.grade', 'g')
             ->join('g.training', 't')
+            // la tabla muestra las asignaciones docentes de cada materia: se traen junto a la lista
+            ->leftJoin('s.teachings', 'te')
+            ->leftJoin('te.teacher', 'tt')
+            ->leftJoin('tt.person', 'tp')
+            ->leftJoin('te.group', 'tg')
             ->orderBy('s.name');
 
         $q = $request->get('q');
@@ -143,7 +148,8 @@ class SubjectController extends AbstractController
             ->andWhere('t.academicYear = :academic_year')
             ->setParameter('academic_year', $academicYear);
 
-        $adapter = new QueryAdapter($queryBuilder, false);
+        // la consulta trae una colección (asignaciones docentes): el paginador debe contar materias, no filas
+        $adapter = new QueryAdapter($queryBuilder, true);
         $pager = new Pagerfanta($adapter);
         try {
             $pager

@@ -131,7 +131,7 @@ class LearningProgramController extends AbstractController
         $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
-            ->select('cp')
+            ->select('cp', 'c')
             ->addSelect('SIZE(cp.activityRealizations)')
             ->from(LearningProgram::class, 'cp')
             ->join('cp.company', 'c')
@@ -161,6 +161,22 @@ class LearningProgramController extends AbstractController
             $pager->setCurrentPage(1);
         }
 
+
+        // la tabla muestra las realizaciones de cada programa: se cargan de una vez
+        $programs = array_map(
+            static fn ($item) => is_array($item) ? $item[0] : $item,
+            iterator_to_array($pager->getCurrentPageResults(), false)
+        );
+        if ($programs !== []) {
+            $managerRegistry->getManager()->createQueryBuilder()
+                ->select('cp', 'ar')
+                ->from(LearningProgram::class, 'cp')
+                ->leftJoin('cp.activityRealizations', 'ar')
+                ->where('cp IN (:programs)')
+                ->setParameter('programs', $programs)
+                ->getQuery()
+                ->getResult();
+        }
 
         $title = $translator->trans('title.list', [], 'wlt_learning_program');
 

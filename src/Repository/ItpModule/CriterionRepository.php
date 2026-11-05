@@ -35,6 +35,25 @@ class CriterionRepository extends EduCriterionRepository
     final public function getStudentProgramWorkcenterStats(StudentProgramWorkcenter $studentProgramWorkcenter): array
     {
         $activities = $studentProgramWorkcenter->getActivities();
+
+        // los criterios de todas las actividades se cargan de una vez (si no, una consulta por actividad)
+        $activityEntities = [];
+        foreach ($activities as $activity) {
+            if ($activity->getActivity() !== null) {
+                $activityEntities[$activity->getActivity()->getId()] = $activity->getActivity();
+            }
+        }
+        if ($activityEntities !== []) {
+            $this->getEntityManager()->createQueryBuilder()
+                ->select('a', 'cr')
+                ->from(Activity::class, 'a')
+                ->leftJoin('a.criteria', 'cr')
+                ->where('a IN (:activities)')
+                ->setParameter('activities', array_values($activityEntities))
+                ->getQuery()
+                ->getResult();
+        }
+
         $criteria = new ArrayCollection();
         foreach ($activities as $activity) {
             foreach ($activity->getActivity()?->getCriteria() as $criterion) {
@@ -45,7 +64,7 @@ class CriterionRepository extends EduCriterionRepository
         }
 
         return $this->createQueryBuilder('c')
-            ->addSelect('AVG(sv.numericGrade)')
+            ->addSelect('AVG(sv.numericGrade)', 'lo', 's')
             ->leftJoin(Activity::class, 'a', 'WITH', 'c MEMBER OF a.criteria')
             ->leftJoin(StudentProgramWorkcenterActivity::class, 'spwa', 'WITH', 'spwa.activity = a AND spwa.studentProgramWorkcenter = :studentProgramWorkcenter')
             ->leftJoin('spwa.scaleValue', 'sv')
@@ -54,6 +73,8 @@ class CriterionRepository extends EduCriterionRepository
             ->where('c IN (:criteria)')
             ->setParameter('criteria', $criteria)
             ->groupBy('c')
+            ->addGroupBy('lo')
+            ->addGroupBy('s')
             ->orderBy('s.name', 'ASC')
             ->addOrderBy('lo.code', 'ASC')
             ->addOrderBy('c.code', 'ASC')

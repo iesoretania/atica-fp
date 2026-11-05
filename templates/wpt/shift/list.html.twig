@@ -32,7 +32,7 @@
                         {{ (item.hours / 100) | number_format(2, 'format.decimal_separator'|trans({}, 'general'), 'format.thousand_separator'|trans({}, 'general')) }}
                     </td>
                     <td>
-                        {{ item.agreements.count() }}
+                        {{ agreement_counts[item.id]|default(0) }}
                     </td>
                     <td>
                         {{ m.link_button(path('workplace_training_activity_list', {'id': item.id}), 'book', 'btn-info btn-sm btn-block', 'table.learning_program'|trans) }}

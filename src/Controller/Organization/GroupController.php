@@ -160,6 +160,30 @@ class GroupController extends AbstractController
             $pager->setCurrentPage(1);
         }
 
+        // la tabla muestra la tutoría y el alumnado de cada grupo: se cargan de una vez con sus personas
+        $pageItems = iterator_to_array($pager->getCurrentPageResults(), false);
+        if ($pageItems !== []) {
+            $em = $managerRegistry->getManager();
+            $em->createQueryBuilder()
+                ->select('g', 'tu', 'tup')
+                ->from(Group::class, 'g')
+                ->leftJoin('g.tutors', 'tu')
+                ->leftJoin('tu.person', 'tup')
+                ->where('g IN (:groups)')
+                ->setParameter('groups', $pageItems)
+                ->getQuery()
+                ->getResult();
+            $em->createQueryBuilder()
+                ->select('g', 'se', 'sep')
+                ->from(Group::class, 'g')
+                ->leftJoin('g.enrollments', 'se')
+                ->leftJoin('se.person', 'sep')
+                ->where('g IN (:groups)')
+                ->setParameter('groups', $pageItems)
+                ->getQuery()
+                ->getResult();
+        }
+
         $title = $translator->trans('title.list', [], 'edu_group');
 
         return $this->render('organization/group/list.html.twig', [

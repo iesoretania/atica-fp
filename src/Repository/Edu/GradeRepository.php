@@ -144,6 +144,7 @@ class GradeRepository extends ServiceEntityRepository
     public function findByOrganizationOrderByAcademicYearDesc(Organization $organization)
     {
         return $this->createQueryBuilder('gr')
+            ->addSelect('t', 'ay')
             ->join('gr.training', 't')
             ->join('t.academicYear', 'ay')
             ->where('ay.organization = :organization')

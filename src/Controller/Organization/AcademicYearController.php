@@ -129,7 +129,7 @@ class AcademicYearController extends AbstractController
         $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
-            ->select('ay')
+            ->select('ay', 'fm', 'fmp', 'p', 'pp')
             ->from(AcademicYear::class, 'ay')
             ->leftJoin('ay.financialManager', 'fm')
             ->leftJoin('fm.person', 'fmp')

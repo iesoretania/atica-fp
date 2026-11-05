@@ -19,6 +19,7 @@
 namespace App\Controller\ItpModule;
 
 use App\Entity\Edu\AcademicYear;
+use App\Entity\Edu\Grade;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
 use App\Entity\ItpModule\TrainingProgram;
@@ -56,6 +57,7 @@ class TrainingProgramController extends AbstractController
         TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
         TranslatorInterface $translator,
+        ManagerRegistry $managerRegistry,
         AcademicYear $academicYear = null,
         int $page = 1
     ): Response {
@@ -93,6 +95,24 @@ class TrainingProgramController extends AbstractController
                 ->setCurrentPage($page);
         } catch (OutOfRangeCurrentPageException) {
             $pager->setCurrentPage(1);
+        }
+
+        // la tabla muestra los grupos de cada curso de cada plan: se cargan de una vez
+        $grades = [];
+        foreach (iterator_to_array($pager->getCurrentPageResults(), false) as $trainingProgram) {
+            foreach ($trainingProgram->getTrainingProgramGrades() as $programGrade) {
+                $grades[$programGrade->getGrade()->getId()] = $programGrade->getGrade();
+            }
+        }
+        if ($grades !== []) {
+            $managerRegistry->getManager()->createQueryBuilder()
+                ->select('gr', 'g')
+                ->from(Grade::class, 'gr')
+                ->leftJoin('gr.groups', 'g')
+                ->where('gr IN (:grades)')
+                ->setParameter('grades', array_values($grades))
+                ->getQuery()
+                ->getResult();
         }
 
         $title = $translator->trans('title.list', [], 'itp_training_program');

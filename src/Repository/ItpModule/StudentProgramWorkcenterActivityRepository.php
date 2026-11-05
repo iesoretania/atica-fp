@@ -24,6 +24,7 @@ class StudentProgramWorkcenterActivityRepository extends ServiceEntityRepository
     final public function createFindByStudentProgramWorkcenterOrderByCodeQueryBuilder(StudentProgramWorkcenter $studentProgramWorkcenter): QueryBuilder
     {
         return $this->createQueryBuilder('spa')
+            ->addSelect('a')
             ->join('spa.activity', 'a')
             ->where('spa.studentProgramWorkcenter = :studentProgramWorkcenter')
             ->setParameter('studentProgramWorkcenter', $studentProgramWorkcenter)

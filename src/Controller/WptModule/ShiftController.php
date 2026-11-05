@@ -20,6 +20,7 @@ namespace App\Controller\WptModule;
 
 use App\Entity\Edu\AcademicYear;
 use App\Entity\Edu\Grade;
+use App\Entity\WptModule\Agreement;
 use App\Entity\WptModule\Shift;
 use App\Form\Type\WptModule\ShiftType;
 use App\Repository\Edu\AcademicYearRepository;
@@ -67,7 +68,7 @@ class ShiftController extends AbstractController
         $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
-            ->select('s')
+            ->select('s', 'su', 'gr')
             ->distinct()
             ->from(Shift::class, 's')
             ->join('s.subject', 'su')
@@ -108,11 +109,41 @@ class ShiftController extends AbstractController
             $pager->setCurrentPage(1);
         }
 
+        // los grupos de cada curso y el número de acuerdos de cada convocatoria se cargan de una vez
+        $agreementCounts = [];
+        $pageItems = iterator_to_array($pager->getCurrentPageResults(), false);
+        if ($pageItems !== []) {
+            $em = $managerRegistry->getManager();
+            $grades = array_values(array_filter(array_map(static fn (Shift $shift) => $shift->getGrade(), $pageItems)));
+            if ($grades !== []) {
+                $em->createQueryBuilder()
+                    ->select('gr', 'g')
+                    ->from(Grade::class, 'gr')
+                    ->leftJoin('gr.groups', 'g')
+                    ->where('gr IN (:grades)')
+                    ->setParameter('grades', $grades)
+                    ->getQuery()
+                    ->getResult();
+            }
+            $rows = $em->createQueryBuilder()
+                ->select('IDENTITY(a.shift) AS shift_id', 'COUNT(a.id) AS total')
+                ->from(Agreement::class, 'a')
+                ->where('a.shift IN (:shifts)')
+                ->setParameter('shifts', $pageItems)
+                ->groupBy('a.shift')
+                ->getQuery()
+                ->getArrayResult();
+            foreach ($rows as $row) {
+                $agreementCounts[(int) $row['shift_id']] = (int) $row['total'];
+            }
+        }
+
         $title = $translator->trans('title.list', [], 'wpt_shift');
 
         return $this->render('wpt/shift/list.html.twig', [
             'title' => $title,
             'pager' => $pager,
+            'agreement_counts' => $agreementCounts,
             'q' => $q,
             'domain' => 'wpt_shift',
             'academic_year' => $academicYear,

@@ -22,6 +22,7 @@ use App\Entity\Edu\StudentEnrollment;
 use App\Entity\Edu\Teacher;
 use App\Entity\ItpModule\ProgramGrade;
 use App\Entity\ItpModule\ProgramGroup;
+use App\Entity\ItpModule\StudentProgram;
 use App\Entity\ItpModule\StudentProgramWorkcenter;
 use App\Repository\Edu\GroupRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -183,6 +184,25 @@ class ProgramGroupRepository extends ServiceEntityRepository
 
     public function createGroupsFromStudentProgramWorkcenterStatsQueryBuilder(array $studentProgramWorkcenters, ?string $q): QueryBuilder
     {
+        // los grupos de programa de los estudiantes se cargan de una vez (si no, uno por fila al recorrerlos)
+        $studentPrograms = [];
+        foreach ($studentProgramWorkcenters as $data) {
+            $studentProgram = $data[0]->getStudentProgram();
+            if ($studentProgram !== null) {
+                $studentPrograms[$studentProgram->getId()] = $studentProgram;
+            }
+        }
+        if ($studentPrograms !== []) {
+            $this->getEntityManager()->createQueryBuilder()
+                ->select('sp', 'pg')
+                ->from(StudentProgram::class, 'sp')
+                ->join('sp.programGroup', 'pg')
+                ->where('sp IN (:student_programs)')
+                ->setParameter('student_programs', array_values($studentPrograms))
+                ->getQuery()
+                ->getResult();
+        }
+
         $groups = new ArrayCollection();
         foreach ($studentProgramWorkcenters as $data) {
             $spw = $data[0];

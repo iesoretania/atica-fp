@@ -126,8 +126,9 @@ class CompanyController extends AbstractController
         $queryBuilder = $managerRegistry->getManager()->createQueryBuilder();
 
         $queryBuilder
-            ->select('c')
+            ->select('c', 'm')
             ->from(Company::class, 'c')
+            ->leftJoin('c.manager', 'm')
             ->orderBy('c.name')
             ->addOrderBy('c.city');
 

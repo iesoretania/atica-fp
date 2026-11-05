@@ -18,6 +18,7 @@
 
 namespace App\Controller\Organization;
 
+use App\Entity\AnsweredSurvey;
 use App\Entity\Organization;
 use App\Entity\Survey;
 use App\Entity\SurveyQuestion;
@@ -163,11 +164,29 @@ class SurveyController extends AbstractController
             $pager->setCurrentPage(1);
         }
 
+        // respuestas de cada encuesta de la página en una sola consulta (un recuento por fila sería un N+1)
+        $answerCounts = [];
+        $pageItems = iterator_to_array($pager->getCurrentPageResults(), false);
+        if ($pageItems !== []) {
+            $rows = $managerRegistry->getManager()->createQueryBuilder()
+                ->select('IDENTITY(a.survey) AS survey_id', 'COUNT(a.id) AS total')
+                ->from(AnsweredSurvey::class, 'a')
+                ->where('a.survey IN (:surveys)')
+                ->setParameter('surveys', $pageItems)
+                ->groupBy('a.survey')
+                ->getQuery()
+                ->getArrayResult();
+            foreach ($rows as $row) {
+                $answerCounts[(int) $row['survey_id']] = (int) $row['total'];
+            }
+        }
+
         $title = $translator->trans('title.list', [], 'edu_survey');
 
         return $this->render('organization/survey/list.html.twig', [
             'title' => $title,
             'pager' => $pager,
+            'answer_counts' => $answerCounts,
             'q' => $q,
             'domain' => 'edu_survey'
         ]);

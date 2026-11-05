@@ -83,6 +83,17 @@ class TrackedWorkDayRepository extends ServiceEntityRepository
     public function findByAgreementEnrollmentWithWorkDay(AgreementEnrollment $agreementEnrollment): array
     {
         $data = $this->findAndCountByAgreementEnrollment($agreementEnrollment);
+
+        // las actividades de cada jornada se muestran en el calendario y en los informes: se cargan de una vez (la
+        // consulta anterior las agrupa para sumar horas y no puede traerlas)
+        $this->createQueryBuilder('twd')
+            ->select('twd', 'act')
+            ->leftJoin('twd.trackedActivities', 'act')
+            ->where('twd.agreementEnrollment = :agreement_enrollment')
+            ->setParameter('agreement_enrollment', $agreementEnrollment)
+            ->getQuery()
+            ->getResult();
+
         $return = [];
         foreach ($data as $datum) {
             foreach ($datum as $element) {

@@ -26,7 +26,7 @@
                         {{ survey.endTimestamp ? survey.endTimestamp|date('format.datetime'|trans({}, 'general')) }}
                     </td>
                     <td>
-                        {{ survey.answers|length }}
+                        {{ answer_counts[survey.id]|default(0) }}
                     </td>
                     <td>
                         {{ m.link_button(path('organization_survey_question_list',{'id': survey.id}), 'question-circle', 'btn-info btn-block btn-sm', 'table.questions'|trans, null, 'd-md-none d-lg-inline') }}
