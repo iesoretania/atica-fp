@@ -4,6 +4,14 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+8.0.3 (2026-11-05)
+------------------
+* fix(ux): La barra lateral muestra el logo de la aplicación junto al nombre (el icono de ÁTICA FP si no hay logo configurado)
+* perf: Se eliminan más consultas N+1 medidas con los datos reales de un centro: listados del centro (grupos, cursos, enseñanzas, materias, encuestas, cursos académicos), empresas, convocatorias de FCT, planes de formación y programas formativos de FFEOE y FP dual, y formularios de proyecto y evaluación de FP dual; el formulario de proyecto de FP dual pasa de 227 a 37 consultas y el de plan de formación de FFEOE de 172 a 40
+* perf: Los informes en PDF (asistencia de FFEOE y FCT, visitas de FCT, evaluación de FFEOE y centros de FP dual) cargan de una vez las actividades, el alumnado y los criterios que muestran
+* perf: El permiso de acceso a FFEOE calcula una sola vez por petición las relaciones de la persona con las estancias (antes las repetía en cada permiso)
+* chore: La prueba que detecta consultas repetidas cubre más pantallas
+
 8.0.2 (2026-11-03)
 ------------------
 * perf: Se eliminan las consultas N+1 en los listados y formularios de alumnado, profesorado, materias, grupos y estancias de la FFEOE: las personas, asignaciones docentes y estancias se cargan junto a la lista en lugar de una consulta por fila
