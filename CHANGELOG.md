@@ -4,6 +4,11 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+7.7.3 (2026-11-06)
+------------------
+* feat: Nueva variable de entorno `APP_TIMEZONE` (por defecto `Europe/Madrid`) que fija la zona horaria de la aplicación en la web y en la consola, sin depender del `php.ini` ni del sistema; si se deja vacía se usa la de PHP
+* fix: Las fechas con hora leídas de la base de datos (guardada en UTC) se devuelven en la zona horaria de la aplicación, de modo que también salen en hora local las que se formatean en PHP (correos, informes, CSV); al guardar ya no se altera la zona horaria del objeto de la entidad
+
 7.7.2 (2026-11-05)
 ------------------
 * perf: Se eliminan más consultas N+1 medidas con los datos reales de un centro: listados del centro (grupos, cursos, enseñanzas, materias, encuestas, cursos académicos), empresas, convocatorias de FCT, planes de formación y programas formativos de FFEOE y FP dual, y formularios de proyecto y evaluación de FP dual; el formulario de proyecto de FP dual pasa de 227 a 37 consultas
