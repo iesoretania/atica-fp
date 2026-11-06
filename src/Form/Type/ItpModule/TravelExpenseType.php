@@ -46,14 +46,12 @@ class TravelExpenseType extends AbstractType
                 'label' => 'form.from_datetime',
                 'date_widget' => 'single_text',
                 'time_widget' => 'single_text',
-                'model_timezone' => 'UTC',
                 'required' => true
             ])
             ->add('toDateTime', DateTimeType::class, [
                 'label' => 'form.to_datetime',
                 'date_widget' => 'single_text',
                 'time_widget' => 'single_text',
-                'model_timezone' => 'UTC',
                 'required' => true
             ])
             ->add('trainingPrograms', EntityType::class, [

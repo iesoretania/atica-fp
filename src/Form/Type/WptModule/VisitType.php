@@ -108,7 +108,6 @@ class VisitType extends AbstractType
                 'label' => 'form.datetime',
                 'date_widget' => 'single_text',
                 'time_widget' => 'single_text',
-                'model_timezone' => 'UTC',
                 'required' => true
             ])
             ->add('teacher', EntityType::class, [

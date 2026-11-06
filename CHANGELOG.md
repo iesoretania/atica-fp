@@ -4,6 +4,11 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+8.0.4 (2026-11-06)
+------------------
+* feat: Nueva variable de entorno `APP_TIMEZONE` (por defecto `Europe/Madrid`) que fija la zona horaria de la aplicación en la web y en la consola, sin depender del `php.ini` ni del sistema; si se deja vacía se usa la de PHP
+* fix: Las fechas con hora leídas de la base de datos (guardada en UTC) se devuelven en la zona horaria de la aplicación, de modo que también salen en hora local las que se formatean en PHP (correos, informes, CSV); al guardar ya no se altera la zona horaria del objeto de la entidad
+
 8.0.3 (2026-11-05)
 ------------------
 * fix(ux): La barra lateral muestra el logo de la aplicación junto al nombre (el icono de ÁTICA FP si no hay logo configurado)
