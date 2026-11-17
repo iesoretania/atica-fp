@@ -236,7 +236,7 @@
         'data-entity-select-scroll-value': scroll ? 'true' : 'false',
         'data-entity-select-allow-clear-value': allow_clear ? 'true' : 'false',
         'data-entity-select-render-html-value': render_html ? 'true' : 'false',
-        'data-entity-select-query-parameters-value': (query_parameters ?: {})|json_encode,
+        'data-entity-select-query-parameters-value': query_parameters ? query_parameters|json_encode : '{}',
         'data-entity-select-req-params-value': attr['data-req_params'] ?? '{}',
     }) -%}
     {%- if multiple -%}{%- set attr = attr|merge({multiple: 'multiple'}) -%}{%- endif -%}

@@ -4,6 +4,10 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+8.0.5 (2026-11-17)
+------------------
+* fix: Los selectores con búsqueda remota (tutor laboral por defecto de los acuerdos de FCT, tutores laborales de FP dual y FFEOE, responsable de empresa, etc.) no devolvían resultados y se quedaban con el indicador de carga girando; además, si la búsqueda falla, el indicador se detiene
+
 8.0.4 (2026-11-06)
 ------------------
 * feat: Nueva variable de entorno `APP_TIMEZONE` (por defecto `Europe/Madrid`) que fija la zona horaria de la aplicación en la web y en la consola, sin depender del `php.ini` ni del sistema; si se deja vacía se usa la de PHP

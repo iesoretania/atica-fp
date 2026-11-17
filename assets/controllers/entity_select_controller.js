@@ -80,18 +80,21 @@ export default class extends Controller {
 
     async load(query, callback) {
         this.lastQuery = query;
-        const params = new URLSearchParams({ q: query, field_name: this.fieldNameValue });
-        if (this.classTypeValue) params.set('class_type', this.classTypeValue);
-        if (this.scrollValue) params.set('page', '1');
-        Object.entries(this.reqParamsValue || {}).forEach(([key, name]) => {
-            const field = document.querySelector(`[name="${name}"]`);
-            params.set(key, field ? field.value : '');
-        });
-        Object.entries(this.queryParametersValue || {}).forEach(([key, value]) => {
-            if (!params.has(key)) params.set(key, value);
-        });
 
+        // Todo dentro del try: si algo falla (también al leer los valores de Stimulus) hay que llamar igualmente a
+        // callback(), o Tom Select se queda con el indicador de carga girando para siempre
         try {
+            const params = new URLSearchParams({ q: query, field_name: this.fieldNameValue });
+            if (this.classTypeValue) params.set('class_type', this.classTypeValue);
+            if (this.scrollValue) params.set('page', '1');
+            Object.entries(this.reqParamsValue || {}).forEach(([key, name]) => {
+                const field = document.querySelector(`[name="${name}"]`);
+                params.set(key, field ? field.value : '');
+            });
+            Object.entries(this.queryParametersValue || {}).forEach(([key, value]) => {
+                if (!params.has(key)) params.set(key, value);
+            });
+
             const response = await fetch(`${this.urlValue}${this.urlValue.includes('?') ? '&' : '?'}${params}`, {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' },
             });

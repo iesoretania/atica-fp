@@ -93,6 +93,25 @@ class WptAgreementTest extends AppWebTestCase
     }
 
     /**
+     * Stimulus exige un objeto en los valores de tipo Object: con «[]» el selector con búsqueda remota lanzaba un
+     * TypeError antes de pedir los resultados y se quedaba con el indicador de carga girando.
+     */
+    public function testRemoteSearchFieldsReceiveObjectValues(): void
+    {
+        $this->login($this->getUser('alfa.admin'));
+        $crawler = $this->client->request('GET', '/fct/acuerdo/nuevo/' . $this->shiftId());
+        self::assertResponseIsSuccessful();
+
+        $fields = $crawler->filter('select[data-controller="entity-select"]');
+        self::assertGreaterThan(0, $fields->count());
+        foreach ($fields as $field) {
+            foreach (['data-entity-select-query-parameters-value', 'data-entity-select-req-params-value'] as $attribute) {
+                self::assertStringStartsWith('{', $field->getAttribute($attribute), $attribute);
+            }
+        }
+    }
+
+    /**
      * @return iterable<string, array{string}>
      */
     public static function outsiderProvider(): iterable
