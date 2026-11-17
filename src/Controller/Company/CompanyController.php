@@ -21,10 +21,13 @@ namespace App\Controller\Company;
 use App\Entity\Company;
 use App\Entity\Person;
 use App\Entity\Workcenter;
+use App\Form\Type\CompanyExportType;
 use App\Form\Type\CompanyType;
 use App\Repository\CompanyRepository;
+use App\Repository\Edu\AcademicYearRepository;
 use App\Repository\PersonRepository;
 use App\Security\OrganizationVoter;
+use App\Service\CompanyExcelExportService;
 use App\Service\UserExtensionService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -127,6 +130,50 @@ class CompanyController extends AbstractController
         return $this->render('company/company_list.html.twig', [
             'title' => $title,
             'domain' => 'company'
+        ]);
+    }
+
+    /**
+     * Exportación a Excel en el formato de importación de nexo-fp. Primero se muestra una pantalla de opciones (¿se
+     * incluyen como empleados los tutores laborales de los acuerdos y convenios?) y, al enviarla, se descarga el libro.
+     */
+    #[Route(path: '/exportar', name: 'company_export', methods: ['GET'])]
+    public function export(
+        Request $request,
+        TranslatorInterface $translator,
+        UserExtensionService $userExtensionService,
+        AcademicYearRepository $academicYearRepository,
+        CompanyExcelExportService $exportService
+    ): Response {
+        $organization = $userExtensionService->getCurrentOrganization();
+        $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
+
+        $form = $this->createForm(CompanyExportType::class, null, [
+            'academic_years' => $academicYearRepository->findAllByOrganization($organization),
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $export = $exportService->build(
+                (bool) $data['workplaceTraining'],
+                (bool) $data['workLinkedLearning'],
+                (bool) $data['inCompanyTraining'],
+                $data['academicYear'],
+                $organization
+            );
+
+            return $exportService->createResponse($export, 'empresas-nexo-fp-' . date('Ymd') . '.xlsx');
+        }
+
+        $title = $translator->trans('export.title', [], 'company');
+
+        return $this->render('company/company_export.html.twig', [
+            'menu_path' => 'company',
+            'breadcrumb' => [['fixed' => $title]],
+            'title' => $title,
+            'form' => $form->createView(),
+            'omitted' => $exportService->omittedCompanies(),
         ]);
     }
 

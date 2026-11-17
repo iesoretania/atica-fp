@@ -4,6 +4,11 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+8.1.0 (2026-11-17)
+------------------
+* feat: El listado de empresas registradas tiene un botón «Exportar a Excel» que genera el libro (empresas, centros de trabajo y empleados) en el formato que importa nexo-fp; los centros educativos (CIF de 8 dígitos) se exportan con el CIF S4111001F y su código de centro. Una pantalla previa pregunta si se incluyen como empleados los tutores laborales de los acuerdos de FCT y los convenios de FP dual y FFEOE (de todos los cursos o de uno). Se omiten, avisando en la hoja «Avisos», las empresas con un CIF que nexo-fp rechazaría y los tutores sin DNI/NIE válido
+* chore: Nueva dependencia openspout/openspout (versión 4, compatible con PHP 8.2 y superiores) para generar el libro Excel
+
 8.0.5 (2026-11-17)
 ------------------
 * fix: Los selectores con búsqueda remota (tutor laboral por defecto de los acuerdos de FCT, tutores laborales de FP dual y FFEOE, responsable de empresa, etc.) no devolvían resultados y se quedaban con el indicador de carga girando; además, si la búsqueda falla, el indicador se detiene

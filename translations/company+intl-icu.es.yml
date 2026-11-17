@@ -53,5 +53,32 @@ form.web_site.help: Dirección de la web de la empresa, si la tiene.
 form.phone_number.help: Teléfono de contacto.
 form.fax_number.help: Número de fax, si lo hay.
 form.address.help: Dirección postal de la sede principal.
+table.export: Exportar a Excel
+export.title: Exportar empresas a Excel
+export.card.title: Opciones de la exportación
+export.info: |
+  Se genera un libro Excel con las empresas, sus centros de trabajo y, si se indica, sus empleados, en el formato que importa nexo-fp.
+
+  Las empresas cuyo CIF son 8 dígitos son centros educativos: se exportan con el CIF S4111001F y su código de centro en la columna correspondiente.
+export.submit: Exportar a Excel
+export.form.workplace_training: Incluir como empleados los tutores laborales de los acuerdos de FCT
+export.form.work_linked_learning: Incluir como empleados los tutores laborales de los convenios de FP dual
+export.form.in_company_training: Incluir como empleados los tutores laborales de los convenios de FFEOE
+export.form.academic_year: Curso académico de los acuerdos y convenios
+export.form.academic_year.all: Todos los cursos
+export.form.workplace_training.help: Cada tutor se añade como empleado de la empresa del centro de trabajo de sus acuerdos.
+export.form.work_linked_learning.help: Cada tutor se añade como empleado de la empresa del centro de trabajo de sus convenios.
+export.form.in_company_training.help: Cada tutor se añade como empleado de la empresa del centro de trabajo de sus convenios.
+export.form.academic_year.help: Solo se tienen en cuenta los tutores de los acuerdos y convenios de ese curso. Si no se elige ninguno, se incluyen todos los cursos.
+export.warning.title: Elementos que no se han podido incluir en el libro porque nexo-fp los rechazaría
+export.warning.sheet: Avisos
+export.warning.invalid_vat: "Empresa {name}: el CIF o código «{code}» tiene menos de 9 caracteres."
+export.warning.duplicate_vat: "Empresa {name}: su CIF o código «{code}» coincide con el de otra empresa ya exportada."
+export.warning.invalid_worker: "Tutor laboral {name}: su identificador «{id}» no es un DNI/NIE válido (9 a 20 caracteres)."
+export.contact.address: Dirección
+export.contact.phone: Teléfono
+export.contact.fax: Fax
+export.contact.email: Correo electrónico
+export.contact.web: Web
 danger.title: "Peligro: eliminación de la empresa"
 danger.text: Si tiene centros de trabajo con convenios o acuerdos no se podrá eliminar. Una vez eliminada, no se podrá recuperar.

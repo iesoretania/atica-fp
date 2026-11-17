@@ -1,0 +1,31 @@
+{% trans_default_domain 'company' %}
+{% extends 'ui/layout.html.twig' %}
+{% import 'ui/macros.html.twig' as m %}
+{% import 'ui/form_layout.html.twig' as fl %}
+{% form_theme form 'ui/form_theme.html.twig' %}
+
+{% block content %}
+    <div class="max-w-5xl">
+        <twig:Ui:Alert type="info" :message="'export.info'|trans" />
+        {% if omitted %}
+            <twig:Ui:Alert type="warning">
+                <p class="font-medium">{{ 'export.warning.title'|trans }}</p>
+                <ul class="mt-1 list-disc pl-5">
+                    {% for warning in omitted %}<li>{{ warning }}</li>{% endfor %}
+                </ul>
+            </twig:Ui:Alert>
+        {% endif %}
+    </div>
+    {{ form_start(form, {'action': path('company_export')}) }}
+    {{ fl.grid(form, [
+        ['workplaceTraining'],
+        ['workLinkedLearning'],
+        ['inCompanyTraining'],
+        ['academicYear'],
+    ], {}, 'export.card.title'|trans) }}
+    {{ m.start_button() }}
+        {{ m.submit_button('export', 'file-excel', 'btn-success', 'export.submit'|trans) }}
+        {{ m.link_button(path('company'), 'arrow-left', 'btn-info', 'form.back'|trans) }}
+    {{ m.end_button() }}
+    {{ form_end(form) }}
+{% endblock %}

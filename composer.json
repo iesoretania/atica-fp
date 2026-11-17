@@ -17,6 +17,7 @@
         "doctrine/orm": "^3.2",
         "johngrogg/ics-parser": "^2.1",
         "mpdf/mpdf": "^8",
+        "openspout/openspout": "^4",
         "oro/doctrine-extensions": "^1.2",
         "pagerfanta/doctrine-orm-adapter": "^4.7",
         "pagerfanta/twig": "^4.7",

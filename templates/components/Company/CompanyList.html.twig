@@ -7,6 +7,7 @@
         {% import 'ui/macros.html.twig' as m %}
         {% import 'ui/live_macros.html.twig' as lm %}
         {% block path_new %}{{ path('company_new') }}{% endblock %}
+        {% block more_actions %}{{ m.link_button(path('company_export'), 'file-excel', 'btn-info', 'table.export'|trans({}, domain)) }}{% endblock %}
 
         {% block table_header %}
             {{ lm.select_th('header.code'|trans({}, domain), 'code', this.sort, this.dir) }}
