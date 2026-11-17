@@ -68,6 +68,20 @@ class CompanyExportTest extends AppWebTestCase
         self::assertSelectorExists('select[name="company_export[academicYear]"]');
     }
 
+    public function testOptionsScreenListsTheOmittedCompaniesWithTranslatedTexts(): void
+    {
+        $this->addCompany('Empresa corta', 'B123');
+
+        $this->login($this->getAdmin());
+        $this->client->request('GET', '/empresa/exportar');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('main', 'Empresa corta');
+        $content = (string) $this->client->getResponse()->getContent();
+        self::assertStringNotContainsString('export.warning', $content, 'Hay una cadena sin traducir');
+        self::assertStringNotContainsString('export.form', $content, 'Hay una cadena sin traducir');
+    }
+
     public function testExportUsesTheNexoFormat(): void
     {
         $this->addCompany('IES Colaborador', '23004455');

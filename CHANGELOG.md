@@ -4,6 +4,11 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+8.1.1 (2026-11-17)
+------------------
+* fix: La pantalla de exportación de empresas mostraba sin traducir el título del aviso de elementos omitidos
+* fix(ux): Los desplegables de los últimos campos de una tarjeta de formulario ya no quedan recortados por el contenedor al abrirse
+
 8.1.0 (2026-11-17)
 ------------------
 * feat: El listado de empresas registradas tiene un botón «Exportar a Excel» que genera el libro (empresas, centros de trabajo y empleados) en el formato que importa nexo-fp; los centros educativos (CIF de 8 dígitos) se exportan con el CIF S4111001F y su código de centro. Una pantalla previa pregunta si se incluyen como empleados los tutores laborales de los acuerdos de FCT y los convenios de FP dual y FFEOE (de todos los cursos o de uno). Se omiten, avisando en la hoja «Avisos», las empresas con un CIF que nexo-fp rechazaría y los tutores sin DNI/NIE válido

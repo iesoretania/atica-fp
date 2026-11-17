@@ -9,7 +9,7 @@
         <twig:Ui:Alert type="info" :message="'export.info'|trans" />
         {% if omitted %}
             <twig:Ui:Alert type="warning">
-                <p class="font-medium">{{ 'export.warning.title'|trans }}</p>
+                <p class="font-medium">{{ 'export.warning.title'|trans({}, 'company') }}</p>
                 <ul class="mt-1 list-disc pl-5">
                     {% for warning in omitted %}<li>{{ warning }}</li>{% endfor %}
                 </ul>

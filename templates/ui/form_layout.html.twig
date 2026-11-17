@@ -37,7 +37,8 @@
         {% endfor %}
         {% if others|filter(n => n is not null) %}{% set rows = rows|merge([others]) %}{% endif %}
     {% endfor %}
-    <div class="max-w-5xl overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
+    {#- Sin «overflow-hidden»: recortaría los desplegables (Tom Select) de los últimos campos de la tarjeta -#}
+    <div class="max-w-5xl rounded-xl bg-white shadow-xs ring-1 ring-gray-200">
         {#- Cabecera de la tarjeta, separada del cuerpo -#}
         {% if title %}<h2 class="border-b border-gray-100 px-5 py-4 text-sm font-semibold text-gray-900 sm:px-6">{{ title }}</h2>{% endif %}
         <div class="space-y-5 p-5 sm:p-6">
