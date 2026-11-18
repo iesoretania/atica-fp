@@ -5,8 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     # Versión de la aplicación
-    app.version:                "8.1.1"
-    app.pub_date:               "2026-11-17"
+    app.version:                "8.2.0"
+    app.pub_date:               "2026-11-18"
 
     # Prefijo de las notificaciones enviadas a los usuarios
     notification.prefix:        "%env(APP_NOTIFICATION_PREFIX)%"
@@ -27,6 +27,10 @@ parameters:
     # El siguiente parámetro evita que se pueda interceptar las credenciales mediante un ataque MITM
     # así que sólo debe ponerse a "false" si existe algún problema con los certificados de la Consejería de Educación
     external.url.force_security: "%env(APP_EXTERNAL_URL_FORCE_SECURITY)%"
+
+    # Búsqueda de personas en los selectores (tutores laborales, gerentes...): "false" (por defecto) exige escribir el
+    # identificador, el usuario o el correo completos; "true" permite buscar por parte del nombre, los apellidos o el identificador
+    person_search.partial:      "%env(bool:default::APP_PERSON_SEARCH_PARTIAL)%"
 
     # Nombre de la sesión que se utilizará para almacenar datos en el navegador del usuario
     session_name:               "%env(APP_SESSION_NAME)%"

@@ -4,6 +4,11 @@ CHANGELOG
 Este documento es un registro de los cambios más relevantes hechos a la plataforma
 en las distintas versiones de la misma.
 
+8.2.0 (2026-11-18)
+------------------
+* feat: Nueva variable de entorno `APP_PERSON_SEARCH_PARTIAL` (por defecto `false`, como hasta ahora) que permite buscar personas en los selectores (tutores laborales de FCT, FP dual y FFEOE, gerentes de empresas...) por parte del nombre, de los apellidos o del identificador, en cualquier orden y sin distinguir mayúsculas; sigue ofreciendo crear una persona nueva
+* feat(ux): El cuadro de búsqueda de personas indica qué hay que escribir: el identificador (DNI/NIE), el usuario o el correo completos, o parte del nombre, apellidos o identificador si la búsqueda parcial está activada
+
 8.1.1 (2026-11-17)
 ------------------
 * fix: La pantalla de exportación de empresas mostraba sin traducir el título del aviso de elementos omitidos

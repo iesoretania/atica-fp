@@ -7,6 +7,7 @@ namespace App\Form\Type;
 use App\Form\DataTransformer\RemoteEntityTransformer;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -15,6 +16,7 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Campo de selección de una entidad (o varias) con búsqueda remota: la lista se carga desde una ruta mientras se escribe
@@ -22,13 +24,17 @@ use Symfony\Component\Routing\RouterInterface;
  *
  * Opciones: class, text_property (propiedad que se muestra; por defecto, __toString), remote_route (+ remote_params) o
  * remote_path, minimum_input_length, multiple, placeholder, allow_clear, scroll, page_limit, render_html,
- * query_parameters, class_type y req_params (campos del formulario cuyo valor se envía en la búsqueda).
+ * query_parameters, class_type, search_hint (pista ya traducida del cuadro de búsqueda; en los selectores de personas se
+ * calcula sola) y req_params (campos del formulario cuyo valor se envía en la búsqueda).
  */
 final class RemoteEntityType extends AbstractType
 {
     public function __construct(
         private readonly ManagerRegistry $registry,
         private readonly RouterInterface $router,
+        private readonly TranslatorInterface $translator,
+        #[Autowire('%person_search.partial%')]
+        private readonly bool $personSearchPartial,
     ) {
     }
 
@@ -51,6 +57,14 @@ final class RemoteEntityType extends AbstractType
         foreach (['multiple', 'placeholder', 'primary_key', 'minimum_input_length', 'allow_clear', 'scroll', 'render_html', 'query_parameters', 'class_type'] as $name) {
             $view->vars[$name] = $options[$name];
         }
+
+        // Pista que se muestra en el cuadro de búsqueda mientras no se ha escrito lo suficiente. En los selectores de
+        // personas depende de si la búsqueda es parcial o exige el identificador, el usuario o el correo completos.
+        $hint = $options['search_hint'];
+        if ($hint === null && $options['remote_route'] === 'api_person_query') {
+            $hint = $this->translator->trans($this->personSearchPartial ? 'hint.partial' : 'hint.exact', [], 'person_search');
+        }
+        $view->vars['search_hint'] = $hint;
 
         if ($options['req_params'] !== []) {
             $accessor = PropertyAccess::createPropertyAccessor();
@@ -88,6 +102,7 @@ final class RemoteEntityType extends AbstractType
             'class_type' => null,
             'query_parameters' => [],
             'render_html' => false,
+            'search_hint' => null,
         ]);
         $resolver->setRequired('class');
     }

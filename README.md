@@ -55,6 +55,9 @@ conocer los cambios necesarios.**
   - Si tu zona horaria no es `Europe/Madrid`, añade `APP_TIMEZONE="Tu/Zona"` (por ejemplo, `Atlantic/Canary`).
     Es la zona con la que se muestran las horas, tanto en la web como en la consola; no hace falta tocar el
     `php.ini` ni la zona horaria del sistema.
+  - Opcionalmente, `APP_PERSON_SEARCH_PARTIAL=true` permite buscar personas (tutores laborales, gerentes...) en los
+    selectores por parte del nombre, de los apellidos o del identificador. Por defecto (`false`) hay que escribir el
+    identificador (DNI/NIE), el usuario o el correo electrónico completos.
 - Ejecutar `php bin/console asset-map:compile` para publicar los assets (CSS y JavaScript). Las librerías de
   frontend se descargan automáticamente durante `composer install`; **no hace falta Node.js**.
 - Configurar el sitio de Apache2 para que el `DocumentRoot` sea la carpeta `public/` dentro de la carpeta de instalación.

@@ -35,6 +35,7 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -227,13 +228,28 @@ class CompanyController extends AbstractController
         Request $request,
         UserExtensionService $userExtensionService,
         PersonRepository $personRepository,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        #[Autowire('%person_search.partial%')]
+        bool $partialSearch
     ): Response {
         $term = $request->query->get('q');
 
         $organization = $userExtensionService->getCurrentOrganization();
 
         $this->denyAccessUnlessGranted(OrganizationVoter::MANAGE_COMPANIES, $organization);
+
+        if ($partialSearch && $term !== null) {
+            // Búsqueda parcial (APP_PERSON_SEARCH_PARTIAL): varias personas por nombre, apellidos o identificador y,
+            // al final, la opción de crear una persona nueva por si no está entre las encontradas
+            $limit = max(1, min(50, $request->query->getInt('page_limit', 10)));
+            $data = [];
+            foreach ($personRepository->searchByPartialTerms($term, $limit) as $person) {
+                $data[] = ['id' => $person->getId(), 'term' => $term, 'text' => $person->getFullDisplayName()];
+            }
+            $data[] = ['id' => 0, 'term' => $term, 'text' => $translator->trans('title.new', [], 'person')];
+
+            return new JsonResponse($data);
+        }
 
         $persons = $term === null ? [] : [$personRepository->findOneByUniqueIdentifierOrUsernameOrEmailAddress($term)];
 

@@ -51,6 +51,45 @@ class PersonRepository extends ServiceEntityRepository implements UserLoaderInte
             ->getResult();
     }
 
+    /**
+     * Búsqueda parcial para los selectores de personas: cada palabra escrita debe estar en el nombre, en los apellidos o
+     * en el identificador (en cualquier orden, sin distinguir mayúsculas), de modo que «ana gar» encuentra a «Ana
+     * García». Además, el usuario o el correo electrónico completos encuentran siempre a su persona.
+     *
+     * @return list<Person>
+     */
+    final public function searchByPartialTerms(string $term, int $limit = 10): array
+    {
+        $words = preg_split('/\s+/', trim($term), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        if ($words === []) {
+            return [];
+        }
+
+        $qb = $this->createQueryBuilder('p');
+        $wordConditions = [];
+        foreach ($words as $index => $word) {
+            $wordConditions[] = $qb->expr()->orX(
+                "p.firstName LIKE :w$index",
+                "p.lastName LIKE :w$index",
+                "p.uniqueIdentifier LIKE :w$index"
+            );
+            // los comodines de LIKE escritos por quien busca se tratan como texto
+            $qb->setParameter("w$index", '%' . addcslashes($word, '%_\\') . '%');
+        }
+
+        $qb->where($qb->expr()->orX(
+            $qb->expr()->andX(...$wordConditions),
+            'p.loginUsername = :exact',
+            'p.emailAddress = :exact'
+        ))
+            ->setParameter('exact', trim($term))
+            ->orderBy('p.lastName')
+            ->addOrderBy('p.firstName')
+            ->setMaxResults($limit);
+
+        return $qb->getQuery()->getResult();
+    }
+
     final public function findOneByUniqueIdentifiers($id, $id2 = null): ?Person
     {
         $qb = $this->createQueryBuilder('p')

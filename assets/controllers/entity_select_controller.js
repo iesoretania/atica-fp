@@ -15,6 +15,7 @@ export default class extends Controller {
         url: String,
         minLength: { type: Number, default: 0 },
         placeholder: String,
+        hint: String,
         fieldName: String,
         classType: String,
         scroll: Boolean,
@@ -42,11 +43,15 @@ export default class extends Controller {
             score: () => () => 1,
             shouldLoad: (query) => query.length >= this.minLengthValue,
             load: (query, callback) => this.load(query, callback),
-            render: this.renderHtmlValue ? {
-                option: (data, escape) => `<div>${data.html ?? escape(data.text)}</div>`,
-                item: (data, escape) => `<div>${escape(data.text)}</div>`,
-            } : {
-                no_results: () => '<div class="no-results">&hellip;</div>',
+            render: {
+                ...(this.renderHtmlValue ? {
+                    option: (data, escape) => `<div>${data.html ?? escape(data.text)}</div>`,
+                    item: (data, escape) => `<div>${escape(data.text)}</div>`,
+                } : {
+                    no_results: () => '<div class="no-results">&hellip;</div>',
+                }),
+                // Pista que se ve al abrir el cuadro de búsqueda, mientras no se ha escrito lo suficiente para buscar
+                not_loading: (data, escape) => (this.hintValue ? `<div class="no-results">${escape(this.hintValue)}</div>` : undefined),
             },
             onItemAdd: (value) => {
                 if (String(value) === '0') {
